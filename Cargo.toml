@@ -7,7 +7,7 @@ documentation = "https://docs.rs/parol_runtime"
 repository = "https://github.com/jsinger67/parol_runtime"
 readme = "README.md"
 keywords = ["parser", "runtime"]
-categories = ["parser", "parser generator", "LL(k)"]
+categories = ["algorithms", "parsing"]
 license = "MIT"
 edition = "2018"
 
