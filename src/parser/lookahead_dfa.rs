@@ -1,0 +1,151 @@
+use super::errors::*;
+use crate::lexer::{TerminalIndex, TokenStream};
+use crate::parser::{ProductionIndex, StateIndex};
+use std::cmp::Ordering;
+
+///
+/// Data structure to represent a DFA state
+///
+///
+/// If the state is accepting the production index is valid and denotes
+/// the resulting production index.
+///
+pub type DFAState = Option<ProductionIndex>;
+
+///
+/// The transitions contain tuples: "from-state -> terminal-index -> to-state"
+///
+#[derive(Debug, Default, Clone, Eq, PartialEq)]
+pub struct DFATransition(pub StateIndex, pub TerminalIndex, pub StateIndex);
+
+///
+/// The lookahead DFA. Used to calculate a certain production number from a
+/// sequence of terminals.
+///
+/// The start state is per definition always the state with index 0.
+///
+/// In the generated parsers there always exists exactly one LookaheadDFA for
+/// each non-terminal.
+///
+#[derive(Debug, Default, Clone, Eq, PartialEq)]
+pub struct LookaheadDFA {
+    ///
+    /// States are identified by their index within the slice.
+    /// It corresponds to the state's number
+    ///
+    pub states: &'static [DFAState],
+
+    ///
+    /// Transitions are sorted
+    ///     * firstly by the index of the from-state,
+    ///     * secondly by the terminal index
+    /// This way it is easy to detect the case where no match exists and to be
+    /// able to quickly terminate the search for an applicable transition.
+    ///
+    pub transitions: &'static [DFATransition],
+
+    ///
+    /// Maximum number of tokens needed to reach an accepting state
+    ///
+    pub k: usize,
+}
+
+impl LookaheadDFA {
+    ///
+    /// Creates a new instance with the given parameters.
+    ///
+    pub fn new(
+        states: &'static [DFAState],
+        transitions: &'static [DFATransition],
+        k: usize,
+    ) -> Self {
+        Self {
+            states,
+            transitions,
+            k,
+        }
+    }
+
+    ///
+    /// Calculates the next production to use for the given non-terminal.
+    /// Retrieves the lookahead tokens from the TokenStream object without
+    /// consuming any of them.
+    ///
+    pub fn eval<'t>(&self, token_stream: &mut TokenStream<'t>) -> Result<ProductionIndex> {
+        let mut state: StateIndex = 0;
+        if self.k > token_stream.k {
+            return Err("Lookahead size mismatch between token stream and Lookahead DFA".into());
+        }
+        let mut last_accepting_state: Option<StateIndex> = None;
+        for i in 0..self.k {
+            // Read the current lookahead token and extract it's type
+            let current_lookahead_token = token_stream
+                .lookahead_token_type(i)
+                .chain_err(|| "Error accessing lookahead token from token stream!")?;
+
+            // Filter the transitions with the matching from-state
+            let mut any_matching_found = false;
+            for i in 0..self.transitions.len() {
+                let current_transition = &self.transitions[i];
+
+                if current_transition.0 != state {
+                    if any_matching_found {
+                        // Since the transitions are sorted by from-state we
+                        // have moved beyond the possible transitions and
+                        // can safely stop the search here.
+                        break;
+                    } else {
+                        // Try the next matching transition.
+                        continue;
+                    }
+                }
+
+                any_matching_found = true;
+
+                // Test if there exists a transition from the from-state
+                // via the current lookahead token
+                match current_transition.1.cmp(&current_lookahead_token) {
+                    Ordering::Equal => {
+                        // Set the to_state and break into the outer for loop
+                        // to finish if we found an accepting state or
+                        // to read the next lookahead token if available.
+                        state = current_transition.2;
+                        if self.states[state].is_some() {
+                            // In case we step too far, we can retrieve the last
+                            // accepting state.
+                            // Indeed we can step too far because the self.k is the
+                            // maximum depth of all subtrees.
+                            last_accepting_state = Some(state);
+                        }
+                        break;
+                    }
+                    Ordering::Greater => {
+                        // The token type is not found
+                        break;
+                    }
+                    _ => (),
+                }
+            }
+        }
+        if let Some(prod_num) = self.states[state] {
+            // The state is accepting, we can return the associated production number
+            Ok(prod_num)
+        } else if let Some(last_state) = last_accepting_state {
+            Ok(self.states[last_state].unwrap())
+        } else {
+            Err(format!("Production prediction failed at state {}", state).into())
+        }
+    }
+
+    ///
+    /// Returns all terminals that lead from state 0 to a valid next state
+    ///
+    pub fn expected_terminals(&self, terminal_names: &'static [&'static str]) -> String {
+        self.transitions
+            .iter()
+            .filter(|t| t.0 == 0)
+            .map(|t| format!(r#""{}""#, terminal_names[t.1]))
+            .collect::<Vec<String>>()
+            .join(", ")
+    }
+}

@@ -1,0 +1,13 @@
+[package]
+name = "parol_runtime"
+version = "0.1.0"
+authors = ["Jörg Singer <singer.joerg@gmx.de>"]
+edition = "2018"
+
+[dependencies]
+regex = "1.3.9"
+lazy_static = "1.4.0"
+error-chain = "0.12.4"
+id_tree = "1.8.0"
+id_tree_layout = "2.0.2"
+log = "0.4.14"
