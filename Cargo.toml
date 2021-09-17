@@ -1,0 +1,15 @@
+[package]
+name = "json_parser"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+env_logger = "0.9.0"
+error-chain = "0.12.4"
+id_tree = "1.8.0"
+id_tree_layout = "2.0.2"
+lazy_static = "1.4.0"
+log = "0.4.14"
+parol_runtime = "0.1.1"
