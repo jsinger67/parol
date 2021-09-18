@@ -1,0 +1,140 @@
+%start calc
+%title "Example grammar of an expression evaluator"
+%comment "To demnonstrate use of lists, operator precedence, operator associativity"
+%line_comment "//"
+%block_comment  "/\*" "\*/"
+
+%%
+
+// -------------------------------------------------------------------------------------------------
+// START SYMBOL
+calc: calc_lst1;
+calc_lst1: calc_lst1_itm1 calc_lst1;
+calc_lst1_itm1: instruction ";";
+calc_lst1: ;
+
+// -------------------------------------------------------------------------------------------------
+// INSTRUCTION
+instruction: assignment;
+instruction: logical_or;
+
+// !!! Moved up to ensure token precedence of equality_op over assign_op in lexer !!!
+equality_op: "==|!=";
+
+// -------------------------------------------------------------------------------------------------
+// ASSIGNMENT
+assign_op: "(\+|-|\*|/|%|<<|>>|&|^|\|)?=";
+assign_item: id assign_op;
+assignment: assign_item assignment_lst1 logical_or;
+assignment_lst1: assignment_lst1_itm1 assignment_lst1;
+assignment_lst1_itm1: assign_item;
+assignment_lst1: ;
+
+// -------------------------------------------------------------------------------------------------
+// LOGICAL OR
+logical_or: logical_and logical_or_lst1;
+logical_or_lst1: logical_or_lst1_itm1 logical_or_lst1;
+logical_or_lst1_itm1: logical_or_item;
+logical_or_lst1: ;
+logical_or_op: "\|\|";
+logical_or_item: logical_or_op logical_and;
+
+// -------------------------------------------------------------------------------------------------
+// LOGICAL AND
+logical_and: bitwise_or logical_and_lst1;
+logical_and_lst1: logical_and_lst1_itm1 logical_and_lst1;
+logical_and_lst1_itm1: logical_and_item;
+logical_and_lst1: ;
+logical_and_op: "&&";
+logical_and_item: logical_and_op bitwise_or;
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE OR
+bitwise_or: bitwise_and bitwise_or_lst1;
+bitwise_or_lst1: bitwise_or_lst1_itm1 bitwise_or_lst1;
+bitwise_or_lst1_itm1: bitwise_or_item;
+bitwise_or_lst1: ;
+bitwise_or_op: "\|";
+bitwise_or_item: bitwise_or_op bitwise_and;
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE AND
+bitwise_and: equality bitwise_and_lst1;
+bitwise_and_lst1: bitwise_and_lst1_itm1 bitwise_and_lst1;
+bitwise_and_lst1_itm1: bitwise_and_item;
+bitwise_and_lst1: ;
+bitwise_and_op: "&";
+bitwise_and_item: bitwise_and_op equality;
+
+// -------------------------------------------------------------------------------------------------
+// EQULAITY AND INEQUALITY
+equality: relational equality_lst1;
+equality_lst1: equality_lst1_itm1 equality_lst1;
+equality_lst1_itm1: equality_item;
+equality_lst1: ;
+equality_item: equality_op relational;
+// !!! Moved up to ensure token precedence of bitwise_shift_op over relational_op in lexer !!!
+bitwise_shift_op: "<<|>>";
+
+// -------------------------------------------------------------------------------------------------
+// RELATIONAL
+relational: bitwise_shift relational_lst1;
+relational_lst1: relational_lst1_itm1 relational_lst1;
+relational_lst1_itm1: relational_item;
+relational_lst1: ;
+relational_op: "<=|<|>=|>";
+relational_item: relational_op bitwise_shift;
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE SHIFT
+bitwise_shift: summ bitwise_shift_lst1;
+bitwise_shift_lst1: bitwise_shift_lst1_itm1 bitwise_shift_lst1;
+bitwise_shift_lst1_itm1: bitwise_shift_item;
+bitwise_shift_lst1: ;
+bitwise_shift_item: bitwise_shift_op summ;
+
+// -------------------------------------------------------------------------------------------------
+// ADDITION AND SUBTRACTION
+summ: mult summ_lst1;
+summ_lst1: summ_lst1_itm1 summ_lst1;
+summ_lst1_itm1: summ_item;
+summ_lst1: ;
+plus: "\+";
+minus: "-";
+add_op: plus;
+add_op: minus;
+summ_item: add_op mult;
+
+// !!! Moved up to ensure token precedence of pow_op over mult_op in lexer !!!
+pow_op: "\*\*";
+
+// -------------------------------------------------------------------------------------------------
+// MULTIPLICATION, DIVISION AND REMAINDER
+mult: power mult_lst1;
+
+mult_lst1: mult_lst1_itm1 mult_lst1;
+mult_lst1_itm1: mult_item;
+mult_lst1: ;
+mult_op: "\*|/|%";
+mult_item: mult_op power;
+
+// -------------------------------------------------------------------------------------------------
+// POWER
+power: factor power_lst1;
+power_lst1: power_lst1_itm1 power_lst1;
+power_lst1_itm1: pow_op factor;
+power_lst1: ;
+
+// -------------------------------------------------------------------------------------------------
+// NEGATION
+negate: minus;
+
+// -------------------------------------------------------------------------------------------------
+// FACTOR
+factor: number;
+factor: idref;
+factor: negate factor;
+factor: "\(" logical_or "\)";
+number: "\d+";
+idref: id;
+id: "[a-zA-Z_]\w*";

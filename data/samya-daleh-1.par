@@ -1,0 +1,11 @@
+%start S
+%title "Example from Samya Daleh used for FIRST(4) and FOLLOW(4)"
+%comment "https://youtu.be/C6jl6UabMeE, https://youtu.be/539ZpXZ5JvE"
+%%
+
+/* 0 */ S: "a" B A;
+/* 1 */ S: "b" A;
+/* 2 */ A: "a";
+/* 3 */ B: "a" "a" S;
+
+

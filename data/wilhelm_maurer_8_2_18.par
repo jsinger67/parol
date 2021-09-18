@@ -1,0 +1,16 @@
+%start S
+%title "Example from R. Wilhelm, D. Maurer; Übersetzerbau; Springer-Verlag; 2. Auflage; 1997"
+%comment "P. 304"
+%%
+
+/* 0 */ S: E;
+/* 1 */ E: T E1;
+/* 2 */ E1: ;
+/* 3 */ E1: "\+" E;
+/* 4 */ T: F T1;
+/* 5 */ T1: ;
+/* 6 */ T1: "\*" T;
+/* 7 */ F: "\(" E "\)";
+/* 8 */ F: "id";
+
+

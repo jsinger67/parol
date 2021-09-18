@@ -1,0 +1,12 @@
+%start I
+%title "Grammar 8 from ParsingEmu"
+
+%%
+
+I: A;
+A: S;
+S: L "=" R;
+S: R;
+L: "*" R;
+L: "i";
+R: L;

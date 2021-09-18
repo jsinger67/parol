@@ -1,0 +1,14 @@
+%start I
+%title "Grammar 2 from ParsingEmu"
+
+%%
+
+I: E;
+E: T G;
+G: "+" T G;
+G: ;
+T: F H;
+H: "*" F H;
+H: ;
+F: "(" E ")";
+F: "i";

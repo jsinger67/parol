@@ -1,0 +1,11 @@
+%start I
+%title "Grammar 7 from ParsingEmu"
+
+%%
+
+I: A;
+A: B;
+B: C D;
+C: "x";
+C: ;
+D: "y";

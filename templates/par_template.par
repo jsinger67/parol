@@ -1,0 +1,5 @@
+%start {{{start_symbol}}}{{{title}}}{{{comment}}}{{{line_comment}}}{{{block_comment}}}
+
+%%
+
+{{{productions}}}

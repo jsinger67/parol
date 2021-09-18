@@ -1,0 +1,10 @@
+%start I
+%title "Grammar 9 from ParsingEmu"
+
+%%
+
+I: A;
+A: S;
+S: C C;
+C: "c" C;
+C: "d";

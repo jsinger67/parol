@@ -1,0 +1,18 @@
+%start I
+%title "Grammar 3 from ParsingEmu"
+
+%%
+
+I: A;
+A: B C D E;
+A: ;
+B: "x";
+B: "y";
+B: ;
+C: "z";
+C: "h";
+C: ;
+D: "k";
+D: ;
+E: "m";
+E: "n";

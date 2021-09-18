@@ -1,0 +1,19 @@
+%start S
+%title "Grammar 12 from ParsingEmu"
+%comment "The original example was left recursive."
+
+%%
+
+S: E;
+E: T;
+T: "0";
+T: "1";
+T: "2";
+T: "3";
+T: "4";
+T: "5";
+T: "6";
+T: "7";
+T: "8";
+T: "9";
+E: T T;

@@ -1,0 +1,8 @@
+%start I
+%title "Grammar 1 from ParsingEmu"
+
+%%
+
+I: A;
+A: "x";
+A: ;

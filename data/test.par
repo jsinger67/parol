@@ -1,0 +1,16 @@
+%start A
+%title "Test grammar"
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%%
+
+/*  0 */ A: {B "a"};
+/*  1 */ B: C
+/*  2 */    | D "d";
+/*  3 */ C: ["c" "b"] E;
+/*  4 */ E: ( F G );
+/*  5 */ F: "f";
+/*  6 */ G: |
+/*  7 */    "g";
+/*  8 */ D: "x" ("y" | "z");

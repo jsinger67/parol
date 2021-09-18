@@ -1,0 +1,58 @@
+name: parol
+version: "0.1.0"
+author: Jörg Singer <singer.joerg@gmx.de>
+about: A LL(k) Parser Generator written in Rust.
+args:
+    - grammar:
+        short: f
+        long: file
+        takes_value: true
+        help: Input grammar file
+    - lookahead:
+        help: Lookahead limit for Lookahead DFA calculation
+        short: k
+        long: lookahead
+        takes_value: true
+        default_value: "5"
+    - only_lookahead:
+        short: c
+        long: only_lookahead
+        takes_value: false
+        help: Don't generate sources but only calculate maximum lookahead size for given grammar
+    - parser:
+        help: Output file for the generated parser source
+        short: p
+        long: parser
+        takes_value: true
+    - expanded:
+        help: Output file for the expanded grammar. Use -e-- to output to stdout
+        short: e
+        long: expanded
+        takes_value: true
+    - actions:
+        help: Output file for the generated trait with semantic actions
+        short: a
+        long: actions
+        takes_value: true
+    - user_type:
+        help: User type that implements the language processing
+        short: t
+        long: user_type
+        takes_value: true
+        default_value: Grammar
+    - module:
+        help: User type's module name
+        short: m
+        long: module
+        takes_value: true
+        default_value: grammar
+    - generate_tree_graph:
+        help: Activates the generation of a SVG file with the parse tree of the given grammar
+        short: s
+        long: svg
+    - verbose:
+        help: Increased verbosity
+        short: v
+        long: verbose
+
+...

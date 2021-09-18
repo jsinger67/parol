@@ -1,0 +1,12 @@
+%start I
+%title "Grammar 10   from ParsingEmu"
+
+%%
+
+I: S;
+S: "a" A "a";
+S: "b" A "b";
+S: "a" B "b";
+S: "b" B "a";
+A: "c";
+B: "c";

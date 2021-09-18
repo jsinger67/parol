@@ -1,0 +1,30 @@
+%start Grammar
+%title "Parol grammar"
+%comment "Parol's own grammar"
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%%
+
+/*  0 */ Grammar: Prolog GrammarDefinition;
+/*  1 */ Prolog: StartDeclaration {Declaration};
+/*  3 */ StartDeclaration: "%start" Identifier;
+/*  4 */ Declaration: "%title" String
+/*  6 */    | "%comment" String
+/*  7 */    | "%line_comment" String
+/*  7 */    | "%block_comment" String String;
+/*  8 */ GrammarDefinition: "%%" Production {Production};
+/*  9 */ Production: Identifier ":" Alternations ";";
+/* 10 */ Alternations: Alternation {"\|" Alternation};
+/* 11 */ Alternation: {Factor};
+/* 12 */ Factor: Group
+/* 13 */    | Repeat
+/* 14 */    | Optional
+/* 15 */    | Symbol;
+/* 16 */ Symbol: Identifier
+/* 17 */    | String;
+/* 18 */ Group: "\(" Alternations "\)";
+/* 19 */ Optional: "\[" Alternations "\]";
+/* 20 */ Repeat: "\{" Alternations "\}";
+/* 21 */ Identifier: "[a-zA-Z_]\w*";
+/* 22 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";

@@ -1,0 +1,11 @@
+%start I
+%title "Grammar 4 from ParsingEmu"
+
+%%
+
+I: S;
+S: "i" E "t" S Z;
+S: "a";
+Z: "c" S;
+Z: ;
+E: "b";
