@@ -4,10 +4,10 @@ use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};
 
 ///
-/// The type of the elements in the syntax tree.
+/// The type of the elements in the parse tree.
 ///
 #[derive(Debug, Clone)]
-pub enum AstType {
+pub enum ParseTreeType {
     ///
     /// An owned representation of a scanned terminal symbol.
     ///
@@ -20,9 +20,9 @@ pub enum AstType {
     N(&'static str),
 }
 
-impl AstType {
+impl ParseTreeType {
     ///
-    /// Tries to access the OwnedToken of the AstType.
+    /// Tries to access the OwnedToken of the ParseTreeType.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
     pub fn token(&self) -> Result<&OwnedToken> {
@@ -35,9 +35,9 @@ impl AstType {
 
 ///
 /// Implementation of the Visualize trait to support the visualization of the
-/// AstType in a tree layout.
+/// ParseTreeType in a tree layout.
 ///
-impl Visualize for AstType {
+impl Visualize for ParseTreeType {
     fn visualize(&self) -> std::string::String {
         match self {
             Self::T(t) => format!("{}", t),
@@ -49,7 +49,7 @@ impl Visualize for AstType {
     }
 }
 
-impl Display for AstType {
+impl Display for ParseTreeType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         match self {
             Self::T(t) => write!(f, "T({})", t),

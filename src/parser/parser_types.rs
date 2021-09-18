@@ -1,8 +1,8 @@
 use super::errors::*;
 use crate::lexer::TokenStream;
 use crate::parser::{
-    AstStackEntry, AstType, LookaheadDFA, NonTerminalIndex, ParseStack, ParseType, ProductionIndex,
-    UserActionsTrait,
+    LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
+    ProductionIndex, UserActionsTrait,
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
@@ -61,27 +61,27 @@ pub struct LLKParser {
     start_symbol_index: NonTerminalIndex,
 
     ///
-    /// Grammar rules stack; is built up in push_production and reduced after
+    /// Grammar productions stack; is built up in push_production and reduced after
     /// each processed token/variable
     ///
     parser_stack: ParseStack,
 
     ///
-    /// The rule depth. Use for logging reasons only.
+    /// The production depth. Use for logging reasons only.
     ///
-    pub rule_depth: usize,
+    pub production_depth: usize,
 
     ///
-    /// AST - the abstract syntax tree the parser creates
+    /// The parse tree the parser creates
     ///
-    pub parse_tree: Tree<AstType>,
+    pub parse_tree: Tree<ParseTreeType>,
 
     ///
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     /// This stack is also used to provide arguments to semantic user actions.
     ///  
-    ast_stack: Vec<AstStackEntry>,
+    parse_tree_stack: Vec<ParseTreeStackEntry>,
 
     ///
     /// The array of generated lookahead automata.
@@ -117,9 +117,9 @@ impl<'t> LLKParser {
         Self {
             start_symbol_index,
             parser_stack: ParseStack::new(terminal_names, non_terminal_names),
-            rule_depth: 0,
+            production_depth: 0,
             parse_tree: Tree::new(),
-            ast_stack: Vec::new(),
+            parse_tree_stack: Vec::new(),
             lookahead_automata,
             productions,
             terminal_names,
@@ -152,13 +152,13 @@ impl<'t> LLKParser {
         for s in self.productions[prod_num].production {
             self.parser_stack.stack.push(s.clone());
         }
-        // Now push a 'rule entry' onto the AST stack
+        // Now push a 'production entry' onto the AST stack
         let root_node_id = self.parse_tree.root_node_id().cloned();
 
         let node_id = if let Some(root_node_id) = root_node_id {
             // We create a new non-terminal node and temporarily insert it under the root node
             self.parse_tree.insert(
-                Node::new(AstType::N(
+                Node::new(ParseTreeType::N(
                     self.non_terminal_names[self.productions[prod_num].lhs],
                 )),
                 InsertBehavior::UnderNode(&root_node_id),
@@ -166,7 +166,7 @@ impl<'t> LLKParser {
         } else {
             // We create a new non-terminal node and insert it as the root node
             self.parse_tree.insert(
-                Node::new(AstType::N(
+                Node::new(ParseTreeType::N(
                     self.non_terminal_names[self.productions[prod_num].lhs],
                 )),
                 InsertBehavior::AsRoot,
@@ -174,12 +174,13 @@ impl<'t> LLKParser {
         };
 
         // The node's id is pushed on the AST stack
-        self.ast_stack.push(AstStackEntry::Id(node_id.unwrap()));
+        self.parse_tree_stack
+            .push(ParseTreeStackEntry::Id(node_id.unwrap()));
 
-        self.rule_depth += 1;
+        self.production_depth += 1;
         debug!(
             "Pushed production {} -> depth {}",
-            prod_num, self.rule_depth
+            prod_num, self.production_depth
         );
     }
 
@@ -191,21 +192,23 @@ impl<'t> LLKParser {
         let l = self.productions[prod_num].production.len();
         // We remove the last n entries from the ast stack and insert them as
         // children under the node laying below on the stack
-        let children = self.ast_stack.split_off(self.ast_stack.len() - l);
+        let children = self
+            .parse_tree_stack
+            .split_off(self.parse_tree_stack.len() - l);
         user_actions.call_semantic_action_for_production_number(
             prod_num,
             &children,
             &self.parse_tree,
         )?;
-        let tos = self.ast_stack.pop();
-        if let Some(AstStackEntry::Id(node_id)) = tos {
+        let tos = self.parse_tree_stack.pop();
+        if let Some(ParseTreeStackEntry::Id(node_id)) = tos {
             children.into_iter().for_each(|c| match c {
-                AstStackEntry::Id(child_node_id) => {
+                ParseTreeStackEntry::Id(child_node_id) => {
                     self.parse_tree
                         .move_node(&child_node_id, MoveBehavior::ToParent(&node_id))
                         .expect("Node should be moved.");
                 }
-                AstStackEntry::Nd(node) => {
+                ParseTreeStackEntry::Nd(node) => {
                     let _ = self
                         .parse_tree
                         .insert(node, InsertBehavior::UnderNode(&node_id))
@@ -214,7 +217,7 @@ impl<'t> LLKParser {
             });
 
             // The node's id is pushed on the AST stack
-            self.ast_stack.push(AstStackEntry::Id(node_id));
+            self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id));
         } else {
             panic!("Expected node id on ast stack, found {:?}", tos);
         }
@@ -307,8 +310,8 @@ Lookahead token: {} ({})
                                 .consume(1)
                                 .chain_err(|| "Failed consuming the next token!")?;
                             self.parser_stack.stack.pop();
-                            self.ast_stack
-                                .push(AstStackEntry::Nd(Node::new(AstType::T(token))));
+                            self.parse_tree_stack
+                                .push(ParseTreeStackEntry::Nd(Node::new(ParseTreeType::T(token))));
                         } else {
                             let msg = self.diagnostic_message(
                                 format!(
@@ -339,8 +342,8 @@ Lookahead token: {} ({})
                         self.push_production(prod_num);
                     }
                     ParseType::E(p) => {
-                        self.rule_depth -= 1;
-                        debug!("Popped production {} -> depth {}", p, self.rule_depth);
+                        self.production_depth -= 1;
+                        debug!("Popped production {} -> depth {}", p, self.production_depth);
                         self.parser_stack.stack.pop(); // Pop the End of production marker
                         self.process_ast_stack(p, user_actions)?;
                     }

@@ -56,7 +56,8 @@ fn tokenizer_test() {
 
 #[test]
 fn lexer_token_production() {
-    let token_stream = RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
+    let token_stream =
+        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
         print!("{:?}", tok);
@@ -79,14 +80,16 @@ fn lexer_token_production() {
 #[test]
 #[should_panic(expected = "Lookahead exceeds its maximum")]
 fn lookahead_must_fail() {
-    let mut token_stream = TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap();
+    let mut token_stream =
+        TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap();
     let _tok = token_stream.lookahead(2).unwrap();
 }
 
 #[test]
 #[should_panic(expected = "Lookahead exceeds token buffer length")]
 fn lookahead_beyond_buffer_must_fail() {
-    let token_stream = RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
+    let token_stream =
+        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume(1).is_ok() {
             let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();

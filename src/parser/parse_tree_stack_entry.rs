@@ -1,30 +1,30 @@
 use super::errors::*;
 use crate::lexer::OwnedToken;
-use crate::parser::AstType;
+use crate::parser::ParseTreeType;
 use id_tree::{Node, NodeId, Tree};
 
 ///
-/// The type of elements in the parser's ast stack.
+/// The type of elements in the parser's parse tree stack.
 /// * 'Nd' references nodes not yet inserted into the parse tree.
 /// * 'Id' holds node ids to nodes that are already part of the parse tree.
 ///
 #[derive(Debug)]
-pub enum AstStackEntry {
+pub enum ParseTreeStackEntry {
     /// The node is not inserted into the parse tree yet.
     /// Thus we can access it directly.
-    Nd(Node<AstType>),
+    Nd(Node<ParseTreeType>),
 
     /// The node is already inserted into the parse tree.
     /// Wee need to lookup the node in the parse tree via the NodeId.
     Id(NodeId),
 }
 
-impl AstStackEntry {
+impl ParseTreeStackEntry {
     ///
     /// Abstracts from the actual place where the node exists and returns the
-    /// inner AstType.
+    /// inner ParseTreeType.
     ///
-    pub fn get_ast_type<'t>(&'t self, parse_tree: &'t Tree<AstType>) -> &'t AstType {
+    pub fn get_ast_type<'t>(&'t self, parse_tree: &'t Tree<ParseTreeType>) -> &'t ParseTreeType {
         match self {
             Self::Nd(n) => n.data(),
             Self::Id(i) => parse_tree.get(i).unwrap().data(),
@@ -32,10 +32,10 @@ impl AstStackEntry {
     }
 
     ///
-    /// Tries to access the OwnedToken of the AstStackEntry.
+    /// Tries to access the OwnedToken of the ParseTreeStackEntry.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
-    pub fn token<'t>(&'t self, parse_tree: &'t Tree<AstType>) -> Result<&'t OwnedToken> {
+    pub fn token<'t>(&'t self, parse_tree: &'t Tree<ParseTreeType>) -> Result<&'t OwnedToken> {
         match self {
             Self::Nd(n) => n.data().token(),
             Self::Id(i) => parse_tree.get(i).unwrap().data().token(),
@@ -43,10 +43,10 @@ impl AstStackEntry {
     }
 
     ///
-    /// Tries to access the text of the AstStackEntry.
+    /// Tries to access the text of the ParseTreeStackEntry.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
-    pub fn symbol<'t>(&'t self, parse_tree: &'t Tree<AstType>) -> Result<&'t String> {
+    pub fn symbol<'t>(&'t self, parse_tree: &'t Tree<ParseTreeType>) -> Result<&'t String> {
         match self {
             Self::Nd(node) => {
                 let token = node.data().token()?;

@@ -16,19 +16,19 @@ pub type ProductionIndex = usize;
 pub type NonTerminalIndex = usize;
 
 ///
-/// Module with types used to handle the parse tree (abstract syntax tree) that
-/// is build during runs of the generated parsers.
+/// Module with types used to handle the parse tree that is build during runs of
+/// the generated parsers.
 ///
 #[forbid(missing_docs)]
 pub mod ast;
-pub use ast::AstType;
+pub use ast::ParseTreeType;
 
 ///
 /// Module with types used in the generated parser's ast stack.
 ///
 #[forbid(missing_docs)]
-pub mod ast_stack_entry;
-pub use ast_stack_entry::AstStackEntry;
+pub mod parse_tree_stack_entry;
+pub use parse_tree_stack_entry::ParseTreeStackEntry;
 
 ///
 /// Module with types used predict the next productions to choose during runs of

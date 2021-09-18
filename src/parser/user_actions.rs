@@ -1,5 +1,5 @@
 use super::errors::*;
-use crate::parser::{AstStackEntry, AstType};
+use crate::parser::{ParseTreeStackEntry, ParseTreeType};
 use id_tree::Tree;
 
 ///
@@ -15,7 +15,7 @@ pub trait UserActionsTrait {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[AstStackEntry],
-        parse_tree: &Tree<AstType>,
+        children: &[ParseTreeStackEntry],
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()>;
 }

@@ -4,7 +4,7 @@ use std::fmt::{Display, Error, Formatter};
 ///
 /// This is a token type in which the matched text is owned, i.e. it does not
 /// have any reference to the input text.
-/// This is necessary to safely put the token into a decoupled syntax tree.
+/// This is necessary to safely put the token into a decoupled parse tree.
 ///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct OwnedToken {
