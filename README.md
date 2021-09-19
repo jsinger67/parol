@@ -14,7 +14,7 @@
 * Generated parsers are clean and easy to read. Terminal names are automatically deduced from the grammar description.
 * Rule selection is done by one deterministic finite **lookahead automaton** for each non-terminal.
 * The lexer and the parser is generated from **one single grammar description** file. Semantic actions are strictly separated from the grammar definition.
-* **Sematic actions** are generated for each production as stubs in a special trait with empty default implementations. The user can implement this trait for his grammar processing item and overwrite needed actions. This provides a loose coupling between your language definition and the language processing.
+* **Semantic actions** are generated for each production as stubs in a special trait with empty default implementations. The user can implement this trait for his grammar processing item and overwrite needed actions. This provides a loose coupling between your language definition and the language processing.
 * The grammar description is provided in a **Bison/Yacc-like** style with additional features known from EBNF such as grouping, optional elements and repetitions.
 * The grammar description supports definition of language comments via **%line_comment** and **%block_comment** declarations.
 * The crate provides several tools for **grammar analysis**, **transformation** and **parse tree visualization** to support your grammar implementation.

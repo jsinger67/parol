@@ -30,7 +30,7 @@ String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
 
 This is a very concise grammar that most programmers should be familiar with. There are several specialties described here. First please notice the built-in support for language comments.
 
-Using the `%line_comment` and `%block_comment` constructs you can easily define your languages comments. For example you can define comments like it's done in the calc example [calc.par](../examples/calc/calc.par):
+Using the `%line_comment` and `%block_comment` constructs you can easily define your language's comments. For example you can define comments like it's done in the calc example [calc.par](../examples/calc/calc.par):
 
 ```ebnf
 %line_comment "//"
@@ -123,6 +123,6 @@ With this simple but effective means you have the control over terminal conflict
 Semantic actions are strictly separated from your grammar description.
 You will use a generated trait with default implementations for each production of your grammar. You can add this trait bound to your grammar processing item and provide concrete implementations for only those productions you are interested in.
 
-More on implementing sematic actions see
+More on implementing semantic actions see
 
 * [Tutorial](Tutorial.md)
