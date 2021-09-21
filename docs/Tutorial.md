@@ -2,6 +2,7 @@
 
 This tutorial will describe step by step how to build an own language processor.
 We will begin from the scratch and want to use [JSON](http://Json.org) as a concrete example.
+The complete source code is available at github, [json_parser](https://github.com/jsinger67/json_parser.git).
 
 ## The JSON grammar in PAR syntax
 

@@ -1,8 +1,8 @@
 <!-- markdownlint-disable first-line-h1 -->
 [![Build Status](https://travis-ci.org/jsinger67/parol.svg?branch=main)](https://travis-ci.org/jsinger/parol)
-<!-- markdownlint-enable first-line-h1 -->
 [![Docs.rs](https://docs.rs/parol/badge.svg)](https://docs.rs/parol)
 [![Crates.io](https://img.shields.io/crates/v/parol.svg)](https://crates.io/crates/parol)
+<!-- markdownlint-enable first-line-h1 -->
 
 # About `parol`
 
