@@ -15,7 +15,7 @@ use crate::json_parser::parse;
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use log::debug;
-use parol_runtime::parser::AstType;
+use parol_runtime::parser::ParseTreeType;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -48,7 +48,7 @@ fn run() -> Result<()> {
     }
 }
 
-fn generate_tree_layout(syntax_tree: &Tree<AstType>, input_file_name: &str) -> Result<()> {
+fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
     let mut svg_full_file_name = PathBuf::from_str(input_file_name).unwrap();
     svg_full_file_name.set_extension("");
     let file_name = svg_full_file_name

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="1900" height="375">
+  <rect x="0" y="0" width="1900" height="375" fill="white"></rect>
+  <text x="15" y="130" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;{&quot;[5](1,1-1)</text>
+  <line x1="950" y1="105" x2="80" y2="120" stroke="black"></line>
+  <text x="155" y="235" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;&quot;string1&quot;&quot;[14](2,5-13)</text>
+  <line x1="270" y1="210" x2="270" y2="225" stroke="black"></line>
+  <text x="240" y="200" style="font-family: 'Courier'; font-style: normal">String</text>
+  <line x1="470" y1="175" x2="270" y2="190" stroke="black"></line>
+  <text x="395" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;:&quot;[8](2,14-14)</text>
+  <line x1="470" y1="175" x2="470" y2="190" stroke="black"></line>
+  <text x="555" y="270" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;&quot;value1&quot;&quot;[14](2,16-23)</text>
+  <line x1="670" y1="245" x2="670" y2="260" stroke="black"></line>
+  <text x="640" y="235" style="font-family: 'Courier'; font-style: normal">String</text>
+  <line x1="670" y1="210" x2="670" y2="225" stroke="black"></line>
+  <text x="645" y="200" style="font-family: 'Courier'; font-style: normal">Value</text>
+  <line x1="470" y1="175" x2="670" y2="190" stroke="black"></line>
+  <text x="450" y="165" style="font-family: 'Courier'; font-style: normal">Pair</text>
+  <line x1="1020" y1="140" x2="470" y2="155" stroke="black"></line>
+  <text x="795" y="235" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;,&quot;[7](2,24-24)</text>
+  <line x1="1270" y1="210" x2="870" y2="225" stroke="black"></line>
+  <text x="955" y="305" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;&quot;string2&quot;&quot;[14](3,5-13)</text>
+  <line x1="1070" y1="280" x2="1070" y2="295" stroke="black"></line>
+  <text x="1040" y="270" style="font-family: 'Courier'; font-style: normal">String</text>
+  <line x1="1270" y1="245" x2="1070" y2="260" stroke="black"></line>
+  <text x="1195" y="270" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;:&quot;[8](3,14-14)</text>
+  <line x1="1270" y1="245" x2="1270" y2="260" stroke="black"></line>
+  <text x="1355" y="340" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;&quot;value2&quot;&quot;[14](3,16-23)</text>
+  <line x1="1470" y1="315" x2="1470" y2="330" stroke="black"></line>
+  <text x="1440" y="305" style="font-family: 'Courier'; font-style: normal">String</text>
+  <line x1="1470" y1="280" x2="1470" y2="295" stroke="black"></line>
+  <text x="1445" y="270" style="font-family: 'Courier'; font-style: normal">Value</text>
+  <line x1="1270" y1="245" x2="1470" y2="260" stroke="black"></line>
+  <text x="1250" y="235" style="font-family: 'Courier'; font-style: normal">Pair</text>
+  <line x1="1270" y1="210" x2="1270" y2="225" stroke="black"></line>
+  <text x="1590" y="235" style="font-family: 'Courier'; font-style: normal">ObjectRestSuffix</text>
+  <line x1="1270" y1="210" x2="1670" y2="225" stroke="black"></line>
+  <text x="1220" y="200" style="font-family: 'Courier'; font-style: normal">ObjectRest</text>
+  <line x1="1340" y1="175" x2="1270" y2="190" stroke="black"></line>
+  <text x="1765" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;}&quot;[6](4,1-1)</text>
+  <line x1="1340" y1="175" x2="1830" y2="190" stroke="black"></line>
+  <text x="1280" y="165" style="font-family: 'Courier'; font-style: normal">ObjectSuffix</text>
+  <line x1="1020" y1="140" x2="1340" y2="155" stroke="black"></line>
+  <text x="955" y="130" style="font-family: 'Courier'; font-style: normal">ObjectSuffix1</text>
+  <line x1="950" y1="105" x2="1020" y2="120" stroke="black"></line>
+  <text x="920" y="95" style="font-family: 'Courier'; font-style: normal">Object</text>
+  <line x1="950" y1="70" x2="950" y2="85" stroke="black"></line>
+  <text x="925" y="60" style="font-family: 'Courier'; font-style: normal">Value</text>
+  <line x1="950" y1="35" x2="950" y2="50" stroke="black"></line>
+  <text x="930" y="25" style="font-family: 'Courier'; font-style: normal">Json</text></svg>

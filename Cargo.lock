@@ -205,9 +205,9 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b14b7e9efe68907eb07f3b23b578e8f43293d0a4ae1113e348df677a0b559e8"
+checksum = "6c884a5071a3fac9affe406282c7bf318b9a767b0ca9ff958d7490467e28f1d4"
 dependencies = [
  "error-chain",
  "id_tree",

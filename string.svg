@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="350" height="165">
+  <rect x="0" y="0" width="350" height="165" fill="white"></rect>
+  <text x="15" y="130" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;&quot;The answer is 42.&quot;&quot;[14](1,1-19)</text>
+  <line x1="180" y1="105" x2="180" y2="120" stroke="black"></line>
+  <text x="150" y="95" style="font-family: 'Courier'; font-style: normal">String</text>
+  <line x1="180" y1="70" x2="180" y2="85" stroke="black"></line>
+  <text x="155" y="60" style="font-family: 'Courier'; font-style: normal">Value</text>
+  <line x1="180" y1="35" x2="180" y2="50" stroke="black"></line>
+  <text x="160" y="25" style="font-family: 'Courier'; font-style: normal">Json</text></svg>

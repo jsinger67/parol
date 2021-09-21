@@ -8,7 +8,7 @@ use id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::parser::errors::*;
 use parol_runtime::parser::{
-    AstType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, UserActionsTrait,
+    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
 
@@ -342,7 +342,7 @@ pub fn parse(
     input: &str,
     file_name: String,
     user_actions: &mut dyn UserActionsTrait,
-) -> Result<Tree<AstType>> {
+) -> Result<Tree<ParseTreeType>> {
     let mut llk_parser = LLKParser::new(
         5,
         LOOKAHEAD_AUTOMATA,

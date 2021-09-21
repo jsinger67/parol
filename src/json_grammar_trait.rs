@@ -7,7 +7,7 @@
 use crate::json_grammar::JsonGrammar;
 use id_tree::Tree;
 use parol_runtime::parser::errors::*;
-use parol_runtime::parser::{AstStackEntry, AstType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
@@ -19,7 +19,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Json: Value;
     ///
-    fn json_0(&mut self, _value_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn json_0(
+        &mut self,
+        _value_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -29,9 +33,9 @@ pub trait JsonGrammarTrait {
     ///
     fn object_1(
         &mut self,
-        _l_brace_0: &AstStackEntry,
-        _object_suffix1_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _l_brace_0: &ParseTreeStackEntry,
+        _object_suffix1_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -42,9 +46,9 @@ pub trait JsonGrammarTrait {
     ///
     fn object_suffix1_2(
         &mut self,
-        _pair_0: &AstStackEntry,
-        _object_suffix_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _pair_0: &ParseTreeStackEntry,
+        _object_suffix_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -55,8 +59,8 @@ pub trait JsonGrammarTrait {
     ///
     fn object_suffix1_3(
         &mut self,
-        _r_brace_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _r_brace_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -67,9 +71,9 @@ pub trait JsonGrammarTrait {
     ///
     fn object_suffix_4(
         &mut self,
-        _object_rest_0: &AstStackEntry,
-        _r_brace_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _object_rest_0: &ParseTreeStackEntry,
+        _r_brace_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -80,8 +84,8 @@ pub trait JsonGrammarTrait {
     ///
     fn object_suffix_5(
         &mut self,
-        _r_brace_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _r_brace_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -92,10 +96,10 @@ pub trait JsonGrammarTrait {
     ///
     fn object_rest_6(
         &mut self,
-        _comma_0: &AstStackEntry,
-        _pair_1: &AstStackEntry,
-        _object_rest_suffix_2: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _comma_0: &ParseTreeStackEntry,
+        _pair_1: &ParseTreeStackEntry,
+        _object_rest_suffix_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -106,8 +110,8 @@ pub trait JsonGrammarTrait {
     ///
     fn object_rest_suffix_7(
         &mut self,
-        _object_rest_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _object_rest_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -116,7 +120,7 @@ pub trait JsonGrammarTrait {
     ///
     /// ObjectRestSuffix: ;
     ///
-    fn object_rest_suffix_8(&mut self, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn object_rest_suffix_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -126,10 +130,10 @@ pub trait JsonGrammarTrait {
     ///
     fn pair_9(
         &mut self,
-        _string_0: &AstStackEntry,
-        _colon_1: &AstStackEntry,
-        _value_2: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _string_0: &ParseTreeStackEntry,
+        _colon_1: &ParseTreeStackEntry,
+        _value_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -140,9 +144,9 @@ pub trait JsonGrammarTrait {
     ///
     fn array_10(
         &mut self,
-        _l_bracket_0: &AstStackEntry,
-        _array_suffix1_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _l_bracket_0: &ParseTreeStackEntry,
+        _array_suffix1_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -153,9 +157,9 @@ pub trait JsonGrammarTrait {
     ///
     fn array_suffix1_11(
         &mut self,
-        _value_0: &AstStackEntry,
-        _array_suffix_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _value_0: &ParseTreeStackEntry,
+        _array_suffix_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -166,8 +170,8 @@ pub trait JsonGrammarTrait {
     ///
     fn array_suffix1_12(
         &mut self,
-        _r_bracket_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _r_bracket_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -178,9 +182,9 @@ pub trait JsonGrammarTrait {
     ///
     fn array_suffix_13(
         &mut self,
-        _array_rest_0: &AstStackEntry,
-        _r_bracket_1: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _array_rest_0: &ParseTreeStackEntry,
+        _r_bracket_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -191,8 +195,8 @@ pub trait JsonGrammarTrait {
     ///
     fn array_suffix_14(
         &mut self,
-        _r_bracket_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _r_bracket_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -203,10 +207,10 @@ pub trait JsonGrammarTrait {
     ///
     fn array_rest_15(
         &mut self,
-        _comma_0: &AstStackEntry,
-        _value_1: &AstStackEntry,
-        _array_rest_suffix_2: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _comma_0: &ParseTreeStackEntry,
+        _value_1: &ParseTreeStackEntry,
+        _array_rest_suffix_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -217,8 +221,8 @@ pub trait JsonGrammarTrait {
     ///
     fn array_rest_suffix_16(
         &mut self,
-        _array_rest_0: &AstStackEntry,
-        _parse_tree: &Tree<AstType>,
+        _array_rest_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
@@ -227,7 +231,7 @@ pub trait JsonGrammarTrait {
     ///
     /// ArrayRestSuffix: ;
     ///
-    fn array_rest_suffix_17(&mut self, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn array_rest_suffix_17(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -235,7 +239,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: String;
     ///
-    fn value_18(&mut self, _string_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_18(
+        &mut self,
+        _string_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -243,7 +251,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Number;
     ///
-    fn value_19(&mut self, _number_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_19(
+        &mut self,
+        _number_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -251,7 +263,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Object;
     ///
-    fn value_20(&mut self, _object_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_20(
+        &mut self,
+        _object_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -259,7 +275,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Array;
     ///
-    fn value_21(&mut self, _array_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_21(
+        &mut self,
+        _array_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -267,7 +287,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "true";
     ///
-    fn value_22(&mut self, _true_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_22(
+        &mut self,
+        _true_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -275,7 +299,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "false";
     ///
-    fn value_23(&mut self, _false_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_23(
+        &mut self,
+        _false_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -283,7 +311,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "null";
     ///
-    fn value_24(&mut self, _null_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn value_24(
+        &mut self,
+        _null_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -291,7 +323,11 @@ pub trait JsonGrammarTrait {
     ///
     /// String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_25(&mut self, _string_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn string_25(
+        &mut self,
+        _string_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -299,7 +335,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
     ///
-    fn number_26(&mut self, _number_0: &AstStackEntry, _parse_tree: &Tree<AstType>) -> Result<()> {
+    fn number_26(
+        &mut self,
+        _number_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 }
@@ -308,8 +348,8 @@ impl UserActionsTrait for JsonGrammar {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[AstStackEntry],
-        parse_tree: &Tree<AstType>,
+        children: &[ParseTreeStackEntry],
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
             0 => self.json_0(&children[0], parse_tree),
