@@ -17,8 +17,8 @@ use parol::analysis::k_decision::calculate_lookahead_dfas;
 use parol::conversions::par::render_par_string;
 use parol::generators::GrammarConfig;
 use parol::generators::{
-    check_and_transform_grammar, generate_user_trait_source, generate_lexer_source,
-    generate_parser_source, try_format,
+    check_and_transform_grammar, generate_lexer_source, generate_parser_source,
+    generate_user_trait_source, try_format,
 };
 use parol_runtime::parser::ParseTreeType;
 use std::fs;
@@ -122,12 +122,9 @@ fn run() -> Result<()> {
         println!("\nParser source:\n{}", parser_source);
     }
 
-    let user_trait_source = generate_user_trait_source(
-        user_type,
-        user_trait_module_name,
-        &grammar_config,
-    )
-    .chain_err(|| "Failed to generate user trait source!")?;
+    let user_trait_source =
+        generate_user_trait_source(user_type, user_trait_module_name, &grammar_config)
+            .chain_err(|| "Failed to generate user trait source!")?;
     if let Some(user_trait_file_out) = config.value_of("actions") {
         fs::write(user_trait_file_out, user_trait_source)
             .chain_err(|| "Error writing generated user trait source!")?;
