@@ -52,7 +52,7 @@ The second section below the %% sign contains the actual grammar description in 
 
 ## The start symbol
 
-It is important to note that the start symbol of the grammar must always be declare with the `%start` declaration, which is the very first declaration in the PAR file.
+It is important to note that the start symbol of the grammar must always be declared with the `%start` declaration, which is the very first declaration in the PAR file.
 
 ```ebnf
 %start Grammar
@@ -121,7 +121,7 @@ With this simple but effective means you have the control over terminal conflict
 ## Semantic actions
 
 Semantic actions are strictly separated from your grammar description.
-You will use a generated trait with default implementations for each production of your grammar. You can add this trait bound to your grammar processing item and provide concrete implementations for only those productions you are interested in.
+You will use a generated trait with default implementations for each production of your grammar. You can implement this trait in your grammar processing item and provide concrete implementations for only those productions you are interested in.
 
 More on implementing semantic actions see
 
