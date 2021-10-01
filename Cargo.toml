@@ -1,13 +1,13 @@
 [package]
 name = "parol"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust."
 documentation = "https://docs.rs/parol"
 repository = "https://github.com/jsinger67/parol"
 readme = "README.md"
-keywords = ["parser_generator", "LLk"]
-categories = ["algorithms", "parsing"]
+keywords = ["parser", "parsing", "parser-generator", "LLk"]
+categories = ["algorithms", "parsing", "Parsing tools"]
 license = "MIT"
 edition = "2018"
 
