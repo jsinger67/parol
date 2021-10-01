@@ -102,7 +102,7 @@ pub fn decidable(
                 break;
             }
             let productions = cfg.matching_productions(non_terminal);
-            let mut k_tuples = productions
+            let k_tuples = productions
                 .iter()
                 .map(|(pi, _)| {
                     let k_tuples = first_cache.get(current_k, grammar_config).0[*pi].clone();
@@ -110,23 +110,17 @@ pub fn decidable(
                 })
                 .collect::<Vec<(usize, KTuples)>>();
 
-            let epsilon_tuple_index = k_tuples
-                .iter()
-                .position(|(_, t)| t.0.contains(&KTuple::eps(current_k)));
-
-            if let Some(epsilon_tuple_index) = epsilon_tuple_index {
-                let cached = follow_cache.get(current_k, grammar_config, first_cache);
-                if let Some(follow_set) = cached.get(non_terminal) {
-                    k_tuples.remove(epsilon_tuple_index);
-                    k_tuples.push((productions.len() + 1, follow_set.clone()));
+            let cached = follow_cache.get(current_k, grammar_config, first_cache);
+            if let Some(follow_set) = cached.get(non_terminal) {
+                if k_tuples
+                    .iter()
+                    .map(|(i, t)| (i, t.clone().k_concat(follow_set, current_k)))
+                    .all(|(i, t1)| k_tuples.iter().all(|(j, t2)| i == j || t1.is_disjoint(t2)))
+                {
+                    return Ok(current_k);
                 }
-            };
-
-            if k_tuples
-                .iter()
-                .all(|(i, t1)| k_tuples.iter().all(|(j, t2)| i == j || t1.is_disjoint(t2)))
-            {
-                return Ok(current_k);
+            } else {
+                return Err("Internal error".into());
             }
             current_k += 1;
         }
