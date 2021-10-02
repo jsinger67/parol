@@ -62,10 +62,11 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
     },
     /* 2 - "list_rest" */
     LookaheadDFA {
-        states: &[None, Some(5), Some(2), Some(4)],
+        states: &[None, None, Some(2), Some(4), Some(5)],
         transitions: &[
             DFATransition(0, 0, 3),
             DFATransition(0, 5, 1),
+            DFATransition(1, 0, 4),
             DFATransition(1, 6, 2),
         ],
         k: 2,

@@ -1,7 +1,7 @@
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
 use crate::errors::*;
-use crate::{GrammarConfig, KTuple, KTuples};
+use crate::{GrammarConfig, KTuples};
 use log::trace;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
@@ -166,33 +166,24 @@ pub fn calculate_k_tuples(
                 decidable(grammar_config, n, max_k, first_cache, follow_cache),
             )
         })
-        .fold(Ok(BTreeMap::new()), |acc, (n, r)| {
-            match (acc, r) {
-                (Err(e), _) => Err(e),
-                (Ok(mut m), Ok(k)) => {
-                    let productions = cfg.matching_productions(&n);
-                    let mut k_tuples =
-                        productions
-                            .iter()
-                            .fold(BTreeMap::new(), |mut acc, (pi, _)| {
-                                let mut k_tuples =
-                                    first_cache.get(k, grammar_config).0[*pi].clone();
-                                if k_tuples.0.iter().any(|t| t.is_eps()) {
-                                    // Means that pi is an epsilon production
-                                    let cached = follow_cache.get(k, grammar_config, first_cache);
-                                    if let Some(follow_set) = cached.get(&n) {
-                                        k_tuples.remove(&KTuple::eps(k));
-                                        k_tuples.append(&mut follow_set.clone());
-                                    }
-                                }
-                                acc.insert(*pi, k_tuples);
-                                acc
-                            });
-                    m.append(&mut k_tuples);
-                    Ok(m)
-                }
-                (_, Err(e)) => Err(e.description().into()),
+        .fold(Ok(BTreeMap::new()), |acc, (n, r)| match (acc, r) {
+            (Err(e), _) => Err(e),
+            (Ok(mut m), Ok(k)) => {
+                let productions = cfg.matching_productions(&n);
+                let mut k_tuples = productions
+                    .iter()
+                    .fold(BTreeMap::new(), |mut acc, (pi, _)| {
+                        let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
+                        let cached = follow_cache.get(k, grammar_config, first_cache);
+                        if let Some(follow_set) = cached.get(&n) {
+                            acc.insert(*pi, k_tuples.k_concat(follow_set, k));
+                        }
+                        acc
+                    });
+                m.append(&mut k_tuples);
+                Ok(m)
             }
+            (_, Err(e)) => Err(e.description().into()),
         })
 }
 
