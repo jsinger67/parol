@@ -54,7 +54,7 @@ impl Display for JsonGrammarItem {
 ///
 #[derive(Debug, Default)]
 pub struct JsonGrammar {
-    pub ast_stack: Vec<JsonGrammarItem>,
+    pub item_stack: Vec<JsonGrammarItem>,
 }
 
 impl JsonGrammar {
@@ -64,12 +64,12 @@ impl JsonGrammar {
 
     fn push(&mut self, item: JsonGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
-        self.ast_stack.push(item)
+        self.item_stack.push(item)
     }
 
     fn pop(&mut self, context: &str) -> Option<JsonGrammarItem> {
-        if !self.ast_stack.is_empty() {
-            let item = self.ast_stack.pop();
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
             if let Some(ref item) = item {
                 trace!("pop    {}: {}", context, item);
             }
@@ -87,7 +87,7 @@ impl JsonGrammar {
         format!(
             "Ast stack at {}:\n{}",
             context,
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .rev()
                 .map(|s| format!("  {}", s))
@@ -102,7 +102,7 @@ impl Display for JsonGrammar {
         writeln!(
             f,
             "{}",
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
