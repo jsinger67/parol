@@ -201,7 +201,7 @@ The name of the production G is created by adding "Group[Number]" to the origina
 
 ## Our JSON parser crate
 
-To create a real example we will now create a separate binary crate that should become our JSON parser.
+To create a real example we will now create a separate binary crate that should become our JSON parser. Please note that I used the powershell for this purpose.
 
 ```powershell
 Push-Location ..
@@ -253,7 +253,7 @@ impl Display for JsonGrammarItem {
 ///
 #[derive(Debug, Default)]
 pub struct JsonGrammar {
-    pub ast_stack: Vec<JsonGrammarItem>,
+    pub item_stack: Vec<JsonGrammarItem>,
 }
 
 impl JsonGrammar {
@@ -263,12 +263,12 @@ impl JsonGrammar {
 
     fn _push(&mut self, item: JsonGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
-        self.ast_stack.push(item)
+        self.item_stack.push(item)
     }
 
     fn _pop(&mut self, context: &str) -> Option<JsonGrammarItem> {
-        if !self.ast_stack.is_empty() {
-            let item = self.ast_stack.pop();
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
             if let Some(ref item) = item {
                 trace!("pop    {}: {}", context, item);
             }
@@ -360,7 +360,7 @@ fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str
 }
 ```
 
-Now you can generate the generate the crate for the first time:
+Now you can generate the crate for the first time:
 
 ```shell
 cargo build
@@ -549,7 +549,7 @@ impl Display for JsonGrammar {
         writeln!(
             f,
             "{}",
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
@@ -728,27 +728,6 @@ Let's have a look at the generated parse tree
 
 ![parse tree](./images/empty_array.png)
 
-Now we have an idea what to do next. We need a new `JsonGrammarItem::Array`. Its inner type should be a vector of values, which are taken from the item stack and moved into our `Array` item.
-
-Extend the `JsonGrammarItem` enum:
-
-```rust
-Array(Vec<JsonGrammarItem>),
-```
-
-Adjust the `Display` implementation:
-
-```rust
-    Self::Array(v) => write!(
-        f,
-        "[{}]",
-        v.iter()
-            .map(|e| format!("{}", e))
-            .collect::<Vec<String>>()
-            .join(", ")
-    ),
-```
-
 Now we modify our input array like this:
 
 ```json
@@ -800,7 +779,28 @@ Here we see that our `ArrayRest` is the production 15. It provides another value
 
 And the empty `ArrayRestSuffix` (Production 17) ist the last production of our array. It provides the empty array as starting point. At the point of production 17 we can say, that all elements (Values!) have been processed and were pushed onto our item stack!
 
-Let's try if we can do it.
+Now we have an idea what to do next. First we need a new `JsonGrammarItem::Array`. Its inner type should be a vector of values, which will be taken from the item stack and moved into our `Array` item.
+
+Extend the `JsonGrammarItem` enum like this:
+
+```rust
+Array(Vec<JsonGrammarItem>),
+```
+
+Adjust the `Display` implementation:
+
+```rust
+    Self::Array(v) => write!(
+        f,
+        "[{}]",
+        v.iter()
+            .map(|e| format!("{}", e))
+            .collect::<Vec<String>>()
+            .join(", ")
+    ),
+```
+
+And further, we can implement the semantic actions for productions 11, 15 and 17 now.
 
 ```rust
 /// Semantic action for production 11:
@@ -879,7 +879,7 @@ Success!
 [2, 1]
 ```
 
-Ok, an array. Not so bad, but the elements are reversed. But this task is easy. We have to reverse the items when the array is finished. The right place seems to be the production 10, doesn't it?
+Ok, an array. Not so bad, although the elements are reversed. But this can be fixed easily. We have to reverse the items when the array is finished. The right place seems to be the production 10, doesn't it?
 
 ```rust
 /// Semantic action for production 10:
@@ -960,7 +960,7 @@ Objects are basically lists of pairs, which in turn are tuples (String, Value). 
 Pair((String, Box<JsonGrammarItem>)),
 ```
 
-Note, that we need to box the value item, because otherwise Rust would not know the size if it at compile time.
+Note, that we need to box the value item, because otherwise Rust would not know the size of it at compile time.
 
 And we adjust the `Display` implementation:
 
@@ -1020,7 +1020,7 @@ Success!
 
 Ok, the `Pair` item is processed correctly too.
 
-Wee need to combine lists pairs into objects finally. And we can conceive what the object's variant of enum `JsonGrammarItem` would look like:
+We need to combine lists of pairs into objects finally. And we can conceive what the object's variant of enum `JsonGrammarItem` would look like:
 
 ```rust
 Object(Vec<JsonGrammarItem>),
