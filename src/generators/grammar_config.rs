@@ -81,7 +81,7 @@ impl GrammarConfig {
             "WHITESPACE_TOKEN".to_owned(),
         ];
         if let Some(line_comment) = &self.line_comment {
-            let line_comment_rx = format!(r###"{}.*(\r\n|\r|\n)"###, line_comment);
+            let line_comment_rx = format!(r###"{}.*(\r\n|\r|\n|$)"###, line_comment);
             terminals.push(line_comment_rx);
         } else {
             terminals.push("UNMATCHABLE_TOKEN".to_owned());
@@ -176,7 +176,7 @@ mod test {
                 "UNMATCHABLE_TOKEN",
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
-                r###"//.*(\r\n|\r|\n)"###,
+                r###"//.*(\r\n|\r|\n|$)"###,
                 r###"(?ms)/\*.*?\*/"###,
                 r###"a"###,
                 r###"b"###,

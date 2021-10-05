@@ -220,75 +220,75 @@ pub fn calculate_lookahead_dfas(
         })
 }
 
-// #[cfg(test)]
-// mod test {
-//     use super::{decidable, FirstCache, FollowCache};
-//     use crate::{Cfg, Pr, Symbol};
+#[cfg(test)]
+mod test {
+    use super::{calculate_k, decidable, FirstCache, FollowCache};
+    use crate::{Cfg, GrammarConfig, Pr, Symbol};
 
-//     #[test]
-//     fn check_decidable() {
-//         let g = Cfg::with_start_symbol("S")
-//             .with_title("Test grammar")
-//             .with_comment("A simple grammar")
-//             .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-//             .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
-//             .add_pr(Pr::new(
-//                 "X",
-//                 vec![
-//                     Symbol::t("a"),
-//                     Symbol::n("Y"),
-//                     Symbol::t("b"),
-//                     Symbol::n("Y"),
-//                 ],
-//             ))
-//             .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-//             .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
-//             .add_pr(Pr::new(
-//                 "Z",
-//                 vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
-//             ));
-//         let first_cache = FirstCache::new();
-//         let follow_cache = FollowCache::new();
-//         let result = decidable(&g, "S", 5, &first_cache, &follow_cache).unwrap();
-//         assert_eq!(0, result);
-//         let result = decidable(&g, "X", 5, &first_cache, &follow_cache).unwrap();
-//         assert_eq!(1, result);
-//         let result = decidable(&g, "Y", 5, &first_cache, &follow_cache).unwrap();
-//         assert_eq!(1, result);
-//         let result = decidable(&g, "Z", 5, &first_cache, &follow_cache).unwrap();
-//         assert_eq!(0, result);
-//         assert_eq!(
-//             "The given non-terminal isn't part of the given grammar!",
-//             decidable(&g, "A", 5, &first_cache, &follow_cache)
-//                 .err()
-//                 .unwrap()
-//                 .description()
-//         );
-//     }
+    #[test]
+    fn check_decidable() {
+        let cfg = Cfg::with_start_symbol("S")
+            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new(
+                "X",
+                vec![
+                    Symbol::t("a"),
+                    Symbol::n("Y"),
+                    Symbol::t("b"),
+                    Symbol::n("Y"),
+                ],
+            ))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new(
+                "Z",
+                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+            ));
+        let grammar_config = GrammarConfig::new(cfg, None, None, None, None, 5);
+        let first_cache = FirstCache::new();
+        let follow_cache = FollowCache::new();
+        let result = decidable(&grammar_config, "S", 5, &first_cache, &follow_cache).unwrap();
+        assert_eq!(0, result);
+        let result = decidable(&grammar_config, "X", 5, &first_cache, &follow_cache).unwrap();
+        assert_eq!(1, result);
+        let result = decidable(&grammar_config, "Y", 5, &first_cache, &follow_cache).unwrap();
+        assert_eq!(1, result);
+        let result = decidable(&grammar_config, "Z", 5, &first_cache, &follow_cache).unwrap();
+        assert_eq!(0, result);
+        assert_eq!(
+            "The given non-terminal isn't part of the given grammar!",
+            decidable(&grammar_config, "A", 5, &first_cache, &follow_cache)
+                .err()
+                .unwrap()
+                .description()
+        );
+    }
 
-//     // #[test]
-//     // fn check_calculate_k() {
-//     //     let g = Cfg::with_start_symbol("S")
-//     //         .with_title("Test grammar")
-//     //         .with_comment("A simple grammar")
-//     //         .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-//     //         .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
-//     //         .add_pr(Pr::new(
-//     //             "X",
-//     //             vec![
-//     //                 Symbol::t("a"),
-//     //                 Symbol::n("Y"),
-//     //                 Symbol::t("b"),
-//     //                 Symbol::n("Y"),
-//     //             ],
-//     //         ))
-//     //         .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-//     //         .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
-//     //         .add_pr(Pr::new(
-//     //             "Z",
-//     //             vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
-//     //         ));
-//     //     let result = calculate_k(&g, 5).unwrap();
-//     //     assert_eq!(1, result);
-//     // }
-// }
+    #[test]
+    fn check_calculate_k() {
+        let cfg = Cfg::with_start_symbol("S")
+            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new(
+                "X",
+                vec![
+                    Symbol::t("a"),
+                    Symbol::n("Y"),
+                    Symbol::t("b"),
+                    Symbol::n("Y"),
+                ],
+            ))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new(
+                "Z",
+                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+            ));
+        let grammar_config = GrammarConfig::new(cfg, None, None, None, None, 5);
+        let first_cache = FirstCache::new();
+        let follow_cache = FollowCache::new();
+        let result = calculate_k(&grammar_config, 5, &first_cache, &follow_cache).unwrap();
+        assert_eq!(1, result);
+    }
+}
