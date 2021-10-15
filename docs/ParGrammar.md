@@ -1,6 +1,6 @@
 # The syntax of PAR Grammar definition
 
-Here I provide the definition of the PAR grammar in EBNF. It is actually written in PAR syntax and can be found here [parol_grammar.par](..\src\parser\parol-grammar.par).
+Here I provide the definition of the PAR grammar in EBNF. It is actually written in PAR syntax and can be found here [parol_grammar.par](../src/parser/parol-grammar.par).
 
 ```ebnf
 (* PAR Grammar defined in EBNF *)
@@ -28,7 +28,7 @@ Identifier          = '[a-zA-Z_]\w*'.
 String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
 ```
 
-This is a very concise grammar that most programmers should be familiar with. There are several specialties described here. First please notice the built-in support for language comments.
+This grammar is very concise and most programmers should be familiar with. But there are several specialties which will be described here. First please notice the built-in support for language comments.
 
 Using the `%line_comment` and `%block_comment` constructs you can easily define your language's comments. For example you can define comments like it's done in the calc example [calc.par](../examples/calc/calc.par):
 
@@ -39,7 +39,7 @@ Using the `%line_comment` and `%block_comment` constructs you can easily define 
 
 If you supply more than one of these two comment declarations the last one will win.
 
-As opposed to EBNF you use C-like line comments starting with two slashes (//) and bock comments (/\* ... \*/) in PAR files. This is a result of the close relation of PAR grammar to yacc/bison.
+As opposed to EBNF you use C-like line comments starting with two slashes (//) and bock comments (/\* ... \*/) in PAR files. This is a result of the close relationship between PAR grammar and bison's grammar.
 
 ## Case sensitivity
 
@@ -47,12 +47,12 @@ Non-terminals are treated case sensitive, i. e. "list" and "List" are different 
 
 ## Sections
 
-`parols`'s input language consists of two sections divided by the %% sign. Above this sign there are declarations of which only the first %start declaration is mandatory. It declares the start symbol of your grammar.
-The second section below the %% sign contains the actual grammar description in form of several productions. At least one production must exist.
+`parols`'s input language consists of two sections divided by the %% token. Above there are declarations of which only the first %start declaration is mandatory. It declares the start symbol of your grammar.
+The second section below the %% token contains the actual grammar description in form of several productions. At least one production must exist.
 
 ## The start symbol
 
-It is important to note that the start symbol of the grammar must always be declared with the `%start` declaration, which is the very first declaration in the PAR file.
+It is important to note that the start symbol of the grammar must always be declared with the `%start` declaration. It is the very first declaration in the PAR file.
 
 ```ebnf
 %start Grammar
@@ -64,13 +64,13 @@ A scanner (aka lexer) is automatically created from all used terminal symbols.
 
 ### Terminal name generation
 
-The names of the terminals are deduced from the content of the terminal itself. For instance for a terminal ":=" it creates the terminal name "ColonEqu", see generated parser for Oberon-0. If you want this name to be more expressive, you can dedicate a separate production to the terminal, lets say:
+The names of the terminals are deduced from the content of the terminal itself. For instance, for a terminal ":=" it creates the terminal name "ColonEqu", see generated parser for Oberon-0. If you want this name to be more expressive, you can dedicate a separate production to the terminal, lets say:
 
 ```ebnf
 Assign: ":=";
 ```
 
-With this trick you define a so called "primary non-terminal for a terminal" (I coined it this way), and this instructs the name generation to name the terminal "Assign".
+With this trick you define a so called "primary non-terminal for a terminal" (I coined it this way) that instructs the name generation to name the terminal "Assign".
 
 ### Terminal conflicts
 
@@ -121,7 +121,7 @@ With this simple but effective means you have the control over terminal conflict
 ## Semantic actions
 
 Semantic actions are strictly separated from your grammar description.
-You will use a generated trait with default implementations for each production of your grammar. You can implement this trait in your grammar processing item and provide concrete implementations for only those productions you are interested in.
+You will use a generated trait with default implementations for each production of your grammar. You can implement this trait in your grammar processing item and provide concrete implementations for those productions you are interested in.
 
 More on implementing semantic actions see
 

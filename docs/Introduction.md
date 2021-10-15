@@ -15,7 +15,7 @@ When built successfully you can just call the `parol` parser generator to get a 
 Simple command line usage:
 
 ```shell
-    cargo run --bin parol -- -f .\examples\list\list.par -s -v
+    cargo run --bin parol -- -f ./examples/list/list.par -s -v
 ```
 
 This will first check if the project is built correctly, generates it if necessary and then it will call the parser generator with the given grammar description file.
@@ -24,7 +24,7 @@ The tool will generate some output:
 
 ![firstTry](./images/firstTry.png)
 
-We see the structure of the parsed grammar description because we added the switch 'verbose' (-v). At the end it states that a parse tree has been written to .\examples\list\list.svg. The switch 'svg' (-s) instructed `parol` to do so.
+We see the structure of the parsed grammar description because we added the switch 'verbose' (-v). At the end it states that a parse tree has been written to ./examples/list/list.svg. The switch 'svg' (-s) instructed `parol` to do so.
 
 The following image shows an excerpt of the parse tree:
 
@@ -32,17 +32,17 @@ The following image shows an excerpt of the parse tree:
 
 To have a visualization of a certain parse tree while you're implementing your grammar can be very helpful.
 
-Besides `parol` itself there exist several tools with special tasks (see [The tools beneath `parol`](./Tools.md)). As an example let's have a look at the `decidable` tool:
+Besides `parol` itself there exist several tools with special tasks (see [Supplementary tools](./Tools.md)). As an example let's have a look at the `decidable` tool:
 
 ```shell
-    cargo run --bin decidable -- .\examples\list\list.par
+    cargo run --bin decidable -- ./examples/list/list.par
 ```
 
 This tool generates this output:
 
 ![decidable](./images/decidable.png)
 
-As you can see it detects the maximum lookahead needed for your grammar. And you see the fact that the simple list example is LL(2). When you look at the generated parser source [list_parser.rs](..\examples\list\list_parser.rs) you can see that the non-terminal "list_rest" has k: 2.
+As you can see it detects the maximum lookahead needed for your grammar. And you see the fact that the simple list example is LL(2). When you look at the generated parser source [list_parser.rs](../examples/list/list_parser.rs) you can see that the non-terminal "list_rest" has k: 2.
 
 Now lets have a look at the used grammar description file `list.par`.
 
@@ -72,4 +72,4 @@ The complete description of the grammar file's syntax can be found here: [PAR Gr
 
 * [PAR Grammar](./ParGrammar.md)
 * [The list example](./ListExample.md)
-* [The tools beneath `parol`](./Tools.md)
+* [Supplementary tools](./Tools.md)

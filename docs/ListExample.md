@@ -3,7 +3,7 @@
 If you want you can build the parser for the *List* example with the following command lines:
 
 ```shell
-cargo run --bin parol -- -f .\examples\list\list.par -e .\examples\list\list-exp.par -p .\examples\list\list_parser.rs -a .\examples\list\list_grammar_trait.rs -t ListGrammar -m list_grammar
+cargo run --bin parol -- -f ./examples/list/list.par -e ./examples/list/list-exp.par -p ./examples/list/list_parser.rs -a ./examples/list/list_grammar_trait.rs -t ListGrammar -m list_grammar
 ```
 
 This step is not necessary because the generated sources are already under source control.
@@ -11,7 +11,7 @@ This step is not necessary because the generated sources are already under sourc
 Then you can start and test the *List* examples executable by executing the following command:
 
 ```shell
-cargo run --example list -- .\examples\list\list_test.txt
+cargo run --example list -- ./examples/list/list_test.txt
 ```
 
 You should get the following output
