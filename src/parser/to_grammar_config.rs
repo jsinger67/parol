@@ -14,16 +14,16 @@ pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
-    let line_comment = parol_grammar.line_comment;
-    let block_comment = parol_grammar.block_comment;
+    let line_comments = parol_grammar.line_comments;
+    let block_comments = parol_grammar.block_comments;
     let lookahead_size = 1; // Updated later
 
     Ok(GrammarConfig::new(
         cfg,
         title,
         comment,
-        line_comment,
-        block_comment,
+        line_comments,
+        block_comments,
         lookahead_size,
     ))
 }

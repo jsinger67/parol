@@ -35,15 +35,15 @@ pub struct GrammarConfig {
     pub comment: Option<String>,
 
     ///
-    /// Optional String with the characters that starts a line comment
+    /// Strings with the characters that starts line comments
     ///
-    pub line_comment: Option<String>,
+    pub line_comments: Vec<String>,
 
     ///
-    /// Optional (String, String) tuple with the characters that start and end
-    /// a block comment, respectively.
+    /// (String, String) tuples with the characters that start and end
+    /// a block comments, respectively.
     ///
-    pub block_comment: Option<(String, String)>,
+    pub block_comments: Vec<(String, String)>,
 
     ///
     /// The maximum lookahead size, used for lexer generation
@@ -56,16 +56,16 @@ impl GrammarConfig {
         cfg: Cfg,
         title: Option<String>,
         comment: Option<String>,
-        line_comment: Option<String>,
-        block_comment: Option<(String, String)>,
+        line_comments: Vec<String>,
+        block_comments: Vec<(String, String)>,
         lookahead_size: usize,
     ) -> Self {
         Self {
             cfg,
             title,
             comment,
-            line_comment,
-            block_comment,
+            line_comments,
+            block_comments,
             lookahead_size,
         }
     }
@@ -80,15 +80,25 @@ impl GrammarConfig {
             "NEW_LINE_TOKEN".to_owned(),
             "WHITESPACE_TOKEN".to_owned(),
         ];
-        if let Some(line_comment) = &self.line_comment {
-            let line_comment_rx = format!(r###"{}.*(\r\n|\r|\n|$)"###, line_comment);
-            terminals.push(line_comment_rx);
+        if !self.line_comments.is_empty() {
+            let line_comments_rx = self
+                .line_comments
+                .iter()
+                .map(|s| format!(r###"({}.*(\r\n|\r|\n|$))"###, s))
+                .collect::<Vec<String>>()
+                .join("|");
+            terminals.push(line_comments_rx);
         } else {
             terminals.push("UNMATCHABLE_TOKEN".to_owned());
         }
-        if let Some((block_start, block_end)) = &self.block_comment {
-            let block_comment_rx = format!(r###"(?ms){}.*?{}"###, block_start, block_end);
-            terminals.push(block_comment_rx);
+        if !self.block_comments.is_empty() {
+            let block_comments_rx = self
+                .block_comments
+                .iter()
+                .map(|(s, e)| format!(r###"((?ms){}.*?{})"###, s, e))
+                .collect::<Vec<String>>()
+                .join("|");
+            terminals.push(block_comments_rx);
         } else {
             terminals.push("UNMATCHABLE_TOKEN".to_owned());
         }
@@ -119,8 +129,8 @@ impl Display for GrammarConfig {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "title: {:?}", self.title)?;
         writeln!(f, "comment: {:?}", self.comment)?;
-        writeln!(f, "line_comment: {:?}", self.line_comment)?;
-        writeln!(f, "block_comment: {:?}", self.block_comment)?;
+        writeln!(f, "line_comments: {:?}", self.line_comments)?;
+        writeln!(f, "block_comments: {:?}", self.block_comments)?;
         writeln!(f, "cfg: {:?}", self.cfg)
     }
 }
@@ -165,8 +175,8 @@ mod test {
             g,
             title,
             comment,
-            Some("//".to_owned()),
-            Some((r#"/\*"#.to_owned(), r#"\*/"#.to_owned())),
+            vec!["//".to_owned()],
+            vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())],
             1,
         );
         let augment_terminals = grammar_config.generate_augmented_terminals();
@@ -176,8 +186,8 @@ mod test {
                 "UNMATCHABLE_TOKEN",
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
-                r###"//.*(\r\n|\r|\n|$)"###,
-                r###"(?ms)/\*.*?\*/"###,
+                r###"(//.*(\r\n|\r|\n|$))"###,
+                r###"((?ms)/\*.*?\*/)"###,
                 r###"a"###,
                 r###"b"###,
                 "ERROR_TOKEN"

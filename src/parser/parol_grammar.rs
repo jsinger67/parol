@@ -139,8 +139,8 @@ pub struct ParolGrammar {
     pub title: Option<String>,
     pub comment: Option<String>,
     pub start_symbol: String,
-    pub line_comment: Option<String>,
-    pub block_comment: Option<(String, String)>,
+    pub line_comments: Vec<String>,
+    pub block_comments: Vec<(String, String)>,
 }
 
 impl ParolGrammar {
@@ -172,8 +172,8 @@ impl Display for ParolGrammar {
         writeln!(f, "title: {:?}", self.title)?;
         writeln!(f, "comment: {:?}", self.comment)?;
         writeln!(f, "start_symbol: {}", self.start_symbol)?;
-        writeln!(f, "line_comment: {:?}", self.line_comment)?;
-        writeln!(f, "block_comment: {:?}", self.block_comment)?;
+        writeln!(f, "line_comments: {:?}", self.line_comments)?;
+        writeln!(f, "block_comments: {:?}", self.block_comments)?;
         writeln!(
             f,
             "{}",
@@ -256,7 +256,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "declaration_10";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s))) = self.ast_stack.pop() {
-            self.line_comment = Some(s);
+            self.line_comments.push(s);
             Ok(())
         } else {
             Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
@@ -277,7 +277,7 @@ impl ParolGrammarTrait for ParolGrammar {
         let context = "declaration_11";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1))) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2))) = self.ast_stack.pop() {
-                self.block_comment = Some((s2, s1));
+                self.block_comments.push((s2, s1));
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())

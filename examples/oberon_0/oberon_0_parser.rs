@@ -21,7 +21,7 @@ pub const TERMINALS: &[&str; 42] = &[
     /*  1 */ NEW_LINE_TOKEN,
     /*  2 */ WHITESPACE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
-    /*  4 */ r###"(?ms)\(\*.*?\*\)"###,
+    /*  4 */ r###"((?ms)\(\*.*?\*\))"###,
     /*  5 */ r###"\."###,
     /*  6 */ r###"\["###,
     /*  7 */ r###"]"###,

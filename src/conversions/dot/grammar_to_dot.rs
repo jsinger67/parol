@@ -142,8 +142,8 @@ mod test {
             g,
             title,
             comment,
-            Some("//".to_owned()),
-            Some((r#"/\*"#.to_owned(), r#"\*/"#.to_owned())),
+            vec!["//".to_owned()],
+            vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())],
             1,
         );
 

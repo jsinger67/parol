@@ -10,8 +10,8 @@ struct YaccElements {
     start_symbol: String,
     title: String,
     comment: String,
-    line_comment: String,
-    block_comment: String,
+    line_comments: String,
+    block_comments: String,
     productions: StrVec,
 }
 
@@ -30,20 +30,19 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         "".to_owned()
     };
 
-    let line_comment = if let Some(line_comment) = grammar_config.line_comment.as_ref() {
-        format!("\n%line_comment \"{}\"", line_comment)
-    } else {
-        "".to_owned()
-    };
+    let line_comments = grammar_config
+        .line_comments
+        .iter()
+        .map(|c| format!("\n%line_comment \"{}\"", c))
+        .collect::<Vec<String>>()
+        .join("\n");
 
-    let block_comment = if let Some(block_comment) = grammar_config.block_comment.as_ref() {
-        format!(
-            "\n%block_comment \"{}\" \"{}\"",
-            block_comment.0, block_comment.1
-        )
-    } else {
-        "".to_owned()
-    };
+    let block_comments = grammar_config
+        .block_comments
+        .iter()
+        .map(|(s, e)| format!("\n%block_comment \"{}\" \"{}\"", s, e))
+        .collect::<Vec<String>>()
+        .join("\n");
 
     let mut productions = Vec::new();
 
@@ -69,8 +68,8 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         start_symbol: grammar_config.cfg.st.clone(),
         title,
         comment,
-        line_comment,
-        block_comment,
+        line_comments,
+        block_comments,
         productions,
     };
     format!("{}", elements)
@@ -105,7 +104,7 @@ mod test {
         let title = Some("Test grammar".to_owned());
         let comment = Some("A simple grammar".to_owned());
 
-        let grammar_config = GrammarConfig::new(g, title, comment, None, None, 1);
+        let grammar_config = GrammarConfig::new(g, title, comment, vec![], vec![], 1);
 
         let par_str = render_par_string(&grammar_config, true);
         let par_str = par_str.replace("\r\n", "\n");
