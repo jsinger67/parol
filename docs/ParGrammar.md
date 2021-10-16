@@ -37,7 +37,7 @@ Using the `%line_comment` and `%block_comment` constructs you can easily define 
 %block_comment  "/\*" "\*/"
 ```
 
-If you supply more than one of these two comment declarations the last one will win.
+You can supply more than one of these two comment declarations. They will all be considered as valid comments.
 
 As opposed to EBNF you use C-like line comments starting with two slashes (//) and bock comments (/\* ... \*/) in PAR files. This is a result of the close relationship between PAR grammar and bison's grammar.
 
