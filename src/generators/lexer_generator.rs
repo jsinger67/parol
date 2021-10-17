@@ -53,3 +53,15 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
 
     Ok(format!("{}", lexer_data))
 }
+
+pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
+    grammar_config
+        .generate_augmented_terminals()
+        .iter()
+        .enumerate()
+        .fold(Vec::new(), |mut acc, (i, e)| {
+            let n = generate_terminal_name(e, i, &grammar_config.cfg);
+            acc.push(n);
+            acc
+        })
+}

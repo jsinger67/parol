@@ -5,7 +5,7 @@ pub mod grammar_trans;
 pub use grammar_trans::check_and_transform_grammar;
 
 pub mod lexer_generator;
-pub use lexer_generator::generate_lexer_source;
+pub use lexer_generator::{generate_lexer_source, generate_terminal_names};
 
 pub mod parser_generator;
 pub use parser_generator::generate_parser_source;

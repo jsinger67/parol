@@ -3,6 +3,7 @@ extern crate error_chain;
 
 use parol::analysis::k_decision::{calculate_k_tuples, FirstCache, FollowCache};
 use parol::errors::*;
+use parol::generators::generate_terminal_names;
 use parol::obtain_cfg_ext;
 use parol::MAX_K;
 use std::env;
@@ -27,6 +28,7 @@ fn run() -> Result<()> {
             bail!("Maximum lookahead is {}", MAX_K);
         }
 
+        let terminals = generate_terminal_names(&grammar_config);
         let first_cache = FirstCache::new();
         let follow_cache = FollowCache::new();
         let result = calculate_k_tuples(&grammar_config, max_k, &first_cache, &follow_cache);
@@ -34,7 +36,7 @@ fn run() -> Result<()> {
             Err(err) => println!("Error: {}", err),
             Ok(tuples) => tuples.iter().for_each(|(prod_num, k_tuples)| {
                 println!("/* {} */ {}", prod_num, grammar_config.cfg.pr[*prod_num]);
-                println!("    {}", k_tuples);
+                println!("    {}", k_tuples.to_string(&terminals));
             }),
         }
     } else {

@@ -4,6 +4,7 @@ extern crate error_chain;
 use log::debug;
 use parol::analysis::{first_k, FirstCache};
 use parol::errors::*;
+use parol::generators::generate_terminal_names;
 use parol::{obtain_cfg_ext, KTuples, MAX_K};
 use std::collections::BTreeMap;
 use std::env;
@@ -39,8 +40,7 @@ fn run() -> Result<()> {
             bail!("Maximum lookahead is {}", MAX_K);
         }
 
-        let augmented_terminals = grammar_config.generate_augmented_terminals();
-        let terminals = augmented_terminals.to_vec();
+        let terminals = generate_terminal_names(&grammar_config);
         let first_cache = FirstCache::new();
 
         let (first_k_per_prod, mut first_k_per_nt) = first_k(&grammar_config, k, &first_cache);
