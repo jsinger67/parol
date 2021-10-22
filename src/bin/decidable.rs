@@ -2,8 +2,9 @@
 extern crate error_chain;
 
 use log::trace;
-use parol::analysis::k_decision::{decidable, FirstCache, FollowCache};
+use parol::analysis::{decidable, explain_conflicts, FirstCache, FollowCache};
 use parol::errors::*;
+use parol::generators::generate_terminal_names;
 use parol::obtain_cfg_ext;
 use parol::MAX_K;
 use std::env;
@@ -35,7 +36,7 @@ fn run() -> Result<()> {
         let follow_cache = FollowCache::new();
 
         let mut errors = 0;
-        let mut non_terminals = vec![];
+        let mut non_terminals_with_conflicts = vec![];
         let actual_k = grammar_config
             .cfg
             .get_non_terminal_set()
@@ -51,13 +52,25 @@ fn run() -> Result<()> {
                     r
                 } else {
                     errors += 1;
-                    non_terminals.push(n);
+                    non_terminals_with_conflicts.push(n);
                     0
                 }
             })
             .max();
         if errors > 0 {
-            println!("{}", non_terminals.join(", "));
+            let terminals = generate_terminal_names(&grammar_config);
+            for nt in &non_terminals_with_conflicts {
+                println!("Conflicts for non-terminal '{}':", nt);
+                let conflicts =
+                    explain_conflicts(&grammar_config, nt, max_k, &first_cache, &follow_cache)?;
+                for (p1, t1, p2, t2) in conflicts {
+                    println!("  Conflict in productions {} and {}:", p1, p2);
+                    println!("    {}: {}", p1, t1.to_string(&terminals));
+                    println!("    {}: {}", p2, t2.to_string(&terminals));
+                    let intersection = t1.intersection(&t2);
+                    println!("    ∩: {}\n", intersection.to_string(&terminals));
+                }
+            }
             println!("{} undecidable non-terminal(s)", errors);
         } else {
             println!("Grammar is LL{}", actual_k.unwrap());

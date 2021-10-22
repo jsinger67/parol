@@ -23,7 +23,8 @@ pub use follow::{follow_k, FollowSet};
 
 pub mod k_decision;
 pub use k_decision::{
-    calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable, FirstCache, FollowCache,
+    calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable, explain_conflicts,
+    FirstCache, FollowCache,
 };
 
 pub mod lookahead_dfa;

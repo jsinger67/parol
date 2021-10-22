@@ -388,7 +388,7 @@ impl KTuple {
                     LINE_COMMENT => "LineComment".to_owned(),
                     BLOCK_COMMENT => "BlockComment".to_owned(),
                     EPS => "\u{03B5}".to_owned(),
-                    _ => format!("\"{}\"", terminals[t.0]),
+                    _ => terminals[t.0].to_string(),
                 })
                 .collect::<Vec<String>>()
                 .join(", ")

@@ -47,6 +47,19 @@ impl KTuples {
         tuples
     }
 
+    pub fn intersection(&self, other: &Self) -> Self {
+        let mut tuples = Self(
+            self.0
+                .intersection(&other.0)
+                .cloned()
+                .collect::<HashSet<KTuple>>(),
+            self.1,
+            false,
+        );
+        tuples.update_completeness();
+        tuples
+    }
+
     pub fn len(&self) -> usize {
         self.0.len()
     }

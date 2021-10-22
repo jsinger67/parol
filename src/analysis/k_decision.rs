@@ -1,3 +1,4 @@
+use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
 use crate::errors::*;
@@ -102,21 +103,26 @@ pub fn decidable(
                 break;
             }
             let productions = cfg.matching_productions(non_terminal);
-            let k_tuples = productions
+            let k_tuples_of_productions = productions
                 .iter()
                 .map(|(pi, _)| {
                     let k_tuples = first_cache.get(current_k, grammar_config).0[*pi].clone();
                     (*pi, k_tuples)
                 })
-                .collect::<Vec<(usize, KTuples)>>();
+                .collect::<Vec<(ProductionIndex, KTuples)>>();
 
             let cached = follow_cache.get(current_k, grammar_config, first_cache);
             if let Some(follow_set) = cached.get(non_terminal) {
-                if k_tuples
+                let concatenated_k_tuples = k_tuples_of_productions
                     .iter()
-                    .map(|(i, t)| (i, t.clone().k_concat(follow_set, current_k)))
-                    .all(|(i, t1)| k_tuples.iter().all(|(j, t2)| i == j || t1.is_disjoint(t2)))
-                {
+                    .map(|(i, t)| (*i, t.clone().k_concat(follow_set, current_k)))
+                    .collect::<Vec<(ProductionIndex, KTuples)>>();
+
+                if concatenated_k_tuples.iter().all(|(i, t1)| {
+                    concatenated_k_tuples
+                        .iter()
+                        .all(|(j, t2)| i == j || t1.is_disjoint(t2))
+                }) {
                     return Ok(current_k);
                 }
             } else {
@@ -218,6 +224,58 @@ pub fn calculate_lookahead_dfas(
                 acc
             }
         })
+}
+
+///
+/// Returns conflicts for a given non-terminal at given lookahead size.
+///
+pub fn explain_conflicts(
+    grammar_config: &GrammarConfig,
+    non_terminal: &str,
+    k: usize,
+    first_cache: &FirstCache,
+    follow_cache: &FollowCache,
+) -> Result<Vec<(ProductionIndex, KTuples, ProductionIndex, KTuples)>> {
+    let cfg = &grammar_config.cfg;
+    let productions = cfg.matching_productions(non_terminal);
+    if productions.is_empty() {
+        Err("The given non-terminal isn't part of the given grammar!".into())
+    } else if productions.len() == 1 {
+        // The trivial case - no lookahead is needed, no conflicts can occur.
+        Ok(Vec::new())
+    } else {
+        let productions = cfg.matching_productions(non_terminal);
+        let k_tuples_of_productions = productions
+            .iter()
+            .map(|(pi, _)| {
+                let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
+                (*pi, k_tuples)
+            })
+            .collect::<Vec<(ProductionIndex, KTuples)>>();
+
+        let cached = follow_cache.get(k, grammar_config, first_cache);
+        if let Some(follow_set) = cached.get(non_terminal) {
+            let concatenated_k_tuples = k_tuples_of_productions
+                .iter()
+                .map(|(i, t)| (*i, t.clone().k_concat(follow_set, k)))
+                .collect::<Vec<(ProductionIndex, KTuples)>>();
+            let mut conflicting_k_tuples = Vec::new();
+            for (i, ki) in &concatenated_k_tuples {
+                for (j, kj) in &concatenated_k_tuples {
+                    if i != j
+                        && !ki.is_disjoint(kj)
+                        && !conflicting_k_tuples
+                            .iter()
+                            .any(|(p1, _, p2, _)| p1 != i && p2 != j)
+                    {
+                        conflicting_k_tuples.push((*i, ki.clone(), *j, kj.clone()));
+                    }
+                }
+            }
+            return Ok(conflicting_k_tuples);
+        }
+        Err("Internal error".into())
+    }
 }
 
 #[cfg(test)]
