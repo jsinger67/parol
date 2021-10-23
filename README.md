@@ -6,6 +6,10 @@
 
 # About `parol`
 
+<!-- markdownlint-disable Inline HTML -->
+<img src="./logo/parol.svg" alt="Logo" height=300 with=300>
+<!-- markdownlint-enable Inline HTML -->
+
 `parol` is a LL(k) parser generator **for Rust written in Rust** with the following features
 
 Generated parsers
