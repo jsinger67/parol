@@ -155,10 +155,10 @@ Replace a Factor that is a R with a non-left-recursive substitution.
 -------------------------------------------------------------------------
 R  -> x { a } y
 =>
-R  -> x R' y     (1)
-R  -> x y        (1a)
-R' -> (a) R'     (2)
-R' -> (a)        (2a)
+R  -> x R' y
+R  -> x y
+R' -> (a) R'
+R' -> (a)
 ```
 
 The name of the production R' is created by adding "Rest[Number]" to the original non-terminal on the LHS.
@@ -170,11 +170,11 @@ New non-terminals and productions are introduced during elimination of *optional
 ```text
 Replace a Factor that is an O with new productions.
 -------------------------------------------------------------------------
-R  -> x [ a ] y.
+R  -> x [ a ] y
 =>
-R  -> x R' y.    (1)
-R  -> x y.       (1a)
-R' -> (a).       (2)
+R  -> x R' y
+R  -> x y
+R' -> (a)
 ```
 
 The name of the production R' is created by adding "Opt[Number]" to the original non-terminal on the LHS.
@@ -187,14 +187,14 @@ New non-terminals and productions are introduced during elimination of *grouped 
 Replace a Factor that is a G with new productions.
 -------------------------------------------------------------------------
 Case 1: Iff g is only of size 1
-R  -> x ( g ) y.
+R  -> x ( g ) y
 =>
-R  -> x g y.     (1)
+R  -> x g y
 Case 2: Otherwise
-R  -> x ( g ) y.
+R  -> x ( g ) y
 =>
-R  -> x G y.     (1)
-G  -> g.         (2)
+R  -> x G y
+G  -> g
 ```
 
 The name of the production G is created by adding "Group[Number]" to the original non-terminal on the LHS.
@@ -274,6 +274,7 @@ impl JsonGrammar {
             }
             item
         } else {
+            trace!("pop    {}: item_stack is empty", context);
             None
         }
     }
@@ -920,7 +921,7 @@ Perfect! But there is still a problem. When we change the array to an empty one 
 /* 12 */ ArraySuffix1: "\]";
 ```
 
-Ok, wee need to push an empty array at the semantic action for production 12. Let`s do this:
+Ok, wee need to push an empty array at the semantic action for productions 12 and 14. Let`s do this:
 
 ```rust
 /// Semantic action for production 12:
@@ -933,6 +934,20 @@ fn array_suffix1_12(
     _parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
     let context = "array_suffix1_12";
+    self.push(JsonGrammarItem::Array(Vec::new()), context);
+    Ok(())
+}
+
+/// Semantic action for production 14:
+///
+/// ArraySuffix: "\]";
+///
+fn array_suffix_14(
+    &mut self,
+    _r_bracket_0: &ParseTreeStackEntry,
+    _parse_tree: &Tree<ParseTreeType>,
+) -> Result<()> {
+    let context = "array_suffix_14";
     self.push(JsonGrammarItem::Array(Vec::new()), context);
     Ok(())
 }
@@ -1043,9 +1058,23 @@ We extend the `Display` implementation for objects with the following new match 
 
 Now we need to solve a similar problem like in the Array case before. We need to collect `Pairs` within an initially empty `Object` item. After all pairs have been collected we have to reverse there order.
 
-First we create an empty `Object` in production 8 which will help us to parse an empty `Object` in the input. Then we also create an empty `Object` in production 5 which will help us to parse an non-empty object:
+First we create an empty `Object` in production 8 which will help us to parse an empty `Object` in the input. Then we also create an empty `Object` in productions 3 and 5 which will help us to parse an non-empty object:
 
 ```rust
+/// Semantic action for production 3:
+///
+/// ObjectSuffix1: "\}";
+///
+fn object_suffix1_3(
+    &mut self,
+    _r_brace_0: &ParseTreeStackEntry,
+    _parse_tree: &Tree<ParseTreeType>,
+) -> Result<()> {
+    let context = "object_suffix1_3";
+    self.push(JsonGrammarItem::Object(Vec::new()), context);
+    Ok(())
+}
+
 /// Semantic action for production 5:
 ///
 /// ObjectSuffix: "\}";
@@ -1219,3 +1248,69 @@ $env:RUST_LOG="trace"
 And then limit the logs until you're happy with it.
 
 In your own implementation feel free to use the logging too. It has been proofed to be very helpful many times.
+
+## What else?
+
+### Duplicate and non-production code
+
+For didactic reasons there are some duplicates in the code which actually violates the DRY rule. Also the generation of the tree layout in the `run` function of `main.rs` would normally not be necessary in production code but is helpful when trying to put your parser into operation.
+
+### Avoid EBNF constructs
+
+Another thing to consider is to refrain from using EBNF constructs *groups*, *optionals* and *repetitions* in your input grammar description because the resulting expanded grammar can be confusing. Instead write your grammar in the old fashioned way as done in the List example (and actually also in the calc example). In the List example `list.par` and `list-exp.par` are actually identical.
+
+As a negative example see the amount of productions generated for the Array non-terminal. In the `json.par` there are actually two productions and the `json-exp.par` eventually contains eight productions. This is a result of the formal transformation applied to the grammar description as described at the beginning of this tutorial. By writing the grammar carefully you can significantly cut down the number of productions in the resulting grammar description.
+
+For example this part
+
+```ebnf
+Array
+    : "\[" Value { "," Value } "\]"
+    | "\[" "\]"
+    ;
+```
+
+could be rewritten without the EBNF constructs *repetition*, i.e. {..} this way
+
+```ebnf
+Array
+    : "\[" Value ArrayListRest "\]"
+    | "\[" "\]"
+    ;
+
+ArrayListRest
+    : "," Value ArrayListRest
+    |
+    ;
+```
+
+This way you eventually save three productions.
+The resulting productions are now (one additional production is introduced during left-factoring):
+
+```ebnf
+Array: "\[" ArraySuffix;
+ArraySuffix: Value ArrayListRest "\]";
+ArraySuffix: "\]";
+ArrayListRest: "," Value ArrayListRest;
+ArrayListRest: ;
+```
+
+This result is easier to comprehend and also makes it easier to handle the sematic actions correctly.
+
+### Error output from sematic actions
+
+`parol` consequently uses [error-chain](https://crates.io/crates/error-chain)'s method for consistent error handling. So actually you can simply return an `Error` object by using the constructor like this:
+
+```rust
+Err("An error is occurred".into())
+```
+
+This will terminate the parsing process and generate an output with the text you provided.
+If you want to convey some information about the error position you can use position information from the `OwnedToken` of the `ParseTreeStackEntry` object:
+
+```rust
+let token = number_0.token(parse_tree)?;
+Err(format!("An error is occurred at {}:{}", token.line, token.column).into())
+```
+
+Where `number_0` is a `ParseTreeStackEntry` taken from the parameter list of the semantic action.
