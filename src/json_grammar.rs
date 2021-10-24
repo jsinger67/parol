@@ -75,6 +75,7 @@ impl JsonGrammar {
             }
             item
         } else {
+            trace!("pop    {}: item_stack is empty", context);
             None
         }
     }
@@ -161,6 +162,20 @@ impl JsonGrammarTrait for JsonGrammar {
             )
             .into()),
         }
+    }
+
+    /// Semantic action for production 3:
+    ///
+    /// ObjectSuffix1: "\}";
+    ///
+    fn object_suffix1_3(
+        &mut self,
+        _r_brace_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "object_suffix1_3";
+        self.push(JsonGrammarItem::Object(Vec::new()), context);
+        Ok(())
     }
 
     /// Semantic action for production 5:
@@ -307,6 +322,20 @@ impl JsonGrammarTrait for JsonGrammar {
         Ok(())
     }
 
+    /// Semantic action for production 14:
+    ///
+    /// ArraySuffix: "\]";
+    ///
+    fn array_suffix_14(
+        &mut self,
+        _r_bracket_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "array_suffix_14";
+        self.push(JsonGrammarItem::Array(Vec::new()), context);
+        Ok(())
+    }
+
     /// Semantic action for production 15:
     ///
     /// ArrayRest: "," Value ArrayRestSuffix;
@@ -334,7 +363,6 @@ impl JsonGrammarTrait for JsonGrammar {
             )
             .into()),
         }
-        // Ok(())
     }
 
     /// Semantic action for production 17:
