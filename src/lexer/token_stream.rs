@@ -11,8 +11,6 @@ pub struct TokenStream<'t> {
     pub k: usize,
     /// The name of the input file
     pub file_name: String,
-    /// Index of the current token
-    pos: usize,
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
     /// The actual token iterator
@@ -36,10 +34,9 @@ impl<'t> TokenStream<'t> {
         let mut token_stream = TokenStream {
             k,
             file_name,
-            pos: 0,
             error_token_type: tokenizer.error_token_type,
             token_iter: TokenIter::new(tokenizer, input, k),
-            tokens: Vec::new(),
+            tokens: Vec::with_capacity(k),
         };
         token_stream.read_tokens(k);
         Ok(token_stream)
@@ -57,11 +54,10 @@ impl<'t> TokenStream<'t> {
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
-            let pos = self.pos + n;
-            if pos >= self.tokens.len() {
+            if n >= self.tokens.len() {
                 Err("Lookahead exceeds token buffer length".into())
             } else {
-                Ok(&self.tokens[pos])
+                Ok(&self.tokens[n])
             }
         }
     }
@@ -77,11 +73,10 @@ impl<'t> TokenStream<'t> {
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
-            let pos = self.pos + n;
-            if pos >= self.tokens.len() {
+            if n >= self.tokens.len() {
                 Err("Lookahead exceeds token buffer length".into())
             } else {
-                Ok(self.tokens[pos].to_owned())
+                Ok(self.tokens[n].to_owned())
             }
         }
     }
@@ -98,11 +93,10 @@ impl<'t> TokenStream<'t> {
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
-            let pos = self.pos + n;
-            if pos >= self.tokens.len() {
+            if n >= self.tokens.len() {
                 Err("Lookahead exceeds token buffer length".into())
             } else {
-                Ok(self.tokens[pos].token_type)
+                Ok(self.tokens[n].token_type)
             }
         }
     }
@@ -112,13 +106,12 @@ impl<'t> TokenStream<'t> {
     /// of tokens.
     /// If necessary more input is read via the token_iter.
     ///
-    pub fn consume(&mut self, n: usize) -> Result<()> {
+    pub fn consume(&mut self) -> Result<()> {
         self.ensure_buffer();
-        let pos = self.pos + n;
-        if pos >= self.tokens.len() {
-            Err("Lookahead exceeds token buffer length".into())
+        if self.tokens.is_empty() {
+            Err("Consume on empty buffer is impossible".into())
         } else {
-            self.pos = pos;
+            self.tokens.remove(0);
             Ok(())
         }
     }
@@ -127,7 +120,7 @@ impl<'t> TokenStream<'t> {
     /// Test if all input was processed by the parser
     ///
     pub fn all_input_consumed(&self) -> bool {
-        !self.tokens.is_empty() && self.tokens[self.pos].token_type == EOI
+        !self.tokens.is_empty() && self.tokens[0].token_type == EOI
     }
 
     ///
@@ -173,10 +166,9 @@ impl<'t> TokenStream<'t> {
     ///
     fn ensure_buffer(&mut self) -> usize {
         let last_buffer_index = self.tokens.len() - 1;
-        let current_lookahead_buffer_size = last_buffer_index - self.pos;
-        if current_lookahead_buffer_size < self.k {
+        if last_buffer_index < self.k {
             // Fill buffer to lookahead size k relative to pos
-            self.read_tokens(self.k - current_lookahead_buffer_size)
+            self.read_tokens(self.k - last_buffer_index)
         } else {
             0
         }

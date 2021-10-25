@@ -4,7 +4,7 @@ extern crate lazy_static;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
-use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
+use parol_runtime::lexer::{OwnedToken, Token, TokenStream, Tokenizer};
 use std::cell::RefCell;
 
 const PAROL_CFG_1: &'static str = r#"%start Grammar
@@ -56,25 +56,26 @@ fn tokenizer_test() {
 
 #[test]
 fn lexer_token_production() {
+    let k = 3;
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, k).unwrap());
+    let mut tok = OwnedToken::default();
     while !token_stream.borrow().all_input_consumed() {
-        let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
+        tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
         print!("{:?}", tok);
-        token_stream.borrow_mut().consume(1).unwrap();
+        token_stream.borrow_mut().consume().unwrap();
     }
-    assert_eq!(66, token_stream.borrow().tokens.len());
+    assert_eq!(k, token_stream.borrow().tokens.len());
     assert_eq!(
-        Token {
-            symbol: ";",
+        OwnedToken {
+            symbol: ";".to_string(),
             token_type: 8,
             line: 19,
             column: 39,
-            length: 1
         },
-        token_stream.borrow().tokens[64]
+        tok
     );
-    assert_eq!(Token::eoi(), token_stream.borrow().tokens[65]);
+    assert_eq!(Token::eoi(), token_stream.borrow().tokens[0]);
 }
 
 #[test]
@@ -91,7 +92,7 @@ fn lookahead_beyond_buffer_must_fail() {
     let token_stream =
         RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
-        if token_stream.borrow_mut().consume(1).is_ok() {
+        if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
             println!("{:?}", tok);
         }

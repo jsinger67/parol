@@ -6,7 +6,7 @@ use std::fmt::{Display, Error, Formatter};
 /// have any reference to the input text.
 /// This is necessary to safely put the token into a decoupled parse tree.
 ///
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Default, Debug, Clone, Eq, PartialEq)]
 pub struct OwnedToken {
     /// The matched string
     pub symbol: String,

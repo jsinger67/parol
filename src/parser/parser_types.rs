@@ -307,7 +307,7 @@ Lookahead token: {} ({})
                             trace!("Consuming token {}", token);
                             stream
                                 .borrow_mut()
-                                .consume(1)
+                                .consume()
                                 .chain_err(|| "Failed consuming the next token!")?;
                             self.parser_stack.stack.pop();
                             self.parse_tree_stack
