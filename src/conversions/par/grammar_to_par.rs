@@ -12,6 +12,7 @@ struct YaccElements {
     comment: String,
     line_comments: String,
     block_comments: String,
+    auto_newline_off: String,
     productions: StrVec,
 }
 
@@ -44,6 +45,12 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         .collect::<Vec<String>>()
         .join("\n");
 
+    let auto_newline_off = if grammar_config.auto_newline {
+        String::new()
+    } else {
+        "%auto_newline_off".to_owned()
+    };
+
     let mut productions = Vec::new();
 
     grammar_config.cfg.pr.iter().for_each(|p| {
@@ -70,6 +77,7 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         comment,
         line_comments,
         block_comments,
+        auto_newline_off,
         productions,
     };
     format!("{}", elements)
@@ -104,7 +112,9 @@ mod test {
         let title = Some("Test grammar".to_owned());
         let comment = Some("A simple grammar".to_owned());
 
-        let grammar_config = GrammarConfig::new(g, title, comment, vec![], vec![], 1);
+        let grammar_config = GrammarConfig::new(g, 1)
+            .with_title(title)
+            .with_comment(comment);
 
         let par_str = render_par_string(&grammar_config, true);
         let par_str = par_str.replace("\r\n", "\n");

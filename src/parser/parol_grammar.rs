@@ -141,6 +141,7 @@ pub struct ParolGrammar {
     pub start_symbol: String,
     pub line_comments: Vec<String>,
     pub block_comments: Vec<(String, String)>,
+    pub auto_newline_off: bool,
 }
 
 impl ParolGrammar {
@@ -287,11 +288,25 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 12:
+    ///
+    /// Declaration: "%auto_newline_off";
+    ///
+    fn declaration_12(
+        &mut self,
+        _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let _context = "declaration_12";
+        self.auto_newline_off = true;
+        Ok(())
+    }
+
+    /// Semantic action for production 19:
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
-    fn production_18(
+    fn production_19(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -299,7 +314,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "production_18";
+        let context = "production_19";
         if let Some(ParolGrammarItem::Alts(mut rhs)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.ast_stack.pop() {
                 rhs.reverse();
@@ -314,17 +329,17 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 20:
     ///
     /// Alternations: Alternation AlternationsSuffix;
     ///
-    fn alternations_19(
+    fn alternations_20(
         &mut self,
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternations_19";
+        let context = "alternations_20";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
                 alt.reverse();
@@ -339,29 +354,29 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 22:
     ///
     /// AlternationsSuffix: ;
     ///
-    fn alternations_suffix_21(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_suffix_21";
+    fn alternations_suffix_22(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternations_suffix_22";
         self.ast_stack
             .push(ParolGrammarItem::Alts(Alternations::new()));
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 23:
     ///
     /// AlternationsRest: "\|" Alternation AlternationsRestSuffix;
     ///
-    fn alternations_rest_22(
+    fn alternations_rest_23(
         &mut self,
         _esc_or_0: &ParseTreeStackEntry,
         _alternation_1: &ParseTreeStackEntry,
         _alternations_rest_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternations_rest_22";
+        let context = "alternations_rest_23";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
                 alt.reverse();
@@ -376,39 +391,39 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 25:
     ///
     /// AlternationsRestSuffix: ;
     ///
-    fn alternations_rest_suffix_24(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_rest_suffix_24";
+    fn alternations_rest_suffix_25(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternations_rest_suffix_25";
         self.ast_stack
             .push(ParolGrammarItem::Alts(Alternations::new()));
         Ok(())
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 27:
     ///
     /// Alternation: ;
     ///
-    fn alternation_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_26";
+    fn alternation_27(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternation_27";
         self.ast_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 28:
     ///
     /// AlternationRest: Factor AlternationRestSuffix;
     ///
-    fn alternation_rest_27(
+    fn alternation_rest_28(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternation_rest_27";
+        let context = "alternation_rest_28";
         trace!("{}", self.trace_ast_stack(context));
         if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Fac(fac)) = self.ast_stack.pop() {
@@ -423,29 +438,29 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 30:
     ///
     /// AlternationRestSuffix: ;
     ///
-    fn alternation_rest_suffix_29(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_rest_suffix_29";
+    fn alternation_rest_suffix_30(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternation_rest_suffix_30";
         self.ast_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 37:
     ///
     /// Group: "\(" Alternations "\)";
     ///
-    fn group_36(
+    fn group_37(
         &mut self,
         _esc_l_paren_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "group_36";
+        let context = "group_37";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Group(alts)));
@@ -455,18 +470,18 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 38:
     ///
     /// Optional: "\[" Alternations "\]";
     ///
-    fn optional_37(
+    fn optional_38(
         &mut self,
         _esc_l_bracket_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "optional_37";
+        let context = "optional_38";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Optional(alts)));
@@ -476,18 +491,18 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 39:
     ///
     /// Repeat: "\{" Alternations "\}";
     ///
-    fn repeat_38(
+    fn repeat_39(
         &mut self,
         _esc_l_brace_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "repeat_38";
+        let context = "repeat_39";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Repeat(alts)));
@@ -497,16 +512,16 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 40:
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_39(
+    fn identifier_40(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "identifier_39";
+        let context = "identifier_40";
         let ast_item = identifier_0.get_ast_type(parse_tree);
         if let ParseTreeType::T(t) = ast_item {
             self.ast_stack
@@ -517,16 +532,16 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 41:
     ///
     /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn string_40(
+    fn string_41(
         &mut self,
         string_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_40";
+        let context = "string_41";
         let ast_item = string_0.get_ast_type(parse_tree);
         if let ParseTreeType::T(t) = ast_item {
             // Trim double quotes here

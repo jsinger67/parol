@@ -303,7 +303,7 @@ mod test {
                 "Z",
                 vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
             ));
-        let grammar_config = GrammarConfig::new(cfg, None, None, vec![], vec![], 5);
+        let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();
         let follow_cache = FollowCache::new();
         let result = decidable(&grammar_config, "S", 5, &first_cache, &follow_cache).unwrap();
@@ -343,7 +343,7 @@ mod test {
                 "Z",
                 vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
             ));
-        let grammar_config = GrammarConfig::new(cfg, None, None, vec![], vec![], 5);
+        let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();
         let follow_cache = FollowCache::new();
         let result = calculate_k(&grammar_config, 5, &first_cache, &follow_cache).unwrap();

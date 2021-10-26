@@ -16,16 +16,17 @@ pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let comment = parol_grammar.comment;
     let line_comments = parol_grammar.line_comments;
     let block_comments = parol_grammar.block_comments;
+    let auto_newline = !parol_grammar.auto_newline_off;
     let lookahead_size = 1; // Updated later
 
-    Ok(GrammarConfig::new(
-        cfg,
-        title,
-        comment,
-        line_comments,
-        block_comments,
-        lookahead_size,
-    ))
+    let grammar_config = GrammarConfig::new(cfg, lookahead_size)
+        .with_title(title)
+        .with_comment(comment)
+        .with_line_comments(line_comments)
+        .with_block_comments(block_comments)
+        .with_auto_newline(auto_newline);
+
+    Ok(grammar_config)
 }
 
 pub fn try_from_factor(factor: Factor) -> Result<Symbol> {

@@ -1,4 +1,4 @@
-%start {{{start_symbol}}}{{{title}}}{{{comment}}}{{{line_comments}}}{{{block_comments}}}
+%start {{{start_symbol}}}{{{title}}}{{{comment}}}{{{line_comments}}}{{{block_comments}}}{{{auto_newline_off}}}
 
 %%
 

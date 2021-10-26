@@ -12,19 +12,20 @@
 /*  4 */ Declaration: "%title" String
 /*  6 */    | "%comment" String
 /*  7 */    | "%line_comment" String
-/*  7 */    | "%block_comment" String String;
-/*  8 */ GrammarDefinition: "%%" Production {Production};
-/*  9 */ Production: Identifier ":" Alternations ";";
-/* 10 */ Alternations: Alternation {"\|" Alternation};
-/* 11 */ Alternation: {Factor};
-/* 12 */ Factor: Group
-/* 13 */    | Repeat
-/* 14 */    | Optional
-/* 15 */    | Symbol;
-/* 16 */ Symbol: Identifier
-/* 17 */    | String;
-/* 18 */ Group: "\(" Alternations "\)";
-/* 19 */ Optional: "\[" Alternations "\]";
-/* 20 */ Repeat: "\{" Alternations "\}";
-/* 21 */ Identifier: "[a-zA-Z_]\w*";
-/* 22 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
+/*  7 */    | "%block_comment" String String
+/*  8 */    | "%auto_newline_off";
+/*  9 */ GrammarDefinition: "%%" Production {Production};
+/* 10 */ Production: Identifier ":" Alternations ";";
+/* 11 */ Alternations: Alternation {"\|" Alternation};
+/* 12 */ Alternation: {Factor};
+/* 13 */ Factor: Group
+/* 14 */    | Repeat
+/* 15 */    | Optional
+/* 16 */    | Symbol;
+/* 17 */ Symbol: Identifier
+/* 18 */    | String;
+/* 19 */ Group: "\(" Alternations "\)";
+/* 20 */ Optional: "\[" Alternations "\]";
+/* 21 */ Repeat: "\{" Alternations "\}";
+/* 22 */ Identifier: "[a-zA-Z_]\w*";
+/* 23 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";

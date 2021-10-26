@@ -13,7 +13,9 @@ use std::fmt::{Debug, Display, Error, Formatter};
 ///     * Parse whitespace instead of skipping them by default
 ///     * Prologue and epilogue for generated parser output
 ///
-#[derive(Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+/// Newly added feature is to optionally switch automatic handling off newlines off.
+///
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub struct GrammarConfig {
     ///
     /// The actual context free grammar.
@@ -46,28 +48,61 @@ pub struct GrammarConfig {
     pub block_comments: Vec<(String, String)>,
 
     ///
+    /// If true the lexer handles (and skips) newlines.
+    /// If false the user has to handle newlines on its own.
+    ///
+    pub auto_newline: bool,
+
+    ///
     /// The maximum lookahead size, used for lexer generation
     ///
     pub lookahead_size: usize,
 }
 
 impl GrammarConfig {
-    pub fn new(
-        cfg: Cfg,
-        title: Option<String>,
-        comment: Option<String>,
-        line_comments: Vec<String>,
-        block_comments: Vec<(String, String)>,
-        lookahead_size: usize,
-    ) -> Self {
+    pub fn new(cfg: Cfg, lookahead_size: usize) -> Self {
         Self {
             cfg,
-            title,
-            comment,
-            line_comments,
-            block_comments,
+            title: None,
+            comment: None,
+            line_comments: Vec::new(),
+            block_comments: Vec::new(),
+            auto_newline: true,
             lookahead_size,
         }
+    }
+
+    pub fn with_title(mut self, title: Option<String>) -> Self {
+        self.title = title;
+        self
+    }
+
+    pub fn with_comment(mut self, comment: Option<String>) -> Self {
+        self.comment = comment;
+        self
+    }
+
+    pub fn with_line_comments(mut self, line_comments: Vec<String>) -> Self {
+        self.line_comments = line_comments;
+        self
+    }
+
+    pub fn with_block_comments(mut self, block_comments: Vec<(String, String)>) -> Self {
+        self.block_comments = block_comments;
+        self
+    }
+
+    pub fn with_auto_newline(mut self, auto_newline: bool) -> Self {
+        self.auto_newline = auto_newline;
+        self
+    }
+
+    pub fn update_lookahead_size(&mut self, k: usize) {
+        self.lookahead_size = k;
+    }
+
+    pub fn update_cfg(&mut self, cfg: Cfg) {
+        self.cfg = cfg;
     }
 
     ///
@@ -77,7 +112,11 @@ impl GrammarConfig {
     pub fn generate_augmented_terminals(&self) -> Vec<String> {
         let mut terminals = vec![
             "UNMATCHABLE_TOKEN".to_owned(),
-            "NEW_LINE_TOKEN".to_owned(),
+            if self.auto_newline {
+                "NEW_LINE_TOKEN".to_owned()
+            } else {
+                "UNMATCHABLE_TOKEN".to_owned()
+            },
             "WHITESPACE_TOKEN".to_owned(),
         ];
         if !self.line_comments.is_empty() {
@@ -115,13 +154,19 @@ impl GrammarConfig {
         terminals.push("ERROR_TOKEN".to_owned());
         terminals
     }
+}
 
-    pub fn update_lookahead_size(&mut self, k: usize) {
-        self.lookahead_size = k;
-    }
-
-    pub fn update_cfg(&mut self, cfg: Cfg) {
-        self.cfg = cfg;
+impl Default for GrammarConfig {
+    fn default() -> Self {
+        Self {
+            cfg: Cfg::default(),
+            title: None,
+            comment: None,
+            line_comments: Vec::new(),
+            block_comments: Vec::new(),
+            auto_newline: true,
+            lookahead_size: 0,
+        }
     }
 }
 
@@ -171,14 +216,11 @@ mod test {
         let title = Some("Test grammar".to_owned());
         let comment = Some("A simple grammar".to_owned());
 
-        let grammar_config = GrammarConfig::new(
-            g,
-            title,
-            comment,
-            vec!["//".to_owned()],
-            vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())],
-            1,
-        );
+        let grammar_config = GrammarConfig::new(g, 1)
+            .with_title(title)
+            .with_comment(comment)
+            .with_line_comments(vec!["//".to_owned()])
+            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
         let augment_terminals = grammar_config.generate_augmented_terminals();
 
         assert_eq!(

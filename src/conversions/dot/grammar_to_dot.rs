@@ -138,14 +138,11 @@ mod test {
         let title = Some("Test grammar".to_owned());
         let comment = Some("A simple grammar".to_owned());
 
-        let grammar_config = GrammarConfig::new(
-            g,
-            title,
-            comment,
-            vec!["//".to_owned()],
-            vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())],
-            1,
-        );
+        let grammar_config = GrammarConfig::new(g, 1)
+            .with_title(title)
+            .with_comment(comment)
+            .with_line_comments(vec!["//".to_owned()])
+            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
 
         let dot_str = render_nt_dot_string(&grammar_config);
         let dot_str = dot_str.replace("\r\n", "\n");
