@@ -48,7 +48,7 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
     let auto_newline_off = if grammar_config.auto_newline {
         String::new()
     } else {
-        "%auto_newline_off".to_owned()
+        "\n%auto_newline_off".to_owned()
     };
 
     let mut productions = Vec::new();
