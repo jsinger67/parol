@@ -68,7 +68,7 @@ impl Tokenizer {
             Err("Augmented terminals should always include the error token!".into())
         } else {
             let combined = combined.trim_end_matches('|');
-            let rx = format!(r###"(?x){}"###, combined);
+            let rx = combined.to_string();
             let rx = Regex::new(&rx).chain_err(|| "Unable to compile generated RegEx!")?;
 
             Ok(Tokenizer {
