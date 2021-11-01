@@ -1,5 +1,5 @@
 use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
+    {{{used_token_constants}}}
 };
 
 pub const TERMINALS: &[&str; {{terminal_count}}] = &[

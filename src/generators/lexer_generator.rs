@@ -8,6 +8,7 @@ use std::fmt::Debug;
 #[template = "templates/lexer_template.rs"]
 struct LexerData {
     augmented_terminals: StrVec,
+    used_token_constants: String,
     terminal_names: StrVec,
     terminal_count: usize,
     lookahead_size: usize,
@@ -34,6 +35,22 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                 acc
             });
 
+    let token_constants: Vec<(&str, bool)> = vec![
+        ("ERROR_TOKEN,", true),
+        ("NEW_LINE_TOKEN,", grammar_config.auto_newline),
+        ("UNMATCHABLE_TOKEN,", true),
+        ("WHITESPACE_TOKEN,", true),
+    ];
+
+    let used_token_constants = token_constants
+        .iter()
+        .fold(String::new(), |mut acc, (c, u)| {
+            if *u {
+                acc.push_str(c);
+            }
+            acc
+        });
+
     let terminal_names =
         original_augmented_terminals
             .iter()
@@ -46,6 +63,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
 
     let lexer_data = LexerData {
         augmented_terminals,
+        used_token_constants,
         terminal_names,
         terminal_count,
         lookahead_size: grammar_config.lookahead_size,
