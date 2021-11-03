@@ -54,6 +54,12 @@ pub struct GrammarConfig {
     pub auto_newline: bool,
 
     ///
+    /// If true the lexer handles (and skips) whitespace.
+    /// If false the user has to handle whitespace on its own.
+    ///
+    pub auto_ws: bool,
+
+    ///
     /// The maximum lookahead size, used for lexer generation
     ///
     pub lookahead_size: usize,
@@ -68,6 +74,7 @@ impl GrammarConfig {
             line_comments: Vec::new(),
             block_comments: Vec::new(),
             auto_newline: true,
+            auto_ws: true,
             lookahead_size,
         }
     }
@@ -97,6 +104,11 @@ impl GrammarConfig {
         self
     }
 
+    pub fn with_auto_ws(mut self, auto_ws: bool) -> Self {
+        self.auto_ws = auto_ws;
+        self
+    }
+
     pub fn update_lookahead_size(&mut self, k: usize) {
         self.lookahead_size = k;
     }
@@ -117,7 +129,11 @@ impl GrammarConfig {
             } else {
                 "UNMATCHABLE_TOKEN".to_owned()
             },
-            "WHITESPACE_TOKEN".to_owned(),
+            if self.auto_ws {
+                "WHITESPACE_TOKEN".to_owned()
+            } else {
+                "UNMATCHABLE_TOKEN".to_owned()
+            },
         ];
         if !self.line_comments.is_empty() {
             let line_comments_rx = self
@@ -165,6 +181,7 @@ impl Default for GrammarConfig {
             line_comments: Vec::new(),
             block_comments: Vec::new(),
             auto_newline: true,
+            auto_ws: true,
             lookahead_size: 0,
         }
     }
@@ -176,6 +193,8 @@ impl Display for GrammarConfig {
         writeln!(f, "comment: {:?}", self.comment)?;
         writeln!(f, "line_comments: {:?}", self.line_comments)?;
         writeln!(f, "block_comments: {:?}", self.block_comments)?;
+        writeln!(f, "auto_newline: {:?}", self.auto_newline)?;
+        writeln!(f, "auto_ws: {:?}", self.auto_ws)?;
         writeln!(f, "cfg: {:?}", self.cfg)
     }
 }

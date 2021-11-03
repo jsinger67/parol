@@ -17,6 +17,7 @@ pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let line_comments = parol_grammar.line_comments;
     let block_comments = parol_grammar.block_comments;
     let auto_newline = !parol_grammar.auto_newline_off;
+    let auto_ws = !parol_grammar.auto_ws_off;
     let lookahead_size = 1; // Updated later
 
     let grammar_config = GrammarConfig::new(cfg, lookahead_size)
@@ -24,7 +25,8 @@ pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
         .with_comment(comment)
         .with_line_comments(line_comments)
         .with_block_comments(block_comments)
-        .with_auto_newline(auto_newline);
+        .with_auto_newline(auto_newline)
+        .with_auto_ws(auto_ws);
 
     Ok(grammar_config)
 }

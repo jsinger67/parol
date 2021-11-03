@@ -10,7 +10,9 @@ StartDeclaration    = '%start' Identifier.
 Declaration         = '%title' String
                     | '%comment' String
                     | '%line_comment' String
-                    | '%block_comment' String String.
+                    | '%block_comment' String String
+                    | '%auto_newline_off'
+                    | '%auto_ws_off'.
 GrammarDefinition   = '%%' Production {Production}.     (* There must be at least one production - with the start symbol *)
 Production          = Identifier ':' Alternations ';'.
 Alternations        = Alternation {'|' Alternation}.
@@ -61,6 +63,16 @@ It is important to note that the start symbol of the grammar must always be decl
 ## Scanner control
 
 A scanner (aka lexer) is automatically created from all used terminal symbols.
+
+### New line handling
+
+The scanner per default skips newlines automatically. To suppress this use the `%auto_newline_off` directive.
+You have to handle newline tokens on your own in your grammar.
+
+### Whitespace handling
+
+The scanner also per default skips whitespace automatically. To suppress this use the `%auto_ws_off` directive.
+You have to handle whitespace tokens on your own in your grammar.
 
 ### Terminal name generation
 

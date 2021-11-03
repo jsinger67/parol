@@ -174,9 +174,21 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 13:
     ///
+    /// Declaration: "%auto_ws_off";
+    ///
+    fn declaration_13(
+        &mut self,
+        _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 14:
+    ///
     /// GrammarDefinition: "%%" Production GrammarDefinitionSuffix;
     ///
-    fn grammar_definition_13(
+    fn grammar_definition_14(
         &mut self,
         _percent_percent_0: &ParseTreeStackEntry,
         _production_1: &ParseTreeStackEntry,
@@ -186,11 +198,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 14:
+    /// Semantic action for production 15:
     ///
     /// GrammarDefinitionSuffix: GrammarDefinitionRest;
     ///
-    fn grammar_definition_suffix_14(
+    fn grammar_definition_suffix_15(
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -198,19 +210,19 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 15:
+    /// Semantic action for production 16:
     ///
     /// GrammarDefinitionSuffix: ;
     ///
-    fn grammar_definition_suffix_15(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn grammar_definition_suffix_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 16:
+    /// Semantic action for production 17:
     ///
     /// GrammarDefinitionRest: Production GrammarDefinitionRestSuffix;
     ///
-    fn grammar_definition_rest_16(
+    fn grammar_definition_rest_17(
         &mut self,
         _production_0: &ParseTreeStackEntry,
         _grammar_definition_rest_suffix_1: &ParseTreeStackEntry,
@@ -219,11 +231,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 18:
     ///
     /// GrammarDefinitionRestSuffix: GrammarDefinitionRest;
     ///
-    fn grammar_definition_rest_suffix_17(
+    fn grammar_definition_rest_suffix_18(
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -231,22 +243,22 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 19:
     ///
     /// GrammarDefinitionRestSuffix: ;
     ///
-    fn grammar_definition_rest_suffix_18(
+    fn grammar_definition_rest_suffix_19(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 20:
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
-    fn production_19(
+    fn production_20(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -257,11 +269,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 21:
     ///
     /// Alternations: Alternation AlternationsSuffix;
     ///
-    fn alternations_20(
+    fn alternations_21(
         &mut self,
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
@@ -270,11 +282,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 22:
     ///
     /// AlternationsSuffix: AlternationsRest;
     ///
-    fn alternations_suffix_21(
+    fn alternations_suffix_22(
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -282,19 +294,19 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 23:
     ///
     /// AlternationsSuffix: ;
     ///
-    fn alternations_suffix_22(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_suffix_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 24:
     ///
     /// AlternationsRest: "\|" Alternation AlternationsRestSuffix;
     ///
-    fn alternations_rest_23(
+    fn alternations_rest_24(
         &mut self,
         _or_0: &ParseTreeStackEntry,
         _alternation_1: &ParseTreeStackEntry,
@@ -304,11 +316,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 25:
     ///
     /// AlternationsRestSuffix: AlternationsRest;
     ///
-    fn alternations_rest_suffix_24(
+    fn alternations_rest_suffix_25(
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -316,19 +328,19 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 26:
     ///
     /// AlternationsRestSuffix: ;
     ///
-    fn alternations_rest_suffix_25(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_rest_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 27:
     ///
     /// Alternation: AlternationRest;
     ///
-    fn alternation_26(
+    fn alternation_27(
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -336,19 +348,19 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 28:
     ///
     /// Alternation: ;
     ///
-    fn alternation_27(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 29:
     ///
     /// AlternationRest: Factor AlternationRestSuffix;
     ///
-    fn alternation_rest_28(
+    fn alternation_rest_29(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
@@ -357,11 +369,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 30:
     ///
     /// AlternationRestSuffix: AlternationRest;
     ///
-    fn alternation_rest_suffix_29(
+    fn alternation_rest_suffix_30(
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -369,19 +381,19 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 30:
+    /// Semantic action for production 31:
     ///
     /// AlternationRestSuffix: ;
     ///
-    fn alternation_rest_suffix_30(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_rest_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 31:
+    /// Semantic action for production 32:
     ///
     /// Factor: Group;
     ///
-    fn factor_31(
+    fn factor_32(
         &mut self,
         _group_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -389,11 +401,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 32:
+    /// Semantic action for production 33:
     ///
     /// Factor: Repeat;
     ///
-    fn factor_32(
+    fn factor_33(
         &mut self,
         _repeat_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -401,11 +413,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 33:
+    /// Semantic action for production 34:
     ///
     /// Factor: Optional;
     ///
-    fn factor_33(
+    fn factor_34(
         &mut self,
         _optional_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -413,11 +425,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 34:
+    /// Semantic action for production 35:
     ///
     /// Factor: Symbol;
     ///
-    fn factor_34(
+    fn factor_35(
         &mut self,
         _symbol_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -425,11 +437,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 36:
     ///
     /// Symbol: Identifier;
     ///
-    fn symbol_35(
+    fn symbol_36(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -437,11 +449,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 37:
     ///
     /// Symbol: String;
     ///
-    fn symbol_36(
+    fn symbol_37(
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -449,11 +461,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 38:
     ///
     /// Group: "\(" Alternations "\)";
     ///
-    fn group_37(
+    fn group_38(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
@@ -463,11 +475,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 39:
     ///
     /// Optional: "\[" Alternations "\]";
     ///
-    fn optional_38(
+    fn optional_39(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
@@ -477,11 +489,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 40:
     ///
     /// Repeat: "\{" Alternations "\}";
     ///
-    fn repeat_39(
+    fn repeat_40(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
@@ -491,11 +503,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 41:
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_40(
+    fn identifier_41(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -503,11 +515,11 @@ pub trait ParolGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 42:
     ///
     /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn string_41(
+    fn string_42(
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -550,19 +562,21 @@ impl UserActionsTrait for ParolGrammar {
 
             12 => self.declaration_12(&children[0], parse_tree),
 
-            13 => self.grammar_definition_13(&children[0], &children[1], &children[2], parse_tree),
+            13 => self.declaration_13(&children[0], parse_tree),
 
-            14 => self.grammar_definition_suffix_14(&children[0], parse_tree),
+            14 => self.grammar_definition_14(&children[0], &children[1], &children[2], parse_tree),
 
-            15 => self.grammar_definition_suffix_15(parse_tree),
+            15 => self.grammar_definition_suffix_15(&children[0], parse_tree),
 
-            16 => self.grammar_definition_rest_16(&children[0], &children[1], parse_tree),
+            16 => self.grammar_definition_suffix_16(parse_tree),
 
-            17 => self.grammar_definition_rest_suffix_17(&children[0], parse_tree),
+            17 => self.grammar_definition_rest_17(&children[0], &children[1], parse_tree),
 
-            18 => self.grammar_definition_rest_suffix_18(parse_tree),
+            18 => self.grammar_definition_rest_suffix_18(&children[0], parse_tree),
 
-            19 => self.production_19(
+            19 => self.grammar_definition_rest_suffix_19(parse_tree),
+
+            20 => self.production_20(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -570,29 +584,27 @@ impl UserActionsTrait for ParolGrammar {
                 parse_tree,
             ),
 
-            20 => self.alternations_20(&children[0], &children[1], parse_tree),
+            21 => self.alternations_21(&children[0], &children[1], parse_tree),
 
-            21 => self.alternations_suffix_21(&children[0], parse_tree),
+            22 => self.alternations_suffix_22(&children[0], parse_tree),
 
-            22 => self.alternations_suffix_22(parse_tree),
+            23 => self.alternations_suffix_23(parse_tree),
 
-            23 => self.alternations_rest_23(&children[0], &children[1], &children[2], parse_tree),
+            24 => self.alternations_rest_24(&children[0], &children[1], &children[2], parse_tree),
 
-            24 => self.alternations_rest_suffix_24(&children[0], parse_tree),
+            25 => self.alternations_rest_suffix_25(&children[0], parse_tree),
 
-            25 => self.alternations_rest_suffix_25(parse_tree),
+            26 => self.alternations_rest_suffix_26(parse_tree),
 
-            26 => self.alternation_26(&children[0], parse_tree),
+            27 => self.alternation_27(&children[0], parse_tree),
 
-            27 => self.alternation_27(parse_tree),
+            28 => self.alternation_28(parse_tree),
 
-            28 => self.alternation_rest_28(&children[0], &children[1], parse_tree),
+            29 => self.alternation_rest_29(&children[0], &children[1], parse_tree),
 
-            29 => self.alternation_rest_suffix_29(&children[0], parse_tree),
+            30 => self.alternation_rest_suffix_30(&children[0], parse_tree),
 
-            30 => self.alternation_rest_suffix_30(parse_tree),
-
-            31 => self.factor_31(&children[0], parse_tree),
+            31 => self.alternation_rest_suffix_31(parse_tree),
 
             32 => self.factor_32(&children[0], parse_tree),
 
@@ -600,19 +612,21 @@ impl UserActionsTrait for ParolGrammar {
 
             34 => self.factor_34(&children[0], parse_tree),
 
-            35 => self.symbol_35(&children[0], parse_tree),
+            35 => self.factor_35(&children[0], parse_tree),
 
             36 => self.symbol_36(&children[0], parse_tree),
 
-            37 => self.group_37(&children[0], &children[1], &children[2], parse_tree),
+            37 => self.symbol_37(&children[0], parse_tree),
 
-            38 => self.optional_38(&children[0], &children[1], &children[2], parse_tree),
+            38 => self.group_38(&children[0], &children[1], &children[2], parse_tree),
 
-            39 => self.repeat_39(&children[0], &children[1], &children[2], parse_tree),
+            39 => self.optional_39(&children[0], &children[1], &children[2], parse_tree),
 
-            40 => self.identifier_40(&children[0], parse_tree),
+            40 => self.repeat_40(&children[0], &children[1], &children[2], parse_tree),
 
-            41 => self.string_41(&children[0], parse_tree),
+            41 => self.identifier_41(&children[0], parse_tree),
+
+            42 => self.string_42(&children[0], parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

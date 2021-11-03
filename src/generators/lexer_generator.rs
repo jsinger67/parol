@@ -39,7 +39,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         ("ERROR_TOKEN,", true),
         ("NEW_LINE_TOKEN,", grammar_config.auto_newline),
         ("UNMATCHABLE_TOKEN,", true),
-        ("WHITESPACE_TOKEN,", true),
+        ("WHITESPACE_TOKEN,", grammar_config.auto_ws),
     ];
 
     let used_token_constants = token_constants
