@@ -19,7 +19,7 @@ pub const NEW_LINE_TOKEN: &str = r###"\r\n|\r|\n"###;
 ///
 /// Regular expression for any whitespace
 ///
-pub const WHITESPACE_TOKEN: &str = r###"\s+"###;
+pub const WHITESPACE_TOKEN: &str = r###"[ \t]+"###;
 
 ///
 /// Regular expression that matches any other token. With this you can detect
