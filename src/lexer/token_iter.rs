@@ -1,4 +1,5 @@
 use crate::lexer::{TerminalIndex, Token, Tokenizer, RX_NEW_LINE};
+use log::trace;
 use regex::CaptureMatches;
 
 ///
@@ -79,15 +80,20 @@ impl<'t> Iterator for TokenIter<'t> {
                 } else {
                     self.col + length
                 };
-                Some(Token::with(symbol, token_type, line, column, length))
+                let token = Token::with(symbol, token_type, line, column, length);
+                trace!("{}", token);
+                Some(token)
             } else {
                 // Error
+                trace!("Error: End of iteration - no match");
                 None
             }
         } else if self.k > 0 {
             self.k -= 1;
+            trace!("EOI");
             Some(Token::eoi())
         } else {
+            trace!("Normal end of iteration");
             None
         }
     }

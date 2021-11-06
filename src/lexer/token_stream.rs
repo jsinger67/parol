@@ -45,26 +45,6 @@ impl<'t> TokenStream<'t> {
     ///
     /// Provides at maximum k tokens lookahead relative to the current read
     /// position.
-    /// If successful it returns an immutable reference to the token at buffer
-    /// position self.pos + n
-    ///
-    pub fn lookahead(&mut self, n: usize) -> Result<&'t Token> {
-        if n > self.k {
-            Err("Lookahead exceeds its maximum".into())
-        } else {
-            // Fill buffer to lookahead size k relative to pos
-            self.ensure_buffer();
-            if n >= self.tokens.len() {
-                Err("Lookahead exceeds token buffer length".into())
-            } else {
-                Ok(&self.tokens[n])
-            }
-        }
-    }
-
-    ///
-    /// Provides at maximum k tokens lookahead relative to the current read
-    /// position.
     /// If successful it returns an owned token from buffer position self.pos + n
     ///
     pub fn owned_lookahead(&mut self, n: usize) -> Result<OwnedToken> {
@@ -76,6 +56,7 @@ impl<'t> TokenStream<'t> {
             if n >= self.tokens.len() {
                 Err("Lookahead exceeds token buffer length".into())
             } else {
+                trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].to_owned())
             }
         }
@@ -96,6 +77,7 @@ impl<'t> TokenStream<'t> {
             if n >= self.tokens.len() {
                 Err("Lookahead exceeds token buffer length".into())
             } else {
+                trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
             }
         }
@@ -111,6 +93,7 @@ impl<'t> TokenStream<'t> {
         if self.tokens.is_empty() {
             Err("Consume on empty buffer is impossible".into())
         } else {
+            trace!("Consuming {}", self.tokens[0]);
             self.tokens.remove(0);
             Ok(())
         }
@@ -120,7 +103,7 @@ impl<'t> TokenStream<'t> {
     /// Test if all input was processed by the parser
     ///
     pub fn all_input_consumed(&self) -> bool {
-        !self.tokens.is_empty() && self.tokens[0].token_type == EOI
+        self.tokens.is_empty() || self.tokens[0].token_type == EOI
     }
 
     ///
@@ -136,7 +119,7 @@ impl<'t> TokenStream<'t> {
         for token in &mut self.token_iter {
             if !token.is_skip_token() {
                 tokens_read += 1;
-                trace!("{}: {}", self.tokens.len(), token);
+                trace!("Read {}: {}", self.tokens.len(), token);
                 self.tokens.push(token);
                 if tokens_read >= n {
                     break;
@@ -151,21 +134,8 @@ impl<'t> TokenStream<'t> {
     /// lookahead buffer.
     /// It returns the number of tokens read.
     ///
-    /// Example:
-    ///     self.k == 4
-    ///     self.pos == 4
-    ///     self.tokens.len() == 6
-    /// We have currently one token lookahead in the buffer
-    ///     last_index = self.tokens.len() - 1 = 5
-    ///     last_index - self.pos == 1
-    /// Therefore we need to read further three tokens to fill the lookahead
-    /// buffer to k (4).
-    ///     k - (last_index - self.pos) ==
-    ///     k - last_index + self.pos ==
-    ///     4 - 5 + 4 == 3
-    ///
     fn ensure_buffer(&mut self) -> usize {
-        let last_buffer_index = self.tokens.len() - 1;
+        let last_buffer_index = self.tokens.len();
         if last_buffer_index < self.k {
             // Fill buffer to lookahead size k relative to pos
             self.read_tokens(self.k - last_buffer_index)

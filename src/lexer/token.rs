@@ -39,6 +39,7 @@ pub struct Token<'t> {
     pub column: usize,
     /// Length of the matched input terminal
     /// A value of 0 indicates a virtual token, for instance an EOF token.
+    /// Be careful: User tokens with length 0 are always invalid!!!
     pub length: usize,
 }
 

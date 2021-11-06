@@ -65,7 +65,7 @@ fn lexer_token_production() {
         print!("{:?}", tok);
         token_stream.borrow_mut().consume().unwrap();
     }
-    assert_eq!(k, token_stream.borrow().tokens.len());
+    assert_eq!(k - 1, token_stream.borrow().tokens.len());
     assert_eq!(
         OwnedToken {
             symbol: ";".to_string(),
@@ -83,7 +83,7 @@ fn lexer_token_production() {
 fn lookahead_must_fail() {
     let mut token_stream =
         TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap();
-    let _tok = token_stream.lookahead(2).unwrap();
+    let _tok = token_stream.owned_lookahead(2).unwrap();
 }
 
 #[test]

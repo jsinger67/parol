@@ -1,6 +1,7 @@
 use super::errors::*;
 use crate::lexer::{TerminalIndex, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
+use log::trace;
 use std::cmp::Ordering;
 
 ///
@@ -109,6 +110,12 @@ impl LookaheadDFA {
                         // Set the to_state and break into the outer for loop
                         // to finish if we found an accepting state or
                         // to read the next lookahead token if available.
+                        trace!(
+                            "{}, {} => {}",
+                            state,
+                            current_lookahead_token,
+                            current_transition.2
+                        );
                         state = current_transition.2;
                         if self.states[state].is_some() {
                             // In case we step too far, we can retrieve the last
@@ -116,6 +123,7 @@ impl LookaheadDFA {
                             // Indeed we can step too far because the self.k is the
                             // maximum depth of all subtrees.
                             last_accepting_state = Some(state);
+                            trace!("State {} accepts", state);
                         }
                         break;
                     }
@@ -129,10 +137,21 @@ impl LookaheadDFA {
         }
         if let Some(prod_num) = self.states[state] {
             // The state is accepting, we can return the associated production number
+            trace!("Predict production {} at state {}", prod_num, state);
             Ok(prod_num)
         } else if let Some(last_state) = last_accepting_state {
+            trace!(
+                "Predict production {:?} from last accepting state {}",
+                self.states[last_state],
+                state
+            );
             Ok(self.states[last_state].unwrap())
         } else {
+            trace!(
+                "Production prediction failed at state {} with token {:?}",
+                state,
+                token_stream.owned_lookahead(0)
+            );
             Err(format!("Production prediction failed at state {}", state).into())
         }
     }
