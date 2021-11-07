@@ -1,4 +1,4 @@
-%start Grammar
+%start Parol
 %title "Parol grammar"
 %comment "Parol's own grammar"
 %line_comment "//"
@@ -6,7 +6,7 @@
 
 %%
 
-/*  0 */ Grammar: Prolog GrammarDefinition;
+/*  0 */ Parol: Prolog GrammarDefinition;
 /*  1 */ Prolog: StartDeclaration PrologSuffix;
 /*  2 */ PrologSuffix: PrologRest;
 /*  3 */ PrologSuffix: ;

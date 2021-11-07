@@ -4,10 +4,10 @@ author: Jörg Singer <singer.joerg@gmx.de>
 about: A LL(k) Parser Generator written in Rust.
 args:
     - grammar:
+        help: Input grammar file
         short: f
         long: file
         takes_value: true
-        help: Input grammar file
     - lookahead:
         help: Lookahead limit for Lookahead DFA calculation
         short: k
@@ -15,10 +15,10 @@ args:
         takes_value: true
         default_value: "5"
     - only_lookahead:
+        help: Don't generate sources but only calculate maximum lookahead size for given grammar
         short: c
         long: only_lookahead
         takes_value: false
-        help: Don't generate sources but only calculate maximum lookahead size for given grammar
     - parser:
         help: Output file for the generated parser source
         short: p
@@ -46,6 +46,11 @@ args:
         long: module
         takes_value: true
         default_value: grammar
+    # - guess:
+    #     help: Guess all output file names from start symbol's name
+    #     short: g
+    #     long: guess
+    #     takes_value: false
     - generate_tree_graph:
         help: Activates the generation of a SVG file with the parse tree of the given grammar
         short: s

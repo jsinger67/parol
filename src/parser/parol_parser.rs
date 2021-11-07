@@ -84,14 +84,14 @@ pub const NON_TERMINALS: &[&str; 26] = &[
     /*  6 */ "AlternationsSuffix",
     /*  7 */ "Declaration",
     /*  8 */ "Factor",
-    /*  9 */ "Grammar",
-    /* 10 */ "GrammarDefinition",
-    /* 11 */ "GrammarDefinitionRest",
-    /* 12 */ "GrammarDefinitionRestSuffix",
-    /* 13 */ "GrammarDefinitionSuffix",
-    /* 14 */ "Group",
-    /* 15 */ "Identifier",
-    /* 16 */ "Optional",
+    /*  9 */ "GrammarDefinition",
+    /* 10 */ "GrammarDefinitionRest",
+    /* 11 */ "GrammarDefinitionRestSuffix",
+    /* 12 */ "GrammarDefinitionSuffix",
+    /* 13 */ "Group",
+    /* 14 */ "Identifier",
+    /* 15 */ "Optional",
+    /* 16 */ "Parol",
     /* 17 */ "Production",
     /* 18 */ "Prolog",
     /* 19 */ "PrologRest",
@@ -213,51 +213,51 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 26] = &[
         ],
         k: 1,
     },
-    /* 9 - "Grammar" */
-    LookaheadDFA {
-        states: &[Some(0)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 10 - "GrammarDefinition" */
+    /* 9 - "GrammarDefinition" */
     LookaheadDFA {
         states: &[Some(14)],
         transitions: &[],
         k: 0,
     },
-    /* 11 - "GrammarDefinitionRest" */
+    /* 10 - "GrammarDefinitionRest" */
     LookaheadDFA {
         states: &[Some(17)],
         transitions: &[],
         k: 0,
     },
-    /* 12 - "GrammarDefinitionRestSuffix" */
+    /* 11 - "GrammarDefinitionRestSuffix" */
     LookaheadDFA {
         states: &[None, Some(18), Some(19)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 22, 1)],
         k: 1,
     },
-    /* 13 - "GrammarDefinitionSuffix" */
+    /* 12 - "GrammarDefinitionSuffix" */
     LookaheadDFA {
         states: &[None, Some(15), Some(16)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 22, 1)],
         k: 1,
     },
-    /* 14 - "Group" */
+    /* 13 - "Group" */
     LookaheadDFA {
         states: &[Some(38)],
         transitions: &[],
         k: 0,
     },
-    /* 15 - "Identifier" */
+    /* 14 - "Identifier" */
     LookaheadDFA {
         states: &[Some(41)],
         transitions: &[],
         k: 0,
     },
-    /* 16 - "Optional" */
+    /* 15 - "Optional" */
     LookaheadDFA {
         states: &[Some(39)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 16 - "Parol" */
+    LookaheadDFA {
+        states: &[Some(0)],
         transitions: &[],
         k: 0,
     },
@@ -334,10 +334,10 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 26] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 43] = &[
-    // 0 - Grammar: Prolog GrammarDefinition;
+    // 0 - Parol: Prolog GrammarDefinition;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(10), ParseType::N(18)],
+        lhs: 16,
+        production: &[ParseType::N(9), ParseType::N(18)],
     },
     // 1 - Prolog: StartDeclaration PrologSuffix;
     Production {
@@ -372,7 +372,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     // 7 - StartDeclaration: "%start" Identifier;
     Production {
         lhs: 23,
-        production: &[ParseType::N(15), ParseType::T(5)],
+        production: &[ParseType::N(14), ParseType::T(5)],
     },
     // 8 - Declaration: "%title" String;
     Production {
@@ -406,32 +406,32 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     },
     // 14 - GrammarDefinition: "%%" Production GrammarDefinitionSuffix;
     Production {
-        lhs: 10,
-        production: &[ParseType::N(13), ParseType::N(17), ParseType::T(12)],
+        lhs: 9,
+        production: &[ParseType::N(12), ParseType::N(17), ParseType::T(12)],
     },
     // 15 - GrammarDefinitionSuffix: GrammarDefinitionRest;
     Production {
-        lhs: 13,
-        production: &[ParseType::N(11)],
+        lhs: 12,
+        production: &[ParseType::N(10)],
     },
     // 16 - GrammarDefinitionSuffix: ;
     Production {
-        lhs: 13,
+        lhs: 12,
         production: &[],
     },
     // 17 - GrammarDefinitionRest: Production GrammarDefinitionRestSuffix;
     Production {
-        lhs: 11,
-        production: &[ParseType::N(12), ParseType::N(17)],
+        lhs: 10,
+        production: &[ParseType::N(11), ParseType::N(17)],
     },
     // 18 - GrammarDefinitionRestSuffix: GrammarDefinitionRest;
     Production {
-        lhs: 12,
-        production: &[ParseType::N(11)],
+        lhs: 11,
+        production: &[ParseType::N(10)],
     },
     // 19 - GrammarDefinitionRestSuffix: ;
     Production {
-        lhs: 12,
+        lhs: 11,
         production: &[],
     },
     // 20 - Production: Identifier ":" Alternations ";";
@@ -441,7 +441,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
             ParseType::T(14),
             ParseType::N(3),
             ParseType::T(13),
-            ParseType::N(15),
+            ParseType::N(14),
         ],
     },
     // 21 - Alternations: Alternation AlternationsSuffix;
@@ -502,7 +502,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     // 32 - Factor: Group;
     Production {
         lhs: 8,
-        production: &[ParseType::N(14)],
+        production: &[ParseType::N(13)],
     },
     // 33 - Factor: Repeat;
     Production {
@@ -512,7 +512,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     // 34 - Factor: Optional;
     Production {
         lhs: 8,
-        production: &[ParseType::N(16)],
+        production: &[ParseType::N(15)],
     },
     // 35 - Factor: Symbol;
     Production {
@@ -522,7 +522,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     // 36 - Symbol: Identifier;
     Production {
         lhs: 25,
-        production: &[ParseType::N(15)],
+        production: &[ParseType::N(14)],
     },
     // 37 - Symbol: String;
     Production {
@@ -531,12 +531,12 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     },
     // 38 - Group: "\(" Alternations "\)";
     Production {
-        lhs: 14,
+        lhs: 13,
         production: &[ParseType::T(17), ParseType::N(3), ParseType::T(16)],
     },
     // 39 - Optional: "\[" Alternations "\]";
     Production {
-        lhs: 16,
+        lhs: 15,
         production: &[ParseType::T(19), ParseType::N(3), ParseType::T(18)],
     },
     // 40 - Repeat: "\{" Alternations "\}";
@@ -546,7 +546,7 @@ pub const PRODUCTIONS: &[Production; 43] = &[
     },
     // 41 - Identifier: "[a-zA-Z_]\w*";
     Production {
-        lhs: 15,
+        lhs: 14,
         production: &[ParseType::T(22)],
     },
     // 42 - String: "\u{0022}([^\\]|\\.)*?\u{0022}";
@@ -566,7 +566,7 @@ pub fn parse(
     user_actions: &mut dyn UserActionsTrait,
 ) -> Result<Tree<ParseTreeType>> {
     let mut llk_parser = LLKParser::new(
-        9,
+        16,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,

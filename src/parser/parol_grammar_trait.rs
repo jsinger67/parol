@@ -17,9 +17,9 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 pub trait ParolGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// Grammar: Prolog GrammarDefinition;
+    /// Parol: Prolog GrammarDefinition;
     ///
-    fn grammar_0(
+    fn parol_0(
         &mut self,
         _prolog_0: &ParseTreeStackEntry,
         _grammar_definition_1: &ParseTreeStackEntry,
@@ -536,7 +536,7 @@ impl UserActionsTrait for ParolGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.grammar_0(&children[0], &children[1], parse_tree),
+            0 => self.parol_0(&children[0], &children[1], parse_tree),
 
             1 => self.prolog_1(&children[0], &children[1], parse_tree),
 

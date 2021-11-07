@@ -1,5 +1,5 @@
 <!-- markdownlint-disable first-line-h1 -->
-[![Build Status](https://app.travis-ci.com/jsinger67/parol.svg?branch=main)](https://app.travis-ci.com/jsinger67/parol)
+[![Rust](https://github.com/jsinger67/parol/actions/workflows/rust.yml/badge.svg)](https://github.com/jsinger67/parol/actions/workflows/rust.yml)
 [![Docs.rs](https://docs.rs/parol/badge.svg)](https://docs.rs/parol)
 [![Crates.io](https://img.shields.io/crates/v/parol.svg)](https://crates.io/crates/parol)
 <!-- markdownlint-enable first-line-h1 -->
