@@ -3,6 +3,7 @@
 //! FOLLOW k of productions and non-terminals
 //!
 
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::FirstCache;
@@ -45,10 +46,10 @@ type StepFunction = Box<
 pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCache) -> FollowSet {
     let cfg = &grammar_config.cfg;
 
-    let augmented_terminals = grammar_config.generate_augmented_terminals();
-    let terminals = augmented_terminals.to_vec();
+    let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index = |nt: &str| -> usize { terminals.iter().position(|n| *n == nt).unwrap() };
+    let terminal_index =
+        |t: &str| -> usize { terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN };
 
     let (_, first_k_of_nt) = first_cache.get(k, grammar_config);
 

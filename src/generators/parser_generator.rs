@@ -5,6 +5,7 @@ use crate::errors::*;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
 use log::trace;
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::StrVec;
@@ -82,7 +83,8 @@ impl Production {
     ) -> Self {
         let get_non_terminal_index =
             |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-        let get_terminal_index = |tr: &str| terminals.iter().position(|t| *t == tr).unwrap();
+        let get_terminal_index =
+            |tr: &str| terminals.iter().position(|t| *t == tr).unwrap() + FIRST_USER_TOKEN;
         let lhs = get_non_terminal_index(pr.get_n_str());
         let production_len = pr.len();
         let production =
@@ -94,7 +96,7 @@ impl Production {
                         Symbol::N(n) => {
                             acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
                         }
-                        Symbol::T(Terminal::Trm(t)) => {
+                        Symbol::T(Terminal::Trm(t, _)) => {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
                         _ => panic!("Unexpected symbol type in production!"),
@@ -140,10 +142,11 @@ pub fn generate_parser_source(
     ast_type_name: &str,
     ast_trait_module_name: &str,
 ) -> Result<String> {
-    let original_augmented_terminals = grammar_config.generate_augmented_terminals();
-    let augmented_terminals = original_augmented_terminals
+    let terminals = grammar_config
+        .cfg
+        .get_ordered_terminals()
         .iter()
-        .map(|s| s.as_str())
+        .map(|(t, _)| *t)
         .collect::<Vec<&str>>();
     let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
     let non_terminal_count = original_non_terminals.len();
@@ -170,11 +173,7 @@ pub fn generate_parser_source(
 
     let dfa_source = generate_dfa_source(la_dfa);
 
-    let productions = generate_productions(
-        grammar_config,
-        &original_non_terminals,
-        &augmented_terminals,
-    );
+    let productions = generate_productions(grammar_config, &original_non_terminals, &terminals);
 
     let max_k = grammar_config.lookahead_size;
 

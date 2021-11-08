@@ -55,7 +55,7 @@ pub mod conversions;
 /// Module with functionalities for lexer and parser generation
 ///
 pub mod generators;
-pub use generators::GrammarConfig;
+pub use generators::{GrammarConfig, ScannerConfig};
 
 pub mod parser;
 

@@ -53,10 +53,10 @@ impl SymbolString {
             match (old_state, sy) {
                 (State::Initial, Symbol::N(n)) if n == nt => *new_state = State::NtFound(idx, 0),
                 (State::Initial, _) => (),
-                (State::NtFound(nt_idx, len), Symbol::T(Terminal::Trm(_))) if len + 1 < k => {
+                (State::NtFound(nt_idx, len), Symbol::T(Terminal::Trm(_, _))) if len + 1 < k => {
                     *new_state = State::NtFound(nt_idx, len + 1)
                 }
-                (State::NtFound(nt_idx, len), Symbol::T(Terminal::Trm(_))) => {
+                (State::NtFound(nt_idx, len), Symbol::T(Terminal::Trm(_, _))) => {
                     *new_state = State::KComplete(nt_idx, len + 1)
                 }
                 (State::NtFound(nt_idx, len), Symbol::T(Terminal::End)) => {
@@ -91,7 +91,7 @@ impl SymbolString {
         self.0
             .iter()
             .take_while(|s| {
-                matches!(s, Symbol::T(Terminal::Trm(_))) || matches!(s, Symbol::T(Terminal::End))
+                matches!(s, Symbol::T(Terminal::Trm(_, _))) || matches!(s, Symbol::T(Terminal::End))
             })
             .count()
     }
@@ -107,7 +107,7 @@ impl SymbolString {
         symbols
             .iter()
             .take_while(|s| {
-                matches!(s, Symbol::T(Terminal::Trm(_))) || matches!(s, Symbol::T(Terminal::End))
+                matches!(s, Symbol::T(Terminal::Trm(_, _))) || matches!(s, Symbol::T(Terminal::End))
             })
             .count()
     }
@@ -133,7 +133,7 @@ mod test {
     use crate::Symbol;
 
     fn t(t: &str) -> Symbol {
-        Symbol::t(t)
+        Symbol::t(t, 0)
     }
 
     fn n(n: &str) -> Symbol {

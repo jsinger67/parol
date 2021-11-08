@@ -94,12 +94,12 @@ impl Cfg {
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///
-    pub fn get_ordered_terminals(&self) -> Vec<&str> {
+    pub fn get_ordered_terminals(&self) -> Vec<(&str, usize)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::T(Terminal::Trm(t)) = s {
-                    if !acc.contains(&t.as_str()) {
-                        acc.push(t);
+                if let Symbol::T(Terminal::Trm(t, s)) = s {
+                    if !acc.contains(&(t.as_str(), *s)) {
+                        acc.push((t, *s));
                     }
                 }
                 acc
@@ -118,7 +118,7 @@ impl Cfg {
             .enumerate()
             .fold(BTreeMap::new(), |mut acc, (pi, p)| {
                 acc = p.get_r().iter().enumerate().fold(acc, |mut acc, (si, s)| {
-                    if matches!(s, Symbol::T(Terminal::Trm(_)))
+                    if matches!(s, Symbol::T(Terminal::Trm(_, _)))
                         || matches!(s, Symbol::T(Terminal::End))
                     {
                         acc.insert(Pos::new(pi, si + 1), s);
@@ -160,12 +160,12 @@ impl Cfg {
     ///
     /// let g = Cfg::with_start_symbol("S'")
     ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a"), Symbol::n("Y"), Symbol::t("b"), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")]));
+    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", 0), Symbol::n("Y"), Symbol::t("b", 0), Symbol::n("Y")]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
+    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.productive_non_terminals();
     /// assert_eq!(["S'".to_owned(), "S".to_owned(), "X".to_owned(), "Y".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
     /// ```
@@ -177,7 +177,7 @@ impl Cfg {
         ) -> BTreeSet<String> {
             for p in pr {
                 if p.get_r().iter().all(|s| match s {
-                    Symbol::T(Terminal::Trm(_)) => true,
+                    Symbol::T(Terminal::Trm(_, _)) => true,
                     Symbol::N(n) => productive_so_far.contains(n),
                     _ => panic!("Unexpected symbol kind!"),
                 }) {
@@ -191,7 +191,7 @@ impl Cfg {
             self.pr.iter().fold(BTreeSet::new(), |mut acc, p| {
                 if p.get_r()
                     .iter()
-                    .all(|s| matches!(s, Symbol::T(Terminal::Trm(_))))
+                    .all(|s| matches!(s, Symbol::T(Terminal::Trm(_, _))))
                 {
                     acc.insert(p.get_n());
                 }
@@ -218,12 +218,12 @@ impl Cfg {
     ///
     /// let g = Cfg::with_start_symbol("S'")
     ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a"), Symbol::n("Y"), Symbol::t("b"), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")]));
+    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", 0), Symbol::n("Y"), Symbol::t("b", 0), Symbol::n("Y")]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
+    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.unproductive_non_terminals();
     /// assert_eq!(["Z".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
     /// ```
@@ -270,13 +270,13 @@ impl Cfg {
     /// let g = Cfg::with_start_symbol("S")
     ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
     ///     .add_pr(Pr::new("Y", vec![Symbol::n("U"), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), Symbol::t("a")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b")]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), Symbol::t("a", 0)]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
     ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
     ///     .add_pr(Pr::new("U", vec![]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("c")]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d")]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::t("d")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
+    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
+    ///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
     ///     .add_pr(Pr::new("Z", vec![]))
     ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.calculate_nullable_non_terminals();
@@ -375,22 +375,22 @@ mod test {
     #[test]
     fn check_serialization() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a"),
+                    Symbol::t("a", 0),
                     Symbol::n("Y"),
-                    Symbol::t("b"),
+                    Symbol::t("b", 0),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let serialized = serde_json::to_string(&g).unwrap();

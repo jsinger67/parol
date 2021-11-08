@@ -42,7 +42,7 @@ fn to_camel_case(name: &str) -> String {
     })
 }
 
-fn generate_argument_list(pr: &Pr, terminals: &[String], terminal_names: &[String]) -> String {
+fn generate_argument_list(pr: &Pr, terminals: &[&str], terminal_names: &[String]) -> String {
     let get_terminal_index = |tr: &str| terminals.iter().position(|t| *t == tr).unwrap();
     let mut arguments = pr
         .get_r()
@@ -52,7 +52,7 @@ fn generate_argument_list(pr: &Pr, terminals: &[String], terminal_names: &[Strin
             Symbol::N(n) => {
                 format!("_{}_{}: &ParseTreeStackEntry", to_camel_case(n), i)
             }
-            Symbol::T(Terminal::Trm(t)) => {
+            Symbol::T(Terminal::Trm(t, _)) => {
                 let terminal_name = &terminal_names[get_terminal_index(t)];
                 format!(
                     "_{}_{}: &ParseTreeStackEntry",
@@ -80,23 +80,27 @@ pub fn generate_user_trait_source(
     user_trait_module_name: &str,
     grammar_config: &GrammarConfig,
 ) -> Result<String> {
-    let augmented_terminals = grammar_config.generate_augmented_terminals();
-    let terminal_names =
-        augmented_terminals
-            .iter()
-            .enumerate()
-            .fold(Vec::new(), |mut acc, (i, e)| {
-                let n = generate_terminal_name(e, i, &grammar_config.cfg);
-                acc.push(n);
-                acc
-            });
+    let terminals = grammar_config
+        .cfg
+        .get_ordered_terminals()
+        .iter()
+        .map(|(t, _)| *t)
+        .collect::<Vec<&str>>();
+    let terminal_names = terminals
+        .iter()
+        .enumerate()
+        .fold(Vec::new(), |mut acc, (i, e)| {
+            let n = generate_terminal_name(e, i, &grammar_config.cfg);
+            acc.push(n);
+            acc
+        });
 
     let trait_functions = grammar_config.cfg.pr.iter().enumerate().fold(
         StrVec::new(0).first_line_no_indent(),
         |mut acc, (i, p)| {
             let fn_name = to_camel_case(p.get_n_str());
             let prod_string = format!("{}", p);
-            let fn_arguments = generate_argument_list(p, &augmented_terminals, &terminal_names);
+            let fn_arguments = generate_argument_list(p, &terminals, &terminal_names);
             let user_trait_function_data = UserTraitFunctionData {
                 fn_name,
                 prod_num: i,

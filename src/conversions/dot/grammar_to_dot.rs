@@ -86,7 +86,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
                 instances_to_types_edges.push(format!("\"{}\"->\"{}\";", to_node, n));
                 from_node = to_node;
             }
-            Symbol::T(Terminal::Trm(_)) | Symbol::T(Terminal::End) => {
+            Symbol::T(Terminal::Trm(_, _)) | Symbol::T(Terminal::End) => {
                 let to_node = format!("t{}_{}", pi, si + 1);
                 inside_production_edges.push(format!("\"{}\"->\"{}\";", from_node, to_node));
                 from_node = to_node;
@@ -112,37 +112,40 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
 #[cfg(test)]
 mod test {
     use crate::conversions::dot::render_nt_dot_string;
-    use crate::{Cfg, GrammarConfig, Pr, Symbol};
+    use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
 
     #[test]
     fn check_dot_format() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a"),
+                    Symbol::t("a", 0),
                     Symbol::n("Y"),
-                    Symbol::t("b"),
+                    Symbol::t("b", 0),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let title = Some("Test grammar".to_owned());
         let comment = Some("A simple grammar".to_owned());
 
+        let scanner_config = ScannerConfig::default()
+            .with_line_comments(vec!["//".to_owned()])
+            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
+
         let grammar_config = GrammarConfig::new(g, 1)
             .with_title(title)
             .with_comment(comment)
-            .with_line_comments(vec!["//".to_owned()])
-            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
+            .add_scanner(scanner_config);
 
         let dot_str = render_nt_dot_string(&grammar_config);
         let dot_str = dot_str.replace("\r\n", "\n");

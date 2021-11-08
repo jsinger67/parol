@@ -5,7 +5,7 @@ use crate::parser::{
     Alternation, Alternations, Factor, ParolGrammar, ParolGrammarItem, Production,
 };
 use crate::utils::combine;
-use crate::{Cfg, GrammarConfig, Pr, Symbol};
+use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
 use std::convert::TryFrom;
 
 pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
@@ -14,27 +14,53 @@ pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
-    let line_comments = parol_grammar.line_comments;
-    let block_comments = parol_grammar.block_comments;
-    let auto_newline = !parol_grammar.auto_newline_off;
-    let auto_ws = !parol_grammar.auto_ws_off;
+    let line_comments = parol_grammar.scanner_configurations[0]
+        .line_comments
+        .clone();
+    let block_comments = parol_grammar.scanner_configurations[0]
+        .block_comments
+        .clone();
+    let auto_newline = !parol_grammar.scanner_configurations[0].auto_newline_off;
+    let auto_ws = !parol_grammar.scanner_configurations[0].auto_ws_off;
     let lookahead_size = 1; // Updated later
 
-    let grammar_config = GrammarConfig::new(cfg, lookahead_size)
-        .with_title(title)
-        .with_comment(comment)
+    let scanner_config = ScannerConfig::default()
         .with_line_comments(line_comments)
         .with_block_comments(block_comments)
         .with_auto_newline(auto_newline)
         .with_auto_ws(auto_ws);
 
+    let mut grammar_config = GrammarConfig::new(cfg, lookahead_size)
+        .with_title(title)
+        .with_comment(comment)
+        .add_scanner(scanner_config);
+
+    for s in 1..parol_grammar.scanner_configurations.len() {
+        grammar_config = grammar_config.add_scanner(try_from_scanner_config(
+            &parol_grammar.scanner_configurations[s],
+            s,
+        )?);
+    }
+
     Ok(grammar_config)
+}
+
+fn try_from_scanner_config(
+    sc: &crate::parser::parol_grammar::ScannerConfig,
+    scanner_state: usize,
+) -> Result<ScannerConfig> {
+    let scanner_config = ScannerConfig::new(sc.name.clone(), scanner_state)
+        .with_line_comments(sc.line_comments.clone())
+        .with_block_comments(sc.block_comments.clone())
+        .with_auto_newline(!sc.auto_newline_off)
+        .with_auto_ws(!sc.auto_ws_off);
+    Ok(scanner_config)
 }
 
 pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
         Factor::NonTerminal(n) => Ok(Symbol::n(&n)),
-        Factor::Terminal(t) => Ok(Symbol::t(&t)),
+        Factor::Terminal(t, s) => Ok(Symbol::t(&t, s)),
         _ => Err(format!("Unexpected type of factor: {}", factor).into()),
     }
 }

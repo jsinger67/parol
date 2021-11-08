@@ -15,7 +15,7 @@ struct LexerData {
 }
 
 pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
-    let original_augmented_terminals = grammar_config.generate_augmented_terminals();
+    let original_augmented_terminals = grammar_config.generate_augmented_terminals(0);
 
     let terminal_count = original_augmented_terminals.len();
     let width = (terminal_count as f32).log10() as usize + 1;
@@ -37,9 +37,15 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
 
     let token_constants: Vec<(&str, bool)> = vec![
         ("ERROR_TOKEN,", true),
-        ("NEW_LINE_TOKEN,", grammar_config.auto_newline),
+        (
+            "NEW_LINE_TOKEN,",
+            grammar_config.scanner_configurations[0].auto_newline,
+        ),
         ("UNMATCHABLE_TOKEN,", true),
-        ("WHITESPACE_TOKEN,", grammar_config.auto_ws),
+        (
+            "WHITESPACE_TOKEN,",
+            grammar_config.scanner_configurations[0].auto_ws,
+        ),
     ];
 
     let used_token_constants = token_constants
@@ -74,7 +80,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
 
 pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
     grammar_config
-        .generate_augmented_terminals()
+        .generate_augmented_terminals(0)
         .iter()
         .enumerate()
         .fold(Vec::new(), |mut acc, (i, e)| {

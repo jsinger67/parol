@@ -286,22 +286,22 @@ mod test {
     #[test]
     fn check_decidable() {
         let cfg = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a"),
+                    Symbol::t("a", 0),
                     Symbol::n("Y"),
-                    Symbol::t("b"),
+                    Symbol::t("b", 0),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
             ));
         let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();
@@ -326,22 +326,22 @@ mod test {
     #[test]
     fn check_calculate_k() {
         let cfg = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a"),
+                    Symbol::t("a", 0),
                     Symbol::n("Y"),
-                    Symbol::t("b"),
+                    Symbol::t("b", 0),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
             ));
         let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();

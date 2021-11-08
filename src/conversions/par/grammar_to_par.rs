@@ -31,21 +31,21 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         "".to_owned()
     };
 
-    let line_comments = grammar_config
+    let line_comments = grammar_config.scanner_configurations[0]
         .line_comments
         .iter()
         .map(|c| format!("\n%line_comment \"{}\"", c))
         .collect::<Vec<String>>()
         .join("\n");
 
-    let block_comments = grammar_config
+    let block_comments = grammar_config.scanner_configurations[0]
         .block_comments
         .iter()
         .map(|(s, e)| format!("\n%block_comment \"{}\" \"{}\"", s, e))
         .collect::<Vec<String>>()
         .join("\n");
 
-    let auto_newline_off = if grammar_config.auto_newline {
+    let auto_newline_off = if grammar_config.scanner_configurations[0].auto_newline {
         String::new()
     } else {
         "\n%auto_newline_off".to_owned()
@@ -86,27 +86,27 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
 #[cfg(test)]
 mod test {
     use crate::conversions::par::render_par_string;
-    use crate::{Cfg, GrammarConfig, Pr, Symbol};
+    use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
 
     #[test]
     fn check_par_format() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a"), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b"), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a"),
+                    Symbol::t("a", 0),
                     Symbol::n("Y"),
-                    Symbol::t("b"),
+                    Symbol::t("b", 0),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b"), Symbol::t("a")]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a"), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a"), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let title = Some("Test grammar".to_owned());
@@ -114,7 +114,8 @@ mod test {
 
         let grammar_config = GrammarConfig::new(g, 1)
             .with_title(title)
-            .with_comment(comment);
+            .with_comment(comment)
+            .add_scanner(ScannerConfig::default());
 
         let par_str = render_par_string(&grammar_config, true);
         let par_str = par_str.replace("\r\n", "\n");

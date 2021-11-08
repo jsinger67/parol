@@ -1,11 +1,10 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
-use crate::generators::terminal_index_resolver::{BLOCK_COMMENT, EOI, LINE_COMMENT};
 use crate::{Cfg, Symbol};
-use parol_runtime::lexer::{NEW_LINE, WHITESPACE};
+use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPACE};
 
 pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> String {
     fn primary_non_terminal(cfg: &Cfg, terminal: &str) -> Option<String> {
-        let cmp = Symbol::t(terminal);
+        let cmp = Symbol::t(terminal, 0);
         cfg.pr
             .iter()
             .find(|r| {

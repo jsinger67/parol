@@ -1,6 +1,9 @@
 pub mod grammar_config;
 pub use grammar_config::GrammarConfig;
 
+pub mod scanner_config;
+pub use scanner_config::ScannerConfig;
+
 pub mod grammar_trans;
 pub use grammar_trans::check_and_transform_grammar;
 
@@ -18,6 +21,3 @@ pub use rust_code_formatter::try_format;
 
 pub mod terminal_name_generator;
 pub use terminal_name_generator::generate_terminal_name;
-
-pub mod terminal_index_resolver;
-pub use terminal_index_resolver::get_terminal_index;

@@ -22,7 +22,7 @@ impl CompiledTerminal {
         R: Fn(&str) -> TerminalIndex,
     {
         match s {
-            Symbol::T(Terminal::Trm(t)) => Self(terminal_index_resolver(t)),
+            Symbol::T(Terminal::Trm(t, _)) => Self(terminal_index_resolver(t)),
             Symbol::T(Terminal::End) => Self(EOI),
             _ => panic!("Unexpected symbol type: {:?}", s),
         }

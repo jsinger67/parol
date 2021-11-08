@@ -15,7 +15,7 @@ pub enum Factor {
     Group(Alternations),
     Repeat(Alternations),
     Optional(Alternations),
-    Terminal(String),
+    Terminal(String, usize),
     NonTerminal(String),
 }
 
@@ -25,7 +25,7 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "({})", g),
             Self::Repeat(r) => write!(f, "{{{}}}", r),
             Self::Optional(o) => write!(f, "[{}]", o),
-            Self::Terminal(t) => write!(f, "T({})", t),
+            Self::Terminal(t, s) => write!(f, "<{}>T({})", s, t),
             Self::NonTerminal(n) => write!(f, "N({})", n),
         }
     }
@@ -112,6 +112,15 @@ impl Display for Production {
 }
 
 #[derive(Debug, Clone)]
+pub struct ScannerConfig {
+    pub name: String,
+    pub line_comments: Vec<String>,
+    pub block_comments: Vec<(String, String)>,
+    pub auto_newline_off: bool,
+    pub auto_ws_off: bool,
+}
+
+#[derive(Debug, Clone)]
 pub enum ParolGrammarItem {
     Prod(Production),
     Alts(Alternations),
@@ -130,19 +139,52 @@ impl Display for ParolGrammarItem {
     }
 }
 
+impl Display for ScannerConfig {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "name: {};", self.name)?;
+        write!(f, "line_comments: {:?};", self.line_comments)?;
+        write!(f, "block_comments: {:?};", self.block_comments)?;
+        write!(f, "auto_newline_off: {};", self.auto_newline_off)?;
+        write!(f, "auto_ws_off: {};", self.auto_ws_off)
+    }
+}
+
+impl Default for ScannerConfig {
+    fn default() -> Self {
+        Self {
+            name: "INITIAL".to_owned(),
+            line_comments: Vec::new(),
+            block_comments: Vec::new(),
+            auto_newline_off: false,
+            auto_ws_off: false,
+        }
+    }
+}
+
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ParolGrammar {
     pub ast_stack: Vec<ParolGrammarItem>,
     pub title: Option<String>,
     pub comment: Option<String>,
     pub start_symbol: String,
-    pub line_comments: Vec<String>,
-    pub block_comments: Vec<(String, String)>,
-    pub auto_newline_off: bool,
-    pub auto_ws_off: bool,
+    pub scanner_configurations: Vec<ScannerConfig>,
+    current_scanner: ScannerConfig,
+}
+
+impl Default for ParolGrammar {
+    fn default() -> Self {
+        Self {
+            ast_stack: Vec::new(),
+            title: None,
+            comment: None,
+            start_symbol: String::default(),
+            scanner_configurations: vec![ScannerConfig::default()],
+            current_scanner: ScannerConfig::default(),
+        }
+    }
 }
 
 impl ParolGrammar {
@@ -174,10 +216,15 @@ impl Display for ParolGrammar {
         writeln!(f, "title: {:?}", self.title)?;
         writeln!(f, "comment: {:?}", self.comment)?;
         writeln!(f, "start_symbol: {}", self.start_symbol)?;
-        writeln!(f, "line_comments: {:?}", self.line_comments)?;
-        writeln!(f, "block_comments: {:?}", self.block_comments)?;
-        writeln!(f, "auto_newline_off: {:?}", self.auto_newline_off)?;
-        writeln!(f, "auto_ws_off: {:?}", self.auto_ws_off)?;
+        writeln!(
+            f,
+            "{}",
+            self.scanner_configurations
+                .iter()
+                .map(|s| format!("{}", s))
+                .collect::<Vec<String>>()
+                .join("\n")
+        )?;
         writeln!(
             f,
             "{}",
@@ -191,17 +238,29 @@ impl Display for ParolGrammar {
 }
 
 impl ParolGrammarTrait for ParolGrammar {
-    /// Semantic action for production 7:
+    /// Semantic action for production 6:
+    ///
+    /// PrologRestSuffix: ;
+    ///
+    fn prolog_rest_suffix_6(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "prolog_rest_suffix_6";
+        trace!("{}", self.trace_ast_stack(context));
+        self.scanner_configurations[0] = self.current_scanner.clone();
+        self.current_scanner = ScannerConfig::default();
+        Ok(())
+    }
+
+    /// Semantic action for production 9:
     ///
     /// StartDeclaration: "%start" Identifier;
     ///
-    fn start_declaration_7(
+    fn start_declaration_9(
         &mut self,
         _percent_start_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "start_declaration_7";
+        let context = "start_declaration_9";
         if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(s))) = self.ast_stack.pop() {
             self.start_symbol = s;
             Ok(())
@@ -210,57 +269,19 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 10:
     ///
     /// Declaration: "%title" String;
     ///
-    fn declaration_8(
+    fn declaration_10(
         &mut self,
         _percent_title_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "declaration_8";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s))) = self.ast_stack.pop() {
-            self.title = Some(s);
-            Ok(())
-        } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
-        }
-    }
-
-    /// Semantic action for production 9:
-    ///
-    /// Declaration: "%comment" String;
-    ///
-    fn declaration_9(
-        &mut self,
-        _percent_comment_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "declaration_9";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s))) = self.ast_stack.pop() {
-            self.comment = Some(s);
-            Ok(())
-        } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
-        }
-    }
-
-    /// Semantic action for production 10:
-    ///
-    /// Declaration: "%line_comment" String;
-    ///
-    fn declaration_10(
-        &mut self,
-        _percent_line_underscore_comment_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
         let context = "declaration_10";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s))) = self.ast_stack.pop() {
-            self.line_comments.push(s);
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.ast_stack.pop() {
+            self.title = Some(s);
             Ok(())
         } else {
             Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
@@ -269,19 +290,57 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 11:
     ///
-    /// Declaration: "%block_comment" String String;
+    /// Declaration: "%comment" String;
     ///
     fn declaration_11(
+        &mut self,
+        _percent_comment_0: &ParseTreeStackEntry,
+        _string_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "declaration_11";
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.ast_stack.pop() {
+            self.comment = Some(s);
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+        }
+    }
+
+    /// Semantic action for production 13:
+    ///
+    /// Declaration: "%line_comment" String;
+    ///
+    fn scanner_directives_13(
+        &mut self,
+        _percent_line_underscore_comment_0: &ParseTreeStackEntry,
+        _string_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "scanner_directives_13";
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.ast_stack.pop() {
+            self.current_scanner.line_comments.push(s);
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+        }
+    }
+
+    /// Semantic action for production 14:
+    ///
+    /// ScannerDirectives: "%block_comment" String String;
+    ///
+    fn scanner_directives_14(
         &mut self,
         _percent_block_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "declaration_11";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1))) = self.ast_stack.pop() {
-            if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2))) = self.ast_stack.pop() {
-                self.block_comments.push((s2, s1));
+        let context = "scanner_directives_14";
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1, _))) = self.ast_stack.pop() {
+            if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2, _))) = self.ast_stack.pop() {
+                self.current_scanner.block_comments.push((s2, s1));
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
@@ -291,39 +350,39 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 12:
+    /// Semantic action for production 15:
     ///
-    /// Declaration: "%auto_newline_off";
+    /// ScannerDirectives: "%auto_newline_off";
     ///
-    fn declaration_12(
+    fn scanner_directives_15(
         &mut self,
         _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let _context = "declaration_12";
-        self.auto_newline_off = true;
+        let _context = "scanner_directives_15";
+        self.current_scanner.auto_newline_off = true;
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 16:
     ///
-    /// Declaration: "%auto_ws_off";
+    /// ScannerDirectives: "%auto_ws_off";
     ///
-    fn declaration_13(
+    fn scanner_directives_16(
         &mut self,
         _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let _context = "declaration_13";
-        self.auto_ws_off = true;
+        let _context = "scanner_directives_16";
+        self.current_scanner.auto_ws_off = true;
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 23:
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
-    fn production_20(
+    fn production_23(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -331,7 +390,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "production_20";
+        let context = "production_23";
         if let Some(ParolGrammarItem::Alts(mut rhs)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.ast_stack.pop() {
                 rhs.reverse();
@@ -346,54 +405,17 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 24:
     ///
     /// Alternations: Alternation AlternationsSuffix;
     ///
-    fn alternations_21(
+    fn alternations_24(
         &mut self,
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternations_21";
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.ast_stack.pop() {
-            if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
-                alt.reverse();
-                alts.push(alt);
-                self.ast_stack.push(ParolGrammarItem::Alts(alts));
-                Ok(())
-            } else {
-                Err(format!("{}: Expected 'Alt' on TOS.", context).into())
-            }
-        } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
-        }
-    }
-
-    /// Semantic action for production 23:
-    ///
-    /// AlternationsSuffix: ;
-    ///
-    fn alternations_suffix_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_suffix_23";
-        self.ast_stack
-            .push(ParolGrammarItem::Alts(Alternations::new()));
-        Ok(())
-    }
-
-    /// Semantic action for production 24:
-    ///
-    /// AlternationsRest: "\|" Alternation AlternationsRestSuffix;
-    ///
-    fn alternations_rest_24(
-        &mut self,
-        _esc_or_0: &ParseTreeStackEntry,
-        _alternation_1: &ParseTreeStackEntry,
-        _alternations_rest_suffix_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "alternations_rest_24";
+        let context = "alternations_24";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
                 alt.reverse();
@@ -410,38 +432,75 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 26:
     ///
-    /// AlternationsRestSuffix: ;
+    /// AlternationsSuffix: ;
     ///
-    fn alternations_rest_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_rest_suffix_26";
+    fn alternations_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternations_suffix_26";
         self.ast_stack
             .push(ParolGrammarItem::Alts(Alternations::new()));
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 27:
+    ///
+    /// AlternationsRest: "\|" Alternation AlternationsRestSuffix;
+    ///
+    fn alternations_rest_27(
+        &mut self,
+        _esc_or_0: &ParseTreeStackEntry,
+        _alternation_1: &ParseTreeStackEntry,
+        _alternations_rest_suffix_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "alternations_rest_27";
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.ast_stack.pop() {
+            if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
+                alt.reverse();
+                alts.push(alt);
+                self.ast_stack.push(ParolGrammarItem::Alts(alts));
+                Ok(())
+            } else {
+                Err(format!("{}: Expected 'Alt' on TOS.", context).into())
+            }
+        } else {
+            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+        }
+    }
+
+    /// Semantic action for production 29:
+    ///
+    /// AlternationsRestSuffix: ;
+    ///
+    fn alternations_rest_suffix_29(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternations_rest_suffix_29";
+        self.ast_stack
+            .push(ParolGrammarItem::Alts(Alternations::new()));
+        Ok(())
+    }
+
+    /// Semantic action for production 31:
     ///
     /// Alternation: ;
     ///
-    fn alternation_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_27";
+    fn alternation_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternation_31";
         self.ast_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
         Ok(())
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 32:
     ///
     /// AlternationRest: Factor AlternationRestSuffix;
     ///
-    fn alternation_rest_29(
+    fn alternation_rest_32(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternation_rest_29";
-        trace!("{}", self.trace_ast_stack(context));
+        let context = "alternation_rest_32";
+        //trace!("{}", self.trace_ast_stack(context));
         if let Some(ParolGrammarItem::Alt(mut alt)) = self.ast_stack.pop() {
             if let Some(ParolGrammarItem::Fac(fac)) = self.ast_stack.pop() {
                 alt.push(fac);
@@ -455,29 +514,29 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 31:
+    /// Semantic action for production 34:
     ///
     /// AlternationRestSuffix: ;
     ///
-    fn alternation_rest_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_rest_suffix_31";
+    fn alternation_rest_suffix_34(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let _context = "alternation_rest_suffix_34";
         self.ast_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 44:
     ///
     /// Group: "\(" Alternations "\)";
     ///
-    fn group_38(
+    fn group_44(
         &mut self,
         _esc_l_paren_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "group_38";
+        let context = "group_44";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Group(alts)));
@@ -487,18 +546,18 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 45:
     ///
     /// Optional: "\[" Alternations "\]";
     ///
-    fn optional_39(
+    fn optional_45(
         &mut self,
         _esc_l_bracket_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "optional_39";
+        let context = "optional_45";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Optional(alts)));
@@ -508,18 +567,18 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 46:
     ///
     /// Repeat: "\{" Alternations "\}";
     ///
-    fn repeat_40(
+    fn repeat_46(
         &mut self,
         _esc_l_brace_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "repeat_40";
+        let context = "repeat_46";
         if let Some(ParolGrammarItem::Alts(alts)) = self.ast_stack.pop() {
             self.ast_stack
                 .push(ParolGrammarItem::Fac(Factor::Repeat(alts)));
@@ -529,16 +588,16 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 47:
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_41(
+    fn identifier_47(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "identifier_41";
+        let context = "identifier_47";
         let ast_item = identifier_0.get_ast_type(parse_tree);
         if let ParseTreeType::T(t) = ast_item {
             self.ast_stack
@@ -549,25 +608,48 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 48:
     ///
     /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn string_42(
+    fn string_48(
         &mut self,
         string_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_42";
+        let context = "string_48";
         let ast_item = string_0.get_ast_type(parse_tree);
         if let ParseTreeType::T(t) = ast_item {
             // Trim double quotes here
             let s = t.symbol.clone().trim_matches('"').to_owned();
-            self.ast_stack
-                .push(ParolGrammarItem::Fac(Factor::Terminal(s)));
+            self.ast_stack.push(ParolGrammarItem::Fac(Factor::Terminal(
+                s,
+                self.scanner_configurations.len() - 1,
+            )));
             Ok(())
         } else {
             Err(format!("{}: Token expected, found {}", context, ast_item).into())
         }
+    }
+
+    /// Semantic action for production 49:
+    ///
+    /// ScannerState: "%scanner" Identifier "\{" ScannerDirectives "\}";
+    ///
+    fn scanner_state_49(
+        &mut self,
+        _percent_scanner_0: &ParseTreeStackEntry,
+        _identifier_1: &ParseTreeStackEntry,
+        _l_brace_2: &ParseTreeStackEntry,
+        _scanner_directives_3: &ParseTreeStackEntry,
+        _r_brace_4: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "scanner_state_49";
+        trace!("{}", self.trace_ast_stack(context));
+        self.scanner_configurations
+            .push(self.current_scanner.clone());
+        self.current_scanner = ScannerConfig::default();
+        Ok(())
     }
 }

@@ -7,10 +7,10 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum Terminal {
     ///
-    /// A physical terminal symbol
+    /// A physical terminal symbol with the scanner state it belongs to
     /// Entities that are provided by the lexer.
     ///
-    Trm(String),
+    Trm(String, usize),
 
     ///
     /// Epsilon symbol, the empty word
@@ -27,11 +27,11 @@ pub enum Terminal {
 }
 
 impl Terminal {
-    pub fn t(t: &str) -> Self {
-        Self::Trm(t.to_owned())
+    pub fn t(t: &str, s: usize) -> Self {
+        Self::Trm(t.to_owned(), s)
     }
     pub fn is_trm(&self) -> bool {
-        matches!(self, Self::Trm(_))
+        matches!(self, Self::Trm(_, _))
     }
     pub fn is_eps(&self) -> bool {
         matches!(self, Self::Eps)
@@ -42,7 +42,7 @@ impl Terminal {
 
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t)) => Terminal::Trm(t.to_string()),
+            Symbol::T(Terminal::Trm(t, s)) => Terminal::Trm(t.to_string(), *s),
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
         }
@@ -52,7 +52,7 @@ impl Terminal {
 impl Display for Terminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Trm(t) => write!(f, "\"{}\"", t),
+            Self::Trm(t, _) => write!(f, "\"{}\"", t),
             Self::Eps => write!(f, "\u{03B5}"), // Lower creek letter Epsilon (ε)
             Self::End => write!(f, "$"),
         }
@@ -90,8 +90,8 @@ pub enum Symbol {
 }
 
 impl Symbol {
-    pub fn t(t: &str) -> Self {
-        Self::T(Terminal::Trm(t.to_owned()))
+    pub fn t(t: &str, s: usize) -> Self {
+        Self::T(Terminal::Trm(t.to_owned(), s))
     }
     pub fn n(n: &str) -> Self {
         Self::N(n.to_owned())
