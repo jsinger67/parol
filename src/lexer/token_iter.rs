@@ -16,7 +16,7 @@ pub struct TokenIter<'t> {
 
 impl<'t> TokenIter<'t> {
     ///
-    /// This creates as token iterator from a tokenizer and an inputs source.
+    /// This creates a token iterator from a tokenizer and an input source.
     /// The k determines the number of lookahead tokens the stream supports.
     ///
     pub fn new(rx: &'static Tokenizer, input: &'t str, k: usize) -> TokenIter<'t> {
@@ -35,6 +35,14 @@ impl<'t> TokenIter<'t> {
             group_names,
             k,
         }
+    }
+
+    ///
+    /// Returns the end position of the last successful match.
+    /// Can be used to setup a new Tokenizer for e.g. scan mode switching.
+    /// 
+    pub fn pos(&self) -> usize {
+        self.pos
     }
 
     fn count_nl(&self, s: &str) -> usize {
@@ -73,7 +81,7 @@ impl<'t> Iterator for TokenIter<'t> {
 
                 // Set the inner position behind the scanned token
                 let new_lines = self.count_nl(symbol);
-                self.pos += length;
+                self.pos = ma.end();
                 self.line += new_lines;
                 self.col = if new_lines > 0 {
                     self.calculate_col(symbol)
