@@ -3,12 +3,12 @@
 //! FOLLOW k of productions and non-terminals
 //!
 
-use parol_runtime::lexer::FIRST_USER_TOKEN;
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::FirstCache;
 use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, SymbolString};
 use log::trace;
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 use std::rc::Rc;
@@ -48,8 +48,9 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index =
-        |t: &str| -> usize { terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN };
+    let terminal_index = |t: &str| -> usize {
+        terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN
+    };
 
     let (_, first_k_of_nt) = first_cache.get(k, grammar_config);
 

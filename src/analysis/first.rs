@@ -3,11 +3,11 @@
 //! FIRSTk of productions and non-terminals
 //!
 
-use parol_runtime::lexer::FIRST_USER_TOKEN;
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::FirstCache;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, SymbolString};
 use log::trace;
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::HashMap;
 
 pub type FirstSet = (Vec<KTuples>, HashMap<String, KTuples>);
@@ -54,8 +54,9 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index =
-        |t: &str| -> usize { terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN };
+    let terminal_index = |t: &str| -> usize {
+        terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN
+    };
 
     let nt_for_production: Vec<usize> =
         non_terminals.iter().fold(vec![0; pr_count], |mut acc, nt| {
