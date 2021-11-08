@@ -55,4 +55,9 @@
 /* 46 */ Repeat: "\{" Alternations "\}";
 /* 47 */ Identifier: "[a-zA-Z_]\w*";
 /* 48 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
-/* 49 */ ScannerState: "%scanner" Identifier "\{" ScannerDirectives "\}";
+/* 49 */ ScannerState: "%scanner" Identifier "\{" ScannerStateSuffix;
+/* 50 */ ScannerStateSuffix: ScannerStateRest "\}";
+/* 51 */ ScannerStateSuffix: "\}";
+/* 52 */ ScannerStateRest: ScannerDirectives ScannerStateRestSuffix;
+/* 53 */ ScannerStateRestSuffix: ScannerStateRest;
+/* 54 */ ScannerStateRestSuffix: ;

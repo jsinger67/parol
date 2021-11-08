@@ -525,6 +525,41 @@ impl ParolGrammarTrait for ParolGrammar {
         Ok(())
     }
 
+    /// Semantic action for production 43:
+    ///
+    /// TokenWithState: "<" Identifier ">" String;
+    ///
+    fn token_with_state_43(
+        &mut self,
+        _l_t_0: &ParseTreeStackEntry,
+        _identifier_1: &ParseTreeStackEntry,
+        _g_t_2: &ParseTreeStackEntry,
+        _string_3: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "token_with_state_43";
+        trace!("{}", self.trace_ast_stack(context));
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.ast_stack.pop() {
+            if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(n))) = self.ast_stack.pop() {
+                if let Some(scanner_state) = self
+                    .scanner_configurations
+                    .iter()
+                    .position(|sc| sc.name == n)
+                {
+                    self.ast_stack
+                        .push(ParolGrammarItem::Fac(Factor::Terminal(s, scanner_state)));
+                    Ok(())
+                } else {
+                    Err(format!("{}: Unknown scanner name '{}'", context, n).into())
+                }
+            } else {
+                Err(format!("{}: Expected 'Factor::NonTerminal' on TOS.", context).into())
+            }
+        } else {
+            Err(format!("{}: Expected 'Factor::Terminal' on TOS.", context).into())
+        }
+    }
+
     /// Semantic action for production 44:
     ///
     /// Group: "\(" Alternations "\)";
@@ -622,34 +657,34 @@ impl ParolGrammarTrait for ParolGrammar {
         if let ParseTreeType::T(t) = ast_item {
             // Trim double quotes here
             let s = t.symbol.clone().trim_matches('"').to_owned();
-            self.ast_stack.push(ParolGrammarItem::Fac(Factor::Terminal(
-                s,
-                self.scanner_configurations.len() - 1,
-            )));
+            self.ast_stack
+                .push(ParolGrammarItem::Fac(Factor::Terminal(s, 0)));
             Ok(())
         } else {
             Err(format!("{}: Token expected, found {}", context, ast_item).into())
         }
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 50:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerDirectives "\}";
+    /// ScannerStateSuffix: ScannerStateRest "\}";
     ///
-    fn scanner_state_49(
+    fn scanner_state_suffix_50(
         &mut self,
-        _percent_scanner_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
-        _l_brace_2: &ParseTreeStackEntry,
-        _scanner_directives_3: &ParseTreeStackEntry,
-        _r_brace_4: &ParseTreeStackEntry,
+        _scanner_state_rest_0: &ParseTreeStackEntry,
+        _r_brace_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_state_49";
+        let context = "scanner_state_suffix_50";
         trace!("{}", self.trace_ast_stack(context));
-        self.scanner_configurations
-            .push(self.current_scanner.clone());
-        self.current_scanner = ScannerConfig::default();
-        Ok(())
+        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(n))) = self.ast_stack.pop() {
+            self.current_scanner.name = n;
+            self.scanner_configurations
+                .push(self.current_scanner.clone());
+            self.current_scanner = ScannerConfig::default();
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'Factor::NonTerminal' on TOS.", context).into())
+        }
     }
 }

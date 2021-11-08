@@ -47,7 +47,7 @@ pub trait CalcGrammarTrait {
     fn calc_lst1_itm1_2(
         &mut self,
         _instruction_0: &ParseTreeStackEntry,
-        _semicolon_1: &ParseTreeStackEntry,
+        _end_of_input_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -91,7 +91,7 @@ pub trait CalcGrammarTrait {
     ///
     fn equality_op_6(
         &mut self,
-        _equality_op_0: &ParseTreeStackEntry,
+        _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -103,7 +103,7 @@ pub trait CalcGrammarTrait {
     ///
     fn assign_op_7(
         &mut self,
-        _assign_op_0: &ParseTreeStackEntry,
+        _whitespace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -221,7 +221,7 @@ pub trait CalcGrammarTrait {
     ///
     fn logical_or_op_17(
         &mut self,
-        _logical_or_op_0: &ParseTreeStackEntry,
+        _line_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -292,7 +292,7 @@ pub trait CalcGrammarTrait {
     ///
     fn logical_and_op_23(
         &mut self,
-        _logical_and_op_0: &ParseTreeStackEntry,
+        _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())

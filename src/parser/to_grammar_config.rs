@@ -6,6 +6,7 @@ use crate::parser::{
 };
 use crate::utils::combine;
 use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
+use log::trace;
 use std::convert::TryFrom;
 
 pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
@@ -65,11 +66,24 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
     }
 }
 
+fn trace_ast_stack(ast_stack: &[ParolGrammarItem]) {
+    trace!(
+        "Ast stack:\n{}",
+        ast_stack
+            .iter()
+            .rev()
+            .map(|s| format!("  {}", s))
+            .collect::<Vec<String>>()
+            .join("\n")
+    );
+}
+
 fn transform_productions(ast_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
     if !ast_stack
         .iter()
         .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
     {
+        trace_ast_stack(&ast_stack);
         return Err("Expecting only productions on user stack".into());
     }
 

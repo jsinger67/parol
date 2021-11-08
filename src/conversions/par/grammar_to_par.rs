@@ -1,7 +1,7 @@
 //!
 //! The module contains the conversion to a the PAR format.
 //!
-use crate::{GrammarConfig, StrVec};
+use crate::{GrammarConfig, ScannerConfig, StrVec};
 use std::fmt::Debug;
 
 #[derive(BartDisplay, Debug, Default)]
@@ -13,7 +13,19 @@ struct YaccElements {
     line_comments: String,
     block_comments: String,
     auto_newline_off: String,
+    auto_ws_off: String,
+    scanner_states: StrVec,
     productions: StrVec,
+}
+
+#[derive(BartDisplay, Debug, Default)]
+#[template = "templates/scanner_config_template.par"]
+struct ScannerConfigElements {
+    scanner_name: String,
+    line_comments: String,
+    block_comments: String,
+    auto_newline_off: String,
+    auto_ws_off: String,
 }
 
 ///
@@ -51,10 +63,22 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         "\n%auto_newline_off".to_owned()
     };
 
+    let auto_ws_off = if grammar_config.scanner_configurations[0].auto_ws {
+        String::new()
+    } else {
+        "\n%auto_ws_off".to_owned()
+    };
+
+    let scanner_state_resolver = |s: usize| {
+        grammar_config.scanner_configurations[s]
+            .scanner_name
+            .clone()
+    };
+
     let mut productions = Vec::new();
 
     grammar_config.cfg.pr.iter().for_each(|p| {
-        productions.push(format!("{}", p));
+        productions.push(p.format(&scanner_state_resolver));
     });
 
     if add_index_comment {
@@ -65,6 +89,16 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
             .map(|(i, p)| format!("/* {:w$} */ {}", i, p, w = width))
             .collect();
     }
+
+    let scanner_states =
+        grammar_config
+            .scanner_configurations
+            .iter()
+            .skip(1)
+            .fold(StrVec::new(0), |mut acc, e| {
+                acc.push(render_scanner_config_string(e));
+                acc
+            });
 
     let productions = productions.drain(..).fold(StrVec::new(0), |mut acc, e| {
         acc.push(e);
@@ -78,8 +112,50 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         line_comments,
         block_comments,
         auto_newline_off,
+        auto_ws_off,
+        scanner_states,
         productions,
     };
+    format!("{}", elements)
+}
+
+fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
+    let scanner_name = scanner_config.scanner_name.clone();
+
+    let line_comments = scanner_config
+        .line_comments
+        .iter()
+        .map(|c| format!("\n    %line_comment \"{}\"", c))
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    let block_comments = scanner_config
+        .block_comments
+        .iter()
+        .map(|(s, e)| format!("\n    %block_comment \"{}\" \"{}\"", s, e))
+        .collect::<Vec<String>>()
+        .join("\n");
+
+    let auto_newline_off = if scanner_config.auto_newline {
+        String::new()
+    } else {
+        "\n    %auto_newline_off".to_owned()
+    };
+
+    let auto_ws_off = if scanner_config.auto_ws {
+        String::new()
+    } else {
+        "\n    %auto_ws_off".to_owned()
+    };
+
+    let elements = ScannerConfigElements {
+        scanner_name,
+        line_comments,
+        block_comments,
+        auto_newline_off,
+        auto_ws_off,
+    };
+
     format!("{}", elements)
 }
 

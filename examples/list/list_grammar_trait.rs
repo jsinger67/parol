@@ -55,7 +55,7 @@ pub trait ListGrammarTrait {
     ///
     fn list_item_3(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
+        _end_of_input_0: &ParseTreeStackEntry,
         _num_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
@@ -76,7 +76,7 @@ pub trait ListGrammarTrait {
     ///
     fn list_rest_5(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
+        _end_of_input_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -88,7 +88,7 @@ pub trait ListGrammarTrait {
     ///
     fn num_6(
         &mut self,
-        _num_0: &ParseTreeStackEntry,
+        _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())

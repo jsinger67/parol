@@ -93,5 +93,5 @@ String
     ;
 
 ScannerState
-    : "%scanner" Identifier "\{" ScannerDirectives "\}"
+    : "%scanner" Identifier "\{" { ScannerDirectives } "\}"
     ;

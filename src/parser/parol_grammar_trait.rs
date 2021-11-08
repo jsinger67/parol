@@ -604,17 +604,74 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 49:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerDirectives "\}";
+    /// ScannerState: "%scanner" Identifier "\{" ScannerStateSuffix;
     ///
     fn scanner_state_49(
         &mut self,
         _percent_scanner_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _l_brace_2: &ParseTreeStackEntry,
-        _scanner_directives_3: &ParseTreeStackEntry,
-        _r_brace_4: &ParseTreeStackEntry,
+        _scanner_state_suffix_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 50:
+    ///
+    /// ScannerStateSuffix: ScannerStateRest "\}";
+    ///
+    fn scanner_state_suffix_50(
+        &mut self,
+        _scanner_state_rest_0: &ParseTreeStackEntry,
+        _r_brace_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 51:
+    ///
+    /// ScannerStateSuffix: "\}";
+    ///
+    fn scanner_state_suffix_51(
+        &mut self,
+        _r_brace_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 52:
+    ///
+    /// ScannerStateRest: ScannerDirectives ScannerStateRestSuffix;
+    ///
+    fn scanner_state_rest_52(
+        &mut self,
+        _scanner_directives_0: &ParseTreeStackEntry,
+        _scanner_state_rest_suffix_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 53:
+    ///
+    /// ScannerStateRestSuffix: ScannerStateRest;
+    ///
+    fn scanner_state_rest_suffix_53(
+        &mut self,
+        _scanner_state_rest_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 54:
+    ///
+    /// ScannerStateRestSuffix: ;
+    ///
+    fn scanner_state_rest_suffix_54(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 }
@@ -742,9 +799,18 @@ impl UserActionsTrait for ParolGrammar {
                 &children[1],
                 &children[2],
                 &children[3],
-                &children[4],
                 parse_tree,
             ),
+
+            50 => self.scanner_state_suffix_50(&children[0], &children[1], parse_tree),
+
+            51 => self.scanner_state_suffix_51(&children[0], parse_tree),
+
+            52 => self.scanner_state_rest_52(&children[0], &children[1], parse_tree),
+
+            53 => self.scanner_state_rest_suffix_53(&children[0], parse_tree),
+
+            54 => self.scanner_state_rest_suffix_54(parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

@@ -33,7 +33,7 @@ pub trait Oberon0GrammarTrait {
     ///
     fn selectorlist_1(
         &mut self,
-        _dot_0: &ParseTreeStackEntry,
+        _end_of_input_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
         _selectorlist_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -47,9 +47,9 @@ pub trait Oberon0GrammarTrait {
     ///
     fn selectorlist_2(
         &mut self,
-        _l_bracket_0: &ParseTreeStackEntry,
+        _newline_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _whitespace_2: &ParseTreeStackEntry,
         _selectorlist_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
@@ -95,9 +95,9 @@ pub trait Oberon0GrammarTrait {
     ///
     fn factor_6(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
+        _line_comment_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -314,7 +314,7 @@ pub trait Oberon0GrammarTrait {
     ///
     fn actual_parameters_24(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
+        _line_comment_0: &ParseTreeStackEntry,
         _actual_parameters_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
@@ -327,7 +327,7 @@ pub trait Oberon0GrammarTrait {
     ///
     fn actual_parameters_suffix_25(
         &mut self,
-        _r_paren_0: &ParseTreeStackEntry,
+        _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -341,7 +341,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _expression_0: &ParseTreeStackEntry,
         _expressionlistrest_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -783,7 +783,7 @@ pub trait Oberon0GrammarTrait {
     ///
     fn formal_parameters_62(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
+        _line_comment_0: &ParseTreeStackEntry,
         _formal_parameters_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
@@ -796,7 +796,7 @@ pub trait Oberon0GrammarTrait {
     ///
     fn formal_parameters_suffix_63(
         &mut self,
-        _r_paren_0: &ParseTreeStackEntry,
+        _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -810,7 +810,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _f_p_section_0: &ParseTreeStackEntry,
         _f_p_section_rest_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -1235,7 +1235,7 @@ pub trait Oberon0GrammarTrait {
         _statement_sequence_1: &ParseTreeStackEntry,
         _e_n_d_2: &ParseTreeStackEntry,
         _ident_3: &ParseTreeStackEntry,
-        _dot_4: &ParseTreeStackEntry,
+        _end_of_input_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -1249,7 +1249,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
-        _dot_2: &ParseTreeStackEntry,
+        _end_of_input_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())

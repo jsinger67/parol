@@ -47,6 +47,26 @@ impl Terminal {
             _ => panic!("Unexpected symbol type: {:?}", s),
         }
     }
+
+    ///
+    /// Get the scanner state in front of the terminal
+    ///
+    pub fn format<R>(&self, scanner_state_resolver: R) -> String
+    where
+        R: Fn(usize) -> String,
+    {
+        match self {
+            Self::Trm(t, s) => {
+                if *s == 0 {
+                    format!("\"{}\"", t)
+                } else {
+                    format!("<{}>\"{}\"", scanner_state_resolver(*s), t)
+                }
+            }
+            Self::Eps => format!("\u{03B5}"), // Lower creek letter Epsilon (ε)
+            Self::End => format!("$"),
+        }
+    }
 }
 
 impl Display for Terminal {
@@ -86,6 +106,7 @@ pub enum Symbol {
 
     ///
     /// Terminal symbol of the grammar.
+    ///
     T(Terminal),
 }
 
@@ -134,6 +155,16 @@ impl Symbol {
             Some(n)
         } else {
             None
+        }
+    }
+
+    pub fn format<R>(&self, scanner_state_resolver: &R) -> String
+    where
+        R: Fn(usize) -> String,
+    {
+        match self {
+            Self::N(n) => format!("{}", n),
+            Self::T(t) => t.format(scanner_state_resolver),
         }
     }
 }

@@ -257,6 +257,23 @@ impl Pr {
             None
         }
     }
+
+    pub fn format<R>(&self, scanner_state_resolver: &R) -> String
+    where
+        R: Fn(usize) -> String,
+    {
+        format!(
+            "{}: {};",
+            self.0,
+            self.1
+                .iter()
+                .fold(Vec::new(), |mut acc, s| {
+                    acc.push(s.format(scanner_state_resolver));
+                    acc
+                })
+                .join(" ")
+        )
+    }
 }
 
 impl Index<usize> for Pr {

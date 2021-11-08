@@ -1,0 +1,40 @@
+%start Start
+%title "Test grammar"
+%comment "Tests corect handling of scanner states"
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%scanner String {
+    %auto_newline_off
+    %auto_ws_off
+}
+
+%%
+
+Start
+    : { Content };
+
+Content
+    : Identifier
+    | "\u{22}" StringContent "\u{22}"
+    ;
+
+StringContent
+    : { Escaped | EscapedLineEnd | NoneQuote }
+    ;
+
+Identifier
+    : "[a-zA-Z_]\w*"
+    ;
+
+Escaped
+    : <String>"\\[\\bft]"
+    ;
+
+EscapedLineEnd
+    : <String>"\\[\s*]\r?\n"
+    ;
+
+NoneQuote
+    : <String>"[^\u{22}]"
+    ;
