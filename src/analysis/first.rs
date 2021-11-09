@@ -54,12 +54,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index = |t: &str, s: usize| -> usize {
-        terminals
-            .iter()
-            .position(|(trm, st)| *trm == t && s == *st)
-            .unwrap()
-            + FIRST_USER_TOKEN
+    let terminal_index = |t: &str| -> usize {
+        terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN
     };
 
     let nt_for_production: Vec<usize> =
@@ -171,7 +167,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 fn combine_production_equation<'a, 'c: 'a>(
     pr: &'c Pr,
     pr_count: usize,
-    terminal_index: &'a (impl Fn(&str, usize) -> TerminalIndex + Clone),
+    terminal_index: &'a (impl Fn(&str) -> TerminalIndex + Clone),
     non_terminal_index: &'a (impl Fn(&str) -> usize + Clone),
     k: usize,
 ) -> TransferFunction<'a> {

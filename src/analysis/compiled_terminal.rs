@@ -19,10 +19,10 @@ pub struct CompiledTerminal(pub TerminalIndex);
 impl CompiledTerminal {
     pub fn create<R>(s: &Symbol, terminal_index_resolver: R) -> Self
     where
-        R: Fn(&str, usize) -> TerminalIndex,
+        R: Fn(&str) -> TerminalIndex,
     {
         match s {
-            Symbol::T(Terminal::Trm(t, s)) => Self(terminal_index_resolver(t, *s)),
+            Symbol::T(Terminal::Trm(t, _)) => Self(terminal_index_resolver(t)),
             Symbol::T(Terminal::End) => Self(EOI),
             _ => panic!("Unexpected symbol type: {:?}", s),
         }

@@ -48,12 +48,8 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index = |t: &str, s: usize| -> usize {
-        terminals
-            .iter()
-            .position(|(trm, st)| *trm == t && s == *st)
-            .unwrap()
-            + FIRST_USER_TOKEN
+    let terminal_index = |t: &str| -> usize {
+        terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN
     };
 
     let (_, first_k_of_nt) = first_cache.get(k, grammar_config);
@@ -154,7 +150,7 @@ fn update_production_equations<'a, 'c: 'a>(
     prod_num: usize,
     pr: &'c Pr,
     first_k_of_nt: &'a HashMap<String, DomainType>,
-    terminal_index: &'a (impl Fn(&str, usize) -> TerminalIndex + Clone),
+    terminal_index: &'a (impl Fn(&str) -> TerminalIndex + Clone),
     k: usize,
 ) -> EquationSystem<'a> {
     let parts = pr.get_r().iter().enumerate().fold(
