@@ -24,11 +24,11 @@ impl Display for Pr {
     /// assert_eq!("S: N L;", format!("{}", pr));
     /// let pr = Pr::new("S", vec![Symbol::n("I"), Symbol::n("L")]);
     /// assert_eq!("S: I L;", format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t(",", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t(",", vec![0]), Symbol::n("N")]);
     /// assert_eq!(r#"S: "," N;"#, format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0])]);
     /// assert_eq!(r#"S: "d";"#, format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t(r#"\d"#, 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t(r#"\d"#, vec![0]), Symbol::t("e", vec![0])]);
     /// assert_eq!(r#"S: "\d" "e";"#, format!("{}", pr));
     /// ```
     ///
@@ -103,11 +103,11 @@ impl Pr {
     /// assert_eq!(0, pr.first_len());
     /// let pr = Pr::new("S", vec![Symbol::n("I"), Symbol::n("L")]);
     /// assert_eq!(0, pr.first_len());
-    /// let pr = Pr::new("S", vec![Symbol::t(",", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t(",", vec![0]), Symbol::n("N")]);
     /// assert_eq!(1, pr.first_len());
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0])]);
     /// assert_eq!(1, pr.first_len());
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0]), Symbol::t("e", vec![0])]);
     /// assert_eq!(2, pr.first_len());
     /// ```
     ///
@@ -134,21 +134,21 @@ impl Pr {
     /// assert_eq!(0, pr.first_len_at(1));
     /// assert_eq!(0, pr.first_len_at(2));
     /// assert_eq!(0, pr.first_len_at(3));
-    /// let pr = Pr::new("S", vec![Symbol::t(",", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t(",", vec![0]), Symbol::n("N")]);
     /// assert_eq!(1, pr.first_len_at(0));
     /// assert_eq!(0, pr.first_len_at(1));
     /// assert_eq!(0, pr.first_len_at(2));
-    /// let pr = Pr::new("S", vec![Symbol::n("N"), Symbol::t("d", 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::n("N"), Symbol::t("d", vec![0]), Symbol::t("e", vec![0])]);
     /// assert_eq!(0, pr.first_len_at(0));
     /// assert_eq!(2, pr.first_len_at(1));
     /// assert_eq!(1, pr.first_len_at(2));
     /// assert_eq!(0, pr.first_len_at(3));
-    /// let pr = Pr::new("S", vec![Symbol::t("c", 0), Symbol::t("d", 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("c", vec![0]), Symbol::t("d", vec![0]), Symbol::t("e", vec![0])]);
     /// assert_eq!(3, pr.first_len_at(0));
     /// assert_eq!(2, pr.first_len_at(1));
     /// assert_eq!(1, pr.first_len_at(2));
     /// assert_eq!(0, pr.first_len_at(3));
-    /// let pr = Pr::new("S", vec![Symbol::t("c", 0), Symbol::t("d", 0), Symbol::t("e", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t("c", vec![0]), Symbol::t("d", vec![0]), Symbol::t("e", vec![0]), Symbol::n("N")]);
     /// assert_eq!(3, pr.first_len_at(0));
     /// assert_eq!(2, pr.first_len_at(1));
     /// assert_eq!(1, pr.first_len_at(2));
@@ -181,13 +181,13 @@ impl Pr {
     /// assert!(!pr.is_k_derivable(1), "Empty production - not possible");
     /// let pr = Pr::new("S", vec![Symbol::n("N"), Symbol::n("L")]);
     /// assert!(pr.is_k_derivable(1), "k_len == 0 but containing Nt - possible");
-    /// let pr = Pr::new("S", vec![Symbol::t(",", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t(",", vec![0]), Symbol::n("N")]);
     /// assert!(!pr.is_k_derivable(1), "k_len == 1 - not necessary");
     /// assert!(pr.is_k_derivable(2), "k_len == 1 but containing Nt - not necessary");
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0])]);
     /// assert!(!pr.is_k_derivable(1), "k_len == 1 - not necessary");
     /// assert!(!pr.is_k_derivable(2), "k_len == 1, containing no Nt - not possible");
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0]), Symbol::t("e", vec![0])]);
     /// assert!(!pr.is_k_derivable(1), "k_len == 2 - not necessary");
     /// assert!(!pr.is_k_derivable(2), "k_len == 2 - not necessary");
     /// assert!(!pr.is_k_derivable(3), "k_len == 2, containing no Nt - not possible");
@@ -218,17 +218,17 @@ impl Pr {
     /// assert!(pr.is_k_derivable_at(1, 0), "k_len == 0 but containing Nt - possible");
     /// assert!(pr.is_k_derivable_at(1, 1), "k_len == 0 but containing Nt - possible");
     /// assert!(!pr.is_k_derivable_at(1, 2), "invalid index - not possible");
-    /// let pr = Pr::new("S", vec![Symbol::t(",", 0), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![Symbol::t(",", vec![0]), Symbol::n("N")]);
     /// assert!(!pr.is_k_derivable_at(1, 0), "k_len == 1 - not necessary");
     /// assert!(pr.is_k_derivable_at(2, 0), "k_len == 1 but containing Nt - possible");
     /// assert!(pr.is_k_derivable_at(2, 1), "k_len == 0 but containing Nt - possible");
     /// assert!(!pr.is_k_derivable_at(2, 2), "invalid index - not possible");
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0])]);
     /// assert!(!pr.is_k_derivable_at(1, 0), "k_len == 1 - not necessary");
     /// assert!(!pr.is_k_derivable_at(2, 0), "k_len == 1, containing no Nt - not possible");
     /// assert!(!pr.is_k_derivable_at(1, 1), "invalid index - not possible");
     /// assert!(!pr.is_k_derivable_at(2, 1), "invalid index - not possible");
-    /// let pr = Pr::new("S", vec![Symbol::t("d", 0), Symbol::t("e", 0)]);
+    /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0]), Symbol::t("e", vec![0])]);
     /// assert!(!pr.is_k_derivable_at(1, 0), "k_len == 2 - not necessary");
     /// assert!(!pr.is_k_derivable_at(2, 0), "k_len == 2 - not necessary");
     /// assert!(!pr.is_k_derivable_at(3, 0), "k_len == 2, containing no Nt - not possible");
@@ -260,7 +260,7 @@ impl Pr {
 
     pub fn format<R>(&self, scanner_state_resolver: &R) -> String
     where
-        R: Fn(usize) -> String,
+        R: Fn(&[usize]) -> String,
     {
         format!(
             "{}: {};",

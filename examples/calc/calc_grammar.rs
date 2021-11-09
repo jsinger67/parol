@@ -83,7 +83,7 @@ impl Display for CalcGrammarItem {
 ///
 #[derive(Debug, Default)]
 pub struct CalcGrammar {
-    pub ast_stack: Vec<CalcGrammarItem>,
+    pub item_stack: Vec<CalcGrammarItem>,
     env: BTreeMap<String, DefinitionRange>,
 }
 
@@ -94,12 +94,12 @@ impl CalcGrammar {
 
     fn push(&mut self, item: CalcGrammarItem, context: &str) {
         trace!("push    {}: {}", context, item);
-        self.ast_stack.push(item)
+        self.item_stack.push(item)
     }
 
     fn pop(&mut self, context: &str) -> Option<CalcGrammarItem> {
-        if !self.ast_stack.is_empty() {
-            let item = self.ast_stack.pop();
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
             if let Some(ref item) = item {
                 trace!("pop     {}: {}", context, item);
             }
@@ -329,7 +329,7 @@ impl CalcGrammar {
         format!(
             "Ast stack at {}:\n{}",
             context,
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .rev()
                 .map(|s| format!("  {}", s))
@@ -344,7 +344,7 @@ impl Display for CalcGrammar {
         writeln!(
             f,
             "Stack\n{}",
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .rev()
                 .map(|e| format!("{}", e))

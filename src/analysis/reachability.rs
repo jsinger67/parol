@@ -13,12 +13,12 @@ use std::collections::{BTreeMap, BTreeSet};
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", 0)]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0])]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
+///     .add_pr(Pr::new("X", vec![Symbol::t("c", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::t("d", vec![0])]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_non_terminals(&g);
 /// assert_eq!(
@@ -68,12 +68,12 @@ pub fn reachable_non_terminals(cfg: &Cfg) -> BTreeSet<String> {
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", 0)]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0])]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
+///     .add_pr(Pr::new("X", vec![Symbol::t("c", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::t("d", vec![0])]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = unreachable_non_terminals(&g);
 /// assert_eq!(
@@ -113,12 +113,12 @@ pub fn all_non_terminals_reachable(cfg: &Cfg) -> bool {
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", 0)]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0])]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
+///     .add_pr(Pr::new("X", vec![Symbol::t("c", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::t("d", vec![0])]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_from_production(&g, 0);
 /// assert_eq!(
@@ -232,12 +232,12 @@ pub fn reachable_from_production(cfg: &Cfg, prod_num: usize) -> BTreeSet<String>
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", 0)]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t("a", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0])]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
-///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
+///     .add_pr(Pr::new("X", vec![Symbol::t("c", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", vec![0])]))
+///     .add_pr(Pr::new("V", vec![Symbol::t("d", vec![0])]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_from_non_terminal(&g, "S");
 /// assert_eq!(
@@ -325,11 +325,11 @@ pub fn reachable_from_non_terminal(cfg: &Cfg, nt: &str) -> BTreeSet<String> {
 ///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("A")]))
-///     .add_pr(Pr::new("A", vec![Symbol::t("x", 0), Symbol::n("B"), Symbol::n("AA")]))
-///     .add_pr(Pr::new("AA", vec![Symbol::t("d", 0), Symbol::n("AA")]))
+///     .add_pr(Pr::new("A", vec![Symbol::t("x", vec![0]), Symbol::n("B"), Symbol::n("AA")]))
+///     .add_pr(Pr::new("AA", vec![Symbol::t("d", vec![0]), Symbol::n("AA")]))
 ///     .add_pr(Pr::new("AA", vec![]))
-///     .add_pr(Pr::new("B", vec![Symbol::t("y", 0)]))
-///     .add_pr(Pr::new("C", vec![Symbol::t("b", 0)]));
+///     .add_pr(Pr::new("B", vec![Symbol::t("y", vec![0])]))
+///     .add_pr(Pr::new("C", vec![Symbol::t("b", vec![0])]));
 /// let prod_numbers = nt_producing_productions(&g, "S");
 /// assert_eq!(
 ///     [].iter().cloned().collect::<BTreeSet<usize>>(),
@@ -392,11 +392,11 @@ pub fn nt_producing_productions(cfg: &Cfg, nt: &str) -> BTreeSet<usize> {
 ///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("A")]))
-///     .add_pr(Pr::new("A", vec![Symbol::t("x", 0), Symbol::n("B"), Symbol::n("AA")]))
-///     .add_pr(Pr::new("AA", vec![Symbol::t("d", 0), Symbol::n("AA")]))
+///     .add_pr(Pr::new("A", vec![Symbol::t("x", vec![0]), Symbol::n("B"), Symbol::n("AA")]))
+///     .add_pr(Pr::new("AA", vec![Symbol::t("d", vec![0]), Symbol::n("AA")]))
 ///     .add_pr(Pr::new("AA", vec![]))
-///     .add_pr(Pr::new("B", vec![Symbol::t("y", 0)]))
-///     .add_pr(Pr::new("C", vec![Symbol::t("b", 0)]));
+///     .add_pr(Pr::new("B", vec![Symbol::t("y", vec![0])]))
+///     .add_pr(Pr::new("C", vec![Symbol::t("b", vec![0])]));
 /// let reachability = nt_reachability(&g);
 /// assert_eq!(
 ///     [

@@ -61,15 +61,15 @@ Factor
 Symbol
     : Identifier
     | SimpleToken
-    | TokenWithState
+    | TokenWithStates
     ;
 
 SimpleToken
     : String
     ;
 
-TokenWithState
-    :  "<" Identifier ">" String
+TokenWithStates
+    :  "<" StateList ">" String
     ;
 
 Group
@@ -94,4 +94,13 @@ String
 
 ScannerState
     : "%scanner" Identifier "\{" { ScannerDirectives } "\}"
+    ;
+
+StateList
+    : Identifier StateListRest
+    ;
+
+StateListRest
+    : "," Identifier StateListRest
+    |
     ;

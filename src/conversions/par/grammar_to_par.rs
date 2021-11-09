@@ -69,10 +69,15 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         "\n%auto_ws_off".to_owned()
     };
 
-    let scanner_state_resolver = |s: usize| {
-        grammar_config.scanner_configurations[s]
-            .scanner_name
-            .clone()
+    let scanner_state_resolver = |s: &[usize]| {
+        s.iter()
+            .map(|s| {
+                grammar_config.scanner_configurations[*s]
+                    .scanner_name
+                    .clone()
+            })
+            .collect::<Vec<String>>()
+            .join(", ")
     };
 
     let mut productions = Vec::new();
@@ -167,22 +172,25 @@ mod test {
     #[test]
     fn check_par_format() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a", 0),
+                    Symbol::t("a", vec![0]),
                     Symbol::n("Y"),
-                    Symbol::t("b", 0),
+                    Symbol::t("b", vec![0]),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
+            .add_pr(Pr::new(
+                "Y",
+                vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])],
+            ))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let title = Some("Test grammar".to_owned());

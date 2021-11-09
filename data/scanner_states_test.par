@@ -16,7 +16,7 @@ Start
 
 Content
     : Identifier
-    | "\u{22}" StringContent "\u{22}"
+    | StringDelimiter StringContent StringDelimiter
     ;
 
 StringContent
@@ -37,4 +37,8 @@ EscapedLineEnd
 
 NoneQuote
     : <String>"[^\u{22}]"
+    ;
+
+StringDelimiter
+    : <String, INITIAL>"\u{22}"
     ;

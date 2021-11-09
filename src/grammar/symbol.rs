@@ -7,10 +7,10 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum Terminal {
     ///
-    /// A physical terminal symbol with the scanner state it belongs to
+    /// A physical terminal symbol with the scanner states it belongs to
     /// Entities that are provided by the lexer.
     ///
-    Trm(String, usize),
+    Trm(String, Vec<usize>),
 
     ///
     /// Epsilon symbol, the empty word
@@ -27,7 +27,7 @@ pub enum Terminal {
 }
 
 impl Terminal {
-    pub fn t(t: &str, s: usize) -> Self {
+    pub fn t(t: &str, s: Vec<usize>) -> Self {
         Self::Trm(t.to_owned(), s)
     }
     pub fn is_trm(&self) -> bool {
@@ -42,9 +42,21 @@ impl Terminal {
 
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, s)) => Terminal::Trm(t.to_string(), *s),
+            Symbol::T(Terminal::Trm(t, s)) => Terminal::Trm(t.to_string(), s.to_vec()),
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
+        }
+    }
+
+    pub fn add_scanner(&mut self, sc: usize) {
+        match self {
+            Terminal::Trm(_, s) => {
+                if !s.contains(&sc) {
+                    s.push(sc);
+                    s.sort_unstable();
+                }
+            }
+            _ => panic!("Unexpected symbol type: {:?}", self),
         }
     }
 
@@ -53,18 +65,19 @@ impl Terminal {
     ///
     pub fn format<R>(&self, scanner_state_resolver: R) -> String
     where
-        R: Fn(usize) -> String,
+        R: Fn(&[usize]) -> String,
     {
         match self {
             Self::Trm(t, s) => {
-                if *s == 0 {
+                if *s == vec![0] {
+                    // Don't print state if terminal is only in state INITIAL (0)
                     format!("\"{}\"", t)
                 } else {
-                    format!("<{}>\"{}\"", scanner_state_resolver(*s), t)
+                    format!("<{}>\"{}\"", scanner_state_resolver(s), t)
                 }
             }
-            Self::Eps => format!("\u{03B5}"), // Lower creek letter Epsilon (ε)
-            Self::End => format!("$"),
+            Self::Eps => "\u{03B5}".to_string(), // Lower creek letter Epsilon (ε)
+            Self::End => "$".to_string(),
         }
     }
 }
@@ -111,7 +124,7 @@ pub enum Symbol {
 }
 
 impl Symbol {
-    pub fn t(t: &str, s: usize) -> Self {
+    pub fn t(t: &str, s: Vec<usize>) -> Self {
         Self::T(Terminal::Trm(t.to_owned(), s))
     }
     pub fn n(n: &str) -> Self {
@@ -160,10 +173,10 @@ impl Symbol {
 
     pub fn format<R>(&self, scanner_state_resolver: &R) -> String
     where
-        R: Fn(usize) -> String,
+        R: Fn(&[usize]) -> String,
     {
         match self {
-            Self::N(n) => format!("{}", n),
+            Self::N(n) => n.to_string(),
             Self::T(t) => t.format(scanner_state_resolver),
         }
     }

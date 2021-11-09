@@ -16,7 +16,7 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 
-pub const TERMINALS: &[&str; 28] = &[
+pub const TERMINALS: &[&str; 29] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
     /*  1 */ NEW_LINE_TOKEN,
     /*  2 */ WHITESPACE_TOKEN,
@@ -44,10 +44,11 @@ pub const TERMINALS: &[&str; 28] = &[
     /* 24 */ r###"[a-zA-Z_]\w*"###,
     /* 25 */ r###"\u{0022}([^\\]|\\.)*?\u{0022}"###,
     /* 26 */ r###"%scanner"###,
-    /* 27 */ ERROR_TOKEN,
+    /* 27 */ r###","###,
+    /* 28 */ ERROR_TOKEN,
 ];
 
-pub const TERMINAL_NAMES: &[&str; 28] = &[
+pub const TERMINAL_NAMES: &[&str; 29] = &[
     /*  0 */ "EndOfInput",
     /*  1 */ "Newline",
     /*  2 */ "Whitespace",
@@ -75,12 +76,13 @@ pub const TERMINAL_NAMES: &[&str; 28] = &[
     /* 24 */ "Identifier",
     /* 25 */ "String",
     /* 26 */ "PercentScanner",
-    /* 27 */ "Error",
+    /* 27 */ "Comma",
+    /* 28 */ "Error",
 ];
 
 const MAX_K: usize = 1;
 
-pub const NON_TERMINALS: &[&str; 34] = &[
+pub const NON_TERMINALS: &[&str; 36] = &[
     /*  0 */ "Alternation",
     /*  1 */ "AlternationRest",
     /*  2 */ "AlternationRestSuffix",
@@ -112,12 +114,14 @@ pub const NON_TERMINALS: &[&str; 34] = &[
     /* 28 */ "ScannerStateSuffix",
     /* 29 */ "SimpleToken",
     /* 30 */ "StartDeclaration",
-    /* 31 */ "String",
-    /* 32 */ "Symbol",
-    /* 33 */ "TokenWithState",
+    /* 31 */ "StateList",
+    /* 32 */ "StateListRest",
+    /* 33 */ "String",
+    /* 34 */ "Symbol",
+    /* 35 */ "TokenWithStates",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 34] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
     /* 0 - "Alternation" */
     LookaheadDFA {
         states: &[None, Some(30), Some(31)],
@@ -397,13 +401,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 34] = &[
         transitions: &[],
         k: 0,
     },
-    /* 31 - "String" */
+    /* 31 - "StateList" */
+    LookaheadDFA {
+        states: &[Some(55)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 32 - "StateListRest" */
+    LookaheadDFA {
+        states: &[None, Some(56), Some(57)],
+        transitions: &[DFATransition(0, 17, 2), DFATransition(0, 27, 1)],
+        k: 1,
+    },
+    /* 33 - "String" */
     LookaheadDFA {
         states: &[Some(48)],
         transitions: &[],
         k: 0,
     },
-    /* 32 - "Symbol" */
+    /* 34 - "Symbol" */
     LookaheadDFA {
         states: &[None, Some(39), Some(40), Some(41)],
         transitions: &[
@@ -413,7 +429,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 34] = &[
         ],
         k: 1,
     },
-    /* 33 - "TokenWithState" */
+    /* 35 - "TokenWithStates" */
     LookaheadDFA {
         states: &[Some(43)],
         transitions: &[],
@@ -421,7 +437,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 34] = &[
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 55] = &[
+pub const PRODUCTIONS: &[Production; 58] = &[
     // 0 - Parol: Prolog GrammarDefinition;
     Production {
         lhs: 17,
@@ -475,12 +491,12 @@ pub const PRODUCTIONS: &[Production; 55] = &[
     // 10 - Declaration: "%title" String;
     Production {
         lhs: 7,
-        production: &[ParseType::N(31), ParseType::T(6)],
+        production: &[ParseType::N(33), ParseType::T(6)],
     },
     // 11 - Declaration: "%comment" String;
     Production {
         lhs: 7,
-        production: &[ParseType::N(31), ParseType::T(7)],
+        production: &[ParseType::N(33), ParseType::T(7)],
     },
     // 12 - Declaration: ScannerDirectives;
     Production {
@@ -490,12 +506,12 @@ pub const PRODUCTIONS: &[Production; 55] = &[
     // 13 - ScannerDirectives: "%line_comment" String;
     Production {
         lhs: 24,
-        production: &[ParseType::N(31), ParseType::T(8)],
+        production: &[ParseType::N(33), ParseType::T(8)],
     },
     // 14 - ScannerDirectives: "%block_comment" String String;
     Production {
         lhs: 24,
-        production: &[ParseType::N(31), ParseType::N(31), ParseType::T(9)],
+        production: &[ParseType::N(33), ParseType::N(33), ParseType::T(9)],
     },
     // 15 - ScannerDirectives: "%auto_newline_off";
     Production {
@@ -620,35 +636,35 @@ pub const PRODUCTIONS: &[Production; 55] = &[
     // 38 - Factor: Symbol;
     Production {
         lhs: 8,
-        production: &[ParseType::N(32)],
+        production: &[ParseType::N(34)],
     },
     // 39 - Symbol: Identifier;
     Production {
-        lhs: 32,
+        lhs: 34,
         production: &[ParseType::N(15)],
     },
     // 40 - Symbol: SimpleToken;
     Production {
-        lhs: 32,
+        lhs: 34,
         production: &[ParseType::N(29)],
     },
-    // 41 - Symbol: TokenWithState;
+    // 41 - Symbol: TokenWithStates;
     Production {
-        lhs: 32,
-        production: &[ParseType::N(33)],
+        lhs: 34,
+        production: &[ParseType::N(35)],
     },
     // 42 - SimpleToken: String;
     Production {
         lhs: 29,
-        production: &[ParseType::N(31)],
+        production: &[ParseType::N(33)],
     },
-    // 43 - TokenWithState: "<" Identifier ">" String;
+    // 43 - TokenWithStates: "<" StateList ">" String;
     Production {
-        lhs: 33,
+        lhs: 35,
         production: &[
-            ParseType::N(31),
+            ParseType::N(33),
             ParseType::T(17),
-            ParseType::N(15),
+            ParseType::N(31),
             ParseType::T(16),
         ],
     },
@@ -674,7 +690,7 @@ pub const PRODUCTIONS: &[Production; 55] = &[
     },
     // 48 - String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     Production {
-        lhs: 31,
+        lhs: 33,
         production: &[ParseType::T(25)],
     },
     // 49 - ScannerState: "%scanner" Identifier "\{" ScannerStateSuffix;
@@ -710,6 +726,21 @@ pub const PRODUCTIONS: &[Production; 55] = &[
     // 54 - ScannerStateRestSuffix: ;
     Production {
         lhs: 27,
+        production: &[],
+    },
+    // 55 - StateList: Identifier StateListRest;
+    Production {
+        lhs: 31,
+        production: &[ParseType::N(32), ParseType::N(15)],
+    },
+    // 56 - StateListRest: "," Identifier StateListRest;
+    Production {
+        lhs: 32,
+        production: &[ParseType::N(32), ParseType::N(15), ParseType::T(27)],
+    },
+    // 57 - StateListRest: ;
+    Production {
+        lhs: 32,
         production: &[],
     },
 ];

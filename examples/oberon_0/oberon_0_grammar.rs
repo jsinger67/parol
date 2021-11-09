@@ -19,7 +19,7 @@ impl Display for Oberon0GrammarItem {
 ///
 #[derive(Debug, Default)]
 pub struct Oberon0Grammar {
-    pub ast_stack: Vec<Oberon0GrammarItem>,
+    pub item_stack: Vec<Oberon0GrammarItem>,
 }
 
 impl Oberon0Grammar {
@@ -29,12 +29,12 @@ impl Oberon0Grammar {
 
     fn _push(&mut self, item: Oberon0GrammarItem, context: &str) {
         trace!("push    {}: {}", context, item);
-        self.ast_stack.push(item)
+        self.item_stack.push(item)
     }
 
     fn _pop(&mut self, context: &str) -> Option<Oberon0GrammarItem> {
-        if !self.ast_stack.is_empty() {
-            let item = self.ast_stack.pop();
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
             if let Some(ref item) = item {
                 trace!("pop     {}: {}", context, item);
             }

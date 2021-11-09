@@ -42,7 +42,7 @@ impl Display for ListGrammarItem {
 ///
 #[derive(Debug, Default)]
 pub struct ListGrammar {
-    pub ast_stack: Vec<ListGrammarItem>,
+    pub item_stack: Vec<ListGrammarItem>,
 }
 
 impl ListGrammar {
@@ -52,12 +52,12 @@ impl ListGrammar {
 
     fn push(&mut self, item: ListGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
-        self.ast_stack.push(item)
+        self.item_stack.push(item)
     }
 
     fn pop(&mut self, context: &str) -> Option<ListGrammarItem> {
-        if !self.ast_stack.is_empty() {
-            let item = self.ast_stack.pop();
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
             if let Some(ref item) = item {
                 trace!("pop    {}: {}", context, item);
             }
@@ -73,7 +73,7 @@ impl Display for ListGrammar {
         writeln!(
             f,
             "{}",
-            self.ast_stack
+            self.item_stack
                 .iter()
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()

@@ -118,7 +118,7 @@ impl ScannerConfig {
             cfg.get_ordered_terminals()
                 .iter()
                 .fold(terminals, |mut acc, (t, s)| {
-                    if *s == self.scanner_state {
+                    if s.contains(&self.scanner_state) {
                         acc.push(t.to_string());
                     }
                     acc

@@ -499,11 +499,11 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 41:
     ///
-    /// Symbol: TokenWithState;
+    /// Symbol: TokenWithStates;
     ///
     fn symbol_41(
         &mut self,
-        _token_with_state_0: &ParseTreeStackEntry,
+        _token_with_states_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -523,12 +523,12 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 43:
     ///
-    /// TokenWithState: "<" Identifier ">" String;
+    /// TokenWithStates: "<" StateList ">" String;
     ///
-    fn token_with_state_43(
+    fn token_with_states_43(
         &mut self,
         _l_t_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
+        _state_list_1: &ParseTreeStackEntry,
         _g_t_2: &ParseTreeStackEntry,
         _string_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -674,6 +674,41 @@ pub trait ParolGrammarTrait {
     fn scanner_state_rest_suffix_54(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
+
+    /// Semantic action for production 55:
+    ///
+    /// StateList: Identifier StateListRest;
+    ///
+    fn state_list_55(
+        &mut self,
+        _identifier_0: &ParseTreeStackEntry,
+        _state_list_rest_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 56:
+    ///
+    /// StateListRest: "," Identifier StateListRest;
+    ///
+    fn state_list_rest_56(
+        &mut self,
+        _comma_0: &ParseTreeStackEntry,
+        _identifier_1: &ParseTreeStackEntry,
+        _state_list_rest_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 57:
+    ///
+    /// StateListRest: ;
+    ///
+    fn state_list_rest_57(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        Ok(())
+    }
 }
 
 impl UserActionsTrait for ParolGrammar {
@@ -776,7 +811,7 @@ impl UserActionsTrait for ParolGrammar {
 
             42 => self.simple_token_42(&children[0], parse_tree),
 
-            43 => self.token_with_state_43(
+            43 => self.token_with_states_43(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -811,6 +846,12 @@ impl UserActionsTrait for ParolGrammar {
             53 => self.scanner_state_rest_suffix_53(&children[0], parse_tree),
 
             54 => self.scanner_state_rest_suffix_54(parse_tree),
+
+            55 => self.state_list_55(&children[0], &children[1], parse_tree),
+
+            56 => self.state_list_rest_56(&children[0], &children[1], &children[2], parse_tree),
+
+            57 => self.state_list_rest_57(parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

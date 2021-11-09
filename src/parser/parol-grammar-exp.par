@@ -47,9 +47,9 @@
 /* 38 */ Factor: Symbol;
 /* 39 */ Symbol: Identifier;
 /* 40 */ Symbol: SimpleToken;
-/* 41 */ Symbol: TokenWithState;
+/* 41 */ Symbol: TokenWithStates;
 /* 42 */ SimpleToken: String;
-/* 43 */ TokenWithState: "<" Identifier ">" String;
+/* 43 */ TokenWithStates: "<" StateList ">" String;
 /* 44 */ Group: "\(" Alternations "\)";
 /* 45 */ Optional: "\[" Alternations "\]";
 /* 46 */ Repeat: "\{" Alternations "\}";
@@ -61,3 +61,6 @@
 /* 52 */ ScannerStateRest: ScannerDirectives ScannerStateRestSuffix;
 /* 53 */ ScannerStateRestSuffix: ScannerStateRest;
 /* 54 */ ScannerStateRestSuffix: ;
+/* 55 */ StateList: Identifier StateListRest;
+/* 56 */ StateListRest: "," Identifier StateListRest;
+/* 57 */ StateListRest: ;

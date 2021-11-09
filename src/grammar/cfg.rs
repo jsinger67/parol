@@ -94,12 +94,12 @@ impl Cfg {
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///
-    pub fn get_ordered_terminals(&self) -> Vec<(&str, usize)> {
+    pub fn get_ordered_terminals(&self) -> Vec<(&str, &[usize])> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
                 if let Symbol::T(Terminal::Trm(t, s)) = s {
-                    if !acc.contains(&(t.as_str(), *s)) {
-                        acc.push((t, *s));
+                    if !acc.contains(&(t.as_str(), s)) {
+                        acc.push((t, s));
                     }
                 }
                 acc
@@ -160,12 +160,12 @@ impl Cfg {
     ///
     /// let g = Cfg::with_start_symbol("S'")
     ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", 0), Symbol::n("Y"), Symbol::t("b", 0), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")]));
+    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", vec![0]), Symbol::n("Y"), Symbol::t("b", vec![0]), Symbol::n("Y")]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
+    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.productive_non_terminals();
     /// assert_eq!(["S'".to_owned(), "S".to_owned(), "X".to_owned(), "Y".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
     /// ```
@@ -218,12 +218,12 @@ impl Cfg {
     ///
     /// let g = Cfg::with_start_symbol("S'")
     ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", 0), Symbol::n("Y"), Symbol::t("b", 0), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")]));
+    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", vec![0]), Symbol::n("Y"), Symbol::t("b", vec![0]), Symbol::n("Y")]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
+    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.unproductive_non_terminals();
     /// assert_eq!(["Z".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
     /// ```
@@ -270,13 +270,13 @@ impl Cfg {
     /// let g = Cfg::with_start_symbol("S")
     ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
     ///     .add_pr(Pr::new("Y", vec![Symbol::n("U"), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), Symbol::t("a", 0)]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", 0)]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), Symbol::t("a", vec![0])]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0])]))
     ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
     ///     .add_pr(Pr::new("U", vec![]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("c", 0)]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", 0)]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::t("d", 0)]))
+    ///     .add_pr(Pr::new("X", vec![Symbol::t("c", vec![0])]))
+    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t("d", vec![0])]))
+    ///     .add_pr(Pr::new("V", vec![Symbol::t("d", vec![0])]))
     ///     .add_pr(Pr::new("Z", vec![]))
     ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.calculate_nullable_non_terminals();
@@ -375,22 +375,25 @@ mod test {
     #[test]
     fn check_serialization() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a", 0), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b", 0), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a", 0),
+                    Symbol::t("a", vec![0]),
                     Symbol::n("Y"),
-                    Symbol::t("b", 0),
+                    Symbol::t("b", vec![0]),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("b", 0), Symbol::t("a", 0)]))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a", 0), Symbol::n("Z")]))
+            .add_pr(Pr::new(
+                "Y",
+                vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])],
+            ))
+            .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a", 0), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let serialized = serde_json::to_string(&g).unwrap();

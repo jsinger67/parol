@@ -133,7 +133,7 @@ mod test {
     use crate::Symbol;
 
     fn t(t: &str) -> Symbol {
-        Symbol::t(t, 0)
+        Symbol::t(t, vec![0])
     }
 
     fn n(n: &str) -> Symbol {

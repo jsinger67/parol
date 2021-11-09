@@ -11,7 +11,7 @@ use std::convert::TryFrom;
 
 pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
-    let pr = transform_productions(parol_grammar.ast_stack)?;
+    let pr = transform_productions(parol_grammar.item_stack)?;
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
@@ -66,10 +66,10 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
     }
 }
 
-fn trace_ast_stack(ast_stack: &[ParolGrammarItem]) {
+fn trace_ast_stack(item_stack: &[ParolGrammarItem]) {
     trace!(
         "Ast stack:\n{}",
-        ast_stack
+        item_stack
             .iter()
             .rev()
             .map(|s| format!("  {}", s))
@@ -78,16 +78,16 @@ fn trace_ast_stack(ast_stack: &[ParolGrammarItem]) {
     );
 }
 
-fn transform_productions(ast_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
-    if !ast_stack
+fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
+    if !item_stack
         .iter()
         .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
     {
-        trace_ast_stack(&ast_stack);
+        trace_ast_stack(&item_stack);
         return Err("Expecting only productions on user stack".into());
     }
 
-    let productions = ast_stack
+    let productions = item_stack
         .into_iter()
         .map(|i| match i {
             ParolGrammarItem::Prod(p) => p,
