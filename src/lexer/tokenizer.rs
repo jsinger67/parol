@@ -86,7 +86,7 @@ impl Tokenizer {
         );
         combined.push_str(
             format!(
-                "(?P<G{}>{})",
+                "|(?P<G{}>{})",
                 error_token_type, augmented_terminals[error_token_type]
             )
             .as_str(),
