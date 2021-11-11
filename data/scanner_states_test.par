@@ -1,6 +1,6 @@
 %start Start
 %title "Test grammar"
-%comment "Tests corect handling of scanner states"
+%comment "Tests correct handling of scanner states"
 %line_comment "//"
 %block_comment "/\*" "\*/"
 

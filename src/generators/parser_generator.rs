@@ -133,6 +133,8 @@ struct ParserData<'a> {
     max_k: usize,
     ast_type_name: String,
     ast_trait_module_name: String,
+    scanner_count: usize,
+    scanner_builds: StrVec,
 }
 
 pub fn generate_parser_source(
@@ -187,6 +189,8 @@ pub fn generate_parser_source(
         max_k,
         ast_type_name: ast_type_name.to_string(),
         ast_trait_module_name: ast_trait_module_name.to_string(),
+        scanner_count: 1,
+        scanner_builds: StrVec::new(0),
     };
 
     Ok(format!("{}", parser_data))

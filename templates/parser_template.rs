@@ -6,11 +6,12 @@
 
 use id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
-use parol_runtime::parser::errors::*;
+use parol_runtime::errors::*;
 use parol_runtime::parser::{
     ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
+use std::rc::Rc;
 
 {{{lexer_source}}}
 
@@ -22,7 +23,10 @@ pub const NON_TERMINALS: &[&str; {{non_terminal_count}}] = &[
 {{{dfa_source}}}
 {{{productions}}}
 lazy_static! {
-    static ref TOKENIZER: Tokenizer = Tokenizer::build(TERMINALS).unwrap();
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
+        ("INITIAL", Tokenizer::build(TERMINALS).unwrap()),
+{{{scanner_builds}}}
+    ];
 }
 
 pub fn parse(input: &str, file_name: String, user_actions: &mut dyn UserActionsTrait) -> Result<Tree<ParseTreeType>> {
@@ -33,8 +37,10 @@ pub fn parse(input: &str, file_name: String, user_actions: &mut dyn UserActionsT
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    let token_stream = RefCell::new(TokenStream::new(input, file_name, &TOKENIZER, MAX_K).unwrap());
-    let result = llk_parser.parse(&token_stream, user_actions);
+    let token_stream = Rc::new(RefCell::new(
+        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+    ));
+    let result = llk_parser.parse(token_stream, user_actions);
     match result {
         Ok(()) => Ok(llk_parser.parse_tree),
         Err(e) => Err(e),

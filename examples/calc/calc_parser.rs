@@ -5,12 +5,13 @@
 // ---------------------------------------------------------
 
 use id_tree::Tree;
+use parol_runtime::errors::*;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
-use parol_runtime::parser::errors::*;
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
+use std::rc::Rc;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -1120,7 +1121,8 @@ pub const PRODUCTIONS: &[Production; 82] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZER: Tokenizer = Tokenizer::build(TERMINALS).unwrap();
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
+        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
 }
 
 pub fn parse(
@@ -1135,8 +1137,10 @@ pub fn parse(
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    let token_stream = RefCell::new(TokenStream::new(input, file_name, &TOKENIZER, MAX_K).unwrap());
-    let result = llk_parser.parse(&token_stream, user_actions);
+    let token_stream = Rc::new(RefCell::new(
+        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+    ));
+    let result = llk_parser.parse(token_stream, user_actions);
     match result {
         Ok(()) => Ok(llk_parser.parse_tree),
         Err(e) => Err(e),

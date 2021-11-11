@@ -6,8 +6,12 @@
 
 use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
-use parol_runtime::parser::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::errors::*;
+use parol_runtime::parser::{
+    ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserAccess, UserActionsTrait,
+};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 ///
 /// The `ParolGrammarTrait` trait is automatically generated for the
@@ -856,4 +860,12 @@ impl UserActionsTrait for ParolGrammar {
             _ => panic!("Unhandled production number: {}", prod_num),
         }
     }
+}
+
+///
+/// Implement the functions of this trait on your own to be able to use the
+/// functionality provided by the given trait.
+///
+impl UserAccess for ParolGrammar {
+    fn set_scanner_access<'a>(&mut self, _scanner_access: Rc<RefCell<dyn ScannerAccess + 'a>>) {}
 }

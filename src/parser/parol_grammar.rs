@@ -1,7 +1,7 @@
 use crate::parser::parol_grammar_trait::ParolGrammarTrait;
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::parser::errors::*;
+use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 

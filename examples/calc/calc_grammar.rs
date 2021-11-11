@@ -4,7 +4,7 @@ use crate::calc_grammar_trait::CalcGrammarTrait;
 use crate::unary_operator::UnaryOperator;
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::parser::errors::*;
+use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
