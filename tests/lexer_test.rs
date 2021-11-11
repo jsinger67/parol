@@ -32,10 +32,10 @@ const PAROL_CFG_1: &'static str = r#"%start Grammar
 
 const TERMINALS: &[&str; 12] = &[
     /*  0 */ UNMATCHABLE_TOKEN, // token::EOI
-    /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
-    /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
-    /*  3 */ r###"//.*"###, // token::LINE_COMMENT
-    /*  4 */ r###"(?m)(/\*(.|[\r\n])*?\*/)(?-m)"###, // token::BLOCK_COMMENT
+    /*  1 */ UNMATCHABLE_TOKEN, // token::NEW_LINE
+    /*  2 */ UNMATCHABLE_TOKEN, // token::WHITESPACE
+    /*  3 */ UNMATCHABLE_TOKEN, // token::LINE_COMMENT
+    /*  4 */ UNMATCHABLE_TOKEN, // token::BLOCK_COMMENT
     /*  5 */ r###"%start"###, // token::FIRST_USER_TOKEN
     /*  6 */ r###"%%"###,
     /*  7 */ r###":"###,
@@ -45,9 +45,19 @@ const TERMINALS: &[&str; 12] = &[
     /* 11 */ ERROR_TOKEN,
 ];
 
+const SCANNER_0: &[&str; 5] = &[
+    /*  0 */ UNMATCHABLE_TOKEN, // token::EOI
+    /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
+    /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
+    /*  3 */ r###"//.*"###, // token::LINE_COMMENT
+    /*  4 */ r###"(?m)(/\*(.|[\r\n])*?\*/)(?-m)"###, // token::BLOCK_COMMENT
+];
+
 lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
-        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0, &vec![5, 6, 7, 8, 9, 10]).unwrap()
+    ),];
 }
 
 #[test]

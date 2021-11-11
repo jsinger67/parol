@@ -1,5 +1,5 @@
 use crate::errors::*;
-use crate::lexer::TerminalIndex;
+use crate::lexer::{TerminalIndex, FIRST_USER_TOKEN};
 use regex::Regex;
 
 ///
@@ -45,36 +45,59 @@ pub struct Tokenizer {
 
 impl Tokenizer {
     ///
-    /// Creates a new Tokenizer object from augmented terminals.
-    /// The augmented terminals contain some additional terminal definitions
-    /// such as whitespace and newline handling as well as comments.
+    /// Creates a new Tokenizer object from augmented terminals and scanner
+    /// specific information.
     ///
-    pub fn build(augmented_terminals: &[&str]) -> Result<Tokenizer> {
-        let mut error_token_type = 0;
-        let combined = augmented_terminals
+    pub fn build(
+        augmented_terminals: &[&str],
+        scanner_specifics: &[&str],
+        scanner_terminal_indices: &[usize],
+    ) -> Result<Tokenizer> {
+        debug_assert_eq!(5, scanner_specifics.len());
+        let internal_terminals =
+            scanner_specifics
+                .iter()
+                .enumerate()
+                .fold(Vec::new(), |mut acc, (i, t)| {
+                    if *t != UNMATCHABLE_TOKEN {
+                        acc.push(format!("(?P<G{}>{})", i, t));
+                    }
+                    acc
+                });
+        let mut combined = scanner_terminal_indices
             .iter()
             .enumerate()
-            .fold(Vec::new(), |mut acc, (i, t)| {
-                if *t != UNMATCHABLE_TOKEN {
-                    acc.push(format!("(?P<G{}>{})", i, t));
-                }
-                if *t == ERROR_TOKEN {
-                    error_token_type = i as TerminalIndex;
-                }
+            .map(|(idx, term_idx)| {
+                format!(
+                    "(?P<G{}>{})",
+                    idx + FIRST_USER_TOKEN,
+                    augmented_terminals[*term_idx]
+                )
+            })
+            .fold(internal_terminals, |mut acc, e| {
+                acc.push(e);
                 acc
             })
             .join("|");
-        if error_token_type == 0 {
-            Err("Augmented terminals should always include the error token!".into())
-        } else {
-            let combined = combined.trim_end_matches('|');
-            let rx = combined.to_string();
-            let rx = Regex::new(&rx).chain_err(|| "Unable to compile generated RegEx!")?;
+        let error_token_type = augmented_terminals.len() - 1;
+        debug_assert_eq!(
+            ERROR_TOKEN, augmented_terminals[error_token_type],
+            "Last token should always be the error token!"
+        );
+        combined.push_str(
+            format!(
+                "(?P<G{}>{})",
+                error_token_type, augmented_terminals[error_token_type]
+            )
+            .as_str(),
+        );
 
-            Ok(Tokenizer {
-                rx,
-                error_token_type,
-            })
-        }
+        let rx = combined.to_string();
+        let rx = Regex::new(&rx).chain_err(|| "Unable to compile generated RegEx!")?;
+
+        Ok(Tokenizer {
+            rx,
+            error_token_type,
+        })
     }
 }
