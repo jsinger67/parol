@@ -30,7 +30,7 @@ const PAROL_CFG_1: &'static str = r#"%start Grammar
 
 "#;
 
-const PAROL_CFG_1_TOKENS: &[&str; 12] = &[
+const TERMINALS: &[&str; 12] = &[
     /*  0 */ UNMATCHABLE_TOKEN, // token::EOI
     /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
     /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
@@ -46,19 +46,23 @@ const PAROL_CFG_1_TOKENS: &[&str; 12] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZER: Tokenizer = Tokenizer::build(PAROL_CFG_1_TOKENS).unwrap();
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
+        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
 }
 
 #[test]
 fn tokenizer_test() {
-    assert_eq!(11, TOKENIZER.error_token_type, "Error token index is wrong");
+    assert_eq!(
+        11, TOKENIZERS[0].1.error_token_type,
+        "Error token index is wrong"
+    );
 }
 
 #[test]
 fn lexer_token_production() {
     let k = 3;
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, k).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, k).unwrap());
     let mut tok = OwnedToken::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
@@ -82,7 +86,7 @@ fn lexer_token_production() {
 #[should_panic(expected = "Lookahead exceeds its maximum")]
 fn lookahead_must_fail() {
     let mut token_stream =
-        TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap();
+        TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap();
     let _tok = token_stream.owned_lookahead(2).unwrap();
 }
 
@@ -90,7 +94,7 @@ fn lookahead_must_fail() {
 #[should_panic(expected = "Lookahead exceeds token buffer length")]
 fn lookahead_beyond_buffer_must_fail() {
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZER, 1).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();

@@ -1,4 +1,4 @@
-use super::errors::*;
+use crate::errors::*;
 use crate::lexer::OwnedToken;
 use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};

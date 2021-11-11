@@ -6,6 +6,9 @@ use regex::CaptureMatches;
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenIter<'t> {
+    // Start position, can be greater than zero, if self was switched before
+    start_pos: usize,
+    // Relative position from start position
     pos: usize,
     line: usize,
     col: usize,
@@ -28,6 +31,7 @@ impl<'t> TokenIter<'t> {
             .map(String::from)
             .collect();
         TokenIter {
+            start_pos: 0,
             pos: 0,
             line: 1,
             col: 1,
@@ -38,11 +42,29 @@ impl<'t> TokenIter<'t> {
     }
 
     ///
-    /// Returns the end position of the last successful match.
-    /// Can be used to setup a new Tokenizer for e.g. scan mode switching.
-    /// 
-    pub fn pos(&self) -> usize {
-        self.pos
+    /// This function is used to setup a new TokenIter (aka scanner state
+    /// switching) by updating all inner position values on the newly created
+    /// TokenIter.
+    ///
+    pub(crate) fn switch_to(&self, rx: &'static Tokenizer, input: &'t str) -> TokenIter<'t> {
+        let start_pos = self.start_pos + self.pos;
+        let (_, input) = input.split_at(start_pos);
+        let group_names: Vec<String> = rx
+            .rx
+            .capture_names()
+            .flatten()
+            .filter(|n| n.starts_with('G'))
+            .map(String::from)
+            .collect();
+        TokenIter {
+            start_pos,
+            pos: 0,
+            line: self.line,
+            col: self.col,
+            capture_iter: rx.rx.captures_iter(input),
+            group_names,
+            k: self.k,
+        }
     }
 
     fn count_nl(&self, s: &str) -> usize {

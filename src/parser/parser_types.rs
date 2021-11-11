@@ -1,12 +1,13 @@
-use super::errors::*;
+use crate::errors::*;
 use crate::lexer::TokenStream;
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
-    ProductionIndex, UserActionsTrait,
+    ProductionIndex, ScannerAccess, UserActionsTrait,
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
 use std::cell::RefCell;
+use std::rc::Rc;
 
 ///
 /// The type that contains all data to process a production within the parser.
@@ -228,13 +229,13 @@ impl<'t> LLKParser {
     fn predict_production(
         &mut self,
         non_terminal: NonTerminalIndex,
-        stream: &RefCell<TokenStream<'t>>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
     ) -> Result<ProductionIndex> {
         let lookahead_dfa = &self.lookahead_automata[non_terminal];
         lookahead_dfa.eval(&mut stream.borrow_mut())
     }
 
-    fn diagnostic_message(&self, msg: &str, stream: &RefCell<TokenStream<'t>>) -> String {
+    fn diagnostic_message(&self, msg: &str, stream: Rc<RefCell<TokenStream<'t>>>) -> String {
         let file_name = stream.borrow().file_name.clone();
         let (token, token_type, location) =
             if let Ok(token) = stream.borrow_mut().owned_lookahead(0) {
@@ -247,22 +248,15 @@ impl<'t> LLKParser {
                 ("<<Error>>".to_string(), 0, format!("{}(?)", file_name))
             };
 
-        trace!(
-            r"
-Parser stack:
-{}
-",
-            self.parser_stack
-        );
+        trace!("\nParser stack:\n{}\n", self.parser_stack);
 
         let prod_num = self.current_production().unwrap();
 
         let msg = format!(
-            r#"{} at {}
-Current production is:
-/* {} */ {}
-Lookahead token: {} ({})
-"#,
+            "{} at {}\
+            Current production is:\
+            /* {} */ {}\
+            Lookahead token: {} ({})\n",
             msg,
             location,
             prod_num,
@@ -281,11 +275,14 @@ Lookahead token: {} ({})
     ///
     pub fn parse(
         &mut self,
-        stream: &RefCell<TokenStream<'t>>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
         user_actions: &mut dyn UserActionsTrait,
     ) -> Result<()> {
+        let scanner_access: Rc<RefCell<dyn ScannerAccess>> = stream.clone();
+        user_actions.set_scanner_access(scanner_access);
+
         let prod_num = self
-            .predict_production(self.start_symbol_index, stream)
+            .predict_production(self.start_symbol_index, stream.clone())
             .chain_err(|| {
                 format!(
                     "Can't predict production while trying to start parsing with {}!",
@@ -325,19 +322,20 @@ Lookahead token: {} ({})
                         }
                     }
                     ParseType::N(n) => {
-                        let prod_num = self.predict_production(n, stream).chain_err(|| {
-                            let nt_name = self.non_terminal_names[n];
-                            self.diagnostic_message(
-                                format!(
-                                    r#"Expecting one of {} at non-terminal "{}""#,
-                                    self.lookahead_automata[n]
-                                        .expected_terminals(self.terminal_names),
-                                    nt_name,
+                        let prod_num =
+                            self.predict_production(n, stream.clone()).chain_err(|| {
+                                let nt_name = self.non_terminal_names[n];
+                                self.diagnostic_message(
+                                    format!(
+                                        r#"Expecting one of {} at non-terminal "{}""#,
+                                        self.lookahead_automata[n]
+                                            .expected_terminals(self.terminal_names),
+                                        nt_name,
+                                    )
+                                    .as_str(),
+                                    stream.clone(),
                                 )
-                                .as_str(),
-                                stream,
-                            )
-                        })?;
+                            })?;
                         self.parser_stack.stack.pop();
                         self.push_production(prod_num);
                     }

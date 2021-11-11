@@ -1,4 +1,4 @@
-use super::errors::*;
+use crate::errors::*;
 use crate::lexer::OwnedToken;
 use crate::parser::ParseTreeType;
 use id_tree::{Node, NodeId, Tree};

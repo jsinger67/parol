@@ -1,6 +1,7 @@
-use super::errors::*;
+use crate::errors::*;
 use crate::lexer::{OwnedToken, Token};
 use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
+use crate::parser::ScannerAccess;
 use log::trace;
 
 ///
@@ -9,12 +10,16 @@ use log::trace;
 pub struct TokenStream<'t> {
     /// The number of available lookahead tokens
     pub k: usize,
+    // The input text
+    input: &'t str,
     /// The name of the input file
     pub file_name: String,
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
     /// The actual token iterator
     token_iter: TokenIter<'t>,
+    /// A slice with named tokenizers
+    tokenizers: &'static [(&'static str, Tokenizer)],
     /// All available tokens
     pub tokens: Vec<Token<'t>>,
 }
@@ -28,14 +33,16 @@ impl<'t> TokenStream<'t> {
     pub fn new(
         input: &'t str,
         file_name: String,
-        tokenizer: &'static Tokenizer,
+        tokenizers: &'static [(&'static str, Tokenizer)],
         k: usize,
     ) -> Result<TokenStream<'t>> {
         let mut token_stream = TokenStream {
             k,
+            input,
             file_name,
-            error_token_type: tokenizer.error_token_type,
-            token_iter: TokenIter::new(tokenizer, input, k),
+            error_token_type: tokenizers[0].1.error_token_type,
+            token_iter: TokenIter::new(&tokenizers[0].1, input, k),
+            tokenizers,
             tokens: Vec::with_capacity(k),
         };
         token_stream.read_tokens(k);
@@ -141,6 +148,19 @@ impl<'t> TokenStream<'t> {
             self.read_tokens(self.k - last_buffer_index)
         } else {
             0
+        }
+    }
+}
+
+impl ScannerAccess for TokenStream<'_> {
+    fn switch_scanner(&mut self, scanner_name: &str) -> std::result::Result<(), Error> {
+        if let Some(scanner_index) = self.tokenizers.iter().position(|(n, _)| *n == scanner_name) {
+            self.token_iter = self
+                .token_iter
+                .switch_to(&self.tokenizers[scanner_index].1, self.input);
+            Ok(())
+        } else {
+            Err(format!("Unknown scanner: {}", scanner_name).into())
         }
     }
 }

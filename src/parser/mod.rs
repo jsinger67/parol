@@ -20,8 +20,8 @@ pub type NonTerminalIndex = usize;
 /// the generated parsers.
 ///
 #[forbid(missing_docs)]
-pub mod ast;
-pub use ast::ParseTreeType;
+pub mod parse_tree_type;
+pub use parse_tree_type::ParseTreeType;
 
 ///
 /// Module with types used in the generated parser's ast stack.
@@ -53,13 +53,16 @@ pub mod parser_types;
 pub use parser_types::{LLKParser, Production};
 
 ///
+/// Module with a trait that provides control of the scanner, especially to
+/// switch the scanner state.
+///
+#[forbid(missing_docs)]
+pub mod scanner_access;
+pub use scanner_access::ScannerAccess;
+
+///
 /// Module with the UserActionsTrait type.
 ///
 #[forbid(missing_docs)]
-pub mod user_actions;
-pub use user_actions::UserActionsTrait;
-
-///
-/// error_chains error module that auto-creates basic error types.
-///
-pub mod errors;
+pub mod user_access;
+pub use user_access::{UserAccess, UserActionsTrait};

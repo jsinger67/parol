@@ -1,4 +1,4 @@
-use super::errors::*;
+use crate::errors::*;
 use crate::lexer::{TerminalIndex, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
 use log::trace;

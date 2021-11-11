@@ -37,11 +37,6 @@ pub use token_iter::TokenIter;
 pub mod token_stream;
 pub use token_stream::TokenStream;
 
-///
-/// error_chains error module that auto-creates basic error types.
-///
-pub mod errors;
-
 lazy_static! {
     static ref RX_NEW_LINE: Regex =
         Regex::new(r"\r\n|\r|\n").expect("error parsing regex: RX_NEW_LINE");
