@@ -5,17 +5,64 @@ use crate::StrVec;
 use std::fmt::Debug;
 
 #[derive(BartDisplay, Debug, Default)]
+#[template = "templates/scanner_build_info.rs"]
+struct ScannerBuildInfo {
+    scanner_index: usize,
+    scanner_name: String,
+    terminal_index_count: usize,
+    special_tokens: StrVec,
+    terminal_indices: StrVec,
+}
+
+impl ScannerBuildInfo {
+    fn from_scanner_build_info(
+        scanner_index: usize,
+        scanner_name: String,
+        terminal_names: &[String],
+        width: usize,
+        special_tokens: &[String],
+        terminal_indices: &[usize],
+    ) -> Self {
+        let special_tokens =
+            special_tokens
+                .iter()
+                .enumerate()
+                .fold(StrVec::new(0), |mut acc, (i, e)| {
+                    let e = match e.as_str() {
+                        "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN"
+                        | "ERROR_TOKEN" => e.to_owned(),
+                        _ => format!(r####"r###"{}"###"####, e),
+                    };
+                    acc.push(format!("/* {:w$} */ {},", i, e, w = width));
+                    acc
+                });
+        let terminal_indices = terminal_indices.iter().fold(StrVec::new(8), |mut acc, e| {
+            acc.push(format!(r#"{}, /* {} */"#, e, terminal_names[*e]));
+            acc
+        });
+        Self {
+            scanner_index,
+            scanner_name,
+            terminal_index_count: terminal_indices.len(),
+            special_tokens,
+            terminal_indices,
+        }
+    }
+}
+
+#[derive(BartDisplay, Debug, Default)]
 #[template = "templates/lexer_template.rs"]
 struct LexerData {
     augmented_terminals: StrVec,
     used_token_constants: String,
     terminal_names: StrVec,
     terminal_count: usize,
+    scanner_build_configs: StrVec,
     lookahead_size: usize,
 }
 
 pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
-    let original_augmented_terminals = grammar_config.generate_augmented_terminals(0);
+    let original_augmented_terminals = grammar_config.generate_augmented_terminals();
 
     let terminal_count = original_augmented_terminals.len();
     let width = (terminal_count as f32).log10() as usize + 1;
@@ -39,12 +86,18 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         ("ERROR_TOKEN,", true),
         (
             "NEW_LINE_TOKEN,",
-            grammar_config.scanner_configurations[0].auto_newline,
+            grammar_config
+                .scanner_configurations
+                .iter()
+                .any(|sc| sc.auto_newline),
         ),
         ("UNMATCHABLE_TOKEN,", true),
         (
             "WHITESPACE_TOKEN,",
-            grammar_config.scanner_configurations[0].auto_ws,
+            grammar_config
+                .scanner_configurations
+                .iter()
+                .any(|sc| sc.auto_ws),
         ),
     ];
 
@@ -61,9 +114,31 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         original_augmented_terminals
             .iter()
             .enumerate()
-            .fold(StrVec::new(4), |mut acc, (i, e)| {
+            .fold(Vec::new(), |mut acc, (i, e)| {
                 let n = generate_terminal_name(e, i, &grammar_config.cfg);
-                acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
+                acc.push(n);
+                acc
+            });
+
+    let scanner_build_configs = grammar_config
+        .scanner_configurations
+        .iter()
+        .enumerate()
+        .map(|(i, sc)| (i, sc.generate_build_information(&grammar_config.cfg)))
+        .map(|(i, (sp, ti, n))| {
+            ScannerBuildInfo::from_scanner_build_info(i, n, &terminal_names, width, &sp, &ti)
+        })
+        .fold(StrVec::new(0), |mut acc, e| {
+            acc.push(format!("{}", e));
+            acc
+        });
+
+    let terminal_names =
+        terminal_names
+            .iter()
+            .enumerate()
+            .fold(StrVec::new(4), |mut acc, (i, e)| {
+                acc.push(format!(r#"/* {:w$} */ "{}","#, i, e, w = width));
                 acc
             });
 
@@ -72,6 +147,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         used_token_constants,
         terminal_names,
         terminal_count,
+        scanner_build_configs,
         lookahead_size: grammar_config.lookahead_size,
     };
 
@@ -80,7 +156,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
 
 pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
     grammar_config
-        .generate_augmented_terminals(0)
+        .generate_augmented_terminals()
         .iter()
         .enumerate()
         .fold(Vec::new(), |mut acc, (i, e)| {

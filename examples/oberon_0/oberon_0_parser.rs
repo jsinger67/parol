@@ -19,10 +19,10 @@ use parol_runtime::lexer::tokenizer::{
 
 pub const TERMINALS: &[&str; 42] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
-    /*  1 */ NEW_LINE_TOKEN,
-    /*  2 */ WHITESPACE_TOKEN,
+    /*  1 */ UNMATCHABLE_TOKEN,
+    /*  2 */ UNMATCHABLE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
-    /*  4 */ r###"((?ms)\(\*.*?\*\))"###,
+    /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###"\."###,
     /*  6 */ r###"\["###,
     /*  7 */ r###"]"###,
@@ -106,6 +106,54 @@ pub const TERMINAL_NAMES: &[&str; 42] = &[
     /* 40 */ "Integer",
     /* 41 */ "Error",
 ];
+
+const SCANNER_0: (&[&str; 5], &[usize; 36]) = (
+    &[
+        /*  0 */ UNMATCHABLE_TOKEN,
+        /*  1 */ NEW_LINE_TOKEN,
+        /*  2 */ WHITESPACE_TOKEN,
+        /*  3 */ UNMATCHABLE_TOKEN,
+        /*  4 */ r###"((?ms)\(\*.*?\*\))"###,
+    ],
+    &[
+        5,  /* Dot */
+        6,  /* LBracket */
+        7,  /* RBracket */
+        8,  /* LParen */
+        9,  /* RParen */
+        10, /* Tilde */
+        11, /* ColonEqu */
+        12, /* RelationalOps */
+        13, /* Equ */
+        14, /* Comma */
+        15, /* IF */
+        16, /* THEN */
+        17, /* ELSE */
+        18, /* END */
+        19, /* ELSIF */
+        20, /* WHILE */
+        21, /* DO */
+        22, /* REPEAT */
+        23, /* UNTIL */
+        24, /* Semicolon */
+        25, /* ARRAY */
+        26, /* OF */
+        27, /* Colon */
+        28, /* RECORD */
+        29, /* VAR */
+        30, /* PROCEDURE */
+        31, /* BEGIN */
+        32, /* RETURN */
+        33, /* TYPE */
+        34, /* CONST */
+        35, /* MODULE */
+        36, /* MulOperator */
+        37, /* AddOperator */
+        38, /* UnaryOp */
+        39, /* Ident */
+        40, /* Integer */
+    ],
+);
 
 const MAX_K: usize = 2;
 
@@ -1404,8 +1452,10 @@ pub const PRODUCTIONS: &[Production; 104] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
-        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
+    ),];
 }
 
 pub fn parse(

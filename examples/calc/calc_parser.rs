@@ -19,10 +19,10 @@ use parol_runtime::lexer::tokenizer::{
 
 pub const TERMINALS: &[&str; 23] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
-    /*  1 */ NEW_LINE_TOKEN,
-    /*  2 */ WHITESPACE_TOKEN,
-    /*  3 */ r###"(//.*(\r\n|\r|\n|$))"###,
-    /*  4 */ r###"((?ms)/\*.*?\*/)"###,
+    /*  1 */ UNMATCHABLE_TOKEN,
+    /*  2 */ UNMATCHABLE_TOKEN,
+    /*  3 */ UNMATCHABLE_TOKEN,
+    /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###";"###,
     /*  6 */ r###"==|!="###,
     /*  7 */ r###"(\+|-|\*|/|%|<<|>>|&|^|\|)?="###,
@@ -68,6 +68,35 @@ pub const TERMINAL_NAMES: &[&str; 23] = &[
     /* 21 */ "Id",
     /* 22 */ "Error",
 ];
+
+const SCANNER_0: (&[&str; 5], &[usize; 17]) = (
+    &[
+        /*  0 */ UNMATCHABLE_TOKEN,
+        /*  1 */ NEW_LINE_TOKEN,
+        /*  2 */ WHITESPACE_TOKEN,
+        /*  3 */ r###"(//.*(\r\n|\r|\n|$))"###,
+        /*  4 */ r###"((?ms)/\*.*?\*/)"###,
+    ],
+    &[
+        5,  /* Semicolon */
+        6,  /* EqualityOp */
+        7,  /* AssignOp */
+        8,  /* LogicalOrOp */
+        9,  /* LogicalAndOp */
+        10, /* BitwiseOrOp */
+        11, /* BitwiseAndOp */
+        12, /* BitwiseShiftOp */
+        13, /* RelationalOp */
+        14, /* Plus */
+        15, /* Minus */
+        16, /* PowOp */
+        17, /* MultOp */
+        18, /* LParen */
+        19, /* RParen */
+        20, /* Number */
+        21, /* Id */
+    ],
+);
 
 const MAX_K: usize = 2;
 
@@ -1121,8 +1150,10 @@ pub const PRODUCTIONS: &[Production; 82] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
-        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
+    ),];
 }
 
 pub fn parse(

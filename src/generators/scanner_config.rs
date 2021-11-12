@@ -1,4 +1,5 @@
 use crate::Cfg;
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -74,11 +75,13 @@ impl ScannerConfig {
     }
 
     ///
-    /// Generates the augmented tokens vector in the format needed by the lexer
-    /// generator.
+    /// Generates the data needed by the lexer generator.
+    /// The tuple contains of the specific internal tokens of the scanner (ws,
+    /// comments etc.) and the indices of the terminals that are valid in this
+    /// scanner.
     ///
-    pub fn generate_augmented_terminals(&self, cfg: &Cfg) -> Vec<String> {
-        let mut terminals = vec![
+    pub fn generate_build_information(&self, cfg: &Cfg) -> (Vec<String>, Vec<usize>, String) {
+        let mut scanner_specific = vec![
             "UNMATCHABLE_TOKEN".to_owned(),
             if self.auto_newline {
                 "NEW_LINE_TOKEN".to_owned()
@@ -98,9 +101,9 @@ impl ScannerConfig {
                 .map(|s| format!(r###"({}.*(\r\n|\r|\n|$))"###, s))
                 .collect::<Vec<String>>()
                 .join("|");
-            terminals.push(line_comments_rx);
+            scanner_specific.push(line_comments_rx);
         } else {
-            terminals.push("UNMATCHABLE_TOKEN".to_owned());
+            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
         }
         if !self.block_comments.is_empty() {
             let block_comments_rx = self
@@ -109,23 +112,24 @@ impl ScannerConfig {
                 .map(|(s, e)| format!(r###"((?ms){}.*?{})"###, s, e))
                 .collect::<Vec<String>>()
                 .join("|");
-            terminals.push(block_comments_rx);
+            scanner_specific.push(block_comments_rx);
         } else {
-            terminals.push("UNMATCHABLE_TOKEN".to_owned());
+            scanner_specific.push("UNMATCHABLE_TOKEN".to_owned());
         }
 
-        let mut terminals =
-            cfg.get_ordered_terminals()
-                .iter()
-                .fold(terminals, |mut acc, (t, s)| {
-                    if s.contains(&self.scanner_state) {
-                        acc.push(t.to_string());
-                    }
-                    acc
-                });
+        let terminals = cfg.get_ordered_terminals();
 
-        terminals.push("ERROR_TOKEN".to_owned());
-        terminals
+        let term_indices = terminals
+            .iter()
+            .enumerate()
+            .fold(Vec::new(), |mut acc, (i, (_, s))| {
+                if s.contains(&self.scanner_state) {
+                    acc.push(i + FIRST_USER_TOKEN);
+                }
+                acc
+            });
+
+        (scanner_specific, term_indices, self.scanner_name.clone())
     }
 }
 

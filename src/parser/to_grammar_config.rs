@@ -66,9 +66,9 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
     }
 }
 
-fn trace_ast_stack(item_stack: &[ParolGrammarItem]) {
+fn trace_item_stack(item_stack: &[ParolGrammarItem]) {
     trace!(
-        "Ast stack:\n{}",
+        "Item stack:\n{}",
         item_stack
             .iter()
             .rev()
@@ -83,7 +83,7 @@ fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
         .iter()
         .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
     {
-        trace_ast_stack(&item_stack);
+        trace_item_stack(&item_stack);
         return Err("Expecting only productions on user stack".into());
     }
 

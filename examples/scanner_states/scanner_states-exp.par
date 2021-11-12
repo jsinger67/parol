@@ -1,10 +1,10 @@
 %start Start
 %title "Test grammar"
-%comment "Tests corect handling of scanner states"
+%comment "Tests correct handling of scanner states"
+%line_comment "//"
+%block_comment "/\*" "\*/"
 
 %scanner String { 
-    %line_comment "//"
-    %block_comment "/\*" "\*/"
     %auto_newline_off
     %auto_ws_off
 }
@@ -18,7 +18,7 @@
 /*  3 */ StartRestSuffix: StartRest;
 /*  4 */ StartRestSuffix: ;
 /*  5 */ Content: Identifier;
-/*  6 */ Content: "\u{22}" StringContent "\u{22}";
+/*  6 */ Content: StringDelimiter StringContent StringDelimiter;
 /*  7 */ StringContent: StringContentRest;
 /*  8 */ StringContent: ;
 /*  9 */ StringContentRest: StringContentRestGroup StringContentRest;
@@ -33,3 +33,4 @@
 /* 18 */ Escaped: <String>"\\[\\bft]";
 /* 19 */ EscapedLineEnd: <String>"\\[\s*]\r?\n";
 /* 20 */ NoneQuote: <String>"[^\u{22}]";
+/* 21 */ StringDelimiter: <INITIAL, String>"\u{22}";

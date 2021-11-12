@@ -179,6 +179,19 @@ pub fn generate_parser_source(
 
     let max_k = grammar_config.lookahead_size;
 
+    let scanner_builds = grammar_config
+        .scanner_configurations
+        .iter()
+        .enumerate()
+        .skip(1)
+        .fold(StrVec::new(8), |mut acc, (i, e)| {
+            acc.push(format!(
+                r#"("{}", Tokenizer::build(TERMINALS, SCANNER_{}.0, SCANNER_{}.1).unwrap()),"#,
+                e.scanner_name, i, i
+            ));
+            acc
+        });
+
     let parser_data = ParserData {
         start_symbol_index,
         lexer_source,
@@ -190,7 +203,7 @@ pub fn generate_parser_source(
         ast_type_name: ast_type_name.to_string(),
         ast_trait_module_name: ast_trait_module_name.to_string(),
         scanner_count: 1,
-        scanner_builds: StrVec::new(0),
+        scanner_builds,
     };
 
     Ok(format!("{}", parser_data))

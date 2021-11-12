@@ -324,10 +324,10 @@ impl CalcGrammar {
 
     #[allow(dead_code)]
     // Use this function for debugging purposes:
-    // trace!("{}", self.trace_ast_stack(context));
-    fn trace_ast_stack(&self, context: &str) -> String {
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> String {
         format!(
-            "Ast stack at {}:\n{}",
+            "Item stack at {}:\n{}",
             context,
             self.item_stack
                 .iter()
@@ -513,7 +513,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "logical_or_13";
-        trace!("{}", self.trace_ast_stack(context));
+        trace!("{}", self.trace_item_stack(context));
         self.process_left_associative_operation_list(context)
     }
 

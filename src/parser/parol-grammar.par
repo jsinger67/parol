@@ -11,15 +11,15 @@ Parol
     ;
 
 Prolog
-    : StartDeclaration { GlobalDirective };
-
-GlobalDirective
-    : Declaration
-    | ScannerState
-    ;
+    : StartDeclaration Declarations ScannerStates;
 
 StartDeclaration
     : "%start" Identifier
+    ;
+
+Declarations
+    : Declaration Declarations
+    |
     ;
 
 Declaration
@@ -33,6 +33,11 @@ ScannerDirectives
     | "%block_comment" String String
     | "%auto_newline_off"
     | "%auto_ws_off"
+    ;
+
+ScannerStates
+    : ScannerState ScannerStates
+    |
     ;
 
 GrammarDefinition

@@ -7,3 +7,5 @@ pub const TERMINALS: &[&str; {{terminal_count}}] = &[
 
 pub const TERMINAL_NAMES: &[&str; {{terminal_count}}] = &[
 {{{ terminal_names }}}];
+
+{{{scanner_build_configs}}}

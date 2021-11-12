@@ -86,8 +86,24 @@ impl GrammarConfig {
     /// Generates the augmented tokens vector in the format needed by the lexer
     /// generator.
     ///
-    pub fn generate_augmented_terminals(&self, scanner_state: usize) -> Vec<String> {
-        self.scanner_configurations[scanner_state].generate_augmented_terminals(&self.cfg)
+    pub fn generate_augmented_terminals(&self) -> Vec<String> {
+        let terminals = vec![
+            "UNMATCHABLE_TOKEN".to_owned(),
+            "UNMATCHABLE_TOKEN".to_owned(),
+            "UNMATCHABLE_TOKEN".to_owned(),
+            "UNMATCHABLE_TOKEN".to_owned(),
+            "UNMATCHABLE_TOKEN".to_owned(),
+        ];
+        let mut terminals =
+            self.cfg
+                .get_ordered_terminals()
+                .iter()
+                .fold(terminals, |mut acc, (t, _)| {
+                    acc.push(t.to_string());
+                    acc
+                });
+        terminals.push("ERROR_TOKEN".to_owned());
+        terminals
     }
 }
 
@@ -162,7 +178,7 @@ mod test {
             .with_comment(comment)
             .add_scanner(scanner_config);
 
-        let augment_terminals = grammar_config.generate_augmented_terminals(0);
+        let augment_terminals = grammar_config.generate_augmented_terminals();
 
         assert_eq!(
             vec![

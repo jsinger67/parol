@@ -94,12 +94,18 @@ impl Cfg {
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///
-    pub fn get_ordered_terminals(&self) -> Vec<(&str, &[usize])> {
+    pub fn get_ordered_terminals(&self) -> Vec<(&str, Vec<usize>)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
                 if let Symbol::T(Terminal::Trm(t, s)) = s {
-                    if !acc.contains(&(t.as_str(), s)) {
-                        acc.push((t, s));
+                    if let Some(pos) = acc.iter_mut().position(|(trm, _)| trm == t) {
+                        for st in s {
+                            if !acc[pos].1.contains(st) {
+                                acc[pos].1.push(*st);
+                            }
+                        }
+                    } else {
+                        acc.push((t, s.to_vec()));
                     }
                 }
                 acc

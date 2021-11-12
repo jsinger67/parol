@@ -19,8 +19,8 @@ use parol_runtime::lexer::tokenizer::{
 
 pub const TERMINALS: &[&str; 8] = &[
     /* 0 */ UNMATCHABLE_TOKEN,
-    /* 1 */ NEW_LINE_TOKEN,
-    /* 2 */ WHITESPACE_TOKEN,
+    /* 1 */ UNMATCHABLE_TOKEN,
+    /* 2 */ UNMATCHABLE_TOKEN,
     /* 3 */ UNMATCHABLE_TOKEN,
     /* 4 */ UNMATCHABLE_TOKEN,
     /* 5 */ r###","###,
@@ -38,6 +38,17 @@ pub const TERMINAL_NAMES: &[&str; 8] = &[
     /* 6 */ "Num",
     /* 7 */ "Error",
 ];
+
+const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
+    &[
+        /* 0 */ UNMATCHABLE_TOKEN,
+        /* 1 */ NEW_LINE_TOKEN,
+        /* 2 */ WHITESPACE_TOKEN,
+        /* 3 */ UNMATCHABLE_TOKEN,
+        /* 4 */ UNMATCHABLE_TOKEN,
+    ],
+    &[5 /* Comma */, 6 /* Num */],
+);
 
 const MAX_K: usize = 2;
 
@@ -119,8 +130,10 @@ pub const PRODUCTIONS: &[Production; 7] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> =
-        vec![("INITIAL", Tokenizer::build(TERMINALS).unwrap()),];
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
+    ),];
 }
 
 pub fn parse(

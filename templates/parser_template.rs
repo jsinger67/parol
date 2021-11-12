@@ -24,7 +24,7 @@ pub const NON_TERMINALS: &[&str; {{non_terminal_count}}] = &[
 {{{productions}}}
 lazy_static! {
     static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
-        ("INITIAL", Tokenizer::build(TERMINALS).unwrap()),
+        ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
 {{{scanner_builds}}}
     ];
 }
