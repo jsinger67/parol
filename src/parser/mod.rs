@@ -65,4 +65,4 @@ pub use scanner_access::ScannerAccess;
 ///
 #[forbid(missing_docs)]
 pub mod user_access;
-pub use user_access::{UserAccess, UserActionsTrait};
+pub use user_access::UserActionsTrait;

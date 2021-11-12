@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::lexer::TokenStream;
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
-    ProductionIndex, ScannerAccess, UserActionsTrait,
+    ProductionIndex, UserActionsTrait,
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
@@ -278,9 +278,6 @@ impl<'t> LLKParser {
         stream: Rc<RefCell<TokenStream<'t>>>,
         user_actions: &mut dyn UserActionsTrait,
     ) -> Result<()> {
-        let scanner_access: Rc<RefCell<dyn ScannerAccess>> = stream.clone();
-        user_actions.set_scanner_access(scanner_access);
-
         let prod_num = self
             .predict_production(self.start_symbol_index, stream.clone())
             .chain_err(|| {
