@@ -5,10 +5,12 @@ use crate::unary_operator::UnaryOperator;
 use id_tree::Tree;
 use log::trace;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess};
+use std::cell::RefMut;
 use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug, Display, Error, Formatter};
+
 ///
 /// The value range for the supported calculations
 ///
@@ -372,6 +374,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_equality_op_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "equality_op_6";
         self.process_binary_operator(tk_equality_op_0, parse_tree, context)
@@ -385,6 +388,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_assign_op_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "assign_op_7";
         let symbol = tk_assign_op_0.symbol(parse_tree)?;
@@ -402,6 +406,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _id_0: &ParseTreeStackEntry,
         _assign_op_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "assign_item_8";
         let top_of_stack1 = self.pop(context);
@@ -433,6 +438,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _assignment_lst1_1: &ParseTreeStackEntry,
         _logical_or_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "assignment_9";
         let value = self.pop(context);
@@ -472,6 +478,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _assignment_lst1_itm1_0: &ParseTreeStackEntry,
         _assignment_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "assignment_lst1_10";
         let top_of_stack1 = self.pop(context);
@@ -495,7 +502,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// assignment_lst1: ;
     ///
-    fn assignment_lst1_12(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn assignment_lst1_12(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "assignment_lst1_12";
         // Start with an empty list here
         self.push(CalcGrammarItem::AssignItems(Vec::new()), context);
@@ -511,6 +522,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _logical_and_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_or_13";
         trace!("{}", self.trace_item_stack(context));
@@ -526,6 +538,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _logical_or_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_or_lst1_14";
         self.process_right_items(context)
@@ -535,7 +548,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_or_lst1: ;
     ///
-    fn logical_or_lst1_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_or_lst1_16(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "logical_or_lst1_16";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -550,6 +567,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _logical_or_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_or_op_17";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::LogOr), context);
@@ -565,6 +583,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _logical_or_op_0: &ParseTreeStackEntry,
         _logical_and_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_or_item_18";
         self.process_right_item(context)
@@ -579,6 +598,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_or_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_and_19";
         self.process_left_associative_operation_list(context)
@@ -593,6 +613,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _logical_and_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_and_lst1_20";
         self.process_right_items(context)
@@ -602,7 +623,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_and_lst1: ;
     ///
-    fn logical_and_lst1_22(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_and_lst1_22(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "logical_and_lst1_22";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -617,6 +642,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _logical_and_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_and_op_23";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::LogAnd), context);
@@ -632,6 +658,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _logical_and_op_0: &ParseTreeStackEntry,
         _bitwise_or_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "logical_and_item_24";
         self.process_right_item(context)
@@ -646,6 +673,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_and_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_or_25";
         self.process_left_associative_operation_list(context)
@@ -660,6 +688,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_or_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_or_lst1_26";
         self.process_right_items(context)
@@ -669,7 +698,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_or_lst1: ;
     ///
-    fn bitwise_or_lst1_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_or_lst1_28(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "bitwise_or_lst1_28";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -684,6 +717,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_or_op_29";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::BitOr), context);
@@ -699,6 +733,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _bitwise_and_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_or_item_30";
         self.process_right_item(context)
@@ -713,6 +748,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _equality_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_and_31";
         self.process_left_associative_operation_list(context)
@@ -727,6 +763,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_and_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_and_lst1_32";
         self.process_right_items(context)
@@ -736,7 +773,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_and_lst1: ;
     ///
-    fn bitwise_and_lst1_34(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_and_lst1_34(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "bitwise_and_lst1_34";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -751,6 +792,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_and_op_35";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::BitAnd), context);
@@ -766,6 +808,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _equality_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_and_item_36";
         self.process_right_item(context)
@@ -780,6 +823,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _relational_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "equality_37";
         self.process_left_associative_operation_list(context)
@@ -794,6 +838,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _equality_lst1_itm1_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "equality_lst1_38";
         self.process_right_items(context)
@@ -803,7 +848,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// equality_lst1: ;
     ///
-    fn equality_lst1_40(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn equality_lst1_40(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "equality_lst1_40";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -819,6 +868,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _equality_op_0: &ParseTreeStackEntry,
         _relational_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "equality_item_41";
         self.process_right_item(context)
@@ -832,6 +882,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_bitwise_shift_op_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_shift_op_42";
         self.process_binary_operator(tk_bitwise_shift_op_0, parse_tree, context)
@@ -846,6 +897,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_shift_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "relational_43";
         self.process_left_associative_operation_list(context)
@@ -860,6 +912,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _relational_lst1_itm1_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "relational_lst1_44";
         self.process_right_items(context)
@@ -869,7 +922,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// relational_lst1: ;
     ///
-    fn relational_lst1_46(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn relational_lst1_46(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "relational_lst1_46";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -884,6 +941,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_relational_op_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "relational_op_47";
         self.process_binary_operator(tk_relational_op_0, parse_tree, context)
@@ -898,6 +956,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _relational_op_0: &ParseTreeStackEntry,
         _bitwise_shift_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "relational_item_48";
         self.process_right_item(context)
@@ -912,6 +971,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _summ_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_shift_49";
         self.process_left_associative_operation_list(context)
@@ -926,6 +986,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_shift_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_shift_lst1_50";
         self.process_right_items(context)
@@ -935,7 +996,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_shift_lst1: ;
     ///
-    fn bitwise_shift_lst1_52(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_shift_lst1_52(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "bitwise_shift_lst1_52";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -951,6 +1016,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _bitwise_shift_op_0: &ParseTreeStackEntry,
         _summ_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "bitwise_shift_item_53";
         self.process_right_item(context)
@@ -965,6 +1031,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _mult_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "summ_54";
         self.process_left_associative_operation_list(context)
@@ -979,6 +1046,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _summ_lst1_itm1_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "summ_lst1_55";
         self.process_right_items(context)
@@ -988,7 +1056,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// summ_lst1: ;
     ///
-    fn summ_lst1_57(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn summ_lst1_57(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "summ_lst1_57";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -1003,6 +1075,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _plus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "plus_58";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Add), context);
@@ -1017,6 +1090,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "minus_59";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Sub), context);
@@ -1032,6 +1106,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _add_op_0: &ParseTreeStackEntry,
         _mult_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "summ_item_62";
         self.process_right_item(context)
@@ -1045,6 +1120,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _pow_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "pow_op_63";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Pow), context);
@@ -1060,6 +1136,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _power_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "mult_64";
         self.process_left_associative_operation_list(context)
@@ -1074,6 +1151,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _mult_lst1_itm1_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "mult_lst1_65";
         self.process_right_items(context)
@@ -1083,7 +1161,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// mult_lst1: ;
     ///
-    fn mult_lst1_67(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn mult_lst1_67(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "mult_lst1_67";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -1098,6 +1180,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_mult_op_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "mult_op_68";
         self.process_binary_operator(tk_mult_op_0, parse_tree, context)
@@ -1112,6 +1195,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _mult_op_0: &ParseTreeStackEntry,
         _power_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "mult_item_69";
         self.process_right_item(context)
@@ -1126,6 +1210,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _factor_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "power_70";
         self.process_right_associative_operation_list(context)
@@ -1140,6 +1225,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _power_lst1_itm1_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "power_lst1_71";
         self.process_right_items(context)
@@ -1154,6 +1240,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _pow_op_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "power_lst1_itm1_72";
         self.process_right_item(context)
@@ -1163,7 +1250,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// power_lst1: ;
     ///
-    fn power_lst1_73(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn power_lst1_73(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "power_lst1_73";
         // Start with an empty list here
         self.push(CalcGrammarItem::RightItems(Vec::new()), context);
@@ -1178,6 +1269,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "negate_74";
         let minus = self.pop(context);
@@ -1198,6 +1290,7 @@ impl CalcGrammarTrait for CalcGrammar {
         _negate_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "factor_77";
         let number = self.pop(context);
@@ -1222,6 +1315,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_number_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "number_79";
         let symbol = tk_number_0.symbol(parse_tree)?;
@@ -1243,6 +1337,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "idref_80";
         let top_of_stack = self.pop(context);
@@ -1267,6 +1362,7 @@ impl CalcGrammarTrait for CalcGrammar {
         &mut self,
         tk_id_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "id_81";
         let id = tk_id_0.symbol(parse_tree)?;

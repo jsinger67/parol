@@ -7,11 +7,8 @@
 use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{
-    ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserAccess, UserActionsTrait,
-};
-use std::cell::RefCell;
-use std::rc::Rc;
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserActionsTrait};
+use std::cell::RefMut;
 
 ///
 /// The `ParolGrammarTrait` trait is automatically generated for the
@@ -28,6 +25,7 @@ pub trait ParolGrammarTrait {
         _prolog_0: &ParseTreeStackEntry,
         _grammar_definition_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -42,6 +40,7 @@ pub trait ParolGrammarTrait {
         _declarations_1: &ParseTreeStackEntry,
         _scanner_states_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -55,6 +54,7 @@ pub trait ParolGrammarTrait {
         _end_of_input_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -68,6 +68,7 @@ pub trait ParolGrammarTrait {
         _declaration_0: &ParseTreeStackEntry,
         _declarations_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -76,7 +77,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Declarations: ;
     ///
-    fn declarations_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn declarations_4(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -89,6 +94,7 @@ pub trait ParolGrammarTrait {
         _newline_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -102,6 +108,7 @@ pub trait ParolGrammarTrait {
         _whitespace_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -114,6 +121,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _scanner_directives_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -127,6 +135,7 @@ pub trait ParolGrammarTrait {
         _line_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -141,6 +150,7 @@ pub trait ParolGrammarTrait {
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -153,6 +163,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -165,6 +176,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -178,6 +190,7 @@ pub trait ParolGrammarTrait {
         _scanner_state_0: &ParseTreeStackEntry,
         _scanner_states_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -186,7 +199,11 @@ pub trait ParolGrammarTrait {
     ///
     /// ScannerStates: ;
     ///
-    fn scanner_states_13(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn scanner_states_13(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -200,6 +217,7 @@ pub trait ParolGrammarTrait {
         _production_1: &ParseTreeStackEntry,
         _grammar_definition_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -212,6 +230,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -220,7 +239,11 @@ pub trait ParolGrammarTrait {
     ///
     /// GrammarDefinitionSuffix: ;
     ///
-    fn grammar_definition_suffix_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn grammar_definition_suffix_16(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -233,6 +256,7 @@ pub trait ParolGrammarTrait {
         _production_0: &ParseTreeStackEntry,
         _grammar_definition_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -245,6 +269,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -256,6 +281,7 @@ pub trait ParolGrammarTrait {
     fn grammar_definition_rest_suffix_19(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -271,6 +297,7 @@ pub trait ParolGrammarTrait {
         _alternations_2: &ParseTreeStackEntry,
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -284,6 +311,7 @@ pub trait ParolGrammarTrait {
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -296,6 +324,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -304,7 +333,11 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationsSuffix: ;
     ///
-    fn alternations_suffix_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_suffix_23(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -318,6 +351,7 @@ pub trait ParolGrammarTrait {
         _alternation_1: &ParseTreeStackEntry,
         _alternations_rest_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -330,6 +364,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -338,7 +373,11 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationsRestSuffix: ;
     ///
-    fn alternations_rest_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_rest_suffix_26(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -350,6 +389,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -358,7 +398,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Alternation: ;
     ///
-    fn alternation_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_28(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -371,6 +415,7 @@ pub trait ParolGrammarTrait {
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -383,6 +428,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -391,7 +437,11 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationRestSuffix: ;
     ///
-    fn alternation_rest_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_rest_suffix_31(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -403,6 +453,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _group_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -415,6 +466,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _repeat_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -427,6 +479,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _optional_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -439,6 +492,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _symbol_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -451,6 +505,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -463,6 +518,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _simple_token_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -475,6 +531,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _token_with_states_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -487,6 +544,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -502,6 +560,7 @@ pub trait ParolGrammarTrait {
         _g_t_2: &ParseTreeStackEntry,
         _string_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -516,6 +575,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -530,6 +590,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -544,6 +605,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -556,6 +618,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -568,6 +631,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -583,6 +647,7 @@ pub trait ParolGrammarTrait {
         _l_brace_2: &ParseTreeStackEntry,
         _scanner_state_suffix_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -596,6 +661,7 @@ pub trait ParolGrammarTrait {
         _scanner_state_rest_0: &ParseTreeStackEntry,
         _r_brace_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -608,6 +674,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _r_brace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -621,6 +688,7 @@ pub trait ParolGrammarTrait {
         _scanner_directives_0: &ParseTreeStackEntry,
         _scanner_state_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -633,6 +701,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _scanner_state_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -641,7 +710,11 @@ pub trait ParolGrammarTrait {
     ///
     /// ScannerStateRestSuffix: ;
     ///
-    fn scanner_state_rest_suffix_51(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn scanner_state_rest_suffix_51(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 
@@ -654,6 +727,7 @@ pub trait ParolGrammarTrait {
         _identifier_0: &ParseTreeStackEntry,
         _state_list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -668,6 +742,7 @@ pub trait ParolGrammarTrait {
         _identifier_1: &ParseTreeStackEntry,
         _state_list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -676,7 +751,11 @@ pub trait ParolGrammarTrait {
     ///
     /// StateListRest: ;
     ///
-    fn state_list_rest_54(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn state_list_rest_54(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         Ok(())
     }
 }
@@ -687,47 +766,71 @@ impl UserActionsTrait for ParolGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
+        scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.parol_0(&children[0], &children[1], parse_tree),
+            0 => self.parol_0(&children[0], &children[1], parse_tree, scanner_access),
 
-            1 => self.prolog_1(&children[0], &children[1], &children[2], parse_tree),
+            1 => self.prolog_1(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            2 => self.start_declaration_2(&children[0], &children[1], parse_tree),
+            2 => self.start_declaration_2(&children[0], &children[1], parse_tree, scanner_access),
 
-            3 => self.declarations_3(&children[0], &children[1], parse_tree),
+            3 => self.declarations_3(&children[0], &children[1], parse_tree, scanner_access),
 
-            4 => self.declarations_4(parse_tree),
+            4 => self.declarations_4(parse_tree, scanner_access),
 
-            5 => self.declaration_5(&children[0], &children[1], parse_tree),
+            5 => self.declaration_5(&children[0], &children[1], parse_tree, scanner_access),
 
-            6 => self.declaration_6(&children[0], &children[1], parse_tree),
+            6 => self.declaration_6(&children[0], &children[1], parse_tree, scanner_access),
 
-            7 => self.declaration_7(&children[0], parse_tree),
+            7 => self.declaration_7(&children[0], parse_tree, scanner_access),
 
-            8 => self.scanner_directives_8(&children[0], &children[1], parse_tree),
+            8 => self.scanner_directives_8(&children[0], &children[1], parse_tree, scanner_access),
 
-            9 => self.scanner_directives_9(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.scanner_directives_9(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            10 => self.scanner_directives_10(&children[0], parse_tree),
+            10 => self.scanner_directives_10(&children[0], parse_tree, scanner_access),
 
-            11 => self.scanner_directives_11(&children[0], parse_tree),
+            11 => self.scanner_directives_11(&children[0], parse_tree, scanner_access),
 
-            12 => self.scanner_states_12(&children[0], &children[1], parse_tree),
+            12 => self.scanner_states_12(&children[0], &children[1], parse_tree, scanner_access),
 
-            13 => self.scanner_states_13(parse_tree),
+            13 => self.scanner_states_13(parse_tree, scanner_access),
 
-            14 => self.grammar_definition_14(&children[0], &children[1], &children[2], parse_tree),
+            14 => self.grammar_definition_14(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            15 => self.grammar_definition_suffix_15(&children[0], parse_tree),
+            15 => self.grammar_definition_suffix_15(&children[0], parse_tree, scanner_access),
 
-            16 => self.grammar_definition_suffix_16(parse_tree),
+            16 => self.grammar_definition_suffix_16(parse_tree, scanner_access),
 
-            17 => self.grammar_definition_rest_17(&children[0], &children[1], parse_tree),
+            17 => self.grammar_definition_rest_17(
+                &children[0],
+                &children[1],
+                parse_tree,
+                scanner_access,
+            ),
 
-            18 => self.grammar_definition_rest_suffix_18(&children[0], parse_tree),
+            18 => self.grammar_definition_rest_suffix_18(&children[0], parse_tree, scanner_access),
 
-            19 => self.grammar_definition_rest_suffix_19(parse_tree),
+            19 => self.grammar_definition_rest_suffix_19(parse_tree, scanner_access),
 
             20 => self.production_20(
                 &children[0],
@@ -735,45 +838,52 @@ impl UserActionsTrait for ParolGrammar {
                 &children[2],
                 &children[3],
                 parse_tree,
+                scanner_access,
             ),
 
-            21 => self.alternations_21(&children[0], &children[1], parse_tree),
+            21 => self.alternations_21(&children[0], &children[1], parse_tree, scanner_access),
 
-            22 => self.alternations_suffix_22(&children[0], parse_tree),
+            22 => self.alternations_suffix_22(&children[0], parse_tree, scanner_access),
 
-            23 => self.alternations_suffix_23(parse_tree),
+            23 => self.alternations_suffix_23(parse_tree, scanner_access),
 
-            24 => self.alternations_rest_24(&children[0], &children[1], &children[2], parse_tree),
+            24 => self.alternations_rest_24(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            25 => self.alternations_rest_suffix_25(&children[0], parse_tree),
+            25 => self.alternations_rest_suffix_25(&children[0], parse_tree, scanner_access),
 
-            26 => self.alternations_rest_suffix_26(parse_tree),
+            26 => self.alternations_rest_suffix_26(parse_tree, scanner_access),
 
-            27 => self.alternation_27(&children[0], parse_tree),
+            27 => self.alternation_27(&children[0], parse_tree, scanner_access),
 
-            28 => self.alternation_28(parse_tree),
+            28 => self.alternation_28(parse_tree, scanner_access),
 
-            29 => self.alternation_rest_29(&children[0], &children[1], parse_tree),
+            29 => self.alternation_rest_29(&children[0], &children[1], parse_tree, scanner_access),
 
-            30 => self.alternation_rest_suffix_30(&children[0], parse_tree),
+            30 => self.alternation_rest_suffix_30(&children[0], parse_tree, scanner_access),
 
-            31 => self.alternation_rest_suffix_31(parse_tree),
+            31 => self.alternation_rest_suffix_31(parse_tree, scanner_access),
 
-            32 => self.factor_32(&children[0], parse_tree),
+            32 => self.factor_32(&children[0], parse_tree, scanner_access),
 
-            33 => self.factor_33(&children[0], parse_tree),
+            33 => self.factor_33(&children[0], parse_tree, scanner_access),
 
-            34 => self.factor_34(&children[0], parse_tree),
+            34 => self.factor_34(&children[0], parse_tree, scanner_access),
 
-            35 => self.factor_35(&children[0], parse_tree),
+            35 => self.factor_35(&children[0], parse_tree, scanner_access),
 
-            36 => self.symbol_36(&children[0], parse_tree),
+            36 => self.symbol_36(&children[0], parse_tree, scanner_access),
 
-            37 => self.symbol_37(&children[0], parse_tree),
+            37 => self.symbol_37(&children[0], parse_tree, scanner_access),
 
-            38 => self.symbol_38(&children[0], parse_tree),
+            38 => self.symbol_38(&children[0], parse_tree, scanner_access),
 
-            39 => self.simple_token_39(&children[0], parse_tree),
+            39 => self.simple_token_39(&children[0], parse_tree, scanner_access),
 
             40 => self.token_with_states_40(
                 &children[0],
@@ -781,17 +891,36 @@ impl UserActionsTrait for ParolGrammar {
                 &children[2],
                 &children[3],
                 parse_tree,
+                scanner_access,
             ),
 
-            41 => self.group_41(&children[0], &children[1], &children[2], parse_tree),
+            41 => self.group_41(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            42 => self.optional_42(&children[0], &children[1], &children[2], parse_tree),
+            42 => self.optional_42(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            43 => self.repeat_43(&children[0], &children[1], &children[2], parse_tree),
+            43 => self.repeat_43(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            44 => self.identifier_44(&children[0], parse_tree),
+            44 => self.identifier_44(&children[0], parse_tree, scanner_access),
 
-            45 => self.string_45(&children[0], parse_tree),
+            45 => self.string_45(&children[0], parse_tree, scanner_access),
 
             46 => self.scanner_state_46(
                 &children[0],
@@ -799,33 +928,36 @@ impl UserActionsTrait for ParolGrammar {
                 &children[2],
                 &children[3],
                 parse_tree,
+                scanner_access,
             ),
 
-            47 => self.scanner_state_suffix_47(&children[0], &children[1], parse_tree),
+            47 => {
+                self.scanner_state_suffix_47(&children[0], &children[1], parse_tree, scanner_access)
+            }
 
-            48 => self.scanner_state_suffix_48(&children[0], parse_tree),
+            48 => self.scanner_state_suffix_48(&children[0], parse_tree, scanner_access),
 
-            49 => self.scanner_state_rest_49(&children[0], &children[1], parse_tree),
+            49 => {
+                self.scanner_state_rest_49(&children[0], &children[1], parse_tree, scanner_access)
+            }
 
-            50 => self.scanner_state_rest_suffix_50(&children[0], parse_tree),
+            50 => self.scanner_state_rest_suffix_50(&children[0], parse_tree, scanner_access),
 
-            51 => self.scanner_state_rest_suffix_51(parse_tree),
+            51 => self.scanner_state_rest_suffix_51(parse_tree, scanner_access),
 
-            52 => self.state_list_52(&children[0], &children[1], parse_tree),
+            52 => self.state_list_52(&children[0], &children[1], parse_tree, scanner_access),
 
-            53 => self.state_list_rest_53(&children[0], &children[1], &children[2], parse_tree),
+            53 => self.state_list_rest_53(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+                scanner_access,
+            ),
 
-            54 => self.state_list_rest_54(parse_tree),
+            54 => self.state_list_rest_54(parse_tree, scanner_access),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }
     }
-}
-
-///
-/// Implement the functions of this trait on your own to be able to use the
-/// functionality provided by the given trait.
-///
-impl UserAccess for ParolGrammar {
-    fn set_scanner_access<'a>(&mut self, _scanner_access: Rc<RefCell<dyn ScannerAccess + 'a>>) {}
 }

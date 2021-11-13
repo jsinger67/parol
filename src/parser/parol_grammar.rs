@@ -2,7 +2,8 @@ use crate::parser::parol_grammar_trait::ParolGrammarTrait;
 use id_tree::Tree;
 use log::trace;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess};
+use std::cell::RefMut;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
@@ -296,6 +297,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _end_of_input_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "start_declaration_2";
         if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(s))) = self.item_stack.pop() {
@@ -310,7 +312,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Declarations: ;
     ///
-    fn declarations_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn declarations_4(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let context = "declarations_4";
         trace!("{}", self.trace_item_stack(context));
         self.scanner_configurations[0] = self.current_scanner.clone();
@@ -327,6 +333,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _percent_title_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "declaration_5";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
@@ -346,6 +353,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _percent_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "declaration_6";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
@@ -365,6 +373,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _percent_line_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "scanner_directives_8";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
@@ -385,6 +394,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "scanner_directives_9";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1, _))) = self.item_stack.pop() {
@@ -407,6 +417,7 @@ impl ParolGrammarTrait for ParolGrammar {
         &mut self,
         _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let _context = "scanner_directives_10";
         self.current_scanner.auto_newline_off = true;
@@ -421,6 +432,7 @@ impl ParolGrammarTrait for ParolGrammar {
         &mut self,
         _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let _context = "scanner_directives_11";
         self.current_scanner.auto_ws_off = true;
@@ -438,6 +450,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternations_2: &ParseTreeStackEntry,
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "production_20";
         if let Some(ParolGrammarItem::Alts(mut rhs)) = self.item_stack.pop() {
@@ -463,6 +476,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "alternations_21";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.item_stack.pop() {
@@ -483,7 +497,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationsSuffix: ;
     ///
-    fn alternations_suffix_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_suffix_23(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let _context = "alternations_suffix_23";
         self.item_stack
             .push(ParolGrammarItem::Alts(Alternations::new()));
@@ -500,6 +518,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternation_1: &ParseTreeStackEntry,
         _alternations_rest_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "alternations_rest_24";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.item_stack.pop() {
@@ -520,7 +539,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationsRestSuffix: ;
     ///
-    fn alternations_rest_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternations_rest_suffix_26(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let _context = "alternations_rest_suffix_26";
         self.item_stack
             .push(ParolGrammarItem::Alts(Alternations::new()));
@@ -531,7 +554,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Alternation: ;
     ///
-    fn alternation_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_28(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let _context = "alternation_28";
         self.item_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
@@ -547,6 +574,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "alternation_rest_29";
         //trace!("{}", self.trace_item_stack(context));
@@ -567,7 +595,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationRestSuffix: ;
     ///
-    fn alternation_rest_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn alternation_rest_suffix_31(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let _context = "alternation_rest_suffix_31";
         self.item_stack
             .push(ParolGrammarItem::Alt(Alternation::new()));
@@ -585,6 +617,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _g_t_2: &ParseTreeStackEntry,
         _string_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "token_with_state_40";
         trace!("{}", self.trace_item_stack(context));
@@ -611,6 +644,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "group_41";
         if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
@@ -632,6 +666,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "optional_42";
         if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
@@ -653,6 +688,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _alternations_1: &ParseTreeStackEntry,
         _esc_r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "repeat_43";
         if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
@@ -672,6 +708,7 @@ impl ParolGrammarTrait for ParolGrammar {
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "identifier_44";
         let ast_item = identifier_0.get_ast_type(parse_tree);
@@ -692,6 +729,7 @@ impl ParolGrammarTrait for ParolGrammar {
         &mut self,
         string_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "string_45";
         let ast_item = string_0.get_ast_type(parse_tree);
@@ -715,6 +753,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_state_rest_0: &ParseTreeStackEntry,
         _r_brace_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "scanner_state_suffix_47";
         trace!("{}", self.trace_item_stack(context));
@@ -740,6 +779,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _identifier_0: &ParseTreeStackEntry,
         _state_list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "state_list_52";
         trace!("{}", self.trace_item_stack(context));
@@ -756,6 +796,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _identifier_1: &ParseTreeStackEntry,
         _state_list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "state_list_rest_53";
         trace!("{}", self.trace_item_stack(context));
@@ -766,7 +807,11 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// StateListRest: ;
     ///
-    fn state_list_rest_54(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn state_list_rest_54(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
         let _context = "state_list_rest_54";
         // Start with an empty state list
         self.item_stack.push(ParolGrammarItem::StateList(vec![]));

@@ -11,7 +11,6 @@ use parol_runtime::parser::{
     ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
-use std::rc::Rc;
 
 {{{lexer_source}}}
 
@@ -37,9 +36,9 @@ pub fn parse(input: &str, file_name: String, user_actions: &mut dyn UserActionsT
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    let token_stream = Rc::new(RefCell::new(
+    let token_stream = RefCell::new(
         TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
-    ));
+    );
     let result = llk_parser.parse(token_stream, user_actions);
     match result {
         Ok(()) => Ok(llk_parser.parse_tree),

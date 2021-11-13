@@ -64,6 +64,7 @@ fn generate_argument_list(pr: &Pr, terminals: &[&str], terminal_names: &[String]
         })
         .collect::<Vec<String>>();
     arguments.push("_parse_tree: &Tree<ParseTreeType>".to_string());
+    arguments.push("_scanner_access: RefMut<dyn ScannerAccess>".to_string());
     arguments.join(", ")
 }
 
@@ -72,6 +73,7 @@ fn generate_caller_argument_list(pr: &Pr) -> String {
         .map(|i| format!("&children[{}]", i))
         .collect::<Vec<String>>();
     arguments.push("parse_tree".to_string());
+    arguments.push("scanner_access".to_string());
     arguments.join(", ")
 }
 
