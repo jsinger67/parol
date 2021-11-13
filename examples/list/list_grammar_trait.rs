@@ -23,7 +23,7 @@ pub trait ListGrammarTrait {
     fn list_0(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -37,7 +37,7 @@ pub trait ListGrammarTrait {
         _num_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -51,7 +51,7 @@ pub trait ListGrammarTrait {
         _list_item_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -65,7 +65,7 @@ pub trait ListGrammarTrait {
         _end_of_input_0: &ParseTreeStackEntry,
         _num_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -77,7 +77,7 @@ pub trait ListGrammarTrait {
     fn list_rest_4(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -90,7 +90,7 @@ pub trait ListGrammarTrait {
         &mut self,
         _end_of_input_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -103,7 +103,7 @@ pub trait ListGrammarTrait {
         &mut self,
         _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }

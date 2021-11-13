@@ -64,7 +64,7 @@ fn generate_argument_list(pr: &Pr, terminals: &[&str], terminal_names: &[String]
         })
         .collect::<Vec<String>>();
     arguments.push("_parse_tree: &Tree<ParseTreeType>".to_string());
-    arguments.push("_scanner_access: RefMut<dyn ScannerAccess>".to_string());
+    arguments.push("mut _scanner_access: RefMut<dyn ScannerAccess>".to_string());
     arguments.join(", ")
 }
 

@@ -24,7 +24,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _selectorlist_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -39,7 +39,7 @@ pub trait Oberon0GrammarTrait {
         _ident_1: &ParseTreeStackEntry,
         _selectorlist_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -55,7 +55,7 @@ pub trait Oberon0GrammarTrait {
         _whitespace_2: &ParseTreeStackEntry,
         _selectorlist_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -67,7 +67,7 @@ pub trait Oberon0GrammarTrait {
     fn selectorlist_3(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -81,7 +81,7 @@ pub trait Oberon0GrammarTrait {
         _ident_0: &ParseTreeStackEntry,
         _selector_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -94,7 +94,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _integer_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -109,7 +109,7 @@ pub trait Oberon0GrammarTrait {
         _expression_1: &ParseTreeStackEntry,
         _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -123,7 +123,7 @@ pub trait Oberon0GrammarTrait {
         _tilde_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -137,7 +137,7 @@ pub trait Oberon0GrammarTrait {
         _unary_op_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -151,7 +151,7 @@ pub trait Oberon0GrammarTrait {
         _factor_0: &ParseTreeStackEntry,
         _mul_expression_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -166,7 +166,7 @@ pub trait Oberon0GrammarTrait {
         _factor_1: &ParseTreeStackEntry,
         _mul_expression_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -178,7 +178,7 @@ pub trait Oberon0GrammarTrait {
     fn mul_expression_11(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -192,7 +192,7 @@ pub trait Oberon0GrammarTrait {
         _term_0: &ParseTreeStackEntry,
         _add_expression_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -207,7 +207,7 @@ pub trait Oberon0GrammarTrait {
         _term_1: &ParseTreeStackEntry,
         _add_expression_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -219,7 +219,7 @@ pub trait Oberon0GrammarTrait {
     fn add_expression_14(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -232,7 +232,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _colon_equ_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -245,7 +245,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _assign_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -258,7 +258,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _relational_ops_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -271,7 +271,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _relational_ops_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -284,7 +284,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _equ_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -298,7 +298,7 @@ pub trait Oberon0GrammarTrait {
         _simple_expression_0: &ParseTreeStackEntry,
         _expression_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -312,7 +312,7 @@ pub trait Oberon0GrammarTrait {
         _relation_op_0: &ParseTreeStackEntry,
         _simple_expression_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -324,7 +324,7 @@ pub trait Oberon0GrammarTrait {
     fn expression_suffix_22(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -340,7 +340,7 @@ pub trait Oberon0GrammarTrait {
         _assign_op_2: &ParseTreeStackEntry,
         _expression_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -354,7 +354,7 @@ pub trait Oberon0GrammarTrait {
         _line_comment_0: &ParseTreeStackEntry,
         _actual_parameters_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -367,7 +367,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -382,7 +382,7 @@ pub trait Oberon0GrammarTrait {
         _expressionlistrest_1: &ParseTreeStackEntry,
         _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -397,7 +397,7 @@ pub trait Oberon0GrammarTrait {
         _expression_1: &ParseTreeStackEntry,
         _expressionlistrest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -409,7 +409,7 @@ pub trait Oberon0GrammarTrait {
     fn expressionlistrest_28(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -423,7 +423,7 @@ pub trait Oberon0GrammarTrait {
         _ident_0: &ParseTreeStackEntry,
         _procedure_call_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -436,7 +436,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _actual_parameters_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -448,7 +448,7 @@ pub trait Oberon0GrammarTrait {
     fn procedure_call_suffix_31(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -466,7 +466,7 @@ pub trait Oberon0GrammarTrait {
         _elseiflist_4: &ParseTreeStackEntry,
         _if_statement_suffix_5: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -481,7 +481,7 @@ pub trait Oberon0GrammarTrait {
         _statement_sequence_1: &ParseTreeStackEntry,
         _e_n_d_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -494,7 +494,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -511,7 +511,7 @@ pub trait Oberon0GrammarTrait {
         _statement_sequence_3: &ParseTreeStackEntry,
         _elseiflist_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -523,7 +523,7 @@ pub trait Oberon0GrammarTrait {
     fn elseiflist_36(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -540,7 +540,7 @@ pub trait Oberon0GrammarTrait {
         _statement_sequence_3: &ParseTreeStackEntry,
         _e_n_d_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -556,7 +556,7 @@ pub trait Oberon0GrammarTrait {
         _u_n_t_i_l_2: &ParseTreeStackEntry,
         _expression_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -569,7 +569,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _assignment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -582,7 +582,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _procedure_call_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -595,7 +595,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _if_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -608,7 +608,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _while_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -621,7 +621,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _repeat_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -633,7 +633,7 @@ pub trait Oberon0GrammarTrait {
     fn statement_44(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -647,7 +647,7 @@ pub trait Oberon0GrammarTrait {
         _statement_0: &ParseTreeStackEntry,
         _statement_sequence_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -662,7 +662,7 @@ pub trait Oberon0GrammarTrait {
         _statement_1: &ParseTreeStackEntry,
         _statement_sequence_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -674,7 +674,7 @@ pub trait Oberon0GrammarTrait {
     fn statement_sequence_rest_47(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -688,7 +688,7 @@ pub trait Oberon0GrammarTrait {
         _ident_0: &ParseTreeStackEntry,
         _ident_list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -703,7 +703,7 @@ pub trait Oberon0GrammarTrait {
         _ident_1: &ParseTreeStackEntry,
         _ident_list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -715,7 +715,7 @@ pub trait Oberon0GrammarTrait {
     fn ident_list_rest_50(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -731,7 +731,7 @@ pub trait Oberon0GrammarTrait {
         _o_f_2: &ParseTreeStackEntry,
         _type_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -746,7 +746,7 @@ pub trait Oberon0GrammarTrait {
         _colon_1: &ParseTreeStackEntry,
         _type_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -758,7 +758,7 @@ pub trait Oberon0GrammarTrait {
     fn field_list_53(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -774,7 +774,7 @@ pub trait Oberon0GrammarTrait {
         _field_list_rest_2: &ParseTreeStackEntry,
         _e_n_d_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -789,7 +789,7 @@ pub trait Oberon0GrammarTrait {
         _field_list_1: &ParseTreeStackEntry,
         _field_list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -801,7 +801,7 @@ pub trait Oberon0GrammarTrait {
     fn field_list_rest_56(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -814,7 +814,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -827,7 +827,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _array_type_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -840,7 +840,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _record_type_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -856,7 +856,7 @@ pub trait Oberon0GrammarTrait {
         _colon_2: &ParseTreeStackEntry,
         _type_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -871,7 +871,7 @@ pub trait Oberon0GrammarTrait {
         _colon_1: &ParseTreeStackEntry,
         _type_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -885,7 +885,7 @@ pub trait Oberon0GrammarTrait {
         _line_comment_0: &ParseTreeStackEntry,
         _formal_parameters_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -898,7 +898,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -913,7 +913,7 @@ pub trait Oberon0GrammarTrait {
         _f_p_section_rest_1: &ParseTreeStackEntry,
         _block_comment_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -928,7 +928,7 @@ pub trait Oberon0GrammarTrait {
         _f_p_section_1: &ParseTreeStackEntry,
         _f_p_section_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -940,7 +940,7 @@ pub trait Oberon0GrammarTrait {
     fn f_p_section_rest_66(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -955,7 +955,7 @@ pub trait Oberon0GrammarTrait {
         _ident_1: &ParseTreeStackEntry,
         _procedure_heading_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -968,7 +968,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _formal_parameters_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -980,7 +980,7 @@ pub trait Oberon0GrammarTrait {
     fn procedure_heading_suffix_69(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -994,7 +994,7 @@ pub trait Oberon0GrammarTrait {
         _declarations_0: &ParseTreeStackEntry,
         _procedure_body_suffix1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1009,7 +1009,7 @@ pub trait Oberon0GrammarTrait {
         _statement_sequence_1: &ParseTreeStackEntry,
         _procedure_body_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1025,7 +1025,7 @@ pub trait Oberon0GrammarTrait {
         _e_n_d_2: &ParseTreeStackEntry,
         _ident_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1039,7 +1039,7 @@ pub trait Oberon0GrammarTrait {
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1055,7 +1055,7 @@ pub trait Oberon0GrammarTrait {
         _e_n_d_2: &ParseTreeStackEntry,
         _ident_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1069,7 +1069,7 @@ pub trait Oberon0GrammarTrait {
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1084,7 +1084,7 @@ pub trait Oberon0GrammarTrait {
         _semicolon_1: &ParseTreeStackEntry,
         _procedure_body_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1099,7 +1099,7 @@ pub trait Oberon0GrammarTrait {
         _type_decls_1: &ParseTreeStackEntry,
         _declarations_suffix2_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1114,7 +1114,7 @@ pub trait Oberon0GrammarTrait {
         _const_decls_1: &ParseTreeStackEntry,
         _declarations_suffix1_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1129,7 +1129,7 @@ pub trait Oberon0GrammarTrait {
         _var_decls_1: &ParseTreeStackEntry,
         _procedure_declaration_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1142,7 +1142,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1157,7 +1157,7 @@ pub trait Oberon0GrammarTrait {
         _var_decls_1: &ParseTreeStackEntry,
         _procedure_declaration_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1170,7 +1170,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1185,7 +1185,7 @@ pub trait Oberon0GrammarTrait {
         _type_decls_1: &ParseTreeStackEntry,
         _declarations_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1200,7 +1200,7 @@ pub trait Oberon0GrammarTrait {
         _var_decls_1: &ParseTreeStackEntry,
         _procedure_declaration_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1213,7 +1213,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1228,7 +1228,7 @@ pub trait Oberon0GrammarTrait {
         _var_decls_1: &ParseTreeStackEntry,
         _procedure_declaration_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1241,7 +1241,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1256,7 +1256,7 @@ pub trait Oberon0GrammarTrait {
         _semicolon_1: &ParseTreeStackEntry,
         _procedure_declaration_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1268,7 +1268,7 @@ pub trait Oberon0GrammarTrait {
     fn procedure_declaration_list_89(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1285,7 +1285,7 @@ pub trait Oberon0GrammarTrait {
         _semicolon_3: &ParseTreeStackEntry,
         _const_decls_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1297,7 +1297,7 @@ pub trait Oberon0GrammarTrait {
     fn const_decls_91(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1314,7 +1314,7 @@ pub trait Oberon0GrammarTrait {
         _semicolon_3: &ParseTreeStackEntry,
         _type_decls_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1326,7 +1326,7 @@ pub trait Oberon0GrammarTrait {
     fn type_decls_93(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1343,7 +1343,7 @@ pub trait Oberon0GrammarTrait {
         _semicolon_3: &ParseTreeStackEntry,
         _var_decls_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1355,7 +1355,7 @@ pub trait Oberon0GrammarTrait {
     fn var_decls_95(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1372,7 +1372,7 @@ pub trait Oberon0GrammarTrait {
         _declarations_3: &ParseTreeStackEntry,
         _module_suffix_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1389,7 +1389,7 @@ pub trait Oberon0GrammarTrait {
         _ident_3: &ParseTreeStackEntry,
         _end_of_input_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1404,7 +1404,7 @@ pub trait Oberon0GrammarTrait {
         _ident_1: &ParseTreeStackEntry,
         _end_of_input_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1417,7 +1417,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _mul_operator_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1430,7 +1430,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _add_operator_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1443,7 +1443,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _unary_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1456,7 +1456,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1469,7 +1469,7 @@ pub trait Oberon0GrammarTrait {
         &mut self,
         _integer_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }

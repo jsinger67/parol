@@ -25,7 +25,7 @@ pub trait ParolGrammarTrait {
         _prolog_0: &ParseTreeStackEntry,
         _grammar_definition_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -40,7 +40,7 @@ pub trait ParolGrammarTrait {
         _declarations_1: &ParseTreeStackEntry,
         _scanner_states_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -54,7 +54,7 @@ pub trait ParolGrammarTrait {
         _end_of_input_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -68,7 +68,7 @@ pub trait ParolGrammarTrait {
         _declaration_0: &ParseTreeStackEntry,
         _declarations_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -80,7 +80,7 @@ pub trait ParolGrammarTrait {
     fn declarations_4(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -94,7 +94,7 @@ pub trait ParolGrammarTrait {
         _newline_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -108,7 +108,7 @@ pub trait ParolGrammarTrait {
         _whitespace_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -121,7 +121,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _scanner_directives_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -135,7 +135,7 @@ pub trait ParolGrammarTrait {
         _line_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -150,7 +150,7 @@ pub trait ParolGrammarTrait {
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -163,7 +163,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -176,7 +176,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -190,7 +190,7 @@ pub trait ParolGrammarTrait {
         _scanner_state_0: &ParseTreeStackEntry,
         _scanner_states_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -202,7 +202,7 @@ pub trait ParolGrammarTrait {
     fn scanner_states_13(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -217,7 +217,7 @@ pub trait ParolGrammarTrait {
         _production_1: &ParseTreeStackEntry,
         _grammar_definition_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -230,7 +230,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -242,7 +242,7 @@ pub trait ParolGrammarTrait {
     fn grammar_definition_suffix_16(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -256,7 +256,7 @@ pub trait ParolGrammarTrait {
         _production_0: &ParseTreeStackEntry,
         _grammar_definition_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -269,7 +269,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _grammar_definition_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -281,7 +281,7 @@ pub trait ParolGrammarTrait {
     fn grammar_definition_rest_suffix_19(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -297,7 +297,7 @@ pub trait ParolGrammarTrait {
         _alternations_2: &ParseTreeStackEntry,
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -311,7 +311,7 @@ pub trait ParolGrammarTrait {
         _alternation_0: &ParseTreeStackEntry,
         _alternations_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -324,7 +324,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -336,7 +336,7 @@ pub trait ParolGrammarTrait {
     fn alternations_suffix_23(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -351,7 +351,7 @@ pub trait ParolGrammarTrait {
         _alternation_1: &ParseTreeStackEntry,
         _alternations_rest_suffix_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -364,7 +364,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternations_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -376,7 +376,7 @@ pub trait ParolGrammarTrait {
     fn alternations_rest_suffix_26(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -389,7 +389,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -401,7 +401,7 @@ pub trait ParolGrammarTrait {
     fn alternation_28(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -415,7 +415,7 @@ pub trait ParolGrammarTrait {
         _factor_0: &ParseTreeStackEntry,
         _alternation_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -428,7 +428,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _alternation_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -440,7 +440,7 @@ pub trait ParolGrammarTrait {
     fn alternation_rest_suffix_31(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -453,7 +453,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _group_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -466,7 +466,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _repeat_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -479,7 +479,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _optional_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -492,7 +492,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _symbol_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -505,7 +505,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -518,7 +518,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _simple_token_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -531,7 +531,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _token_with_states_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -544,7 +544,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -560,7 +560,7 @@ pub trait ParolGrammarTrait {
         _g_t_2: &ParseTreeStackEntry,
         _string_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -575,7 +575,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -590,7 +590,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -605,7 +605,7 @@ pub trait ParolGrammarTrait {
         _alternations_1: &ParseTreeStackEntry,
         _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -618,7 +618,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -631,7 +631,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -647,7 +647,7 @@ pub trait ParolGrammarTrait {
         _l_brace_2: &ParseTreeStackEntry,
         _scanner_state_suffix_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -661,7 +661,7 @@ pub trait ParolGrammarTrait {
         _scanner_state_rest_0: &ParseTreeStackEntry,
         _r_brace_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -674,7 +674,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _r_brace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -688,7 +688,7 @@ pub trait ParolGrammarTrait {
         _scanner_directives_0: &ParseTreeStackEntry,
         _scanner_state_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -701,7 +701,7 @@ pub trait ParolGrammarTrait {
         &mut self,
         _scanner_state_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -713,7 +713,7 @@ pub trait ParolGrammarTrait {
     fn scanner_state_rest_suffix_51(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -727,7 +727,7 @@ pub trait ParolGrammarTrait {
         _identifier_0: &ParseTreeStackEntry,
         _state_list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -742,7 +742,7 @@ pub trait ParolGrammarTrait {
         _identifier_1: &ParseTreeStackEntry,
         _state_list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -754,7 +754,7 @@ pub trait ParolGrammarTrait {
     fn state_list_rest_54(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }

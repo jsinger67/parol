@@ -85,8 +85,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
-        scanner_access: RefMut<dyn ScannerAccess>,
+        mut scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         if self.in_string {
             scanner_access.switch_scanner("INITIAL")?;

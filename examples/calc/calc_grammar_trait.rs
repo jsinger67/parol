@@ -24,7 +24,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _calc_lst1_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -38,7 +38,7 @@ pub trait CalcGrammarTrait {
         _calc_lst1_itm1_0: &ParseTreeStackEntry,
         _calc_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -52,7 +52,7 @@ pub trait CalcGrammarTrait {
         _instruction_0: &ParseTreeStackEntry,
         _end_of_input_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -64,7 +64,7 @@ pub trait CalcGrammarTrait {
     fn calc_lst1_3(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -77,7 +77,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _assignment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -90,7 +90,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _logical_or_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -103,7 +103,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -116,7 +116,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _whitespace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -130,7 +130,7 @@ pub trait CalcGrammarTrait {
         _id_0: &ParseTreeStackEntry,
         _assign_op_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -145,7 +145,7 @@ pub trait CalcGrammarTrait {
         _assignment_lst1_1: &ParseTreeStackEntry,
         _logical_or_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -159,7 +159,7 @@ pub trait CalcGrammarTrait {
         _assignment_lst1_itm1_0: &ParseTreeStackEntry,
         _assignment_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -172,7 +172,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _assign_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -184,7 +184,7 @@ pub trait CalcGrammarTrait {
     fn assignment_lst1_12(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait {
         _logical_and_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -212,7 +212,7 @@ pub trait CalcGrammarTrait {
         _logical_or_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -225,7 +225,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _logical_or_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -237,7 +237,7 @@ pub trait CalcGrammarTrait {
     fn logical_or_lst1_16(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -250,7 +250,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _line_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -264,7 +264,7 @@ pub trait CalcGrammarTrait {
         _logical_or_op_0: &ParseTreeStackEntry,
         _logical_and_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -278,7 +278,7 @@ pub trait CalcGrammarTrait {
         _bitwise_or_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -292,7 +292,7 @@ pub trait CalcGrammarTrait {
         _logical_and_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -305,7 +305,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _logical_and_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -317,7 +317,7 @@ pub trait CalcGrammarTrait {
     fn logical_and_lst1_22(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -330,7 +330,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -344,7 +344,7 @@ pub trait CalcGrammarTrait {
         _logical_and_op_0: &ParseTreeStackEntry,
         _bitwise_or_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -358,7 +358,7 @@ pub trait CalcGrammarTrait {
         _bitwise_and_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -372,7 +372,7 @@ pub trait CalcGrammarTrait {
         _bitwise_or_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -385,7 +385,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_or_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -397,7 +397,7 @@ pub trait CalcGrammarTrait {
     fn bitwise_or_lst1_28(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -410,7 +410,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -424,7 +424,7 @@ pub trait CalcGrammarTrait {
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _bitwise_and_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -438,7 +438,7 @@ pub trait CalcGrammarTrait {
         _equality_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -452,7 +452,7 @@ pub trait CalcGrammarTrait {
         _bitwise_and_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -465,7 +465,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_and_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -477,7 +477,7 @@ pub trait CalcGrammarTrait {
     fn bitwise_and_lst1_34(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -490,7 +490,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -504,7 +504,7 @@ pub trait CalcGrammarTrait {
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _equality_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -518,7 +518,7 @@ pub trait CalcGrammarTrait {
         _relational_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -532,7 +532,7 @@ pub trait CalcGrammarTrait {
         _equality_lst1_itm1_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -545,7 +545,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _equality_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -557,7 +557,7 @@ pub trait CalcGrammarTrait {
     fn equality_lst1_40(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -571,7 +571,7 @@ pub trait CalcGrammarTrait {
         _equality_op_0: &ParseTreeStackEntry,
         _relational_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -584,7 +584,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_shift_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -598,7 +598,7 @@ pub trait CalcGrammarTrait {
         _bitwise_shift_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -612,7 +612,7 @@ pub trait CalcGrammarTrait {
         _relational_lst1_itm1_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -625,7 +625,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _relational_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -637,7 +637,7 @@ pub trait CalcGrammarTrait {
     fn relational_lst1_46(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -650,7 +650,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _relational_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -664,7 +664,7 @@ pub trait CalcGrammarTrait {
         _relational_op_0: &ParseTreeStackEntry,
         _bitwise_shift_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -678,7 +678,7 @@ pub trait CalcGrammarTrait {
         _summ_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -692,7 +692,7 @@ pub trait CalcGrammarTrait {
         _bitwise_shift_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -705,7 +705,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _bitwise_shift_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -717,7 +717,7 @@ pub trait CalcGrammarTrait {
     fn bitwise_shift_lst1_52(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -731,7 +731,7 @@ pub trait CalcGrammarTrait {
         _bitwise_shift_op_0: &ParseTreeStackEntry,
         _summ_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -745,7 +745,7 @@ pub trait CalcGrammarTrait {
         _mult_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -759,7 +759,7 @@ pub trait CalcGrammarTrait {
         _summ_lst1_itm1_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -772,7 +772,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _summ_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -784,7 +784,7 @@ pub trait CalcGrammarTrait {
     fn summ_lst1_57(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -797,7 +797,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _plus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -810,7 +810,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -823,7 +823,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _plus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -836,7 +836,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -850,7 +850,7 @@ pub trait CalcGrammarTrait {
         _add_op_0: &ParseTreeStackEntry,
         _mult_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -863,7 +863,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _pow_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -877,7 +877,7 @@ pub trait CalcGrammarTrait {
         _power_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -891,7 +891,7 @@ pub trait CalcGrammarTrait {
         _mult_lst1_itm1_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -904,7 +904,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _mult_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -916,7 +916,7 @@ pub trait CalcGrammarTrait {
     fn mult_lst1_67(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -929,7 +929,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _mult_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -943,7 +943,7 @@ pub trait CalcGrammarTrait {
         _mult_op_0: &ParseTreeStackEntry,
         _power_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -957,7 +957,7 @@ pub trait CalcGrammarTrait {
         _factor_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -971,7 +971,7 @@ pub trait CalcGrammarTrait {
         _power_lst1_itm1_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -985,7 +985,7 @@ pub trait CalcGrammarTrait {
         _pow_op_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -997,7 +997,7 @@ pub trait CalcGrammarTrait {
     fn power_lst1_73(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1010,7 +1010,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1023,7 +1023,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1036,7 +1036,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _idref_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1050,7 +1050,7 @@ pub trait CalcGrammarTrait {
         _negate_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1065,7 +1065,7 @@ pub trait CalcGrammarTrait {
         _logical_or_1: &ParseTreeStackEntry,
         _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1078,7 +1078,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1091,7 +1091,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -1104,7 +1104,7 @@ pub trait CalcGrammarTrait {
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }

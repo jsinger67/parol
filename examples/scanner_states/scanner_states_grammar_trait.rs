@@ -24,7 +24,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _start_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -36,7 +36,7 @@ pub trait ScannerStatesGrammarTrait {
     fn start_1(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -50,7 +50,7 @@ pub trait ScannerStatesGrammarTrait {
         _content_0: &ParseTreeStackEntry,
         _start_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -63,7 +63,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _start_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -75,7 +75,7 @@ pub trait ScannerStatesGrammarTrait {
     fn start_rest_suffix_4(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -88,7 +88,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -103,7 +103,7 @@ pub trait ScannerStatesGrammarTrait {
         _string_content_1: &ParseTreeStackEntry,
         _string_delimiter_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -116,7 +116,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _string_content_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -128,7 +128,7 @@ pub trait ScannerStatesGrammarTrait {
     fn string_content_8(
         &mut self,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -142,7 +142,7 @@ pub trait ScannerStatesGrammarTrait {
         _string_content_rest_group_0: &ParseTreeStackEntry,
         _string_content_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -155,7 +155,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -168,7 +168,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -181,7 +181,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -194,7 +194,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _string_content_rest_group1_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -207,7 +207,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -220,7 +220,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -233,7 +233,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -246,7 +246,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _end_of_input_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -259,7 +259,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -272,7 +272,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _whitespace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -285,7 +285,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _line_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -298,7 +298,7 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
