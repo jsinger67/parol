@@ -1,6 +1,7 @@
 use crate::errors::*;
-use crate::parser::{ParseTreeStackEntry, ParseTreeType};
+use crate::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess};
 use id_tree::Tree;
+use std::cell::RefMut;
 
 ///
 /// This trait is used as the coupling point between the generated parser and
@@ -17,5 +18,6 @@ pub trait UserActionsTrait {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
+        scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()>;
 }
