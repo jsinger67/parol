@@ -8,11 +8,6 @@ use std::cell::RefMut;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
-/// The value range for the supported scanner_states elements
-///
-pub type DefinitionRange = usize;
-
-///
 /// Data structure used to build up a scanner_states during parsing
 ///
 #[derive(Debug, Clone)]
@@ -44,12 +39,12 @@ impl ScannerStatesGrammar {
         ScannerStatesGrammar::default()
     }
 
-    fn push(&mut self, item: ScannerStatesGrammarItem, context: &str) {
+    fn _push(&mut self, item: ScannerStatesGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
         self.item_stack.push(item)
     }
 
-    fn pop(&mut self, context: &str) -> Option<ScannerStatesGrammarItem> {
+    fn _pop(&mut self, context: &str) -> Option<ScannerStatesGrammarItem> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -77,20 +72,22 @@ impl Display for ScannerStatesGrammar {
 }
 
 impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
-    /// Semantic action for production 21:
+    /// Semantic action for production 16:
     ///
     /// StringDelimiter: "\u{22}";
     ///
-    fn string_delimiter_21(
+    fn string_delimiter_16(
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         if self.in_string {
+            trace!("Switching to scanner <INITIAL>");
             scanner_access.switch_scanner("INITIAL")?;
             self.in_string = false;
         } else {
+            trace!("Switching to scanner <String>");
             scanner_access.switch_scanner("String")?;
             self.in_string = true;
         }

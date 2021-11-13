@@ -20,7 +20,14 @@ Content
     ;
 
 StringContent
-    : { Escaped | EscapedLineEnd | NoneQuote }
+    : StringElement StringContent
+    |
+    ;
+
+StringElement
+    : Escaped
+    | EscapedLineEnd
+    | NoneQuote
     ;
 
 Identifier

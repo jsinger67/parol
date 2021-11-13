@@ -110,11 +110,12 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// StringContent: StringContentRest;
+    /// StringContent: StringElement StringContent;
     ///
     fn string_content_7(
         &mut self,
-        _string_content_rest_0: &ParseTreeStackEntry,
+        _string_element_0: &ParseTreeStackEntry,
+        _string_content_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -135,12 +136,11 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// StringContentRest: StringContentRestGroup StringContentRest;
+    /// StringElement: Escaped;
     ///
-    fn string_content_rest_9(
+    fn string_element_9(
         &mut self,
-        _string_content_rest_group_0: &ParseTreeStackEntry,
-        _string_content_rest_1: &ParseTreeStackEntry,
+        _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -149,11 +149,11 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// StringContentRestGroup: NoneQuote;
+    /// StringElement: EscapedLineEnd;
     ///
-    fn string_content_rest_group_10(
+    fn string_element_10(
         &mut self,
-        _none_quote_0: &ParseTreeStackEntry,
+        _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -162,48 +162,9 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// StringContentRestGroup: EscapedLineEnd;
+    /// StringElement: NoneQuote;
     ///
-    fn string_content_rest_group_11(
-        &mut self,
-        _escaped_line_end_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 12:
-    ///
-    /// StringContentRestGroup: Escaped;
-    ///
-    fn string_content_rest_group_12(
-        &mut self,
-        _escaped_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 13:
-    ///
-    /// StringContentRest: StringContentRestGroup1;
-    ///
-    fn string_content_rest_13(
-        &mut self,
-        _string_content_rest_group1_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 14:
-    ///
-    /// StringContentRestGroup1: NoneQuote;
-    ///
-    fn string_content_rest_group1_14(
+    fn string_element_11(
         &mut self,
         _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -212,37 +173,11 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 15:
-    ///
-    /// StringContentRestGroup1: EscapedLineEnd;
-    ///
-    fn string_content_rest_group1_15(
-        &mut self,
-        _escaped_line_end_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 16:
-    ///
-    /// StringContentRestGroup1: Escaped;
-    ///
-    fn string_content_rest_group1_16(
-        &mut self,
-        _escaped_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 17:
+    /// Semantic action for production 12:
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_17(
+    fn identifier_12(
         &mut self,
         _end_of_input_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -251,11 +186,11 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 13:
     ///
     /// Escaped: "\\[\\bft]";
     ///
-    fn escaped_18(
+    fn escaped_13(
         &mut self,
         _newline_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -264,11 +199,11 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 14:
     ///
     /// EscapedLineEnd: "\\[\s*]\r?\n";
     ///
-    fn escaped_line_end_19(
+    fn escaped_line_end_14(
         &mut self,
         _whitespace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -277,11 +212,11 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 15:
     ///
     /// NoneQuote: "[^\u{22}]";
     ///
-    fn none_quote_20(
+    fn none_quote_15(
         &mut self,
         _line_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -290,11 +225,11 @@ pub trait ScannerStatesGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 16:
     ///
     /// StringDelimiter: "\u{22}";
     ///
-    fn string_delimiter_21(
+    fn string_delimiter_16(
         &mut self,
         _block_comment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -333,35 +268,25 @@ impl UserActionsTrait for ScannerStatesGrammar {
                 scanner_access,
             ),
 
-            7 => self.string_content_7(&children[0], parse_tree, scanner_access),
+            7 => self.string_content_7(&children[0], &children[1], parse_tree, scanner_access),
 
             8 => self.string_content_8(parse_tree, scanner_access),
 
-            9 => self.string_content_rest_9(&children[0], &children[1], parse_tree, scanner_access),
+            9 => self.string_element_9(&children[0], parse_tree, scanner_access),
 
-            10 => self.string_content_rest_group_10(&children[0], parse_tree, scanner_access),
+            10 => self.string_element_10(&children[0], parse_tree, scanner_access),
 
-            11 => self.string_content_rest_group_11(&children[0], parse_tree, scanner_access),
+            11 => self.string_element_11(&children[0], parse_tree, scanner_access),
 
-            12 => self.string_content_rest_group_12(&children[0], parse_tree, scanner_access),
+            12 => self.identifier_12(&children[0], parse_tree, scanner_access),
 
-            13 => self.string_content_rest_13(&children[0], parse_tree, scanner_access),
+            13 => self.escaped_13(&children[0], parse_tree, scanner_access),
 
-            14 => self.string_content_rest_group1_14(&children[0], parse_tree, scanner_access),
+            14 => self.escaped_line_end_14(&children[0], parse_tree, scanner_access),
 
-            15 => self.string_content_rest_group1_15(&children[0], parse_tree, scanner_access),
+            15 => self.none_quote_15(&children[0], parse_tree, scanner_access),
 
-            16 => self.string_content_rest_group1_16(&children[0], parse_tree, scanner_access),
-
-            17 => self.identifier_17(&children[0], parse_tree, scanner_access),
-
-            18 => self.escaped_18(&children[0], parse_tree, scanner_access),
-
-            19 => self.escaped_line_end_19(&children[0], parse_tree, scanner_access),
-
-            20 => self.none_quote_20(&children[0], parse_tree, scanner_access),
-
-            21 => self.string_delimiter_21(&children[0], parse_tree, scanner_access),
+            16 => self.string_delimiter_16(&children[0], parse_tree, scanner_access),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

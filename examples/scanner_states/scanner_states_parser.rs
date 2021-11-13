@@ -73,9 +73,9 @@ const SCANNER_1: (&[&str; 5], &[usize; 4]) = (
     ],
 );
 
-const MAX_K: usize = 2;
+const MAX_K: usize = 1;
 
-pub const NON_TERMINALS: &[&str; 13] = &[
+pub const NON_TERMINALS: &[&str; 11] = &[
     /*  0 */ "Content",
     /*  1 */ "Escaped",
     /*  2 */ "EscapedLineEnd",
@@ -85,13 +85,11 @@ pub const NON_TERMINALS: &[&str; 13] = &[
     /*  6 */ "StartRest",
     /*  7 */ "StartRestSuffix",
     /*  8 */ "StringContent",
-    /*  9 */ "StringContentRest",
-    /* 10 */ "StringContentRestGroup",
-    /* 11 */ "StringContentRestGroup1",
-    /* 12 */ "StringDelimiter",
+    /*  9 */ "StringDelimiter",
+    /* 10 */ "StringElement",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 13] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 11] = &[
     /* 0 - "Content" */
     LookaheadDFA {
         states: &[None, Some(5), Some(6)],
@@ -100,25 +98,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 13] = &[
     },
     /* 1 - "Escaped" */
     LookaheadDFA {
-        states: &[Some(18)],
+        states: &[Some(13)],
         transitions: &[],
         k: 0,
     },
     /* 2 - "EscapedLineEnd" */
     LookaheadDFA {
-        states: &[Some(19)],
+        states: &[Some(14)],
         transitions: &[],
         k: 0,
     },
     /* 3 - "Identifier" */
     LookaheadDFA {
-        states: &[Some(17)],
+        states: &[Some(12)],
         transitions: &[],
         k: 0,
     },
     /* 4 - "NoneQuote" */
     LookaheadDFA {
-        states: &[Some(20)],
+        states: &[Some(15)],
         transitions: &[],
         k: 0,
     },
@@ -159,57 +157,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 13] = &[
         ],
         k: 1,
     },
-    /* 9 - "StringContentRest" */
+    /* 9 - "StringDelimiter" */
     LookaheadDFA {
-        states: &[None, None, Some(9), None, None, Some(13)],
-        transitions: &[
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 3),
-            DFATransition(0, 8, 4),
-            DFATransition(1, 6, 2),
-            DFATransition(1, 7, 2),
-            DFATransition(1, 8, 2),
-            DFATransition(1, 9, 5),
-            DFATransition(3, 6, 2),
-            DFATransition(3, 7, 2),
-            DFATransition(3, 8, 2),
-            DFATransition(3, 9, 5),
-            DFATransition(4, 6, 2),
-            DFATransition(4, 7, 2),
-            DFATransition(4, 8, 2),
-            DFATransition(4, 9, 5),
-        ],
-        k: 2,
-    },
-    /* 10 - "StringContentRestGroup" */
-    LookaheadDFA {
-        states: &[None, Some(10), Some(11), Some(12)],
-        transitions: &[
-            DFATransition(0, 6, 3),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 8, 1),
-        ],
-        k: 1,
-    },
-    /* 11 - "StringContentRestGroup1" */
-    LookaheadDFA {
-        states: &[None, Some(14), Some(15), Some(16)],
-        transitions: &[
-            DFATransition(0, 6, 3),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 8, 1),
-        ],
-        k: 1,
-    },
-    /* 12 - "StringDelimiter" */
-    LookaheadDFA {
-        states: &[Some(21)],
+        states: &[Some(16)],
         transitions: &[],
         k: 0,
     },
+    /* 10 - "StringElement" */
+    LookaheadDFA {
+        states: &[None, Some(9), Some(10), Some(11)],
+        transitions: &[
+            DFATransition(0, 6, 1),
+            DFATransition(0, 7, 2),
+            DFATransition(0, 8, 3),
+        ],
+        k: 1,
+    },
 ];
 
-pub const PRODUCTIONS: &[Production; 22] = &[
+pub const PRODUCTIONS: &[Production; 17] = &[
     // 0 - Start: StartRest;
     Production {
         lhs: 5,
@@ -243,81 +209,56 @@ pub const PRODUCTIONS: &[Production; 22] = &[
     // 6 - Content: StringDelimiter StringContent StringDelimiter;
     Production {
         lhs: 0,
-        production: &[ParseType::N(12), ParseType::N(8), ParseType::N(12)],
+        production: &[ParseType::N(9), ParseType::N(8), ParseType::N(9)],
     },
-    // 7 - StringContent: StringContentRest;
+    // 7 - StringContent: StringElement StringContent;
     Production {
         lhs: 8,
-        production: &[ParseType::N(9)],
+        production: &[ParseType::N(8), ParseType::N(10)],
     },
     // 8 - StringContent: ;
     Production {
         lhs: 8,
         production: &[],
     },
-    // 9 - StringContentRest: StringContentRestGroup StringContentRest;
-    Production {
-        lhs: 9,
-        production: &[ParseType::N(9), ParseType::N(10)],
-    },
-    // 10 - StringContentRestGroup: NoneQuote;
-    Production {
-        lhs: 10,
-        production: &[ParseType::N(4)],
-    },
-    // 11 - StringContentRestGroup: EscapedLineEnd;
-    Production {
-        lhs: 10,
-        production: &[ParseType::N(2)],
-    },
-    // 12 - StringContentRestGroup: Escaped;
+    // 9 - StringElement: Escaped;
     Production {
         lhs: 10,
         production: &[ParseType::N(1)],
     },
-    // 13 - StringContentRest: StringContentRestGroup1;
+    // 10 - StringElement: EscapedLineEnd;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(11)],
-    },
-    // 14 - StringContentRestGroup1: NoneQuote;
-    Production {
-        lhs: 11,
-        production: &[ParseType::N(4)],
-    },
-    // 15 - StringContentRestGroup1: EscapedLineEnd;
-    Production {
-        lhs: 11,
+        lhs: 10,
         production: &[ParseType::N(2)],
     },
-    // 16 - StringContentRestGroup1: Escaped;
+    // 11 - StringElement: NoneQuote;
     Production {
-        lhs: 11,
-        production: &[ParseType::N(1)],
+        lhs: 10,
+        production: &[ParseType::N(4)],
     },
-    // 17 - Identifier: "[a-zA-Z_]\w*";
+    // 12 - Identifier: "[a-zA-Z_]\w*";
     Production {
         lhs: 3,
         production: &[ParseType::T(5)],
     },
-    // 18 - Escaped: "\\[\\bft]";
+    // 13 - Escaped: "\\[\\bft]";
     Production {
         lhs: 1,
         production: &[ParseType::T(6)],
     },
-    // 19 - EscapedLineEnd: "\\[\s*]\r?\n";
+    // 14 - EscapedLineEnd: "\\[\s*]\r?\n";
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
     },
-    // 20 - NoneQuote: "[^\u{22}]";
+    // 15 - NoneQuote: "[^\u{22}]";
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 21 - StringDelimiter: "\u{22}";
+    // 16 - StringDelimiter: "\u{22}";
     Production {
-        lhs: 12,
+        lhs: 9,
         production: &[ParseType::T(9)],
     },
 ];
