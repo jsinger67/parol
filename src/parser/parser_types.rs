@@ -255,9 +255,9 @@ impl<'t> LLKParser {
         let prod_num = self.current_production().unwrap();
 
         let msg = format!(
-            "{} at {}\
-            Current production is:\
-            /* {} */ {}\
+            "{} at {}\n\
+            Current production is:\n\
+            /* {} */ {}\n\
             Lookahead token: {} ({})\n",
             msg,
             location,
