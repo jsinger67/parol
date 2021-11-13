@@ -1,5 +1,6 @@
 use crate::errors::*;
-use crate::lexer::{TerminalIndex, FIRST_USER_TOKEN};
+use crate::lexer::TerminalIndex;
+use log::trace;
 use regex::Regex;
 
 ///
@@ -66,14 +67,7 @@ impl Tokenizer {
                 });
         let mut combined = scanner_terminal_indices
             .iter()
-            .enumerate()
-            .map(|(idx, term_idx)| {
-                format!(
-                    "(?P<G{}>{})",
-                    idx + FIRST_USER_TOKEN,
-                    augmented_terminals[*term_idx]
-                )
-            })
+            .map(|term_idx| format!("(?P<G{}>{})", term_idx, augmented_terminals[*term_idx]))
             .fold(internal_terminals, |mut acc, e| {
                 acc.push(e);
                 acc
@@ -93,6 +87,7 @@ impl Tokenizer {
         );
 
         let rx = combined.to_string();
+        trace!("Generated regex for scanner:\n{}", rx);
         let rx = Regex::new(&rx).chain_err(|| "Unable to compile generated RegEx!")?;
 
         Ok(Tokenizer {

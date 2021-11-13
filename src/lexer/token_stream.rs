@@ -155,6 +155,7 @@ impl<'t> TokenStream<'t> {
 impl ScannerAccess for TokenStream<'_> {
     fn switch_scanner(&mut self, scanner_name: &str) -> std::result::Result<(), Error> {
         if let Some(scanner_index) = self.tokenizers.iter().position(|(n, _)| *n == scanner_name) {
+            trace!("Switching to scanner {} <{}>", scanner_index, scanner_name);
             self.token_iter = self
                 .token_iter
                 .switch_to(&self.tokenizers[scanner_index].1, self.input);
