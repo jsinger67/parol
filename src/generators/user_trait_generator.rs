@@ -90,9 +90,8 @@ pub fn generate_user_trait_source(
         .collect::<Vec<&str>>();
     let terminal_names = terminals
         .iter()
-        .enumerate()
-        .fold(Vec::new(), |mut acc, (i, e)| {
-            let n = generate_terminal_name(e, i, &grammar_config.cfg);
+        .fold(Vec::new(), |mut acc, e| {
+            let n = generate_terminal_name(e, usize::MAX, &grammar_config.cfg);
             acc.push(n);
             acc
         });

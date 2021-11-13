@@ -179,7 +179,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     fn identifier_12(
         &mut self,
-        _end_of_input_0: &ParseTreeStackEntry,
+        _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -188,11 +188,11 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// Escaped: "\\[\\bft]";
+    /// Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
     ///
     fn escaped_13(
         &mut self,
-        _newline_0: &ParseTreeStackEntry,
+        _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -201,11 +201,11 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// EscapedLineEnd: "\\[\s*]\r?\n";
+    /// EscapedLineEnd: "\u{5c}[\s*]\r?\n";
     ///
     fn escaped_line_end_14(
         &mut self,
-        _whitespace_0: &ParseTreeStackEntry,
+        _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -214,11 +214,11 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// NoneQuote: "[^\u{22}]";
+    /// NoneQuote: "[^\u{22}\u{5c}]+";
     ///
     fn none_quote_15(
         &mut self,
-        _line_comment_0: &ParseTreeStackEntry,
+        _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -231,7 +231,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     fn string_delimiter_16(
         &mut self,
-        _block_comment_0: &ParseTreeStackEntry,
+        _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {

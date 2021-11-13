@@ -25,7 +25,7 @@
 /* 10 */ StringElement: EscapedLineEnd;
 /* 11 */ StringElement: NoneQuote;
 /* 12 */ Identifier: "[a-zA-Z_]\w*";
-/* 13 */ Escaped: <String>"\\[\\bft]";
-/* 14 */ EscapedLineEnd: <String>"\\[\s*]\r?\n";
-/* 15 */ NoneQuote: <String>"[^\u{22}]";
+/* 13 */ Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
+/* 14 */ EscapedLineEnd: <String>"\u{5c}[\s*]\r?\n";
+/* 15 */ NoneQuote: <String>"[^\u{22}\u{5c}]+";
 /* 16 */ StringDelimiter: <INITIAL, String>"\u{22}";

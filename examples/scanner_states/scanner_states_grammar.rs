@@ -39,12 +39,12 @@ impl ScannerStatesGrammar {
         ScannerStatesGrammar::default()
     }
 
-    fn _push(&mut self, item: ScannerStatesGrammarItem, context: &str) {
+    fn push(&mut self, item: ScannerStatesGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
         self.item_stack.push(item)
     }
 
-    fn _pop(&mut self, context: &str) -> Option<ScannerStatesGrammarItem> {
+    fn pop(&mut self, context: &str) -> Option<ScannerStatesGrammarItem> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -72,16 +72,84 @@ impl Display for ScannerStatesGrammar {
 }
 
 impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
+    /// Semantic action for production 12:
+    ///
+    /// Identifier: "[a-zA-Z_]\w*";
+    ///
+    fn identifier_12(
+        &mut self,
+        identifier_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
+        let context = "identifier_12";
+        let id = identifier_0.symbol(parse_tree)?;
+        self.push(ScannerStatesGrammarItem::Identifier(id.clone()), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 13:
+    ///
+    /// Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
+    ///
+    fn escaped_13(
+        &mut self,
+        escaped_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
+        let context = "escaped_13";
+        if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
+            let mut element = escaped_0.symbol(parse_tree)?.to_string();
+            element.remove(0);
+            trace!("Escaped: {}", element);
+            match element.as_str() {
+                "\u{5c}" | "\u{22}" => s.push_str(&element),
+                "b" => s.push('\u{8}'), // Backspace
+                "f" => s.push('\u{c}'), // Formfeed
+                "n" => s.push('\n'),    // Newline
+                "t" => s.push('\t'),    // Tab
+                _ => return Err("Unhandled escape sequence".into()),
+            }
+            self.push(ScannerStatesGrammarItem::String(s), context);
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'String' on TOS.", context).into())
+        }
+    }
+
+    /// Semantic action for production 15:
+    ///
+    /// NoneQuote: "[^\u{22}]";
+    ///
+    fn none_quote_15(
+        &mut self,
+        none_quote_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
+        mut _scanner_access: RefMut<dyn ScannerAccess>,
+    ) -> Result<()> {
+        let context = "none_quote_15";
+        if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
+            let element = none_quote_0.symbol(parse_tree)?;
+            s.push_str(element);
+            self.push(ScannerStatesGrammarItem::String(s), context);
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'String' on TOS.", context).into())
+        }
+    }
+
     /// Semantic action for production 16:
     ///
     /// StringDelimiter: "\u{22}";
     ///
     fn string_delimiter_16(
         &mut self,
-        _block_comment_0: &ParseTreeStackEntry,
+        _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
+        let context = "string_delimiter_16";
         if self.in_string {
             trace!("Switching to scanner <INITIAL>");
             scanner_access.switch_scanner("INITIAL")?;
@@ -90,6 +158,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
             trace!("Switching to scanner <String>");
             scanner_access.switch_scanner("String")?;
             self.in_string = true;
+            self.push(ScannerStatesGrammarItem::String(String::new()), context);
         }
         Ok(())
     }

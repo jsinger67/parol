@@ -51,7 +51,7 @@ pub trait ParolGrammarTrait {
     ///
     fn start_declaration_2(
         &mut self,
-        _end_of_input_0: &ParseTreeStackEntry,
+        _percent_start_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
@@ -91,7 +91,7 @@ pub trait ParolGrammarTrait {
     ///
     fn declaration_5(
         &mut self,
-        _newline_0: &ParseTreeStackEntry,
+        _percent_title_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
@@ -105,7 +105,7 @@ pub trait ParolGrammarTrait {
     ///
     fn declaration_6(
         &mut self,
-        _whitespace_0: &ParseTreeStackEntry,
+        _percent_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
@@ -132,7 +132,7 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_8(
         &mut self,
-        _line_comment_0: &ParseTreeStackEntry,
+        _percent_line_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
@@ -146,7 +146,7 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_9(
         &mut self,
-        _block_comment_0: &ParseTreeStackEntry,
+        _percent_block_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,

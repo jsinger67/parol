@@ -62,7 +62,7 @@ pub trait ListGrammarTrait {
     ///
     fn list_item_3(
         &mut self,
-        _end_of_input_0: &ParseTreeStackEntry,
+        _comma_0: &ParseTreeStackEntry,
         _num_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
@@ -88,7 +88,7 @@ pub trait ListGrammarTrait {
     ///
     fn list_rest_5(
         &mut self,
-        _end_of_input_0: &ParseTreeStackEntry,
+        _comma_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
@@ -101,7 +101,7 @@ pub trait ListGrammarTrait {
     ///
     fn num_6(
         &mut self,
-        _newline_0: &ParseTreeStackEntry,
+        _num_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
         mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {

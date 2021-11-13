@@ -229,8 +229,8 @@ impl ParolGrammar {
     }
 
     fn handle_scanner_state(&mut self, context: &str) -> Result<()> {
-        let l = self.item_stack.pop();
-        let s = self.item_stack.pop();
+        let l = self.pop(context);
+        let s = self.pop(context);
 
         match (&l, &s) {
             (
@@ -244,7 +244,7 @@ impl ParolGrammar {
                 {
                     let mut l = l.clone();
                     l.push(scanner_state);
-                    self.item_stack.push(ParolGrammarItem::StateList(l));
+                    self.push(ParolGrammarItem::StateList(l), context);
                     trace!("{}", self.trace_item_stack(context));
                     Ok(())
                 } else {
@@ -256,6 +256,23 @@ impl ParolGrammar {
                 context, l, s
             )
             .into()),
+        }
+    }
+
+    fn push(&mut self, item: ParolGrammarItem, context: &str) {
+        trace!("push   {}: {}", context, item);
+        self.item_stack.push(item)
+    }
+
+    fn pop(&mut self, context: &str) -> Option<ParolGrammarItem> {
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
+            if let Some(ref item) = item {
+                trace!("pop    {}: {}", context, item);
+            }
+            item
+        } else {
+            None
         }
     }
 }
@@ -300,7 +317,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "start_declaration_2";
-        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(s))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(s))) = self.pop(context) {
             self.start_symbol = s;
             Ok(())
         } else {
@@ -336,7 +353,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "declaration_5";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.title = Some(s);
             Ok(())
         } else {
@@ -356,7 +373,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "declaration_6";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.comment = Some(s);
             Ok(())
         } else {
@@ -376,7 +393,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "scanner_directives_8";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.current_scanner.line_comments.push(s);
             Ok(())
         } else {
@@ -397,8 +414,8 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "scanner_directives_9";
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1, _))) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2, _))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1, _))) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2, _))) = self.pop(context) {
                 self.current_scanner.block_comments.push((s2, s1));
                 Ok(())
             } else {
@@ -453,8 +470,8 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "production_20";
-        if let Some(ParolGrammarItem::Alts(mut rhs)) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(mut rhs)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.pop(context) {
                 rhs.reverse();
                 self.item_stack
                     .push(ParolGrammarItem::Prod(Production::new(lhs, rhs)));
@@ -479,11 +496,11 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "alternations_21";
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::Alt(mut alt)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
                 alt.reverse();
                 alts.push(alt);
-                self.item_stack.push(ParolGrammarItem::Alts(alts));
+                self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Alt' on TOS.", context).into())
@@ -521,11 +538,11 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "alternations_rest_24";
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::Alt(mut alt)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
                 alt.reverse();
                 alts.push(alt);
-                self.item_stack.push(ParolGrammarItem::Alts(alts));
+                self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Alt' on TOS.", context).into())
@@ -578,10 +595,10 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "alternation_rest_29";
         //trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Alt(mut alt)) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::Fac(fac)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
                 alt.push(fac);
-                self.item_stack.push(ParolGrammarItem::Alt(alt));
+                self.push(ParolGrammarItem::Alt(alt), context);
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Fac' on TOS.", context).into())
@@ -621,8 +638,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "token_with_state_40";
         trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.item_stack.pop() {
-            if let Some(ParolGrammarItem::StateList(sc)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
+            if let Some(ParolGrammarItem::StateList(sc)) = self.pop(context) {
                 self.item_stack
                     .push(ParolGrammarItem::Fac(Factor::Terminal(s, sc)));
                 Ok(())
@@ -647,7 +664,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "group_41";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             self.item_stack
                 .push(ParolGrammarItem::Fac(Factor::Group(alts)));
             Ok(())
@@ -669,7 +686,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "optional_42";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             self.item_stack
                 .push(ParolGrammarItem::Fac(Factor::Optional(alts)));
             Ok(())
@@ -691,7 +708,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "repeat_43";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             self.item_stack
                 .push(ParolGrammarItem::Fac(Factor::Repeat(alts)));
             Ok(())
@@ -757,7 +774,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "scanner_state_suffix_47";
         trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(n))) = self.item_stack.pop() {
+        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(n))) = self.pop(context) {
             trace!("{}", self);
             self.current_scanner.name = n;
             self.scanner_configurations
@@ -812,9 +829,9 @@ impl ParolGrammarTrait for ParolGrammar {
         _parse_tree: &Tree<ParseTreeType>,
         _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
-        let _context = "state_list_rest_54";
+        let context = "state_list_rest_54";
         // Start with an empty state list
-        self.item_stack.push(ParolGrammarItem::StateList(vec![]));
+        self.push(ParolGrammarItem::StateList(vec![]), context);
         Ok(())
     }
 }

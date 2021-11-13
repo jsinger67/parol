@@ -35,15 +35,15 @@ Identifier
     ;
 
 Escaped
-    : <String>"\\[\\bft]"
+    : <String>"\u{5c}[\u{22}\u{5c}bfnt]"
     ;
 
 EscapedLineEnd
-    : <String>"\\[\s*]\r?\n"
+    : <String>"\u{5c}[\s*]\r?\n"
     ;
 
 NoneQuote
-    : <String>"[^\u{22}]"
+    : <String>"[^\u{22}\u{5c}]+"
     ;
 
 StringDelimiter
