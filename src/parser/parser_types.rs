@@ -6,7 +6,7 @@ use crate::parser::{
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
-use std::cell::{RefCell, RefMut};
+use std::cell::RefCell;
 
 ///
 /// The type that contains all data to process a production within the parser.
@@ -188,7 +188,6 @@ impl<'t> LLKParser {
         &mut self,
         prod_num: ProductionIndex,
         user_actions: &mut dyn UserActionsTrait,
-        stream: &RefCell<TokenStream<'t>>,
     ) -> Result<()> {
         let l = self.productions[prod_num]
             .production
@@ -200,12 +199,10 @@ impl<'t> LLKParser {
         let children = self
             .parse_tree_stack
             .split_off(self.parse_tree_stack.len() - l);
-        let scanner_access: RefMut<dyn ScannerAccess> = stream.borrow_mut();
         user_actions.call_semantic_action_for_production_number(
             prod_num,
             &children,
             &self.parse_tree,
-            scanner_access,
         )?;
         let tos = self.parse_tree_stack.pop();
         if let Some(ParseTreeStackEntry::Id(node_id)) = tos {
@@ -349,7 +346,7 @@ impl<'t> LLKParser {
                         self.production_depth -= 1;
                         debug!("Popped production {} -> depth {}", p, self.production_depth);
                         self.parser_stack.stack.pop(); // Pop the End of production marker
-                        self.process_item_stack(p, user_actions, &stream)?;
+                        self.process_item_stack(p, user_actions)?;
                     }
                 }
             }
