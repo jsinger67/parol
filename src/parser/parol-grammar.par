@@ -67,6 +67,7 @@ Symbol
     : Identifier
     | SimpleToken
     | TokenWithStates
+    | ScannerSwitch
     ;
 
 SimpleToken
@@ -107,5 +108,14 @@ StateList
 
 StateListRest
     : "," Identifier StateListRest
+    |
+    ;
+
+ScannerSwitch
+    : "%sc" "\(" ScannerNameOpt "\)"
+    ;
+
+ScannerNameOpt
+    : Identifier
     |
     ;

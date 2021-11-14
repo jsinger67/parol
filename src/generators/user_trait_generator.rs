@@ -48,6 +48,7 @@ fn generate_argument_list(pr: &Pr, terminals: &[&str], terminal_names: &[String]
         .get_r()
         .iter()
         .enumerate()
+        .filter(|(_, s)| !s.is_switch())
         .map(|(i, a)| match a {
             Symbol::N(n) => {
                 format!("_{}_{}: &ParseTreeStackEntry", to_camel_case(n), i)
@@ -64,16 +65,18 @@ fn generate_argument_list(pr: &Pr, terminals: &[&str], terminal_names: &[String]
         })
         .collect::<Vec<String>>();
     arguments.push("_parse_tree: &Tree<ParseTreeType>".to_string());
-    arguments.push("mut _scanner_access: RefMut<dyn ScannerAccess>".to_string());
     arguments.join(", ")
 }
 
 fn generate_caller_argument_list(pr: &Pr) -> String {
-    let mut arguments = (0..pr.get_r().len())
-        .map(|i| format!("&children[{}]", i))
+    let mut arguments = pr
+        .get_r()
+        .iter()
+        .filter(|s| !s.is_switch())
+        .enumerate()
+        .map(|(i, _)| format!("&children[{}]", i))
         .collect::<Vec<String>>();
     arguments.push("parse_tree".to_string());
-    arguments.push("scanner_access".to_string());
     arguments.join(", ")
 }
 

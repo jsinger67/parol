@@ -2,9 +2,7 @@ use crate::scanner_states_grammar_trait::ScannerStatesGrammarTrait;
 use id_tree::Tree;
 use log::trace;
 use parol_runtime::errors::*;
-use parol_runtime::parser::ScannerAccess;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
-use std::cell::RefMut;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -80,7 +78,6 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "identifier_12";
         let id = identifier_0.symbol(parse_tree)?;
@@ -96,7 +93,6 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         &mut self,
         escaped_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "escaped_13";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
@@ -126,7 +122,6 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         &mut self,
         none_quote_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "none_quote_15";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
@@ -147,16 +142,11 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         &mut self,
         _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "string_delimiter_16";
         if self.in_string {
-            trace!("Switching to scanner <INITIAL>");
-            scanner_access.switch_scanner("INITIAL")?;
             self.in_string = false;
         } else {
-            trace!("Switching to scanner <String>");
-            scanner_access.switch_scanner("String")?;
             self.in_string = true;
             self.push(ScannerStatesGrammarItem::String(String::new()), context);
         }

@@ -62,6 +62,7 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
         Factor::NonTerminal(n) => Ok(Symbol::n(&n)),
         Factor::Terminal(t, s) => Ok(Symbol::t(&t, s)),
+        Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         _ => Err(format!("Unexpected type of factor: {}", factor).into()),
     }
 }

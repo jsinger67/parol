@@ -16,7 +16,7 @@ Start
 
 Content
     : Identifier
-    | StringDelimiter StringContent StringDelimiter
+    | StringDelimiter %sc(String) StringContent StringDelimiter %sc()
     ;
 
 StringContent

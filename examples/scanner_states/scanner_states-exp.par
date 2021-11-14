@@ -18,7 +18,7 @@
 /*  3 */ StartRestSuffix: StartRest;
 /*  4 */ StartRestSuffix: ;
 /*  5 */ Content: Identifier;
-/*  6 */ Content: StringDelimiter StringContent StringDelimiter;
+/*  6 */ Content: StringDelimiter String StringContent StringDelimiter INITIAL;
 /*  7 */ StringContent: StringElement StringContent;
 /*  8 */ StringContent: ;
 /*  9 */ StringElement: Escaped;

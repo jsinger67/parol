@@ -5,10 +5,9 @@
 // ---------------------------------------------------------
 
 use id_tree::Tree;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use parol_runtime::errors::*;
 use crate::{{user_trait_module_name}}::{{user_type_name}};
-use std::cell::RefMut;
 
 ///
 /// The `{{{user_type_name}}}Trait` trait is automatically generated for the
@@ -24,8 +23,7 @@ impl UserActionsTrait for {{{user_type_name}}} {
         &mut self,
         prod_num: usize,
         children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
-        scanner_access: RefMut<dyn ScannerAccess>,) -> Result<()> {
+        parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         match prod_num {
 {{{trait_caller}}}            _ => panic!("Unhandled production number: {}", prod_num),
         }

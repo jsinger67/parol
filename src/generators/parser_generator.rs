@@ -99,6 +99,7 @@ impl Production {
                         Symbol::T(Terminal::Trm(t, _)) => {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
+                        Symbol::S(s) => acc.push(format!("ParseType::S({}),", s)),
                         _ => panic!("Unexpected symbol type in production!"),
                     }
                     acc

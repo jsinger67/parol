@@ -2,8 +2,7 @@ use crate::list_grammar_trait::ListGrammarTrait;
 use id_tree::Tree;
 use log::trace;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess};
-use std::cell::RefMut;
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -88,11 +87,7 @@ impl ListGrammarTrait for ListGrammar {
     ///
     /// list: ;
     ///
-    fn list_0(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn list_0(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "list_0";
         // This is the empty list case
         self.push(ListGrammarItem::List(Vec::new()), context);
@@ -108,7 +103,6 @@ impl ListGrammarTrait for ListGrammar {
         _num_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "list_1";
         let top_of_stack1 = self.pop(context);
@@ -140,7 +134,6 @@ impl ListGrammarTrait for ListGrammar {
         _list_item_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "list_rest_2";
         let top_of_stack1 = self.pop(context);
@@ -164,11 +157,7 @@ impl ListGrammarTrait for ListGrammar {
     ///
     /// list_rest: ;
     ///
-    fn list_rest_4(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn list_rest_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "list_rest_4";
         // Start here with an empty list
         self.push(ListGrammarItem::List(Vec::new()), context);
@@ -183,7 +172,6 @@ impl ListGrammarTrait for ListGrammar {
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "list_rest_5";
         // Start here with an empty list
@@ -199,7 +187,6 @@ impl ListGrammarTrait for ListGrammar {
         &mut self,
         num_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
-        _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         let context = "num_6";
         let symbol = num_0.symbol(parse_tree)?;

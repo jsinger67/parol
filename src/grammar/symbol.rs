@@ -138,6 +138,9 @@ impl Symbol {
     pub fn e() -> Self {
         Self::T(Terminal::End)
     }
+    pub fn s(s: usize) -> Self {
+        Self::S(s)
+    }
     pub fn is_t(&self) -> bool {
         matches!(self, Self::T(_))
     }

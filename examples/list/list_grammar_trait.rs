@@ -7,8 +7,7 @@
 use crate::list_grammar::ListGrammar;
 use id_tree::Tree;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserActionsTrait};
-use std::cell::RefMut;
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
 /// The `ListGrammarTrait` trait is automatically generated for the
@@ -20,11 +19,7 @@ pub trait ListGrammarTrait {
     ///
     /// list: ;
     ///
-    fn list_0(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn list_0(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -37,7 +32,6 @@ pub trait ListGrammarTrait {
         _num_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -51,7 +45,6 @@ pub trait ListGrammarTrait {
         _list_item_0: &ParseTreeStackEntry,
         _list_rest_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -65,7 +58,6 @@ pub trait ListGrammarTrait {
         _comma_0: &ParseTreeStackEntry,
         _num_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -74,11 +66,7 @@ pub trait ListGrammarTrait {
     ///
     /// list_rest: ;
     ///
-    fn list_rest_4(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn list_rest_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -90,7 +78,6 @@ pub trait ListGrammarTrait {
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -103,7 +90,6 @@ pub trait ListGrammarTrait {
         &mut self,
         _num_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -115,22 +101,21 @@ impl UserActionsTrait for ListGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-        scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.list_0(parse_tree, scanner_access),
+            0 => self.list_0(parse_tree),
 
-            1 => self.list_1(&children[0], &children[1], parse_tree, scanner_access),
+            1 => self.list_1(&children[0], &children[1], parse_tree),
 
-            2 => self.list_rest_2(&children[0], &children[1], parse_tree, scanner_access),
+            2 => self.list_rest_2(&children[0], &children[1], parse_tree),
 
-            3 => self.list_item_3(&children[0], &children[1], parse_tree, scanner_access),
+            3 => self.list_item_3(&children[0], &children[1], parse_tree),
 
-            4 => self.list_rest_4(parse_tree, scanner_access),
+            4 => self.list_rest_4(parse_tree),
 
-            5 => self.list_rest_5(&children[0], parse_tree, scanner_access),
+            5 => self.list_rest_5(&children[0], parse_tree),
 
-            6 => self.num_6(&children[0], parse_tree, scanner_access),
+            6 => self.num_6(&children[0], parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

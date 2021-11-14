@@ -7,8 +7,7 @@
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use id_tree::Tree;
 use parol_runtime::errors::*;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, ScannerAccess, UserActionsTrait};
-use std::cell::RefMut;
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
 /// The `ScannerStatesGrammarTrait` trait is automatically generated for the
@@ -24,7 +23,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _start_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -33,11 +31,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// Start: ;
     ///
-    fn start_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn start_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -50,7 +44,6 @@ pub trait ScannerStatesGrammarTrait {
         _content_0: &ParseTreeStackEntry,
         _start_rest_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -63,7 +56,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _start_rest_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -72,11 +64,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StartRestSuffix: ;
     ///
-    fn start_rest_suffix_4(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn start_rest_suffix_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -88,22 +76,20 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// Content: StringDelimiter StringContent StringDelimiter;
+    /// Content: StringDelimiter S(1) StringContent StringDelimiter S(0);
     ///
     fn content_6(
         &mut self,
         _string_delimiter_0: &ParseTreeStackEntry,
-        _string_content_1: &ParseTreeStackEntry,
-        _string_delimiter_2: &ParseTreeStackEntry,
+        _string_content_2: &ParseTreeStackEntry,
+        _string_delimiter_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -117,7 +103,6 @@ pub trait ScannerStatesGrammarTrait {
         _string_element_0: &ParseTreeStackEntry,
         _string_content_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -126,11 +111,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringContent: ;
     ///
-    fn string_content_8(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
-    ) -> Result<()> {
+    fn string_content_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -142,7 +123,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -155,7 +135,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -168,7 +147,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -181,7 +159,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -194,7 +171,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -207,7 +183,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _escaped_line_end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -220,7 +195,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _none_quote_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -233,7 +207,6 @@ pub trait ScannerStatesGrammarTrait {
         &mut self,
         _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-        mut _scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         Ok(())
     }
@@ -245,48 +218,41 @@ impl UserActionsTrait for ScannerStatesGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-        scanner_access: RefMut<dyn ScannerAccess>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.start_0(&children[0], parse_tree, scanner_access),
+            0 => self.start_0(&children[0], parse_tree),
 
-            1 => self.start_1(parse_tree, scanner_access),
+            1 => self.start_1(parse_tree),
 
-            2 => self.start_rest_2(&children[0], &children[1], parse_tree, scanner_access),
+            2 => self.start_rest_2(&children[0], &children[1], parse_tree),
 
-            3 => self.start_rest_suffix_3(&children[0], parse_tree, scanner_access),
+            3 => self.start_rest_suffix_3(&children[0], parse_tree),
 
-            4 => self.start_rest_suffix_4(parse_tree, scanner_access),
+            4 => self.start_rest_suffix_4(parse_tree),
 
-            5 => self.content_5(&children[0], parse_tree, scanner_access),
+            5 => self.content_5(&children[0], parse_tree),
 
-            6 => self.content_6(
-                &children[0],
-                &children[1],
-                &children[2],
-                parse_tree,
-                scanner_access,
-            ),
+            6 => self.content_6(&children[0], &children[1], &children[2], parse_tree),
 
-            7 => self.string_content_7(&children[0], &children[1], parse_tree, scanner_access),
+            7 => self.string_content_7(&children[0], &children[1], parse_tree),
 
-            8 => self.string_content_8(parse_tree, scanner_access),
+            8 => self.string_content_8(parse_tree),
 
-            9 => self.string_element_9(&children[0], parse_tree, scanner_access),
+            9 => self.string_element_9(&children[0], parse_tree),
 
-            10 => self.string_element_10(&children[0], parse_tree, scanner_access),
+            10 => self.string_element_10(&children[0], parse_tree),
 
-            11 => self.string_element_11(&children[0], parse_tree, scanner_access),
+            11 => self.string_element_11(&children[0], parse_tree),
 
-            12 => self.identifier_12(&children[0], parse_tree, scanner_access),
+            12 => self.identifier_12(&children[0], parse_tree),
 
-            13 => self.escaped_13(&children[0], parse_tree, scanner_access),
+            13 => self.escaped_13(&children[0], parse_tree),
 
-            14 => self.escaped_line_end_14(&children[0], parse_tree, scanner_access),
+            14 => self.escaped_line_end_14(&children[0], parse_tree),
 
-            15 => self.none_quote_15(&children[0], parse_tree, scanner_access),
+            15 => self.none_quote_15(&children[0], parse_tree),
 
-            16 => self.string_delimiter_16(&children[0], parse_tree, scanner_access),
+            16 => self.string_delimiter_16(&children[0], parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }
