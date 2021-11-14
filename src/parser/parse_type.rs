@@ -18,6 +18,11 @@ pub enum ParseType {
     T(TerminalIndex),
 
     ///
+    /// The index of a scanner configuration
+    ///
+    S(usize),
+
+    ///
     /// End of production marker
     ///
     E(ProductionIndex),
@@ -28,6 +33,7 @@ impl Display for ParseType {
         match self {
             Self::N(n) => write!(f, "N({})", n),
             Self::T(t) => write!(f, "T({})", t),
+            Self::S(s) => write!(f, "S({})", s),
             Self::E(e) => write!(f, "E({})", e),
         }
     }

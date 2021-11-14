@@ -190,8 +190,12 @@ impl<'t> LLKParser {
         user_actions: &mut dyn UserActionsTrait,
         stream: &RefCell<TokenStream<'t>>,
     ) -> Result<()> {
-        let l = self.productions[prod_num].production.len();
-        // We remove the last n entries from the ast stack and insert them as
+        let l = self.productions[prod_num]
+            .production
+            .iter()
+            .filter(|s| !matches!(s, ParseType::S(_)))
+            .count();
+        // We remove the last n entries from the parse tree stack and insert them as
         // children under the node laying below on the stack
         let children = self
             .parse_tree_stack
@@ -222,7 +226,7 @@ impl<'t> LLKParser {
             // The node's id is pushed on the AST stack
             self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id));
         } else {
-            panic!("Expected node id on ast stack, found {:?}", tos);
+            panic!("Expected node id on parse tree stack, found {:?}", tos);
         }
 
         Ok(())
@@ -336,6 +340,10 @@ impl<'t> LLKParser {
                         })?;
                         self.parser_stack.stack.pop();
                         self.push_production(prod_num);
+                    }
+                    ParseType::S(s) => {
+                        stream.borrow_mut().switch_scanner(s)?;
+                        self.parser_stack.stack.pop();
                     }
                     ParseType::E(p) => {
                         self.production_depth -= 1;

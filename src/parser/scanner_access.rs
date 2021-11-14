@@ -11,5 +11,5 @@ pub trait ScannerAccess {
     /// This function provides the possibility to switch the active scanner from
     /// within a semantic action.
     ///
-    fn switch_scanner(&mut self, scanner_name: &str) -> Result<()>;
+    fn switch_scanner(&mut self, scanner_index: usize) -> Result<()>;
 }

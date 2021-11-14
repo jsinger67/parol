@@ -24,7 +24,7 @@ pub mod parse_tree_type;
 pub use parse_tree_type::ParseTreeType;
 
 ///
-/// Module with types used in the generated parser's ast stack.
+/// Module with types used in the generated parser's parse tree stack.
 ///
 #[forbid(missing_docs)]
 pub mod parse_tree_stack_entry;
