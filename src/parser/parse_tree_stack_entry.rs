@@ -24,7 +24,10 @@ impl ParseTreeStackEntry {
     /// Abstracts from the actual place where the node exists and returns the
     /// inner ParseTreeType.
     ///
-    pub fn get_ast_type<'t>(&'t self, parse_tree: &'t Tree<ParseTreeType>) -> &'t ParseTreeType {
+    pub fn get_parse_tree_type<'t>(
+        &'t self,
+        parse_tree: &'t Tree<ParseTreeType>,
+    ) -> &'t ParseTreeType {
         match self {
             Self::Nd(n) => n.data(),
             Self::Id(i) => parse_tree.get(i).unwrap().data(),
