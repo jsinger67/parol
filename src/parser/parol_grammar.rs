@@ -693,13 +693,13 @@ impl ParolGrammarTrait for ParolGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "identifier_45";
-        let ast_item = identifier_0.get_ast_type(parse_tree);
-        if let ParseTreeType::T(t) = ast_item {
+        let parse_tree_item = identifier_0.get_parse_tree_type(parse_tree);
+        if let ParseTreeType::T(t) = parse_tree_item {
             self.item_stack
                 .push(ParolGrammarItem::Fac(Factor::NonTerminal(t.symbol.clone())));
             Ok(())
         } else {
-            Err(format!("{}: Token expected, found {}", context, ast_item).into())
+            Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
         }
     }
 
@@ -713,15 +713,15 @@ impl ParolGrammarTrait for ParolGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "string_46";
-        let ast_item = string_0.get_ast_type(parse_tree);
-        if let ParseTreeType::T(t) = ast_item {
+        let parse_tree_item = string_0.get_parse_tree_type(parse_tree);
+        if let ParseTreeType::T(t) = parse_tree_item {
             // Trim double quotes here
             let s = t.symbol.clone().trim_matches('"').to_owned();
             self.item_stack
                 .push(ParolGrammarItem::Fac(Factor::Terminal(s, vec![0])));
             Ok(())
         } else {
-            Err(format!("{}: Token expected, found {}", context, ast_item).into())
+            Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
         }
     }
 
