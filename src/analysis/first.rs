@@ -195,6 +195,7 @@ fn combine_production_equation<'a, 'c: 'a>(
                         }
                     }
                 }
+                Symbol::S(_) => (),
             }
             acc
         });
@@ -232,6 +233,7 @@ fn combine_production_equation<'a, 'c: 'a>(
                     result_function(result_vector).k_concat(&f(result_vector), k)
                 });
             }
+            Symbol::S(_) => (),
         }
     }
     result_function

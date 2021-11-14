@@ -176,6 +176,7 @@ fn update_production_equations<'a, 'c: 'a>(
                         }
                     }
                 }
+                Symbol::S(_) => (),
             }
             acc
         },
@@ -224,6 +225,7 @@ fn update_production_equations<'a, 'c: 'a>(
                                     .k_concat(first_of_nt, k)
                             });
                     }
+                    Symbol::S(_) => (),
                 }
             }
             // trace!("  concat Follow({}, {})", pr.get_n_str(), k);

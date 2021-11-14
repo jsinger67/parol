@@ -183,10 +183,10 @@ mod test {
         assert_eq!(
             vec![
                 "UNMATCHABLE_TOKEN",
-                "NEW_LINE_TOKEN",
-                "WHITESPACE_TOKEN",
-                r###"(//.*(\r\n|\r|\n|$))"###,
-                r###"((?ms)/\*.*?\*/)"###,
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
                 r###"a"###,
                 r###"b"###,
                 "ERROR_TOKEN"
@@ -196,5 +196,27 @@ mod test {
             .collect::<Vec<String>>(),
             augment_terminals
         );
+
+        let (special_terminals, terminal_indices, scanner_name) = grammar_config
+            .scanner_configurations[0]
+            .generate_build_information(&grammar_config.cfg);
+
+        assert_eq!(
+            vec![
+                "UNMATCHABLE_TOKEN",
+                "NEW_LINE_TOKEN",
+                "WHITESPACE_TOKEN",
+                r###"(//.*(\r\n|\r|\n|$))"###,
+                r###"((?ms)/\*.*?\*/)"###,
+            ]
+            .iter()
+            .map(|t| (*t).to_owned())
+            .collect::<Vec<String>>(),
+            special_terminals
+        );
+
+        assert_eq!(vec![5, 6], terminal_indices);
+
+        assert_eq!("INITIAL", scanner_name);
     }
 }

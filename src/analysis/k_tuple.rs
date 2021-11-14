@@ -28,18 +28,6 @@ impl Terminals {
     ///
     /// Creates a new object with maximum k length from another object
     ///
-    pub fn take_k(k: usize, other: &Self) -> Self {
-        let first_len = other.k_len(k);
-        let mut terminals = Self::new();
-        for elem in other.0.iter().take(first_len) {
-            terminals.0.push(*elem);
-        }
-        terminals
-    }
-
-    ///
-    /// Creates a new object with maximum k length from another object
-    ///
     pub fn of(k: usize, mut other: Self) -> Self {
         let first_len = other.k_len(k);
         let mut terminals = Self::new();
@@ -258,19 +246,6 @@ impl KTuple {
     ///
     pub fn new(k: usize) -> Self {
         let terminals = TerminalString::Incomplete(Terminals::new());
-        Self { terminals, k }
-    }
-
-    ///
-    /// Creates a new object with maximum k length from another object
-    ///
-    pub fn take_k(k: usize, other: &Self) -> Self {
-        let terminals = Terminals::take_k(k, other.terminals.inner());
-        let terminals = if terminals.is_k_complete(k) {
-            TerminalString::Complete(terminals)
-        } else {
-            TerminalString::Incomplete(terminals)
-        };
         Self { terminals, k }
     }
 

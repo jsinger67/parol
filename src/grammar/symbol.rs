@@ -121,6 +121,11 @@ pub enum Symbol {
     /// Terminal symbol of the grammar.
     ///
     T(Terminal),
+
+    ///
+    /// Instruction to switch scanner state
+    ///
+    S(usize),
 }
 
 impl Symbol {
@@ -141,6 +146,9 @@ impl Symbol {
     }
     pub fn is_end(&self) -> bool {
         matches!(self, Self::T(Terminal::End))
+    }
+    pub fn is_switch(&self) -> bool {
+        matches!(self, Self::S(_))
     }
     pub fn get_t(&self) -> Option<Terminal> {
         if let Self::T(t) = &self {
@@ -178,6 +186,7 @@ impl Symbol {
         match self {
             Self::N(n) => n.to_string(),
             Self::T(t) => t.format(scanner_state_resolver),
+            Self::S(s) => scanner_state_resolver(&[*s]),
         }
     }
 }
@@ -187,6 +196,7 @@ impl Display for Symbol {
         match self {
             Self::N(n) => write!(f, "{}", n),
             Self::T(t) => write!(f, "{}", t),
+            Self::S(s) => write!(f, "S({})", s),
         }
     }
 }

@@ -88,13 +88,11 @@ pub fn generate_user_trait_source(
         .iter()
         .map(|(t, _)| *t)
         .collect::<Vec<&str>>();
-    let terminal_names = terminals
-        .iter()
-        .fold(Vec::new(), |mut acc, e| {
-            let n = generate_terminal_name(e, usize::MAX, &grammar_config.cfg);
-            acc.push(n);
-            acc
-        });
+    let terminal_names = terminals.iter().fold(Vec::new(), |mut acc, e| {
+        let n = generate_terminal_name(e, usize::MAX, &grammar_config.cfg);
+        acc.push(n);
+        acc
+    });
 
     let trait_functions = grammar_config.cfg.pr.iter().enumerate().fold(
         StrVec::new(0).first_line_no_indent(),
