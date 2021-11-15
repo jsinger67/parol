@@ -1,26 +1,39 @@
 use crate::errors::*;
 use crate::lexer::{OwnedToken, Token};
 use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
-use crate::parser::ScannerAccess;
+use crate::parser::ScannerIndex;
 use log::trace;
 
+///
+/// The TokenStream<'t> type is the interface the parser actually uses.
+/// It provides the lookahead functionality by maintaining a lookahead buffer.
+/// Also it provides the ability to switch scanner states. This is handled by
+/// choosing a Tokenizer and updating its position in the input text.
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenStream<'t> {
     /// The number of available lookahead tokens
     pub k: usize,
-    // The input text
+
+    /// The input text
     input: &'t str,
+
     /// The name of the input file
     pub file_name: String,
+
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
-    /// The actual token iterator
+
+    /// The actual token iterator.
+    /// It is replaced by a new one in case of scanner state switch.
     token_iter: TokenIter<'t>,
-    /// A slice with named tokenizers
+
+    /// A slice with named tokenizers, which operate in combination with the
+    /// TokenIter like a scanner.
     tokenizers: &'static [(&'static str, Tokenizer)],
-    /// All available tokens
+
+    /// Lookahead token buffer, maximum size is k
     pub tokens: Vec<Token<'t>>,
 }
 
@@ -121,6 +134,24 @@ impl<'t> TokenStream<'t> {
         self.error_token_type
     }
 
+    ///
+    /// Provides scanner state switching
+    ///
+    pub fn switch_scanner(
+        &mut self,
+        scanner_index: ScannerIndex,
+    ) -> std::result::Result<(), Error> {
+        trace!(
+            "Switching to scanner {} <{}>",
+            scanner_index,
+            self.tokenizers[scanner_index].0
+        );
+        self.token_iter = self
+            .token_iter
+            .switch_to(&self.tokenizers[scanner_index].1, self.input);
+        Ok(())
+    }
+
     fn read_tokens(&mut self, n: usize) -> usize {
         let mut tokens_read = 0usize;
         for token in &mut self.token_iter {
@@ -137,31 +168,16 @@ impl<'t> TokenStream<'t> {
     }
 
     ///
-    /// The function tries to fill the buffer (self.tokens) with a k tokens
-    /// lookahead buffer.
+    /// The function fills the lookahead buffer (self.tokens) with k tokens.
     /// It returns the number of tokens read.
     ///
     fn ensure_buffer(&mut self) -> usize {
-        let last_buffer_index = self.tokens.len();
-        if last_buffer_index < self.k {
-            // Fill buffer to lookahead size k relative to pos
-            self.read_tokens(self.k - last_buffer_index)
+        let fill_len = self.tokens.len();
+        if fill_len < self.k {
+            // Fill buffer to lookahead size k
+            self.read_tokens(self.k - fill_len)
         } else {
             0
         }
-    }
-}
-
-impl ScannerAccess for TokenStream<'_> {
-    fn switch_scanner(&mut self, scanner_index: usize) -> std::result::Result<(), Error> {
-        trace!(
-            "Switching to scanner {} <{}>",
-            scanner_index,
-            self.tokenizers[scanner_index].0
-        );
-        self.token_iter = self
-            .token_iter
-            .switch_to(&self.tokenizers[scanner_index].1, self.input);
-        Ok(())
     }
 }

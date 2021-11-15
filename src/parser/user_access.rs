@@ -3,7 +3,7 @@ use crate::parser::{ParseTreeStackEntry, ParseTreeType};
 use id_tree::Tree;
 
 ///
-/// This trait is used as the coupling point between the generated parser and
+/// This trait is used as a coupling point between the generated parser and
 /// the user item that implements the actual semantic actions.
 /// The trait is generated for the users item and implemented for it
 /// automatically.

@@ -1,5 +1,5 @@
 use crate::lexer::TerminalIndex;
-use crate::parser::{NonTerminalIndex, ProductionIndex};
+use crate::parser::{NonTerminalIndex, ProductionIndex, ScannerIndex};
 use std::fmt::{Display, Error, Formatter};
 
 ///
@@ -20,7 +20,7 @@ pub enum ParseType {
     ///
     /// The index of a scanner configuration
     ///
-    S(usize),
+    S(ScannerIndex),
 
     ///
     /// End of production marker
@@ -41,7 +41,7 @@ impl Display for ParseType {
 
 ///
 /// The generated parsers are push down automata (PDA) which utilize a stack
-/// during parsing and helps processing of the grammar's productions.
+/// during parsing. It helps to process the grammar's productions.
 ///
 pub struct ParseStack {
     ///

@@ -7,7 +7,6 @@ use std::cmp::Ordering;
 ///
 /// Data structure to represent a DFA state
 ///
-///
 /// If the state is accepting the production index is valid and denotes
 /// the resulting production index.
 ///

@@ -23,20 +23,27 @@ pub const FIRST_USER_TOKEN: TerminalIndex = 5;
 const EOI_TOKEN: &str = "$";
 
 ///
+/// The Token<'t> type represents a scanned token.
+/// It has a reference to the scanned text in the symbol member.
+///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub struct Token<'t> {
     /// The matched string
     pub symbol: &'t str,
+
     /// The index of the terminal in the augmented terminal list
     pub token_type: TerminalIndex,
+
     /// Position information: line number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
     pub line: usize,
+
     /// Position information: column number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
     pub column: usize,
+
     /// Length of the matched input terminal
     /// A value of 0 indicates a virtual token, for instance an EOF token.
     /// Be careful: User tokens with length 0 are always invalid!!!

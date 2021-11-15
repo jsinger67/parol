@@ -16,6 +16,11 @@ pub type ProductionIndex = usize;
 pub type NonTerminalIndex = usize;
 
 ///
+/// The index of a scanner configuration
+///
+pub type ScannerIndex = usize;
+
+///
 /// Module with types used to handle the parse tree that is build during runs of
 /// the generated parsers.
 ///
@@ -31,15 +36,15 @@ pub mod parse_tree_stack_entry;
 pub use parse_tree_stack_entry::ParseTreeStackEntry;
 
 ///
-/// Module with types used predict the next productions to choose during runs of
-/// generated parsers.
+/// Module with types used to predict the next productions to choose during runs
+/// of generated parsers.
 ///
 #[forbid(missing_docs)]
 pub mod lookahead_dfa;
 pub use lookahead_dfa::{DFAState, DFATransition, LookaheadDFA};
 
 ///
-/// Module with types used in the parser stack.
+/// Module with types used in the parse stack.
 ///
 #[forbid(missing_docs)]
 pub mod parse_type;
@@ -51,14 +56,6 @@ pub use parse_type::{ParseStack, ParseType};
 #[forbid(missing_docs)]
 pub mod parser_types;
 pub use parser_types::{LLKParser, Production};
-
-///
-/// Module with a trait that provides control of the scanner, especially to
-/// switch the scanner state.
-///
-#[forbid(missing_docs)]
-pub mod scanner_access;
-pub use scanner_access::ScannerAccess;
 
 ///
 /// Module with the UserActionsTrait type.

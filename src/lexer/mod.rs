@@ -3,7 +3,7 @@
 use regex::Regex;
 
 ///
-/// Type used as an identifier for token types that the user provides.
+/// Type used for token types the user provides.
 ///
 pub type TerminalIndex = usize;
 
@@ -14,7 +14,7 @@ pub mod token;
 pub use token::{Token, BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE};
 
 ///
-/// The owned token type is a token with owning token text
+/// The owned token type is a token with owning token text.
 ///
 pub mod owned_token;
 pub use owned_token::OwnedToken;

@@ -2,7 +2,7 @@ use crate::errors::*;
 use crate::lexer::TokenStream;
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
-    ProductionIndex, ScannerAccess, UserActionsTrait,
+    ProductionIndex, UserActionsTrait,
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};

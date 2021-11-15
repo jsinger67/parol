@@ -3,24 +3,39 @@ use log::trace;
 use regex::CaptureMatches;
 
 ///
+/// The TokenIter type provides iterator functionality for Token<'t> objects.
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenIter<'t> {
-    // Start position, can be greater than zero, if self was switched before
+    /// Start position in the input text as byte offset.
+    /// Can be greater than zero, if `self` was created during a
+    /// scanner state switch before.
     start_pos: usize,
-    // Relative position from start position
+
+    /// Relative position from start position as byte offset.
     pos: usize,
+
+    /// Line number
     line: usize,
+
+    /// Column number
     col: usize,
+
+    /// An iterator of capture groups
     capture_iter: CaptureMatches<'static, 't>,
+
+    /// A list of valid group names. They are used to associate the token type
+    /// with the matched text.
     group_names: Vec<String>,
+
+    /// The lookahead size
     k: usize,
 }
 
 impl<'t> TokenIter<'t> {
     ///
-    /// This creates a token iterator from a tokenizer and an input source.
-    /// The k determines the number of lookahead tokens the stream supports.
+    /// This function creates a token iterator from a tokenizer and an input.
+    /// k determines the number of lookahead tokens the stream shall support.
     ///
     pub fn new(rx: &'static Tokenizer, input: &'t str, k: usize) -> TokenIter<'t> {
         let group_names: Vec<String> = rx
@@ -42,9 +57,9 @@ impl<'t> TokenIter<'t> {
     }
 
     ///
-    /// This function is used to setup a new TokenIter (aka scanner state
-    /// switching) by updating all inner position values on the newly created
-    /// TokenIter.
+    /// This function is used to setup a new TokenIter at the current stream
+    /// position (aka scanner state switching) by updating all inner position
+    /// values on the newly created TokenIter object.
     ///
     pub(crate) fn switch_to(&self, rx: &'static Tokenizer, input: &'t str) -> TokenIter<'t> {
         let start_pos = self.start_pos + self.pos;
@@ -67,19 +82,22 @@ impl<'t> TokenIter<'t> {
         }
     }
 
+    ///
+    /// Counts the occurrences of newlines in the given text.
+    /// It is used to update the internal line number.
+    ///
     fn count_nl(&self, s: &str) -> usize {
         RX_NEW_LINE.find_iter(s).count()
     }
 
+    ///
+    /// Calculates the column position after the last matched newline.
+    /// Is used to update the internal column number.
+    ///
     fn calculate_col(&self, s: &str) -> usize {
         let mut matches = RX_NEW_LINE.find_iter(s).collect::<Vec<_>>();
         let right_most_match = matches.pop().unwrap();
         s.len() - right_most_match.end() + 1
-    }
-
-    #[cfg(test)]
-    pub fn named_groups(&self) -> &Vec<String> {
-        &self.group_names
     }
 }
 
@@ -94,7 +112,7 @@ impl<'t> Iterator for TokenIter<'t> {
                 // Token type is taken from the group name
                 let group_name = group_name_opt.unwrap();
                 let token_type = TerminalIndex::from_str_radix(&group_name[1..], 10).unwrap();
-                // The symbol ist taken from the match
+                // The symbol is taken from the match
                 let symbol = ma.as_str();
                 let length = symbol.len();
                 // The token position is calculated from the matched text
