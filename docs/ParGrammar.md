@@ -5,11 +5,12 @@ Here I provide the definition of the PAR grammar in EBNF. It is actually written
 ```ebnf
 (* PAR Grammar defined in EBNF *)
 Grammar             = Prolog GrammarDefinition.         (* The start symbol of the PAR grammar *)
-Prolog              = StartDeclaration {Declaration}.
+Prolog              = StartDeclaration {Declaration} {ScannerState}.
 StartDeclaration    = '%start' Identifier.
 Declaration         = '%title' String
                     | '%comment' String
-                    | '%line_comment' String
+                    | ScannerDirectives.
+ScannerDirectives   = '%line_comment' String
                     | '%block_comment' String String
                     | '%auto_newline_off'
                     | '%auto_ws_off'.
@@ -22,12 +23,19 @@ Factor              = Group
                     | Optional
                     | Symbol.
 Symbol              = Identifier                        (* EBNF: Meta-identifier *)
-                    | String.                           (* EBNF: Terminal-string, always treated as a regular expression! *)
+                    | SimpleToken.
+                    | TokenWithStates
+                    | ScannerSwitch.                    (* Instruction to switch to new scanner state *)
+SimpleToken         = String.                           (* EBNF: Terminal-string, always treated as a regular expression! *)
+TokenWithStates     = "<" StateList ">" String.
 Group               = '(' Alternations ')'.             (* A grouping *)
 Optional            = '[' Alternations ']'.             (* An optional expression *)
 Repeat              = '{' Alternations '}'.             (* A repetition *)
 Identifier          = '[a-zA-Z_]\w*'.
 String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
+ScannerState        = '%scanner' Identifier '{' {ScannerDirectives} '}'.
+StateList           = Identifier { ',' Identifier }.
+ScannerSwitch       = '%sc' '(' [Identifier] ')'.       (* Missing identifier implies INITIAL state *)
 ```
 
 This grammar is very concise and most programmers should be familiar with. But there are several specialties which will be described here. First please notice the built-in support for language comments.
@@ -129,6 +137,14 @@ minus: "-"
 Thats all.
 
 With this simple but effective means you have the control over terminal conflicts.
+
+## Scanner states
+
+Additionally, *as of version `v0.2.0`* the grammar supports **multiple scanner states**. This feature is known from Flex and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
+
+Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should not be a big problem and can easily circumvented by an appropriate grammar formulation.
+
+To demonstrate the handling of scanner states a new example `scanner_states` was included.
 
 ## Semantic actions
 
