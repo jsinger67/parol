@@ -5,8 +5,8 @@
 // ---------------------------------------------------------
 
 use id_tree::Tree;
+use parol_runtime::errors::*;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
-use parol_runtime::parser::errors::*;
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
@@ -18,8 +18,8 @@ use parol_runtime::lexer::tokenizer::{
 
 pub const TERMINALS: &[&str; 17] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
-    /*  1 */ NEW_LINE_TOKEN,
-    /*  2 */ WHITESPACE_TOKEN,
+    /*  1 */ UNMATCHABLE_TOKEN,
+    /*  2 */ UNMATCHABLE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###"\{"###,
@@ -56,6 +56,30 @@ pub const TERMINAL_NAMES: &[&str; 17] = &[
     /* 15 */ "Number",
     /* 16 */ "Error",
 ];
+
+/* SCANNER_0: "INITIAL" */
+const SCANNER_0: (&[&str; 5], &[usize; 11]) = (
+    &[
+        /*  0 */ UNMATCHABLE_TOKEN,
+        /*  1 */ NEW_LINE_TOKEN,
+        /*  2 */ WHITESPACE_TOKEN,
+        /*  3 */ UNMATCHABLE_TOKEN,
+        /*  4 */ UNMATCHABLE_TOKEN,
+    ],
+    &[
+        5,  /* LBrace */
+        6,  /* RBrace */
+        7,  /* Comma */
+        8,  /* Colon */
+        9,  /* LBracket */
+        10, /* RBracket */
+        11, /* True */
+        12, /* False */
+        13, /* Null */
+        14, /* String */
+        15, /* Number */
+    ],
+);
 
 const MAX_K: usize = 1;
 
@@ -335,7 +359,10 @@ pub const PRODUCTIONS: &[Production; 27] = &[
 ];
 
 lazy_static! {
-    static ref TOKENIZER: Tokenizer = Tokenizer::build(TERMINALS).unwrap();
+    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
+    ),];
 }
 
 pub fn parse(
@@ -350,8 +377,9 @@ pub fn parse(
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    let token_stream = RefCell::new(TokenStream::new(input, file_name, &TOKENIZER, MAX_K).unwrap());
-    let result = llk_parser.parse(&token_stream, user_actions);
+    let token_stream =
+        RefCell::new(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap());
+    let result = llk_parser.parse(token_stream, user_actions);
     match result {
         Ok(()) => Ok(llk_parser.parse_tree),
         Err(e) => Err(e),

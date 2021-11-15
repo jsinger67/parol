@@ -6,7 +6,7 @@
 
 use crate::json_grammar::JsonGrammar;
 use id_tree::Tree;
-use parol_runtime::parser::errors::*;
+use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
