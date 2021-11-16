@@ -97,11 +97,22 @@ pub fn generate_user_trait_source(
         acc
     });
 
+    let scanner_state_resolver = |s: &[usize]| {
+        s.iter()
+            .map(|s| {
+                grammar_config.scanner_configurations[*s]
+                    .scanner_name
+                    .clone()
+            })
+            .collect::<Vec<String>>()
+            .join(", ")
+    };
+
     let trait_functions = grammar_config.cfg.pr.iter().enumerate().fold(
         StrVec::new(0).first_line_no_indent(),
         |mut acc, (i, p)| {
             let fn_name = to_camel_case(p.get_n_str());
-            let prod_string = format!("{}", p);
+            let prod_string = p.format(&scanner_state_resolver);
             let fn_arguments = generate_argument_list(p, &terminals, &terminal_names);
             let user_trait_function_data = UserTraitFunctionData {
                 fn_name,

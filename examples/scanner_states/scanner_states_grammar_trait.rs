@@ -82,7 +82,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// Content: StringDelimiter S(1) StringContent StringDelimiter S(0);
+    /// Content: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
     ///
     fn content_6(
         &mut self,
@@ -165,7 +165,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
+    /// Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
     ///
     fn escaped_13(
         &mut self,
@@ -177,7 +177,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// EscapedLineEnd: "\u{5c}[\s*]\r?\n";
+    /// EscapedLineEnd: <String>"\u{5c}[\s*]\r?\n";
     ///
     fn escaped_line_end_14(
         &mut self,
@@ -189,7 +189,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// NoneQuote: "[^\u{22}\u{5c}]+";
+    /// NoneQuote: <String>"[^\u{22}\u{5c}]+";
     ///
     fn none_quote_15(
         &mut self,
@@ -201,7 +201,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// StringDelimiter: "\u{22}";
+    /// StringDelimiter: <INITIAL, String>"\u{22}";
     ///
     fn string_delimiter_16(
         &mut self,

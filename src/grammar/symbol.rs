@@ -189,7 +189,13 @@ impl Symbol {
         match self {
             Self::N(n) => n.to_string(),
             Self::T(t) => t.format(scanner_state_resolver),
-            Self::S(s) => scanner_state_resolver(&[*s]),
+            Self::S(s) => {
+                if *s == 0 {
+                    "%sc()".to_string()
+                } else {
+                    format!("%sc({})", scanner_state_resolver(&[*s]))
+                }
+            }
         }
     }
 }

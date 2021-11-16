@@ -70,7 +70,7 @@ It is important to note that the start symbol of the grammar must always be decl
 
 ## Scanner control
 
-A scanner (aka lexer) is automatically created from all used terminal symbols.
+A scanner (aka lexer) is automatically created from all used terminal symbols. Terminal symbols can also be associated with different scanner states. See section [Scanner states](#scanner-states) below for more details.
 
 ### New line handling
 
@@ -138,11 +138,78 @@ Thats all.
 
 With this simple but effective means you have the control over terminal conflicts.
 
-## Scanner states
+### Terminals that matches an empty string
 
-Additionally, *as of version `v0.2.0`* the grammar supports **multiple scanner states**. This feature is known from Flex and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
+Please note that terminals should always match non-empty text portions. This means that you have to avoid terminals like this:
 
-Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should not be a big problem and can easily circumvented by an appropriate grammar formulation.
+```regex
+"a?", "a*", "\b"
+```
+
+Internally the tokenizer will enter a loop and match the empty string over and over again without making progress in the input. Currently there is no check for this scenario in `parol_runtime`.
+
+## Scanner states {#scanner-states}
+
+Additionally, *as of version `v0.2.0`* the grammar supports **multiple scanner states**. This feature is known from Flex as [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11) and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
+
+### The Default scanner state INITIAL
+
+INITIAL is the name of the default scanner state 0. Its behavior is defined with `ScannerDirectives` in the global `Declaration` section, such as:
+
+```ebnf
+%line_comment "//"
+%block_comment "/\*" "\*/"
+```
+
+### Introduce new scanner states with the %scanner directive
+
+Use the `%scanner \<name\> {...}` construct after the global `Declaration` section and before the %% sign to introduce arbitrary scanner states. The identifier following the %scanner token defines the name of the state which is used to refer to it from scanner state lists at terminals.
+
+```ebnf
+%scanner String {
+    %auto_newline_off
+    %auto_ws_off
+}
+```
+
+You can place any of the `ScannerDirectives` within the block that defines the scanner state.
+
+By default each scanner handles (and skips) whitespace and newline. Use `%auto_newline_off` and `%auto_ws_off` to modify each scanner state appropriately.
+
+Associate terminals with scanner states by prefixing them with a list of comma separated state names in angle brackets. Like this:
+
+```ebnf
+StringDelimiter
+    : <String, INITIAL>"\u{22}"
+    ;
+```
+
+Scanner state references in different occurrences of the same terminal are accumulated. I.e.,
+
+```text
+<State1>"term"
+...
+<State2>"term"
+```
+
+will result in
+
+```text
+<State1, State2>"term"
+```
+
+Terminals without explicitly associated scanner state are implicitly associated with scanner state INITIAL.
+
+Scanner state switching is initiated within your productions like in the following example:
+
+```ebnf
+String: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
+
+```
+
+The `%sc` instruction is used to switch to the state named in the parenthesis. The INITIAL state can be omitted as seen in the second occurrence, i.e. `%sc()` and `%sc(INITIAL)` are equivalent.
+
+> Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should not be a big problem and can easily circumvented by an appropriate grammar formulation.
 
 To demonstrate the handling of scanner states a new example `scanner_states` was included.
 
