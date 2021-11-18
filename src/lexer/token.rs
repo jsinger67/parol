@@ -48,6 +48,10 @@ pub struct Token<'t> {
     /// A value of 0 indicates a virtual token, for instance an EOF token.
     /// Be careful: User tokens with length 0 are always invalid!!!
     pub length: usize,
+
+    /// Relative position from start position as byte offset after matching this
+    /// terminal. Needed for scanner switching.
+    pub(crate) pos: usize,
 }
 
 impl<'t> Token<'t> {
@@ -61,6 +65,7 @@ impl<'t> Token<'t> {
             line: 0,
             column: 0,
             length: 0,
+            pos: 0,
         }
     }
 
@@ -73,6 +78,7 @@ impl<'t> Token<'t> {
         line: usize,
         column: usize,
         length: usize,
+        pos: usize,
     ) -> Self {
         Self {
             symbol,
@@ -80,6 +86,7 @@ impl<'t> Token<'t> {
             line,
             column,
             length,
+            pos,
         }
     }
 

@@ -12,9 +12,6 @@ pub struct TokenIter<'t> {
     /// scanner state switch before.
     start_pos: usize,
 
-    /// Relative position from start position as byte offset.
-    pos: usize,
-
     /// Line number
     line: usize,
 
@@ -47,7 +44,6 @@ impl<'t> TokenIter<'t> {
             .collect();
         TokenIter {
             start_pos: 0,
-            pos: 0,
             line: 1,
             col: 1,
             capture_iter: rx.rx.captures_iter(input),
@@ -61,8 +57,13 @@ impl<'t> TokenIter<'t> {
     /// position (aka scanner state switching) by updating all inner position
     /// values on the newly created TokenIter object.
     ///
-    pub(crate) fn switch_to(&self, rx: &'static Tokenizer, input: &'t str) -> TokenIter<'t> {
-        let start_pos = self.start_pos + self.pos;
+    pub(crate) fn switch_to(
+        &self,
+        rx: &'static Tokenizer,
+        input: &'t str,
+        pos: usize,
+    ) -> TokenIter<'t> {
+        let start_pos = self.start_pos + pos;
         let (_, input) = input.split_at(start_pos);
         let group_names: Vec<String> = rx
             .rx
@@ -73,7 +74,6 @@ impl<'t> TokenIter<'t> {
             .collect();
         TokenIter {
             start_pos,
-            pos: 0,
             line: self.line,
             col: self.col,
             capture_iter: rx.rx.captures_iter(input),
@@ -121,14 +121,14 @@ impl<'t> Iterator for TokenIter<'t> {
 
                 // Set the inner position behind the scanned token
                 let new_lines = self.count_nl(symbol);
-                self.pos = ma.end();
+                let pos = ma.end();
                 self.line += new_lines;
                 self.col = if new_lines > 0 {
                     self.calculate_col(symbol)
                 } else {
                     self.col + length
                 };
-                let token = Token::with(symbol, token_type, line, column, length);
+                let token = Token::with(symbol, token_type, line, column, length, pos);
                 trace!("{}", token);
                 Some(token)
             } else {

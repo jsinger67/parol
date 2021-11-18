@@ -35,6 +35,10 @@ pub struct TokenStream<'t> {
 
     /// Lookahead token buffer, maximum size is k
     pub tokens: Vec<Token<'t>>,
+
+    /// Relative position from start position as byte offset after matching this
+    /// terminal. Needed for scanner switching.
+    pos: usize,
 }
 
 impl<'t> TokenStream<'t> {
@@ -57,6 +61,7 @@ impl<'t> TokenStream<'t> {
             token_iter: TokenIter::new(&tokenizers[0].1, input, k),
             tokenizers,
             tokens: Vec::with_capacity(k),
+            pos: 0,
         };
         token_stream.read_tokens(k);
         Ok(token_stream)
@@ -113,7 +118,12 @@ impl<'t> TokenStream<'t> {
         if self.tokens.is_empty() {
             Err("Consume on empty buffer is impossible".into())
         } else {
-            trace!("Consuming {}", self.tokens[0]);
+            self.pos = self.tokens[0].pos; // Latest consumed LA(0)!
+            trace!(
+                "Consuming {}, Stream position is {}.",
+                self.tokens[0],
+                self.pos
+            );
             self.tokens.remove(0);
             Ok(())
         }
@@ -137,6 +147,11 @@ impl<'t> TokenStream<'t> {
     ///
     /// Provides scanner state switching
     ///
+    /// Currently we take the stream position where we set the new scanner from
+    /// the match of LA(0) token. More precisely the position after the match
+    /// which is stored in the token.
+    /// This is a documented restriction.
+    ///
     pub fn switch_scanner(
         &mut self,
         scanner_index: ScannerIndex,
@@ -146,9 +161,11 @@ impl<'t> TokenStream<'t> {
             scanner_index,
             self.tokenizers[scanner_index].0
         );
-        self.token_iter = self
-            .token_iter
-            .switch_to(&self.tokenizers[scanner_index].1, self.input);
+        self.token_iter =
+            self.token_iter
+                .switch_to(&self.tokenizers[scanner_index].1, self.input, self.pos);
+        self.tokens.clear();
+        self.read_tokens(self.k);
         Ok(())
     }
 

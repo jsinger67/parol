@@ -41,6 +41,7 @@ impl Production {
             .map(|s| match s {
                 ParseType::N(n) => non_terminal_names[*n].to_owned(),
                 ParseType::T(t) => format!(r#""{}""#, terminal_names[*t]),
+                ParseType::S(s) => format!("%sc({})", s),
                 _ => "?".to_owned(),
             })
             .collect::<Vec<String>>()
