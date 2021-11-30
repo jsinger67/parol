@@ -18,6 +18,8 @@ pub enum Factor {
     Terminal(String, Vec<usize>),
     NonTerminal(String),
     ScannerSwitch(usize),
+    ScannerSwitchPush(usize),
+    ScannerSwitchPop,
 }
 
 impl Display for Factor {
@@ -37,6 +39,8 @@ impl Display for Factor {
             ),
             Self::NonTerminal(n) => write!(f, "N({})", n),
             Self::ScannerSwitch(n) => write!(f, "S({})", n),
+            Self::ScannerSwitchPush(n) => write!(f, "Push({})", n),
+            Self::ScannerSwitchPop => write!(f, "Pop"),
         }
     }
 }
@@ -462,8 +466,7 @@ impl ParolGrammarTrait for ParolGrammar {
         if let Some(ParolGrammarItem::Alts(mut rhs)) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.pop(context) {
                 rhs.reverse();
-                self.item_stack
-                    .push(ParolGrammarItem::Prod(Production::new(lhs, rhs)));
+                self.push(ParolGrammarItem::Prod(Production::new(lhs, rhs)), context);
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
@@ -503,9 +506,8 @@ impl ParolGrammarTrait for ParolGrammar {
     /// AlternationsSuffix: ;
     ///
     fn alternations_suffix_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_suffix_23";
-        self.item_stack
-            .push(ParolGrammarItem::Alts(Alternations::new()));
+        let context = "alternations_suffix_23";
+        self.push(ParolGrammarItem::Alts(Alternations::new()), context);
         Ok(())
     }
 
@@ -540,9 +542,8 @@ impl ParolGrammarTrait for ParolGrammar {
     /// AlternationsRestSuffix: ;
     ///
     fn alternations_rest_suffix_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternations_rest_suffix_26";
-        self.item_stack
-            .push(ParolGrammarItem::Alts(Alternations::new()));
+        let context = "alternations_rest_suffix_26";
+        self.push(ParolGrammarItem::Alts(Alternations::new()), context);
         Ok(())
     }
 
@@ -551,9 +552,8 @@ impl ParolGrammarTrait for ParolGrammar {
     /// Alternation: ;
     ///
     fn alternation_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_28";
-        self.item_stack
-            .push(ParolGrammarItem::Alt(Alternation::new()));
+        let context = "alternation_28";
+        self.push(ParolGrammarItem::Alt(Alternation::new()), context);
         Ok(())
     }
 
@@ -587,9 +587,8 @@ impl ParolGrammarTrait for ParolGrammar {
     /// AlternationRestSuffix: ;
     ///
     fn alternation_rest_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let _context = "alternation_rest_suffix_31";
-        self.item_stack
-            .push(ParolGrammarItem::Alt(Alternation::new()));
+        let context = "alternation_rest_suffix_31";
+        self.push(ParolGrammarItem::Alt(Alternation::new()), context);
         Ok(())
     }
 
@@ -609,8 +608,7 @@ impl ParolGrammarTrait for ParolGrammar {
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             if let Some(ParolGrammarItem::StateList(sc)) = self.pop(context) {
-                self.item_stack
-                    .push(ParolGrammarItem::Fac(Factor::Terminal(s, sc)));
+                self.push(ParolGrammarItem::Fac(Factor::Terminal(s, sc)), context);
                 Ok(())
             } else {
                 Err(format!("{}: Expected 'StateList' on TOS.", context).into())
@@ -633,8 +631,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "group_42";
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.item_stack
-                .push(ParolGrammarItem::Fac(Factor::Group(alts)));
+            self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
             Ok(())
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
@@ -654,8 +651,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "optional_43";
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.item_stack
-                .push(ParolGrammarItem::Fac(Factor::Optional(alts)));
+            self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
             Ok(())
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
@@ -675,8 +671,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "repeat_44";
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.item_stack
-                .push(ParolGrammarItem::Fac(Factor::Repeat(alts)));
+            self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
             Ok(())
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
@@ -695,8 +690,10 @@ impl ParolGrammarTrait for ParolGrammar {
         let context = "identifier_45";
         let parse_tree_item = identifier_0.get_parse_tree_type(parse_tree);
         if let ParseTreeType::T(t) = parse_tree_item {
-            self.item_stack
-                .push(ParolGrammarItem::Fac(Factor::NonTerminal(t.symbol.clone())));
+            self.push(
+                ParolGrammarItem::Fac(Factor::NonTerminal(t.symbol.clone())),
+                context,
+            );
             Ok(())
         } else {
             Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
@@ -717,8 +714,7 @@ impl ParolGrammarTrait for ParolGrammar {
         if let ParseTreeType::T(t) = parse_tree_item {
             // Trim double quotes here
             let s = t.symbol.clone().trim_matches('"').to_owned();
-            self.item_stack
-                .push(ParolGrammarItem::Fac(Factor::Terminal(s, vec![0])));
+            self.push(ParolGrammarItem::Fac(Factor::Terminal(s, vec![0])), context);
             Ok(())
         } else {
             Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
@@ -835,8 +831,43 @@ impl ParolGrammarTrait for ParolGrammar {
                 .iter()
                 .position(|sc| sc.name == *s)
             {
-                self.item_stack
-                    .push(ParolGrammarItem::Fac(Factor::ScannerSwitch(scanner_state)));
+                self.push(
+                    ParolGrammarItem::Fac(Factor::ScannerSwitch(scanner_state)),
+                    context,
+                );
+                trace!("{}", self.trace_item_stack(context));
+                Ok(())
+            } else {
+                Err(format!("{}: Unknown scanner name '{}'", context, s).into())
+            }
+        } else {
+            Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
+        }
+    }
+
+    /// Semantic action for production 57:
+    ///
+    /// ScannerSwitch: "%push" "\(" Identifier "\)";
+    ///
+    fn scanner_switch_57(
+        &mut self,
+        _percent_push_0: &ParseTreeStackEntry,
+        _l_paren_1: &ParseTreeStackEntry,
+        _scanner_name_opt_2: &ParseTreeStackEntry,
+        _r_paren_3: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "scanner_switch_57";
+        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(s))) = self.pop(context) {
+            if let Some(scanner_state) = self
+                .scanner_configurations
+                .iter()
+                .position(|sc| sc.name == *s)
+            {
+                self.push(
+                    ParolGrammarItem::Fac(Factor::ScannerSwitchPush(scanner_state)),
+                    context,
+                );
                 trace!("{}", self.trace_item_stack(context));
                 Ok(())
             } else {
@@ -849,13 +880,31 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 58:
     ///
+    /// ScannerSwitch: "%pop" "\(" "\)";
+    ///
+    fn scanner_switch_58(
+        &mut self,
+        _percent_pop_0: &ParseTreeStackEntry,
+        _l_paren_1: &ParseTreeStackEntry,
+        _r_paren_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "scanner_switch_58";
+        self.push(ParolGrammarItem::Fac(Factor::ScannerSwitchPop), context);
+        trace!("{}", self.trace_item_stack(context));
+        Ok(())
+    }
+
+    /// Semantic action for production 60:
+    ///
     /// ScannerNameOpt: ;
     ///
-    fn scanner_name_opt_58(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        self.item_stack
-            .push(ParolGrammarItem::Fac(Factor::NonTerminal(
-                "INITIAL".to_string(),
-            )));
+    fn scanner_name_opt_60(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "scanner_name_opt_60";
+        self.push(
+            ParolGrammarItem::Fac(Factor::NonTerminal("INITIAL".to_string())),
+            context,
+        );
         Ok(())
     }
 }

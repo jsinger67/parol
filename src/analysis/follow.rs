@@ -177,6 +177,8 @@ fn update_production_equations<'a, 'c: 'a>(
                     }
                 }
                 Symbol::S(_) => (),
+                Symbol::Push(_) => (),
+                Symbol::Pop => (),
             }
             acc
         },
@@ -226,6 +228,8 @@ fn update_production_equations<'a, 'c: 'a>(
                             });
                     }
                     Symbol::S(_) => (),
+                    Symbol::Push(_) => (),
+                    Symbol::Pop => (),
                 }
             }
             // trace!("  concat Follow({}, {})", pr.get_n_str(), k);

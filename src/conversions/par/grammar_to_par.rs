@@ -92,7 +92,7 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
             .collect();
     }
 
-    let scanner_states =
+    let mut scanner_states =
         grammar_config
             .scanner_configurations
             .iter()
@@ -101,6 +101,11 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
                 acc.push(render_scanner_config_string(e));
                 acc
             });
+
+    if !scanner_states.is_empty() {
+        // Add a separator to beautify the output if there exist additional scanner states.
+        scanner_states.push(String::default());
+    }
 
     let productions = productions.drain(..).fold(StrVec::new(0), |mut acc, e| {
         acc.push(e);

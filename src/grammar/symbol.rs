@@ -1,6 +1,7 @@
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::parser::parol_grammar::Factor;
 use crate::parser::to_grammar_config::try_from_factor;
+use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -125,7 +126,19 @@ pub enum Symbol {
     ///
     /// Instruction to switch scanner state
     ///
-    S(usize),
+    S(ScannerIndex),
+
+    ///
+    /// Instruction to push the index of the current scanner and switch to a scanner configuration
+    /// with the given index
+    ///
+    Push(ScannerIndex),
+
+    ///
+    /// Instruction to pop the index of the scanner pushed before and switch to the scanner
+    /// configuration with that index
+    ///
+    Pop,
 }
 
 impl Symbol {
@@ -151,7 +164,7 @@ impl Symbol {
         matches!(self, Self::T(Terminal::End))
     }
     pub fn is_switch(&self) -> bool {
-        matches!(self, Self::S(_))
+        matches!(self, Self::S(_)) || matches!(self, Self::Push(_)) || matches!(self, Self::Pop)
     }
     pub fn get_t(&self) -> Option<Terminal> {
         if let Self::T(t) = &self {
@@ -196,6 +209,8 @@ impl Symbol {
                     format!("%sc({})", scanner_state_resolver(&[*s]))
                 }
             }
+            Self::Push(s) => format!("%push({})", scanner_state_resolver(&[*s])),
+            Self::Pop => "%pop".to_string(),
         }
     }
 }
@@ -206,6 +221,8 @@ impl Display for Symbol {
             Self::N(n) => write!(f, "{}", n),
             Self::T(t) => write!(f, "{}", t),
             Self::S(s) => write!(f, "S({})", s),
+            Self::Push(s) => write!(f, "Push({})", s),
+            Self::Pop => write!(f, "Pop"),
         }
     }
 }

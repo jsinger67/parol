@@ -705,11 +705,14 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 57:
     ///
-    /// ScannerNameOpt: Identifier;
+    /// ScannerSwitch: "%push" "\(" Identifier "\)";
     ///
-    fn scanner_name_opt_57(
+    fn scanner_switch_57(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        _percent_push_0: &ParseTreeStackEntry,
+        _l_paren_1: &ParseTreeStackEntry,
+        _identifier_2: &ParseTreeStackEntry,
+        _r_paren_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -717,9 +720,35 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 58:
     ///
+    /// ScannerSwitch: "%pop" "\(" "\)";
+    ///
+    fn scanner_switch_58(
+        &mut self,
+        _percent_pop_0: &ParseTreeStackEntry,
+        _l_paren_1: &ParseTreeStackEntry,
+        _r_paren_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 59:
+    ///
+    /// ScannerNameOpt: Identifier;
+    ///
+    fn scanner_name_opt_59(
+        &mut self,
+        _identifier_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 60:
+    ///
     /// ScannerNameOpt: ;
     ///
-    fn scanner_name_opt_58(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn scanner_name_opt_60(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 }
@@ -870,9 +899,19 @@ impl UserActionsTrait for ParolGrammar {
                 parse_tree,
             ),
 
-            57 => self.scanner_name_opt_57(&children[0], parse_tree),
+            57 => self.scanner_switch_57(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
 
-            58 => self.scanner_name_opt_58(parse_tree),
+            58 => self.scanner_switch_58(&children[0], &children[1], &children[2], parse_tree),
+
+            59 => self.scanner_name_opt_59(&children[0], parse_tree),
+
+            60 => self.scanner_name_opt_60(parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

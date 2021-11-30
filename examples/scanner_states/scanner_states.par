@@ -1,9 +1,12 @@
 %start Start
 %title "Test grammar"
 %comment "Tests correct handling of scanner states"
+
+// The following declarations only apply to scanner INITIAL
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
+// Her we introduce a new scanner state 'String'
 %scanner String {
     %auto_newline_off
     %auto_ws_off
@@ -16,8 +19,21 @@ Start
 
 Content
     : Identifier
-    | StringDelimiter %sc(String) StringContent StringDelimiter %sc()
+    | StringDelimiter
+      // Here we push the current scanner index (INITIAL) on the scanner stack and switch to
+      // the scanner 'String'
+      %push(String)
+      StringContent StringDelimiter
+      // And here we return to the scanner INITIAL again by poping it from the scanner stack and
+      // switching to it.
+      %pop()
     ;
+
+// Another valid version of the production above with the same effect is to use %sc in this way:
+//
+// Content
+//     : Identifier
+//     | StringDelimiter %sc(String) StringContent StringDelimiter %sc()
 
 StringContent
     : StringElement StringContent
@@ -31,21 +47,26 @@ StringElement
     ;
 
 Identifier
+    // This terminal is only valid in scanner state INITIAL (implicitly)
     : "[a-zA-Z_]\w*"
     ;
 
 Escaped
+    // This terminal is only valid in scanner state 'String'
     : <String>"\u{5c}[\u{22}\u{5c}bfnt]"
     ;
 
 EscapedLineEnd
+    // This terminal is only valid in scanner state 'String'
     : <String>"\u{5c}[\s*]\r?\n"
     ;
 
 NoneQuote
+    // This terminal is only valid in scanner state 'String'
     : <String>"[^\u{22}\u{5c}]+"
     ;
 
 StringDelimiter
+    // This terminal is valid in both scanner states INITIAL and 'String'
     : <String, INITIAL>"\u{22}"
     ;

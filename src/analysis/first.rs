@@ -196,6 +196,8 @@ fn combine_production_equation<'a, 'c: 'a>(
                     }
                 }
                 Symbol::S(_) => (),
+                Symbol::Push(_) => (),
+                Symbol::Pop => (),
             }
             acc
         });
@@ -234,6 +236,8 @@ fn combine_production_equation<'a, 'c: 'a>(
                 });
             }
             Symbol::S(_) => (),
+            Symbol::Push(_) => (),
+            Symbol::Pop => (),
         }
     }
     result_function

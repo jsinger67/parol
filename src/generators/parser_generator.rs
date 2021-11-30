@@ -100,6 +100,8 @@ impl Production {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
                         Symbol::S(s) => acc.push(format!("ParseType::S({}),", s)),
+                        Symbol::Push(s) => acc.push(format!("ParseType::Push({}),", s)),
+                        Symbol::Pop => acc.push("ParseType::Pop,".to_string()),
                         _ => panic!("Unexpected symbol type in production!"),
                     }
                     acc

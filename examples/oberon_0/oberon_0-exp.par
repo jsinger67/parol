@@ -2,7 +2,6 @@
 %title "Oberon-0 Grammar"
 %block_comment "\(\*" "\*\)"
 
-
 %%
 
 /*   0 */ selector: selectorlist;

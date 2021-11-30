@@ -27,7 +27,7 @@ Other properties of `parol` are:
 * As a result semantic actions are strictly separated from the grammar definition in contrast to Bison. No parser generation step is needed when you merely change the implementation of a semantic action.
 * The grammar description is provided in a **Yacc/Bison-like style** with additional features known from EBNF such as grouping, optional elements and repetitions.
 * You can define multiple scanner states (aka start conditions) and define switches between them directly in the productions of your grammar.
-* You can opt out the default handling of whitespace and newline for each scanner state separately.
+* You can opt out the default handling of whitespace and newlines for each scanner state separately.
 * The grammar description supports definition of language comments via **%line_comment** and **%block_comment** declarations for each scanner state.
 * The crate provides several tools for **grammar analysis**, **transformation** and **parse tree visualization** to support your grammar implementation.
 * The parser generator **detects direct and indirect left recursions** in your grammar description.

@@ -82,7 +82,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// Content: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
+    /// Content: StringDelimiter %push(String) StringContent StringDelimiter %pop;
     ///
     fn content_6(
         &mut self,

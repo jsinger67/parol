@@ -35,7 +35,9 @@ Identifier          = '[a-zA-Z_]\w*'.
 String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
 ScannerState        = '%scanner' Identifier '{' {ScannerDirectives} '}'.
 StateList           = Identifier { ',' Identifier }.
-ScannerSwitch       = '%sc' '(' [Identifier] ')'.       (* Missing identifier implies INITIAL state *)
+ScannerSwitch       = '%sc' '(' [Identifier] ')'        (* Missing identifier implies INITIAL state *)
+                    | '%push' '(' Identifier ')'        (* Identifier of scanner state is mandatory *)
+                    | '%pop' '(' ')'.                   (* Parentheses are also mandatory *)
 ```
 
 This grammar is very concise and most programmers should be familiar with. But there are several specialties which will be described here. First please notice the built-in support for language comments.
@@ -174,7 +176,7 @@ Use the `%scanner \<name\> {...}` construct after the global `Declaration` secti
 
 You can place any of the `ScannerDirectives` within the block that defines the scanner state.
 
-By default each scanner handles (and skips) whitespace and newline. Use `%auto_newline_off` and `%auto_ws_off` to modify each scanner state appropriately.
+By default each scanner handles (and skips) whitespace and newlines. Use `%auto_newline_off` and `%auto_ws_off` to modify each scanner state appropriately.
 
 Associate terminals with scanner states by prefixing them with a list of comma separated state names in angle brackets. Like this:
 
@@ -200,16 +202,27 @@ will result in
 
 Terminals without explicitly associated scanner state are implicitly associated with scanner state INITIAL.
 
-Scanner state switching is initiated within your productions like in the following example:
+Scanner state switching is initiated within your productions like in the following two examples:
 
 ```ebnf
 String: StringDelimiter %sc(String) StringContent StringDelimiter %sc();
 
 ```
 
-The `%sc` instruction is used to switch to the state named in the parenthesis. The INITIAL state can be omitted as seen in the second occurrence, i.e. `%sc()` and `%sc(INITIAL)` are equivalent.
+or
 
-> Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should not be a big problem and can easily circumvented by an appropriate grammar formulation.
+```ebnf
+String: StringDelimiter %push(String) StringContent StringDelimiter %pop();
+
+```
+
+The `%sc` instruction is used to switch directly to the state named in the parenthesis. The INITIAL state can be omitted as seen in the second occurrence of the first example, i.e. `%sc()` and `%sc(INITIAL)` are equivalent.
+
+The `%push` instruction is used to push the index of the current scanner on the internal scanner stack and to switch to a scanner configuration with the given index in parentheses.
+
+The `%pop` instruction is used to pop the index of the scanner pushed before and to switch to the scanner configuration with that index.
+
+> Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should can be circumvented by an appropriate grammar formulation.
 
 To demonstrate the handling of scanner states a new example `scanner_states` was included.
 

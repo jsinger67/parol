@@ -16,7 +16,7 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 
-pub const TERMINALS: &[&str; 30] = &[
+pub const TERMINALS: &[&str; 32] = &[
     /*  0 */ UNMATCHABLE_TOKEN,
     /*  1 */ UNMATCHABLE_TOKEN,
     /*  2 */ UNMATCHABLE_TOKEN,
@@ -46,10 +46,12 @@ pub const TERMINALS: &[&str; 30] = &[
     /* 26 */ r###"%scanner"###,
     /* 27 */ r###","###,
     /* 28 */ r###"%sc"###,
-    /* 29 */ ERROR_TOKEN,
+    /* 29 */ r###"%push"###,
+    /* 30 */ r###"%pop"###,
+    /* 31 */ ERROR_TOKEN,
 ];
 
-pub const TERMINAL_NAMES: &[&str; 30] = &[
+pub const TERMINAL_NAMES: &[&str; 32] = &[
     /*  0 */ "EndOfInput",
     /*  1 */ "Newline",
     /*  2 */ "Whitespace",
@@ -79,11 +81,13 @@ pub const TERMINAL_NAMES: &[&str; 30] = &[
     /* 26 */ "PercentScanner",
     /* 27 */ "Comma",
     /* 28 */ "PercentSc",
-    /* 29 */ "Error",
+    /* 29 */ "PercentPush",
+    /* 30 */ "PercentPop",
+    /* 31 */ "Error",
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 24]) = (
+const SCANNER_0: (&[&str; 5], &[usize; 26]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
@@ -116,6 +120,8 @@ const SCANNER_0: (&[&str; 5], &[usize; 24]) = (
         26, /* PercentScanner */
         27, /* Comma */
         28, /* PercentSc */
+        29, /* PercentPush */
+        30, /* PercentPop */
     ],
 );
 
@@ -177,6 +183,8 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
             DFATransition(0, 24, 1),
             DFATransition(0, 25, 1),
             DFATransition(0, 28, 1),
+            DFATransition(0, 29, 1),
+            DFATransition(0, 30, 1),
         ],
         k: 1,
     },
@@ -202,6 +210,8 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
             DFATransition(0, 24, 1),
             DFATransition(0, 25, 1),
             DFATransition(0, 28, 1),
+            DFATransition(0, 29, 1),
+            DFATransition(0, 30, 1),
         ],
         k: 1,
     },
@@ -280,6 +290,8 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
             DFATransition(0, 24, 4),
             DFATransition(0, 25, 4),
             DFATransition(0, 28, 4),
+            DFATransition(0, 29, 4),
+            DFATransition(0, 30, 4),
         ],
         k: 1,
     },
@@ -362,7 +374,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
     },
     /* 22 - "ScannerNameOpt" */
     LookaheadDFA {
-        states: &[None, Some(57), Some(58)],
+        states: &[None, Some(59), Some(60)],
         transitions: &[DFATransition(0, 19, 2), DFATransition(0, 24, 1)],
         k: 1,
     },
@@ -410,9 +422,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
     },
     /* 28 - "ScannerSwitch" */
     LookaheadDFA {
-        states: &[Some(56)],
-        transitions: &[],
-        k: 0,
+        states: &[None, Some(56), Some(57), Some(58)],
+        transitions: &[
+            DFATransition(0, 28, 1),
+            DFATransition(0, 29, 2),
+            DFATransition(0, 30, 3),
+        ],
+        k: 1,
     },
     /* 29 - "SimpleToken" */
     LookaheadDFA {
@@ -452,6 +468,8 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
             DFATransition(0, 24, 1),
             DFATransition(0, 25, 2),
             DFATransition(0, 28, 4),
+            DFATransition(0, 29, 4),
+            DFATransition(0, 30, 4),
         ],
         k: 1,
     },
@@ -463,7 +481,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 36] = &[
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 59] = &[
+pub const PRODUCTIONS: &[Production; 61] = &[
     // 0 - Parol: Prolog GrammarDefinition;
     Production {
         lhs: 17,
@@ -769,12 +787,27 @@ pub const PRODUCTIONS: &[Production; 59] = &[
             ParseType::T(28),
         ],
     },
-    // 57 - ScannerNameOpt: Identifier;
+    // 57 - ScannerSwitch: "%push" "\(" Identifier "\)";
+    Production {
+        lhs: 28,
+        production: &[
+            ParseType::T(19),
+            ParseType::N(15),
+            ParseType::T(18),
+            ParseType::T(29),
+        ],
+    },
+    // 58 - ScannerSwitch: "%pop" "\(" "\)";
+    Production {
+        lhs: 28,
+        production: &[ParseType::T(19), ParseType::T(18), ParseType::T(30)],
+    },
+    // 59 - ScannerNameOpt: Identifier;
     Production {
         lhs: 22,
         production: &[ParseType::N(15)],
     },
-    // 58 - ScannerNameOpt: ;
+    // 60 - ScannerNameOpt: ;
     Production {
         lhs: 22,
         production: &[],

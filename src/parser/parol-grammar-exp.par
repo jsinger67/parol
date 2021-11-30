@@ -4,7 +4,6 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
-
 %%
 
 /*  0 */ Parol: Prolog GrammarDefinition;
@@ -64,5 +63,7 @@
 /* 54 */ StateListRest: "," Identifier StateListRest;
 /* 55 */ StateListRest: ;
 /* 56 */ ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
-/* 57 */ ScannerNameOpt: Identifier;
-/* 58 */ ScannerNameOpt: ;
+/* 57 */ ScannerSwitch: "%push" "\(" Identifier "\)";
+/* 58 */ ScannerSwitch: "%pop" "\(" "\)";
+/* 59 */ ScannerNameOpt: Identifier;
+/* 60 */ ScannerNameOpt: ;

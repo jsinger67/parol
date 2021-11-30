@@ -206,14 +206,14 @@ pub const PRODUCTIONS: &[Production; 17] = &[
         lhs: 0,
         production: &[ParseType::N(3)],
     },
-    // 6 - Content: StringDelimiter S(1) StringContent StringDelimiter S(0);
+    // 6 - Content: StringDelimiter Push(1) StringContent StringDelimiter Pop;
     Production {
         lhs: 0,
         production: &[
-            ParseType::S(0),
+            ParseType::Pop,
             ParseType::N(9),
             ParseType::N(8),
-            ParseType::S(1),
+            ParseType::Push(1),
             ParseType::N(9),
         ],
     },
