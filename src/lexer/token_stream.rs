@@ -53,6 +53,9 @@ pub struct TokenStream<'t> {
 
     /// Index of the current scanner state, is 0 initially.
     pub current_scanner_index: usize,
+
+    /// Scanner stack to support push and pop operations for scanner configurations
+    scanner_stack: Vec<ScannerIndex>,
 }
 
 impl<'t> TokenStream<'t> {
@@ -80,6 +83,7 @@ impl<'t> TokenStream<'t> {
             line: 1,
             column: 1,
             current_scanner_index: 0,
+            scanner_stack: Vec::new(),
         };
         token_stream.read_tokens(k);
         Ok(token_stream)
@@ -207,6 +211,62 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer();
         }
         Ok(())
+    }
+
+    ///
+    /// Push the current scanner index and switch to the scanner with given index.
+    ///
+    pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> std::result::Result<(), Error> {
+        if self.current_scanner_index == scanner_index {
+            trace!(
+                "Redundant switch to scanner {} <{}> omitted",
+                scanner_index,
+                self.tokenizers[scanner_index].0,
+            );
+        } else {
+            trace!(
+                "Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
+                self.current_scanner_index,
+                scanner_index,
+                self.tokenizers[scanner_index].0,
+                self.pos,
+            );
+            self.scanner_stack.push(self.current_scanner_index);
+            self.token_iter = self.switch_to(scanner_index);
+            self.current_scanner_index = scanner_index;
+            self.tokens.clear();
+            self.ensure_buffer();
+        }
+        Ok(())
+    }
+
+    ///
+    /// Push the current scanner index and switch to the scanner with given index.
+    ///
+    pub fn pop_scanner(&mut self) -> std::result::Result<(), Error> {
+        if let Some(scanner_index) = self.scanner_stack.pop() {
+            if self.current_scanner_index == scanner_index {
+                trace!(
+                    "Redundant switch to scanner {} <{}> omitted",
+                    scanner_index,
+                    self.tokenizers[scanner_index].0,
+                );
+            } else {
+                trace!(
+                    "Switching to popped scanner {} <{}>; Current offset is {}",
+                    scanner_index,
+                    self.tokenizers[scanner_index].0,
+                    self.pos,
+                );
+                self.token_iter = self.switch_to(scanner_index);
+                self.current_scanner_index = scanner_index;
+                self.tokens.clear();
+                self.ensure_buffer();
+            }
+            Ok(())
+        } else {
+            Err("pop_scanner: Tried to pop from an empty scanner stack!".into())
+        }
     }
 
     ///

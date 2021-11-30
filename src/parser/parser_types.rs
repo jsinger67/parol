@@ -42,6 +42,8 @@ impl Production {
                 ParseType::N(n) => non_terminal_names[*n].to_owned(),
                 ParseType::T(t) => format!(r#""{}""#, terminal_names[*t]),
                 ParseType::S(s) => format!("%sc({})", s),
+                ParseType::Push(s) => format!("%push({})", s),
+                ParseType::Pop => "%pop".to_string(),
                 _ => "?".to_owned(),
             })
             .collect::<Vec<String>>()
@@ -193,7 +195,7 @@ impl<'t> LLKParser {
         let l = self.productions[prod_num]
             .production
             .iter()
-            .filter(|s| !matches!(s, ParseType::S(_)))
+            .filter(|s| !s.is_switch())
             .count();
         // We remove the last n entries from the parse tree stack and insert them as
         // children under the node laying below on the stack
@@ -347,6 +349,14 @@ impl<'t> LLKParser {
                     }
                     ParseType::S(s) => {
                         stream.borrow_mut().switch_scanner(s)?;
+                        self.parser_stack.stack.pop();
+                    }
+                    ParseType::Push(s) => {
+                        stream.borrow_mut().push_scanner(s)?;
+                        self.parser_stack.stack.pop();
+                    }
+                    ParseType::Pop => {
+                        stream.borrow_mut().pop_scanner()?;
                         self.parser_stack.stack.pop();
                     }
                     ParseType::E(p) => {
