@@ -21,6 +21,9 @@ use std::fs;
 use std::path::PathBuf;
 use std::str::FromStr;
 
+// To generate:
+// parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
+
 error_chain! {
     links {
         RuntimeParserErr(parol_runtime::errors::Error, parol_runtime::errors::ErrorKind);

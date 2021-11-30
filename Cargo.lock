@@ -146,7 +146,7 @@ checksum = "b71991ff56294aa922b450139ee08b3bfc70982c6b2c7562771375cf73542dd4"
 
 [[package]]
 name = "json_parser"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "env_logger",
  "error-chain",
@@ -205,9 +205,9 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.2.0"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06c219d6c9b1ac29a237b6d1148a5ef85f4d66a82651db6d6134cca1e5e1c01d"
+checksum = "e5a546b8bda286bca61b8e48a509ce85a7b684b994da78db92cbdb59a5370f36"
 dependencies = [
  "error-chain",
  "id_tree",
