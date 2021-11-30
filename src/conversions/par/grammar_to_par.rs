@@ -22,10 +22,7 @@ struct YaccElements {
 #[template = "templates/scanner_config_template.par"]
 struct ScannerConfigElements {
     scanner_name: String,
-    line_comments: String,
-    block_comments: String,
-    auto_newline_off: String,
-    auto_ws_off: String,
+    scanner_directives: String,
 }
 
 ///
@@ -127,38 +124,41 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
 fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
     let scanner_name = scanner_config.scanner_name.clone();
 
+    let mut scanner_directives = Vec::<String>::new();
+
     let line_comments = scanner_config
         .line_comments
         .iter()
-        .map(|c| format!("\n    %line_comment \"{}\"", c))
+        .map(|c| format!("%line_comment \"{}\"", c))
         .collect::<Vec<String>>()
-        .join("\n");
+        .join(" ");
+
+    if !line_comments.is_empty() {
+        scanner_directives.push(line_comments);
+    }
 
     let block_comments = scanner_config
         .block_comments
         .iter()
-        .map(|(s, e)| format!("\n    %block_comment \"{}\" \"{}\"", s, e))
+        .map(|(s, e)| format!("%block_comment \"{}\" \"{}\"", s, e))
         .collect::<Vec<String>>()
-        .join("\n");
+        .join(" ");
 
-    let auto_newline_off = if scanner_config.auto_newline {
-        String::new()
-    } else {
-        "\n    %auto_newline_off".to_owned()
-    };
+    if !block_comments.is_empty() {
+        scanner_directives.push(block_comments);
+    }
 
-    let auto_ws_off = if scanner_config.auto_ws {
-        String::new()
-    } else {
-        "\n    %auto_ws_off".to_owned()
-    };
+    if !scanner_config.auto_newline {
+        scanner_directives.push("%auto_newline_off".to_owned());
+    }
+
+    if !scanner_config.auto_ws {
+        scanner_directives.push("%auto_ws_off".to_owned());
+    }
 
     let elements = ScannerConfigElements {
         scanner_name,
-        line_comments,
-        block_comments,
-        auto_newline_off,
-        auto_ws_off,
+        scanner_directives: scanner_directives.join(" "),
     };
 
     format!("{}", elements)

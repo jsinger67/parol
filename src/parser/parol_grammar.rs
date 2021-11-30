@@ -750,6 +750,30 @@ impl ParolGrammarTrait for ParolGrammar {
         }
     }
 
+    /// Semantic action for production 49:
+    ///
+    /// ScannerStateSuffix: "\}";
+    ///
+    fn scanner_state_suffix_49(
+        &mut self,
+        _r_brace_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "scanner_state_suffix_49";
+        trace!("{}", self.trace_item_stack(context));
+        if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(n))) = self.pop(context) {
+            trace!("{}", self);
+            self.current_scanner.name = n;
+            self.scanner_configurations
+                .push(self.current_scanner.clone());
+            self.current_scanner = ScannerConfig::default();
+            trace!("{}", self);
+            Ok(())
+        } else {
+            Err(format!("{}: Expected 'Factor::NonTerminal' on TOS.", context).into())
+        }
+    }
+
     /// Semantic action for production 53:
     ///
     /// StateList: Identifier StateListRest;

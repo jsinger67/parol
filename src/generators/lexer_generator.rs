@@ -1,4 +1,5 @@
 use crate::errors::*;
+use crate::generate_name;
 use crate::generators::{generate_terminal_name, GrammarConfig};
 
 use crate::StrVec;
@@ -115,7 +116,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
             .iter()
             .enumerate()
             .fold(Vec::new(), |mut acc, (i, e)| {
-                let n = generate_terminal_name(e, i, &grammar_config.cfg);
+                let n = generate_name(&acc, generate_terminal_name(e, i, &grammar_config.cfg));
                 acc.push(n);
                 acc
             });
@@ -160,7 +161,7 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         .iter()
         .enumerate()
         .fold(Vec::new(), |mut acc, (i, e)| {
-            let n = generate_terminal_name(e, i, &grammar_config.cfg);
+            let n = generate_name(&acc, generate_terminal_name(e, i, &grammar_config.cfg));
             acc.push(n);
             acc
         })

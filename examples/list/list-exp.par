@@ -2,6 +2,7 @@
 %title "A simple comma separated list of integers"
 %comment "A trailing comma is allowed."
 
+
 %%
 
 /* 0 */ list: ;

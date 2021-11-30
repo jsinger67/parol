@@ -1,4 +1,1 @@
-
-
-%scanner {{{scanner_name}}} { {{{line_comments}}}{{{block_comments}}}{{{auto_newline_off}}}{{{auto_ws_off}}}
-}
+%scanner {{{scanner_name}}} { {{{scanner_directives}}} }

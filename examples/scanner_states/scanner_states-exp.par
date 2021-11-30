@@ -4,11 +4,7 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
-%scanner String { 
-    %auto_newline_off
-    %auto_ws_off
-}
-
+%scanner String { %auto_newline_off %auto_ws_off }
 
 %%
 
