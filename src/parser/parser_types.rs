@@ -1,5 +1,5 @@
 use crate::errors::*;
-use crate::lexer::TokenStream;
+use crate::lexer::{FormatToken, TokenStream};
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
     ProductionIndex, UserActionsTrait,
@@ -239,36 +239,20 @@ impl<'t> LLKParser {
         lookahead_dfa.eval(&mut stream.borrow_mut())
     }
 
-    fn diagnostic_message(&self, msg: &str, stream: &RefCell<TokenStream<'t>>) -> String {
-        let file_name = stream.borrow().file_name.clone();
-        let (token, token_type, location) =
-            if let Ok(token) = stream.borrow_mut().owned_lookahead(0) {
-                (
-                    format!("{}", token),
-                    token.token_type,
-                    format!("{}:({},{})", file_name, token.line, token.column),
-                )
-            } else {
-                ("<<Error>>".to_string(), 0, format!("{}(?)", file_name))
-            };
-
+    fn diagnostic_message(&self, msg: &str) -> String {
         trace!("\nParser stack:\n{}\n", self.parser_stack);
-
-        let prod_num = self.current_production().unwrap();
-
-        let msg = format!(
-            "{} at {}\n\
-            Current production is:\n\
-            /* {} */ {}\n\
-            Lookahead token: {} ({})\n",
-            msg,
-            location,
-            prod_num,
-            self.productions[prod_num].to_string(self.terminal_names, self.non_terminal_names),
-            token,
-            self.terminal_names[token_type],
-        );
-        msg
+        if let Some(prod_num) = self.current_production() {
+            format!(
+                "{}\n\
+                Current production is:\n\
+                /* {} */ {}\n",
+                msg,
+                prod_num,
+                self.productions[prod_num].to_string(self.terminal_names, self.non_terminal_names),
+            )
+        } else {
+            format!("{}\n", msg,)
+        }
     }
 
     ///
@@ -282,12 +266,25 @@ impl<'t> LLKParser {
         stream: RefCell<TokenStream<'t>>,
         user_actions: &mut dyn UserActionsTrait,
     ) -> Result<()> {
+        let file_name = stream.borrow().file_name.clone();
+
         let prod_num = self
             .predict_production(self.start_symbol_index, &stream)
             .chain_err(|| {
-                format!(
-                    "Can't predict production while trying to start parsing with {}!",
-                    self.non_terminal_names[self.start_symbol_index]
+                let nt_name = self.non_terminal_names[self.start_symbol_index];
+                self.diagnostic_message(
+                    format!(
+                        "{}\nat non-terminal \"{}\" (start symbol) \n\
+                    Current scanner is {}",
+                        self.lookahead_automata[self.start_symbol_index].show_diagnosis(
+                            self.terminal_names,
+                            &stream.borrow().tokens,
+                            &stream.borrow().file_name,
+                        ),
+                        nt_name,
+                        stream.borrow().current_scanner(),
+                    )
+                    .as_str(),
                 )
             })?;
 
@@ -313,31 +310,40 @@ impl<'t> LLKParser {
                         } else {
                             let msg = self.diagnostic_message(
                                 format!(
-                                    "Expecting token {}, but found {}",
-                                    self.terminal_names[t], token
+                                    "Expecting token type {}, but found \"{}\" \n\
+                                    Current scanner is {}",
+                                    self.terminal_names[t],
+                                    token.format(&file_name, self.terminal_names),
+                                    stream.borrow().current_scanner(),
                                 )
                                 .as_str(),
-                                &stream,
                             );
                             return Err(msg.into());
                         }
                     }
                     ParseType::N(n) => {
-                        let prod_num = self.predict_production(n, &stream).chain_err(|| {
+                        if let Ok(prod_num) = self.predict_production(n, &stream) {
+                            self.parser_stack.stack.pop();
+                            self.push_production(prod_num);
+                        } else {
                             let nt_name = self.non_terminal_names[n];
-                            self.diagnostic_message(
-                                format!(
-                                    r#"Expecting one of {} at non-terminal "{}""#,
-                                    self.lookahead_automata[n]
-                                        .expected_terminals(self.terminal_names),
-                                    nt_name,
+                            return Err(self
+                                .diagnostic_message(
+                                    format!(
+                                        "{}\nat non-terminal \"{}\" \n\
+                                    Current scanner is {}",
+                                        self.lookahead_automata[n].show_diagnosis(
+                                            self.terminal_names,
+                                            &stream.borrow().tokens,
+                                            &stream.borrow().file_name,
+                                        ),
+                                        nt_name,
+                                        stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
                                 )
-                                .as_str(),
-                                &stream,
-                            )
-                        })?;
-                        self.parser_stack.stack.pop();
-                        self.push_production(prod_num);
+                                .into());
+                        }
                     }
                     ParseType::S(s) => {
                         stream.borrow_mut().switch_scanner(s)?;
@@ -354,7 +360,7 @@ impl<'t> LLKParser {
         }
 
         if !stream.borrow().all_input_consumed() {
-            Err(self.diagnostic_message("Unprocessed input", &stream).into())
+            Err(self.diagnostic_message("Unprocessed input").into())
         } else {
             Ok(())
         }

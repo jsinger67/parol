@@ -8,6 +8,12 @@ use regex::Regex;
 pub type TerminalIndex = usize;
 
 ///
+/// Module with common formatting trait
+///
+pub mod format_token;
+pub use format_token::FormatToken;
+
+///
 /// Module that provides basic token implementation.
 ///
 pub mod token;
@@ -38,6 +44,5 @@ pub mod token_stream;
 pub use token_stream::TokenStream;
 
 lazy_static! {
-    static ref RX_NEW_LINE: Regex =
-        Regex::new(r"\r\n|\r|\n").expect("error parsing regex: RX_NEW_LINE");
+    static ref RX_NEW_LINE: Regex = Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE");
 }

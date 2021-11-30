@@ -1,5 +1,5 @@
 use crate::errors::*;
-use crate::lexer::{TerminalIndex, TokenStream};
+use crate::lexer::{FormatToken, TerminalIndex, Token, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
 use log::trace;
 use std::cmp::Ordering;
@@ -158,12 +158,48 @@ impl LookaheadDFA {
     ///
     /// Returns all terminals that lead from state 0 to a valid next state
     ///
-    pub fn expected_terminals(&self, terminal_names: &'static [&'static str]) -> String {
-        self.transitions
-            .iter()
-            .filter(|t| t.0 == 0)
-            .map(|t| format!(r#""{}""#, terminal_names[t.1]))
-            .collect::<Vec<String>>()
-            .join(", ")
+    pub fn show_diagnosis(
+        &self,
+        terminal_names: &'static [&'static str],
+        tokens: &[Token],
+        file_name: &str,
+    ) -> String {
+        let mut state = 0;
+        let mut diag_msg = String::new();
+        for (lookahead, token) in tokens.iter().enumerate() {
+            let token_type = token.token_type;
+            if let Some(transition) = self
+                .transitions
+                .iter()
+                .position(|t| t.0 == state && t.1 == token_type)
+            {
+                diag_msg.push_str(
+                    format!(
+                        "LA({}): {} ",
+                        lookahead + 1,
+                        token.format(file_name, terminal_names)
+                    )
+                    .as_str(),
+                );
+                state = self.transitions[transition].2;
+            } else {
+                diag_msg.push_str(
+                    format!(
+                        "and LA({}): {}. But instead expecting one of {}",
+                        lookahead + 1,
+                        token.format(file_name, terminal_names),
+                        self.transitions
+                            .iter()
+                            .filter(|t| t.0 == state)
+                            .map(|t| format!(r#""{}""#, terminal_names[t.1]))
+                            .collect::<Vec<String>>()
+                            .join(", "),
+                    )
+                    .as_str(),
+                );
+                break;
+            }
+        }
+        diag_msg
     }
 }

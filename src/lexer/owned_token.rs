@@ -1,4 +1,4 @@
-use crate::lexer::TerminalIndex;
+use crate::lexer::{FormatToken, TerminalIndex};
 use std::fmt::{Display, Error, Formatter};
 
 ///
@@ -22,14 +22,39 @@ pub struct OwnedToken {
 
 impl Display for OwnedToken {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        let (c1, c2) = if self.symbol.starts_with('\'') {
+            ('<', '>')
+        } else {
+            ('\'', '\'')
+        };
         write!(
             f,
-            r#""{}"[{}]({},{}-{})"#,
+            "{}{}{}[{}]({},{}-{})",
+            c1,
             self.symbol,
+            c2,
             self.token_type,
             self.line,
             self.column,
-            self.column + self.symbol.len() - 1
+            self.column + self.symbol.len()
+        )
+    }
+}
+
+impl FormatToken for OwnedToken {
+    fn format(
+        &self,
+        file_name: &str,
+        terminal_names: &'static [&'static str],
+    ) -> std::string::String {
+        let name = terminal_names[self.token_type];
+        format!(
+            "'{}'({}) at {}:{}:{}",
+            self.symbol.escape_default(),
+            name,
+            file_name,
+            self.line,
+            self.column,
         )
     }
 }
