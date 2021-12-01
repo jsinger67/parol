@@ -79,15 +79,15 @@ TokenWithStates
     ;
 
 Group
-    : "\(" Alternations "\)"
+    : "\(" Factor Alternations "\)"
     ;
 
 Optional
-    : "\[" Alternations "\]"
+    : "\[" Factor Alternations "\]"
     ;
 
 Repeat
-    : "\{" Alternations "\}"
+    : "\{" Factor Alternations "\}"
     ;
 
 Identifier

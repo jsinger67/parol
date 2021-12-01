@@ -516,13 +516,14 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 42:
     ///
-    /// Group: "\(" Alternations "\)";
+    /// Group: "\(" Factor Alternations "\)";
     ///
     fn group_42(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_paren_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -530,13 +531,14 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 43:
     ///
-    /// Optional: "\[" Alternations "\]";
+    /// Optional: "\[" Factor Alternations "\]";
     ///
     fn optional_43(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_bracket_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -544,13 +546,14 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 44:
     ///
-    /// Repeat: "\{" Alternations "\}";
+    /// Repeat: "\{" Factor Alternations "\}";
     ///
     fn repeat_44(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_brace_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -857,11 +860,29 @@ impl UserActionsTrait for ParolGrammar {
                 parse_tree,
             ),
 
-            42 => self.group_42(&children[0], &children[1], &children[2], parse_tree),
+            42 => self.group_42(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
 
-            43 => self.optional_43(&children[0], &children[1], &children[2], parse_tree),
+            43 => self.optional_43(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
 
-            44 => self.repeat_44(&children[0], &children[1], &children[2], parse_tree),
+            44 => self.repeat_44(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
 
             45 => self.identifier_45(&children[0], parse_tree),
 

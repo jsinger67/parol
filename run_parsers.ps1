@@ -48,7 +48,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Some of the example grammars will fail because they don't pass the basic grammar checks.
-# Get-ChildItem ./data/*.par | ForEach-Object { ./target/release/parol.exe parol -f $_.FullName }
+# Get-ChildItem ./data/*.par | ForEach-Object { Write-Host $_.FullName -ForegroundColor Blue; ./target/release/parol -f $_.FullName }
 
 # --------------------------------------------------------------------------------------------------
 # Final message

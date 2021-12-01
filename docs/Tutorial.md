@@ -123,7 +123,7 @@ Now open both variants, the json.par and the json-exp.par, side by side to see t
 
 It is not needed to understand the transformation process itself in detail. But here are some hints that let you better recognize your original constructs in the resulting format.
 
-### `Suffix`
+### Left-factoring
 
 For instance, new non-terminals which end with "Suffix[Number]" are introduced by the left-factoring step. Typically they appear on one production on the right most end and have at least two alternatives as extra productions where they appear on the LHS.
 
@@ -146,7 +146,7 @@ As you can see they are equivalent but the second one needs one lookahead symbol
 
  `parol` left-factors the grammar after all other substitutions described below are completed.
 
-### `Rest`
+### Repetitions
 
 New non-terminals and productions are introduced during elimination of *repetitions* applying the following scheme:
 
@@ -156,14 +156,13 @@ Replace a Factor that is a R with a non-left-recursive substitution.
 R  -> x { a } y
 =>
 R  -> x R' y
-R  -> x y
-R' -> (a) R'
-R' -> (a)
+R' -> a R'
+R' ->
 ```
 
 The name of the production R' is created by adding "Rest[Number]" to the original non-terminal on the LHS.
 
-### `Opt`
+### Optional expressions
 
 New non-terminals and productions are introduced during elimination of *optional expressions* applying the following scheme:
 
@@ -172,12 +171,9 @@ Replace a Factor that is an O with new productions.
 -------------------------------------------------------------------------
 R  -> x [ a ] y
 =>
-R  -> x R' y
+R  -> x a y
 R  -> x y
-R' -> (a)
 ```
-
-The name of the production R' is created by adding "Opt[Number]" to the original non-terminal on the LHS.
 
 ### `Group`
 
@@ -225,7 +221,7 @@ id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
-parol_runtime = "0.2.0"
+parol_runtime = "0.2.3"
 ```
 
 Next add a file json_grammar.rs to the src folder of the crate. It will contain your grammar processing items.

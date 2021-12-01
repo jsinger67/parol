@@ -620,19 +620,30 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 42:
     ///
-    /// Group: "\(" Alternations "\)";
+    /// Group: "\(" Factor Alternations "\)";
     ///
     fn group_42(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_paren_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "group_42";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
-            Ok(())
+        trace!("{}", self.trace_item_stack(context));
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
+                if alts.0.is_empty() {
+                    alts.push(Alternation(vec![fac]));
+                } else {
+                    alts.0[0].0.insert(0, fac);
+                }
+                self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
+                Ok(())
+            } else {
+                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+            }
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
         }
@@ -640,19 +651,30 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 43:
     ///
-    /// Optional: "\[" Alternations "\]";
+    /// Optional: "\[" Factor Alternations "\]";
     ///
     fn optional_43(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_bracket_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "optional_43";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
-            Ok(())
+        trace!("{}", self.trace_item_stack(context));
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
+                if alts.0.is_empty() {
+                    alts.push(Alternation(vec![fac]));
+                } else {
+                    alts.0[0].0.insert(0, fac);
+                }
+                self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
+                Ok(())
+            } else {
+                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+            }
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
         }
@@ -660,19 +682,30 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 44:
     ///
-    /// Repeat: "\{" Alternations "\}";
+    /// Repeat: "\{" Factor Alternations "\}";
     ///
     fn repeat_44(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
+        _factor_1: &ParseTreeStackEntry,
+        _alternations_2: &ParseTreeStackEntry,
+        _r_brace_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "repeat_44";
-        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
-            self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
-            Ok(())
+        trace!("{}", self.trace_item_stack(context));
+        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
+            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
+                if alts.0.is_empty() {
+                    alts.push(Alternation(vec![fac]));
+                } else {
+                    alts.0[0].0.insert(0, fac);
+                }
+                self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
+                Ok(())
+            } else {
+                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+            }
         } else {
             Err(format!("{}: Expected 'Alts' on TOS.", context).into())
         }

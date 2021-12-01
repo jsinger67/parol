@@ -48,9 +48,9 @@
 /* 39 */ Symbol: ScannerSwitch;
 /* 40 */ SimpleToken: String;
 /* 41 */ TokenWithStates: "<" StateList ">" String;
-/* 42 */ Group: "\(" Alternations "\)";
-/* 43 */ Optional: "\[" Alternations "\]";
-/* 44 */ Repeat: "\{" Alternations "\}";
+/* 42 */ Group: "\(" Factor Alternations "\)";
+/* 43 */ Optional: "\[" Factor Alternations "\]";
+/* 44 */ Repeat: "\{" Factor Alternations "\}";
 /* 45 */ Identifier: "[a-zA-Z_]\w*";
 /* 46 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
 /* 47 */ ScannerState: "%scanner" Identifier "\{" ScannerStateSuffix;
