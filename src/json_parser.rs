@@ -83,52 +83,36 @@ const SCANNER_0: (&[&str; 5], &[usize; 11]) = (
 
 const MAX_K: usize = 1;
 
-pub const NON_TERMINALS: &[&str; 15] = &[
+pub const NON_TERMINALS: &[&str; 11] = &[
     /*  0 */ "Array",
-    /*  1 */ "ArrayRest",
-    /*  2 */ "ArrayRestSuffix",
-    /*  3 */ "ArraySuffix",
-    /*  4 */ "ArraySuffix1",
-    /*  5 */ "Json",
-    /*  6 */ "Number",
-    /*  7 */ "Object",
-    /*  8 */ "ObjectRest",
-    /*  9 */ "ObjectRestSuffix",
-    /* 10 */ "ObjectSuffix",
-    /* 11 */ "ObjectSuffix1",
-    /* 12 */ "Pair",
-    /* 13 */ "String",
-    /* 14 */ "Value",
+    /*  1 */ "ArrayList",
+    /*  2 */ "ArraySuffix",
+    /*  3 */ "Json",
+    /*  4 */ "Number",
+    /*  5 */ "Object",
+    /*  6 */ "ObjectList",
+    /*  7 */ "ObjectSuffix",
+    /*  8 */ "Pair",
+    /*  9 */ "String",
+    /* 10 */ "Value",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 15] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 11] = &[
     /* 0 - "Array" */
     LookaheadDFA {
-        states: &[Some(10)],
+        states: &[Some(7)],
         transitions: &[],
         k: 0,
     },
-    /* 1 - "ArrayRest" */
+    /* 1 - "ArrayList" */
     LookaheadDFA {
-        states: &[Some(15)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 2 - "ArrayRestSuffix" */
-    LookaheadDFA {
-        states: &[None, Some(16), Some(17)],
+        states: &[None, Some(10), Some(11)],
         transitions: &[DFATransition(0, 7, 1), DFATransition(0, 10, 2)],
         k: 1,
     },
-    /* 3 - "ArraySuffix" */
+    /* 2 - "ArraySuffix" */
     LookaheadDFA {
-        states: &[None, Some(13), Some(14)],
-        transitions: &[DFATransition(0, 7, 1), DFATransition(0, 10, 2)],
-        k: 1,
-    },
-    /* 4 - "ArraySuffix1" */
-    LookaheadDFA {
-        states: &[None, Some(11), Some(12)],
+        states: &[None, Some(8), Some(9)],
         transitions: &[
             DFATransition(0, 5, 1),
             DFATransition(0, 9, 1),
@@ -141,71 +125,59 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 15] = &[
         ],
         k: 1,
     },
-    /* 5 - "Json" */
+    /* 3 - "Json" */
     LookaheadDFA {
         states: &[Some(0)],
         transitions: &[],
         k: 0,
     },
-    /* 6 - "Number" */
+    /* 4 - "Number" */
     LookaheadDFA {
-        states: &[Some(26)],
+        states: &[Some(20)],
         transitions: &[],
         k: 0,
     },
-    /* 7 - "Object" */
+    /* 5 - "Object" */
     LookaheadDFA {
         states: &[Some(1)],
         transitions: &[],
         k: 0,
     },
-    /* 8 - "ObjectRest" */
-    LookaheadDFA {
-        states: &[Some(6)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 9 - "ObjectRestSuffix" */
-    LookaheadDFA {
-        states: &[None, Some(7), Some(8)],
-        transitions: &[DFATransition(0, 6, 2), DFATransition(0, 7, 1)],
-        k: 1,
-    },
-    /* 10 - "ObjectSuffix" */
+    /* 6 - "ObjectList" */
     LookaheadDFA {
         states: &[None, Some(4), Some(5)],
         transitions: &[DFATransition(0, 6, 2), DFATransition(0, 7, 1)],
         k: 1,
     },
-    /* 11 - "ObjectSuffix1" */
+    /* 7 - "ObjectSuffix" */
     LookaheadDFA {
         states: &[None, Some(2), Some(3)],
         transitions: &[DFATransition(0, 6, 2), DFATransition(0, 14, 1)],
         k: 1,
     },
-    /* 12 - "Pair" */
+    /* 8 - "Pair" */
     LookaheadDFA {
-        states: &[Some(9)],
+        states: &[Some(6)],
         transitions: &[],
         k: 0,
     },
-    /* 13 - "String" */
+    /* 9 - "String" */
     LookaheadDFA {
-        states: &[Some(25)],
+        states: &[Some(19)],
         transitions: &[],
         k: 0,
     },
-    /* 14 - "Value" */
+    /* 10 - "Value" */
     LookaheadDFA {
         states: &[
             None,
+            Some(12),
+            Some(13),
+            Some(14),
+            Some(15),
+            Some(16),
+            Some(17),
             Some(18),
-            Some(19),
-            Some(20),
-            Some(21),
-            Some(22),
-            Some(23),
-            Some(24),
         ],
         transitions: &[
             DFATransition(0, 5, 3),
@@ -220,140 +192,110 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 15] = &[
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 27] = &[
+pub const PRODUCTIONS: &[Production; 21] = &[
     // 0 - Json: Value;
     Production {
-        lhs: 5,
-        production: &[ParseType::N(14)],
+        lhs: 3,
+        production: &[ParseType::N(10)],
     },
-    // 1 - Object: "\{" ObjectSuffix1;
+    // 1 - Object: "\{" ObjectSuffix;
+    Production {
+        lhs: 5,
+        production: &[ParseType::N(7), ParseType::T(5)],
+    },
+    // 2 - ObjectSuffix: Pair ObjectList "\}";
     Production {
         lhs: 7,
-        production: &[ParseType::N(11), ParseType::T(5)],
+        production: &[ParseType::T(6), ParseType::N(6), ParseType::N(8)],
     },
-    // 2 - ObjectSuffix1: Pair ObjectSuffix;
+    // 3 - ObjectSuffix: "\}";
     Production {
-        lhs: 11,
-        production: &[ParseType::N(10), ParseType::N(12)],
-    },
-    // 3 - ObjectSuffix1: "\}";
-    Production {
-        lhs: 11,
+        lhs: 7,
         production: &[ParseType::T(6)],
     },
-    // 4 - ObjectSuffix: ObjectRest "\}";
-    Production {
-        lhs: 10,
-        production: &[ParseType::T(6), ParseType::N(8)],
-    },
-    // 5 - ObjectSuffix: "\}";
-    Production {
-        lhs: 10,
-        production: &[ParseType::T(6)],
-    },
-    // 6 - ObjectRest: "," Pair ObjectRestSuffix;
-    Production {
-        lhs: 8,
-        production: &[ParseType::N(9), ParseType::N(12), ParseType::T(7)],
-    },
-    // 7 - ObjectRestSuffix: ObjectRest;
-    Production {
-        lhs: 9,
-        production: &[ParseType::N(8)],
-    },
-    // 8 - ObjectRestSuffix: ;
-    Production {
-        lhs: 9,
-        production: &[],
-    },
-    // 9 - Pair: String ":" Value;
-    Production {
-        lhs: 12,
-        production: &[ParseType::N(14), ParseType::T(8), ParseType::N(13)],
-    },
-    // 10 - Array: "\[" ArraySuffix1;
-    Production {
-        lhs: 0,
-        production: &[ParseType::N(4), ParseType::T(9)],
-    },
-    // 11 - ArraySuffix1: Value ArraySuffix;
-    Production {
-        lhs: 4,
-        production: &[ParseType::N(3), ParseType::N(14)],
-    },
-    // 12 - ArraySuffix1: "\]";
-    Production {
-        lhs: 4,
-        production: &[ParseType::T(10)],
-    },
-    // 13 - ArraySuffix: ArrayRest "\]";
-    Production {
-        lhs: 3,
-        production: &[ParseType::T(10), ParseType::N(1)],
-    },
-    // 14 - ArraySuffix: "\]";
-    Production {
-        lhs: 3,
-        production: &[ParseType::T(10)],
-    },
-    // 15 - ArrayRest: "," Value ArrayRestSuffix;
-    Production {
-        lhs: 1,
-        production: &[ParseType::N(2), ParseType::N(14), ParseType::T(7)],
-    },
-    // 16 - ArrayRestSuffix: ArrayRest;
-    Production {
-        lhs: 2,
-        production: &[ParseType::N(1)],
-    },
-    // 17 - ArrayRestSuffix: ;
-    Production {
-        lhs: 2,
-        production: &[],
-    },
-    // 18 - Value: String;
-    Production {
-        lhs: 14,
-        production: &[ParseType::N(13)],
-    },
-    // 19 - Value: Number;
-    Production {
-        lhs: 14,
-        production: &[ParseType::N(6)],
-    },
-    // 20 - Value: Object;
-    Production {
-        lhs: 14,
-        production: &[ParseType::N(7)],
-    },
-    // 21 - Value: Array;
-    Production {
-        lhs: 14,
-        production: &[ParseType::N(0)],
-    },
-    // 22 - Value: "true";
-    Production {
-        lhs: 14,
-        production: &[ParseType::T(11)],
-    },
-    // 23 - Value: "false";
-    Production {
-        lhs: 14,
-        production: &[ParseType::T(12)],
-    },
-    // 24 - Value: "null";
-    Production {
-        lhs: 14,
-        production: &[ParseType::T(13)],
-    },
-    // 25 - String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
-    Production {
-        lhs: 13,
-        production: &[ParseType::T(14)],
-    },
-    // 26 - Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
+    // 4 - ObjectList: "," Pair ObjectList;
     Production {
         lhs: 6,
+        production: &[ParseType::N(6), ParseType::N(8), ParseType::T(7)],
+    },
+    // 5 - ObjectList: ;
+    Production {
+        lhs: 6,
+        production: &[],
+    },
+    // 6 - Pair: String ":" Value;
+    Production {
+        lhs: 8,
+        production: &[ParseType::N(10), ParseType::T(8), ParseType::N(9)],
+    },
+    // 7 - Array: "\[" ArraySuffix;
+    Production {
+        lhs: 0,
+        production: &[ParseType::N(2), ParseType::T(9)],
+    },
+    // 8 - ArraySuffix: Value ArrayList "\]";
+    Production {
+        lhs: 2,
+        production: &[ParseType::T(10), ParseType::N(1), ParseType::N(10)],
+    },
+    // 9 - ArraySuffix: "\]";
+    Production {
+        lhs: 2,
+        production: &[ParseType::T(10)],
+    },
+    // 10 - ArrayList: "," Value ArrayList;
+    Production {
+        lhs: 1,
+        production: &[ParseType::N(1), ParseType::N(10), ParseType::T(7)],
+    },
+    // 11 - ArrayList: ;
+    Production {
+        lhs: 1,
+        production: &[],
+    },
+    // 12 - Value: String;
+    Production {
+        lhs: 10,
+        production: &[ParseType::N(9)],
+    },
+    // 13 - Value: Number;
+    Production {
+        lhs: 10,
+        production: &[ParseType::N(4)],
+    },
+    // 14 - Value: Object;
+    Production {
+        lhs: 10,
+        production: &[ParseType::N(5)],
+    },
+    // 15 - Value: Array;
+    Production {
+        lhs: 10,
+        production: &[ParseType::N(0)],
+    },
+    // 16 - Value: "true";
+    Production {
+        lhs: 10,
+        production: &[ParseType::T(11)],
+    },
+    // 17 - Value: "false";
+    Production {
+        lhs: 10,
+        production: &[ParseType::T(12)],
+    },
+    // 18 - Value: "null";
+    Production {
+        lhs: 10,
+        production: &[ParseType::T(13)],
+    },
+    // 19 - String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
+    Production {
+        lhs: 9,
+        production: &[ParseType::T(14)],
+    },
+    // 20 - Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
+    Production {
+        lhs: 4,
         production: &[ParseType::T(15)],
     },
 ];
@@ -371,7 +313,7 @@ pub fn parse(
     user_actions: &mut dyn UserActionsTrait,
 ) -> Result<Tree<ParseTreeType>> {
     let mut llk_parser = LLKParser::new(
-        5,
+        3,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,

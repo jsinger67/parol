@@ -138,15 +138,16 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix1: Pair ObjectSuffix;
+    /// ObjectSuffix: Pair ObjectList "\}";
     ///
-    fn object_suffix1_2(
+    fn object_suffix_2(
         &mut self,
         _pair_0: &ParseTreeStackEntry,
-        _object_suffix_1: &ParseTreeStackEntry,
+        _object_list_1: &ParseTreeStackEntry,
+        _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_suffix1_2";
+        let context = "object_suffix_2";
         let top_of_stack1 = self.pop(context);
         let top_of_stack2 = self.pop(context);
         match (&top_of_stack1, &top_of_stack2) {
@@ -166,44 +167,30 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 3:
     ///
-    /// ObjectSuffix1: "\}";
-    ///
-    fn object_suffix1_3(
-        &mut self,
-        _r_brace_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "object_suffix1_3";
-        self.push(JsonGrammarItem::Object(Vec::new()), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 5:
-    ///
     /// ObjectSuffix: "\}";
     ///
-    fn object_suffix_5(
+    fn object_suffix_3(
         &mut self,
         _r_brace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_suffix_5";
+        let context = "object_suffix_3";
         self.push(JsonGrammarItem::Object(Vec::new()), context);
         Ok(())
     }
 
-    /// Semantic action for production 6:
+    /// Semantic action for production 4:
     ///
-    /// ObjectRest: "," Pair ObjectRestSuffix;
+    /// ObjectList: "," Pair ObjectList;
     ///
-    fn object_rest_6(
+    fn object_list_4(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _pair_1: &ParseTreeStackEntry,
-        _object_rest_suffix_2: &ParseTreeStackEntry,
+        _object_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_rest_6";
+        let context = "object_list_4";
         let top_of_stack1 = self.pop(context);
         let top_of_stack2 = self.pop(context);
         match (&top_of_stack1, &top_of_stack2) {
@@ -221,28 +208,28 @@ impl JsonGrammarTrait for JsonGrammar {
         }
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 5:
     ///
-    /// ObjectRestSuffix: ;
+    /// ObjectList: ;
     ///
-    fn object_rest_suffix_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "object_rest_suffix_8";
+    fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "object_list_5";
         self.push(JsonGrammarItem::Object(Vec::new()), context);
         Ok(())
     }
 
-    /// Semantic action for production 9:
+    /// Semantic action for production 6:
     ///
     /// Pair: String ":" Value;
     ///
-    fn pair_9(
+    fn pair_6(
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
         _value_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "pair_9";
+        let context = "pair_6";
         let value = self.pop(context);
         let name = self.pop(context);
         match (&name, &value) {
@@ -257,17 +244,17 @@ impl JsonGrammarTrait for JsonGrammar {
         }
     }
 
-    /// Semantic action for production 10:
+    /// Semantic action for production 7:
     ///
-    /// Array: "\[" ArraySuffix1;
+    /// Array: "\[" ArraySuffix;
     ///
-    fn array_10(
+    fn array_7(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _array_suffix1_1: &ParseTreeStackEntry,
+        _array_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_10";
+        let context = "array_7";
         let top_of_stack = self.pop(context);
         match &top_of_stack {
             Some(JsonGrammarItem::Array(list)) => {
@@ -280,17 +267,18 @@ impl JsonGrammarTrait for JsonGrammar {
         }
     }
 
-    /// Semantic action for production 11:
+    /// Semantic action for production 8:
     ///
-    /// ArraySuffix1: Value ArraySuffix;
+    /// ArraySuffix: Value ArrayList "\]";
     ///
-    fn array_suffix1_11(
+    fn array_suffix_8(
         &mut self,
         _value_0: &ParseTreeStackEntry,
-        _array_suffix_1: &ParseTreeStackEntry,
+        _array_list_1: &ParseTreeStackEntry,
+        _r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_suffix1_11";
+        let context = "array_suffix_8";
         let top_of_stack1 = self.pop(context);
         let top_of_stack2 = self.pop(context);
         match (&top_of_stack1, &top_of_stack2) {
@@ -308,46 +296,32 @@ impl JsonGrammarTrait for JsonGrammar {
         }
     }
 
-    /// Semantic action for production 12:
-    ///
-    /// ArraySuffix1: "\]";
-    ///
-    fn array_suffix1_12(
-        &mut self,
-        _r_bracket_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "array_suffix1_12";
-        self.push(JsonGrammarItem::Array(Vec::new()), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 14:
+    /// Semantic action for production 9:
     ///
     /// ArraySuffix: "\]";
     ///
-    fn array_suffix_14(
+    fn array_suffix_9(
         &mut self,
         _r_bracket_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_suffix_14";
+        let context = "array_suffix_9";
         self.push(JsonGrammarItem::Array(Vec::new()), context);
         Ok(())
     }
 
-    /// Semantic action for production 15:
+    /// Semantic action for production 10:
     ///
-    /// ArrayRest: "," Value ArrayRestSuffix;
+    /// ArrayList: "," Value ArrayList;
     ///
-    fn array_rest_15(
+    fn array_list_10(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _value_1: &ParseTreeStackEntry,
-        _array_rest_suffix_2: &ParseTreeStackEntry,
+        _array_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_rest_15";
+        let context = "array_list_10";
         let top_of_stack1 = self.pop(context);
         let top_of_stack2 = self.pop(context);
         match (&top_of_stack1, &top_of_stack2) {
@@ -365,83 +339,83 @@ impl JsonGrammarTrait for JsonGrammar {
         }
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 11:
     ///
-    /// ArrayRestSuffix: ;
+    /// ArrayList: ;
     ///
-    fn array_rest_suffix_17(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "array_rest_suffix_17";
+    fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "array_list_11";
         self.push(JsonGrammarItem::Array(Vec::new()), context);
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 16:
     ///
     /// Value: "true";
     ///
-    fn value_22(
+    fn value_16(
         &mut self,
         _true_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_22";
+        let context = "value_16";
         self.push(JsonGrammarItem::True, context);
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 17:
     ///
     /// Value: "false";
     ///
-    fn value_23(
+    fn value_17(
         &mut self,
         _false_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_23";
+        let context = "value_17";
         self.push(JsonGrammarItem::False, context);
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 18:
     ///
     /// Value: "null";
     ///
-    fn value_24(
+    fn value_18(
         &mut self,
         _null_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_24";
+        let context = "value_18";
         self.push(JsonGrammarItem::Null, context);
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 19:
     ///
     /// String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_25(
+    fn string_19(
         &mut self,
         string_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_25";
+        let context = "string_19";
         let string = string_0.symbol(parse_tree)?;
         self.push(JsonGrammarItem::String(string.to_string()), context);
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 20:
     ///
     /// Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
     ///
-    fn number_26(
+    fn number_20(
         &mut self,
         number_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "number_26";
+        let context = "number_20";
         let number = number_0
             .symbol(parse_tree)?
             .parse::<f64>()

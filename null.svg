@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="190" height="130">
-  <rect x="0" y="0" width="190" height="130" fill="white"></rect>
-  <text x="15" y="95" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&quot;null&quot;[13](1,1-4)</text>
-  <line x1="100" y1="70" x2="100" y2="85" stroke="black"></line>
-  <text x="75" y="60" style="font-family: 'Courier'; font-style: normal">Value</text>
-  <line x1="100" y1="35" x2="100" y2="50" stroke="black"></line>
-  <text x="80" y="25" style="font-family: 'Courier'; font-style: normal">Json</text></svg>

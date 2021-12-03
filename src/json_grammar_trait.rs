@@ -29,12 +29,12 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// Object: "\{" ObjectSuffix1;
+    /// Object: "\{" ObjectSuffix;
     ///
     fn object_1(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
-        _object_suffix1_1: &ParseTreeStackEntry,
+        _object_suffix_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -42,12 +42,13 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix1: Pair ObjectSuffix;
+    /// ObjectSuffix: Pair ObjectList "\}";
     ///
-    fn object_suffix1_2(
+    fn object_suffix_2(
         &mut self,
         _pair_0: &ParseTreeStackEntry,
-        _object_suffix_1: &ParseTreeStackEntry,
+        _object_list_1: &ParseTreeStackEntry,
+        _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -55,9 +56,9 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ObjectSuffix1: "\}";
+    /// ObjectSuffix: "\}";
     ///
-    fn object_suffix1_3(
+    fn object_suffix_3(
         &mut self,
         _r_brace_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -67,12 +68,13 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectSuffix: ObjectRest "\}";
+    /// ObjectList: "," Pair ObjectList;
     ///
-    fn object_suffix_4(
+    fn object_list_4(
         &mut self,
-        _object_rest_0: &ParseTreeStackEntry,
-        _r_brace_1: &ParseTreeStackEntry,
+        _comma_0: &ParseTreeStackEntry,
+        _pair_1: &ParseTreeStackEntry,
+        _object_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -80,55 +82,17 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectSuffix: "\}";
+    /// ObjectList: ;
     ///
-    fn object_suffix_5(
-        &mut self,
-        _r_brace_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// ObjectRest: "," Pair ObjectRestSuffix;
-    ///
-    fn object_rest_6(
-        &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _pair_1: &ParseTreeStackEntry,
-        _object_rest_suffix_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 7:
-    ///
-    /// ObjectRestSuffix: ObjectRest;
-    ///
-    fn object_rest_suffix_7(
-        &mut self,
-        _object_rest_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 8:
-    ///
-    /// ObjectRestSuffix: ;
-    ///
-    fn object_rest_suffix_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 9:
-    ///
     /// Pair: String ":" Value;
     ///
-    fn pair_9(
+    fn pair_6(
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -138,14 +102,54 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 10:
+    /// Semantic action for production 7:
     ///
-    /// Array: "\[" ArraySuffix1;
+    /// Array: "\[" ArraySuffix;
     ///
-    fn array_10(
+    fn array_7(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _array_suffix1_1: &ParseTreeStackEntry,
+        _array_suffix_1: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 8:
+    ///
+    /// ArraySuffix: Value ArrayList "\]";
+    ///
+    fn array_suffix_8(
+        &mut self,
+        _value_0: &ParseTreeStackEntry,
+        _array_list_1: &ParseTreeStackEntry,
+        _r_bracket_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 9:
+    ///
+    /// ArraySuffix: "\]";
+    ///
+    fn array_suffix_9(
+        &mut self,
+        _r_bracket_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 10:
+    ///
+    /// ArrayList: "," Value ArrayList;
+    ///
+    fn array_list_10(
+        &mut self,
+        _comma_0: &ParseTreeStackEntry,
+        _value_1: &ParseTreeStackEntry,
+        _array_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -153,24 +157,19 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// ArraySuffix1: Value ArraySuffix;
+    /// ArrayList: ;
     ///
-    fn array_suffix1_11(
-        &mut self,
-        _value_0: &ParseTreeStackEntry,
-        _array_suffix_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 12:
     ///
-    /// ArraySuffix1: "\]";
+    /// Value: String;
     ///
-    fn array_suffix1_12(
+    fn value_12(
         &mut self,
-        _r_bracket_0: &ParseTreeStackEntry,
+        _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -178,80 +177,9 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// ArraySuffix: ArrayRest "\]";
-    ///
-    fn array_suffix_13(
-        &mut self,
-        _array_rest_0: &ParseTreeStackEntry,
-        _r_bracket_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 14:
-    ///
-    /// ArraySuffix: "\]";
-    ///
-    fn array_suffix_14(
-        &mut self,
-        _r_bracket_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 15:
-    ///
-    /// ArrayRest: "," Value ArrayRestSuffix;
-    ///
-    fn array_rest_15(
-        &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _value_1: &ParseTreeStackEntry,
-        _array_rest_suffix_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 16:
-    ///
-    /// ArrayRestSuffix: ArrayRest;
-    ///
-    fn array_rest_suffix_16(
-        &mut self,
-        _array_rest_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 17:
-    ///
-    /// ArrayRestSuffix: ;
-    ///
-    fn array_rest_suffix_17(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 18:
-    ///
-    /// Value: String;
-    ///
-    fn value_18(
-        &mut self,
-        _string_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 19:
-    ///
     /// Value: Number;
     ///
-    fn value_19(
+    fn value_13(
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -259,11 +187,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 14:
     ///
     /// Value: Object;
     ///
-    fn value_20(
+    fn value_14(
         &mut self,
         _object_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -271,11 +199,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 15:
     ///
     /// Value: Array;
     ///
-    fn value_21(
+    fn value_15(
         &mut self,
         _array_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -283,11 +211,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 16:
     ///
     /// Value: "true";
     ///
-    fn value_22(
+    fn value_16(
         &mut self,
         _true_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -295,11 +223,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 17:
     ///
     /// Value: "false";
     ///
-    fn value_23(
+    fn value_17(
         &mut self,
         _false_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -307,11 +235,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 18:
     ///
     /// Value: "null";
     ///
-    fn value_24(
+    fn value_18(
         &mut self,
         _null_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -319,11 +247,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 19:
     ///
     /// String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_25(
+    fn string_19(
         &mut self,
         _string_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -331,11 +259,11 @@ pub trait JsonGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 20:
     ///
     /// Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
     ///
-    fn number_26(
+    fn number_20(
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -356,55 +284,43 @@ impl UserActionsTrait for JsonGrammar {
 
             1 => self.object_1(&children[0], &children[1], parse_tree),
 
-            2 => self.object_suffix1_2(&children[0], &children[1], parse_tree),
+            2 => self.object_suffix_2(&children[0], &children[1], &children[2], parse_tree),
 
-            3 => self.object_suffix1_3(&children[0], parse_tree),
+            3 => self.object_suffix_3(&children[0], parse_tree),
 
-            4 => self.object_suffix_4(&children[0], &children[1], parse_tree),
+            4 => self.object_list_4(&children[0], &children[1], &children[2], parse_tree),
 
-            5 => self.object_suffix_5(&children[0], parse_tree),
+            5 => self.object_list_5(parse_tree),
 
-            6 => self.object_rest_6(&children[0], &children[1], &children[2], parse_tree),
+            6 => self.pair_6(&children[0], &children[1], &children[2], parse_tree),
 
-            7 => self.object_rest_suffix_7(&children[0], parse_tree),
+            7 => self.array_7(&children[0], &children[1], parse_tree),
 
-            8 => self.object_rest_suffix_8(parse_tree),
+            8 => self.array_suffix_8(&children[0], &children[1], &children[2], parse_tree),
 
-            9 => self.pair_9(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.array_suffix_9(&children[0], parse_tree),
 
-            10 => self.array_10(&children[0], &children[1], parse_tree),
+            10 => self.array_list_10(&children[0], &children[1], &children[2], parse_tree),
 
-            11 => self.array_suffix1_11(&children[0], &children[1], parse_tree),
+            11 => self.array_list_11(parse_tree),
 
-            12 => self.array_suffix1_12(&children[0], parse_tree),
+            12 => self.value_12(&children[0], parse_tree),
 
-            13 => self.array_suffix_13(&children[0], &children[1], parse_tree),
+            13 => self.value_13(&children[0], parse_tree),
 
-            14 => self.array_suffix_14(&children[0], parse_tree),
+            14 => self.value_14(&children[0], parse_tree),
 
-            15 => self.array_rest_15(&children[0], &children[1], &children[2], parse_tree),
+            15 => self.value_15(&children[0], parse_tree),
 
-            16 => self.array_rest_suffix_16(&children[0], parse_tree),
+            16 => self.value_16(&children[0], parse_tree),
 
-            17 => self.array_rest_suffix_17(parse_tree),
+            17 => self.value_17(&children[0], parse_tree),
 
             18 => self.value_18(&children[0], parse_tree),
 
-            19 => self.value_19(&children[0], parse_tree),
+            19 => self.string_19(&children[0], parse_tree),
 
-            20 => self.value_20(&children[0], parse_tree),
-
-            21 => self.value_21(&children[0], parse_tree),
-
-            22 => self.value_22(&children[0], parse_tree),
-
-            23 => self.value_23(&children[0], parse_tree),
-
-            24 => self.value_24(&children[0], parse_tree),
-
-            25 => self.string_25(&children[0], parse_tree),
-
-            26 => self.number_26(&children[0], parse_tree),
+            20 => self.number_20(&children[0], parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }
