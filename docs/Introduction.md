@@ -42,9 +42,11 @@ This tool generates this output:
 
 ![decidable](./images/decidable.png)
 
-As you can see it detects the maximum lookahead needed for your grammar. And you see the fact that the simple list example is LL(2). When you look at the generated parser source [list_parser.rs](../examples/list/list_parser.rs) you can see that the non-terminal "list_rest" has k: 2.
+As you can see it detects the maximum lookahead needed for your grammar. And you see the fact that the simple list example is LL(2). When you look at the generated parser source [list_parser.rs](../examples/list/list_parser.rs) you can see that the non-terminal `list_rest` has k: 2. You can find the actual code in the LOOKAHEAD_AUTOMATA struct at the LookaheadDFA of non-terminal `list_rest`.
 
-Now lets have a look at the used grammar description file `list.par`.
+## First glance at the grammar description format
+
+Lets have a look at the used grammar description file `list.par`.
 
 ```ebnf
 %start list

@@ -46,25 +46,32 @@ The current number token ("\d+") in production 6 corresponds with the `num_0` pa
 
 Form the production we know that "\d+" is a terminal
 
-We extract the token's text from this `num_0` parameter with the helper function `symbol` of the `ParseTreeStackEntry`. Then we convert it to `usize`, the type defined by `DefinitionRange`. If this succeeds we push the new `ListGrammarItem::Num` on our user stack.  
+We extract the token's text from this `num_0` parameter with the helper function `symbol` of the `ParseTreeStackEntry`. Then we convert it to `usize`, the type defined by `DefinitionRange`. If this succeeds we push the new `ListGrammarItem::Num` on our item stack.  
 
 ```rust
 /// Semantic action for production 6:
 ///
 /// num: "\d+";
 ///
-fn num_6(&mut self, num_0: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+fn num_6(
+    &mut self,
+    num_0: &ParseTreeStackEntry,
+    parse_tree: &Tree<ParseTreeType>,
+) -> Result<()> {
     let context = "num_6";
     let symbol = num_0.symbol(parse_tree)?;
-    let number = symbol
-        .parse::<DefinitionRange>()
-        .chain_err(|| format!("{}: Error accessing token from ParseTreeStackEntry", context))?;
+    let number = symbol.parse::<DefinitionRange>().chain_err(|| {
+        format!(
+            "{}: Error accessing token from ParseTreeStackEntry",
+            context
+        )
+    })?;
     self.push(ListGrammarItem::Num(number), context);
     Ok(())
 }
 ```
 
-At the end of the parsing our user stack will contain all 'pushed in' `ListGrammarItem::Num` items, but in reversed order.
+At the end of the parsing our item stack will contain all 'pushed in' `ListGrammarItem::Num` items, but in reversed order.
 In the `list_1` semantic action of the *List* example we take these number from the user stack, reverse them and pushing it as `ListGrammarItem::List`:
 
 ```rust

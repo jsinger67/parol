@@ -70,31 +70,31 @@ impl Display for ScannerStatesGrammar {
 }
 
 impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
-    /// Semantic action for production 12:
+    /// Semantic action for production 10:
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_12(
+    fn identifier_10(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "identifier_12";
+        let context = "identifier_10";
         let id = identifier_0.symbol(parse_tree)?;
         self.push(ScannerStatesGrammarItem::Identifier(id.clone()), context);
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 11:
     ///
-    /// Escaped: "\u{5c}[\u{22}\u{5c}bfnt]";
+    /// Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
     ///
-    fn escaped_13(
+    fn escaped_11(
         &mut self,
         escaped_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "escaped_13";
+        let context = "escaped_11";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
             let mut element = escaped_0.symbol(parse_tree)?.to_string();
             element.remove(0);
@@ -114,16 +114,16 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         }
     }
 
-    /// Semantic action for production 15:
+    /// Semantic action for production 13:
     ///
-    /// NoneQuote: "[^\u{22}]";
+    /// NoneQuote: <String>"[^\u{22}\u{5c}]+";
     ///
-    fn none_quote_15(
+    fn none_quote_13(
         &mut self,
         none_quote_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "none_quote_15";
+        let context = "none_quote_13";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
             let element = none_quote_0.symbol(parse_tree)?;
             s.push_str(element);
@@ -134,16 +134,16 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         }
     }
 
-    /// Semantic action for production 16:
+    /// Semantic action for production 14:
     ///
-    /// StringDelimiter: "\u{22}";
+    /// StringDelimiter: <INITIAL, String>"\u{22}";
     ///
-    fn string_delimiter_16(
+    fn string_delimiter_14(
         &mut self,
         _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_delimiter_16";
+        let context = "string_delimiter_14";
         if self.in_string {
             self.in_string = false;
         } else {

@@ -72,7 +72,9 @@ It is important to note that the start symbol of the grammar must always be decl
 
 ## Scanner control
 
-A scanner (aka lexer) is automatically created from all used terminal symbols. Terminal symbols can also be associated with different scanner states. See section [Scanner states](#scanner-states) below for more details.
+<!-- markdownlint-disable no-inline-html -->
+A scanner (aka lexer) is automatically created from all used terminal symbols. Terminal symbols can also be associated with different scanner states. See section <a href="#scanner-states">Scanner states</a> below for more details.
+<!-- markdownlint-enable no-inline-html -->
 
 ### New line handling
 
@@ -150,7 +152,9 @@ Please note that terminals should always match non-empty text portions. This mea
 
 Internally the tokenizer will enter a loop and match the empty string over and over again without making progress in the input. Currently there is no check for this scenario in `parol_runtime`.
 
-## Scanner states {#scanner-states}
+<!-- markdownlint-disable no-inline-html -->
+<h2 id=scanner-states>Scanner states</h2>
+<!-- markdownlint-enable no-inline-html -->
 
 Additionally, *as of version `v0.2.0`* the grammar supports **multiple scanner states**. This feature is known from Flex as [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11) and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
 
