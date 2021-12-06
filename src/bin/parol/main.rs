@@ -105,14 +105,8 @@ fn run() -> Result<()> {
 
     let user_type = config.value_of("user_type").unwrap();
 
-    let parser_source = generate_parser_source(
-        &grammar_config,
-        &lexer_source,
-        &lookahead_dfa_s,
-        user_type,
-        user_trait_module_name,
-    )
-    .chain_err(|| "Failed to generate parser source!")?;
+    let parser_source = generate_parser_source(&grammar_config, &lexer_source, &lookahead_dfa_s)
+        .chain_err(|| "Failed to generate parser source!")?;
 
     if let Some(parser_file_out) = config.value_of("parser") {
         fs::write(parser_file_out, parser_source)

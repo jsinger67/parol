@@ -182,13 +182,13 @@ fn find_production_with_factor(
 ) -> Option<(ProductionIndex, usize)> {
     let production_index = productions.iter().position(|r| {
         let Alternations(e) = &r.rhs;
-        e.iter().any(|r| r.0.iter().any(|r| pred(r)))
+        e.iter().any(|r| r.0.iter().any(&pred))
     });
     if let Some(production_index) = production_index {
         let Alternations(e) = &productions[production_index].rhs;
         Some((
             production_index,
-            e.iter().position(|r| r.0.iter().any(|r| pred(r))).unwrap(),
+            e.iter().position(|r| r.0.iter().any(&pred)).unwrap(),
         ))
     } else {
         None
@@ -218,9 +218,7 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
     }
 
     fn separate_single_production(productions: &mut Vec<Production>) -> bool {
-        let candidate_index = productions
-            .iter()
-            .position(|r| production_has_multiple_alts(r));
+        let candidate_index = productions.iter().position(&production_has_multiple_alts);
         if let Some(index) = candidate_index {
             apply_production_transformation(
                 productions,

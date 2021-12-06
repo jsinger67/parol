@@ -15,9 +15,7 @@ use std::fmt::Debug;
 #[template = "templates/parser_dfa_template.rs"]
 struct Dfa {
     states: StrVec,
-    state_count: usize,
     transitions: StrVec,
-    transition_count: usize,
     k: usize,
     nt_index: usize,
     nt_name: String,
@@ -34,7 +32,6 @@ impl Dfa {
                     acc.push(format!("{:?},", s));
                     acc
                 });
-        let state_count = compiled_dfa.states.len();
         let transitions = compiled_dfa.transitions.iter().fold(
             StrVec::new(4).first_line_no_indent(),
             |mut acc, t| {
@@ -42,14 +39,11 @@ impl Dfa {
                 acc
             },
         );
-        let transition_count = compiled_dfa.transitions.len();
         let k = compiled_dfa.k;
 
         Self {
             states,
-            state_count,
             transitions,
-            transition_count,
             k,
             nt_index,
             nt_name,
@@ -68,7 +62,6 @@ struct Dfas {
 #[template = "templates/parser_production_template.rs"]
 struct Production {
     lhs: usize,
-    production_len: usize,
     production: StrVec,
     prod_num: usize,
     prod_string: String,
@@ -86,7 +79,6 @@ impl Production {
         let get_terminal_index =
             |tr: &str| terminals.iter().position(|t| *t == tr).unwrap() + FIRST_USER_TOKEN;
         let lhs = get_non_terminal_index(pr.get_n_str());
-        let production_len = pr.len();
         let production =
             pr.get_r()
                 .iter()
@@ -109,7 +101,6 @@ impl Production {
         let prod_string = format!("{}", pr);
         Self {
             lhs,
-            production_len,
             production,
             prod_num,
             prod_string,
@@ -134,9 +125,6 @@ struct ParserData<'a> {
     dfa_source: String,
     productions: String,
     max_k: usize,
-    ast_type_name: String,
-    ast_trait_module_name: String,
-    scanner_count: usize,
     scanner_builds: StrVec,
 }
 
@@ -144,8 +132,6 @@ pub fn generate_parser_source(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
     la_dfa: &BTreeMap<String, LookaheadDFA>,
-    ast_type_name: &str,
-    ast_trait_module_name: &str,
 ) -> Result<String> {
     let terminals = grammar_config
         .cfg
@@ -203,9 +189,6 @@ pub fn generate_parser_source(
         dfa_source,
         productions,
         max_k,
-        ast_type_name: ast_type_name.to_string(),
-        ast_trait_module_name: ast_trait_module_name.to_string(),
-        scanner_count: 1,
         scanner_builds,
     };
 

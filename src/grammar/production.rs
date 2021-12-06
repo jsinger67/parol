@@ -56,7 +56,7 @@ impl Default for Pr {
 
 impl Pr {
     pub fn new(n: &str, r: Rhs) -> Self {
-        if !r.iter().all(|s| Self::is_allowed_symbol(s)) {
+        if !r.iter().all(Self::is_allowed_symbol) {
             panic!("Unexpected symbol kind!");
         }
         Self(Symbol::N(n.to_owned()), r)

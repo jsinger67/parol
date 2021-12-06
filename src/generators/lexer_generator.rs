@@ -59,7 +59,6 @@ struct LexerData {
     terminal_names: StrVec,
     terminal_count: usize,
     scanner_build_configs: StrVec,
-    lookahead_size: usize,
 }
 
 pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
@@ -149,7 +148,6 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
         terminal_names,
         terminal_count,
         scanner_build_configs,
-        lookahead_size: grammar_config.lookahead_size,
     };
 
     Ok(format!("{}", lexer_data))

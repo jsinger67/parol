@@ -195,9 +195,7 @@ pub fn left_factor(g: &Cfg) -> Cfg {
 
     fn factor_out(operand: TransformationOperand) -> TransformationOperand {
         let prefixes = find_longest_prefixes(&operand.pr);
-        prefixes
-            .iter()
-            .fold(operand, |acc, p| factor_out_prefix(acc, p))
+        prefixes.iter().fold(operand, &factor_out_prefix)
     }
 
     while operand.modified {
