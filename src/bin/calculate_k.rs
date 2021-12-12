@@ -3,7 +3,7 @@ extern crate error_chain;
 
 use parol::analysis::k_decision::{calculate_k, FirstCache, FollowCache};
 use parol::errors::*;
-use parol::{obtain_cfg_ext, MAX_K};
+use parol::{obtain_grammar_config, MAX_K};
 use std::env;
 
 quick_main!(run);
@@ -13,7 +13,7 @@ fn run() -> Result<()> {
     if args.len() > 1 {
         let file_name = args[1].clone();
 
-        let grammar_config = obtain_cfg_ext(&file_name, true)?;
+        let grammar_config = obtain_grammar_config(&file_name, true)?;
 
         let max_k = if args.len() > 2 {
             args[2]

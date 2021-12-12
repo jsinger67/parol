@@ -2,7 +2,7 @@
 extern crate error_chain;
 
 use parol::errors::*;
-use parol::{left_factor, obtain_cfg_ext};
+use parol::{left_factor, obtain_grammar_config};
 use std::env;
 
 quick_main!(run);
@@ -12,7 +12,7 @@ fn run() -> Result<()> {
     if args.len() > 1 {
         let file_name = args[1].clone();
 
-        let mut grammar_config = obtain_cfg_ext(&file_name, false)?;
+        let mut grammar_config = obtain_grammar_config(&file_name, false)?;
         let cfg = left_factor(&grammar_config.cfg);
 
         // Exchange original grammar with transformed one

@@ -66,7 +66,7 @@ pub mod transformation;
 pub use transformation::left_factor;
 
 mod utils;
-pub use utils::obtain_cfg_ext;
+pub use utils::obtain_grammar_config;
 
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};

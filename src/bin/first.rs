@@ -5,7 +5,7 @@ use log::debug;
 use parol::analysis::{first_k, FirstCache};
 use parol::errors::*;
 use parol::generators::generate_terminal_names;
-use parol::{obtain_cfg_ext, KTuples, MAX_K};
+use parol::{obtain_grammar_config, KTuples, MAX_K};
 use std::collections::BTreeMap;
 use std::env;
 
@@ -26,7 +26,7 @@ fn run() -> Result<()> {
         );
     } else {
         let file_name = args[1].clone();
-        let grammar_config = obtain_cfg_ext(&file_name, false)?;
+        let grammar_config = obtain_grammar_config(&file_name, false)?;
 
         let k = if args.len() > 2 {
             args[2]

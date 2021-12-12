@@ -2,7 +2,7 @@
 extern crate error_chain;
 
 use parol::errors::*;
-use parol::obtain_cfg_ext;
+use parol::obtain_grammar_config;
 use std::env;
 
 quick_main!(run);
@@ -12,7 +12,7 @@ fn run() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
         let file_name = args[1].clone();
-        let grammar_config = obtain_cfg_ext(&file_name, false)?;
+        let grammar_config = obtain_grammar_config(&file_name, false)?;
         let serialized = serde_json::to_string(&grammar_config).unwrap();
         println!("{}", serialized);
         let cfg_ext1 = serde_json::from_str(&serialized).unwrap();

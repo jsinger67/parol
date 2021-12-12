@@ -55,7 +55,7 @@ fn run() -> Result<()> {
 
     let verbose = config.is_present("verbose");
 
-    let mut grammar_config = obtain_cfg_ext(
+    let mut grammar_config = obtain_grammar_config(
         config.value_of("grammar"),
         verbose,
         config.is_present("generate_tree_graph"),
@@ -159,7 +159,7 @@ fn generate_tree_layout(
         .chain_err(|| "Failed writing layout")
 }
 
-fn obtain_cfg_ext(
+fn obtain_grammar_config(
     grammar: Option<&str>,
     verbose: bool,
     generate_tree_graph: bool,

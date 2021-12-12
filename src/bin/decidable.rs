@@ -5,7 +5,7 @@ use log::trace;
 use parol::analysis::{decidable, explain_conflicts, FirstCache, FollowCache};
 use parol::errors::*;
 use parol::generators::generate_terminal_names;
-use parol::obtain_cfg_ext;
+use parol::obtain_grammar_config;
 use parol::MAX_K;
 use std::env;
 
@@ -19,7 +19,7 @@ fn run() -> Result<()> {
     if args.len() > 1 {
         let file_name = args[1].clone();
 
-        let grammar_config = obtain_cfg_ext(&file_name, false)?;
+        let grammar_config = obtain_grammar_config(&file_name, false)?;
 
         let max_k = if args.len() > 2 {
             args[2]

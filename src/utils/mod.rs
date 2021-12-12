@@ -115,7 +115,7 @@ where
     }
 }
 
-pub fn obtain_cfg_ext(file_name: &str, verbose: bool) -> Result<GrammarConfig> {
+pub fn obtain_grammar_config(file_name: &str, verbose: bool) -> Result<GrammarConfig> {
     let input =
         fs::read_to_string(file_name).chain_err(|| format!("Can't read file {}", file_name))?;
     let mut parol_grammar = ParolGrammar::new();

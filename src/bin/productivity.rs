@@ -4,7 +4,7 @@ extern crate error_chain;
 use log::debug;
 use parol::analysis::non_productive_non_terminals;
 use parol::errors::*;
-use parol::obtain_cfg_ext;
+use parol::obtain_grammar_config;
 use std::env;
 
 quick_main!(run);
@@ -24,7 +24,7 @@ fn run() -> Result<()> {
         );
     } else {
         let file_name = args[1].clone();
-        let grammar_config = obtain_cfg_ext(&file_name, false)?;
+        let grammar_config = obtain_grammar_config(&file_name, false)?;
 
         let non_productive_non_terminals = non_productive_non_terminals(&grammar_config.cfg);
         if non_productive_non_terminals.is_empty() {
