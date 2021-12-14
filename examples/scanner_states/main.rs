@@ -63,7 +63,7 @@ fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str
     svg_full_file_name.set_file_name(file_name);
     svg_full_file_name.set_extension("svg");
 
-    Layouter::new(&syntax_tree)
+    Layouter::new(syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
         .chain_err(|| "Failed writing layout")

@@ -1,0 +1,40 @@
+%start Expressions
+%title "Boolean Parser Example"
+%comment "Inspired by Tom Humphrey's project https://github.com/Tom01098/BooleanParser"
+%line_comment "//"
+%block_comment "\(\*" "\*\)"
+
+%%
+
+/*  0 */ Expressions: Expression ExpressionsList ExpressionsSuffix;
+/*  1 */ ExpressionsSuffix: ";";
+/*  2 */ ExpressionsSuffix: ;
+/*  3 */ ExpressionsList: ";" Expression ExpressionsList;
+/*  4 */ ExpressionsList: ;
+/*  5 */ Expression: Term TailExpression;
+/*  6 */ TailExpression: TailExpressionList;
+/*  7 */ TailExpressionList: BinaryOperator Term TailExpressionList;
+/*  8 */ TailExpressionList: ;
+/*  9 */ Term: UnaryOperator Factor;
+/* 10 */ Term: Factor;
+/* 11 */ Boolean: True;
+/* 12 */ Boolean: False;
+/* 13 */ UnaryOperator: Not;
+/* 14 */ BinaryOperator: AndOp;
+/* 15 */ BinaryOperator: OrOp;
+/* 16 */ BinaryOperator: XorOp;
+/* 17 */ BinaryOperator: NorOp;
+/* 18 */ BinaryOperator: NandOp;
+/* 19 */ BinaryOperator: XnorOp;
+/* 20 */ AndOp: "(?i)AND";
+/* 21 */ OrOp: "(?i)OR";
+/* 22 */ XorOp: "(?i)XOR";
+/* 23 */ NorOp: "(?i)NOR";
+/* 24 */ NandOp: "(?i)NAND";
+/* 25 */ XnorOp: "(?i)XNOR";
+/* 26 */ True: "(?i)TRUE";
+/* 27 */ False: "(?i)FALSE";
+/* 28 */ Not: "(?i)NOT";
+/* 29 */ Parenthesized: "\(" Expression "\)";
+/* 30 */ Factor: Boolean;
+/* 31 */ Factor: Parenthesized;

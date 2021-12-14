@@ -47,6 +47,13 @@ if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }
 
+# --------------------------------------------------------------------------------------------------
+Write-Host "Running Boolean Parser example..." -ForegroundColor Cyan
+./target/release/examples/boolean_parser ./examples/boolean_parser/boolean_parser_test.txt
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCont    
+}
+
 # Some of the example grammars will fail because they don't pass the basic grammar checks.
 # Get-ChildItem ./data/*.par | ForEach-Object { Write-Host $_.FullName -ForegroundColor Blue; ./target/release/parol -f $_.FullName }
 

@@ -1,0 +1,36 @@
+%start Expressions
+%title "Boolean Parser Example"
+%comment "Inspired by Tom Humphrey's project https://github.com/Tom01098/BooleanParser"
+%line_comment "//"
+%block_comment "\(\*" "\*\)"
+
+%%
+
+Expressions     : Expression { ";" Expression } [ ";" ];
+Expression      : Term TailExpression;
+TailExpression  : { BinaryOperator Term };
+Term            : [ UnaryOperator ] Factor;
+Boolean         : True
+                | False;
+UnaryOperator   : Not;
+BinaryOperator  : AndOp
+                | OrOp
+                | XorOp
+                | NorOp
+                | NandOp
+                | XnorOp;
+AndOp           : "(?i)AND";
+OrOp            : "(?i)OR";
+XorOp           : "(?i)XOR";
+NorOp           : "(?i)NOR";
+NandOp          : "(?i)NAND";
+XnorOp          : "(?i)XNOR";
+True            : "(?i)TRUE";
+False           : "(?i)FALSE";
+Not             : "(?i)NOT";
+Parenthesized   : "\(" Expression "\)";
+Factor          : Boolean
+                | Parenthesized;
+
+
+

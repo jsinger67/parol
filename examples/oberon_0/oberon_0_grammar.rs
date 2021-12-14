@@ -47,7 +47,7 @@ impl Oberon0Grammar {
 
 impl Display for Oberon0Grammar {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        writeln!(f, "")
+        writeln!(f)
     }
 }
 

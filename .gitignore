@@ -8,6 +8,9 @@ Cargo.lock
 # Visual Studio
 .vs/**
 
+# Ionide
+.ionide/**
+
 # Parol
 /data/**/*.svg
 /data/**/*.png

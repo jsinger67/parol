@@ -1,6 +1,6 @@
 %start calc
 %title "Example grammar of an expression evaluator"
-%comment "To demnonstrate use of lists, operator precedence, operator associativity"
+%comment "To demonstrate use of lists, operator precedence, operator associativity"
 %line_comment "//"
 %block_comment  "/\*" "\*/"
 
@@ -67,7 +67,7 @@ bitwise_and_op: "&";
 bitwise_and_item: bitwise_and_op equality;
 
 // -------------------------------------------------------------------------------------------------
-// EQULAITY AND INEQUALITY
+// EQUALITY AND INEQUALITY
 equality: relational equality_lst1;
 equality_lst1: equality_lst1_itm1 equality_lst1;
 equality_lst1_itm1: equality_item;

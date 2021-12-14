@@ -227,7 +227,7 @@ impl CalcGrammar {
                 // The list is in reverse ordering (right to left) so we have to
                 // reverse it.
                 for l in list.iter().rev() {
-                    value = Self::apply_binary_operation(value, &l, context)?;
+                    value = Self::apply_binary_operation(value, l, context)?;
                 }
                 self.push(CalcGrammarItem::Num(value), context);
                 Ok(())
@@ -452,7 +452,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 for i in list {
                     value = self.assign(i, value, context)?;
                 }
-                self.assign(&item, value, context)?;
+                self.assign(item, value, context)?;
                 Ok(())
             }
             //_ => Ok(())

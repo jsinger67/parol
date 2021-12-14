@@ -1,6 +1,6 @@
 %start calc
 %title "Example grammar of an expression evaluator"
-%comment "To demnonstrate use of lists, operator precedence, operator associativity"
+%comment "To demonstrate use of lists, operator precedence, operator associativity"
 %line_comment "//"
 %block_comment "/\*" "\*/"
 

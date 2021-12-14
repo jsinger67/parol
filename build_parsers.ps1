@@ -43,6 +43,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --------------------------------------------------------------------------------------------------
+Write-Host "Building Boolean Parser example..." -ForegroundColor Cyan
+./target/release/parol -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
+
+# --------------------------------------------------------------------------------------------------
 # Final message
 # --------------------------------------------------------------------------------------------------
 if ($ErrorCont -gt 0) {

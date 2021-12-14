@@ -6,14 +6,14 @@ extern crate lazy_static;
 
 extern crate parol_runtime;
 
+mod boolean_grammar;
+mod boolean_grammar_trait;
+mod boolean_parser;
 mod errors;
-mod list_grammar;
-mod list_grammar_trait;
-mod list_parser;
 
+use crate::boolean_grammar::BooleanGrammar;
+use crate::boolean_parser::parse;
 use crate::errors::*;
-use crate::list_grammar::ListGrammar;
-use crate::list_parser::parse;
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use log::debug;
@@ -24,15 +24,17 @@ use std::path::PathBuf;
 use std::str::FromStr;
 
 // To generate:
-// cargo run --bin parol -- -f .\examples\list\list.par -l .\examples\list\list-lf.par -p .\examples\list\list_parser.rs -a .\examples\list\list_grammar_trait.rs -t ListGrammar -m list_grammar
+// cargo run --bin parol -- -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
 
 // To run the example
-// cargo run --example list -- .\examples\list\list_test.txt
+// cargo run --example boolean_parser -- ./examples/boolean_parser/boolean_parser_test.txt
+
+// To activate local logging
+// $env:RUST_LOG="boolean_parser::boolean_grammar=trace"
 
 quick_main!(run);
 
 fn run() -> Result<()> {
-    // $env:RUST_LOG="main=off,parol_runtime=trace,list=debug"
     env_logger::init();
     debug!("env logger started");
 
@@ -41,10 +43,10 @@ fn run() -> Result<()> {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
             .chain_err(|| format!("Can't read file {}", file_name))?;
-        let mut list_grammar = ListGrammar::new();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
+        let mut boolean_grammar = BooleanGrammar::new();
+        let syntax_tree = parse(&input, file_name.to_owned(), &mut boolean_grammar)
             .chain_err(|| format!("Failed parsing file {}", file_name))?;
-        println!("{}", list_grammar);
+        println!("{}", boolean_grammar);
         generate_tree_layout(&syntax_tree, &file_name)
     } else {
         Err("Please provide a file name as single parameter!".into())
