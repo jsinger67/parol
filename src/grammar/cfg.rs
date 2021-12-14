@@ -156,101 +156,6 @@ impl Cfg {
     }
 
     ///
-    /// Calculates all productive non-terminals.
-    ///
-    /// ```
-    /// use parol::{Cfg, Pr, Symbol};
-    /// use std::collections::BTreeSet;
-    /// let mut g = Cfg::default();
-    /// assert!(g.productive_non_terminals().is_empty());
-    ///
-    /// let g = Cfg::with_start_symbol("S'")
-    ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", vec![0]), Symbol::n("Y"), Symbol::t("b", vec![0]), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")]));
-    /// let productive = g.productive_non_terminals();
-    /// assert_eq!(["S'".to_owned(), "S".to_owned(), "X".to_owned(), "Y".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
-    /// ```
-    ///
-    pub fn productive_non_terminals(&self) -> BTreeSet<String> {
-        fn insert_productive(
-            pr: &[Pr],
-            mut productive_so_far: BTreeSet<String>,
-        ) -> BTreeSet<String> {
-            for p in pr {
-                if p.get_r().iter().all(|s| match s {
-                    Symbol::T(Terminal::Trm(_, _)) => true,
-                    Symbol::N(n) => productive_so_far.contains(n),
-                    _ => panic!("Unexpected symbol kind!"),
-                }) {
-                    productive_so_far.insert(p.get_n().clone());
-                }
-            }
-            productive_so_far
-        }
-
-        let mut productive: BTreeSet<String> =
-            self.pr.iter().fold(BTreeSet::new(), |mut acc, p| {
-                if p.get_r()
-                    .iter()
-                    .all(|s| matches!(s, Symbol::T(Terminal::Trm(_, _))))
-                {
-                    acc.insert(p.get_n());
-                }
-                acc
-            });
-
-        let mut current_size = 0;
-        while current_size < productive.len() {
-            current_size = productive.len();
-            productive = insert_productive(&self.pr, productive);
-        }
-        productive
-    }
-
-    ///
-    /// Calculates all non-productive non-terminals.
-    ///
-    /// ```
-    /// use parol::{Cfg, Pr, Symbol};
-    /// use std::collections::BTreeSet;
-    /// use std::convert::From;
-    /// let mut g = Cfg::default();
-    /// assert!(g.productive_non_terminals().is_empty());
-    ///
-    /// let g = Cfg::with_start_symbol("S'")
-    ///     .add_pr(Pr::new("S'", vec![Symbol::n("S")]))
-    ///     .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t("a", vec![0]), Symbol::n("Y"), Symbol::t("b", vec![0]), Symbol::n("Y")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Z", vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")]));
-    /// let productive = g.unproductive_non_terminals();
-    /// assert_eq!(["Z".to_owned()].iter().cloned().collect::<BTreeSet<String>>(), productive);
-    /// ```
-    ///
-    pub fn unproductive_non_terminals(&self) -> BTreeSet<String> {
-        self.get_non_terminal_set()
-            .difference(&self.productive_non_terminals())
-            .cloned()
-            .collect()
-    }
-
-    ///
-    /// Detects whether all non-terminals are productive
-    ///
-    pub fn all_non_terminals_productive(&self) -> bool {
-        let all_nts = self.get_non_terminal_set();
-        let productive = self.productive_non_terminals();
-        all_nts == productive
-    }
-
-    ///
     /// Returns a vector of production references with the LHS matching the given non-terminal n
     ///
     pub fn matching_productions(&self, n: &str) -> Vec<(usize, &Pr)> {
@@ -351,10 +256,6 @@ impl Cfg {
             nullables_vec.insert(n);
         }
         nullables_vec
-    }
-
-    pub fn get_at(&self, pos: &Pos) -> &Symbol {
-        &self.pr[pos.pr_index()][pos.sy_index()]
     }
 }
 
