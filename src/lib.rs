@@ -36,13 +36,7 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolString, SymbolStrings, Termin
 pub mod analysis;
 
 pub use analysis::{
-    //calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable,
-    detect_left_recursions,
-    CompiledTerminal,
-    KTuple,
-    KTuples,
-    NtEdgeType,
-    NtGrammarGraph,
+    detect_left_recursions, CompiledTerminal, KTuple, KTuples, NtEdgeType, NtGrammarGraph,
     NtNodeType,
 };
 
@@ -66,7 +60,7 @@ pub mod transformation;
 pub use transformation::left_factor;
 
 mod utils;
-pub use utils::obtain_grammar_config;
+pub use utils::{generate_tree_layout, obtain_grammar_config};
 
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};

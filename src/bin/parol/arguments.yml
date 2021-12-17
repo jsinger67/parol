@@ -1,5 +1,5 @@
 name: parol
-version: "0.3.1"
+version: "0.3.2"
 author: Jörg Singer <singer.joerg@gmx.de>
 about: A LL(k) Parser Generator written in Rust.
 args:
@@ -46,11 +46,6 @@ args:
         long: module
         takes_value: true
         default_value: grammar
-    # - guess:
-    #     help: Guess all output file names from start symbol's name
-    #     short: g
-    #     long: guess
-    #     takes_value: false
     - generate_tree_graph:
         help: Activates the generation of a SVG file with the parse tree of the given grammar
         short: s

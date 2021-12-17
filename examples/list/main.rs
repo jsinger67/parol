@@ -14,14 +14,10 @@ mod list_parser;
 use crate::errors::*;
 use crate::list_grammar::ListGrammar;
 use crate::list_parser::parse;
-use id_tree::Tree;
-use id_tree_layout::Layouter;
 use log::debug;
-use parol_runtime::parser::ParseTreeType;
+use parol::generate_tree_layout;
 use std::env;
 use std::fs;
-use std::path::PathBuf;
-use std::str::FromStr;
 
 // To generate:
 // cargo run --bin parol -- -f .\examples\list\list.par -l .\examples\list\list-lf.par -p .\examples\list\list_parser.rs -a .\examples\list\list_grammar_trait.rs -t ListGrammar -m list_grammar
@@ -45,26 +41,8 @@ fn run() -> Result<()> {
         let syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
             .chain_err(|| format!("Failed parsing file {}", file_name))?;
         println!("{}", list_grammar);
-        generate_tree_layout(&syntax_tree, &file_name)
+        generate_tree_layout(&syntax_tree, &file_name).chain_err(|| "Error generating tree layout")
     } else {
         Err("Please provide a file name as single parameter!".into())
     }
-}
-
-fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
-    let mut svg_full_file_name = PathBuf::from_str(input_file_name).unwrap();
-    svg_full_file_name.set_extension("");
-    let file_name = svg_full_file_name
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_owned();
-    svg_full_file_name.set_file_name(file_name);
-    svg_full_file_name.set_extension("svg");
-
-    Layouter::new(syntax_tree)
-        .with_file_path(std::path::Path::new(&svg_full_file_name))
-        .write()
-        .chain_err(|| "Failed writing layout")
 }

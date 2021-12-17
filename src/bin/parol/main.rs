@@ -10,20 +10,16 @@ use parol::parser::parol_parser::parse;
 use parol::MAX_K;
 use std::convert::TryFrom;
 
-use id_tree::Tree;
-use id_tree_layout::Layouter;
 use log::trace;
 use parol::analysis::k_decision::calculate_lookahead_dfas;
 use parol::conversions::par::render_par_string;
+use parol::generate_tree_layout;
 use parol::generators::GrammarConfig;
 use parol::generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source,
     generate_user_trait_source, try_format,
 };
-use parol_runtime::parser::ParseTreeType;
 use std::fs;
-use std::path::PathBuf;
-use std::str::FromStr;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -130,35 +126,6 @@ fn run() -> Result<()> {
     Ok(())
 }
 
-fn generate_tree_layout(
-    syntax_tree: &Tree<ParseTreeType>,
-    input_file_name: &str,
-    verbose: bool,
-) -> Result<()> {
-    let mut svg_full_file_name = PathBuf::from_str(input_file_name).unwrap();
-    svg_full_file_name.set_extension("");
-    let file_name = svg_full_file_name
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_owned();
-    svg_full_file_name.set_file_name(file_name);
-    svg_full_file_name.set_extension("svg");
-
-    if verbose {
-        println!(
-            "Writing tree layout to {}",
-            svg_full_file_name.to_str().unwrap()
-        );
-    }
-
-    Layouter::new(syntax_tree)
-        .with_file_path(std::path::Path::new(&svg_full_file_name))
-        .write()
-        .chain_err(|| "Failed writing layout")
-}
-
 fn obtain_grammar_config(
     grammar: Option<&str>,
     verbose: bool,
@@ -176,7 +143,8 @@ fn obtain_grammar_config(
         }
 
         if generate_tree_graph {
-            generate_tree_layout(&syntax_tree, file_name, verbose)?;
+            generate_tree_layout(&syntax_tree, file_name)
+                .chain_err(|| "Error generating tree layout")?;
         }
 
         Ok(GrammarConfig::try_from(parol_grammar)?)

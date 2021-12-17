@@ -329,8 +329,6 @@ use log::debug;
 use parol_runtime::parser::ParseTreeType;
 use std::env;
 use std::fs;
-use std::path::PathBuf;
-use std::str::FromStr;
 
 error_chain! {
     links {
@@ -360,15 +358,7 @@ fn run() -> Result<()> {
 }
 
 fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
-    let mut svg_full_file_name = PathBuf::from_str(input_file_name).unwrap();
-    svg_full_file_name.set_extension("");
-    let file_name = svg_full_file_name
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_owned();
-    svg_full_file_name.set_file_name(file_name);
+    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
     svg_full_file_name.set_extension("svg");
 
     Layouter::new(&syntax_tree)

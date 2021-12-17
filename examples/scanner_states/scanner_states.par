@@ -24,12 +24,14 @@ Content
       // the scanner 'String'
       %push(String)
       StringContent StringDelimiter
-      // And here we return to the scanner INITIAL again by poping it from the scanner stack and
+      // And here we return to the scanner INITIAL again by popping it from the scanner stack and
       // switching to it.
       %pop()
     ;
 
-// Another valid version of the production above with the same effect is to use %sc in this way:
+// Another valid version of the production above with the same effect is to use %sc as shown below.
+// %sc performs a direct switch to the given scanner state without affecting the scanner stack.
+// An omitted scanner state (as in %s()) implies scanner state INITIAL.
 //
 // Content
 //     : Identifier

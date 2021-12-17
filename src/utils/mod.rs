@@ -3,6 +3,9 @@ use crate::grammar::cfg::RX_NUM_SUFFIX;
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
 use crate::GrammarConfig;
+use id_tree::Tree;
+use id_tree_layout::Layouter;
+use parol_runtime::parser::ParseTreeType;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fs;
@@ -127,4 +130,17 @@ pub fn obtain_grammar_config(file_name: &str, verbose: bool) -> Result<GrammarCo
     }
 
     GrammarConfig::try_from(parol_grammar)
+}
+
+pub fn generate_tree_layout(
+    syntax_tree: &Tree<ParseTreeType>,
+    input_file_name: &str,
+) -> Result<()> {
+    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+    svg_full_file_name.set_extension("svg");
+
+    Layouter::new(syntax_tree)
+        .with_file_path(std::path::Path::new(&svg_full_file_name))
+        .write()
+        .chain_err(|| "Failed writing layout")
 }
