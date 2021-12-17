@@ -322,20 +322,13 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "array_list_10";
-        let top_of_stack1 = self.pop(context);
-        let top_of_stack2 = self.pop(context);
-        match (&top_of_stack1, &top_of_stack2) {
-            (Some(JsonGrammarItem::Array(array)), Some(elem)) => {
-                let mut list = array.clone();
-                list.push(elem.clone());
-                self.push(JsonGrammarItem::Array(list.to_vec()), context);
+        match (self.pop(context), self.pop(context)) {
+            (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
+                array.push(elem);
+                self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(format!(
-                "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+            _ => Err(format!("{}: expecting Array, Value on top of stack", context).into()),
         }
     }
 
