@@ -1,6 +1,6 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
-use crate::errors::*;
 use crate::KTuples;
+use anyhow::{bail, Result};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};
@@ -191,7 +191,7 @@ Ambiguous production number prediction
 {} <--> {}"#,
                                     result_state_prod_num, other_to_state_prod_num
                                 );
-                                return Err(message.into());
+                                bail!(message);
                             }
                             result_union.borrow_mut().coin_state(
                                 result_state,

@@ -2,9 +2,9 @@ use crate::assign_operator::AssignOperator;
 use crate::binary_operator::BinaryOperator;
 use crate::calc_grammar_trait::CalcGrammarTrait;
 use crate::unary_operator::UnaryOperator;
+use anyhow::{anyhow, bail, Context, Result};
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
@@ -132,7 +132,7 @@ impl CalcGrammar {
             Self::apply_assign_item(var, &item.1, num, context)?;
             Ok(*var)
         } else {
-            Err(format!("assign: undeclared variable {}", item.0).into())
+            Err(anyhow!("assign: undeclared variable {}", item.0))
         }
     }
 
@@ -150,7 +150,7 @@ impl CalcGrammar {
             AssignOperator::MulAssign => *lhs *= rhs,
             AssignOperator::DivAssign => {
                 if rhs == 0 {
-                    return Err("Division by zero detected!".into());
+                    bail!("Division by zero detected!");
                 }
                 *lhs /= rhs
             }
@@ -183,7 +183,7 @@ impl CalcGrammar {
             BinaryOperator::Mul => lhs * rhs.1,
             BinaryOperator::Div => {
                 if rhs.1 == 0 {
-                    return Err("Division by zero detected!".into());
+                    bail!("Division by zero detected!");
                 }
                 lhs / rhs.1
             }
@@ -192,7 +192,7 @@ impl CalcGrammar {
                 if let Ok(exponent) = rhs.1.try_into() {
                     lhs.pow(exponent)
                 } else {
-                    return Err(format!("Exponent {} can't be converted to u32!", rhs).into());
+                    bail!("Exponent {} can't be converted to u32!", rhs);
                 }
             }
             BinaryOperator::Eq => (lhs == rhs.1) as DefinitionRange,
@@ -239,7 +239,7 @@ impl CalcGrammar {
                 Ok(())
             }
             // _ => Ok(()),
-            _ => Err(format!("{}: unexpected ({:?}, {:?})", context, list, value).into()),
+            _ => Err(anyhow!("{}: unexpected ({:?}, {:?})", context, list, value)),
         }
     }
 
@@ -278,7 +278,12 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::Num(*value), context);
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}, {:?})", context, value, left_lst).into()),
+            _ => Err(anyhow!(
+                "{}: unexpected ({:?}, {:?})",
+                context,
+                value,
+                left_lst
+            )),
         }
     }
 
@@ -304,7 +309,12 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::RightItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}, {:?}", context, right_item, right_lst).into()),
+            _ => Err(anyhow!(
+                "{}: unexpected ({:?}, {:?}",
+                context,
+                right_item,
+                right_lst
+            )),
         }
     }
 
@@ -319,7 +329,7 @@ impl CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}, {:?}", context, value, op).into()),
+            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, op)),
         }
     }
 
@@ -416,11 +426,12 @@ impl CalcGrammarTrait for CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -456,11 +467,13 @@ impl CalcGrammarTrait for CalcGrammar {
                 Ok(())
             }
             //_ => Ok(())
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}, {:?})",
-                context, value, assignment_lst, assign_item
-            )
-            .into()),
+                context,
+                value,
+                assignment_lst,
+                assign_item
+            )),
         }
     }
 
@@ -484,11 +497,12 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::AssignItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -1186,7 +1200,7 @@ impl CalcGrammarTrait for CalcGrammar {
             self.push(CalcGrammarItem::UnaryOp(UnaryOperator::Negation), context);
             Ok(())
         } else {
-            Err(format!("{}: unexpected {:?}", context, minus).into())
+            Err(anyhow!("{}: unexpected {:?}", context, minus))
         }
     }
 
@@ -1211,7 +1225,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::Num(-num), context);
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected {:?} {:?}", context, negate, number).into()),
+            _ => Err(anyhow!("{}: unexpected {:?} {:?}", context, negate, number)),
         }
     }
 
@@ -1226,7 +1240,7 @@ impl CalcGrammarTrait for CalcGrammar {
     ) -> Result<()> {
         let context = "number_79";
         let symbol = tk_number_0.symbol(parse_tree)?;
-        let number = symbol.parse::<DefinitionRange>().chain_err(|| {
+        let number = symbol.parse::<DefinitionRange>().with_context(|| {
             format!(
                 "{}: Error accessing token from ParseTreeStackEntry",
                 context
@@ -1252,11 +1266,11 @@ impl CalcGrammarTrait for CalcGrammar {
                 if let Some(val) = self.value(&id) {
                     self.push(CalcGrammarItem::Num(val), context);
                 } else {
-                    return Err(format!("{}: undeclared variable {}", context, id).into());
+                    return Err(anyhow!("{}: undeclared variable {}", context, id));
                 }
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected {:?}", context, top_of_stack).into()),
+            _ => Err(anyhow!("{}: unexpected {:?}", context, top_of_stack)),
         }
     }
 

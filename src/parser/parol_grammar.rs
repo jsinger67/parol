@@ -1,7 +1,7 @@
 use crate::parser::parol_grammar_trait::ParolGrammarTrait;
+use anyhow::{anyhow, Result};
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -253,14 +253,15 @@ impl ParolGrammar {
                     trace!("{}", self.trace_item_stack(context));
                     Ok(())
                 } else {
-                    Err(format!("{}: Unknown scanner name '{}'", context, s).into())
+                    Err(anyhow!("{}: Unknown scanner name '{}'", context, s))
                 }
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: Expected [StateList, Factor::NonTerminal] on TOS, found [{:?}, {:?}]",
-                context, l, s
-            )
-            .into()),
+                context,
+                l,
+                s
+            )),
         }
     }
 
@@ -325,7 +326,10 @@ impl ParolGrammarTrait for ParolGrammar {
             self.start_symbol = s;
             Ok(())
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::NonTerminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -356,7 +360,10 @@ impl ParolGrammarTrait for ParolGrammar {
             self.title = Some(s);
             Ok(())
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::Terminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -375,7 +382,10 @@ impl ParolGrammarTrait for ParolGrammar {
             self.comment = Some(s);
             Ok(())
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::Terminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -394,7 +404,10 @@ impl ParolGrammarTrait for ParolGrammar {
             self.current_scanner.line_comments.push(s);
             Ok(())
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::Terminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -415,10 +428,16 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.current_scanner.block_comments.push((s2, s1));
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+                Err(anyhow!(
+                    "{}: Expected 'Fac(Factor::Terminal)' on TOS.",
+                    context
+                ))
             }
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::Terminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::Terminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -469,10 +488,13 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Prod(Production::new(lhs, rhs)), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
+                Err(anyhow!(
+                    "{}: Expected 'Fac(Factor::NonTerminal)' on TOS.",
+                    context
+                ))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -494,10 +516,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Alt' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Alt' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -520,10 +542,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Alt' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Alt' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -555,10 +577,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Alt(alt), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Fac' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Fac' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alt' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alt' on TOS.", context))
         }
     }
 
@@ -591,10 +613,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Fac(Factor::Terminal(s, sc)), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'StateList' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'StateList' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Factor::Terminal' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Factor::Terminal' on TOS.", context))
         }
     }
 
@@ -622,10 +644,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -653,10 +675,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -684,10 +706,10 @@ impl ParolGrammarTrait for ParolGrammar {
                 self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
                 Ok(())
             } else {
-                Err(format!("{}: Expected 'Factor' on TOS.", context).into())
+                Err(anyhow!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(format!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(anyhow!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -709,7 +731,11 @@ impl ParolGrammarTrait for ParolGrammar {
             );
             Ok(())
         } else {
-            Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
+            Err(anyhow!(
+                "{}: Token expected, found {}",
+                context,
+                parse_tree_item
+            ))
         }
     }
 
@@ -730,7 +756,11 @@ impl ParolGrammarTrait for ParolGrammar {
             self.push(ParolGrammarItem::Fac(Factor::Terminal(s, vec![0])), context);
             Ok(())
         } else {
-            Err(format!("{}: Token expected, found {}", context, parse_tree_item).into())
+            Err(anyhow!(
+                "{}: Token expected, found {}",
+                context,
+                parse_tree_item
+            ))
         }
     }
 
@@ -758,7 +788,10 @@ impl ParolGrammarTrait for ParolGrammar {
             trace!("{}", self);
             Ok(())
         } else {
-            Err(format!("{}: Expected 'Factor::NonTerminal' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Factor::NonTerminal' on TOS.",
+                context
+            ))
         }
     }
 
@@ -830,10 +863,13 @@ impl ParolGrammarTrait for ParolGrammar {
                 trace!("{}", self.trace_item_stack(context));
                 Ok(())
             } else {
-                Err(format!("{}: Unknown scanner name '{}'", context, s).into())
+                Err(anyhow!("{}: Unknown scanner name '{}'", context, s))
             }
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::NonTerminal)' on TOS.",
+                context
+            ))
         }
     }
 
@@ -863,10 +899,13 @@ impl ParolGrammarTrait for ParolGrammar {
                 trace!("{}", self.trace_item_stack(context));
                 Ok(())
             } else {
-                Err(format!("{}: Unknown scanner name '{}'", context, s).into())
+                Err(anyhow!("{}: Unknown scanner name '{}'", context, s))
             }
         } else {
-            Err(format!("{}: Expected 'Fac(Factor::NonTerminal)' on TOS.", context).into())
+            Err(anyhow!(
+                "{}: Expected 'Fac(Factor::NonTerminal)' on TOS.",
+                context
+            ))
         }
     }
 

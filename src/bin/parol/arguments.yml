@@ -1,5 +1,5 @@
 name: parol
-version: "0.3.2"
+version: "0.4.0"
 author: Jörg Singer <singer.joerg@gmx.de>
 about: A LL(k) Parser Generator written in Rust.
 args:

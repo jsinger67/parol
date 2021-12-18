@@ -60,7 +60,7 @@ fn num_6(
 ) -> Result<()> {
     let context = "num_6";
     let symbol = num_0.symbol(parse_tree)?;
-    let number = symbol.parse::<DefinitionRange>().chain_err(|| {
+    let number = symbol.parse::<DefinitionRange>().with_context(|| {
         format!(
             "{}: Error accessing token from ParseTreeStackEntry",
             context

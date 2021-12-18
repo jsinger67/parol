@@ -47,7 +47,7 @@ Although LL grammars are known to be a subset of LR grammars many use cases exis
 
 `parol` is simple. You can actually understand all parts of it without broader knowledge in parsing theory.
 
-`parol` is fast. The use of deterministic automata ensure a minimal overhead during parsing, no backtracking needed.
+`parol` is fast. The use of deterministic automata ensures a minimal overhead during parsing, no backtracking needed.
 
 `parol` is a true LL(k) parser. You won't find much working LL(k) parsers out there.
 

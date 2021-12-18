@@ -1,14 +1,9 @@
-#[macro_use]
-extern crate error_chain;
-
+use anyhow::{bail, Result};
 use parol::analysis::k_decision::{calculate_k, FirstCache, FollowCache};
-use parol::errors::*;
 use parol::{obtain_grammar_config, MAX_K};
 use std::env;
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {
         let file_name = args[1].clone();

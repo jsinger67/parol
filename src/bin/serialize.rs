@@ -1,13 +1,8 @@
-#[macro_use]
-extern crate error_chain;
-
-use parol::errors::*;
+use anyhow::Result;
 use parol::obtain_grammar_config;
 use std::env;
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     env_logger::init();
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 {

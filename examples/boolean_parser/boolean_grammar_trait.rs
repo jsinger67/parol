@@ -5,8 +5,8 @@
 // ---------------------------------------------------------
 
 use crate::boolean_grammar::BooleanGrammar;
+use anyhow::Result;
 use id_tree::Tree;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///

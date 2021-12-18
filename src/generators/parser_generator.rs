@@ -1,9 +1,9 @@
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::analysis::LookaheadDFA;
 use crate::conversions::dot::render_dfa_dot_string;
-use crate::errors::*;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
+use anyhow::{Context, Result};
 use log::trace;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::{BTreeMap, BTreeSet};
@@ -147,7 +147,7 @@ pub fn generate_parser_source(
     let start_symbol_index: usize = non_terminals
         .iter()
         .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .chain_err(|| {
+        .with_context(|| {
             format!(
                 "Start symbol '{}' is not part of the given grammar!",
                 grammar_config.cfg.get_start_symbol()

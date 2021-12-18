@@ -6,7 +6,7 @@
 
 use id_tree::Tree;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::errors::*;
+use anyhow::Result;
 use crate::{{user_trait_module_name}}::{{user_type_name}};
 
 ///

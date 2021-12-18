@@ -1,7 +1,4 @@
 #[macro_use]
-extern crate error_chain;
-
-#[macro_use]
 extern crate lazy_static;
 
 extern crate parol_runtime;
@@ -11,12 +8,11 @@ mod binary_operator;
 mod calc_grammar;
 mod calc_grammar_trait;
 mod calc_parser;
-mod errors;
 mod unary_operator;
 
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_parser::parse;
-use crate::errors::*;
+use anyhow::{anyhow, Context, Result};
 use log::debug;
 use parol::generate_tree_layout;
 use std::env;
@@ -28,9 +24,7 @@ use std::fs;
 // To run the example
 // cargo run --example calc -- .\examples\calc\calc_test.txt
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     // $env:RUST_LOG="calc=trace"
     env_logger::init();
     debug!("env logger started");
@@ -39,13 +33,14 @@ fn run() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .chain_err(|| format!("Can't read file {}", file_name))?;
+            .with_context(|| format!("Can't read file {}", file_name))?;
         let mut calc_grammar = CalcGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut calc_grammar)
-            .chain_err(|| format!("Failed parsing file {}", file_name))?;
+            .with_context(|| format!("Failed parsing file {}", file_name))?;
         println!("{}", calc_grammar);
-        generate_tree_layout(&syntax_tree, &file_name).chain_err(|| "Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &file_name)
+            .with_context(|| "Error generating tree layout")
     } else {
-        Err("Please provide a file name as single parameter!".into())
+        Err(anyhow!("Please provide a file name as single parameter!"))
     }
 }

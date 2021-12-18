@@ -237,7 +237,7 @@ edition = "2018"
 
 [dependencies]
 env_logger = "0.9.0"
-error-chain = "0.12.4"
+anyhow = "1.0.51"
 id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
@@ -310,9 +310,6 @@ Next open the main.rs of your crate and replace its contents with the following 
 
 ```rust
 #[macro_use]
-extern crate error_chain;
-
-#[macro_use]
 extern crate lazy_static;
 
 extern crate parol_runtime;
@@ -323,6 +320,7 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
+use anyhow::{anyhow, Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use log::debug;
@@ -330,15 +328,7 @@ use parol_runtime::parser::ParseTreeType;
 use std::env;
 use std::fs;
 
-error_chain! {
-    links {
-        RuntimeParserErr(parol_runtime::errors::Error, parol_runtime::errors::ErrorKind);
-    }
-}
-
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     env_logger::init();
     debug!("env logger started");
 
@@ -346,14 +336,14 @@ fn run() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .chain_err(|| format!("Can't read file {}", file_name))?;
+            .with_context(|| format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut json_grammar)
-            .chain_err(|| format!("Failed parsing file {}", file_name))?;
+            .with_context(|| format!("Failed parsing file {}", file_name))?;
         println!("Success!\n{}", json_grammar);
         generate_tree_layout(&syntax_tree, &file_name)
     } else {
-        Err("Please provide a file name as single parameter!".into())
+        Err("Please provide a file name as single parameter!")
     }
 }
 
@@ -364,7 +354,7 @@ fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str
     Layouter::new(&syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
-        .chain_err(|| "Failed writing layout")
+        .with_context(|| "Failed writing layout")
 }
 ```
 
@@ -555,7 +545,7 @@ Remove the '_' from the `_push` function and add the following lines at the begi
 
 ```rust
 use id_tree::Tree;
-use parol_runtime::errors::*;
+use anyhow::Result;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 ```
 
@@ -742,7 +732,7 @@ fn number_20(
     let number = number_0
         .symbol(parse_tree)?
         .parse::<f64>()
-        .chain_err(|| format!("{}: Error accessing number token", context))?;
+        .with_context(|| format!("{}: Error accessing number token", context))?;
     self.push(JsonGrammarItem::Number(number), context);
     Ok(())
 }
@@ -882,11 +872,11 @@ fn array_suffix_8(
             self.push(JsonGrammarItem::Array(list.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!(
+        _ => Err(anyhow!(
             "{}: unexpected ({:?}, {:?}",
             context, top_of_stack1, top_of_stack2
         )
-        .into()),
+        ),
     }
 }
 
@@ -911,11 +901,11 @@ fn array_list_10(
             self.push(JsonGrammarItem::Array(list.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!(
+        _ => Err(anyhow!(
             "{}: unexpected ({:?}, {:?}",
             context, top_of_stack1, top_of_stack2
         )
-        .into()),
+        ),
     }
 }
 
@@ -960,7 +950,7 @@ fn array_7(
             self.push(JsonGrammarItem::Array(list.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!("{}: unexpected ({:?}", context, top_of_stack).into()),
+        _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
     }
 }
 ```
@@ -1054,7 +1044,7 @@ fn pair_6(
             );
             Ok(())
         }
-        _ => Err(format!("{}: unexpected ({:?}, {:?}", context, value, name).into()),
+        _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, name)),
     }
 }
 ```
@@ -1152,11 +1142,11 @@ fn object_suffix_2(
             self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!(
+        _ => Err(anyhow!(
             "{}: unexpected ({:?}, {:?}",
             context, top_of_stack1, top_of_stack2
         )
-        .into()),
+        ),
     }
 }
 
@@ -1181,11 +1171,11 @@ fn object_list_4(
             self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!(
+        _ => Err(anyhow!(
             "{}: unexpected ({:?}, {:?}",
             context, top_of_stack1, top_of_stack2
         )
-        .into()),
+        ),
     }
 }
 ```
@@ -1233,7 +1223,7 @@ fn object_1(
             self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
             Ok(())
         }
-        _ => Err(format!("{}: unexpected ({:?}", context, top_of_stack).into()),
+        _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
     }
 }
 ```
@@ -1286,10 +1276,10 @@ For didactic reasons there are some duplicates in the code which actually violat
 
 ### Error output from sematic actions
 
-`parol` consequently uses [error-chain](https://crates.io/crates/error-chain)'s method for consistent error handling. So actually you can simply return an `Error` object by using the constructor like this:
+`parol` consequently uses [anyhow](https://github.com/dtolnay/anyhow) for consistent error handling. So actually you can simply return an `Error` object by using the constructor like this:
 
 ```rust
-Err("An error is occurred".into())
+Err(anyhow!("An error is occurred"))
 ```
 
 This will terminate the parsing process and generate an output with the text you provided.
@@ -1297,7 +1287,7 @@ If you want to convey some information about the error position you can use posi
 
 ```rust
 let token = number_0.token(parse_tree)?;
-Err(format!("An error is occurred at {}:{}", token.line, token.column).into())
+Err(anyhow!("An error is occurred at {}:{}", token.line, token.column))
 ```
 
 Where `number_0` is a `ParseTreeStackEntry` taken from the parameter list of the semantic action. Additionally, the `ParseTreeStackEntry` you chose have to be a terminal symbol so that its `token` function can succeed.

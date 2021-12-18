@@ -1,8 +1,8 @@
-use crate::errors::*;
 use crate::grammar::cfg::RX_NUM_SUFFIX;
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
 use crate::GrammarConfig;
+use anyhow::{Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use parol_runtime::parser::ParseTreeType;
@@ -120,10 +120,10 @@ where
 
 pub fn obtain_grammar_config(file_name: &str, verbose: bool) -> Result<GrammarConfig> {
     let input =
-        fs::read_to_string(file_name).chain_err(|| format!("Can't read file {}", file_name))?;
+        fs::read_to_string(file_name).with_context(|| format!("Can't read file {}", file_name))?;
     let mut parol_grammar = ParolGrammar::new();
     let _syntax_tree = parse(&input, file_name.to_owned(), &mut parol_grammar)
-        .chain_err(|| format!("Failed parsing file {}", file_name))?;
+        .with_context(|| format!("Failed parsing file {}", file_name))?;
 
     if verbose {
         println!("{}", parol_grammar);
@@ -142,5 +142,5 @@ pub fn generate_tree_layout(
     Layouter::new(syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
-        .chain_err(|| "Failed writing layout")
+        .with_context(|| "Failed writing layout")
 }

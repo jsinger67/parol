@@ -1,7 +1,4 @@
 #[macro_use]
-extern crate error_chain;
-
-#[macro_use]
 extern crate lazy_static;
 
 extern crate parol_runtime;
@@ -9,11 +6,10 @@ extern crate parol_runtime;
 mod boolean_grammar;
 mod boolean_grammar_trait;
 mod boolean_parser;
-mod errors;
 
 use crate::boolean_grammar::BooleanGrammar;
 use crate::boolean_parser::parse;
-use crate::errors::*;
+use anyhow::{anyhow, Context, Result};
 use log::debug;
 use parol::generate_tree_layout;
 use std::env;
@@ -28,9 +24,7 @@ use std::fs;
 // To activate local logging
 // $env:RUST_LOG="boolean_parser::boolean_grammar=trace"
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     env_logger::init();
     debug!("env logger started");
 
@@ -38,13 +32,14 @@ fn run() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .chain_err(|| format!("Can't read file {}", file_name))?;
+            .with_context(|| format!("Can't read file {}", file_name))?;
         let mut boolean_grammar = BooleanGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut boolean_grammar)
-            .chain_err(|| format!("Failed parsing file {}", file_name))?;
+            .with_context(|| format!("Failed parsing file {}", file_name))?;
         println!("{}", boolean_grammar);
-        generate_tree_layout(&syntax_tree, &file_name).chain_err(|| "Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &file_name)
+            .with_context(|| "Error generating tree layout")
     } else {
-        Err("Please provide a file name as single parameter!".into())
+        Err(anyhow!("Please provide a file name as single parameter!"))
     }
 }

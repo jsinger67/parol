@@ -5,8 +5,8 @@
 // ---------------------------------------------------------
 
 use crate::oberon_0_grammar::Oberon0Grammar;
+use anyhow::Result;
 use id_tree::Tree;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///

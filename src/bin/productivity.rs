@@ -1,15 +1,10 @@
-#[macro_use]
-extern crate error_chain;
-
+use anyhow::Result;
 use log::debug;
 use parol::analysis::non_productive_non_terminals;
-use parol::errors::*;
 use parol::obtain_grammar_config;
 use std::env;
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     env_logger::init();
     // $env:RUST_LOG="parol,parol_runtime=off,productivity=debug"
     debug!("env logger started");

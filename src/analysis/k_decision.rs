@@ -1,8 +1,8 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
-use crate::errors::*;
 use crate::{GrammarConfig, KTuples};
+use anyhow::{anyhow, bail, Result};
 use log::trace;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
@@ -92,7 +92,9 @@ pub fn decidable(
     let cfg = &grammar_config.cfg;
     let productions = cfg.matching_productions(non_terminal);
     if productions.is_empty() {
-        Err("The given non-terminal isn't part of the given grammar!".into())
+        Err(anyhow!(
+            "The given non-terminal isn't part of the given grammar!"
+        ))
     } else if productions.len() == 1 {
         // The trivial case - no lookahead is needed.
         Ok(0)
@@ -126,11 +128,11 @@ pub fn decidable(
                     return Ok(current_k);
                 }
             } else {
-                return Err("Internal error".into());
+                bail!("Internal error");
             }
             current_k += 1;
         }
-        Err("max_k exceeded".into())
+        Err(anyhow!("max_k exceeded"))
     }
 }
 
@@ -189,7 +191,7 @@ pub fn calculate_k_tuples(
                 m.append(&mut k_tuples);
                 Ok(m)
             }
-            (_, Err(e)) => Err(e.description().into()),
+            (_, Err(e)) => Err(anyhow!(e.to_string())),
         })
 }
 
@@ -239,7 +241,9 @@ pub fn explain_conflicts(
     let cfg = &grammar_config.cfg;
     let productions = cfg.matching_productions(non_terminal);
     if productions.is_empty() {
-        Err("The given non-terminal isn't part of the given grammar!".into())
+        Err(anyhow!(
+            "The given non-terminal isn't part of the given grammar!"
+        ))
     } else if productions.len() == 1 {
         // The trivial case - no lookahead is needed, no conflicts can occur.
         Ok(Vec::new())
@@ -274,7 +278,7 @@ pub fn explain_conflicts(
             }
             return Ok(conflicting_k_tuples);
         }
-        Err("Internal error".into())
+        Err(anyhow!("Internal error"))
     }
 }
 
@@ -322,7 +326,7 @@ mod test {
             decidable(&grammar_config, "A", 5, &first_cache, &follow_cache)
                 .err()
                 .unwrap()
-                .description()
+                .to_string()
         );
     }
 

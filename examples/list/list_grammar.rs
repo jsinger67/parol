@@ -1,7 +1,7 @@
 use crate::list_grammar_trait::ListGrammarTrait;
+use anyhow::{anyhow, Context, Result};
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -117,11 +117,12 @@ impl ListGrammarTrait for ListGrammar {
                 self.push(ListGrammarItem::List(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -145,11 +146,12 @@ impl ListGrammarTrait for ListGrammar {
                 self.push(ListGrammarItem::List(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -190,7 +192,7 @@ impl ListGrammarTrait for ListGrammar {
     ) -> Result<()> {
         let context = "num_6";
         let symbol = num_0.symbol(parse_tree)?;
-        let number = symbol.parse::<DefinitionRange>().chain_err(|| {
+        let number = symbol.parse::<DefinitionRange>().with_context(|| {
             format!(
                 "{}: Error accessing token from ParseTreeStackEntry",
                 context

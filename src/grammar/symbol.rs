@@ -228,8 +228,8 @@ impl Display for Symbol {
 }
 
 impl TryFrom<Factor> for Symbol {
-    type Error = crate::errors::Error;
-    fn try_from(factor: Factor) -> crate::errors::Result<Self> {
+    type Error = anyhow::Error;
+    fn try_from(factor: Factor) -> anyhow::Result<Self> {
         try_from_factor(factor)
     }
 }

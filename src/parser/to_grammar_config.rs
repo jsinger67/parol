@@ -1,11 +1,11 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
-use crate::errors::*;
 use crate::generate_name;
 use crate::parser::{
     Alternation, Alternations, Factor, ParolGrammar, ParolGrammarItem, Production,
 };
 use crate::utils::combine;
 use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
+use anyhow::{anyhow, bail, Result};
 use log::trace;
 use std::convert::TryFrom;
 
@@ -65,7 +65,7 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
         Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop => Ok(Symbol::Pop),
-        _ => Err(format!("Unexpected type of factor: {}", factor).into()),
+        _ => Err(anyhow!("Unexpected type of factor: {}", factor)),
     }
 }
 
@@ -87,7 +87,7 @@ fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
         .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
     {
         trace_item_stack(&item_stack);
-        return Err("Expecting only productions on user stack".into());
+        bail!("Expecting only productions on user stack");
     }
 
     let productions = item_stack
@@ -112,11 +112,10 @@ fn finalize(productions: Vec<Production>) -> Result<Vec<Pr>> {
         .map(|r| {
             let Alternations(mut e) = r.rhs.clone();
             if e.len() != 1 {
-                return Err(format!(
+                bail!(
                     "Expected one alternation per production after transformation but found {} at {}!",
                     e.len(), r
-                )
-                .into());
+                );
             }
             let single_alternative = e.pop().unwrap();
             Ok(Pr(

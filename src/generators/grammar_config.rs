@@ -131,8 +131,8 @@ impl Display for GrammarConfig {
 }
 
 impl TryFrom<ParolGrammar> for GrammarConfig {
-    type Error = crate::errors::Error;
-    fn try_from(grammar: ParolGrammar) -> crate::errors::Result<Self> {
+    type Error = anyhow::Error;
+    fn try_from(grammar: ParolGrammar) -> anyhow::Result<Self> {
         try_to_convert(grammar)
     }
 }

@@ -12,16 +12,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate bart_derive;
 
-#[macro_use]
-extern crate error_chain;
-
 extern crate serde;
 extern crate serde_json;
-
-///
-/// error_chains error module that auto-creates basic error types.
-///
-pub mod errors;
 
 ///
 /// Basic grammar data structures and algorithms

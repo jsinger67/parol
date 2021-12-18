@@ -1,19 +1,15 @@
 #[macro_use]
-extern crate error_chain;
-
-#[macro_use]
 extern crate lazy_static;
 
 extern crate parol_runtime;
 
-mod errors;
 mod scanner_states_grammar;
 mod scanner_states_grammar_trait;
 mod scanner_states_parser;
 
-use crate::errors::*;
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use crate::scanner_states_parser::parse;
+use anyhow::{anyhow, Context, Result};
 use log::debug;
 use parol::generate_tree_layout;
 use std::env;
@@ -25,9 +21,7 @@ use std::fs;
 // To run the example
 // cargo run --example scanner_states -- ./examples/scanner_states/scanner_states_test.txt
 
-quick_main!(run);
-
-fn run() -> Result<()> {
+fn main() -> Result<()> {
     // $env:RUST_LOG="scanner_states=trace"
     env_logger::init();
     debug!("env logger started");
@@ -36,13 +30,14 @@ fn run() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .chain_err(|| format!("Can't read file {}", file_name))?;
+            .with_context(|| format!("Can't read file {}", file_name))?;
         let mut scanner_states_grammar = ScannerStatesGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut scanner_states_grammar)
-            .chain_err(|| format!("Failed parsing file {}", file_name))?;
+            .with_context(|| format!("Failed parsing file {}", file_name))?;
         println!("{}", scanner_states_grammar);
-        generate_tree_layout(&syntax_tree, &file_name).chain_err(|| "Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &file_name)
+            .with_context(|| "Error generating tree layout")
     } else {
-        Err("Please provide a file name as single parameter!".into())
+        Err(anyhow!("Please provide a file name as single parameter!"))
     }
 }
