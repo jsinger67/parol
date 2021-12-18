@@ -4,8 +4,8 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+use anyhow::Result;
 use id_tree::Tree;
-use parol_runtime::errors::*;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,

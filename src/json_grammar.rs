@@ -1,7 +1,7 @@
 use crate::json_grammar_trait::JsonGrammarTrait;
+use anyhow::{anyhow, Context, Result};
 use id_tree::Tree;
 use log::trace;
-use parol_runtime::errors::*;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -132,7 +132,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}", context, top_of_stack).into()),
+            _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
         }
     }
 
@@ -157,11 +157,12 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -200,11 +201,12 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -240,7 +242,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 );
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}, {:?}", context, value, name).into()),
+            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, name)),
         }
     }
 
@@ -263,7 +265,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!("{}: unexpected ({:?}", context, top_of_stack).into()),
+            _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
         }
     }
 
@@ -288,11 +290,12 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(format!(
+            _ => Err(anyhow!(
                 "{}: unexpected ({:?}, {:?}",
-                context, top_of_stack1, top_of_stack2
-            )
-            .into()),
+                context,
+                top_of_stack1,
+                top_of_stack2
+            )),
         }
     }
 
@@ -328,7 +331,10 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(format!("{}: expecting Array, Value on top of stack", context).into()),
+            _ => Err(anyhow!(
+                "{}: expecting Array, Value on top of stack",
+                context
+            )),
         }
     }
 
@@ -412,7 +418,7 @@ impl JsonGrammarTrait for JsonGrammar {
         let number = number_0
             .symbol(parse_tree)?
             .parse::<f64>()
-            .chain_err(|| format!("{}: Error accessing number token", context))?;
+            .with_context(|| format!("{}: Error accessing number token", context))?;
         self.push(JsonGrammarItem::Number(number), context);
         Ok(())
     }
