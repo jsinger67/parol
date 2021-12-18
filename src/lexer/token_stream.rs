@@ -1,7 +1,7 @@
-use crate::errors::*;
 use crate::lexer::{OwnedToken, Token};
 use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
 use crate::parser::ScannerIndex;
+use anyhow::{anyhow, Result};
 use log::trace;
 
 ///
@@ -96,12 +96,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn owned_lookahead(&mut self, n: usize) -> Result<OwnedToken> {
         if n > self.k {
-            Err("Lookahead exceeds its maximum".into())
+            Err(anyhow!("Lookahead exceeds its maximum"))
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err("Lookahead exceeds token buffer length".into())
+                Err(anyhow!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].to_owned())
@@ -117,12 +117,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex> {
         if n > self.k {
-            Err("Lookahead exceeds its maximum".into())
+            Err(anyhow!("Lookahead exceeds its maximum"))
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err("Lookahead exceeds token buffer length".into())
+                Err(anyhow!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -139,7 +139,7 @@ impl<'t> TokenStream<'t> {
     pub fn consume(&mut self) -> Result<()> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
-            Err("Consume on empty buffer is impossible".into())
+            Err(anyhow!("Consume on empty buffer is impossible"))
         } else {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
@@ -188,10 +188,7 @@ impl<'t> TokenStream<'t> {
     /// `TokenStream::consume`.
     /// This is a documented restriction.
     ///
-    pub fn switch_scanner(
-        &mut self,
-        scanner_index: ScannerIndex,
-    ) -> std::result::Result<(), Error> {
+    pub fn switch_scanner(&mut self, scanner_index: ScannerIndex) -> Result<()> {
         if self.current_scanner_index == scanner_index {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
@@ -216,7 +213,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// Push the current scanner index and switch to the scanner with given index.
     ///
-    pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> std::result::Result<(), Error> {
+    pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> Result<()> {
         if self.current_scanner_index == scanner_index {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
@@ -243,7 +240,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// Push the current scanner index and switch to the scanner with given index.
     ///
-    pub fn pop_scanner(&mut self) -> std::result::Result<(), Error> {
+    pub fn pop_scanner(&mut self) -> Result<()> {
         if let Some(scanner_index) = self.scanner_stack.pop() {
             if self.current_scanner_index == scanner_index {
                 trace!(
@@ -265,7 +262,9 @@ impl<'t> TokenStream<'t> {
             }
             Ok(())
         } else {
-            Err("pop_scanner: Tried to pop from an empty scanner stack!".into())
+            Err(anyhow!(
+                "pop_scanner: Tried to pop from an empty scanner stack!"
+            ))
         }
     }
 

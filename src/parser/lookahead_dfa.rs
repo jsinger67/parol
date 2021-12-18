@@ -1,6 +1,7 @@
-use crate::errors::*;
+use crate::errors::RuntimeError;
 use crate::lexer::{FormatToken, TerminalIndex, Token, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
+use anyhow::{anyhow, Context, Result};
 use log::trace;
 use std::cmp::Ordering;
 
@@ -74,14 +75,16 @@ impl LookaheadDFA {
     pub fn eval<'t>(&self, token_stream: &mut TokenStream<'t>) -> Result<ProductionIndex> {
         let mut state: StateIndex = 0;
         if self.k > token_stream.k {
-            return Err("Lookahead size mismatch between token stream and Lookahead DFA".into());
+            return Err(anyhow!(RuntimeError::DataError(
+                "Lookahead size mismatch between token stream and Lookahead DFA"
+            )));
         }
         let mut last_accepting_state: Option<StateIndex> = None;
         for i in 0..self.k {
             // Read the current lookahead token and extract it's type
             let current_lookahead_token = token_stream
                 .lookahead_token_type(i)
-                .chain_err(|| "Error accessing lookahead token from token stream!")?;
+                .with_context(|| "Error accessing lookahead token from token stream!")?;
 
             // Filter the transitions with the matching from-state
             let mut any_matching_found = false;
@@ -151,7 +154,10 @@ impl LookaheadDFA {
                 state,
                 token_stream.owned_lookahead(0)
             );
-            Err(format!("Production prediction failed at state {}", state).into())
+            Err(anyhow!(RuntimeError::PredictionError(format!(
+                "Production prediction failed at state {}",
+                state
+            ))))
         }
     }
 

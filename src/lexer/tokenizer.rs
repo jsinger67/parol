@@ -1,5 +1,5 @@
-use crate::errors::*;
 use crate::lexer::TerminalIndex;
+use anyhow::{Context, Result};
 use log::trace;
 use regex::Regex;
 
@@ -88,7 +88,7 @@ impl Tokenizer {
 
         let rx = combined.to_string();
         trace!("Generated regex for scanner:\n{}", rx);
-        let rx = Regex::new(&rx).chain_err(|| "Unable to compile generated RegEx!")?;
+        let rx = Regex::new(&rx).with_context(|| "Unable to compile generated RegEx!")?;
 
         Ok(Tokenizer {
             rx,

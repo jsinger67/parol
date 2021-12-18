@@ -1,6 +1,6 @@
-use crate::errors::*;
 use crate::lexer::OwnedToken;
 use crate::parser::ParseTreeType;
+use anyhow::Result;
 use id_tree::{Node, NodeId, Tree};
 
 ///

@@ -2,7 +2,7 @@
 extern crate lazy_static;
 
 #[macro_use]
-extern crate error_chain;
+extern crate thiserror;
 
 ///
 /// Module that provides types for lexical analysis.

@@ -1,9 +1,10 @@
-use crate::errors::*;
+use crate::errors::RuntimeError;
 use crate::lexer::{FormatToken, TokenStream};
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
     ProductionIndex, UserActionsTrait,
 };
+use anyhow::{anyhow, bail, Context, Result};
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
 use std::cell::RefCell;
@@ -130,13 +131,6 @@ impl<'t> LLKParser {
         }
     }
 
-    #[allow(dead_code)]
-    fn log_tree(&self) {
-        let mut s = String::new();
-        self.parse_tree.write_formatted(&mut s).unwrap();
-        debug!("\n{}", s);
-    }
-
     fn input_accepted(&self) -> bool {
         matches!(self.parser_stack.stack[..], [] | [ParseType::T(0)])
     }
@@ -155,7 +149,7 @@ impl<'t> LLKParser {
         for s in self.productions[prod_num].production {
             self.parser_stack.stack.push(s.clone());
         }
-        // Now push a 'production entry' onto the AST stack
+        // Now push a 'production entry' onto the parse stack
         let root_node_id = self.parse_tree.root_node_id().cloned();
 
         let node_id = if let Some(root_node_id) = root_node_id {
@@ -176,7 +170,7 @@ impl<'t> LLKParser {
             )
         };
 
-        // The node's id is pushed on the AST stack
+        // The node's id is pushed on the parse stack
         self.parse_tree_stack
             .push(ParseTreeStackEntry::Id(node_id.unwrap()));
 
@@ -209,27 +203,38 @@ impl<'t> LLKParser {
         )?;
         let tos = self.parse_tree_stack.pop();
         if let Some(ParseTreeStackEntry::Id(node_id)) = tos {
-            children.into_iter().for_each(|c| match c {
+            let result = children.into_iter().fold(Ok(()), |mut acc, c| match c {
                 ParseTreeStackEntry::Id(child_node_id) => {
-                    self.parse_tree
-                        .move_node(&child_node_id, MoveBehavior::ToParent(&node_id))
-                        .expect("Node should be moved.");
+                    if acc.is_ok() {
+                        acc = self
+                            .parse_tree
+                            .move_node(&child_node_id, MoveBehavior::ToParent(&node_id));
+                    }
+                    acc
                 }
                 ParseTreeStackEntry::Nd(node) => {
-                    let _ = self
-                        .parse_tree
-                        .insert(node, InsertBehavior::UnderNode(&node_id))
-                        .expect("Node should be inserted.");
+                    if acc.is_ok() {
+                        acc = self
+                            .parse_tree
+                            .insert(node, InsertBehavior::UnderNode(&node_id))
+                            .map(|_| ());
+                    }
+                    acc
                 }
             });
 
-            // The node's id is pushed on the AST stack
-            self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id));
+            result
+                .and_then(|_| {
+                    self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id));
+                    Ok(())
+                })
+                .map_err(|e| anyhow!(RuntimeError::IdTreeError { source: e }))
         } else {
-            panic!("Expected node id on parse tree stack, found {:?}", tos);
+            bail!(RuntimeError::InternalError(format!(
+                "Expected node id on parse tree stack, found {:?}",
+                tos
+            )))
         }
-
-        Ok(())
     }
 
     fn predict_production(
@@ -272,7 +277,7 @@ impl<'t> LLKParser {
 
         let prod_num = self
             .predict_production(self.start_symbol_index, &stream)
-            .chain_err(|| {
+            .with_context(|| {
                 let nt_name = self.non_terminal_names[self.start_symbol_index];
                 self.diagnostic_message(
                     format!(
@@ -299,13 +304,13 @@ impl<'t> LLKParser {
                         let token = stream
                             .borrow_mut()
                             .owned_lookahead(0)
-                            .chain_err(|| "Failed accessing lookahead token!")?;
+                            .with_context(|| "Failed accessing lookahead token!")?;
                         if token.token_type == t {
                             trace!("Consuming token {}", token);
                             stream
                                 .borrow_mut()
                                 .consume()
-                                .chain_err(|| "Failed consuming the next token!")?;
+                                .with_context(|| "Failed consuming the next token!")?;
                             self.parser_stack.stack.pop();
                             self.parse_tree_stack
                                 .push(ParseTreeStackEntry::Nd(Node::new(ParseTreeType::T(token))));
@@ -320,7 +325,7 @@ impl<'t> LLKParser {
                                 )
                                 .as_str(),
                             );
-                            return Err(msg.into());
+                            bail!(msg);
                         }
                     }
                     ParseType::N(n) => {
@@ -329,22 +334,20 @@ impl<'t> LLKParser {
                             self.push_production(prod_num);
                         } else {
                             let nt_name = self.non_terminal_names[n];
-                            return Err(self
-                                .diagnostic_message(
-                                    format!(
-                                        "{}\nat non-terminal \"{}\" \n\
+                            bail!(self.diagnostic_message(
+                                format!(
+                                    "{}\nat non-terminal \"{}\" \n\
                                     Current scanner is {}",
-                                        self.lookahead_automata[n].show_diagnosis(
-                                            self.terminal_names,
-                                            &stream.borrow().tokens,
-                                            &stream.borrow().file_name,
-                                        ),
-                                        nt_name,
-                                        stream.borrow().current_scanner(),
-                                    )
-                                    .as_str(),
+                                    self.lookahead_automata[n].show_diagnosis(
+                                        self.terminal_names,
+                                        &stream.borrow().tokens,
+                                        &stream.borrow().file_name,
+                                    ),
+                                    nt_name,
+                                    stream.borrow().current_scanner(),
                                 )
-                                .into());
+                                .as_str(),
+                            ));
                         }
                     }
                     ParseType::S(s) => {
@@ -370,7 +373,7 @@ impl<'t> LLKParser {
         }
 
         if !stream.borrow().all_input_consumed() {
-            Err(self.diagnostic_message("Unprocessed input").into())
+            bail!(self.diagnostic_message("Unprocessed input"))
         } else {
             Ok(())
         }

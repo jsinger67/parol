@@ -1,5 +1,5 @@
-use crate::errors::*;
 use crate::lexer::OwnedToken;
+use anyhow::{anyhow, Result};
 use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};
 
@@ -28,7 +28,7 @@ impl ParseTreeType {
     pub fn token(&self) -> Result<&OwnedToken> {
         match self {
             Self::T(t) => Ok(t),
-            _ => Err(format!("{} is no token!", self).into()),
+            _ => Err(anyhow!("{} is no token!", self)),
         }
     }
 }
