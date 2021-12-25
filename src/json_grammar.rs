@@ -124,15 +124,13 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "object_1";
-        let top_of_stack = self.pop(context);
-        match &top_of_stack {
-            Some(JsonGrammarItem::Object(pairs)) => {
-                let mut pairs = pairs.clone();
+        match self.pop(context) {
+            Some(JsonGrammarItem::Object(mut pairs)) => {
                 pairs.reverse();
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
+            _ => Err(anyhow!("{}: expecting Object on top of stack", context)),
         }
     }
 
@@ -148,20 +146,15 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "object_suffix_2";
-        let top_of_stack1 = self.pop(context);
-        let top_of_stack2 = self.pop(context);
-        match (&top_of_stack1, &top_of_stack2) {
-            (Some(JsonGrammarItem::Object(pairs)), Some(pair)) => {
-                let mut pairs = pairs.clone();
-                pairs.push(pair.clone());
-                self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
+        match (self.pop(context), self.pop(context)) {
+            (Some(JsonGrammarItem::Object(mut pairs)), Some(pair)) => {
+                pairs.push(pair);
+                self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
             _ => Err(anyhow!(
-                "{}: unexpected ({:?}, {:?}",
-                context,
-                top_of_stack1,
-                top_of_stack2
+                "{}: expected Object, Pair on top of stack",
+                context
             )),
         }
     }
@@ -281,20 +274,15 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "array_suffix_8";
-        let top_of_stack1 = self.pop(context);
-        let top_of_stack2 = self.pop(context);
-        match (&top_of_stack1, &top_of_stack2) {
-            (Some(JsonGrammarItem::Array(array)), Some(elem)) => {
-                let mut list = array.clone();
-                list.push(elem.clone());
-                self.push(JsonGrammarItem::Array(list.to_vec()), context);
+        match (self.pop(context), self.pop(context)) {
+            (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
+                array.push(elem);
+                self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
             _ => Err(anyhow!(
-                "{}: unexpected ({:?}, {:?}",
-                context,
-                top_of_stack1,
-                top_of_stack2
+                "{}: expecting Array, Value on top of stack",
+                context
             )),
         }
     }
