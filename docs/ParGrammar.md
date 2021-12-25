@@ -169,12 +169,16 @@ INITIAL is the name of the default scanner state 0. Its behavior is defined with
 
 ### Introduce new scanner states with the %scanner directive
 
-Use the `%scanner \<name\> {...}` construct after the global `Declaration` section and before the %% sign to introduce arbitrary scanner states. The identifier following the %scanner token defines the name of the state which is used to refer to it from scanner state lists at terminals.
+Use the `%scanner Name {...}` construct after the global `Declaration` section and before the %% sign to introduce arbitrary scanner states. The identifier following the %scanner token defines the name of the state which is used to refer to it from scanner state lists at terminals.
 
 ```ebnf
 %scanner String {
     %auto_newline_off
     %auto_ws_off
+}
+
+%scanner Pragma {
+    %block_comment "\{" "\}"
 }
 ```
 

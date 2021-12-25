@@ -24,7 +24,7 @@ The tool will generate some output:
 
 ![firstTry](./images/firstTry.png)
 
-We see the structure of the parsed grammar description because we added the switch 'verbose' (-v). At the end it states that a parse tree has been written to ./examples/list/list.svg. The switch 'svg' (-s) instructed `parol` to do so.
+We see the structure of the parsed grammar description because we added the switch 'verbose' (-v). Also a parse tree has been written to ./examples/list/list.svg. The switch 'svg' (-s) instructed `parol` to do so.
 
 The following image shows an excerpt of the parse tree:
 

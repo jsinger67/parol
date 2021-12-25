@@ -45,7 +45,7 @@ Several tools coming along with parol can help you in this phase.
 
 For now let's assume that our grammar is sufficient and flawless.
 
-We can first detect if we have produced syntactically correct grammar description.
+We can first detect if we have produced a syntactically correct grammar description.
 
 ```shell
 cargo run --bin parol -- -f ./examples/json/json.par -e ./examples/json/json-exp.par  -v
@@ -148,7 +148,7 @@ ObjectSuffix    : Pair ObjectList "\}";
 ObjectSuffix    : "\}";
 ```
 
-As you can see they are equivalent but the second one needs one lookahead symbols whereas the first version needs two.
+As you can see they are equivalent but the second one needs one lookahead symbol whereas the first version needs two symbols.
 
  `parol` left-factors the grammar after all other substitutions described below are completed.
 
@@ -759,7 +759,7 @@ But wait. For the array there exists a bunch of productions:
 /* 11 */ ArrayList: ;
 ```
 
-How do we deal with them. This time we let the parse tree help us. Create a simple json file, `array.json`:
+How do we deal with them? This time we let the parse tree help us. Create a simple json file, `array.json`:
 
 ```json
 []
@@ -772,7 +772,7 @@ cargo run ./json/array.json
 Success!
 ```
 
-Let's have a look at the generated parse tree
+Let's have a look at the generated parse tree (./json/array.svg)
 
 ![parse tree](./images/empty_array.png)
 
@@ -863,20 +863,16 @@ fn array_suffix_8(
     _parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
     let context = "array_suffix_8";
-    let top_of_stack1 = self.pop(context);
-    let top_of_stack2 = self.pop(context);
-    match (&top_of_stack1, &top_of_stack2) {
-        (Some(JsonGrammarItem::Array(array)), Some(elem)) => {
-            let mut list = array.clone();
-            list.push(elem.clone());
-            self.push(JsonGrammarItem::Array(list.to_vec()), context);
+    match (self.pop(context), self.pop(context)) {
+        (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
+            array.push(elem);
+            self.push(JsonGrammarItem::Array(array), context);
             Ok(())
         }
         _ => Err(anyhow!(
-            "{}: unexpected ({:?}, {:?}",
-            context, top_of_stack1, top_of_stack2
-        )
-        ),
+            "{}: expecting Array, Value on top of stack",
+            context
+        )),
     }
 }
 
@@ -892,20 +888,16 @@ fn array_list_10(
     _parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
     let context = "array_list_10";
-    let top_of_stack1 = self.pop(context);
-    let top_of_stack2 = self.pop(context);
-    match (&top_of_stack1, &top_of_stack2) {
-        (Some(JsonGrammarItem::Array(array)), Some(elem)) => {
-            let mut list = array.clone();
-            list.push(elem.clone());
-            self.push(JsonGrammarItem::Array(list.to_vec()), context);
+    match (self.pop(context), self.pop(context)) {
+        (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
+            array.push(elem);
+            self.push(JsonGrammarItem::Array(array), context);
             Ok(())
         }
         _ => Err(anyhow!(
-            "{}: unexpected ({:?}, {:?}",
-            context, top_of_stack1, top_of_stack2
-        )
-        ),
+            "{}: expecting Array, Value on top of stack",
+            context
+        )),
     }
 }
 
@@ -969,7 +961,7 @@ Perfect! But there is still a problem. When we change the array to an empty one 
 /*  9 */ ArraySuffix: "\]";
 ```
 
-Ok, wee need to push an empty array at the semantic action for production 9. Let`s do this:
+Ok, we need to push an empty array at the semantic action for production 9. Let`s do this:
 
 ```rust
 /// Semantic action for production 9:
@@ -1133,20 +1125,16 @@ fn object_suffix_2(
     _parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
     let context = "object_suffix_2";
-    let top_of_stack1 = self.pop(context);
-    let top_of_stack2 = self.pop(context);
-    match (&top_of_stack1, &top_of_stack2) {
-        (Some(JsonGrammarItem::Object(pairs)), Some(pair)) => {
-            let mut pairs = pairs.clone();
-            pairs.push(pair.clone());
-            self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
+    match (self.pop(context), self.pop(context)) {
+        (Some(JsonGrammarItem::Object(mut pairs)), Some(pair)) => {
+            pairs.push(pair);
+            self.push(JsonGrammarItem::Object(pairs), context);
             Ok(())
         }
         _ => Err(anyhow!(
-            "{}: unexpected ({:?}, {:?}",
-            context, top_of_stack1, top_of_stack2
-        )
-        ),
+            "{}: expected Object, Pair on top of stack",
+            context
+        )),
     }
 }
 
@@ -1215,16 +1203,14 @@ fn object_1(
     _parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
     let context = "object_1";
-    let top_of_stack = self.pop(context);
-    match &top_of_stack {
-        Some(JsonGrammarItem::Object(pairs)) => {
-            let mut pairs = pairs.clone();
-            pairs.reverse();
-            self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
-            Ok(())
+        match self.pop(context) {
+            Some(JsonGrammarItem::Object(mut pairs)) => {
+                pairs.reverse();
+                self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
+                Ok(())
+            }
+            _ => Err(anyhow!("{}: expecting Object on top of stack", context)),
         }
-        _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
-    }
 }
 ```
 
