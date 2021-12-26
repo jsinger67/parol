@@ -31,7 +31,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ExpressionsSuffix: ";";
+    /// ExpressionsSuffix: Semicolon;
     ///
     fn expressions_suffix_1(
         &mut self,
@@ -51,7 +51,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ExpressionsList: ";" Expression ExpressionsList;
+    /// ExpressionsList: Semicolon Expression ExpressionsList;
     ///
     fn expressions_list_3(
         &mut self,
@@ -361,13 +361,13 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 29:
     ///
-    /// Parenthesized: "\(" Expression "\)";
+    /// Parenthesized: LeftParenthesis Expression RightParenthesis;
     ///
     fn parenthesized_29(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
+        _left_parenthesis_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _right_parenthesis_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -375,11 +375,11 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 30:
     ///
-    /// Factor: Boolean;
+    /// Semicolon: ";";
     ///
-    fn factor_30(
+    fn semicolon_30(
         &mut self,
-        _boolean_0: &ParseTreeStackEntry,
+        _semicolon_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -387,9 +387,45 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 31:
     ///
+    /// LeftParenthesis: "\(";
+    ///
+    fn left_parenthesis_31(
+        &mut self,
+        _left_parenthesis_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 32:
+    ///
+    /// RightParenthesis: "\)";
+    ///
+    fn right_parenthesis_32(
+        &mut self,
+        _right_parenthesis_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 33:
+    ///
+    /// Factor: Boolean;
+    ///
+    fn factor_33(
+        &mut self,
+        _boolean_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 34:
+    ///
     /// Factor: Parenthesized;
     ///
-    fn factor_31(
+    fn factor_34(
         &mut self,
         _parenthesized_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -466,9 +502,15 @@ impl UserActionsTrait for BooleanGrammar {
 
             29 => self.parenthesized_29(&children[0], &children[1], &children[2], parse_tree),
 
-            30 => self.factor_30(&children[0], parse_tree),
+            30 => self.semicolon_30(&children[0], parse_tree),
 
-            31 => self.factor_31(&children[0], parse_tree),
+            31 => self.left_parenthesis_31(&children[0], parse_tree),
+
+            32 => self.right_parenthesis_32(&children[0], parse_tree),
+
+            33 => self.factor_33(&children[0], parse_tree),
+
+            34 => self.factor_34(&children[0], parse_tree),
 
             _ => panic!("Unhandled production number: {}", prod_num),
         }

@@ -60,7 +60,7 @@ Although LL grammars are known to be a subset of LR grammars many use cases exis
 ## Documentation
 
 This project contains some introductory grammar examples from entry level up to a more complex C-like expression language and an acceptor for Oberon-0 grammar.
-Two of the examples describe the principles of language processing by using semantic actions in the way `parol` advocates it.
+Some of the examples describe the principles of language processing by using semantic actions in the way `parol` advocates it.
 
 A [Tutorial](docs/Tutorial.md) explains step by step how to use `parol` by implementing a [JSON parser](https://github.com/jsinger67/json_parser.git).
 

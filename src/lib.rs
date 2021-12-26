@@ -28,8 +28,8 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolString, SymbolStrings, Termin
 pub mod analysis;
 
 pub use analysis::{
-    detect_left_recursions, CompiledTerminal, KTuple, KTuples, NtEdgeType, NtGrammarGraph,
-    NtNodeType,
+    calculate_lookahead_dfas, detect_left_recursions, CompiledTerminal, KTuple, KTuples,
+    NtEdgeType, NtGrammarGraph, NtNodeType,
 };
 
 ///
@@ -37,13 +37,19 @@ pub use analysis::{
 ///
 pub mod conversions;
 
+pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_string};
+
 ///
 /// Module with functionalities for lexer and parser generation
 ///
 pub mod generators;
-pub use generators::{GrammarConfig, ScannerConfig};
+pub use generators::{
+    check_and_transform_grammar, generate_lexer_source, generate_parser_source,
+    generate_user_trait_source, try_format, GrammarConfig, ScannerConfig,
+};
 
 pub mod parser;
+pub use parser::{parse, ParolGrammar};
 
 ///
 /// Module with functionalities for grammar transformation

@@ -6,6 +6,7 @@ pub use parol_grammar::{
 pub mod parol_grammar_trait;
 
 pub mod parol_parser;
+pub use parol_parser::parse;
 
 pub mod to_grammar_config;
 pub use to_grammar_config::try_to_convert;

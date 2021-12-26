@@ -6,7 +6,7 @@
 
 %%
 
-Expressions     : Expression { ";" Expression } [ ";" ];
+Expressions     : Expression { Semicolon Expression } [ Semicolon ];
 Expression      : Term TailExpression;
 TailExpression  : { BinaryOperator Term };
 Term            : [ UnaryOperator ] Factor;
@@ -28,7 +28,10 @@ XnorOp          : "(?i)XNOR";
 True            : "(?i)TRUE";
 False           : "(?i)FALSE";
 Not             : "(?i)NOT";
-Parenthesized   : "\(" Expression "\)";
+Parenthesized   : LeftParenthesis Expression RightParenthesis;
+Semicolon       : ";";
+LeftParenthesis : "\(";
+RightParenthesis: "\)";
 Factor          : Boolean
                 | Parenthesized;
 

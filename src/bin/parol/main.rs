@@ -3,21 +3,17 @@ extern crate clap;
 
 use anyhow::{bail, Context, Result};
 use clap::App;
-use parol::parser::parol_grammar::ParolGrammar;
-use parol::parser::parol_parser::parse;
-use parol::MAX_K;
 use std::convert::TryFrom;
 
 use log::trace;
-use parol::analysis::k_decision::calculate_lookahead_dfas;
-use parol::conversions::par::render_par_string;
-use parol::generate_tree_layout;
-use parol::generators::GrammarConfig;
-use parol::generators::{
-    check_and_transform_grammar, generate_lexer_source, generate_parser_source,
-    generate_user_trait_source, try_format,
+use parol::{
+    calculate_lookahead_dfas, check_and_transform_grammar, generate_lexer_source,
+    generate_parser_source, generate_tree_layout, generate_user_trait_source, parse,
+    render_par_string, try_format, GrammarConfig, ParolGrammar, MAX_K,
 };
 use std::fs;
+
+static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -28,7 +24,7 @@ fn main() -> Result<()> {
     trace!("env logger started");
 
     let yaml = load_yaml!("arguments.yml");
-    let config = App::from_yaml(yaml).get_matches();
+    let config = App::from_yaml(yaml).version(VERSION).get_matches();
 
     let max_k = config.value_of("lookahead").unwrap().parse::<usize>()?;
     if max_k > MAX_K {

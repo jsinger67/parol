@@ -7,9 +7,9 @@
 %%
 
 /*  0 */ Expressions: Expression ExpressionsList ExpressionsSuffix;
-/*  1 */ ExpressionsSuffix: ";";
+/*  1 */ ExpressionsSuffix: Semicolon;
 /*  2 */ ExpressionsSuffix: ;
-/*  3 */ ExpressionsList: ";" Expression ExpressionsList;
+/*  3 */ ExpressionsList: Semicolon Expression ExpressionsList;
 /*  4 */ ExpressionsList: ;
 /*  5 */ Expression: Term TailExpression;
 /*  6 */ TailExpression: TailExpressionList;
@@ -35,6 +35,9 @@
 /* 26 */ True: "(?i)TRUE";
 /* 27 */ False: "(?i)FALSE";
 /* 28 */ Not: "(?i)NOT";
-/* 29 */ Parenthesized: "\(" Expression "\)";
-/* 30 */ Factor: Boolean;
-/* 31 */ Factor: Parenthesized;
+/* 29 */ Parenthesized: LeftParenthesis Expression RightParenthesis;
+/* 30 */ Semicolon: ";";
+/* 31 */ LeftParenthesis: "\(";
+/* 32 */ RightParenthesis: "\)";
+/* 33 */ Factor: Boolean;
+/* 34 */ Factor: Parenthesized;

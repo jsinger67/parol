@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust."
 documentation = "https://docs.rs/parol"
@@ -20,7 +20,7 @@ id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
-parol_runtime = "0.3.0"
+parol_runtime = "0.3.1"
 petgraph = "0.6.0"
 regex = "1.5.4"
 serde = "1.0.130"

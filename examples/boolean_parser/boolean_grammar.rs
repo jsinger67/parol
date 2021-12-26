@@ -115,6 +115,7 @@ impl Display for BooleanGrammarItem {
 #[derive(Debug, Default)]
 pub struct BooleanGrammar {
     pub item_stack: Vec<BooleanGrammarItem>,
+    pub expression_stack: Vec<String>,
 }
 
 impl BooleanGrammar {
@@ -250,6 +251,14 @@ impl BooleanGrammar {
             }
         }
     }
+
+    fn record_expression(&mut self, item: &dyn Display) {
+        if let Some(last) = self.expression_stack.last_mut() {
+            last.push_str(format!("{} ", item).as_str());
+        } else {
+            self.expression_stack.push(format!("{} ", item));
+        }
+    }
 }
 
 impl Display for BooleanGrammar {
@@ -257,9 +266,10 @@ impl Display for BooleanGrammar {
         writeln!(
             f,
             "{}",
-            self.item_stack
+            self.expression_stack
                 .iter()
-                .map(|e| format!("{}", e))
+                .zip(self.item_stack.iter())
+                .map(|(e, r)| format!("{}= {};", e, r))
                 .collect::<Vec<String>>()
                 .join("\n")
         )
@@ -392,7 +402,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "and_op_20";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::And), context);
+        let op = BinaryOp::And;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -407,7 +419,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "or_op_21";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::Or), context);
+        let op = BinaryOp::Or;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -422,7 +436,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "xor_op_22";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::Xor), context);
+        let op = BinaryOp::Xor;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -437,7 +453,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "nor_op_23";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::Nor), context);
+        let op = BinaryOp::Nor;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -452,7 +470,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "nand_op_24";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::Nand), context);
+        let op = BinaryOp::Nand;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -467,7 +487,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ) -> Result<()> {
         let context = "xnor_op_25";
         trace!("{}", self.trace_item_stack(context));
-        self.push(BooleanGrammarItem::BinOp(BinaryOp::Xnor), context);
+        let op = BinaryOp::Xnor;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::BinOp(op), context);
         Ok(())
     }
 
@@ -481,7 +503,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "true_26";
-        self.push(BooleanGrammarItem::Val(true), context);
+        let val = BooleanGrammarItem::Val(true);
+        self.record_expression(&val);
+        self.push(val, context);
         Ok(())
     }
 
@@ -495,7 +519,9 @@ impl BooleanGrammarTrait for BooleanGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "false_27";
-        self.push(BooleanGrammarItem::Val(false), context);
+        let val = BooleanGrammarItem::Val(false);
+        self.record_expression(&val);
+        self.push(val, context);
         Ok(())
     }
 
@@ -509,7 +535,48 @@ impl BooleanGrammarTrait for BooleanGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "not_28";
-        self.push(BooleanGrammarItem::UnaryOp(UnaryOp::Not), context);
+        let op = UnaryOp::Not;
+        self.record_expression(&op);
+        self.push(BooleanGrammarItem::UnaryOp(op), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 30:
+    ///
+    /// Semicolon: ";";
+    ///
+    fn semicolon_30(
+        &mut self,
+        _semicolon_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        self.expression_stack.push(String::new());
+        Ok(())
+    }
+
+    /// Semantic action for production 31:
+    ///
+    /// LeftParenthesis: "\(";
+    ///
+    fn left_parenthesis_31(
+        &mut self,
+        _left_parenthesis_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        self.record_expression(&"(");
+        Ok(())
+    }
+
+    /// Semantic action for production 32:
+    ///
+    /// RightParenthesis: "\)";
+    ///
+    fn right_parenthesis_32(
+        &mut self,
+        _right_parenthesis_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        self.record_expression(&")");
         Ok(())
     }
 }
