@@ -10,7 +10,7 @@ id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
-parol_runtime = "0.3.0"
+parol_runtime = "0.4.0"
 
 [profile.release]
 debug = true

@@ -16,6 +16,7 @@ use log::debug;
 use parol_runtime::parser::ParseTreeType;
 use std::env;
 use std::fs;
+use std::time::Instant;
 
 // To generate:
 // parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
@@ -30,8 +31,11 @@ fn main() -> Result<()> {
         let input = fs::read_to_string(file_name.clone())
             .with_context(|| format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
+        let now = Instant::now();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut json_grammar)
             .with_context(|| format!("Failed parsing file {}", file_name))?;
+        let elapsed_time = now.elapsed();
+        println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
         if args.len() > 2 && args[2] == "-q" {
             Ok(())
         } else {
