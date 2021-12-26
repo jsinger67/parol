@@ -1,4 +1,4 @@
-use crate::lexer::{FormatToken, OwnedToken, TerminalIndex};
+use crate::lexer::{FormatToken, TerminalIndex};
 use std::fmt::{Display, Error, Formatter};
 
 ///
@@ -28,7 +28,7 @@ const EOI_TOKEN: &str = "$";
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq)]
 pub struct Token<'t> {
     /// The matched string
     pub symbol: &'t str,
@@ -96,18 +96,6 @@ impl<'t> Token<'t> {
     ///
     pub fn is_skip_token(&self) -> bool {
         self.token_type > EOI && self.token_type < FIRST_USER_TOKEN
-    }
-
-    ///
-    /// Creates an owned variant of the token
-    ///
-    pub fn to_owned(&self) -> OwnedToken {
-        OwnedToken {
-            symbol: self.symbol.to_owned(),
-            token_type: self.token_type,
-            line: self.line,
-            column: self.column,
-        }
     }
 }
 

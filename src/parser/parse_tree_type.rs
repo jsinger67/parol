@@ -1,4 +1,4 @@
-use crate::lexer::OwnedToken;
+use crate::lexer::Token;
 use anyhow::{anyhow, Result};
 use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};
@@ -6,12 +6,14 @@ use std::fmt::{Display, Formatter};
 ///
 /// The type of the elements in the parse tree.
 ///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+///
 #[derive(Debug, Clone)]
-pub enum ParseTreeType {
+pub enum ParseTreeType<'t> {
     ///
     /// An owned representation of a scanned terminal symbol.
     ///
-    T(OwnedToken),
+    T(Token<'t>),
 
     ///
     /// A reference into the slice of non-terminal names.
@@ -20,12 +22,12 @@ pub enum ParseTreeType {
     N(&'static str),
 }
 
-impl ParseTreeType {
+impl<'t> ParseTreeType<'t> {
     ///
-    /// Tries to access the OwnedToken of the ParseTreeType.
+    /// Tries to access the Token of the ParseTreeType.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
-    pub fn token(&self) -> Result<&OwnedToken> {
+    pub fn token(&self) -> Result<&Token<'t>> {
         match self {
             Self::T(t) => Ok(t),
             _ => Err(anyhow!("{} is no token!", self)),
@@ -37,7 +39,7 @@ impl ParseTreeType {
 /// Implementation of the Visualize trait to support the visualization of the
 /// ParseTreeType in a tree layout.
 ///
-impl Visualize for ParseTreeType {
+impl Visualize for ParseTreeType<'_> {
     fn visualize(&self) -> std::string::String {
         match self {
             Self::T(t) => format!("{}", t),
@@ -49,7 +51,7 @@ impl Visualize for ParseTreeType {
     }
 }
 
-impl Display for ParseTreeType {
+impl Display for ParseTreeType<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         match self {
             Self::T(t) => write!(f, "T({})", t),

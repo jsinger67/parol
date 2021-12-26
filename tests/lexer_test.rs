@@ -4,7 +4,7 @@ extern crate lazy_static;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
-use parol_runtime::lexer::{OwnedToken, Token, TokenStream, Tokenizer};
+use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
 use std::cell::RefCell;
 
 const PAROL_CFG_1: &'static str = r#"%start Grammar
@@ -73,22 +73,14 @@ fn lexer_token_production() {
     let k = 3;
     let token_stream =
         RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, k).unwrap());
-    let mut tok = OwnedToken::default();
+    let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
-        tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
+        tok = token_stream.borrow_mut().lookahead(0).unwrap();
         print!("{:?}", tok);
         token_stream.borrow_mut().consume().unwrap();
     }
     assert_eq!(k - 1, token_stream.borrow().tokens.len());
-    assert_eq!(
-        OwnedToken {
-            symbol: ";".to_string(),
-            token_type: 8,
-            line: 19,
-            column: 39,
-        },
-        tok
-    );
+    assert_eq!(Token::with(";", 8, 19, 39, 1, 545), tok);
     assert_eq!(Token::eoi(), token_stream.borrow().tokens[0]);
 }
 
@@ -97,7 +89,7 @@ fn lexer_token_production() {
 fn lookahead_must_fail() {
     let mut token_stream =
         TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap();
-    let _tok = token_stream.owned_lookahead(2).unwrap();
+    let _tok = token_stream.lookahead(2).unwrap();
 }
 
 #[test]
@@ -107,9 +99,9 @@ fn lookahead_beyond_buffer_must_fail() {
         RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume().is_ok() {
-            let tok = token_stream.borrow_mut().owned_lookahead(0).unwrap();
+            let tok = token_stream.borrow_mut().lookahead(0).unwrap();
             println!("{:?}", tok);
         }
     }
-    token_stream.borrow_mut().owned_lookahead(1).unwrap();
+    token_stream.borrow_mut().lookahead(1).unwrap();
 }

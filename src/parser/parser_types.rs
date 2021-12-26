@@ -58,7 +58,9 @@ impl Production {
 /// It resembles a PDA.
 /// All data of the generated parser are provided in the 'new' function.
 ///
-pub struct LLKParser {
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+///
+pub struct LLKParser<'t> {
     ///
     /// The non-terminal index of the start symbol
     ///
@@ -78,14 +80,14 @@ pub struct LLKParser {
     ///
     /// The parse tree the parser creates
     ///
-    pub parse_tree: Tree<ParseTreeType>,
+    pub parse_tree: Tree<ParseTreeType<'t>>,
 
     ///
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     /// This stack is also used to provide arguments to semantic user actions.
     ///  
-    parse_tree_stack: Vec<ParseTreeStackEntry>,
+    parse_tree_stack: Vec<ParseTreeStackEntry<'t>>,
 
     ///
     /// The array of generated lookahead automata.
@@ -107,7 +109,7 @@ pub struct LLKParser {
     non_terminal_names: &'static [&'static str],
 }
 
-impl<'t> LLKParser {
+impl<'t> LLKParser<'t> {
     ///
     /// Creates a new instance with the given parameters.
     ///
@@ -224,10 +226,7 @@ impl<'t> LLKParser {
             });
 
             result
-                .and_then(|_| {
-                    self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id));
-                    Ok(())
-                })
+                .map(|_| self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id)))
                 .map_err(|e| anyhow!(RuntimeError::IdTreeError { source: e }))
         } else {
             bail!(RuntimeError::InternalError(format!(
@@ -303,7 +302,7 @@ impl<'t> LLKParser {
                     ParseType::T(t) => {
                         let token = stream
                             .borrow_mut()
-                            .owned_lookahead(0)
+                            .lookahead(0)
                             .with_context(|| "Failed accessing lookahead token!")?;
                         if token.token_type == t {
                             trace!("Consuming token {}", token);

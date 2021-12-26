@@ -1,4 +1,4 @@
-use crate::lexer::{OwnedToken, Token};
+use crate::lexer::Token;
 use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
 use crate::parser::ScannerIndex;
 use anyhow::{anyhow, Result};
@@ -94,7 +94,7 @@ impl<'t> TokenStream<'t> {
     /// position.
     /// If successful it returns an owned token from buffer position self.pos + n
     ///
-    pub fn owned_lookahead(&mut self, n: usize) -> Result<OwnedToken> {
+    pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>> {
         if n > self.k {
             Err(anyhow!("Lookahead exceeds its maximum"))
         } else {
@@ -104,7 +104,7 @@ impl<'t> TokenStream<'t> {
                 Err(anyhow!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
-                Ok(self.tokens[n].to_owned())
+                Ok(self.tokens[n])
             }
         }
     }

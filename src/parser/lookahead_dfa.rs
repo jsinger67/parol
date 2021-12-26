@@ -152,7 +152,7 @@ impl LookaheadDFA {
             trace!(
                 "Production prediction failed at state {} with token {:?}",
                 state,
-                token_stream.owned_lookahead(0)
+                token_stream.lookahead(0)
             );
             Err(anyhow!(RuntimeError::PredictionError(format!(
                 "Production prediction failed at state {}",
