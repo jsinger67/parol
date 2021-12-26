@@ -294,7 +294,7 @@ impl CalcGrammar {
         context: &str,
     ) -> Result<()> {
         let symbol = stack_entry.symbol(parse_tree)?;
-        let op: BinaryOperator = symbol.as_str().into();
+        let op: BinaryOperator = symbol.into();
         self.push(CalcGrammarItem::BinaryOp(op), context);
         Ok(())
     }
@@ -399,7 +399,7 @@ impl CalcGrammarTrait for CalcGrammar {
     ) -> Result<()> {
         let context = "assign_op_7";
         let symbol = tk_assign_op_0.symbol(parse_tree)?;
-        let assign_op: AssignOperator = symbol.as_str().into();
+        let assign_op: AssignOperator = symbol.into();
         self.push(CalcGrammarItem::AssignOp(assign_op), context);
         Ok(())
     }
@@ -1285,7 +1285,7 @@ impl CalcGrammarTrait for CalcGrammar {
     ) -> Result<()> {
         let context = "id_81";
         let id = tk_id_0.symbol(parse_tree)?;
-        self.push(CalcGrammarItem::Id(id.clone()), context);
+        self.push(CalcGrammarItem::Id(id.to_owned()), context);
         Ok(())
     }
 }

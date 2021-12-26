@@ -1469,11 +1469,11 @@ lazy_static! {
     ),];
 }
 
-pub fn parse(
-    input: &str,
+pub fn parse<'t>(
+    input: &'t str,
     file_name: String,
     user_actions: &mut dyn UserActionsTrait,
-) -> Result<Tree<ParseTreeType>> {
+) -> Result<Tree<ParseTreeType<'t>>> {
     let mut llk_parser = LLKParser::new(
         52,
         LOOKAHEAD_AUTOMATA,

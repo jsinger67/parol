@@ -81,7 +81,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ) -> Result<()> {
         let context = "identifier_10";
         let id = identifier_0.symbol(parse_tree)?;
-        self.push(ScannerStatesGrammarItem::Identifier(id.clone()), context);
+        self.push(ScannerStatesGrammarItem::Identifier(id.to_owned()), context);
         Ok(())
     }
 

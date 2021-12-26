@@ -726,7 +726,7 @@ impl ParolGrammarTrait for ParolGrammar {
         let parse_tree_item = identifier_0.get_parse_tree_type(parse_tree);
         if let ParseTreeType::T(t) = parse_tree_item {
             self.push(
-                ParolGrammarItem::Fac(Factor::NonTerminal(t.symbol.clone())),
+                ParolGrammarItem::Fac(Factor::NonTerminal(t.symbol.to_owned())),
                 context,
             );
             Ok(())
@@ -752,7 +752,7 @@ impl ParolGrammarTrait for ParolGrammar {
         let parse_tree_item = string_0.get_parse_tree_type(parse_tree);
         if let ParseTreeType::T(t) = parse_tree_item {
             // Trim double quotes here
-            let s = t.symbol.clone().trim_matches('"').to_owned();
+            let s = t.symbol.trim_matches('"').to_owned();
             self.push(ParolGrammarItem::Fac(Factor::Terminal(s, vec![0])), context);
             Ok(())
         } else {
