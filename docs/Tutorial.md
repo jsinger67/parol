@@ -242,7 +242,7 @@ id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
-parol_runtime = "0.2.3"
+parol_runtime = "0.4.0"
 ```
 
 Next add a file json_grammar.rs to the src folder of the crate. It will contain your grammar processing items.
