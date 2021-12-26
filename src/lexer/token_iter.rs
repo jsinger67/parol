@@ -55,7 +55,7 @@ impl<'t> TokenIter<'t> {
 
     ///
     /// Counts the occurrences of newlines in the given text.
-    /// If more than one line is counted it also calculates the column position after the last
+    /// If at least one newline is counted it also calculates the column position after the last
     /// matched newline.
     /// It is used to update `line` and `col` members.
     ///
