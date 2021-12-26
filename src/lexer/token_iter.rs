@@ -7,10 +7,10 @@ use regex::CaptureMatches;
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub struct TokenIter<'t> {
-    /// Line number
+    /// Line number, starting with 1
     line: usize,
 
-    /// Column number
+    /// Column number, starting with 1
     col: usize,
 
     /// An iterator of capture groups
@@ -55,20 +55,21 @@ impl<'t> TokenIter<'t> {
 
     ///
     /// Counts the occurrences of newlines in the given text.
-    /// It is used to update the internal line number.
+    /// If more than one line is counted it also calculates the column position after the last
+    /// matched newline.
+    /// It is used to update `line` and `col` members.
     ///
-    pub(crate) fn count_nl(s: &str) -> usize {
-        RX_NEW_LINE.find_iter(s).count()
-    }
-
+    /// Returns a tuple of line count and new column number.
     ///
-    /// Calculates the column position after the last matched newline.
-    /// Is used to update the internal column number.
-    ///
-    pub(crate) fn calculate_col(s: &str) -> usize {
-        let mut matches = RX_NEW_LINE.find_iter(s).collect::<Vec<_>>();
-        let right_most_match = matches.pop().unwrap();
-        s.len() - right_most_match.end() + 1
+    pub(crate) fn count_nl(s: &str) -> (usize, usize) {
+        let matches = RX_NEW_LINE.find_iter(s).collect::<Vec<_>>();
+        let lines = matches.len();
+        if let Some(&right_most_match) = matches.last() {
+            (lines, s.len() - right_most_match.end() + 1)
+        } else {
+            // Column number 0 means invalid
+            (lines, 0)
+        }
     }
 }
 
@@ -87,19 +88,20 @@ impl<'t> Iterator for TokenIter<'t> {
                 let symbol = ma.as_str();
                 let length = symbol.len();
                 // The token position is calculated from the matched text
-                let line = self.line;
-                let column = self.col;
+                let start_line = self.line;
+                let start_column = self.col;
 
                 // Set the inner position behind the scanned token
-                let new_lines = Self::count_nl(symbol);
+                let (new_lines, column_after_nl) = Self::count_nl(symbol);
                 let pos = ma.end();
                 self.line += new_lines;
                 self.col = if new_lines > 0 {
-                    Self::calculate_col(symbol)
+                    column_after_nl
                 } else {
+                    debug_assert!(column_after_nl == 0);
                     self.col + length
                 };
-                let token = Token::with(symbol, token_type, line, column, length, pos);
+                let token = Token::with(symbol, token_type, start_line, start_column, length, pos);
                 trace!("{}, newline count: {}", token, new_lines);
                 Some(token)
             } else {

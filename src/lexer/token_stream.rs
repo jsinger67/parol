@@ -144,11 +144,11 @@ impl<'t> TokenStream<'t> {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
             let la1 = &self.tokens[0];
-            let new_lines = TokenIter::count_nl(la1.symbol);
+            let (new_lines, column) = TokenIter::count_nl(la1.symbol);
             self.pos = la1.pos;
             self.line = la1.line + new_lines;
             self.column = if new_lines > 0 {
-                TokenIter::calculate_col(la1.symbol)
+                column
             } else {
                 la1.column + la1.length
             };
