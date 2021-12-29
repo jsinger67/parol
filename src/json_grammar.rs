@@ -1,7 +1,7 @@
 use crate::json_grammar_trait::JsonGrammarTrait;
-use anyhow::{anyhow, Context, Result};
 use id_tree::Tree;
 use log::trace;
+use miette::{miette, IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -130,7 +130,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: expecting Object on top of stack", context)),
+            _ => Err(miette!("{}: expecting Object on top of stack", context)),
         }
     }
 
@@ -152,7 +152,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: expected Object, Pair on top of stack",
                 context
             )),
@@ -194,7 +194,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 top_of_stack1,
@@ -235,7 +235,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 );
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, name)),
+            _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, value, name)),
         }
     }
 
@@ -258,7 +258,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
+            _ => Err(miette!("{}: unexpected ({:?}", context, top_of_stack)),
         }
     }
 
@@ -280,7 +280,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: expecting Array, Value on top of stack",
                 context
             )),
@@ -319,7 +319,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: expecting Array, Value on top of stack",
                 context
             )),
@@ -406,7 +406,8 @@ impl JsonGrammarTrait for JsonGrammar {
         let number = number_0
             .symbol(parse_tree)?
             .parse::<f64>()
-            .with_context(|| format!("{}: Error accessing number token", context))?;
+            .into_diagnostic()
+            .wrap_err(format!("{}: Error accessing number token", context))?;
         self.push(JsonGrammarItem::Number(number), context);
         Ok(())
     }

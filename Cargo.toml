@@ -1,16 +1,16 @@
 [package]
 name = "json_parser"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2018"
 
 [dependencies]
 env_logger = "0.9.0"
-anyhow = "1.0.51"
 id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
-parol_runtime = "0.4.0"
+miette = { version = "3.2.0", features = ["fancy"] }
+parol_runtime = "0.5.2"
 
 [profile.release]
 debug = true
