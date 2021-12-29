@@ -1,5 +1,7 @@
 use crate::lexer::{FormatToken, TerminalIndex};
-use std::fmt::{Display, Error, Formatter};
+use miette::SourceSpan;
+use std::convert::From;
+use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
 /// Special token constants the lexer has to deal with regularly.
@@ -49,6 +51,9 @@ pub struct Token<'t> {
     /// Be careful: User tokens with length 0 are always invalid!!!
     pub length: usize,
 
+    /// Start position as byte offset at last scanner switching.
+    pub(crate) start_pos: usize,
+
     /// Relative position from start position as byte offset after matching this
     /// terminal. Needed for scanner switching.
     pub(crate) pos: usize,
@@ -65,6 +70,7 @@ impl<'t> Token<'t> {
             line: 0,
             column: 0,
             length: 0,
+            start_pos: 0,
             pos: 0,
         }
     }
@@ -78,6 +84,7 @@ impl<'t> Token<'t> {
         line: usize,
         column: usize,
         length: usize,
+        start_pos: usize,
         pos: usize,
     ) -> Self {
         Self {
@@ -86,6 +93,7 @@ impl<'t> Token<'t> {
             line,
             column,
             length,
+            start_pos,
             pos,
         }
     }
@@ -121,19 +129,28 @@ impl Display for Token<'_> {
 }
 
 impl FormatToken for Token<'_> {
-    fn format(
+    fn format<T>(
         &self,
-        file_name: &str,
+        file_name: &T,
         terminal_names: &'static [&'static str],
-    ) -> std::string::String {
+    ) -> std::string::String
+    where
+        T: Debug,
+    {
         let name = terminal_names[self.token_type];
         format!(
-            "'{}'({}) at {}:{}:{}",
+            "'{}'({}) at {:?}:{}:{}",
             self.symbol.escape_default(),
             name,
             file_name,
             self.line,
             self.column,
         )
+    }
+}
+
+impl<'t> From<&Token<'t>> for SourceSpan {
+    fn from(token: &Token<'t>) -> Self {
+        (token.start_pos + token.pos - token.length, token.length).into()
     }
 }

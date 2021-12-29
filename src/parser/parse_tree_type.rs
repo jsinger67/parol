@@ -1,6 +1,6 @@
 use crate::lexer::Token;
-use anyhow::{anyhow, Result};
 use id_tree_layout::Visualize;
+use miette::{miette, Result};
 use std::fmt::{Display, Formatter};
 
 ///
@@ -30,7 +30,7 @@ impl<'t> ParseTreeType<'t> {
     pub fn token(&self) -> Result<&Token<'t>> {
         match self {
             Self::T(t) => Ok(t),
-            _ => Err(anyhow!("{} is no token!", self)),
+            _ => Err(miette!("{} is no token!", self)),
         }
     }
 }

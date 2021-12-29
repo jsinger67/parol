@@ -1,12 +1,12 @@
-use crate::errors::RuntimeError;
+use crate::errors::{FileSource, ParserError, TokenVec, UnexpectedToken};
 use crate::lexer::{FormatToken, TokenStream};
 use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
     ProductionIndex, UserActionsTrait,
 };
-use anyhow::{anyhow, bail, Context, Result};
 use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
 use log::{debug, trace};
+use miette::{bail, miette, Result, WrapErr};
 use std::cell::RefCell;
 
 ///
@@ -227,9 +227,9 @@ impl<'t> LLKParser<'t> {
 
             result
                 .map(|_| self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id)))
-                .map_err(|e| anyhow!(RuntimeError::IdTreeError { source: e }))
+                .map_err(|e| miette!(ParserError::IdTreeError { source: e }))
         } else {
-            bail!(RuntimeError::InternalError(format!(
+            bail!(ParserError::InternalError(format!(
                 "Expected node id on parse tree stack, found {:?}",
                 tos
             )))
@@ -274,25 +274,35 @@ impl<'t> LLKParser<'t> {
     ) -> Result<()> {
         let file_name = stream.borrow().file_name.clone();
 
-        let prod_num = self
-            .predict_production(self.start_symbol_index, &stream)
-            .with_context(|| {
+        let prod_num = match self.predict_production(self.start_symbol_index, &stream) {
+            Ok(prod_num) => prod_num,
+            Err(source) => {
                 let nt_name = self.non_terminal_names[self.start_symbol_index];
-                self.diagnostic_message(
-                    format!(
-                        "{}\nat non-terminal \"{}\" (start symbol) \n\
-                    Current scanner is {}",
-                        self.lookahead_automata[self.start_symbol_index].show_diagnosis(
-                            self.terminal_names,
-                            &stream.borrow().tokens,
-                            &stream.borrow().file_name,
-                        ),
-                        nt_name,
-                        stream.borrow().current_scanner(),
-                    )
-                    .as_str(),
-                )
-            })?;
+                let (message, unexpected_tokens, expected_tokens) =
+                    self.lookahead_automata[self.start_symbol_index].build_error(
+                        self.terminal_names,
+                        &stream.borrow().tokens,
+                        &stream.borrow().file_name,
+                    )?;
+                let error = miette!(ParserError::PredictionErrorWithExpectations {
+                    cause: self.diagnostic_message(
+                        format!(
+                            "{}\nat non-terminal \"{}\" \n\
+                                Current scanner is {}",
+                            message,
+                            nt_name,
+                            stream.borrow().current_scanner(),
+                        )
+                        .as_str(),
+                    ),
+                    input: FileSource::try_new(stream.borrow().file_name.to_owned())?.into(),
+                    unexpected_tokens,
+                    expected_tokens,
+                })
+                .wrap_err(source);
+                return Err(error);
+            }
+        };
 
         self.push_production(prod_num);
 
@@ -303,52 +313,74 @@ impl<'t> LLKParser<'t> {
                         let token = stream
                             .borrow_mut()
                             .lookahead(0)
-                            .with_context(|| "Failed accessing lookahead token!")?;
+                            .wrap_err("Failed accessing lookahead token!")?;
                         if token.token_type == t {
                             trace!("Consuming token {}", token);
                             stream
                                 .borrow_mut()
                                 .consume()
-                                .with_context(|| "Failed consuming the next token!")?;
+                                .wrap_err("Failed consuming the next token!")?;
                             self.parser_stack.stack.pop();
                             self.parse_tree_stack
                                 .push(ParseTreeStackEntry::Nd(Node::new(ParseTreeType::T(token))));
                         } else {
-                            let msg = self.diagnostic_message(
-                                format!(
-                                    "Expecting token type {}, but found \"{}\" \n\
-                                    Current scanner is {}",
-                                    self.terminal_names[t],
-                                    token.format(&file_name, self.terminal_names),
-                                    stream.borrow().current_scanner(),
-                                )
-                                .as_str(),
-                            );
-                            bail!(msg);
+                            let mut expected_tokens = TokenVec::default();
+                            expected_tokens.push(self.terminal_names[t].to_string());
+                            return Err(miette!(ParserError::PredictionErrorWithExpectations {
+                                cause: self.diagnostic_message(
+                                    format!(
+                                        "Found \"{}\" \n\
+                                        Current scanner is {}",
+                                        token.format(&file_name, self.terminal_names),
+                                        stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
+                                ),
+                                input: FileSource::try_new(stream.borrow().file_name.to_owned())?
+                                    .into(),
+                                unexpected_tokens: vec![UnexpectedToken::new(
+                                    "LA(1)".to_owned(),
+                                    self.terminal_names[token.token_type].to_owned(),
+                                    FileSource::try_new(file_name)?.into(),
+                                    &token
+                                )],
+                                expected_tokens
+                            }));
                         }
                     }
-                    ParseType::N(n) => {
-                        if let Ok(prod_num) = self.predict_production(n, &stream) {
+                    ParseType::N(n) => match self.predict_production(n, &stream) {
+                        Ok(prod_num) => {
                             self.parser_stack.stack.pop();
                             self.push_production(prod_num);
-                        } else {
-                            let nt_name = self.non_terminal_names[n];
-                            bail!(self.diagnostic_message(
-                                format!(
-                                    "{}\nat non-terminal \"{}\" \n\
-                                    Current scanner is {}",
-                                    self.lookahead_automata[n].show_diagnosis(
-                                        self.terminal_names,
-                                        &stream.borrow().tokens,
-                                        &stream.borrow().file_name,
-                                    ),
-                                    nt_name,
-                                    stream.borrow().current_scanner(),
-                                )
-                                .as_str(),
-                            ));
                         }
-                    }
+                        Err(source) => {
+                            let nt_name = self.non_terminal_names[n];
+                            let (message, unexpected_tokens, expected_tokens) =
+                                self.lookahead_automata[n].build_error(
+                                    self.terminal_names,
+                                    &stream.borrow().tokens,
+                                    &stream.borrow().file_name,
+                                )?;
+                            let error = miette!(ParserError::PredictionErrorWithExpectations {
+                                cause: self.diagnostic_message(
+                                    format!(
+                                        "{}\nat non-terminal \"{}\" \n\
+                                            Current scanner is {}",
+                                        message,
+                                        nt_name,
+                                        stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
+                                ),
+                                input: FileSource::try_new(stream.borrow().file_name.to_owned())?
+                                    .into(),
+                                unexpected_tokens,
+                                expected_tokens,
+                            })
+                            .wrap_err(source);
+                            return Err(error);
+                        }
+                    },
                     ParseType::S(s) => {
                         stream.borrow_mut().switch_scanner(s)?;
                         self.parser_stack.stack.pop();
@@ -372,7 +404,10 @@ impl<'t> LLKParser<'t> {
         }
 
         if !stream.borrow().all_input_consumed() {
-            bail!(self.diagnostic_message("Unprocessed input"))
+            Err(miette!(ParserError::UnprocessedInput {
+                input: FileSource::try_new(stream.borrow().file_name.to_owned())?.into(),
+                last_token: stream.borrow().last_token()?.into()
+            }))
         } else {
             Ok(())
         }

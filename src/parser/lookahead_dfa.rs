@@ -1,9 +1,11 @@
-use crate::errors::RuntimeError;
+use crate::errors::{FileSource, LookaheadError, TokenVec, UnexpectedToken};
 use crate::lexer::{FormatToken, TerminalIndex, Token, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
-use anyhow::{anyhow, Context, Result};
 use log::trace;
+use miette::{miette, Result, WrapErr};
 use std::cmp::Ordering;
+use std::fmt::Debug;
+use std::path::Path;
 
 ///
 /// Data structure to represent a DFA state
@@ -75,7 +77,7 @@ impl LookaheadDFA {
     pub fn eval<'t>(&self, token_stream: &mut TokenStream<'t>) -> Result<ProductionIndex> {
         let mut state: StateIndex = 0;
         if self.k > token_stream.k {
-            return Err(anyhow!(RuntimeError::DataError(
+            return Err(miette!(LookaheadError::DataError(
                 "Lookahead size mismatch between token stream and Lookahead DFA"
             )));
         }
@@ -84,7 +86,7 @@ impl LookaheadDFA {
             // Read the current lookahead token and extract it's type
             let current_lookahead_token = token_stream
                 .lookahead_token_type(i)
-                .with_context(|| "Error accessing lookahead token from token stream!")?;
+                .wrap_err("Error accessing lookahead token from token stream!")?;
 
             // Filter the transitions with the matching from-state
             let mut any_matching_found = false;
@@ -154,24 +156,28 @@ impl LookaheadDFA {
                 state,
                 token_stream.lookahead(0)
             );
-            Err(anyhow!(RuntimeError::PredictionError(format!(
-                "Production prediction failed at state {}",
-                state
-            ))))
+            Err(miette!(LookaheadError::PredictionError {
+                cause: format!("Production prediction failed at state {}", state),
+            }))
         }
     }
 
     ///
     /// Returns all terminals that lead from state 0 to a valid next state
     ///
-    pub fn show_diagnosis(
+    pub fn build_error<T>(
         &self,
         terminal_names: &'static [&'static str],
         tokens: &[Token],
-        file_name: &str,
-    ) -> String {
+        file_name: T,
+    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec)>
+    where
+        T: AsRef<Path> + Debug,
+    {
         let mut state = 0;
         let mut diag_msg = String::new();
+        let mut unexpected_tokens = Vec::new();
+        let mut expected_tokens = TokenVec::default();
         for (lookahead, token) in tokens.iter().enumerate() {
             let token_type = token.token_type;
             if let Some(transition) = self
@@ -183,29 +189,42 @@ impl LookaheadDFA {
                     format!(
                         "LA({}): {} ",
                         lookahead + 1,
-                        token.format(file_name, terminal_names)
+                        token.format(&file_name, terminal_names)
                     )
                     .as_str(),
                 );
+                unexpected_tokens.push(UnexpectedToken::new(
+                    format!("LA({})", lookahead + 1),
+                    terminal_names[token_type].to_owned(),
+                    FileSource::try_new(file_name.as_ref().to_path_buf())?.into(),
+                    token,
+                ));
                 state = self.transitions[transition].2;
             } else {
                 diag_msg.push_str(
                     format!(
-                        "and LA({}): {}. But instead expecting one of {}",
+                        "LA({}): {}.",
                         lookahead + 1,
-                        token.format(file_name, terminal_names),
-                        self.transitions
-                            .iter()
-                            .filter(|t| t.0 == state)
-                            .map(|t| format!(r#""{}""#, terminal_names[t.1]))
-                            .collect::<Vec<String>>()
-                            .join(", "),
+                        token.format(&file_name, terminal_names),
                     )
                     .as_str(),
+                );
+                unexpected_tokens.push(UnexpectedToken::new(
+                    format!("LA({})", lookahead + 1),
+                    terminal_names[token_type].to_owned(),
+                    FileSource::try_new(file_name.as_ref().to_path_buf())?.into(),
+                    token,
+                ));
+                expected_tokens = self.transitions.iter().filter(|t| t.0 == state).fold(
+                    expected_tokens,
+                    |mut acc, t| {
+                        acc.push(format!(r#""{}""#, terminal_names[t.1]));
+                        acc
+                    },
                 );
                 break;
             }
         }
-        diag_msg
+        Ok((diag_msg, unexpected_tokens, expected_tokens))
     }
 }

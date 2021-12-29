@@ -1,6 +1,6 @@
 use crate::lexer::TerminalIndex;
-use anyhow::{Context, Result};
 use log::trace;
+use miette::{IntoDiagnostic, Result, WrapErr};
 use regex::Regex;
 
 ///
@@ -88,7 +88,9 @@ impl Tokenizer {
 
         let rx = combined.to_string();
         trace!("Generated regex for scanner:\n{}", rx);
-        let rx = Regex::new(&rx).with_context(|| "Unable to compile generated RegEx!")?;
+        let rx = Regex::new(&rx)
+            .into_diagnostic()
+            .wrap_err("Unable to compile generated RegEx!")?;
 
         Ok(Tokenizer {
             rx,

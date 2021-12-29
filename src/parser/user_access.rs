@@ -1,6 +1,6 @@
 use crate::parser::{ParseTreeStackEntry, ParseTreeType};
-use anyhow::Result;
 use id_tree::Tree;
+use miette::Result;
 
 ///
 /// This trait is used as a coupling point between the generated parser and

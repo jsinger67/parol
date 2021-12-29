@@ -1,6 +1,7 @@
 use crate::lexer::{TerminalIndex, Token, Tokenizer, RX_NEW_LINE};
 use log::trace;
 use regex::CaptureMatches;
+use std::path::{Path, PathBuf};
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
@@ -20,6 +21,9 @@ pub struct TokenIter<'t> {
     /// with the matched text.
     group_names: Vec<String>,
 
+    /// The name of the input file
+    pub file_name: PathBuf,
+
     /// The lookahead size
     k: usize,
 }
@@ -29,7 +33,10 @@ impl<'t> TokenIter<'t> {
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new(rx: &'static Tokenizer, input: &'t str, k: usize) -> TokenIter<'t> {
+    pub fn new<T>(rx: &'static Tokenizer, input: &'t str, file_name: T, k: usize) -> TokenIter<'t>
+    where
+        T: AsRef<Path>,
+    {
         let group_names: Vec<String> = rx
             .rx
             .capture_names()
@@ -42,6 +49,7 @@ impl<'t> TokenIter<'t> {
             col: 1,
             capture_iter: rx.rx.captures_iter(input),
             group_names,
+            file_name: file_name.as_ref().to_path_buf(),
             k,
         }
     }
@@ -101,7 +109,8 @@ impl<'t> Iterator for TokenIter<'t> {
                     debug_assert!(column_after_nl == 0);
                     self.col + length
                 };
-                let token = Token::with(symbol, token_type, start_line, start_column, length, pos);
+                let token =
+                    Token::with(symbol, token_type, start_line, start_column, length, 0, pos);
                 trace!("{}, newline count: {}", token, new_lines);
                 Some(token)
             } else {

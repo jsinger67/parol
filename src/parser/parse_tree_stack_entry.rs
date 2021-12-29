@@ -1,7 +1,7 @@
 use crate::lexer::Token;
 use crate::parser::ParseTreeType;
-use anyhow::Result;
 use id_tree::{Node, NodeId, Tree};
+use miette::{IntoDiagnostic, Result};
 
 ///
 /// The type of elements in the parser's parse tree stack.
@@ -47,6 +47,8 @@ impl<'t> ParseTreeStackEntry<'t> {
     /// `'a` refers to the lifetime of self.
     /// `'b` refers to the lifetime of the parse tree.
     ///
+    /// `'t` refers to the lifetime of the scanned text.
+    ///
     pub fn token<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType<'t>>) -> Result<&'a Token<'t>>
     where
         'b: 'a,
@@ -74,7 +76,7 @@ impl<'t> ParseTreeStackEntry<'t> {
                 Ok(token.symbol)
             }
             Self::Id(i) => {
-                let node = parse_tree.get(i)?;
+                let node = parse_tree.get(i).into_diagnostic()?;
                 let token = node.data().token()?;
                 Ok(token.symbol)
             }

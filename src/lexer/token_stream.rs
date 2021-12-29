@@ -1,8 +1,10 @@
+use crate::errors::LookaheadError;
 use crate::lexer::Token;
 use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
 use crate::parser::ScannerIndex;
-use anyhow::{anyhow, Result};
 use log::trace;
+use miette::{miette, Result};
+use std::path::{Path, PathBuf};
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -17,10 +19,10 @@ pub struct TokenStream<'t> {
     pub k: usize,
 
     /// The input text
-    input: &'t str,
+    pub(crate) input: &'t str,
 
     /// The name of the input file
-    pub file_name: String,
+    pub file_name: PathBuf,
 
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
@@ -64,18 +66,21 @@ impl<'t> TokenStream<'t> {
     /// an input string.
     /// The k determines the number of lookahead tokens the stream supports.
     ///
-    pub fn new(
+    pub fn new<T>(
         input: &'t str,
-        file_name: String,
+        file_name: T,
         tokenizers: &'static [(&'static str, Tokenizer)],
         k: usize,
-    ) -> Result<TokenStream<'t>> {
+    ) -> Result<TokenStream<'t>>
+    where
+        T: AsRef<Path>,
+    {
         let mut token_stream = TokenStream {
             k,
             input,
-            file_name,
+            file_name: file_name.as_ref().to_path_buf(),
             error_token_type: tokenizers[0].1.error_token_type,
-            token_iter: TokenIter::new(&tokenizers[0].1, input, k),
+            token_iter: TokenIter::new(&tokenizers[0].1, input, file_name, k),
             tokenizers,
             tokens: Vec::with_capacity(k),
             start_pos: 0,
@@ -96,12 +101,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>> {
         if n > self.k {
-            Err(anyhow!("Lookahead exceeds its maximum"))
+            Err(miette!("Lookahead exceeds its maximum"))
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err(anyhow!("Lookahead exceeds token buffer length"))
+                Err(miette!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n])
@@ -117,12 +122,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex> {
         if n > self.k {
-            Err(anyhow!("Lookahead exceeds its maximum"))
+            Err(miette!("Lookahead exceeds its maximum"))
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err(anyhow!("Lookahead exceeds token buffer length"))
+                Err(miette!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -139,7 +144,7 @@ impl<'t> TokenStream<'t> {
     pub fn consume(&mut self) -> Result<()> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
-            Err(anyhow!("Consume on empty buffer is impossible"))
+            Err(miette!("Consume on empty buffer is impossible"))
         } else {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
@@ -169,6 +174,17 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn all_input_consumed(&self) -> bool {
         self.tokens.is_empty() || self.tokens[0].token_type == EOI
+    }
+
+    ///
+    /// Returns the last valid token from token buffer if there is one
+    ///
+    pub fn last_token(&self) -> Result<&Token<'_>> {
+        self.tokens
+            .iter()
+            .rev()
+            .find(|t| t.token_type != EOI)
+            .ok_or(miette!(LookaheadError::TokenBufferEmptyError))
     }
 
     ///
@@ -262,7 +278,7 @@ impl<'t> TokenStream<'t> {
             }
             Ok(())
         } else {
-            Err(anyhow!(
+            Err(miette!(
                 "pop_scanner: Tried to pop from an empty scanner stack!"
             ))
         }
@@ -278,10 +294,11 @@ impl<'t> TokenStream<'t> {
 
     fn read_tokens(&mut self, n: usize) -> usize {
         let mut tokens_read = 0usize;
-        for token in &mut self.token_iter {
+        for mut token in &mut self.token_iter {
             if !token.is_skip_token() {
                 tokens_read += 1;
                 trace!("Read {}: {}", self.tokens.len(), token);
+                token.start_pos = self.start_pos;
                 self.tokens.push(token);
                 if tokens_read >= n {
                     break;
@@ -313,7 +330,12 @@ impl<'t> TokenStream<'t> {
         self.start_pos += self.pos;
         self.pos = 0;
         let (_, input) = self.input.split_at(self.start_pos);
-        TokenIter::new(&self.tokenizers[scanner_index].1, input, self.k)
-            .with_position(self.line, self.column)
+        TokenIter::new(
+            &self.tokenizers[scanner_index].1,
+            input,
+            &self.file_name.as_path(),
+            self.k,
+        )
+        .with_position(self.line, self.column)
     }
 }

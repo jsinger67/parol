@@ -6,6 +6,7 @@ use parol_runtime::lexer::tokenizer::{
 };
 use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
 use std::cell::RefCell;
+use std::path::PathBuf;
 
 const PAROL_CFG_1: &'static str = r#"%start Grammar
 %%
@@ -72,7 +73,7 @@ fn tokenizer_test() {
 fn lexer_token_production() {
     let k = 3;
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, k).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, k).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -80,7 +81,7 @@ fn lexer_token_production() {
         token_stream.borrow_mut().consume().unwrap();
     }
     assert_eq!(k - 1, token_stream.borrow().tokens.len());
-    assert_eq!(Token::with(";", 8, 19, 39, 1, 545), tok);
+    assert_eq!(Token::with(";", 8, 19, 39, 1, 0, 545), tok);
     assert_eq!(Token::eoi(), token_stream.borrow().tokens[0]);
 }
 
@@ -88,7 +89,7 @@ fn lexer_token_production() {
 #[should_panic(expected = "Lookahead exceeds its maximum")]
 fn lookahead_must_fail() {
     let mut token_stream =
-        TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap();
+        TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, 1).unwrap();
     let _tok = token_stream.lookahead(2).unwrap();
 }
 
@@ -96,7 +97,7 @@ fn lookahead_must_fail() {
 #[should_panic(expected = "Lookahead exceeds token buffer length")]
 fn lookahead_beyond_buffer_must_fail() {
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, "No file".to_owned(), &TOKENIZERS, 1).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().lookahead(0).unwrap();
