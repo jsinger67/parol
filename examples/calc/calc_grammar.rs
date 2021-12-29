@@ -2,9 +2,9 @@ use crate::assign_operator::AssignOperator;
 use crate::binary_operator::BinaryOperator;
 use crate::calc_grammar_trait::CalcGrammarTrait;
 use crate::unary_operator::UnaryOperator;
-use anyhow::{anyhow, bail, Context, Result};
 use id_tree::Tree;
 use log::trace;
+use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
@@ -132,7 +132,7 @@ impl CalcGrammar {
             Self::apply_assign_item(var, &item.1, num, context)?;
             Ok(*var)
         } else {
-            Err(anyhow!("assign: undeclared variable {}", item.0))
+            Err(miette!("assign: undeclared variable {}", item.0))
         }
     }
 
@@ -239,7 +239,7 @@ impl CalcGrammar {
                 Ok(())
             }
             // _ => Ok(()),
-            _ => Err(anyhow!("{}: unexpected ({:?}, {:?})", context, list, value)),
+            _ => Err(miette!("{}: unexpected ({:?}, {:?})", context, list, value)),
         }
     }
 
@@ -278,7 +278,7 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::Num(*value), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?})",
                 context,
                 value,
@@ -309,7 +309,7 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::RightItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 right_item,
@@ -329,7 +329,7 @@ impl CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, op)),
+            _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, value, op)),
         }
     }
 
@@ -426,7 +426,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 top_of_stack1,
@@ -467,7 +467,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 Ok(())
             }
             //_ => Ok(())
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?}, {:?})",
                 context,
                 value,
@@ -497,7 +497,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::AssignItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(miette!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 top_of_stack1,
@@ -1200,7 +1200,7 @@ impl CalcGrammarTrait for CalcGrammar {
             self.push(CalcGrammarItem::UnaryOp(UnaryOperator::Negation), context);
             Ok(())
         } else {
-            Err(anyhow!("{}: unexpected {:?}", context, minus))
+            Err(miette!("{}: unexpected {:?}", context, minus))
         }
     }
 
@@ -1225,7 +1225,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::Num(-num), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected {:?} {:?}", context, negate, number)),
+            _ => Err(miette!("{}: unexpected {:?} {:?}", context, negate, number)),
         }
     }
 
@@ -1240,12 +1240,15 @@ impl CalcGrammarTrait for CalcGrammar {
     ) -> Result<()> {
         let context = "number_79";
         let symbol = tk_number_0.symbol(parse_tree)?;
-        let number = symbol.parse::<DefinitionRange>().with_context(|| {
-            format!(
-                "{}: Error accessing token from ParseTreeStackEntry",
-                context
-            )
-        })?;
+        let number = symbol
+            .parse::<DefinitionRange>()
+            .into_diagnostic()
+            .wrap_err({
+                format!(
+                    "{}: Error accessing token from ParseTreeStackEntry",
+                    context
+                )
+            })?;
         self.push(CalcGrammarItem::Num(number), context);
         Ok(())
     }
@@ -1266,11 +1269,11 @@ impl CalcGrammarTrait for CalcGrammar {
                 if let Some(val) = self.value(&id) {
                     self.push(CalcGrammarItem::Num(val), context);
                 } else {
-                    return Err(anyhow!("{}: undeclared variable {}", context, id));
+                    return Err(miette!("{}: undeclared variable {}", context, id));
                 }
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected {:?}", context, top_of_stack)),
+            _ => Err(miette!("{}: unexpected {:?}", context, top_of_stack)),
         }
     }
 

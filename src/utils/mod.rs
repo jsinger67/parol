@@ -2,14 +2,16 @@ use crate::grammar::cfg::RX_NUM_SUFFIX;
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
 use crate::GrammarConfig;
-use anyhow::{Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
+use miette::{IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::ParseTreeType;
 use std::collections::HashMap;
 use std::convert::TryFrom;
+use std::fmt::Debug;
 use std::fs;
 use std::hash::Hash;
+use std::path::Path;
 
 pub mod str_vec;
 
@@ -118,12 +120,16 @@ where
     }
 }
 
-pub fn obtain_grammar_config(file_name: &str, verbose: bool) -> Result<GrammarConfig> {
-    let input =
-        fs::read_to_string(file_name).with_context(|| format!("Can't read file {}", file_name))?;
+pub fn obtain_grammar_config<T>(file_name: T, verbose: bool) -> Result<GrammarConfig>
+where
+    T: AsRef<Path> + Debug,
+{
+    let input = fs::read_to_string(&file_name)
+        .into_diagnostic()
+        .wrap_err(format!("Can't read file {:?}", file_name))?;
     let mut parol_grammar = ParolGrammar::new();
-    let _syntax_tree = parse(&input, file_name.to_owned(), &mut parol_grammar)
-        .with_context(|| format!("Failed parsing file {}", file_name))?;
+    let _syntax_tree = parse(&input, &file_name, &mut parol_grammar)
+        .wrap_err(format!("Failed parsing file {:?}", file_name))?;
 
     if verbose {
         println!("{}", parol_grammar);
@@ -132,15 +138,16 @@ pub fn obtain_grammar_config(file_name: &str, verbose: bool) -> Result<GrammarCo
     GrammarConfig::try_from(parol_grammar)
 }
 
-pub fn generate_tree_layout(
-    syntax_tree: &Tree<ParseTreeType>,
-    input_file_name: &str,
-) -> Result<()> {
-    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+pub fn generate_tree_layout<T>(syntax_tree: &Tree<ParseTreeType>, input_file_name: T) -> Result<()>
+where
+    T: AsRef<Path>,
+{
+    let mut svg_full_file_name = input_file_name.as_ref().to_path_buf();
     svg_full_file_name.set_extension("svg");
 
     Layouter::new(syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
-        .with_context(|| "Failed writing layout")
+        .into_diagnostic()
+        .wrap_err("Failed writing layout")
 }

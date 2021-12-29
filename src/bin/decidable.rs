@@ -1,5 +1,5 @@
-use anyhow::{bail, Result};
 use log::trace;
+use miette::{bail, Result};
 use parol::analysis::{decidable, explain_conflicts, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
 use parol::obtain_grammar_config;

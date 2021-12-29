@@ -1,5 +1,5 @@
-use anyhow::Result;
 use log::debug;
+use miette::Result;
 use parol::analysis::non_productive_non_terminals;
 use parol::obtain_grammar_config;
 use std::env;

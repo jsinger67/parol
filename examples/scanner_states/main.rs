@@ -9,8 +9,8 @@ mod scanner_states_parser;
 
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use crate::scanner_states_parser::parse;
-use anyhow::{anyhow, Context, Result};
 use log::debug;
+use miette::{miette, IntoDiagnostic, Result, WrapErr};
 use parol::generate_tree_layout;
 use std::env;
 use std::fs;
@@ -30,14 +30,14 @@ fn main() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .with_context(|| format!("Can't read file {}", file_name))?;
+            .into_diagnostic()
+            .wrap_err(format!("Can't read file {}", file_name))?;
         let mut scanner_states_grammar = ScannerStatesGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut scanner_states_grammar)
-            .with_context(|| format!("Failed parsing file {}", file_name))?;
+            .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("{}", scanner_states_grammar);
-        generate_tree_layout(&syntax_tree, &file_name)
-            .with_context(|| "Error generating tree layout")
+        generate_tree_layout(&syntax_tree, &file_name).wrap_err("Error generating tree layout")
     } else {
-        Err(anyhow!("Please provide a file name as single parameter!"))
+        Err(miette!("Please provide a file name as single parameter!"))
     }
 }

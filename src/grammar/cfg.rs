@@ -9,7 +9,7 @@ lazy_static! {
 }
 
 ///
-/// Context free grammar type
+/// WrapErr free grammar type
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub struct Cfg {

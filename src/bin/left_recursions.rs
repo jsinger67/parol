@@ -1,4 +1,4 @@
-use anyhow::Result;
+use miette::Result;
 use parol::{detect_left_recursions, obtain_grammar_config};
 use std::env;
 

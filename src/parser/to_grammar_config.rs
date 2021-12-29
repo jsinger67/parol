@@ -5,8 +5,8 @@ use crate::parser::{
 };
 use crate::utils::combine;
 use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
-use anyhow::{anyhow, bail, Result};
 use log::trace;
+use miette::{bail, miette, Result};
 use std::convert::TryFrom;
 
 pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
@@ -65,7 +65,7 @@ pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
         Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop => Ok(Symbol::Pop),
-        _ => Err(anyhow!("Unexpected type of factor: {}", factor)),
+        _ => Err(miette!("Unexpected type of factor: {}", factor)),
     }
 }
 

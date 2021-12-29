@@ -1,6 +1,6 @@
 use crate::generators::{generate_terminal_name, GrammarConfig};
 use crate::{Pr, StrVec, Symbol, Terminal};
-use anyhow::Result;
+use miette::Result;
 
 #[derive(BartDisplay, Debug, Default)]
 #[template = "templates/user_trait_caller_function_template.rs"]

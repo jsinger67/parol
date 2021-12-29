@@ -228,8 +228,8 @@ impl Display for Symbol {
 }
 
 impl TryFrom<Factor> for Symbol {
-    type Error = anyhow::Error;
-    fn try_from(factor: Factor) -> anyhow::Result<Self> {
+    type Error = miette::Error;
+    fn try_from(factor: Factor) -> miette::Result<Self> {
         try_from_factor(factor)
     }
 }

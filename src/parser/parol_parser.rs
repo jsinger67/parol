@@ -4,13 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use anyhow::Result;
 use id_tree::Tree;
+use miette::Result;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
+use std::path::Path;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -706,11 +707,14 @@ lazy_static! {
     ),];
 }
 
-pub fn parse<'t>(
+pub fn parse<'t, T>(
     input: &'t str,
-    file_name: String,
+    file_name: T,
     user_actions: &mut dyn UserActionsTrait,
-) -> Result<Tree<ParseTreeType<'t>>> {
+) -> Result<Tree<ParseTreeType<'t>>>
+where
+    T: AsRef<Path>,
+{
     let mut llk_parser = LLKParser::new(
         12,
         LOOKAHEAD_AUTOMATA,

@@ -1,6 +1,6 @@
 use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::{detect_left_recursions, left_factor, Cfg};
-use anyhow::{anyhow, Result};
+use miette::{miette, Result};
 
 pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
     let non_productive = non_productive_non_terminals(cfg);
@@ -10,7 +10,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
             .map(|nt| nt.to_string())
             .collect::<Vec<String>>()
             .join(", ");
-        return Err(anyhow!(
+        return Err(miette!(
             "Grammar contains non-productive non-terminals:\n{}",
             non_productive_string
         ));
@@ -22,7 +22,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
             .map(|nt| nt.to_string())
             .collect::<Vec<String>>()
             .join(", ");
-        return Err(anyhow!(
+        return Err(miette!(
             "Grammar contains unreachable non-terminals:\n{}",
             unreachable_string
         ));
@@ -41,7 +41,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
             .collect::<Vec<String>>()
             .join(", ");
 
-        return Err(anyhow!(
+        return Err(miette!(
             "Grammar contains left_recursions:\n{}",
             left_recursions_string
         ));

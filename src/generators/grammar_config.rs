@@ -131,8 +131,8 @@ impl Display for GrammarConfig {
 }
 
 impl TryFrom<ParolGrammar> for GrammarConfig {
-    type Error = anyhow::Error;
-    fn try_from(grammar: ParolGrammar) -> anyhow::Result<Self> {
+    type Error = miette::Error;
+    fn try_from(grammar: ParolGrammar) -> miette::Result<Self> {
         try_to_convert(grammar)
     }
 }

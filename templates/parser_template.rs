@@ -6,11 +6,12 @@
 
 use id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
-use anyhow::Result;
+use miette::Result;
 use parol_runtime::parser::{
     ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, UserActionsTrait,
 };
 use std::cell::RefCell;
+use std::path::Path;
 
 {{{lexer_source}}}
 
@@ -28,11 +29,11 @@ lazy_static! {
     ];
 }
 
-pub fn parse<'t>(
+pub fn parse<'t, T>(
     input: &'t str,
-    file_name: String,
+    file_name: T,
     user_actions: &mut dyn UserActionsTrait,
-) -> Result<Tree<ParseTreeType<'t>>> {
+) -> Result<Tree<ParseTreeType<'t>>> where T: AsRef<Path> {
     let mut llk_parser = LLKParser::new(
         {{start_symbol_index}},
         LOOKAHEAD_AUTOMATA,

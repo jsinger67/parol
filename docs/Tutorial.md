@@ -232,12 +232,12 @@ Open the Cargo.toml file and replace its content with the following lines:
 ```toml
 [package]
 name = "json_parser"
-version = "0.1.3"
+version = "0.3.0"
 edition = "2018"
 
 [dependencies]
 env_logger = "0.9.0"
-anyhow = "1.0.51"
+miette = { version = "3.2.0", features = ["fancy"] }
 id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
@@ -320,7 +320,7 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
-use anyhow::{anyhow, Context, Result};
+use miette::{miette, IntoDiagnostic, Result, WrapErr};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use log::debug;
@@ -336,10 +336,11 @@ fn main() -> Result<()> {
     if args.len() == 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .with_context(|| format!("Can't read file {}", file_name))?;
+            .wrap_err( format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
         let syntax_tree = parse(&input, file_name.to_owned(), &mut json_grammar)
-            .with_context(|| format!("Failed parsing file {}", file_name))?;
+            .into_diagnostic()
+            .wrap_err( format!("Failed parsing file {}", file_name))?;
         println!("Success!\n{}", json_grammar);
         generate_tree_layout(&syntax_tree, &file_name)
     } else {
@@ -354,7 +355,8 @@ fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str
     Layouter::new(&syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
-        .with_context(|| "Failed writing layout")
+        .into_diagnostic()
+        .wrap_err( "Failed writing layout")
 }
 ```
 
@@ -545,7 +547,7 @@ Remove the '_' from the `_push` function and add the following lines at the begi
 
 ```rust
 use id_tree::Tree;
-use anyhow::Result;
+use miette::Result;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 ```
 
@@ -732,7 +734,7 @@ fn number_20(
     let number = number_0
         .symbol(parse_tree)?
         .parse::<f64>()
-        .with_context(|| format!("{}: Error accessing number token", context))?;
+        .wrap_err( format!("{}: Error accessing number token", context))?;
     self.push(JsonGrammarItem::Number(number), context);
     Ok(())
 }
@@ -869,7 +871,7 @@ fn array_suffix_8(
             self.push(JsonGrammarItem::Array(array), context);
             Ok(())
         }
-        _ => Err(anyhow!(
+        _ => Err(miette!(
             "{}: expecting Array, Value on top of stack",
             context
         )),
@@ -894,7 +896,7 @@ fn array_list_10(
             self.push(JsonGrammarItem::Array(array), context);
             Ok(())
         }
-        _ => Err(anyhow!(
+        _ => Err(miette!(
             "{}: expecting Array, Value on top of stack",
             context
         )),
@@ -942,7 +944,7 @@ fn array_7(
             self.push(JsonGrammarItem::Array(list.to_vec()), context);
             Ok(())
         }
-        _ => Err(anyhow!("{}: unexpected ({:?}", context, top_of_stack)),
+        _ => Err(miette!("{}: unexpected ({:?}", context, top_of_stack)),
     }
 }
 ```
@@ -1036,7 +1038,7 @@ fn pair_6(
             );
             Ok(())
         }
-        _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, name)),
+        _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, value, name)),
     }
 }
 ```
@@ -1131,7 +1133,7 @@ fn object_suffix_2(
             self.push(JsonGrammarItem::Object(pairs), context);
             Ok(())
         }
-        _ => Err(anyhow!(
+        _ => Err(miette!(
             "{}: expected Object, Pair on top of stack",
             context
         )),
@@ -1159,7 +1161,7 @@ fn object_list_4(
             self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
             Ok(())
         }
-        _ => Err(anyhow!(
+        _ => Err(miette!(
             "{}: unexpected ({:?}, {:?}",
             context, top_of_stack1, top_of_stack2
         )
@@ -1209,7 +1211,7 @@ fn object_1(
                 self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: expecting Object on top of stack", context)),
+            _ => Err(miette!("{}: expecting Object on top of stack", context)),
         }
 }
 ```
@@ -1262,10 +1264,10 @@ For didactic reasons there are some duplicates in the code which actually violat
 
 ### Error output from sematic actions
 
-`parol` consequently uses [anyhow](https://github.com/dtolnay/anyhow) for consistent error handling. So actually you can simply return an `Error` object by using the constructor like this:
+`parol` consequently uses [miette](https://github.com/zkat/miette.git) for consistent error handling. So actually you can simply return an `Error` object from your semantic action by using the constructor like this:
 
 ```rust
-Err(anyhow!("An error is occurred"))
+Err(miette!("An error is occurred"))
 ```
 
 This will terminate the parsing process and generate an output with the text you provided.
@@ -1273,7 +1275,9 @@ If you want to convey some information about the error position you can use posi
 
 ```rust
 let token = number_0.token(parse_tree)?;
-Err(anyhow!("An error is occurred at {}:{}", token.line, token.column))
+Err(miette!("An error is occurred at {}:{}", token.line, token.column))
 ```
 
 Where `number_0` is a `ParseTreeStackEntry` taken from the parameter list of the semantic action. Additionally, the `ParseTreeStackEntry` you chose have to be a terminal symbol so that its `token` function can succeed.
+
+Also you can define your own error types, let automatically derive miette::Diagnostics for them and unleash the full power of structured error reporting. Please consult the documentation of miette for deeper insights.

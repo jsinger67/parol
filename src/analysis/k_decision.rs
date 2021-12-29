@@ -2,8 +2,8 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
 use crate::{GrammarConfig, KTuples};
-use anyhow::{anyhow, bail, Result};
 use log::trace;
+use miette::{bail, miette, Result};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 use std::rc::Rc;
@@ -92,7 +92,7 @@ pub fn decidable(
     let cfg = &grammar_config.cfg;
     let productions = cfg.matching_productions(non_terminal);
     if productions.is_empty() {
-        Err(anyhow!(
+        Err(miette!(
             "The given non-terminal isn't part of the given grammar!"
         ))
     } else if productions.len() == 1 {
@@ -132,7 +132,7 @@ pub fn decidable(
             }
             current_k += 1;
         }
-        Err(anyhow!("max_k exceeded"))
+        Err(miette!("max_k exceeded"))
     }
 }
 
@@ -191,7 +191,7 @@ pub fn calculate_k_tuples(
                 m.append(&mut k_tuples);
                 Ok(m)
             }
-            (_, Err(e)) => Err(anyhow!(e.to_string())),
+            (_, Err(e)) => Err(miette!(e.to_string())),
         })
 }
 
@@ -241,7 +241,7 @@ pub fn explain_conflicts(
     let cfg = &grammar_config.cfg;
     let productions = cfg.matching_productions(non_terminal);
     if productions.is_empty() {
-        Err(anyhow!(
+        Err(miette!(
             "The given non-terminal isn't part of the given grammar!"
         ))
     } else if productions.len() == 1 {
@@ -278,7 +278,7 @@ pub fn explain_conflicts(
             }
             return Ok(conflicting_k_tuples);
         }
-        Err(anyhow!("Internal error"))
+        Err(miette!("Internal error"))
     }
 }
 

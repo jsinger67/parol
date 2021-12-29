@@ -1,4 +1,4 @@
-use anyhow::Result;
+use miette::Result;
 use parol::obtain_grammar_config;
 use std::env;
 

@@ -1,4 +1,4 @@
-use anyhow::{bail, Result};
+use miette::{bail, Result};
 use parol::analysis::k_decision::{calculate_k_tuples, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
 use parol::obtain_grammar_config;

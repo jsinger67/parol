@@ -1,6 +1,6 @@
 use crate::generate_name;
 use crate::generators::{generate_terminal_name, GrammarConfig};
-use anyhow::Result;
+use miette::Result;
 
 use crate::StrVec;
 use std::fmt::Debug;

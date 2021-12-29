@@ -3,8 +3,8 @@ use crate::analysis::LookaheadDFA;
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
-use anyhow::{Context, Result};
 use log::trace;
+use miette::{miette, Result};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -147,12 +147,10 @@ pub fn generate_parser_source(
     let start_symbol_index: usize = non_terminals
         .iter()
         .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .with_context(|| {
-            format!(
-                "Start symbol '{}' is not part of the given grammar!",
-                grammar_config.cfg.get_start_symbol()
-            )
-        })?;
+        .ok_or(miette!(format!(
+            "Start symbol '{}' is not part of the given grammar!",
+            grammar_config.cfg.get_start_symbol()
+        )))?;
 
     let non_terminals = non_terminals
         .iter()
