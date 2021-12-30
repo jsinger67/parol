@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate clap;
 
-use clap::App;
+use clap::{App,AppSettings};
 use miette::{bail, IntoDiagnostic, Result, WrapErr};
 use std::convert::TryFrom;
 
@@ -11,7 +11,8 @@ use parol::{
     generate_parser_source, generate_tree_layout, generate_user_trait_source, parse,
     render_par_string, try_format, GrammarConfig, ParolGrammar, MAX_K,
 };
-use std::fs;
+use std::{fs, io};
+use std::process::{self, Command};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -24,7 +25,34 @@ fn main() -> Result<()> {
     trace!("env logger started");
 
     let yaml = load_yaml!("arguments.yml");
-    let config = App::from_yaml(yaml).version(VERSION).get_matches();
+    let config = App::from_yaml(yaml).version(VERSION)
+        // Allows for tools like `parol-serialize` to be invoked as subcommands (`parol serialize`)
+        .setting(AppSettings::AllowExternalSubcommands)
+        // If we use an external subcommand, it must come first (no flags before)
+        .setting(AppSettings::ArgsNegateSubcommands)
+        .get_matches();
+
+    if let (subcommand_name, Some(sub_matches)) = config.subcommand() {
+        let ext_args: Vec<&str> = sub_matches.values_of("").map_or_else(Vec::default, |args| args.collect());
+        let tool_name = format!("parol-{}", subcommand_name);
+        log::debug!("Delegating to {} with {:?}", tool_name, ext_args);
+        let mut tool_child = match Command::new(&tool_name).args(ext_args).spawn() {
+            Ok(child) => child,
+            Err(e) if e.kind() == io::ErrorKind::NotFound => {
+                bail!("Missing tool `{}`", tool_name);
+            }
+            Err(e) => return Err(e).into_diagnostic().wrap_err(format!("Failure to spawn {} command", tool_name))?
+
+
+        };
+        let status = tool_child.wait().into_diagnostic().wrap_err(format!("Unexpected error running {}", tool_name))?;
+        match status.code() {
+            Some(code) => process::exit(code),
+            None => process::exit(7), // Abnormal exit with signal. Exit code chosen arbitrarily
+        };
+    }
+
+    
 
     let max_k = config
         .value_of("lookahead")

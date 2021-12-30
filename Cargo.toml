@@ -10,6 +10,9 @@ keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
 license = "MIT"
 edition = "2018"
+# Gives tools poor names (without prefixes). See issue #2
+autobins = false
+default-run = "parol"
 
 [dependencies]
 bart = "0.1.4"
@@ -35,3 +38,52 @@ features = [ "suggestions", "color", "yaml" ]
 
 [profile.release]
 debug = true
+
+[[bin]]
+name = "parol"
+
+# Prefix all the tool names with parol-<tool> to avoid polluting the path
+#
+# Otherwise `cargo install` will install them directly into $PATH
+# See issue #2
+#
+# The main binary picks up these subcommands automatically and runs them as external tools.
+[[bin]]
+name = "parol-calculate-k"
+path = "src/bin/calculate_k.rs"
+
+[[bin]]
+name = "parol-calculate-k-tuples"
+path = "src/bin/calculate_k_tuples.rs"
+
+[[bin]]
+name = "parol-decidable"
+path = "src/bin/decidable.rs"
+
+[[bin]]
+name = "parol-first"
+path = "src/bin/first.rs"
+
+[[bin]]
+name = "parol-follow"
+path = "src/bin/follow.rs"
+
+[[bin]]
+name = "parol-format"
+path = "src/bin/format.rs"
+
+[[bin]]
+name = "parol-left-factor"
+path = "src/bin/left_factor.rs"
+
+[[bin]]
+name = "parol-left-recursions"
+path = "src/bin/left_recursions.rs"
+
+[[bin]]
+name = "parol-productivity"
+path = "src/bin/productivity.rs"
+
+[[bin]]
+name = "parol-serialize"
+path = "src/bin/serialize.rs"
