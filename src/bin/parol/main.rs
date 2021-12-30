@@ -1,8 +1,8 @@
 #[macro_use]
 extern crate clap;
 
-use clap::{App,AppSettings};
-use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
+use clap::{App,AppSettings,SubCommand,Arg};
+use miette::{bail, IntoDiagnostic, Result, WrapErr};
 use std::convert::TryFrom;
 
 use log::trace;
@@ -27,14 +27,27 @@ fn main() -> Result<()> {
 
     let yaml = load_yaml!("arguments.yml");
     let config = App::from_yaml(yaml)
-        // If the first arg is the name of a tool, invoke that instead
-        .setting(AppSettings::AllowExternalSubcommands)
-        // Only invoke subcommands if they come first....
+        /*
+         * We want all our "tools" to be registered as subcommands.
+         *
+         * Doing this allows `clap` to give better help and error messages
+         * then if we used AppSettings::AllowExternalSubcommands
+         */
+        .subcommands(tools::names().map(|name| {
+            /*
+             * For now, our subcommands have no names or descriptions
+             *
+             * They all accept infinite args (clap makes no attempt to validate things here).
+             */
+            SubCommand::with_name(name)
+                .arg(Arg::with_name("args").index(1).multiple(true))
+        }))
+        // Only invoke tools if they come first, to avoid ambiguity with main binary
         .setting(AppSettings::ArgsNegateSubcommands)
         .version(VERSION).get_matches();
 
     if let (subcommand_name, Some(sub_matches)) = config.subcommand() {
-        let mut ext_args: Vec<&str> = sub_matches.values_of("").map_or_else(Vec::default, |args| args.collect());
+        let mut ext_args: Vec<&str> = sub_matches.values_of("args").map_or_else(Vec::default, |args| args.collect());
         /*
          * All of the tools were originally written using `env::args()` meaning they expect tool name to be
          * first.
@@ -43,14 +56,7 @@ fn main() -> Result<()> {
          * Fake a command name to avoid changing all the indices
          */
         ext_args.insert(0, subcommand_name);
-        let tool_main = tools::get_tool_main(subcommand_name).ok_or_else(|| {
-            let mut available_tools = String::new(); // NOTE: Has leading `\n`
-            for name in tools::names() {
-                available_tools.push_str("\n  - ");
-                available_tools.push_str(name);
-            }
-            miette!("Unknown tool name: {}\nAvailable tools:{}", subcommand_name, available_tools)
-        })?;
+        let tool_main = tools::get_tool_main(subcommand_name).expect("Clap should've validated tool name");
         log::debug!("Delegating to {} with {:?}", subcommand_name, ext_args);
         return tool_main(&ext_args);
     }
