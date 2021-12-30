@@ -1,9 +1,12 @@
+use crate::errors::JsonError;
 use crate::json_grammar_trait::JsonGrammarTrait;
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result, WrapErr};
+use miette::{miette, Result, WrapErr};
+use parol_runtime::errors::FileSource;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
+use std::path::PathBuf;
 
 ///
 /// Data structure used to build up a json structure item during parsing
@@ -55,6 +58,7 @@ impl Display for JsonGrammarItem {
 #[derive(Debug, Default)]
 pub struct JsonGrammar {
     pub item_stack: Vec<JsonGrammarItem>,
+    file_name: PathBuf,
 }
 
 impl JsonGrammar {
@@ -113,6 +117,13 @@ impl Display for JsonGrammar {
 }
 
 impl JsonGrammarTrait for JsonGrammar {
+    ///
+    /// Information provided by parser
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        self.file_name = file_name.into();
+    }
+
     /// Semantic action for production 1:
     ///
     /// Object: "\{" ObjectSuffix1;
@@ -403,11 +414,17 @@ impl JsonGrammarTrait for JsonGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "number_20";
-        let number = number_0
-            .symbol(parse_tree)?
-            .parse::<f64>()
-            .into_diagnostic()
-            .wrap_err(format!("{}: Error accessing number token", context))?;
+        let number = match number_0.symbol(parse_tree)?.parse::<f64>() {
+            Ok(number) => number,
+            Err(error) => {
+                return Err(miette!(JsonError::ParseF64Failed {
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    token: number_0.token(parse_tree)?.into()
+                }))
+                .wrap_err(miette!(error))
+            }
+        };
+
         self.push(JsonGrammarItem::Number(number), context);
         Ok(())
     }

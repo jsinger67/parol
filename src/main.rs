@@ -1,8 +1,15 @@
 #[macro_use]
 extern crate lazy_static;
 
+#[macro_use]
+extern crate miette;
+
+#[macro_use]
+extern crate thiserror;
+
 extern crate parol_runtime;
 
+mod errors;
 mod json_grammar;
 mod json_grammar_trait;
 mod json_parser;
