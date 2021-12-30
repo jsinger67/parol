@@ -51,7 +51,7 @@ To have a visualization of a certain parse tree while you're implementing your g
 Besides `parol` itself there exist several tools with special tasks (see [Supplementary tools](./Tools.md)). As an example let's have a look at the `decidable` tool:
 
 ```shell
-    cargo run --bin decidable -- ./examples/list/list.par
+    cargo run --bin parol -- decidable ./examples/list/list.par
 ```
 
 This tool generates this output:
