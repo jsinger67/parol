@@ -274,6 +274,8 @@ impl<'t> LLKParser<'t> {
     ) -> Result<()> {
         let file_name = stream.borrow().file_name.clone();
 
+        user_actions.init(&file_name);
+
         let prod_num = match self.predict_production(self.start_symbol_index, &stream) {
             Ok(prod_num) => prod_num,
             Err(source) => {

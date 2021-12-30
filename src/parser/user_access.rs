@@ -1,6 +1,7 @@
 use crate::parser::{ParseTreeStackEntry, ParseTreeType};
 use id_tree::Tree;
 use miette::Result;
+use std::path::Path;
 
 ///
 /// This trait is used as a coupling point between the generated parser and
@@ -9,6 +10,13 @@ use miette::Result;
 /// automatically.
 ///
 pub trait UserActionsTrait {
+    ///
+    /// Initialize the user with additional information.
+    /// This function is called by the parser before paring starts.
+    /// Is is used to transform necessary data from parser to user.
+    ///
+    fn init(&mut self, file_name: &Path);
+
     ///
     /// This function is implemented automatically for the user's item.
     ///
