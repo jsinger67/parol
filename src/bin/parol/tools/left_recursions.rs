@@ -23,8 +23,7 @@ pub fn main(args: &[&str]) -> Result<()> {
         println!("Missing arguments <par-file>!");
         println!(
             "Example:\n\
-            cargo run --bin {} ./src/parser/parol-grammar-exp.par",
-            module_path!()
+            cargo run --bin parol left_recursions ./src/parser/parol-grammar-exp.par"
         );
     }
     Ok(())

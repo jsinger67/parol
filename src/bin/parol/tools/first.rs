@@ -14,8 +14,7 @@ pub fn main(args: &[&str]) -> Result<()> {
         println!("Missing arguments <par-file> [k=1]!");
         println!(
             "Example:\n\
-            cargo run --bin {} ./src/parser/parol-grammar-exp.par",
-            module_path!()
+            cargo run --bin parol first ./src/parser/parol-grammar-exp.par"
         );
     } else {
         let file_name = args[1].to_owned();

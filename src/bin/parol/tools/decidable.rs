@@ -69,8 +69,7 @@ pub fn main(args: &[&str]) -> Result<()> {
         println!("Missing arguments <par-file> <k=5>!");
         println!(
             "Example:\n\
-            cargo run --bin {} ./src/parser/parol-grammar-exp.par",
-            module_path!()
+            cargo run --bin parol decidable ./src/parser/parol-grammar-exp.par"
         );
     }
     Ok(())

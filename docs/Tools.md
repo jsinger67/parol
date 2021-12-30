@@ -1,18 +1,33 @@
 # Supplementary tools
 
-Tools are separate binaries. Their source code can be found in the `bin` folder. The most prominent one is parol itself which is located in a dedicated subfolder.
-But this sections is devoted to the other tools around.
+As of version v0.5.1. tools are subcommands of the parol binary. Their source code can be found in the `bin/parol/tools` folder. `parol` itself is located in the subfolder `bin/parol`. This sections is devoted to the subcommands only.
 
 Please note, that you do not need to use these tools normally when you want to generate parsers. All of their functionality is completely included in `parol` itself. But when you are about to solve a certain problem they may come handy. So it is useful to know whats in the bag.
 
 Hint: All tools give a short help output when called without parameters:
 
 ```shell
-    >cargo run --bin calculate_k
+    >cargo run --bin parol calculate_k
 Missing arguments <par-file> <k=5>!
 Example:
-cargo run --bin calculate_k ./src/parser/parol-grammar-exp.par
+cargo run --bin parol::tools::calculate_k ./src/parser/parol-grammar-exp.par
 ```
+
+If you installed parol via
+
+```shell
+cargo install --path .
+```
+
+you will have another option of calling parol and its subcommands which is even easier because the `parol` executable is installed in your `~/.cargo/bin` folder.
+
+```shell
+    >parol calculate_k
+Missing arguments <par-file> <k=5>!
+Example:
+cargo run --bin parol::tools::calculate_k ./src/parser/parol-grammar-exp.par
+```
+
 
 ## `calculate_k_tuples`
 

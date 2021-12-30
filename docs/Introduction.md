@@ -8,6 +8,16 @@ On a shell or terminal you can call
 
 from the crates root folder.
 
+## Installation
+
+You can opt for installing parol via the command from the crates root folder
+
+```shell
+cargo install --path .
+```
+
+This simplifies calling `parol` because the executable is installed in your `~/.cargo/bin` folder.
+
 ## The first test
 
 When built successfully you can just call the `parol` parser generator to get a feeling about how to use it in your own project.
@@ -16,6 +26,12 @@ Simple command line usage:
 
 ```shell
     cargo run --bin parol -- -f ./examples/list/list.par -s -v
+```
+
+or when installed
+
+```shell
+    parol -f ./examples/list/list.par -s -v
 ```
 
 This will first check if the project is built correctly, generates it if necessary and then it will call the parser generator with the given grammar description file.
