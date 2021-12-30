@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate clap;
 
-use clap::{App,AppSettings,SubCommand,Arg};
+use clap::{App, AppSettings, Arg, SubCommand};
 use miette::{bail, IntoDiagnostic, Result, WrapErr};
 use std::convert::TryFrom;
 
@@ -11,7 +11,7 @@ use parol::{
     generate_parser_source, generate_tree_layout, generate_user_trait_source, parse,
     render_par_string, try_format, GrammarConfig, ParolGrammar, MAX_K,
 };
-use std::{fs, env};
+use std::{env, fs};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -39,15 +39,17 @@ fn main() -> Result<()> {
              *
              * They all accept infinite args (clap makes no attempt to validate things here).
              */
-            SubCommand::with_name(name)
-                .arg(Arg::with_name("args").index(1).multiple(true))
+            SubCommand::with_name(name).arg(Arg::with_name("args").index(1).multiple(true))
         }))
         // Only invoke tools if they come first, to avoid ambiguity with main binary
         .setting(AppSettings::ArgsNegateSubcommands)
-        .version(VERSION).get_matches();
+        .version(VERSION)
+        .get_matches();
 
     if let (subcommand_name, Some(sub_matches)) = config.subcommand() {
-        let mut ext_args: Vec<&str> = sub_matches.values_of("args").map_or_else(Vec::default, |args| args.collect());
+        let mut ext_args: Vec<&str> = sub_matches
+            .values_of("args")
+            .map_or_else(Vec::default, |args| args.collect());
         /*
          * All of the tools were originally written using `env::args()` meaning they expect tool name to be
          * first.
@@ -56,7 +58,8 @@ fn main() -> Result<()> {
          * Fake a command name to avoid changing all the indices
          */
         ext_args.insert(0, subcommand_name);
-        let tool_main = tools::get_tool_main(subcommand_name).expect("Clap should've validated tool name");
+        let tool_main =
+            tools::get_tool_main(subcommand_name).expect("Clap should've validated tool name");
         log::debug!("Delegating to {} with {:?}", subcommand_name, ext_args);
         return tool_main(&ext_args);
     }

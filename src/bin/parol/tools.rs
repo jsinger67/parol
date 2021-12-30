@@ -3,10 +3,13 @@
 pub type ToolFunc = fn(&[&str]) -> miette::Result<()>;
 
 pub fn get_tool_main(name: &str) -> Option<ToolFunc> {
-    TOOLS.iter().find(|(actual_name, _)| *actual_name == name).map(|tool| tool.1)    
+    TOOLS
+        .iter()
+        .find(|(actual_name, _)| *actual_name == name)
+        .map(|tool| tool.1)
 }
 
-pub fn names() -> impl Iterator<Item=&'static str> {
+pub fn names() -> impl Iterator<Item = &'static str> {
     TOOLS.iter().map(|(name, _)| *name)
 }
 
@@ -26,7 +29,14 @@ macro_rules! declare_tools {
 }
 
 declare_tools!(
-    calculate_k, calculate_k_tuples, decidable, first, follow,
-    format, left_factor, left_recursions, productivity, serialize
+    calculate_k,
+    calculate_k_tuples,
+    decidable,
+    first,
+    follow,
+    format,
+    left_factor,
+    left_recursions,
+    productivity,
+    serialize
 );
-

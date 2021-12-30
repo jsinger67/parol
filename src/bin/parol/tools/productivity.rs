@@ -16,7 +16,7 @@ pub fn main(args: &[&str]) -> Result<()> {
             module_path!()
         );
     } else {
-        let file_name = args[1].clone();
+        let file_name = args[1].to_owned();
         let grammar_config = obtain_grammar_config(&file_name, false)?;
 
         let non_productive_non_terminals = non_productive_non_terminals(&grammar_config.cfg);

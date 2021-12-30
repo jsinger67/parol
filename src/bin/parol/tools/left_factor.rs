@@ -3,7 +3,7 @@ use parol::{left_factor, obtain_grammar_config};
 
 pub fn main(args: &[&str]) -> Result<()> {
     if args.len() > 1 {
-        let file_name = args[1].clone();
+        let file_name = args[1].to_owned();
 
         let mut grammar_config = obtain_grammar_config(&file_name, false)?;
         let cfg = left_factor(&grammar_config.cfg);

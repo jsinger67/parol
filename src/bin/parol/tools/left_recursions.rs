@@ -3,7 +3,7 @@ use parol::{detect_left_recursions, obtain_grammar_config};
 
 pub fn main(args: &[&str]) -> Result<()> {
     if args.len() > 1 {
-        let file_name = args[1].clone();
+        let file_name = args[1].to_owned();
         let grammar_config = obtain_grammar_config(&file_name, false)?;
         let recursions = detect_left_recursions(&grammar_config.cfg);
         if recursions.is_empty() {
