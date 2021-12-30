@@ -6,7 +6,7 @@
 
 use crate::list_grammar::ListGrammar;
 use id_tree::Tree;
-use miette::Result;
+use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -15,6 +15,11 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 /// All functions have default implementations.
 ///
 pub trait ListGrammarTrait {
+    ///
+    /// Implement this method if you need the provided information
+    ///
+    fn init(&mut self, _file_name: &std::path::Path) {}
+
     /// Semantic action for production 0:
     ///
     /// list: ;
@@ -96,6 +101,18 @@ pub trait ListGrammarTrait {
 }
 
 impl UserActionsTrait for ListGrammar {
+    ///
+    /// Initialize the user with additional information.
+    /// This function is called by the parser before parsing starts.
+    /// Is is used to transport necessary data from parser to user.
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        ListGrammarTrait::init(self, file_name);
+    }
+
+    ///
+    /// This function is implemented automatically for the user's item ListGrammar.
+    ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
@@ -117,7 +134,7 @@ impl UserActionsTrait for ListGrammar {
 
             6 => self.num_6(&children[0], parse_tree),
 
-            _ => panic!("Unhandled production number: {}", prod_num),
+            _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
 }

@@ -454,6 +454,8 @@ Now let's focus on the actual trait that we need to partially implement in our l
 Now we can survey the function stubs within the trait. They are all implemented by default and thus do not need to be implemented by us at all. That's why our JsonParser is compilable in the current state and can already be used as an acceptor for json files.
 The contained functions correspond to the productions of the expanded input grammar (`json-exp.par`). They have arguments that correspond to the symbols on the right hand side of the corresponding production. The names of the functions are derived from the left hand side of the production (the non-terminal) plus the production number to ensure uniqueness of function names.
 
+As of version v0.5.2 a `init` function was added to the trait with the semantic actions. You should implement it if you need the provided information.
+
 Anyway, when you want to do something useful with the given input you need to implement some of these functions on your own in the `JsonGrammar` struct.
 
 ## Implementing semantic actions
@@ -1264,13 +1266,51 @@ Err(miette!("An error is occurred"))
 ```
 
 This will terminate the parsing process and generate an output with the text you provided.
-If you want to convey some information about the error position you can use position information from the `OwnedToken` of the `ParseTreeStackEntry` object:
+If you want to convey some information about the error position you can use position information from the `Token` of the `ParseTreeStackEntry` object.
+Also it is advised to implement the init function from the trait for semantic actions:
 
 ```rust
-let token = number_0.token(parse_tree)?;
-Err(miette!("An error is occurred at {}:{}", token.line, token.column))
+impl CalcGrammarTrait for CalcGrammar {
+    ///
+    /// Information provided by parser
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        self.file_name = file_name.into();
+    }
+```
+
+Then you could return a special error like in this example (see example `calc`):
+
+```rust
+/// Semantic action for production 79:
+///
+/// number: "\d+";
+///
+fn number_79(
+    &mut self,
+    tk_number_0: &ParseTreeStackEntry,
+    parse_tree: &Tree<ParseTreeType>,
+) -> Result<()> {
+    let context = "number_79";
+    let symbol = tk_number_0.symbol(parse_tree)?;
+    let number = match symbol.parse::<DefinitionRange>() {
+        Ok(number) => number,
+        Err(error) => return Err(miette!(CalcError::ParseISizeFailed {
+            input: FileSource::try_new(self.file_name.clone())?.into(),
+            token: tk_number_0.token(parse_tree)?.into()
+        })).wrap_err(miette!(error)),
+    };
+    self.push(CalcGrammarItem::Num(number), context);
+    Ok(())
+}
 ```
 
 Where `number_0` is a `ParseTreeStackEntry` taken from the parameter list of the semantic action. Additionally, the `ParseTreeStackEntry` you chose have to be a terminal symbol so that its `token` function can succeed.
 
-Also you can define your own error types, let automatically derive miette::Diagnostics for them and unleash the full power of structured error reporting. Please consult the documentation of miette for deeper insights.
+You get then such an expressive error message:
+
+![ErrorFromAction](./images/error_from_action.png)
+
+This is possible if you define your own error types, let automatically derive miette::Diagnostics for them and unleash the full power of structured error reporting. Please consult the documentation of miette for deeper insights.
+
+For demonstration please see module `errors` in example `calc`.

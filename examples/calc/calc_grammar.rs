@@ -1,14 +1,17 @@
 use crate::assign_operator::AssignOperator;
 use crate::binary_operator::BinaryOperator;
 use crate::calc_grammar_trait::CalcGrammarTrait;
+use crate::errors::CalcError;
 use crate::unary_operator::UnaryOperator;
 use id_tree::Tree;
 use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
+use miette::{bail, miette, Result, WrapErr};
+use parol_runtime::errors::FileSource;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug, Display, Error, Formatter};
+use std::path::PathBuf;
 
 ///
 /// The value range for the supported calculations
@@ -86,6 +89,7 @@ impl Display for CalcGrammarItem {
 pub struct CalcGrammar {
     pub item_stack: Vec<CalcGrammarItem>,
     env: BTreeMap<String, DefinitionRange>,
+    file_name: PathBuf,
 }
 
 impl CalcGrammar {
@@ -375,6 +379,13 @@ impl Display for CalcGrammar {
 }
 
 impl CalcGrammarTrait for CalcGrammar {
+    ///
+    /// Information provided by parser
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        self.file_name = file_name.into();
+    }
+
     /// Semantic action for production 6:
     ///
     /// equality_op: "==|!=";
@@ -1240,15 +1251,16 @@ impl CalcGrammarTrait for CalcGrammar {
     ) -> Result<()> {
         let context = "number_79";
         let symbol = tk_number_0.symbol(parse_tree)?;
-        let number = symbol
-            .parse::<DefinitionRange>()
-            .into_diagnostic()
-            .wrap_err({
-                format!(
-                    "{}: Error accessing token from ParseTreeStackEntry",
-                    context
-                )
-            })?;
+        let number = match symbol.parse::<DefinitionRange>() {
+            Ok(number) => number,
+            Err(error) => {
+                return Err(miette!(CalcError::ParseISizeFailed {
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    token: tk_number_0.token(parse_tree)?.into()
+                }))
+                .wrap_err(miette!(error))
+            }
+        };
         self.push(CalcGrammarItem::Num(number), context);
         Ok(())
     }

@@ -6,7 +6,7 @@
 
 use id_tree::Tree;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use miette::Result;
+use miette::{miette, Result};
 use crate::{{user_trait_module_name}}::{{user_type_name}};
 
 ///
@@ -15,17 +15,35 @@ use crate::{{user_trait_module_name}}::{{user_type_name}};
 /// All functions have default implementations.
 /// 
 pub trait {{{user_type_name}}}Trait {
-{{{trait_functions}}}
+    ///
+    /// Implement this method if you need the provided information
+    ///
+    fn init(&mut self, _file_name: &std::path::Path) {
+    }
+
+    {{{trait_functions}}}
 }
 
 impl UserActionsTrait for {{{user_type_name}}} {
+    ///
+    /// Initialize the user with additional information.
+    /// This function is called by the parser before parsing starts.
+    /// Is is used to transport necessary data from parser to user.
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        {{{user_type_name}}}Trait::init(self, file_name);
+    }
+
+    ///
+    /// This function is implemented automatically for the user's item {{{user_type_name}}}.
+    ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         match prod_num {
-{{{trait_caller}}}            _ => panic!("Unhandled production number: {}", prod_num),
+{{{trait_caller}}}            _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
 }

@@ -1,5 +1,9 @@
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate miette;
+#[macro_use]
+extern crate thiserror;
 
 extern crate parol_runtime;
 
@@ -8,6 +12,7 @@ mod binary_operator;
 mod calc_grammar;
 mod calc_grammar_trait;
 mod calc_parser;
+mod errors;
 mod unary_operator;
 
 use crate::calc_grammar::CalcGrammar;

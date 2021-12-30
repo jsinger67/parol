@@ -6,7 +6,7 @@
 
 use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
-use miette::Result;
+use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -15,6 +15,11 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 /// All functions have default implementations.
 ///
 pub trait ParolGrammarTrait {
+    ///
+    /// Implement this method if you need the provided information
+    ///
+    fn init(&mut self, _file_name: &std::path::Path) {}
+
     /// Semantic action for production 0:
     ///
     /// Parol: Prolog GrammarDefinition;
@@ -634,6 +639,18 @@ pub trait ParolGrammarTrait {
 }
 
 impl UserActionsTrait for ParolGrammar {
+    ///
+    /// Initialize the user with additional information.
+    /// This function is called by the parser before parsing starts.
+    /// Is is used to transport necessary data from parser to user.
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        ParolGrammarTrait::init(self, file_name);
+    }
+
+    ///
+    /// This function is implemented automatically for the user's item ParolGrammar.
+    ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
@@ -790,7 +807,7 @@ impl UserActionsTrait for ParolGrammar {
 
             49 => self.scanner_name_opt_49(parse_tree),
 
-            _ => panic!("Unhandled production number: {}", prod_num),
+            _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
 }

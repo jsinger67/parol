@@ -6,7 +6,7 @@
 
 use crate::oberon_0_grammar::Oberon0Grammar;
 use id_tree::Tree;
-use miette::Result;
+use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -15,6 +15,11 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 /// All functions have default implementations.
 ///
 pub trait Oberon0GrammarTrait {
+    ///
+    /// Implement this method if you need the provided information
+    ///
+    fn init(&mut self, _file_name: &std::path::Path) {}
+
     /// Semantic action for production 0:
     ///
     /// selector: selectorlist;
@@ -1329,6 +1334,18 @@ pub trait Oberon0GrammarTrait {
 }
 
 impl UserActionsTrait for Oberon0Grammar {
+    ///
+    /// Initialize the user with additional information.
+    /// This function is called by the parser before parsing starts.
+    /// Is is used to transport necessary data from parser to user.
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        Oberon0GrammarTrait::init(self, file_name);
+    }
+
+    ///
+    /// This function is implemented automatically for the user's item Oberon0Grammar.
+    ///
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
@@ -1680,7 +1697,7 @@ impl UserActionsTrait for Oberon0Grammar {
 
             104 => self.integer_104(&children[0], parse_tree),
 
-            _ => panic!("Unhandled production number: {}", prod_num),
+            _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
 }
