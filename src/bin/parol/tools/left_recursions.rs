@@ -1,9 +1,7 @@
 use miette::Result;
 use parol::{detect_left_recursions, obtain_grammar_config};
-use std::env;
 
-fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+pub fn main(args: &[&str]) -> Result<()> {
     if args.len() > 1 {
         let file_name = args[1].clone();
         let grammar_config = obtain_grammar_config(&file_name, false)?;
