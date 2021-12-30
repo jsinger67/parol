@@ -3,11 +3,6 @@ use parol::analysis::non_productive_non_terminals;
 use parol::obtain_grammar_config;
 
 pub fn main(args: &[&str]) -> Result<()> {
-    // Logger already initialized
-    // env_logger::init();
-    // $env:RUST_LOG="parol,parol_runtime=off,productivity=debug"
-    // debug!("env logger started");
-
     if args.len() < 2 {
         println!("Missing arguments <par-file>!");
         println!(

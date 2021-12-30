@@ -28,7 +28,6 @@ Example:
 cargo run --bin parol::tools::calculate_k ./src/parser/parol-grammar-exp.par
 ```
 
-
 ## `calculate_k_tuples`
 
 Calculates the lookahead tokens with size k for each non-terminal. Checks the decidability first.

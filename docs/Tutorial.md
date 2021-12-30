@@ -95,14 +95,7 @@ Value    : String
          | Value;
 ```
 
-```shell
-cargo run --bin parol -- -f ./examples/json/json.par
-...
-Error: Basic grammar checks and transformations failed!
-Caused by: Grammar contains left_recursions:
-Value => Value(17,0) => P(Value: Value;) => Value(17,1) => Value
-error: process didn't exit successfully: `target\debug\parol.exe -f ./examples/json/json.par` (exit code: 1)
-```
+![recursion](./images/recursion.png)
 
 To see more clearly what this message means we first save the expanded grammar to a separate file. Please ignore the error in this case. The `json-exp.par` is generated anyway.
 

@@ -5,7 +5,6 @@ use parol::obtain_grammar_config;
 use parol::MAX_K;
 
 pub fn main(args: &[&str]) -> Result<()> {
-    // NOTE: Logger should already be initialized
     if args.len() > 1 {
         let file_name = args[1].to_owned();
 

@@ -5,11 +5,6 @@ use parol::{obtain_grammar_config, KTuples, MAX_K};
 use std::collections::BTreeMap;
 
 pub fn main(args: &[&str]) -> Result<()> {
-    // NOTE: Logger should already be started
-    // env_logger::init();
-    // $env:RUST_LOG="parol,parol_runtime=off,productivity=debug"
-    // debug!("env logger started");
-
     if args.len() < 2 {
         println!("Missing arguments <par-file> [k=1]!");
         println!(
