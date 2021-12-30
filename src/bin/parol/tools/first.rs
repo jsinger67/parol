@@ -1,17 +1,15 @@
-use log::debug;
 use miette::{bail, Result};
 use parol::analysis::{first_k, FirstCache};
 use parol::generators::generate_terminal_names;
 use parol::{obtain_grammar_config, KTuples, MAX_K};
 use std::collections::BTreeMap;
-use std::env;
 
-fn main() -> Result<()> {
-    env_logger::init();
+pub fn main(args: &[&str]) -> Result<()> {
+    // NOTE: Logger should already be started
+    // env_logger::init();
     // $env:RUST_LOG="parol,parol_runtime=off,productivity=debug"
-    debug!("env logger started");
+    // debug!("env logger started");
 
-    let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("Missing arguments <par-file> [k=1]!");
         println!(

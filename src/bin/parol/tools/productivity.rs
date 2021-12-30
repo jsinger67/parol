@@ -1,15 +1,13 @@
-use log::debug;
 use miette::Result;
 use parol::analysis::non_productive_non_terminals;
 use parol::obtain_grammar_config;
-use std::env;
 
-fn main() -> Result<()> {
-    env_logger::init();
+pub fn main(args: &[&str]) -> Result<()> {
+    // Logger already initialized
+    // env_logger::init();
     // $env:RUST_LOG="parol,parol_runtime=off,productivity=debug"
-    debug!("env logger started");
+    // debug!("env logger started");
 
-    let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         println!("Missing arguments <par-file>!");
         println!(

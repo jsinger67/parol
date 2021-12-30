@@ -2,7 +2,7 @@
 extern crate clap;
 
 use clap::{App,AppSettings};
-use miette::{bail, IntoDiagnostic, Result, WrapErr};
+use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
 use std::convert::TryFrom;
 
 use log::trace;
@@ -11,10 +11,11 @@ use parol::{
     generate_parser_source, generate_tree_layout, generate_user_trait_source, parse,
     render_par_string, try_format, GrammarConfig, ParolGrammar, MAX_K,
 };
-use std::{fs, io};
-use std::process::{self, Command};
+use std::{fs, env};
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
+
+mod tools;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -25,34 +26,34 @@ fn main() -> Result<()> {
     trace!("env logger started");
 
     let yaml = load_yaml!("arguments.yml");
-    let config = App::from_yaml(yaml).version(VERSION)
-        // Allows for tools like `parol-serialize` to be invoked as subcommands (`parol serialize`)
+    let config = App::from_yaml(yaml)
+        // If the first arg is the name of a tool, invoke that instead
         .setting(AppSettings::AllowExternalSubcommands)
-        // If we use an external subcommand, it must come first (no flags before)
+        // Only invoke subcommands if they come first....
         .setting(AppSettings::ArgsNegateSubcommands)
-        .get_matches();
+        .version(VERSION).get_matches();
 
     if let (subcommand_name, Some(sub_matches)) = config.subcommand() {
-        let ext_args: Vec<&str> = sub_matches.values_of("").map_or_else(Vec::default, |args| args.collect());
-        let tool_name = format!("parol-{}", subcommand_name);
-        log::debug!("Delegating to {} with {:?}", tool_name, ext_args);
-        let mut tool_child = match Command::new(&tool_name).args(ext_args).spawn() {
-            Ok(child) => child,
-            Err(e) if e.kind() == io::ErrorKind::NotFound => {
-                bail!("Missing tool `{}`", tool_name);
+        let mut ext_args: Vec<&str> = sub_matches.values_of("").map_or_else(Vec::default, |args| args.collect());
+        /*
+         * All of the tools were originally written using `env::args()` meaning they expect tool name to be
+         * first.
+         *
+         * Therefore they expect first argument at index 1 instead of zero.
+         * Fake a command name to avoid changing all the indices
+         */
+        ext_args.insert(0, subcommand_name);
+        let tool_main = tools::get_tool_main(subcommand_name).ok_or_else(|| {
+            let mut available_tools = String::new(); // NOTE: Has leading `\n`
+            for name in tools::names() {
+                available_tools.push_str("\n  - ");
+                available_tools.push_str(name);
             }
-            Err(e) => return Err(e).into_diagnostic().wrap_err(format!("Failure to spawn {} command", tool_name))?
-
-
-        };
-        let status = tool_child.wait().into_diagnostic().wrap_err(format!("Unexpected error running {}", tool_name))?;
-        match status.code() {
-            Some(code) => process::exit(code),
-            None => process::exit(7), // Abnormal exit with signal. Exit code chosen arbitrarily
-        };
+            miette!("Unknown tool name: {}\nAvailable tools:{}", subcommand_name, available_tools)
+        })?;
+        log::debug!("Delegating to {} with {:?}", subcommand_name, ext_args);
+        return tool_main(&ext_args);
     }
-
-    
 
     let max_k = config
         .value_of("lookahead")

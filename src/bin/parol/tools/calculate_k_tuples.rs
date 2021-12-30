@@ -3,10 +3,8 @@ use parol::analysis::k_decision::{calculate_k_tuples, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
 use parol::obtain_grammar_config;
 use parol::MAX_K;
-use std::env;
 
-fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
+pub fn main(args: &[&str]) -> Result<()> {
     if args.len() > 1 {
         let file_name = args[1].clone();
 
