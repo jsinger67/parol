@@ -12,8 +12,9 @@ use std::path::Path;
 pub trait UserActionsTrait {
     ///
     /// Initialize the user with additional information.
-    /// This function is called by the parser before paring starts.
-    /// Is is used to transform necessary data from parser to user.
+    /// This function is called by the parser before parsing starts.
+    /// Is is used to transport necessary data from parser to user.
+    /// Is likely to be extended later.
     ///
     fn init(&mut self, file_name: &Path);
 
