@@ -4,16 +4,22 @@ As of version v0.5.1. tools are subcommands of the parol binary. Their source co
 
 Please note, that you do not need to use these tools normally when you want to generate parsers. All of their functionality is completely included in `parol` itself. But when you are about to solve a certain problem they may come handy. So it is useful to know whats in the bag.
 
-Hint: All tools give a short help output when called without parameters:
+Hint: All subcommands give a short help output when called without parameters:
 
 ```shell
     >cargo run --bin parol calculate_k
 Missing arguments <par-file> <k=5>!
 Example:
-cargo run --bin parol::tools::calculate_k ./src/parser/parol-grammar-exp.par
+cargo run --bin parol calculate_k ./src/parser/parol-grammar-exp.par
 ```
 
 If you installed parol via
+
+```shell
+cargo install parol
+```
+
+or from local repository
 
 ```shell
 cargo install --path .
@@ -22,10 +28,23 @@ cargo install --path .
 you will have another option of calling parol and its subcommands which is even easier because the `parol` executable is installed in your `~/.cargo/bin` folder.
 
 ```shell
-    >parol calculate_k
-Missing arguments <par-file> <k=5>!
-Example:
-cargo run --bin parol::tools::calculate_k ./src/parser/parol-grammar-exp.par
+    >parol calculate_k  ./examples/list/list-exp.par
+title: Some("A simple comma separated list of integers")
+comment: Some("A trailing comma is allowed.")
+start_symbol: list
+current_scanner: INITIAL
+name: INITIAL;line_comments: [];block_comments: [];auto_newline_off: false;auto_ws_off: false;
+list: Alts(Alt());
+list: Alts(Alt(N(num), N(list_rest)));
+list_rest: Alts(Alt(N(list_item), N(list_rest)));
+list_item: Alts(Alt(<0>T(,), N(num)));
+list_rest: Alts(Alt());
+list_rest: Alts(Alt(<0>T(,)));
+num: Alts(Alt(<0>T(\d+)));
+
+Ok(
+    2,
+)
 ```
 
 ## `calculate_k_tuples`

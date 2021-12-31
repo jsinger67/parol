@@ -22,20 +22,25 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 0:
     ///
-    /// list: ;
+    /// List: Num ListRest ListSuffix;
     ///
-    fn list_0(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_0(
+        &mut self,
+        _num_0: &ParseTreeStackEntry,
+        _list_rest_1: &ParseTreeStackEntry,
+        _list_suffix_2: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 1:
     ///
-    /// list: num list_rest;
+    /// ListSuffix: ",";
     ///
-    fn list_1(
+    fn list_suffix_1(
         &mut self,
-        _num_0: &ParseTreeStackEntry,
-        _list_rest_1: &ParseTreeStackEntry,
+        _comma_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -43,53 +48,45 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// list_rest: list_item list_rest;
+    /// ListSuffix: ;
     ///
-    fn list_rest_2(
-        &mut self,
-        _list_item_0: &ParseTreeStackEntry,
-        _list_rest_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn list_suffix_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// list_item: "," num;
+    /// List: ;
     ///
-    fn list_item_3(
-        &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _num_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn list_3(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// list_rest: ;
+    /// ListRest: "," Num ListRest;
     ///
-    fn list_rest_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 5:
-    ///
-    /// list_rest: ",";
-    ///
-    fn list_rest_5(
+    fn list_rest_4(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
+        _num_1: &ParseTreeStackEntry,
+        _list_rest_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
 
+    /// Semantic action for production 5:
+    ///
+    /// ListRest: ;
+    ///
+    fn list_rest_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for production 6:
     ///
-    /// num: "\d+";
+    /// Num: "\d+";
     ///
     fn num_6(
         &mut self,
@@ -120,17 +117,17 @@ impl UserActionsTrait for ListGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.list_0(parse_tree),
+            0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),
 
-            1 => self.list_1(&children[0], &children[1], parse_tree),
+            1 => self.list_suffix_1(&children[0], parse_tree),
 
-            2 => self.list_rest_2(&children[0], &children[1], parse_tree),
+            2 => self.list_suffix_2(parse_tree),
 
-            3 => self.list_item_3(&children[0], &children[1], parse_tree),
+            3 => self.list_3(parse_tree),
 
-            4 => self.list_rest_4(parse_tree),
+            4 => self.list_rest_4(&children[0], &children[1], &children[2], parse_tree),
 
-            5 => self.list_rest_5(&children[0], parse_tree),
+            5 => self.list_rest_5(parse_tree),
 
             6 => self.num_6(&children[0], parse_tree),
 

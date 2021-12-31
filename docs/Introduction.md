@@ -10,7 +10,13 @@ from the crates root folder.
 
 ## Installation
 
-You can opt for installing parol via the command from the crates root folder
+You can opt for installing parol via the command
+
+```shell
+cargo install parol
+```
+
+or from local repository
 
 ```shell
 cargo install --path .
@@ -48,10 +54,10 @@ The following image shows an excerpt of the parse tree:
 
 To have a visualization of a certain parse tree while you're implementing your grammar can be very helpful.
 
-Besides `parol` itself there exist several tools with special tasks (see [Supplementary tools](./Tools.md)). As an example let's have a look at the `decidable` tool:
+`parol` itself provides several tools with special tasks (see [Supplementary tools](./Tools.md)) as subcommands. As an example let's have a look at the `decidable` subcommand:
 
 ```shell
-    cargo run --bin parol -- decidable ./examples/list/list.par
+    cargo run --bin parol decidable ./examples/list/list-exp.par
 ```
 
 This tool generates this output:

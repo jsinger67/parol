@@ -19,7 +19,7 @@ You should get the following output
 
 This single output line shows the result the parser has returned from the parsing of the content '1, 2, 3, 4, 5, 6,'. A list of numbers just as expected.
 
-Here we will only have a closer look at the implementation of the semantic action for production 6 (`num`).
+Here we will have a closer look at the implementation of the semantic action for production 6 (`Num`). It is actually the only action we need to implement in this simple example.
 
 But first we will have a look at the grammar description [list.par](../examples/list/list.par):
 
@@ -30,14 +30,38 @@ But first we will have a look at the grammar description [list.par](../examples/
 
 %%
 
-/* 0 */ list: ;
-/* 1 */ list: num list_rest;
-/* 2 */ list_rest: list_item list_rest;
-/* 3 */ list_item: "," num;
-/* 4 */ list_rest: ;
-/* 5 */ list_rest: ",";
-/* 6 */ num: "\d+";
+List: [Num ListRest [","]];
+ListRest: ["," Num ListRest];
+Num: "\d+";
 ```
+
+<!-- markdownlint-disable blanks-around-fences -->
+> Note: This grammar is actually a regular grammar because is could be written by a regular expression
+> ```regex
+> (\d+\s*(,\s*\d+\s*)*,?)?
+> ```
+>But we describe it here by means of context free grammars.
+<!-- markdownlint-enable blanks-around-fences -->
+
+Then we take a look at the expanded grammar (also know as canonical format) that `parol` created from our `list.par`, the [list-exp.par](../examples/list/list-exp.par):
+
+```ebnf
+%start List
+%title "A simple comma separated list of integers"
+%comment "A trailing comma is allowed."
+
+%%
+
+/* 0 */ List: Num ListRest ListSuffix;
+/* 1 */ ListSuffix: ",";
+/* 2 */ ListSuffix: ;
+/* 3 */ List: ;
+/* 4 */ ListRest: "," Num ListRest;
+/* 5 */ ListRest: ;
+/* 6 */ Num: "\d+";
+```
+
+This is an equivalently transformed version of our initial grammar. More on grammar transformation applied by `parol` can be found in the [Tutorial](Tutorial.md).
 
 What we need to know is that the parser will call the semantic actions for a certain production after it has recognized all symbols that are on the right hand side of it.
 The generated function has arguments that correspond to the symbols on the right hand side. The name of the function is derived from the left hand side of the production (the non-terminal) plus the production number to ensure uniqueness of function names. This results in the name "num_6" in our case here.
@@ -46,37 +70,26 @@ The current number token ("\d+") in production 6 corresponds with the `num_0` pa
 
 Form the production we know that "\d+" is a terminal
 
-We extract the token's text from this `num_0` parameter with the helper function `symbol` of the `ParseTreeStackEntry`. Then we convert it to `usize`, the type defined by `DefinitionRange`. If this succeeds we push the new `ListGrammarItem::Num` on our item stack.  
+We extract the token's text from this `num_0` parameter with the helper function `symbol` of the `ParseTreeStackEntry`. Then we convert it to `usize`, the type defined by `DefinitionRange`. If this succeeds we push the new number on our item stack.  
 
 ```rust
 /// Semantic action for production 6:
 ///
-/// num: "\d+";
+/// Num: "\d+";
 ///
 fn num_6(
     &mut self,
     num_0: &ParseTreeStackEntry,
     parse_tree: &Tree<ParseTreeType>,
 ) -> Result<()> {
-    let context = "num_6";
     let symbol = num_0.symbol(parse_tree)?;
-    let number = symbol.parse::<DefinitionRange>().into_diagnostic().wrap_err( {
-        format!(
-            "{}: Error accessing token from ParseTreeStackEntry",
-            context
-        )
-    })?;
-    self.push(ListGrammarItem::Num(number), context);
+    let number = symbol
+        .parse::<DefinitionRange>()
+        .into_diagnostic()
+        .wrap_err("num_6: Error accessing token from ParseTreeStackEntry")?;
+    self.push(number);
     Ok(())
 }
-```
-
-At the end of the parsing our item stack will contain all 'pushed in' `ListGrammarItem::Num` items, but in reversed order.
-In the `list_1` semantic action of the *List* example we take these number from the user stack, reverse them and pushing it as `ListGrammarItem::List`:
-
-```rust
-    list.reverse();
-    self.push(ListGrammarItem::List(list.to_vec()), context);
 ```
 
 ## Further readings

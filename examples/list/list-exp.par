@@ -1,13 +1,13 @@
-%start list
+%start List
 %title "A simple comma separated list of integers"
 %comment "A trailing comma is allowed."
 
 %%
 
-/* 0 */ list: ;
-/* 1 */ list: num list_rest;
-/* 2 */ list_rest: list_item list_rest;
-/* 3 */ list_item: "," num;
-/* 4 */ list_rest: ;
-/* 5 */ list_rest: ",";
-/* 6 */ num: "\d+";
+/* 0 */ List: Num ListRest ListSuffix;
+/* 1 */ ListSuffix: ",";
+/* 2 */ ListSuffix: ;
+/* 3 */ List: ;
+/* 4 */ ListRest: "," Num ListRest;
+/* 5 */ ListRest: ;
+/* 6 */ Num: "\d+";
