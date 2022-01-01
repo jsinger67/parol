@@ -5,7 +5,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::ops::Index;
 
 lazy_static! {
-    pub(crate) static ref RX_NUM_SUFFIX: Regex = Regex::new(r"\d+$").expect("error parsing regex");
+    pub(crate) static ref RX_NUM_SUFFIX: Regex =
+        Regex::new(r"[0-9]+$").expect("error parsing regex");
 }
 
 ///

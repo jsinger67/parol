@@ -28,8 +28,8 @@ impl Display for Pr {
     /// assert_eq!(r#"S: "," N;"#, format!("{}", pr));
     /// let pr = Pr::new("S", vec![Symbol::t("d", vec![0])]);
     /// assert_eq!(r#"S: "d";"#, format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t(r#"\d"#, vec![0]), Symbol::t("e", vec![0])]);
-    /// assert_eq!(r#"S: "\d" "e";"#, format!("{}", pr));
+    /// let pr = Pr::new("S", vec![Symbol::t(r#"[0-9]"#, vec![0]), Symbol::t("e", vec![0])]);
+    /// assert_eq!(r#"S: "[0-9]" "e";"#, format!("{}", pr));
     /// ```
     ///
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {

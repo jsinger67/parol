@@ -6,4 +6,4 @@
 
 List: [Num ListRest [","]];
 ListRest: ["," Num ListRest];
-Num: "\d+";
+Num: "[0-9]+";

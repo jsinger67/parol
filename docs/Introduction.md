@@ -83,7 +83,7 @@ Lets have a look at the used grammar description file `list.par`.
 /* 3 */ list_item: "," num;
 /* 4 */ list_rest: ;
 /* 5 */ list_rest: ",";
-/* 6 */ num: "\d+";
+/* 6 */ num: "[0-9]+";
 ```
 
 It shows us the basic structure of a grammar description file and if you are familiar with yacc/bison grammar files, you will recognize the similarity.

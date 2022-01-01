@@ -135,6 +135,6 @@ factor: number;
 factor: idref;
 factor: negate factor;
 factor: "\(" logical_or "\)";
-number: "\d+";
+number: "[0-9]+";
 idref: id;
 id: "[a-zA-Z_]\w*";

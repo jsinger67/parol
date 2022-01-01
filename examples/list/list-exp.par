@@ -10,4 +10,4 @@
 /* 3 */ List: ;
 /* 4 */ ListRest: "," Num ListRest;
 /* 5 */ ListRest: ;
-/* 6 */ Num: "\d+";
+/* 6 */ Num: "[0-9]+";

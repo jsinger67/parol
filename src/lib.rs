@@ -12,6 +12,8 @@ extern crate serde_derive;
 #[macro_use]
 extern crate bart_derive;
 
+extern crate rand;
+extern crate regex_generate;
 extern crate serde;
 extern crate serde_json;
 
@@ -45,7 +47,7 @@ pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_st
 pub mod generators;
 pub use generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source,
-    generate_user_trait_source, try_format, GrammarConfig, ScannerConfig,
+    generate_user_trait_source, try_format, GrammarConfig, LanguageGenerator, ScannerConfig,
 };
 
 pub mod parser;

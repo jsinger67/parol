@@ -7,6 +7,9 @@ pub use scanner_config::ScannerConfig;
 pub mod grammar_trans;
 pub use grammar_trans::check_and_transform_grammar;
 
+pub mod language_generator;
+pub use language_generator::LanguageGenerator;
+
 pub mod lexer_generator;
 pub use lexer_generator::{generate_lexer_source, generate_terminal_names};
 

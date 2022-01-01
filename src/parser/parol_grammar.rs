@@ -8,7 +8,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
 // Test run:
-// cargo run --bin parol -- -f .\src\parser\parol-grammar.par -v
+// parol -f .\src\parser\parol-grammar.par -v
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Factor {

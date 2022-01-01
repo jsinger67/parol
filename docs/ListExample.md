@@ -32,13 +32,13 @@ But first we will have a look at the grammar description [list.par](../examples/
 
 List: [Num ListRest [","]];
 ListRest: ["," Num ListRest];
-Num: "\d+";
+Num: "[0-9]+";
 ```
 
 <!-- markdownlint-disable blanks-around-fences -->
 > Note: This grammar is actually a regular grammar because is could be written by a regular expression
 > ```regex
-> (\d+\s*(,\s*\d+\s*)*,?)?
+> ([0-9]+\s*(,\s*[0-9]+\s*)*,?)?
 > ```
 >But we describe it here by means of context free grammars.
 <!-- markdownlint-enable blanks-around-fences -->
@@ -58,7 +58,7 @@ Then we take a look at the expanded grammar (also know as canonical format) that
 /* 3 */ List: ;
 /* 4 */ ListRest: "," Num ListRest;
 /* 5 */ ListRest: ;
-/* 6 */ Num: "\d+";
+/* 6 */ Num: "[0-9]+";
 ```
 
 This is an equivalently transformed version of our initial grammar. More on grammar transformation applied by `parol` can be found in the [Tutorial](Tutorial.md).
@@ -66,16 +66,16 @@ This is an equivalently transformed version of our initial grammar. More on gram
 What we need to know is that the parser will call the semantic actions for a certain production after it has recognized all symbols that are on the right hand side of it.
 The generated function has arguments that correspond to the symbols on the right hand side. The name of the function is derived from the left hand side of the production (the non-terminal) plus the production number to ensure uniqueness of function names. This results in the name "num_6" in our case here.
 
-The current number token ("\d+") in production 6 corresponds with the `num_0` parameter. Its type is `&ParseTreeStackEntry`. This type is predetermined by the `parol` parser's runtime, and can therefor be found in the `parol_runtime` crate. It can be thought of as being either a token from the input string that matched a terminal or a non-terminal that is actually a root node of a sub-tree of the parse tree.
+The current number token ("[0-9]+") in production 6 corresponds with the `num_0` parameter. Its type is `&ParseTreeStackEntry`. This type is predetermined by the `parol` parser's runtime, and can therefor be found in the `parol_runtime` crate. It can be thought of as being either a token from the input string that matched a terminal or a non-terminal that is actually a root node of a sub-tree of the parse tree.
 
-Form the production we know that "\d+" is a terminal
+Form the production we know that "[0-9]+" is a terminal
 
 We extract the token's text from this `num_0` parameter with the helper function `symbol` of the `ParseTreeStackEntry`. Then we convert it to `usize`, the type defined by `DefinitionRange`. If this succeeds we push the new number on our item stack.  
 
 ```rust
 /// Semantic action for production 6:
 ///
-/// Num: "\d+";
+/// Num: "[0-9]+";
 ///
 fn num_6(
     &mut self,

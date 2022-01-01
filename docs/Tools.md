@@ -40,7 +40,7 @@ list_rest: Alts(Alt(N(list_item), N(list_rest)));
 list_item: Alts(Alt(<0>T(,), N(num)));
 list_rest: Alts(Alt());
 list_rest: Alts(Alt(<0>T(,)));
-num: Alts(Alt(<0>T(\d+)));
+num: Alts(Alt(<0>T([0-9]+)));
 
 Ok(
     2,

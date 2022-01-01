@@ -365,7 +365,7 @@ Fine. Let's check if the parser works.
 cargo run
 ...
 Error: Please provide a file name as single parameter!
-error: process didn't exit successfully: `target\debug\json_parser.exe` (exit code: 1
+error: process didn't exit successfully: `target[0-9]ebug\json_parser.exe` (exit code: 1
 ```
 
 We need an example json file. Create a new folder named `json` in your crates root and place a new file `JsonParserTest.json` with the following content into it:
@@ -1284,7 +1284,7 @@ Then you could return a special error like in this example (see example `calc`):
 ```rust
 /// Semantic action for production 79:
 ///
-/// number: "\d+";
+/// number: "[0-9]+";
 ///
 fn number_79(
     &mut self,

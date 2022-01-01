@@ -38,7 +38,7 @@ pub const TERMINALS: &[&str; 23] = &[
     /* 17 */ r###"\*|/|%"###,
     /* 18 */ r###"\("###,
     /* 19 */ r###"\)"###,
-    /* 20 */ r###"\d+"###,
+    /* 20 */ r###"[0-9]+"###,
     /* 21 */ r###"[a-zA-Z_]\w*"###,
     /* 22 */ ERROR_TOKEN,
 ];
@@ -1133,7 +1133,7 @@ pub const PRODUCTIONS: &[Production; 82] = &[
         lhs: 29,
         production: &[ParseType::T(19), ParseType::N(38), ParseType::T(18)],
     },
-    // 79 - number: "\d+";
+    // 79 - number: "[0-9]+";
     Production {
         lhs: 50,
         production: &[ParseType::T(20)],

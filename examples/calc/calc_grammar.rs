@@ -1242,7 +1242,7 @@ impl CalcGrammarTrait for CalcGrammar {
 
     /// Semantic action for production 79:
     ///
-    /// number: "\d+";
+    /// number: "[0-9]+";
     ///
     fn number_79(
         &mut self,
