@@ -86,7 +86,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// Num: "[0-9]+";
+    /// Num: "0|[1-9][0-9]*";
     ///
     fn num_6(
         &mut self,

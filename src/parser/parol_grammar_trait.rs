@@ -479,7 +479,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 37:
     ///
-    /// Identifier: "[a-zA-Z_]\w*";
+    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
     fn identifier_37(
         &mut self,

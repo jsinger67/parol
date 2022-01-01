@@ -42,7 +42,7 @@ pub const TERMINALS: &[&str; 32] = &[
     /* 21 */ r###"\]"###,
     /* 22 */ r###"\{"###,
     /* 23 */ r###"\}"###,
-    /* 24 */ r###"[a-zA-Z_]\w*"###,
+    /* 24 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
     /* 25 */ r###"\u{0022}([^\\]|\\.)*?\u{0022}"###,
     /* 26 */ r###"%scanner"###,
     /* 27 */ r###","###,
@@ -617,7 +617,7 @@ pub const PRODUCTIONS: &[Production; 50] = &[
             ParseType::T(22),
         ],
     },
-    // 37 - Identifier: "[a-zA-Z_]\w*";
+    // 37 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
         lhs: 10,
         production: &[ParseType::T(24)],

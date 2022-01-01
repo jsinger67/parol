@@ -961,7 +961,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 79:
     ///
-    /// number: "[0-9]+";
+    /// number: "0|[1-9][0-9]*";
     ///
     fn number_79(
         &mut self,
@@ -985,7 +985,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 81:
     ///
-    /// id: "[a-zA-Z_]\w*";
+    /// id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
     fn id_81(
         &mut self,

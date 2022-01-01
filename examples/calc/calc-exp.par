@@ -85,6 +85,6 @@
 /* 76 */ factor: idref;
 /* 77 */ factor: negate factor;
 /* 78 */ factor: "\(" logical_or "\)";
-/* 79 */ number: "[0-9]+";
+/* 79 */ number: "0|[1-9][0-9]*";
 /* 80 */ idref: id;
-/* 81 */ id: "[a-zA-Z_]\w*";
+/* 81 */ id: "[a-zA-Z_][a-zA-Z0-9_]*";

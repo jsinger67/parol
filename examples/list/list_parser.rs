@@ -24,7 +24,7 @@ pub const TERMINALS: &[&str; 8] = &[
     /* 3 */ UNMATCHABLE_TOKEN,
     /* 4 */ UNMATCHABLE_TOKEN,
     /* 5 */ r###","###,
-    /* 6 */ r###"[0-9]+"###,
+    /* 6 */ r###"0|[1-9][0-9]*"###,
     /* 7 */ ERROR_TOKEN,
 ];
 
@@ -123,7 +123,7 @@ pub const PRODUCTIONS: &[Production; 7] = &[
         lhs: 1,
         production: &[],
     },
-    // 6 - Num: "[0-9]+";
+    // 6 - Num: "0|[1-9][0-9]*";
     Production {
         lhs: 3,
         production: &[ParseType::T(6)],

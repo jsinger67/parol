@@ -38,8 +38,8 @@ pub const TERMINALS: &[&str; 23] = &[
     /* 17 */ r###"\*|/|%"###,
     /* 18 */ r###"\("###,
     /* 19 */ r###"\)"###,
-    /* 20 */ r###"[0-9]+"###,
-    /* 21 */ r###"[a-zA-Z_]\w*"###,
+    /* 20 */ r###"0|[1-9][0-9]*"###,
+    /* 21 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
     /* 22 */ ERROR_TOKEN,
 ];
 
@@ -1133,7 +1133,7 @@ pub const PRODUCTIONS: &[Production; 82] = &[
         lhs: 29,
         production: &[ParseType::T(19), ParseType::N(38), ParseType::T(18)],
     },
-    // 79 - number: "[0-9]+";
+    // 79 - number: "0|[1-9][0-9]*";
     Production {
         lhs: 50,
         production: &[ParseType::T(20)],
@@ -1143,7 +1143,7 @@ pub const PRODUCTIONS: &[Production; 82] = &[
         lhs: 31,
         production: &[ParseType::N(30)],
     },
-    // 81 - id: "[a-zA-Z_]\w*";
+    // 81 - id: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
         lhs: 30,
         production: &[ParseType::T(21)],

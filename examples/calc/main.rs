@@ -24,7 +24,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// cargo run --bin parol -- -f .\examples\calc\calc.par -l .\examples\calc\calc-lf.par -p .\examples\calc\calc_parser.rs -a .\examples\calc\calc_grammar_trait.rs -t CalcGrammar -m calc_grammar
+// parol -f ./examples/calc/calc.par -e ./examples/calc/calc-exp.par -p ./examples/calc/calc_parser.rs -a ./examples/calc/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar
 
 // To run the example
 // cargo run --example calc -- .\examples\calc\calc_test.txt

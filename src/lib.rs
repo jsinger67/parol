@@ -13,7 +13,7 @@ extern crate serde_derive;
 extern crate bart_derive;
 
 extern crate rand;
-extern crate regex_generate;
+extern crate rand_regex;
 extern crate serde;
 extern crate serde_json;
 

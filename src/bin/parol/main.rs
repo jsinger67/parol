@@ -20,8 +20,6 @@ mod tools;
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
 fn main() -> Result<()> {
-    // $env:RUST_LOG="parol_runtime=trace,parol=trace"
-    // std::env::set_var("RUST_LOG", "parol::analysis::first,parol::analysis::follow,parol::analysis::k_decision,parol::main=trace");
     env_logger::try_init().into_diagnostic()?;
     trace!("env logger started");
 

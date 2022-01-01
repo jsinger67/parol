@@ -1,14 +1,15 @@
 use crate::{Cfg, Symbol, Terminal};
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result};
-use rand::prelude::*;
-use regex_generate::{Generator, DEFAULT_MAX_REPEAT};
-use std::io::Write;
+use miette::{miette, ErrReport, Result};
+use rand::Rng;
+//use std::collections::HashMap;
+use std::fmt::Display;
 
 #[derive(Debug)]
 pub struct LanguageGenerator<'a> {
     generator_stack: Vec<Symbol>,
     cfg: &'a Cfg,
+    //cache: HashMap<&'a str, rand_regex::Regex>,
 }
 
 impl<'a> LanguageGenerator<'a> {
@@ -16,27 +17,28 @@ impl<'a> LanguageGenerator<'a> {
         Self {
             generator_stack: Vec::new(),
             cfg,
+            // cache: HashMap::new(),
         }
     }
 
-    pub fn generate<W>(&mut self, buffer: &mut W, max_repeat: u32) -> Result<()>
-    where
-        W: Write,
-    {
+    pub fn generate(&mut self, max_repeat: u32) -> Result<String> {
+        let mut result = String::new();
         self.process_non_terminal(self.cfg.get_start_symbol())?;
         while let Some(symbol) = self.generator_stack.pop() {
             match symbol {
                 Symbol::N(n) => self.process_non_terminal(&n),
-                Symbol::T(Terminal::Trm(t, _)) => self.process_terminal(&t, buffer, max_repeat),
+                Symbol::T(Terminal::Trm(t, _)) => {
+                    self.process_terminal(&t, &mut result, max_repeat)
+                }
                 _ => Ok(()),
             }?
         }
-        Ok(())
+        Ok(result)
     }
 
     fn process_non_terminal(&mut self, non_terminal: &str) -> Result<()> {
         let productions_of_nt = self.cfg.matching_productions(non_terminal);
-        let chosen_index = rand::thread_rng().gen_range(0, productions_of_nt.len());
+        let chosen_index = rand::thread_rng().gen_range(0..productions_of_nt.len());
         trace!(
             "/* {} */ {} {}/{}",
             productions_of_nt[chosen_index].0,
@@ -53,18 +55,50 @@ impl<'a> LanguageGenerator<'a> {
         Ok(())
     }
 
-    fn process_terminal<W>(&mut self, terminal: &str, buffer: &mut W, max_repeat: u32) -> Result<()>
-    where
-        W: Write,
-    {
-        let mut gen = Generator::new(
-            terminal,
-            ThreadRng::default(),
-            std::cmp::max(max_repeat, DEFAULT_MAX_REPEAT),
-        )
-        .map_err(|error| miette!("{}", error))?;
-        gen.generate(buffer).map_err(|error| miette!("{}", error))?;
-        buffer.write(b" ").into_diagnostic()?;
-        Ok(())
+    fn to_miette<T: Display>(e: T) -> ErrReport {
+        miette!("{}", e)
     }
+
+    fn process_terminal(
+        &mut self,
+        terminal: &str,
+        result: &mut String,
+        max_repeat: u32,
+    ) -> Result<()> {
+        let mut rng = rand::thread_rng();
+        regex_syntax::ParserBuilder::new()
+            .build()
+            .parse(terminal)
+            .map_err(Self::to_miette)
+            .and_then(|utf8_hir| {
+                rand_regex::Regex::with_hir(utf8_hir, max_repeat)
+                    .map_err(Self::to_miette)
+                    .and_then(|utf8_gen| {
+                        let generated = rng.sample::<String, _>(&utf8_gen);
+                        trace!("gen: {}", generated);
+                        result.push_str(&generated);
+                        result.push_str(" ");
+                        Ok(())
+                    })
+            })
+    }
+
+    // fn get_regex(&mut self, terminal: &'a str, max_repeat: u32) -> Result<&rand_regex::Regex> {
+    //     if let Some(regex) = self.cache.get(terminal) {
+    //         Ok(regex)
+    //     } else {
+    //         regex_syntax::ParserBuilder::new()
+    //             .build()
+    //             .parse(terminal)
+    //             .map_err(Self::to_miette)
+    //             .and_then(move |utf8_hir| {
+    //                 rand_regex::Regex::with_hir(utf8_hir, max_repeat)
+    //                     .map_err(Self::to_miette)
+    //                     .and_then(|utf8_gen| {
+    //                         self.cache.insert(terminal, utf8_gen);
+    //                         Ok(self.cache.get(terminal).unwrap())
+    //                     })
+    //             })
+    //     }
+    // }
 }
