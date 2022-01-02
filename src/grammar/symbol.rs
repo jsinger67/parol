@@ -210,7 +210,7 @@ impl Symbol {
                 }
             }
             Self::Push(s) => format!("%push({})", scanner_state_resolver(&[*s])),
-            Self::Pop => "%pop".to_string(),
+            Self::Pop => "%pop()".to_string(),
         }
     }
 }
