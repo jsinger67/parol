@@ -434,14 +434,13 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 34:
     ///
-    /// Group: "\(" Factor Alternations "\)";
+    /// Group: "\(" Alternations "\)";
     ///
     fn group_34(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_paren_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -449,14 +448,13 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 35:
     ///
-    /// Optional: "\[" Factor Alternations "\]";
+    /// Optional: "\[" Alternations "\]";
     ///
     fn optional_35(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_bracket_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -464,14 +462,13 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 36:
     ///
-    /// Repeat: "\{" Factor Alternations "\}";
+    /// Repeat: "\{" Alternations "\}";
     ///
     fn repeat_36(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_brace_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -738,29 +735,11 @@ impl UserActionsTrait for ParolGrammar {
                 parse_tree,
             ),
 
-            34 => self.group_34(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
+            34 => self.group_34(&children[0], &children[1], &children[2], parse_tree),
 
-            35 => self.optional_35(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
+            35 => self.optional_35(&children[0], &children[1], &children[2], parse_tree),
 
-            36 => self.repeat_36(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
+            36 => self.repeat_36(&children[0], &children[1], &children[2], parse_tree),
 
             37 => self.identifier_37(&children[0], parse_tree),
 

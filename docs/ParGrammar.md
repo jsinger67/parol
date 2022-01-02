@@ -28,9 +28,9 @@ Symbol              = Identifier                        (* EBNF: Meta-identifier
                     | ScannerSwitch.                    (* Instruction to switch to new scanner state *)
 SimpleToken         = String.                           (* EBNF: Terminal-string, always treated as a regular expression! *)
 TokenWithStates     = "<" StateList ">" String.
-Group               = '(' Factor Alternations ')'.      (* A non-empty grouping *)
-Optional            = '[' Factor Alternations ']'.      (* A non-empty optional expression *)
-Repeat              = '{' Factor Alternations '}'.      (* A non-empty repetition *)
+Group               = '(' Alternations ')'.             (* A non-empty grouping *)
+Optional            = '[' Alternations ']'.             (* A non-empty optional expression *)
+Repeat              = '{' Alternations '}'.             (* A non-empty repetition *)
 Identifier          = '[a-zA-Z_]\w*'.
 String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
 ScannerState        = '%scanner' Identifier '{' {ScannerDirectives} '}'.

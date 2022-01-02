@@ -1,0 +1,9 @@
+%start OptionalAlternatives
+%title ""
+
+%%
+
+/* 0 */ OptionalAlternatives: OptionalAlternativesOpt;
+/* 1 */ OptionalAlternatives: ;
+/* 2 */ OptionalAlternativesOpt: "y";
+/* 3 */ OptionalAlternativesOpt: "x";

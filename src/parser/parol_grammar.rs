@@ -1,9 +1,12 @@
-use crate::parser::parol_grammar_trait::ParolGrammarTrait;
+use super::parol_grammar_trait::ParolGrammarTrait;
+use super::ParolParserError;
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, Result};
+use miette::{miette, IntoDiagnostic, Result};
+use parol_runtime::errors::FileSource;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
+use std::path::PathBuf;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -45,6 +48,10 @@ impl Display for Factor {
     }
 }
 
+///
+/// An Alternation is a sequence of factors.
+/// Valid operation on Alternation is "|".
+///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Alternation(pub Vec<Factor>);
 
@@ -195,6 +202,7 @@ pub struct ParolGrammar {
     pub start_symbol: String,
     pub scanner_configurations: Vec<ScannerConfig>,
     current_scanner: ScannerConfig,
+    file_name: PathBuf,
 }
 
 impl Default for ParolGrammar {
@@ -206,6 +214,7 @@ impl Default for ParolGrammar {
             start_symbol: String::default(),
             scanner_configurations: vec![ScannerConfig::default()],
             current_scanner: ScannerConfig::default(),
+            file_name: PathBuf::default(),
         }
     }
 }
@@ -233,7 +242,12 @@ impl ParolGrammar {
         )
     }
 
-    fn handle_scanner_state(&mut self, context: &str) -> Result<()> {
+    fn handle_scanner_state(
+        &mut self,
+        context: &str,
+        identifier_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         let l = self.pop(context);
         let s = self.pop(context);
 
@@ -253,7 +267,22 @@ impl ParolGrammar {
                     trace!("{}", self.trace_item_stack(context));
                     Ok(())
                 } else {
-                    Err(miette!("{}: Unknown scanner name '{}'", context, s))
+                    if let ParseTreeStackEntry::Id(node_id) = identifier_0 {
+                        // We need to navigate to the one and only child of the Identifier
+                        // non-terminal to access the actual token.
+                        let child = parse_tree
+                            .get(&node_id)
+                            .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
+                            .into_diagnostic()?;
+                        Err(miette!(ParolParserError::UnknownScanner {
+                            context: context.to_owned(),
+                            name: s.clone(),
+                            input: FileSource::try_new(self.file_name.clone())?.into(),
+                            token: child.data().token()?.into()
+                        }))
+                    } else {
+                        Err(miette!("{}: Unknown scanner name '{}'", context, s))
+                    }
                 }
             }
             _ => Err(miette!(
@@ -311,6 +340,13 @@ impl Display for ParolGrammar {
 }
 
 impl ParolGrammarTrait for ParolGrammar {
+    ///
+    /// Information provided by parser
+    ///
+    fn init(&mut self, file_name: &std::path::Path) {
+        self.file_name = file_name.into();
+    }
+
     /// Semantic action for production 2:
     ///
     /// StartDeclaration: "%start" Identifier;
@@ -622,94 +658,76 @@ impl ParolGrammarTrait for ParolGrammar {
 
     /// Semantic action for production 34:
     ///
-    /// Group: "\(" Factor Alternations "\)";
+    /// Group: "\(" Alternations "\)";
     ///
     fn group_34(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_paren_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "group_34";
         trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
-            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
-                if alts.0.is_empty() {
-                    alts.push(Alternation(vec![fac]));
-                } else {
-                    alts.0[0].0.insert(0, fac);
-                }
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
+            if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
+                Err(miette!("{}: Empty alternative is not allowed in Group.", context).into())
+            } else {
                 self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
                 Ok(())
-            } else {
-                Err(miette!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context))
+            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
         }
     }
 
     /// Semantic action for production 35:
     ///
-    /// Optional: "\[" Factor Alternations "\]";
+    /// Optional: "\[" Alternations "\]";
     ///
     fn optional_35(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_bracket_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_bracket_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "optional_35";
         trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
-            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
-                if alts.0.is_empty() {
-                    alts.push(Alternation(vec![fac]));
-                } else {
-                    alts.0[0].0.insert(0, fac);
-                }
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
+            if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
+                Err(miette!("{}: Empty alternative is not allowed in Optional.", context).into())
+            } else {
                 self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
                 Ok(())
-            } else {
-                Err(miette!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context))
+            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
         }
     }
 
     /// Semantic action for production 36:
     ///
-    /// Repeat: "\{" Factor Alternations "\}";
+    /// Repeat: "\{" Alternations "\}";
     ///
     fn repeat_36(
         &mut self,
         _l_brace_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _r_brace_3: &ParseTreeStackEntry,
+        _alternations_1: &ParseTreeStackEntry,
+        _r_brace_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "repeat_36";
         trace!("{}", self.trace_item_stack(context));
-        if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
-            if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
-                if alts.0.is_empty() {
-                    alts.push(Alternation(vec![fac]));
-                } else {
-                    alts.0[0].0.insert(0, fac);
-                }
+        if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
+            if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
+                Err(miette!("{}: Empty alternative is not allowed in Repeat.", context).into())
+            } else {
                 self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
                 Ok(())
-            } else {
-                Err(miette!("{}: Expected 'Factor' on TOS.", context))
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context))
+            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
         }
     }
 
@@ -801,13 +819,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     fn state_list_42(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        identifier_0: &ParseTreeStackEntry,
         _state_list_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "state_list_42";
         trace!("{}", self.trace_item_stack(context));
-        self.handle_scanner_state(context)
+        self.handle_scanner_state(context, identifier_0, parse_tree)
     }
 
     /// Semantic action for production 43:
@@ -817,13 +835,13 @@ impl ParolGrammarTrait for ParolGrammar {
     fn state_list_rest_43(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
+        identifier_1: &ParseTreeStackEntry,
         _state_list_rest_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "state_list_rest_43";
         trace!("{}", self.trace_item_stack(context));
-        self.handle_scanner_state(context)
+        self.handle_scanner_state(context, identifier_1, parse_tree)
     }
 
     /// Semantic action for production 44:

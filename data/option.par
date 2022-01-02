@@ -1,0 +1,5 @@
+%start OptionalAlternatives
+
+%%
+
+OptionalAlternatives: [ "x" | "y" ];

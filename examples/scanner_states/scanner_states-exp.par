@@ -12,7 +12,7 @@
 /*  1 */ StartList: Content StartList;
 /*  2 */ StartList: ;
 /*  3 */ Content: Identifier;
-/*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop;
+/*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
 /*  5 */ StringContent: StringElement StringContent;
 /*  6 */ StringContent: ;
 /*  7 */ StringElement: Escaped;

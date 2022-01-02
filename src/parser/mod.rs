@@ -1,3 +1,6 @@
+pub mod errors;
+pub use errors::ParolParserError;
+
 pub mod parol_grammar;
 pub use parol_grammar::{
     Alternation, Alternations, Factor, ParolGrammar, ParolGrammarItem, Production,

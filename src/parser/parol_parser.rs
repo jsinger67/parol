@@ -587,35 +587,20 @@ pub const PRODUCTIONS: &[Production; 50] = &[
             ParseType::T(16),
         ],
     },
-    // 34 - Group: "\(" Factor Alternations "\)";
+    // 34 - Group: "\(" Alternations "\)";
     Production {
         lhs: 9,
-        production: &[
-            ParseType::T(19),
-            ParseType::N(2),
-            ParseType::N(6),
-            ParseType::T(18),
-        ],
+        production: &[ParseType::T(19), ParseType::N(2), ParseType::T(18)],
     },
-    // 35 - Optional: "\[" Factor Alternations "\]";
+    // 35 - Optional: "\[" Alternations "\]";
     Production {
         lhs: 11,
-        production: &[
-            ParseType::T(21),
-            ParseType::N(2),
-            ParseType::N(6),
-            ParseType::T(20),
-        ],
+        production: &[ParseType::T(21), ParseType::N(2), ParseType::T(20)],
     },
-    // 36 - Repeat: "\{" Factor Alternations "\}";
+    // 36 - Repeat: "\{" Alternations "\}";
     Production {
         lhs: 15,
-        production: &[
-            ParseType::T(23),
-            ParseType::N(2),
-            ParseType::N(6),
-            ParseType::T(22),
-        ],
+        production: &[ParseType::T(23), ParseType::N(2), ParseType::T(22)],
     },
     // 37 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
