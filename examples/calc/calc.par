@@ -23,7 +23,7 @@ equality_op: "==|!=";
 
 // -------------------------------------------------------------------------------------------------
 // ASSIGNMENT
-assign_op: "(\+|-|\*|/|%|<<|>>|&|^|\|)?=";
+assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
 assign_item: id assign_op;
 assignment: assign_item assignment_lst1 logical_or;
 assignment_lst1: assignment_lst1_itm1 assignment_lst1;

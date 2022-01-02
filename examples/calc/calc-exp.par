@@ -13,7 +13,7 @@
 /*  4 */ instruction: assignment;
 /*  5 */ instruction: logical_or;
 /*  6 */ equality_op: "==|!=";
-/*  7 */ assign_op: "(\+|-|\*|/|%|<<|>>|&|^|\|)?=";
+/*  7 */ assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
 /*  8 */ assign_item: id assign_op;
 /*  9 */ assignment: assign_item assignment_lst1 logical_or;
 /* 10 */ assignment_lst1: assignment_lst1_itm1 assignment_lst1;

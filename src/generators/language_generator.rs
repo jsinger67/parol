@@ -1,15 +1,28 @@
 use crate::{Cfg, Symbol, Terminal};
 use log::trace;
-use miette::{miette, ErrReport, Result};
+use miette::IntoDiagnostic;
+use miette::{miette, Diagnostic, Result};
 use rand::Rng;
-//use std::collections::HashMap;
-use std::fmt::Display;
+use std::collections::HashMap;
+
+const MAX_RESULT_SIZE: usize = 100000;
+const MAX_REPEAT: u32 = 8;
+
+#[derive(Error, Diagnostic, Debug)]
+#[error("Stopping generation to prevent endless recursion at size {len}")]
+#[diagnostic(
+    help("Generation does not terminate in good time"),
+    code("parol::generators::language_generator::source_size_exceeded")
+)]
+pub struct SourceSizeExceeded {
+    len: usize,
+}
 
 #[derive(Debug)]
 pub struct LanguageGenerator<'a> {
     generator_stack: Vec<Symbol>,
     cfg: &'a Cfg,
-    //cache: HashMap<&'a str, rand_regex::Regex>,
+    cache: HashMap<String, rand_regex::Regex>,
 }
 
 impl<'a> LanguageGenerator<'a> {
@@ -17,18 +30,18 @@ impl<'a> LanguageGenerator<'a> {
         Self {
             generator_stack: Vec::new(),
             cfg,
-            // cache: HashMap::new(),
+            cache: HashMap::new(),
         }
     }
 
-    pub fn generate(&mut self, max_repeat: u32) -> Result<String> {
+    pub fn generate(&mut self, max_result_length: Option<usize>) -> Result<String> {
         let mut result = String::new();
         self.process_non_terminal(self.cfg.get_start_symbol())?;
         while let Some(symbol) = self.generator_stack.pop() {
             match symbol {
                 Symbol::N(n) => self.process_non_terminal(&n),
                 Symbol::T(Terminal::Trm(t, _)) => {
-                    self.process_terminal(&t, &mut result, max_repeat)
+                    self.process_terminal(t.clone(), &mut result, max_result_length)
                 }
                 _ => Ok(()),
             }?
@@ -55,50 +68,47 @@ impl<'a> LanguageGenerator<'a> {
         Ok(())
     }
 
-    fn to_miette<T: Display>(e: T) -> ErrReport {
-        miette!("{}", e)
-    }
-
     fn process_terminal(
         &mut self,
-        terminal: &str,
+        terminal: String,
         result: &mut String,
-        max_repeat: u32,
+        max_result_length: Option<usize>,
     ) -> Result<()> {
         let mut rng = rand::thread_rng();
-        regex_syntax::ParserBuilder::new()
-            .build()
-            .parse(terminal)
-            .map_err(Self::to_miette)
-            .and_then(|utf8_hir| {
-                rand_regex::Regex::with_hir(utf8_hir, max_repeat)
-                    .map_err(Self::to_miette)
-                    .and_then(|utf8_gen| {
-                        let generated = rng.sample::<String, _>(&utf8_gen);
-                        trace!("gen: {}", generated);
-                        result.push_str(&generated);
-                        result.push_str(" ");
-                        Ok(())
-                    })
-            })
+        let utf8_gen = self.get_regex(terminal)?;
+        let generated = rng.sample::<String, _>(&utf8_gen);
+        trace!("gen: {}", generated);
+        result.push_str(&generated);
+        result.push(' ');
+        let len = result.len();
+        if len > max_result_length.unwrap_or(MAX_RESULT_SIZE) {
+            Err(miette!(SourceSizeExceeded { len }))
+        } else {
+            Ok(())
+        }
     }
 
-    // fn get_regex(&mut self, terminal: &'a str, max_repeat: u32) -> Result<&rand_regex::Regex> {
-    //     if let Some(regex) = self.cache.get(terminal) {
-    //         Ok(regex)
-    //     } else {
-    //         regex_syntax::ParserBuilder::new()
-    //             .build()
-    //             .parse(terminal)
-    //             .map_err(Self::to_miette)
-    //             .and_then(move |utf8_hir| {
-    //                 rand_regex::Regex::with_hir(utf8_hir, max_repeat)
-    //                     .map_err(Self::to_miette)
-    //                     .and_then(|utf8_gen| {
-    //                         self.cache.insert(terminal, utf8_gen);
-    //                         Ok(self.cache.get(terminal).unwrap())
-    //                     })
-    //             })
-    //     }
-    // }
+    fn get_regex<'b, 'c>(&'b mut self, terminal: String) -> Result<&'c rand_regex::Regex>
+    where
+        'b: 'c,
+    {
+        let exist = self.cache.get(&terminal).is_some();
+
+        if exist {
+            let regex = self.cache.get(&terminal).unwrap();
+            trace!("Reusing cached regex for: {}", terminal);
+            return Ok(regex);
+        }
+
+        match regex_syntax::ParserBuilder::new().build().parse(&terminal) {
+            Ok(utf8_hir) => {
+                let utf8_gen =
+                    rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT).into_diagnostic()?;
+                trace!("Caching regex for: {}", terminal);
+                self.cache.insert(terminal.clone(), utf8_gen);
+                self.get_regex(terminal)
+            }
+            Err(err) => Err(miette!(err)),
+        }
+    }
 }

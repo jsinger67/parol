@@ -104,7 +104,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// assign_op: "(\+|-|\*|/|%|<<|>>|&|^|\|)?=";
+    /// assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
     fn assign_op_7(
         &mut self,

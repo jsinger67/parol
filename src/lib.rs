@@ -12,6 +12,9 @@ extern crate serde_derive;
 #[macro_use]
 extern crate bart_derive;
 
+#[macro_use]
+extern crate thiserror;
+
 extern crate rand;
 extern crate rand_regex;
 extern crate serde;
