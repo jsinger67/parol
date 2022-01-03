@@ -1,0 +1,5 @@
+%start Start
+%%
+Start: {"a"};
+Start: {"b" | "c"};
+Start: {"d" | "e" | "f"};

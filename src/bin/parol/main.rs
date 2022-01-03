@@ -73,13 +73,9 @@ fn main() -> Result<()> {
 
     let verbose = config.is_present("verbose");
 
-    let mut grammar_config = obtain_grammar_config(
-        config.value_of("grammar"),
-        verbose,
-        config.is_present("generate_tree_graph"),
-    )?;
+    let mut grammar_config = obtain_grammar_config(&config)?;
 
-    write_expanded_grammar(&grammar_config, config.value_of("expanded"))
+    write_expanded_grammar(&grammar_config, &config, 0)
         .wrap_err("Error writing left-factored grammar!")?;
 
     let cfg = check_and_transform_grammar(&grammar_config.cfg)
@@ -88,7 +84,7 @@ fn main() -> Result<()> {
     // Exchange original grammar with transformed one
     grammar_config.update_cfg(cfg);
 
-    write_expanded_grammar(&grammar_config, config.value_of("expanded"))
+    write_expanded_grammar(&grammar_config, &config, 1)
         .wrap_err("Error writing left-factored grammar!")?;
 
     if !config.is_present("parser") && !config.is_present("only_lookahead") {
@@ -98,7 +94,7 @@ fn main() -> Result<()> {
     let lookahead_dfa_s = calculate_lookahead_dfas(&grammar_config, max_k)
         .wrap_err("Lookahead calculation for the given grammar failed!")?;
 
-    if config.is_present("verbose") {
+    if verbose {
         print!("Lookahead DFAs:\n{:?}", lookahead_dfa_s);
     }
 
@@ -112,7 +108,7 @@ fn main() -> Result<()> {
             .k,
     );
 
-    if config.is_present("verbose") {
+    if verbose {
         print!("\nGrammar config:\n{:?}", grammar_config);
     }
 
@@ -150,12 +146,8 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn obtain_grammar_config(
-    grammar: Option<&str>,
-    verbose: bool,
-    generate_tree_graph: bool,
-) -> Result<GrammarConfig> {
-    if let Some(file_name) = grammar {
+fn obtain_grammar_config(config: &clap::ArgMatches) -> Result<GrammarConfig> {
+    if let Some(file_name) = config.value_of("grammar") {
         let input = fs::read_to_string(file_name)
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
@@ -163,11 +155,18 @@ fn obtain_grammar_config(
         let syntax_tree = parse(&input, file_name.to_owned(), &mut parol_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
 
-        if verbose {
+        if config.is_present("verbose") {
             println!("{}", parol_grammar);
         }
 
-        if generate_tree_graph {
+        if let Some(file_name) = config.value_of("write_internal").as_ref() {
+            let serialized = format!("{}", parol_grammar);
+            fs::write(file_name, serialized)
+                .into_diagnostic()
+                .wrap_err("Error writing left-factored grammar!")?;
+        }
+
+        if config.is_present("generate_tree_graph") {
             generate_tree_layout(&syntax_tree, file_name)
                 .wrap_err("Error generating tree layout")?;
         }
@@ -178,8 +177,12 @@ fn obtain_grammar_config(
     }
 }
 
-fn write_expanded_grammar(grammar_config: &GrammarConfig, expanded: Option<&str>) -> Result<()> {
-    if let Some(file_name) = expanded.as_ref() {
+fn write_expanded_grammar(
+    grammar_config: &GrammarConfig,
+    config: &clap::ArgMatches,
+    pass: usize,
+) -> Result<()> {
+    if let Some(file_name) = config.value_of("expanded").as_ref() {
         let lf_source = render_par_string(grammar_config, true);
         if *file_name == "--" {
             print!("{}", lf_source);
@@ -189,5 +192,15 @@ fn write_expanded_grammar(grammar_config: &GrammarConfig, expanded: Option<&str>
                 .wrap_err("Error writing left-factored grammar!")?;
         }
     }
+
+    if pass == 0 {
+        if let Some(file_name) = config.value_of("write_untransformed") {
+            let serialized = render_par_string(grammar_config, false);
+            fs::write(file_name, serialized)
+                .into_diagnostic()
+                .wrap_err("Error writing untransformed grammar!")?;
+        }
+    }
+
     Ok(())
 }

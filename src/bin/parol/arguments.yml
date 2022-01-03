@@ -28,6 +28,21 @@ args:
         short: e
         long: expanded
         takes_value: true
+    - write_internal:
+        help: Writes the internal parsed grammar (ParolGrammar)
+        short: i
+        long: write_internal
+        takes_value: true
+    - write_untransformed:
+        help: Writes the untransformed parsed grammar
+        short: u
+        long: write_untransformed
+        takes_value: true
+    - write_transformed:
+        help: Writes the transformed parsed grammar
+        short: w
+        long: write_transformed
+        takes_value: true
     - actions:
         help: Output file for the generated trait with semantic actions
         short: a

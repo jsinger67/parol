@@ -2,4 +2,4 @@
 
 %%
 
-OptionalAlternatives: [ "x" | "y" ];
+OptionalAlternatives: [ "x" | "y" | "z" ];

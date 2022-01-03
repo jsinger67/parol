@@ -13,7 +13,7 @@ use std::path::PathBuf;
 // Test run:
 // parol -f .\src\parser\parol-grammar.par -v
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub enum Factor {
     Group(Alternations),
     Repeat(Alternations),
@@ -52,7 +52,7 @@ impl Display for Factor {
 /// An Alternation is a sequence of factors.
 /// Valid operation on Alternation is "|".
 ///
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Alternation(pub Vec<Factor>);
 
 impl Display for Alternation {
@@ -77,13 +77,9 @@ impl Alternation {
     pub(crate) fn push(&mut self, fac: Factor) {
         self.0.push(fac)
     }
-
-    fn reverse(&mut self) {
-        self.0.reverse()
-    }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Alternations(pub Vec<Alternation>);
 
 impl Alternations {
@@ -91,12 +87,8 @@ impl Alternations {
         Self(Vec::new())
     }
 
-    fn push(&mut self, alt: Alternation) {
-        self.0.push(alt)
-    }
-
-    fn reverse(&mut self) {
-        self.0.reverse()
+    pub(crate) fn insert(&mut self, alt: Alternation) {
+        self.0.insert(0, alt)
     }
 }
 
@@ -114,7 +106,7 @@ impl Display for Alternations {
     }
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Production {
     pub lhs: String,
     pub rhs: Alternations,
@@ -132,7 +124,7 @@ impl Display for Production {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ScannerConfig {
     pub name: String,
     pub line_comments: Vec<String>,
@@ -141,7 +133,7 @@ pub struct ScannerConfig {
     pub auto_ws_off: bool,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ParolGrammarItem {
     Prod(Production),
     Alts(Alternations),
@@ -194,7 +186,7 @@ impl Default for ScannerConfig {
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ParolGrammar {
     pub item_stack: Vec<ParolGrammarItem>,
     pub title: Option<String>,
@@ -266,23 +258,21 @@ impl ParolGrammar {
                     self.push(ParolGrammarItem::StateList(l), context);
                     trace!("{}", self.trace_item_stack(context));
                     Ok(())
+                } else if let ParseTreeStackEntry::Id(node_id) = identifier_0 {
+                    // We need to navigate to the one and only child of the Identifier
+                    // non-terminal to access the actual token.
+                    let child = parse_tree
+                        .get(node_id)
+                        .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
+                        .into_diagnostic()?;
+                    Err(miette!(ParolParserError::UnknownScanner {
+                        context: context.to_owned(),
+                        name: s.clone(),
+                        input: FileSource::try_new(self.file_name.clone())?.into(),
+                        token: child.data().token()?.into()
+                    }))
                 } else {
-                    if let ParseTreeStackEntry::Id(node_id) = identifier_0 {
-                        // We need to navigate to the one and only child of the Identifier
-                        // non-terminal to access the actual token.
-                        let child = parse_tree
-                            .get(&node_id)
-                            .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
-                            .into_diagnostic()?;
-                        Err(miette!(ParolParserError::UnknownScanner {
-                            context: context.to_owned(),
-                            name: s.clone(),
-                            input: FileSource::try_new(self.file_name.clone())?.into(),
-                            token: child.data().token()?.into()
-                        }))
-                    } else {
-                        Err(miette!("{}: Unknown scanner name '{}'", context, s))
-                    }
+                    Err(miette!("{}: Unknown scanner name '{}'", context, s))
                 }
             }
             _ => Err(miette!(
@@ -518,9 +508,8 @@ impl ParolGrammarTrait for ParolGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "production_17";
-        if let Some(ParolGrammarItem::Alts(mut rhs)) = self.pop(context) {
+        if let Some(ParolGrammarItem::Alts(rhs)) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(Factor::NonTerminal(lhs))) = self.pop(context) {
-                rhs.reverse();
                 self.push(ParolGrammarItem::Prod(Production::new(lhs, rhs)), context);
                 Ok(())
             } else {
@@ -546,9 +535,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "alternations_18";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
-            if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
-                alt.reverse();
-                alts.push(alt);
+            if let Some(ParolGrammarItem::Alt(alt)) = self.pop(context) {
+                alts.insert(alt);
                 self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
@@ -572,9 +560,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ) -> Result<()> {
         let context = "alternations_list_19";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
-            if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
-                alt.reverse();
-                alts.push(alt);
+            if let Some(ParolGrammarItem::Alt(alt)) = self.pop(context) {
+                alts.insert(alt);
                 self.push(ParolGrammarItem::Alts(alts), context);
                 Ok(())
             } else {
@@ -662,22 +649,27 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     fn group_34(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
+        l_paren_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        r_paren_2: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "group_34";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
-                Err(miette!("{}: Empty alternative is not allowed in Group.", context).into())
+                Err(miette!(ParolParserError::EmptyGroup {
+                    context: context.to_owned(),
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    start: l_paren_0.token(parse_tree)?.into(),
+                    end: r_paren_2.token(parse_tree)?.into(),
+                }))
             } else {
                 self.push(ParolGrammarItem::Fac(Factor::Group(alts)), context);
                 Ok(())
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(miette!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -687,22 +679,27 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     fn optional_35(
         &mut self,
-        _l_bracket_0: &ParseTreeStackEntry,
+        l_bracket_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        r_bracket_2: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "optional_35";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
-                Err(miette!("{}: Empty alternative is not allowed in Optional.", context).into())
+                Err(miette!(ParolParserError::EmptyOptional {
+                    context: context.to_owned(),
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    start: l_bracket_0.token(parse_tree)?.into(),
+                    end: r_bracket_2.token(parse_tree)?.into(),
+                }))
             } else {
                 self.push(ParolGrammarItem::Fac(Factor::Optional(alts)), context);
                 Ok(())
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(miette!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
@@ -712,22 +709,27 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     fn repeat_36(
         &mut self,
-        _l_brace_0: &ParseTreeStackEntry,
+        l_brace_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        r_brace_2: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "repeat_36";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
-                Err(miette!("{}: Empty alternative is not allowed in Repeat.", context).into())
+                Err(miette!(ParolParserError::EmptyRepetition {
+                    context: context.to_owned(),
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    start: l_brace_0.token(parse_tree)?.into(),
+                    end: r_brace_2.token(parse_tree)?.into(),
+                }))
             } else {
                 self.push(ParolGrammarItem::Fac(Factor::Repeat(alts)), context);
                 Ok(())
             }
         } else {
-            Err(miette!("{}: Expected 'Alts' on TOS.", context).into())
+            Err(miette!("{}: Expected 'Alts' on TOS.", context))
         }
     }
 
