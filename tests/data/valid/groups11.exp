@@ -1,0 +1,8 @@
+%start Start
+%title ""
+
+%%
+
+/* 0 */ Start: "x" StartGroup "y";
+/* 1 */ StartGroup: "a" "b";
+/* 2 */ StartGroup: "c" "d";

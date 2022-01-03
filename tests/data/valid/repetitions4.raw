@@ -1,0 +1,12 @@
+%start Start
+%title ""
+
+%%
+
+Start: StartList;
+StartList: StartListGroup StartList;
+StartListGroup: "a";
+StartListGroup: "b";
+StartListGroup: "c";
+StartListGroup: "d";
+StartList: ;

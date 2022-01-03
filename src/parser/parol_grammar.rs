@@ -74,6 +74,10 @@ impl Alternation {
         Self(Vec::new())
     }
 
+    pub(crate) fn insert(&mut self, fac: Factor) {
+        self.0.insert(0, fac)
+    }
+
     pub(crate) fn push(&mut self, fac: Factor) {
         self.0.push(fac)
     }
@@ -596,7 +600,7 @@ impl ParolGrammarTrait for ParolGrammar {
         //trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
-                alt.push(fac);
+                alt.insert(fac);
                 self.push(ParolGrammarItem::Alt(alt), context);
                 Ok(())
             } else {

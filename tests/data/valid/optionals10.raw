@@ -1,0 +1,11 @@
+%start Start
+%title ""
+
+%%
+
+Start: "x" StartOpt "y";
+Start: "x" "y";
+StartOpt: StartOptGroup;
+StartOpt: "d";
+StartOptGroup: "a" "b";
+StartOptGroup: "c";

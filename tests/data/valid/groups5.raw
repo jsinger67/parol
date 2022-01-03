@@ -1,0 +1,6 @@
+%start Start
+%title ""
+
+%%
+
+Start: "x" "a" "y";

@@ -1,0 +1,10 @@
+%start Start
+%title ""
+
+%%
+
+/* 0 */ Start: StartOpt;
+/* 1 */ Start: ;
+/* 2 */ StartOpt: "a";
+/* 3 */ StartOpt: "b";
+/* 4 */ StartOpt: "c";

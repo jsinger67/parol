@@ -1,0 +1,10 @@
+%start Start
+%title ""
+
+%%
+
+/* 0 */ Start: "x" StartSuffix;
+/* 1 */ StartSuffix: StartOpt "y";
+/* 2 */ StartSuffix: "y";
+/* 3 */ StartOpt: "a";
+/* 4 */ StartOpt: "b";

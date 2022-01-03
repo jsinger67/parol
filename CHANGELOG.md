@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 * Fixed a serious bug in parsing groups, repetitions and optionals introduced in commit [6476e75].
 * Started issuing more detailed miette-like errors from parol itself.
-* Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'
+* Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
+* More tests to check the parol parser's internal representation.
 
 ## v0.5.3 - 2022-01-02
 
@@ -25,7 +26,7 @@ You can use it this way:
 { "\r" : "uA7Fcu8a4A񚥚\r" , "\b\f\nuD1C0u5daf\b" : null , "\n\/\f𘃈򘱵" : true , "\\󸽿\\\\uCfC4𚍑𞱁uD852" : "\b\buEA01\\" } 
 ```
 
-I already found some quirks in a view regular expressions 😉.
+I already found some quirks in a few regular expressions 😉.
 
 Also you can run endless stress tests like in this example using a powershell one-liner:
 

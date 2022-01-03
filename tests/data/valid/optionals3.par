@@ -1,6 +1,3 @@
 %start Start
 %%
-Start: "x" ["a"] "y";
-Start: "x" ["b" | "c"] "y";
-Start: "x" ["e" "e" | "f"] "y";
-Start: "x" [("g" "h" | "i") | "j"] "y";
+Start: ["a" | "b" | "c"];

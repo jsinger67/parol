@@ -1,6 +1,3 @@
 %start Start
 %%
 Start: ["a"];
-Start: ["b" | "c"];
-Start: ["d" | "e" | "f"];
-Start: ["g" | "h" | "i" | "j"];

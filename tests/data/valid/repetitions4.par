@@ -1,0 +1,3 @@
+%start Start
+%%
+Start: {"a" | "b" | "c" | "d"};
