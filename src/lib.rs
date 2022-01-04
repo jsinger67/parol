@@ -3,6 +3,8 @@
 //! Main module of this crate
 //!
 
+use regex::Regex;
+
 #[macro_use]
 extern crate lazy_static;
 
@@ -72,3 +74,10 @@ pub(crate) use utils::{generate_name, group_by};
 /// Internal lookahead limit
 ///
 pub const MAX_K: usize = 10;
+
+lazy_static! {
+    ///
+    /// Regex used for portable newline handling
+    pub static ref RX_NEWLINE: Regex =
+        Regex::new(r"\r\n|\r\n").expect("error parsing regex");
+}

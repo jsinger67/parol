@@ -25,8 +25,8 @@ fn reproduction_test() -> Result<()> {
             file_path.set_extension("expected");
             let expected = fs::read_to_string(&file_path).into_diagnostic()?;
             assert_eq!(
-                expected.replace("\r\n", "\n"),
-                representation.replace("\r\n", "\n"),
+                parol::RX_NEWLINE.replace_all(&expected, "\n"),
+                parol::RX_NEWLINE.replace_all(&representation, "\n"),
                 "parse result mismatch!"
             );
         }

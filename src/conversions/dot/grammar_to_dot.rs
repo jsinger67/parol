@@ -151,7 +151,6 @@ mod test {
             .add_scanner(scanner_config);
 
         let dot_str = render_nt_dot_string(&grammar_config);
-        let dot_str = dot_str.replace("\r\n", "\n");
         let expected = r#"digraph G {
     rankdir=LR;
     label="Test grammar";
@@ -262,7 +261,9 @@ mod test {
     "n5_3"->"X";
 }
 "#;
-        let expected = expected.replace("\r\n", "\n");
-        assert_eq!(expected, dot_str);
+        assert_eq!(
+            crate::RX_NEWLINE.replace_all(expected, "\n"),
+            crate::RX_NEWLINE.replace_all(&dot_str, "\n")
+        );
     }
 }
