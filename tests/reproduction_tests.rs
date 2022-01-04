@@ -24,7 +24,11 @@ fn reproduction_test() -> Result<()> {
             let representation = format!("{}", parol_grammar);
             file_path.set_extension("expected");
             let expected = fs::read_to_string(&file_path).into_diagnostic()?;
-            assert_eq!(expected, representation, "parse result mismatch!");
+            assert_eq!(
+                expected.replace("\r\n", "\n"),
+                representation.replace("\r\n", "\n"),
+                "parse result mismatch!"
+            );
         }
     }
     Ok(())
