@@ -162,7 +162,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// EscapedLineEnd: <String>"\u{5c}[\s*]\r?\n";
+    /// EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";
     ///
     fn escaped_line_end_12(
         &mut self,
