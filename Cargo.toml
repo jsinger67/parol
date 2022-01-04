@@ -2,6 +2,7 @@
 name = "json_parser"
 version = "0.3.1"
 edition = "2018"
+build = "build.rs"
 
 [dependencies]
 env_logger = "0.9.0"
@@ -12,6 +13,9 @@ log = "0.4.14"
 miette = { version = "3.2.0", features = ["fancy"] }
 parol_runtime = "0.5.3"
 thiserror = "1.0.30"
+
+[build-dependencies]
+parol = { path = "../parol" }
 
 [profile.release]
 debug = true
