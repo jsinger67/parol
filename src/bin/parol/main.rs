@@ -65,7 +65,13 @@ fn main() -> Result<()> {
     }
 
     // If relative paths are spsecified, they should be resoled relative to the current directory
-    let mut builder = parol::build::Builder::with_output_dir(env::current_dir().into_diagnostic()?);
+    let mut builder =
+        parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
+
+    // It's okay if the output doesn't exist;
+    builder.disable_output_sanity_checks();
+    // Don't care about cargo.
+    builder.set_cargo_integration(false);
 
     // NOTE: Grammar file is required option
     let grammar_file = PathBuf::from(
