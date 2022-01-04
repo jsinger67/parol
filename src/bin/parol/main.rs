@@ -90,6 +90,13 @@ fn main() -> Result<()> {
     if let Some(parser_file) = config.value_of("parser") {
         builder.parser_output_file(parser_file);
     }
+    if let Some(expanded_grammar_file) = config.value_of("expanded") {
+        if expanded_grammar_file == "--" {
+            // We special case this in our listener (see below)
+        } else {
+            builder.expanded_grammar_output_file(expanded_grammar_file);
+        }
+    }
 
     let mut listener = CLIListener {
         grammar_file: &grammar_file,
@@ -164,13 +171,12 @@ impl BuildListener for CLIListener<'_, '_> {
             // final pass
             IntermediateGrammar::LAST => {
                 if let Some(file_name) = self.config.value_of("expanded").as_ref() {
+                    // NOTE: We still need special handling for writing to stdout
                     let lf_source = render_par_string(grammar_config, true);
                     if *file_name == "--" {
                         print!("{}", lf_source);
                     } else {
-                        fs::write(file_name, lf_source)
-                            .into_diagnostic()
-                            .wrap_err("Error writing left-factored grammar!")?;
+                        // Should be handled by the builder
                     }
                 }
             }

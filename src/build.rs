@@ -45,7 +45,7 @@
 //!
 //! By default, it does not make any attempt to integrate with cargo (unless explicitly asked too - see below).
 //!
-//! Any configured output paths (including generated parsers, expanded grammers, etc)
+//! Any configured output paths (including generated parsers, expanded grammars, etc)
 //! are resolved relative to this base using [Path::join]. This means that specifiying absolute paths
 //! overrides this explicit base directory.
 //!
@@ -105,6 +105,8 @@ pub struct Builder {
     /// The base output directory
     output_dir: PathBuf,
     grammar_file: Option<PathBuf>,
+    /// Output file for expaned grammar
+    expanded_grammar_output_file: Option<PathBuf>,
     /// Output file for the generated parser source
     parser_output_file: Option<PathBuf>,
     /// Ouptut file for the generated actions files.
@@ -155,6 +157,7 @@ impl Builder {
             user_type_name: String::from(DEFUALT_USER_TYPE_NAME),
             parser_output_file: None,
             actions_output_file: None,
+            expanded_grammar_output_file: None,
         }
     }
     /// Set the output location for the generated parser.
@@ -169,6 +172,13 @@ impl Builder {
     /// By default, the generated actions file is output nowhere.
     pub fn actions_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
         self.actions_output_file = Some(self.resolve_path(p));
+        self
+    }
+    /// Set the actions output location for the generated parser.
+    ///
+    /// By default, the generated actions file is output nowhere.
+    pub fn expanded_grammar_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
+        self.expanded_grammar_output_file = Some(self.resolve_path(p));
         self
     }
     /// Enable cargo intergration.
@@ -326,10 +336,16 @@ impl GrammarGenerator<'_> {
         // Exchange original grammar with transformed one
         grammar_config.update_cfg(cfg);
 
-        // We need to fire twice. Once for `Transformed` to mark intiial transformation and once for `Expanded` to mark
-        // our final transformation.
         self.listener
             .on_intermediate_grammar(IntermediateGrammar::Transformed, &*grammar_config)?;
+        if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
+            fs::write(
+                expanded_file,
+                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+            )
+            .into_diagnostic()
+            .wrap_err("Error writing left-factored grammar!")?;
+        }
         self.state = Some(State::Expanded);
         Ok(())
     }
