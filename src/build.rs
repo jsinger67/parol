@@ -45,9 +45,11 @@
 //!
 //! By default, it does not make any attempt to integrate with cargo (unless explicitly asked too - see below).
 //!
-//! Any configured output paths (including generated parsers, expanded grammars, etc)
+//! Any configured *output* paths (including generated parsers, expanded grammars, etc)
 //! are resolved relative to this base using [Path::join]. This means that specifiying absolute paths
 //! overrides this explicit base directory.
+//! 
+//! This does not include the grammar input file, that is reolved in the regular manner.
 //!
 //! See the source code for `bin/parol/main.rs` for a detailed example on how to use this.
 //!
@@ -132,7 +134,7 @@ impl Builder {
         builder
     }
     /// Internal utility to resolve a path relative to the output directory
-    fn resolve_path(&self, p: impl AsRef<Path>) -> PathBuf {
+    fn resolve_output_path(&self, p: impl AsRef<Path>) -> PathBuf {
         self.output_dir.join(p)
     }
     /// Create a new builder with an explicitly speicfied output directory.
@@ -164,21 +166,21 @@ impl Builder {
     ///
     /// By default, the generated parser is output nowhere.
     pub fn parser_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.parser_output_file = Some(self.resolve_path(p));
+        self.parser_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Set the actions output location for the generated parser.
     ///
     /// By default, the generated actions file is output nowhere.
     pub fn actions_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.actions_output_file = Some(self.resolve_path(p));
+        self.actions_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Set the actions output location for the generated parser.
     ///
     /// By default, the generated actions file is output nowhere.
     pub fn expanded_grammar_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
-        self.expanded_grammar_output_file = Some(self.resolve_path(p));
+        self.expanded_grammar_output_file = Some(self.resolve_output_path(p));
         self
     }
     /// Enable cargo intergration.
@@ -196,7 +198,7 @@ impl Builder {
     ///
     /// Does not check that the file exists.
     pub fn grammar_file(&mut self, grammar: impl AsRef<Path>) -> &mut Self {
-        self.grammar_file = Some(self.resolve_path(grammar));
+        self.grammar_file = Some(PathBuf::from(grammar.as_ref()));
         self
     }
     /// Set the name of the user type that implements the language processing
