@@ -266,14 +266,14 @@ impl Builder {
         })
     }
     /// Generate the parser, writing it to the pre-configured output files.
-    pub fn generate_grammar(&mut self) -> miette::Result<()> {
-        self.begin_generation_with(None)?.generate_grammar()
+    pub fn generate_parser(&mut self) -> miette::Result<()> {
+        self.begin_generation_with(None)?.generate_parser()
     }
 }
 
 /// Represents in-process grammar generation.
 ///
-/// Most of the time you will want to use [Builder::generate_grammar] to bypass this completely.
+/// Most of the time you will want to use [Builder::generate_parser] to bypass this completely.
 ///
 /// This is an advanced API, and unless stated otherwise, all its methods are unstable (see module docs).
 pub struct GrammarGenerator<'l> {
@@ -288,8 +288,8 @@ pub struct GrammarGenerator<'l> {
     lookahead_dfa_s: Option<BTreeMap<String, LookaheadDFA>>,
 }
 impl GrammarGenerator<'_> {
-    /// Generate the parser, writing it to the pre-configured grammar files.
-    pub fn generate_grammar(&mut self) -> miette::Result<()> {
+    /// Generate the parser, writing it to the pre-configured output files.
+    pub fn generate_parser(&mut self) -> miette::Result<()> {
         self.parse()?;
         self.expand()?;
         self.post_process()?;
