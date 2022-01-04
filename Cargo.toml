@@ -36,8 +36,15 @@ version = "2.33.3"
 default-features = false
 features = [ "suggestions", "color", "yaml" ]
 
-
 [profile.release]
 debug = true
 
 [features]
+default = ["build"]
+# Includes logic for invoking from build.rs script
+build = []
+
+[[bin]]
+name = "parol"
+# Much of the logic formerly in the main binary has been refactored into the library
+required-features = ["build"]
