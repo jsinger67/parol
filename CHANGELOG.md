@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Started issuing more detailed miette-like errors from parol itself.
 * Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
 * More tests to check the parol parser's internal representation.
+* Fixed some problems related to platform specific newline characters.
 
 ## v0.5.3 - 2022-01-02
 
