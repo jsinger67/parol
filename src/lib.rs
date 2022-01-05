@@ -22,6 +22,9 @@ extern crate rand_regex;
 extern crate serde;
 extern crate serde_json;
 
+#[cfg(feature = "build")]
+pub mod build;
+
 ///
 /// Basic grammar data structures and algorithms
 ///

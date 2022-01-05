@@ -1,17 +1,19 @@
 #[macro_use]
 extern crate clap;
 
-use clap::{App, AppSettings, Arg, SubCommand};
-use miette::{bail, IntoDiagnostic, Result, WrapErr};
-use std::convert::TryFrom;
-
-use log::trace;
-use parol::{
-    calculate_lookahead_dfas, check_and_transform_grammar, generate_lexer_source,
-    generate_parser_source, generate_tree_layout, generate_user_trait_source, parse,
-    render_par_string, try_format, GrammarConfig, ParolGrammar, MAX_K,
-};
+use std::path::{Path, PathBuf};
 use std::{env, fs};
+
+use clap::{App, AppSettings, Arg, SubCommand};
+use log::trace;
+use miette::{miette, IntoDiagnostic, Result, WrapErr};
+
+use id_tree::Tree;
+use parol::{
+    build::{BuildListener, IntermediateGrammar},
+    render_par_string, GrammarConfig, ParolGrammar,
+};
+use parol_runtime::parser::ParseTreeType;
 
 static VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -62,145 +64,130 @@ fn main() -> Result<()> {
         return tool_main(&ext_args);
     }
 
-    let max_k = config
-        .value_of("lookahead")
-        .unwrap()
-        .parse::<usize>()
-        .into_diagnostic()?;
-    if max_k > MAX_K {
-        bail!("Maximum lookahead is {}", MAX_K);
+    // If relative paths are spsecified, they should be resoled relative to the current directory
+    let mut builder =
+        parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
+
+    // It's okay if the output doesn't exist;
+    builder.disable_output_sanity_checks();
+    // Don't care about cargo.
+    builder.set_cargo_integration(false);
+
+    // NOTE: Grammar file is required option
+    let grammar_file = PathBuf::from(
+        config
+            .value_of("grammar")
+            .ok_or_else(|| miette!("Missing input grammar file (Specify with `-f`)"))?,
+    );
+    builder.grammar_file(&grammar_file);
+
+    if let Some(max_k_str) = config.value_of("lookahead") {
+        builder.max_lookahead(max_k_str.parse::<usize>().into_diagnostic()?)?;
+    }
+    if let Some(module) = config.value_of("module") {
+        builder.user_trait_module_name(module);
+    }
+    if let Some(user_type) = config.value_of("user_type") {
+        builder.user_type_name(user_type);
+    }
+    if let Some(actions_file) = config.value_of("actions") {
+        builder.actions_output_file(actions_file);
+    }
+    if let Some(parser_file) = config.value_of("parser") {
+        builder.parser_output_file(parser_file);
+    }
+    if let Some(expanded_grammar_file) = config.value_of("expanded") {
+        if expanded_grammar_file == "--" {
+            // We special case this in our listener (see below)
+        } else {
+            builder.expanded_grammar_output_file(expanded_grammar_file);
+        }
     }
 
-    let verbose = config.is_present("verbose");
+    let mut listener = CLIListener {
+        grammar_file: &grammar_file,
+        config: &config,
+    };
+    let mut generator = builder.begin_generation_with(Some(&mut listener))?;
 
-    let mut grammar_config = obtain_grammar_config(&config)?;
+    generator.parse()?;
+    generator.expand()?;
 
-    write_expanded_grammar(&grammar_config, &config, 0)
-        .wrap_err("Error writing left-factored grammar!")?;
-
-    let cfg = check_and_transform_grammar(&grammar_config.cfg)
-        .wrap_err("Basic grammar checks and transformations failed!")?;
-
-    // Exchange original grammar with transformed one
-    grammar_config.update_cfg(cfg);
-
-    write_expanded_grammar(&grammar_config, &config, 1)
-        .wrap_err("Error writing left-factored grammar!")?;
-
+    // NOTE: only-lookahead appears to have been broken (even before this commit).
+    // See issue #2
     if !config.is_present("parser") && !config.is_present("only_lookahead") {
         return Ok(());
     }
 
-    let lookahead_dfa_s = calculate_lookahead_dfas(&grammar_config, max_k)
-        .wrap_err("Lookahead calculation for the given grammar failed!")?;
-
-    if verbose {
-        print!("Lookahead DFAs:\n{:?}", lookahead_dfa_s);
-    }
-
-    // Update maximum lookahead size for scanner generation
-    grammar_config.update_lookahead_size(
-        lookahead_dfa_s
-            .iter()
-            .max_by_key(|(_, dfa)| dfa.k)
-            .unwrap()
-            .1
-            .k,
-    );
-
-    if verbose {
-        print!("\nGrammar config:\n{:?}", grammar_config);
-    }
-
-    let lexer_source =
-        generate_lexer_source(&grammar_config).wrap_err("Failed to generate lexer source!")?;
-
-    let user_trait_module_name = config.value_of("module").unwrap();
-
-    let user_type = config.value_of("user_type").unwrap();
-
-    let parser_source = generate_parser_source(&grammar_config, &lexer_source, &lookahead_dfa_s)
-        .wrap_err("Failed to generate parser source!")?;
-
-    if let Some(parser_file_out) = config.value_of("parser") {
-        fs::write(parser_file_out, parser_source)
-            .into_diagnostic()
-            .wrap_err("Error writing generated lexer source!")?;
-        try_format(parser_file_out);
-    } else if verbose {
-        println!("\nParser source:\n{}", parser_source);
-    }
-
-    let user_trait_source =
-        generate_user_trait_source(user_type, user_trait_module_name, &grammar_config)
-            .wrap_err("Failed to generate user trait source!")?;
-    if let Some(user_trait_file_out) = config.value_of("actions") {
-        fs::write(user_trait_file_out, user_trait_source)
-            .into_diagnostic()
-            .wrap_err("Error writing generated user trait source!")?;
-        try_format(user_trait_file_out);
-    } else if verbose {
-        println!("\nSource for semantic actions:\n{}", user_trait_source);
-    }
+    generator.post_process()?;
+    generator.write_output()?;
 
     Ok(())
 }
 
-fn obtain_grammar_config(config: &clap::ArgMatches) -> Result<GrammarConfig> {
-    if let Some(file_name) = config.value_of("grammar") {
-        let input = fs::read_to_string(file_name)
-            .into_diagnostic()
-            .wrap_err(format!("Can't read file {}", file_name))?;
-        let mut parol_grammar = ParolGrammar::new();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut parol_grammar)
-            .wrap_err(format!("Failed parsing file {}", file_name))?;
-
-        if config.is_present("verbose") {
+pub struct CLIListener<'a, 'm> {
+    config: &'a clap::ArgMatches<'m>,
+    grammar_file: &'a Path,
+}
+impl CLIListener<'_, '_> {
+    fn vebrose(&self) -> bool {
+        self.config.is_present("verbose")
+    }
+}
+impl BuildListener for CLIListener<'_, '_> {
+    fn on_initial_grammar_parse(
+        &mut self,
+        syntax_tree: &Tree<ParseTreeType>,
+        parol_grammar: &ParolGrammar,
+    ) -> miette::Result<()> {
+        if self.vebrose() {
             println!("{}", parol_grammar);
         }
 
-        if let Some(file_name) = config.value_of("write_internal").as_ref() {
+        if let Some(file_name) = self.config.value_of("write_internal").as_ref() {
             let serialized = format!("{}", parol_grammar);
             fs::write(file_name, serialized)
                 .into_diagnostic()
                 .wrap_err("Error writing left-factored grammar!")?;
         }
 
-        if config.is_present("generate_tree_graph") {
-            generate_tree_layout(&syntax_tree, file_name)
+        if self.config.is_present("generate_tree_graph") {
+            parol::generate_tree_layout(syntax_tree, &self.grammar_file)
                 .wrap_err("Error generating tree layout")?;
         }
 
-        Ok(GrammarConfig::try_from(parol_grammar)?)
-    } else {
-        bail!("Need grammar file!");
+        Ok(())
     }
-}
 
-fn write_expanded_grammar(
-    grammar_config: &GrammarConfig,
-    config: &clap::ArgMatches,
-    pass: usize,
-) -> Result<()> {
-    if let Some(file_name) = config.value_of("expanded").as_ref() {
-        let lf_source = render_par_string(grammar_config, true);
-        if *file_name == "--" {
-            print!("{}", lf_source);
-        } else {
-            fs::write(file_name, lf_source)
-                .into_diagnostic()
-                .wrap_err("Error writing left-factored grammar!")?;
+    fn on_intermediate_grammar(
+        &mut self,
+        stage: IntermediateGrammar,
+        grammar_config: &GrammarConfig,
+    ) -> miette::Result<()> {
+        match stage {
+            // no passes yet
+            IntermediateGrammar::Untransformed => {
+                if let Some(file_name) = self.config.value_of("write_untransformed") {
+                    let serialized = render_par_string(grammar_config, false);
+                    fs::write(file_name, serialized)
+                        .into_diagnostic()
+                        .wrap_err("Error writing untransformed grammar!")?;
+                }
+            }
+            // final pass
+            IntermediateGrammar::LAST => {
+                if let Some(file_name) = self.config.value_of("expanded").as_ref() {
+                    // NOTE: We still need special handling for writing to stdout
+                    let lf_source = render_par_string(grammar_config, true);
+                    if *file_name == "--" {
+                        print!("{}", lf_source);
+                    } else {
+                        // Should be handled by the builder
+                    }
+                }
+            }
+            _ => {}
         }
+        Ok(())
     }
-
-    if pass == 0 {
-        if let Some(file_name) = config.value_of("write_untransformed") {
-            let serialized = render_par_string(grammar_config, false);
-            fs::write(file_name, serialized)
-                .into_diagnostic()
-                .wrap_err("Error writing untransformed grammar!")?;
-        }
-    }
-
-    Ok(())
 }

@@ -12,7 +12,6 @@ args:
         short: k
         long: lookahead
         takes_value: true
-        default_value: "5"
     - only_lookahead:
         help: Don't generate sources but only calculate maximum lookahead size for given grammar
         short: c
@@ -53,13 +52,11 @@ args:
         short: t
         long: user_type
         takes_value: true
-        default_value: Grammar
     - module:
         help: User type's module name
         short: m
         long: module
         takes_value: true
-        default_value: grammar
     - generate_tree_graph:
         help: Activates the generation of a SVG file with the parse tree of the given grammar
         short: s
