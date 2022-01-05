@@ -1,7 +1,7 @@
 //! Allows programatically invoking parol from a `build.rs` script
 //!
 //! The process of invoking a grammar starts with a [`Builder`] and one of two output modes:
-//! 1. Cargo build script output mode, via [Builder::for_cargo_script] (easiest)
+//! 1. Cargo build script output mode, via [Builder::with_cargo_script_output] (easiest)
 //! 2. Explcicitly specifying an output directory via [Builder::with_explicit_output_dir]
 //!
 //! ## Cargo integration
@@ -12,7 +12,7 @@
 //! implicitly outputing the appropriate [`rerun-if-changed=<grammar>`](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#change-detection) instructions to Cargo.
 //!
 //! ### Defaults
-//! When using [`Builder::for_cargo_script`], a number of reasonable defaults are set:
+//! When using [`Builder::with_cargo_script_output`], a number of reasonable defaults are set:
 //!
 //! By default, the output directory is set to the `OUT_DIR` environment variable.
 //! By default, the generated parser name is `parser.rs` and the generated grammar action file is `
@@ -22,7 +22,6 @@
 //! mod parser {
 //!     include!(concat!(env!("OUT_DIR"), "/parser.rs"));
 //! }
-
 //! ```
 //!
 //! ### Tradeoffs
@@ -60,7 +59,7 @@
 //! It does not use the "output" directory.
 //!
 //! ### Interaction with version control
-//! When using [`Builder::for_cargo_script`], the output is put in a subdir of the `target`
+//! When using [`Builder::with_cargo_script_output`], the output is put in a subdir of the `target`
 //! directory and excluded from version control.
 //!
 //! This is useful if you want to ignore changes in machine-generated code.
@@ -168,7 +167,7 @@ pub struct Builder {
     debug_verbose: bool,
 }
 impl Builder {
-    /// Create a new builder for use in a Cargo build script (`build.rs`).
+    /// Create a new builder fr use in a Cargo build script (`build.rs`).
     ///
     /// This is the recommended default way to get started.
     ///
@@ -187,7 +186,7 @@ impl Builder {
     /// See the module documentation for how to include these files into your project.
     ///
     /// Panics if used outside of a cargo build script.
-    pub fn for_cargo_script() -> Self {
+    pub fn with_cargo_script_output() -> Self {
         assert!(is_build_script(), "Cannot use outside of a cargo script");
         // Don't worry! $OUT_DIR is unique for every
         let out_dir = env::var_os("OUT_DIR").unwrap();
@@ -242,14 +241,14 @@ impl Builder {
     ///
     /// This disables that check (used for the CLI).
     ///
-    /// NOTE: When using [`Builder::for_cargo_script`], these are automatically inferred.
+    /// NOTE: When using [`Builder::with_cargo_script_output`], these are automatically inferred.
     pub fn disable_output_sanity_checks(&mut self) -> &mut Self {
         self.output_snaity_checks = false;
         self
     }
     /// Set the output location for the generated parser.
     ///
-    /// If you are using [Builder::for_cargo_script],
+    /// If you are using [Builder::with_cargo_script_output],
     /// the default output is "$OUT_DIR/parser.rs".
     ///
     /// If you are using an explicitly specified output directory, then this option is *required*.
@@ -259,7 +258,7 @@ impl Builder {
     }
     /// Set the actions output location for the generated parser.
     ///
-    /// If you are using [Builder::for_cargo_script],
+    /// If you are using [Builder::with_cargo_script_output],
     /// the default output is "$OUT_DIR/grammar.rs".
     ///
     /// If you are using an explicitly specified output directory, then this option is *required*.
@@ -269,7 +268,7 @@ impl Builder {
     }
     /// Set the actions output location for the generated parser.
     ///
-    /// If you are using [Builder::for_cargo_script],
+    /// If you are using [Builder::with_cargo_script_output],
     /// the default output is "$OUT_DIR/grammar-exp.par".
     ///
     /// Otherwise, this is ignored.
