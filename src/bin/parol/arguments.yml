@@ -12,11 +12,6 @@ args:
         short: k
         long: lookahead
         takes_value: true
-    - only_lookahead:
-        help: Don't generate sources but only calculate maximum lookahead size for given grammar
-        short: c
-        long: only_lookahead
-        takes_value: false
     - parser:
         help: Output file for the generated parser source
         short: p

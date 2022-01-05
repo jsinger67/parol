@@ -4,13 +4,23 @@ As of version v0.5.1. tools are subcommands of the parol binary. Their source co
 
 Please note, that you do not need to use these tools normally when you want to generate parsers. All of their functionality is completely included in `parol` itself. But when you are about to solve a certain problem they may come handy. So it is useful to know whats in the bag.
 
-Hint: All subcommands give a short help output when called without parameters:
+Hint: All subcommands give a short help output when called after parameter `help`:
 
 ```shell
-    >cargo run --bin parol calculate_k
-Missing arguments <par-file> <k=5>!
-Example:
-cargo run --bin parol calculate_k ./src/parser/parol-grammar-exp.par
+    >cargo run --bin parol help calculate_k
+parol.exe-calculate_k 
+Calculates the maximum lookahead needed for your grammar, similar to `decidable`.
+
+USAGE:
+    parol.exe calculate_k [ARGS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+ARGS:
+    <grammar_file>    The grammar file to use
+    <lookahead>       The maximum number of lookahead tokens to be used [default: 5]
 ```
 
 If you installed parol via
@@ -25,7 +35,7 @@ or from local repository
 cargo install --path .
 ```
 
-you will have another option of calling parol and its subcommands which is even easier because the `parol` executable is installed in your `~/.cargo/bin` folder.
+you will have another option of calling `parol` and its subcommands which is even easier because the `parol` executable is installed in your `~/.cargo/bin` folder.
 
 ```shell
     >parol calculate_k  ./examples/list/list-exp.par

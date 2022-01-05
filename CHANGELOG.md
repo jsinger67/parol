@@ -5,9 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v0.5.6-pre - unreleased yet
+
+* Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch over to `clap v3`.
+* Fixed issue #4: *It appears the --only-lookahead option (-c) doesn't work*. This option is useless and was removed.
+
 ## v0.5.5 - 2022-01-05
 
-* Included PR #8 from Techcable.
+* Included PR #8: *Rename default actions file from grammar.rs -> grammar_trait.rs*. ***Thanks a lot to Techcable***
 
 ## v0.5.4 - 2022-01-05
 
@@ -16,7 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
 * More tests to check the parol parser's internal representation.
 * Fixed some problems related to platform specific newline characters.
-* Fixed Issues #5 and included PR #6. *Thanks a lot to Techcable*
+* Fixed issues #5: *Bizarre error running scanner_states*. ***Thanks a lot to Techcable***
+* Included PR #6: *Add API to invoke parol from build scripts*. ***Thanks a lot to Techcable***
 
 ## v0.5.3 - 2022-01-02
 

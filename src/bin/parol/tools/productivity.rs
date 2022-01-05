@@ -1,26 +1,33 @@
-use miette::Result;
+use miette::{miette, Result};
+
 use parol::analysis::non_productive_non_terminals;
 use parol::obtain_grammar_config;
 
-pub fn main(args: &[&str]) -> Result<()> {
-    if args.len() < 2 {
-        println!("Missing arguments <par-file>!");
-        println!(
-            "Example:\n\
-            cargo run --bin parol productivity ./src/parser/parol-grammar-exp.par"
-        );
-    } else {
-        let file_name = args[1].to_owned();
-        let grammar_config = obtain_grammar_config(&file_name, false)?;
+pub fn sub_command() -> clap::App<'static, 'static> {
+    clap::SubCommand::with_name("productivity")
+        .about("Checks the given grammar for non-productive non-terminals.")
+        .arg(
+            clap::Arg::with_name("grammar_file")
+                .short("f")
+                .help("The grammar file to use")
+                .index(1),
+        )
+}
 
-        let non_productive_non_terminals = non_productive_non_terminals(&grammar_config.cfg);
-        if non_productive_non_terminals.is_empty() {
-            println!("No non-productive non-terminals found!");
-        } else {
-            println!("Non-productive non-terminals:");
-            for nt in non_productive_non_terminals {
-                println!("  {}", nt);
-            }
+pub fn main(args: &clap::ArgMatches) -> Result<()> {
+    let file_name = args
+        .value_of("grammar_file")
+        .ok_or_else(|| miette!("Missing argument <grammar_file>!"))?;
+
+    let grammar_config = obtain_grammar_config(&file_name, false)?;
+
+    let non_productive_non_terminals = non_productive_non_terminals(&grammar_config.cfg);
+    if non_productive_non_terminals.is_empty() {
+        println!("No non-productive non-terminals found!");
+    } else {
+        println!("Non-productive non-terminals:");
+        for nt in non_productive_non_terminals {
+            println!("  {}", nt);
         }
     }
     Ok(())

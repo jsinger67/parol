@@ -1,50 +1,61 @@
-use miette::{bail, Result};
+use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
 use parol::analysis::{first_k, FirstCache};
 use parol::generators::generate_terminal_names;
 use parol::{obtain_grammar_config, KTuples, MAX_K};
 use std::collections::BTreeMap;
 
-pub fn main(args: &[&str]) -> Result<()> {
-    if args.len() < 2 {
-        println!("Missing arguments <par-file> [k=1]!");
+pub fn sub_command() -> clap::App<'static, 'static> {
+    clap::SubCommand::with_name("first")
+        .about("Calculates the FIRST(k) sets for each production and for each non-terminal.")
+        .arg(
+            clap::Arg::with_name("grammar_file")
+                .short("f")
+                .help("The grammar file to use")
+                .index(1),
+        )
+        .arg(
+            clap::Arg::with_name("lookahead")
+                .short("k")
+                .default_value("1")
+                .help("The maximum number of lookahead tokens to be used")
+                .index(2),
+        )
+}
+
+pub fn main(args: &clap::ArgMatches) -> Result<()> {
+    let file_name = args
+        .value_of("grammar_file")
+        .ok_or_else(|| miette!("Missing argument <grammar_file>!"))?;
+
+    let grammar_config = obtain_grammar_config(&file_name, true)?;
+    let max_k = args
+        .value_of("lookahead")
+        .unwrap()
+        .parse::<usize>()
+        .into_diagnostic()
+        .wrap_err("Provide a valid integer value for second argument")?;
+
+    if max_k > MAX_K {
+        bail!("Maximum lookahead is {}", MAX_K);
+    }
+
+    let terminals = generate_terminal_names(&grammar_config);
+    let first_cache = FirstCache::new();
+
+    let (first_k_per_prod, mut first_k_per_nt) = first_k(&grammar_config, max_k, &first_cache);
+    println!("Per production:");
+    for (i, f) in first_k_per_prod.iter().enumerate() {
         println!(
-            "Example:\n\
-            cargo run --bin parol first ./src/parser/parol-grammar-exp.par"
+            "  {}({}): {}",
+            i,
+            grammar_config.cfg.pr[i].get_n_str(),
+            f.to_string(&terminals)
         );
-    } else {
-        let file_name = args[1].to_owned();
-        let grammar_config = obtain_grammar_config(&file_name, false)?;
-
-        let k = if args.len() > 2 {
-            args[2]
-                .parse::<usize>()
-                .expect("Provide a valid integer value for second argument")
-        } else {
-            1usize
-        };
-
-        if k > MAX_K {
-            bail!("Maximum lookahead is {}", MAX_K);
-        }
-
-        let terminals = generate_terminal_names(&grammar_config);
-        let first_cache = FirstCache::new();
-
-        let (first_k_per_prod, mut first_k_per_nt) = first_k(&grammar_config, k, &first_cache);
-        println!("Per production:");
-        for (i, f) in first_k_per_prod.iter().enumerate() {
-            println!(
-                "  {}({}): {}",
-                i,
-                grammar_config.cfg.pr[i].get_n_str(),
-                f.to_string(&terminals)
-            );
-        }
-        println!("Per non-terminal:");
-        let first_k_per_nt: BTreeMap<String, KTuples> = first_k_per_nt.drain().collect();
-        for (nt, fi) in first_k_per_nt.iter() {
-            println!("  {}: {}", nt, fi.to_string(&terminals));
-        }
+    }
+    println!("Per non-terminal:");
+    let first_k_per_nt: BTreeMap<String, KTuples> = first_k_per_nt.drain().collect();
+    for (nt, fi) in first_k_per_nt.iter() {
+        println!("  {}: {}", nt, fi.to_string(&terminals));
     }
     Ok(())
 }

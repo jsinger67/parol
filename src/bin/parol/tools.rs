@@ -1,16 +1,24 @@
 //! A registry for all the extra tools that can be used with parol.
 
-pub type ToolFunc = fn(&[&str]) -> miette::Result<()>;
+pub type SubCommandFunc = fn() -> clap::App<'static, 'static>;
+pub type ToolFunc = fn(&clap::ArgMatches) -> miette::Result<()>;
+
+pub fn get_tool_sub_command(name: &str) -> Option<SubCommandFunc> {
+    TOOLS
+        .iter()
+        .find(|(actual_name, _, _)| *actual_name == name)
+        .map(|tool| tool.1)
+}
 
 pub fn get_tool_main(name: &str) -> Option<ToolFunc> {
     TOOLS
         .iter()
-        .find(|(actual_name, _)| *actual_name == name)
-        .map(|tool| tool.1)
+        .find(|(actual_name, _, _)| *actual_name == name)
+        .map(|tool| tool.2)
 }
 
 pub fn names() -> impl Iterator<Item = &'static str> {
-    TOOLS.iter().map(|(name, _)| *name)
+    TOOLS.iter().map(|(name, _, _)| *name)
 }
 
 /*
@@ -22,8 +30,8 @@ pub fn names() -> impl Iterator<Item = &'static str> {
 macro_rules! declare_tools {
     ($($tool:ident),*) => {
         $(mod $tool;)*
-        pub static TOOLS: &[(&str, ToolFunc)] = &[
-            $((stringify!($tool), self::$tool::main)),*
+        pub static TOOLS: &[(&str, SubCommandFunc, ToolFunc)] = &[
+            $((stringify!($tool), self::$tool::sub_command, self::$tool::main)),*
         ];
     }
 }

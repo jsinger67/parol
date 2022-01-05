@@ -1,34 +1,45 @@
-use miette::{bail, Result};
+use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
 use parol::analysis::k_decision::{calculate_k, FirstCache, FollowCache};
 use parol::{obtain_grammar_config, MAX_K};
 
-pub fn main(args: &[&str]) -> Result<()> {
-    if args.len() > 1 {
-        let file_name = args[1].to_owned();
+pub fn sub_command() -> clap::App<'static, 'static> {
+    clap::SubCommand::with_name("calculate_k")
+        .about("Calculates the maximum lookahead needed for your grammar, similar to `decidable`.")
+        .arg(
+            clap::Arg::with_name("grammar_file")
+                .short("f")
+                .help("The grammar file to use")
+                .index(1),
+        )
+        .arg(
+            clap::Arg::with_name("lookahead")
+                .short("k")
+                .default_value("5")
+                .help("The maximum number of lookahead tokens to be used")
+                .index(2),
+        )
+}
 
-        let grammar_config = obtain_grammar_config(&file_name, true)?;
+pub fn main(args: &clap::ArgMatches) -> Result<()> {
+    let file_name = args
+        .value_of("grammar_file")
+        .ok_or_else(|| miette!("Missing argument <grammar_file>!"))?;
 
-        let max_k = if args.len() > 2 {
-            args[2]
-                .parse::<usize>()
-                .expect("Provide a valid integer value for second argument")
-        } else {
-            5usize
-        };
-        if max_k > MAX_K {
-            bail!("Maximum lookahead is {}", MAX_K);
-        }
+    let grammar_config = obtain_grammar_config(&file_name, true)?;
+    let max_k = args
+        .value_of("lookahead")
+        .unwrap()
+        .parse::<usize>()
+        .into_diagnostic()
+        .wrap_err("Provide a valid integer value for second argument")?;
 
-        let first_cache = FirstCache::new();
-        let follow_cache = FollowCache::new();
-        let result = calculate_k(&grammar_config, max_k, &first_cache, &follow_cache);
-        println!("{:#?}", result);
-    } else {
-        println!("Missing arguments <par-file> <k=5>!");
-        println!(
-            "Example:\n\
-            cargo run --bin parol calculate_k ./src/parser/parol-grammar-exp.par"
-        );
+    if max_k > MAX_K {
+        bail!("Maximum lookahead is {}", MAX_K);
     }
+
+    let first_cache = FirstCache::new();
+    let follow_cache = FollowCache::new();
+    let result = calculate_k(&grammar_config, max_k, &first_cache, &follow_cache);
+    println!("{:#?}", result);
     Ok(())
 }

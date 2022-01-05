@@ -4,7 +4,7 @@ extern crate clap;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use clap::{App, AppSettings, Arg, SubCommand};
+use clap::{App, AppSettings};
 use log::trace;
 use miette::{miette, IntoDiagnostic, Result, WrapErr};
 
@@ -39,7 +39,7 @@ fn main() -> Result<()> {
              *
              * They all accept infinite args (clap makes no attempt to validate things here).
              */
-            SubCommand::with_name(name).arg(Arg::with_name("args").index(1).multiple(true))
+            tools::get_tool_sub_command(name).unwrap()()
         }))
         // Only invoke tools if they come first, to avoid ambiguity with main binary
         .setting(AppSettings::ArgsNegateSubcommands)
@@ -47,24 +47,13 @@ fn main() -> Result<()> {
         .get_matches();
 
     if let (subcommand_name, Some(sub_matches)) = config.subcommand() {
-        let mut ext_args: Vec<&str> = sub_matches
-            .values_of("args")
-            .map_or_else(Vec::default, |args| args.collect());
-        /*
-         * All of the tools were originally written using `env::args()` meaning they expect tool name to be
-         * first.
-         *
-         * Therefore they expect first argument at index 1 instead of zero.
-         * Fake a command name to avoid changing all the indices
-         */
-        ext_args.insert(0, subcommand_name);
         let tool_main =
             tools::get_tool_main(subcommand_name).expect("Clap should've validated tool name");
-        log::debug!("Delegating to {} with {:?}", subcommand_name, ext_args);
-        return tool_main(&ext_args);
+        log::debug!("Delegating to {} with {:?}", subcommand_name, sub_matches);
+        return tool_main(sub_matches);
     }
 
-    // If relative paths are spsecified, they should be resoled relative to the current directory
+    // If relative paths are specified, they should be resoled relative to the current directory
     let mut builder =
         parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
 
@@ -112,13 +101,6 @@ fn main() -> Result<()> {
 
     generator.parse()?;
     generator.expand()?;
-
-    // NOTE: only-lookahead appears to have been broken (even before this commit).
-    // See issue #2
-    if !config.is_present("parser") && !config.is_present("only_lookahead") {
-        return Ok(());
-    }
-
     generator.post_process()?;
     generator.write_output()?;
 
@@ -130,7 +112,7 @@ pub struct CLIListener<'a, 'm> {
     grammar_file: &'a Path,
 }
 impl CLIListener<'_, '_> {
-    fn vebrose(&self) -> bool {
+    fn verbose(&self) -> bool {
         self.config.is_present("verbose")
     }
 }
@@ -140,7 +122,7 @@ impl BuildListener for CLIListener<'_, '_> {
         syntax_tree: &Tree<ParseTreeType>,
         parol_grammar: &ParolGrammar,
     ) -> miette::Result<()> {
-        if self.vebrose() {
+        if self.verbose() {
             println!("{}", parol_grammar);
         }
 
