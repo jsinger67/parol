@@ -5,13 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## v0.5.4 - unreleased yet
+## v0.5.4 - 2022-01-05
 
 * Fixed a serious bug in parsing groups, repetitions and optionals introduced in commit [6476e75].
 * Started issuing more detailed miette-like errors from parol itself.
 * Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
 * More tests to check the parol parser's internal representation.
 * Fixed some problems related to platform specific newline characters.
+* Fixed Issue #5 *Thanks a lot to Techcable*
 
 ## v0.5.3 - 2022-01-02
 

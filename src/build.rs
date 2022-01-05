@@ -1,15 +1,15 @@
-//! Allows programatically invoking parol from a `build.rs` script
+//! Allows programmatically invoking parol from a `build.rs` script
 //!
 //! The process of invoking a grammar starts with a [`Builder`] and one of two output modes:
 //! 1. Cargo build script output mode, via [Builder::with_cargo_script_output] (easiest)
-//! 2. Explcicitly specifying an output directory via [Builder::with_explicit_output_dir]
+//! 2. Explicitly specifying an output directory via [Builder::with_explicit_output_dir]
 //!
 //! ## Cargo integration
 //! If this API detects it is running inside a [Cargo `build.rs` script](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html),
 //! then it implicitly enables cargo integration.
 //!
 //! This has Cargo *automatically* regenerate the parser sources whenever the grammar changes. This is done by
-//! implicitly outputing the appropriate [`rerun-if-changed=<grammar>`](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#change-detection) instructions to Cargo.
+//! implicitly outputting the appropriate [`rerun-if-changed=<grammar>`](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#change-detection) instructions to Cargo.
 //!
 //! ### Defaults
 //! When using [`Builder::with_cargo_script_output`], a number of reasonable defaults are set:
@@ -32,19 +32,19 @@
 //! If someone just wants to `cargo install <your crate>`, Cargo will have to download and execute `parol` to generate your parser code.
 //!
 //! Contributors to your project (who modify your grammar) will have to download and invoke parol anyways,
-//! so this cost primarily affects initial compile times. Also cargo is very intellegent about caching build script outputs,
+//! so this cost primarily affects initial compile times. Also cargo is very intelligent about caching build script outputs,
 //! so it really only affects
 //!
-//! Despiste the impact on initial compiles, this is somewhat tradtional in the Rust community.
+//! Despite the impact on initial compiles, this is somewhat traditional in the Rust community.
 //! It's [the recommended way to use `bindgen`](https://rust-lang.github.io/rust-bindgen/library-usage.html)
 //! and it's the only way to use [`pest`](https://pest.rs/).
 //!
 //! If you are really concerned about compile times,
 //! you can use explicit output (below) to avoid invoking pest.
 //!
-//! ## Explicitly controling Output Locations
+//! ## Explicitly controlling Output Locations
 //! If you want more control over the location of generated grammar files,
-//! you can invoke [`Builder::with_explicit_output_dir`] to explictly set an output directory.
+//! you can invoke [`Builder::with_explicit_output_dir`] to explicitly set an output directory.
 //!
 //! In addition you must explicitly name your output parser and action files,
 //! or the configuration will give an error.
@@ -52,7 +52,7 @@
 //! This is used to power the command line `parol` tool, and is useful for additional control.
 //!
 //! Any configured *output* paths (including generated parsers, expanded grammars, etc)
-//! are resolved relative to this base output using [Path::join]. This means that specifiying absolute paths
+//! are resolved relative to this base output using [Path::join]. This means that specifying absolute paths
 //! overrides this explicit base directory.
 //!
 //! The grammar input file is resolved in the regular manner.
@@ -68,18 +68,18 @@
 //!
 //! In this case, you would probably set the output to a sub-directory of `src`.
 //! This means that files are version controlled
-//! and you would have to commit them whenver changes are made.
+//! and you would have to commit them whenever changes are made.
 //!
 //! ## Using the CLI directly
 //! Note that explicitly specifying the output directory doesn't avoid running parol on `cargo install`.
 //!
 //! It does not increase the initial build speed, and still requires compiling and invoking `parol`.
 //!
-//! If you realy want to avoid adding `parol` as a build dependency,
+//! If you really want to avoid adding `parol` as a build dependency,
 //! you need to invoke the CLI manually to generate the parser sources ahead of time.
 //!
 //! Using a build script requires adding a build dependency, and cargo will unconditionally execute build scripts it on first install.
-//! While Cargo's build script caching is excellemt, it only activates on recompiles.
+//! While Cargo's build script caching is excellent, it only activates on recompiles.
 //!
 //! As such, using the CLI manually is really the only way to improve (initial) compile times.
 //!
@@ -129,18 +129,18 @@ pub const DEFAULT_MAX_LOOKAHEAD: usize = 5;
 /// The default name of the generated grammar module.
 pub const DEFAULT_MODULE_NAME: &str = "grammar";
 /// The default name of the user type that implements grammar parsing.
-pub const DEFUALT_USER_TYPE_NAME: &str = "Grammar";
+pub const DEFAULT_USER_TYPE_NAME: &str = "Grammar";
 
 fn is_build_script() -> bool {
-    // Although only `OUT_DIR` is nessicary for our purposes, it's possible someone else set it.
+    // Although only `OUT_DIR` is necessary for our purposes, it's possible someone else set it.
     // Check for a second one to make sure we're actually running under cargo
     // See full list of environment variables here: https://is.gd/K6LyzQ
     env::var_os("OUT_DIR").is_some() && env::var_os("CARGO_MANIFEST_DIR").is_some()
 }
 
-/// Builds the configuration for generating and analysing `parol` grammars.
+/// Builds the configuration for generating and analyzing `parol` grammars.
 ///
-/// A grammar file is requiered for almost all possible operations (set with [Builder::grammar_file])
+/// A grammar file is required for almost all possible operations (set with [Builder::grammar_file])
 ///
 /// Does not actually generate anything until finished.
 #[derive(Clone)]
@@ -148,21 +148,21 @@ pub struct Builder {
     /// The base output directory
     output_dir: PathBuf,
     grammar_file: Option<PathBuf>,
-    /// Output file for expaned grammar
+    /// Output file for expanded grammar
     expanded_grammar_output_file: Option<PathBuf>,
     /// Output file for the generated parser source
     parser_output_file: Option<PathBuf>,
-    /// Ouptut file for the generated actions files.
+    /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
     user_type_name: String,
     module_name: String,
     cargo_integration: bool,
     max_lookahead: usize,
     /// By default, we want to require that the parser output file is specified.
-    /// Otherwise we're just wasting time outputing to /dev/null.
+    /// Otherwise we're just wasting time outputting to /dev/null.
     ///
     /// The CLI needs to be able to override this (mostly for debugging), hence the option.
-    output_snaity_checks: bool,
+    output_sanity_checks: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
 }
@@ -204,7 +204,7 @@ impl Builder {
     fn resolve_output_path(&self, p: impl AsRef<Path>) -> PathBuf {
         self.output_dir.join(p)
     }
-    /// Create a new builder with an explicitly speicfied output directory.
+    /// Create a new builder with an explicitly specified output directory.
     ///
     /// This requires that output files be specified explicitly,
     /// unless this check is disabled with [`Builder::disable_output_sanity_checks`]
@@ -227,14 +227,14 @@ impl Builder {
             debug_verbose: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
-            user_type_name: String::from(DEFUALT_USER_TYPE_NAME),
+            user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
             // In this mode, the user must specify explicit outputs.
             // The default is /dev/null (`None`)
             parser_output_file: None,
             actions_output_file: None,
             expanded_grammar_output_file: None,
             // By default, we require that output files != /dev/null
-            output_snaity_checks: true,
+            output_sanity_checks: true,
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -243,7 +243,7 @@ impl Builder {
     ///
     /// NOTE: When using [`Builder::with_cargo_script_output`], these are automatically inferred.
     pub fn disable_output_sanity_checks(&mut self) -> &mut Self {
-        self.output_snaity_checks = false;
+        self.output_sanity_checks = false;
         self
     }
     /// Set the output location for the generated parser.
@@ -276,7 +276,7 @@ impl Builder {
         self.expanded_grammar_output_file = Some(self.resolve_output_path(p));
         self
     }
-    /// Explciitly enable/disable cargo intergration.
+    /// Explicitly enable/disable cargo integration.
     ///
     /// This is automatically set to true if you are running a build script,
     /// and is `false` otherwise.
@@ -309,7 +309,7 @@ impl Builder {
     ///
     /// If nothing is specified, the default lookahead is [DEFAULT_MAX_LOOKAHEAD].
     ///
-    /// Returns a [BuilderError] if the lookahead is gerater than [crate::MAX_K].
+    /// Returns a [BuilderError] if the lookahead is greater than [crate::MAX_K].
     pub fn max_lookahead(&mut self, k: usize) -> Result<&mut Self, BuilderError> {
         if k > MAX_K {
             return Err(BuilderError::LookaheadTooLarge);
@@ -317,7 +317,7 @@ impl Builder {
         self.max_lookahead = k;
         Ok(self)
     }
-    /// Debug vebrose information to the standard output
+    /// Debug verbose information to the standard output
     ///
     /// This is an internal method, and is only intended for the CLI.
     #[doc(hidden)]
@@ -346,7 +346,7 @@ impl Builder {
             .as_ref()
             .ok_or(BuilderError::MissingGrammarFile)?
             .clone();
-        if self.output_snaity_checks {
+        if self.output_sanity_checks {
             // Check that we have outputs
             if self.parser_output_file.is_none() {
                 return Err(BuilderError::MissingParserOutputFile);
@@ -483,12 +483,12 @@ impl GrammarGenerator<'_> {
         if self.builder.debug_verbose {
             print!("\nGrammar config:\n{:?}", grammar_config);
         }
-        self.state = Some(State::PostPorcessed);
+        self.state = Some(State::PostProcessed);
         Ok(())
     }
     #[doc(hidden)]
     pub fn write_output(&mut self) -> miette::Result<()> {
-        assert_eq!(self.state, Some(State::PostPorcessed));
+        assert_eq!(self.state, Some(State::PostProcessed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
         let lexer_source = crate::generate_lexer_source(grammar_config)
             .wrap_err("Failed to generate lexer source!")?;
@@ -531,7 +531,7 @@ impl GrammarGenerator<'_> {
 enum State {
     Parsed,
     Expanded,
-    PostPorcessed,
+    PostProcessed,
     Finished,
 }
 
@@ -539,7 +539,7 @@ enum State {
 ///
 /// This is used by the CLI to implement some of its more advanced options (without cluttering up the main interface).
 ///
-/// The details of this trait are conisdered unstable.
+/// The details of this trait are considered unstable.
 #[allow(
     unused_variables, // All these variables are going to be unused because these are NOP impls....
     missing_docs, // This is fine because this is internal.
@@ -588,7 +588,7 @@ impl<'l> BuildListener for MaybeBuildListener<'l> {
     }
 }
 
-/// Marks an intermediate stage of the grammar, in beteween the various transformations that parol does.
+/// Marks an intermediate stage of the grammar, in between the various transformations that parol does.
 ///
 /// The last transformation is returned by [IntermediateGrammar::LAST]
 ///
@@ -620,12 +620,12 @@ pub enum BuilderError {
     /// Indicates that no parser output file has been specified.
     ///
     /// This would discard the generated parser, which is typically a mistake.
-    #[error("No parser output file specifeid")]
+    #[error("No parser output file specified")]
     MissingParserOutputFile,
     /// Indicates that no parser output file has been specified.
     ///
     /// This would discard the generated parser, which is typically a mistake.
-    #[error("No action output file specifeid")]
+    #[error("No action output file specified")]
     MissingActionOutputFile,
     /// Indicates that the specified lookahead is too large
     #[error("Maximum lookahead is {}", MAX_K)]
