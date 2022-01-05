@@ -60,7 +60,9 @@ Escaped
 
 EscapedLineEnd
     // This terminal is only valid in scanner state 'String'
-    : <String>"\u{5c}[\s*]\r?\n"
+    // NOTE: [\s^\n\r] matches all whitespace characters *except* \r and \n
+    // Otherwise, the regex will greedly pickup newlines See issue #5
+    : <String>"\u{5c}[\s^\n\r]*\r?\n"
     ;
 
 NoneQuote

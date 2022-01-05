@@ -25,7 +25,7 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###"[a-zA-Z_]\w*"###,
     /*  6 */ r###"\u{5c}[\u{22}\u{5c}bfnt]"###,
-    /*  7 */ r###"\u{5c}[\s*]\r?\n"###,
+    /*  7 */ r###"\u{5c}[\s^\n\r]*\r?\n"###,
     /*  8 */ r###"[^\u{22}\u{5c}]+"###,
     /*  9 */ r###"\u{22}"###,
     /* 10 */ ERROR_TOKEN,
@@ -232,7 +232,7 @@ pub const PRODUCTIONS: &[Production; 15] = &[
         lhs: 1,
         production: &[ParseType::T(6)],
     },
-    // 12 - EscapedLineEnd: "\u{5c}[\s*]\r?\n";
+    // 12 - EscapedLineEnd: "\u{5c}[\s^\n\r]*\r?\n";
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
