@@ -1,6 +1,6 @@
 [package]
 name = "json_parser"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2018"
 build = "build.rs"
 
@@ -15,7 +15,7 @@ parol_runtime = "0.5.3"
 thiserror = "1.0.30"
 
 [build-dependencies]
-parol = "0.5.4"
+parol = "0.5.5"
 
 [profile.release]
 debug = true
