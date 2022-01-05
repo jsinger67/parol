@@ -1,4 +1,4 @@
-use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
+use miette::{bail, IntoDiagnostic, Result, WrapErr};
 use parol::analysis::{decidable, explain_conflicts, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
 use parol::obtain_grammar_config;
@@ -9,25 +9,28 @@ pub fn sub_command() -> clap::App<'static, 'static> {
         .about("Can be used to detect the maximum lookahead needed for your grammar.")
         .arg(
             clap::Arg::with_name("grammar_file")
+                .required(true)
                 .short("f")
+                .long("grammar-file")
+                .takes_value(true)
                 .help("The grammar file to use")
-                .index(1),
         )
         .arg(
             clap::Arg::with_name("lookahead")
                 .short("k")
+                .long("lookahead")
+                .takes_value(true)
                 .default_value("5")
                 .help("The maximum number of lookahead tokens to be used")
-                .index(2),
         )
 }
 
 pub fn main(args: &clap::ArgMatches) -> Result<()> {
     let file_name = args
         .value_of("grammar_file")
-        .ok_or_else(|| miette!("Missing argument <grammar_file>!"))?;
+        .unwrap();
 
-    let grammar_config = obtain_grammar_config(&file_name, true)?;
+    let grammar_config = obtain_grammar_config(&file_name, false)?;
     let max_k = args
         .value_of("lookahead")
         .unwrap()

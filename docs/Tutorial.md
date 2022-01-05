@@ -69,7 +69,7 @@ This prints the internal structure of the parsed grammar definition, which is a 
 As an example for an additional tool I will name the `decidable` tool:
 
 ```shell
-    cargo run --bin parol -- decidable ./examples/json/json-exp.par
+    cargo run --bin parol decidable -f ./examples/json/json-exp.par
 ...
 Grammar is LL1    
 ```
