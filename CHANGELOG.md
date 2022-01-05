@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v0.5.5 - 2022-01-05
+
+* Included PR #8 from Techcable.
+
 ## v0.5.4 - 2022-01-05
 
 * Fixed a serious bug in parsing groups, repetitions and optionals introduced in commit [6476e75].
