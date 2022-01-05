@@ -15,7 +15,22 @@ parol_runtime = "0.5.3"
 thiserror = "1.0.30"
 
 [build-dependencies]
-parol = { path = "../parol" }
+# TODO: Fix when an official version is released
+#
+# Also this assumes now that jsinger67/parol#6 is accepted....
+parol = { git = "https://github.com/Techcable/parol.git", branch = "fix/default-actions-file-name" }
 
 [profile.release]
 debug = true
+
+[features]
+# Use the $OUT_DIR environment variable to store generated build files.
+#
+# This is recomended default for most users, as it requires less configuration (and results in smaller commits)
+#
+# However in this crate it is off by default, because we want to include the generated files in the `src` directory.
+# That way you can more easily browse the generated outputs.
+#
+# See the Cargo book for more details on $OUT_DIR:
+# https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#outputs-of-the-build-script
+use-cargo-output = []
