@@ -179,7 +179,7 @@ impl Builder {
     /// | Method name                    | CLI Option           | Default (relative) name |
     /// | -------------------------------|----------------------|-------------------------|
     /// | `parser_output_file`           | `--parser` or `-p`   | "parser.rs"             |
-    /// | `actions_output_file`          | `--actions` or `-a`  | "grammar.rs"            |
+    /// | `actions_output_file`          | `--actions` or `-a`  | "grammar_trait.rs"      |
     /// | `expanded_grammar_output_file` | `--expanded` or `-e` | "grammar-exp.par"       |
     ///
     ///
@@ -194,7 +194,7 @@ impl Builder {
         // Set those reasonable defaults we promised
         builder
             .parser_output_file("parser.rs")
-            .actions_output_file("grammar.rs")
+            .actions_output_file("grammar_trait.rs")
             .expanded_grammar_output_file("grammar-exp.par");
         // Cargo integration should already be enabled (because we are a build script)
         assert!(builder.cargo_integration);
@@ -259,7 +259,7 @@ impl Builder {
     /// Set the actions output location for the generated parser.
     ///
     /// If you are using [Builder::with_cargo_script_output],
-    /// the default output is "$OUT_DIR/grammar.rs".
+    /// the default output is "$OUT_DIR/grammar_trait.rs".
     ///
     /// If you are using an explicitly specified output directory, then this option is *required*.
     pub fn actions_output_file(&mut self, p: impl AsRef<Path>) -> &mut Self {
