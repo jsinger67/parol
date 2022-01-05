@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
 * More tests to check the parol parser's internal representation.
 * Fixed some problems related to platform specific newline characters.
-* Fixed Issue #5 *Thanks a lot to Techcable*
+* Fixed Issues #5 and included PR #6. *Thanks a lot to Techcable*
 
 ## v0.5.3 - 2022-01-02
 
