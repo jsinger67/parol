@@ -436,6 +436,18 @@ impl GrammarGenerator<'_> {
         let cfg = crate::check_and_transform_grammar(&grammar_config.cfg)
             .wrap_err("Basic grammar checks and transformations failed!")?;
 
+        // To have at least a preliminary version of the expanded grammar,
+        // even when the next checks fail, we write out the expanded grammar here.
+        // In most cases it will be overwritten further on.
+        if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
+            fs::write(
+                expanded_file,
+                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+            )
+            .into_diagnostic()
+            .wrap_err("Error writing left-factored grammar!")?;
+        }
+
         // Exchange original grammar with transformed one
         grammar_config.update_cfg(cfg);
 
