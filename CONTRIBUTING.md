@@ -24,7 +24,7 @@ messages are being returned when necessary.
 - Make sure you run `cargo fmt` (found [here](https://github.com/rust-lang-nursery/rustfmt))
 on your changes.
 - Also run `cargo clippy` (found [here](https://github.com/Manishearth/rust-clippy/))
-on your changes, but I would greatly appreciate it and fix them if possible.
+on your changes and fix all warnings if possible.
 - It would be nice if you do a spell check. It is not required but encouraged.
-- Don't forget to add yourself to the to the list of Contributors in the README! This is
+- Don't forget to add yourself to the to the list of Contributors in the README! This is also
 not required, but it is very much encouraged!
