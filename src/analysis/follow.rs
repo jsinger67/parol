@@ -6,7 +6,8 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::FirstCache;
-use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, SymbolString};
+use crate::grammar::symbol_string::SymbolString;
+use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol};
 use log::trace;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::cell::RefCell;
@@ -17,6 +18,7 @@ use std::rc::Rc;
 /// The set of the follow k terminals
 type DomainType = KTuples;
 
+/// Mapping of non-terminals to KTuples
 pub type FollowSet = BTreeMap<String, DomainType>;
 
 /// The result map is applied to each iteration step.

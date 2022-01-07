@@ -19,7 +19,7 @@ pub mod str_vec;
 /// pairs. Each pair consists of a unique key and a vector of all elements of the input
 /// vector which did produce this key by applying the projection function.
 /// The result vector is not sorted.
-pub fn group_by<P, T, K>(data: &[T], projection: P) -> Vec<(K, Vec<T>)>
+pub(crate) fn group_by<P, T, K>(data: &[T], projection: P) -> Vec<(K, Vec<T>)>
 where
     P: Fn(&T) -> K,
     K: Eq + Hash,
@@ -43,7 +43,7 @@ where
 /// Generates a new unique name avoiding collisions with the names given in the 'exclusions'.
 /// It takes a preferred name and if it collides it adds an increasing suffix number.
 /// If the preferred name already has a suffix number it starts counting up from this number.
-pub fn generate_name(exclusions: &[String], preferred_name: String) -> String {
+pub(crate) fn generate_name(exclusions: &[String], preferred_name: String) -> String {
     fn gen_name(exclusions: &[String], prefix: String, start_num: usize) -> String {
         let mut num = start_num;
         let mut new_name = format!("{}{}", prefix, num);
@@ -69,20 +69,7 @@ pub fn generate_name(exclusions: &[String], preferred_name: String) -> String {
     }
 }
 
-// pub fn count_by<T, P>(data: &[T], pred: P) -> usize
-// where
-//     T: Eq,
-//     P: Fn(&T) -> bool,
-// {
-//     data.iter().fold(0, |mut acc, e| {
-//         if pred(e) {
-//             acc += 1;
-//         }
-//         acc
-//     })
-// }
-
-pub fn combine<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
+pub(crate) fn combine<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
 where
     F: Fn(A) -> B,
     G: Fn(B) -> C,
@@ -90,7 +77,7 @@ where
     move |x| g(f(x))
 }
 
-pub fn short_cut_disjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
+pub(crate) fn short_cut_disjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
 where
     F: Fn(&A) -> bool,
     G: Fn(&A) -> bool,
@@ -105,7 +92,7 @@ where
     }
 }
 
-pub fn short_cut_conjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
+pub(crate) fn short_cut_conjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
 where
     F: Fn(&A) -> bool,
     G: Fn(&A) -> bool,
@@ -120,6 +107,13 @@ where
     }
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Utility function to parse a file with a grammar in PAR syntax.
+///
 pub fn obtain_grammar_config<T>(file_name: T, verbose: bool) -> Result<GrammarConfig>
 where
     T: AsRef<Path> + Debug,
@@ -138,6 +132,13 @@ where
     GrammarConfig::try_from(parol_grammar)
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Utility function for generating tree layouts
+///  
 pub fn generate_tree_layout<T>(syntax_tree: &Tree<ParseTreeType>, input_file_name: T) -> Result<()>
 where
     T: AsRef<Path>,

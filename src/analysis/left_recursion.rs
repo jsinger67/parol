@@ -3,6 +3,15 @@ use petgraph::algo::all_simple_paths;
 use petgraph::graph::NodeIndex;
 use std::collections::HashSet;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Detects left recursions.
+/// The result is a collection of vectors of [NtNodeType].
+/// The vectors of nodes are cycles in the [NtGrammarGraph].
+///
 pub fn detect_left_recursions(grammar: &Cfg) -> HashSet<Vec<NtNodeType>> {
     let nt_graph: NtGrammarGraph = grammar.into();
     let graph = &nt_graph.0;

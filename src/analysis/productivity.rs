@@ -1,8 +1,9 @@
 //! Grammar flow analysis
 //! Productivity of non-terminals
 
+use crate::grammar::symbol_string::SymbolString;
 use crate::utils::{short_cut_conjunction_combine, short_cut_disjunction_combine};
-use crate::{Cfg, Pr, Symbol, SymbolString};
+use crate::{Cfg, Pr, Symbol /*SymbolString*/};
 use log::trace;
 
 /// Result type for each non-terminal:
@@ -22,6 +23,7 @@ type EquationSystem<'a> = Vec<TransferFunction<'a>>;
 
 type StepFunction = Box<dyn Fn(&EquationSystem, &ResultVector) -> ResultVector>;
 
+/// Returns the non-productive terminals as a vector
 pub fn non_productive_non_terminals(cfg: &Cfg) -> Vec<String> {
     // The indices within this vector of non-terminals corresponds to the indices in the result-vector.
     let non_terminals = cfg

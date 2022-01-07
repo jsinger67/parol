@@ -9,6 +9,10 @@ lazy_static! {
         Regex::new(r"[0-9]+$").expect("error parsing regex");
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// WrapErr free grammar type
 ///
@@ -21,10 +25,12 @@ pub struct Cfg {
 }
 
 impl Cfg {
+    /// Returns the start symbol of the grammar
     pub fn get_start_symbol(&self) -> &str {
         &self.st
     }
 
+    /// Creates a new item with the given start symbol
     pub fn with_start_symbol(n: &str) -> Self {
         Self {
             st: n.to_owned(),
@@ -32,11 +38,13 @@ impl Cfg {
         }
     }
 
+    /// Adds a production
     pub fn add_pr(mut self, p: Pr) -> Self {
         self.pr.push(p);
         self
     }
 
+    /// Returns the grammar position of the start symbol
     pub fn get_start_symbol_position(&self) -> Option<Pos> {
         self.pr
             .iter()

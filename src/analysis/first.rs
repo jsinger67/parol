@@ -5,11 +5,14 @@
 
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::FirstCache;
-use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, SymbolString};
+use crate::grammar::symbol_string::SymbolString;
+use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol};
 use log::trace;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::collections::HashMap;
 
+/// 0: KTuples for terminals in terminal-index order
+/// 1: Mapping of non-terminals to KTuples
 pub type FirstSet = (Vec<KTuples>, HashMap<String, KTuples>);
 
 /// Result type for each production:

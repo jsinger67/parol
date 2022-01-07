@@ -2,10 +2,13 @@ use crate::{Pr, Symbol};
 use std::fmt::{Display, Error, Formatter};
 
 ///
-/// Type of the RHS of a Production type
+/// Symbol strings are special collections of [Symbol]s.
+/// They only contain symbol kinds relevant for operations on grammars.
+/// Especially in contrast to [Rhs] of [Pr] productions they don't contain scanner state
+/// instructions like %sc, %push and %pop.
 ///
 #[derive(Debug, Clone, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct SymbolString(pub Vec<Symbol>);
+pub(crate) struct SymbolString(pub Vec<Symbol>);
 
 impl SymbolString {
     ///
@@ -27,10 +30,6 @@ impl SymbolString {
 
     pub fn len(&self) -> usize {
         self.0.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.0.is_empty()
     }
 }
 

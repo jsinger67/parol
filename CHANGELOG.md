@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 * Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch over to `clap v3`.
 * Fixed issue #4: *It appears the --only-lookahead option (-c) doesn't work*. This option is useless and was removed.
 * Builder: Write out a preliminary version of the expanded grammar after parsing to support grammars that fail later checks.
+* Consolidated Public API (fixes #11)
 
 ## v0.5.5 - 2022-01-05
 

@@ -8,8 +8,12 @@ use std::fmt::{Debug, Display, Error, Formatter};
 /// Epsilon token constant
 /// Can be contained in FIRST sets
 ///
-pub const EPS: TerminalIndex = TerminalIndex::MAX;
+pub(crate) const EPS: TerminalIndex = TerminalIndex::MAX;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Internal data structure to represent a compiled terminal, a TerminalIndex.
 ///
@@ -17,6 +21,7 @@ pub const EPS: TerminalIndex = TerminalIndex::MAX;
 pub struct CompiledTerminal(pub TerminalIndex);
 
 impl CompiledTerminal {
+    /// Creates a new item from a Symbol
     pub fn create<R>(s: &Symbol, terminal_index_resolver: R) -> Self
     where
         R: Fn(&str) -> TerminalIndex,

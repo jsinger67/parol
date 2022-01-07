@@ -5,6 +5,13 @@ use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// A terminal symbol with different specificities
+///
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum Terminal {
     ///
@@ -28,19 +35,24 @@ pub enum Terminal {
 }
 
 impl Terminal {
+    /// Creates a terminal
     pub fn t(t: &str, s: Vec<usize>) -> Self {
         Self::Trm(t.to_owned(), s)
     }
+    /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
         matches!(self, Self::Trm(_, _))
     }
+    /// Checks if self is an epsilon
     pub fn is_eps(&self) -> bool {
         matches!(self, Self::Eps)
     }
+    /// Checks if self is an end of input terminal
     pub fn is_end(&self) -> bool {
         matches!(self, Self::End)
     }
 
+    /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
             Symbol::T(Terminal::Trm(t, s)) => Terminal::Trm(t.to_string(), s.to_vec()),
@@ -49,6 +61,7 @@ impl Terminal {
         }
     }
 
+    /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
             Terminal::Trm(_, s) => {
@@ -62,7 +75,7 @@ impl Terminal {
     }
 
     ///
-    /// Get the scanner state in front of the terminal
+    /// Formats self with the help of a scanner state resolver
     ///
     pub fn format<R>(&self, scanner_state_resolver: R) -> String
     where
@@ -111,6 +124,13 @@ impl TerminalMappings<Terminal> for Terminal {
     }
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// A grammar symbol with different specificities
+///
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 pub enum Symbol {
     ///
@@ -142,30 +162,39 @@ pub enum Symbol {
 }
 
 impl Symbol {
+    /// Creates a terminal symbol
     pub fn t(t: &str, s: Vec<usize>) -> Self {
         Self::T(Terminal::Trm(t.to_owned(), s))
     }
+    /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
         Self::N(n.to_owned())
     }
+    /// Creates a end-of-input terminal symbol
     pub fn e() -> Self {
         Self::T(Terminal::End)
     }
+    /// Creates a scanner index
     pub fn s(s: usize) -> Self {
         Self::S(s)
     }
+    /// Checks if self is a terminal
     pub fn is_t(&self) -> bool {
         matches!(self, Self::T(_))
     }
+    /// Checks if self is a non-terminal
     pub fn is_n(&self) -> bool {
         matches!(self, Self::N(_))
     }
+    /// Checks if self is a end-of-input terminal
     pub fn is_end(&self) -> bool {
         matches!(self, Self::T(Terminal::End))
     }
+    /// Checks if self is a scanner switch instruction
     pub fn is_switch(&self) -> bool {
         matches!(self, Self::S(_)) || matches!(self, Self::Push(_)) || matches!(self, Self::Pop)
     }
+    /// Returns a terminal if available
     pub fn get_t(&self) -> Option<Terminal> {
         if let Self::T(t) = &self {
             Some(t.clone())
@@ -173,6 +202,7 @@ impl Symbol {
             None
         }
     }
+    /// Returns a terminal reference if available
     pub fn get_t_ref(&self) -> Option<&Terminal> {
         if let Self::T(t) = &self {
             Some(t)
@@ -180,6 +210,7 @@ impl Symbol {
             None
         }
     }
+    /// Returns a non-terminal if available
     pub fn get_n(&self) -> Option<String> {
         if let Self::N(n) = &self {
             Some(n.clone())
@@ -187,6 +218,7 @@ impl Symbol {
             None
         }
     }
+    /// Returns a non-terminal reference if available
     pub fn get_n_ref(&self) -> Option<&String> {
         if let Self::N(n) = &self {
             Some(n)
@@ -195,6 +227,7 @@ impl Symbol {
         }
     }
 
+    /// Formats self with the help of a scanner state resolver
     pub fn format<R>(&self, scanner_state_resolver: &R) -> String
     where
         R: Fn(&[usize]) -> String,

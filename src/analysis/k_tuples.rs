@@ -3,6 +3,10 @@ use crate::KTuple;
 use std::collections::HashSet;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// A set type consisting of terminal strings (called k-tuples)
 ///
@@ -10,25 +14,30 @@ use std::fmt::{Debug, Display, Error, Formatter};
 pub struct KTuples(pub HashSet<KTuple>, usize, bool);
 
 impl KTuples {
+    /// Creates a new item
     pub fn new(k: usize) -> Self {
         Self(HashSet::new(), k, false)
     }
 
+    /// Creates a new item from a slice of KTuples
     pub fn of(tuples: &[KTuple], k: usize) -> Self {
         let mut tuples = Self(tuples.iter().cloned().collect(), k, false);
         tuples.update_completeness();
         tuples
     }
 
+    /// Inserts a KTuple
     pub fn insert(&mut self, tuple: KTuple) {
         self.2 &= tuple.is_k_complete();
         self.0.insert(tuple);
     }
 
+    /// Removes a KTuple
     pub fn remove(&mut self, tuple: &KTuple) {
         self.0.remove(tuple);
     }
 
+    /// Appends another KTuples item to self
     pub fn append(&mut self, other: &mut Self) -> bool {
         let count = self.0.len();
         for t in other.0.drain() {
@@ -37,6 +46,7 @@ impl KTuples {
         count != self.0.len()
     }
 
+    /// Creates a union with another KTuples and self
     pub fn union(&self, other: &Self) -> Self {
         let mut tuples = Self(
             self.0.union(&other.0).cloned().collect::<HashSet<KTuple>>(),
@@ -47,6 +57,7 @@ impl KTuples {
         tuples
     }
 
+    /// Creates a intersection with another KTuples and self
     pub fn intersection(&self, other: &Self) -> Self {
         let mut tuples = Self(
             self.0
@@ -60,24 +71,29 @@ impl KTuples {
         tuples
     }
 
+    /// Returns the number of `KTuple`s
     pub fn len(&self) -> usize {
         self.0.len()
     }
 
+    /// Checks if the collection is empty
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
 
+    /// Checks if self and other are disjoint
     pub fn is_disjoint(&self, other: &Self) -> bool {
         self.0.is_disjoint(&other.0)
     }
 
+    /// Checks if self is epsilon
     pub fn eps(k: usize) -> Self {
         let mut set = HashSet::new();
         set.insert(KTuple::eps(k));
         Self(set, k, false)
     }
 
+    /// Checks if self is end-of-input representation
     pub fn end(k: usize) -> Self {
         let mut set = HashSet::new();
         set.insert(KTuple::end(k));
@@ -152,6 +168,7 @@ impl KTuples {
         self
     }
 
+    /// Conversion to string with the help of the terminals slice
     pub fn to_string(&self, terminals: &[String]) -> String {
         format!(
             "{{{}}}(k={})",
@@ -164,6 +181,7 @@ impl KTuples {
         )
     }
 
+    /// Set the lookahead size
     pub fn set_k(mut self, k: usize) -> Self {
         self.0 = self.0.drain().map(|t| t.set_k(k)).collect();
         if k > self.1 {
@@ -175,6 +193,7 @@ impl KTuples {
         self
     }
 
+    /// Returns a sorted representation of self
     pub fn sorted(&self) -> Vec<KTuple> {
         let mut sorted_k_tuples: Vec<KTuple> = self.0.iter().cloned().collect();
         sorted_k_tuples.sort_by(|a, b| a.partial_cmp(b).unwrap());

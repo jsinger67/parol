@@ -80,6 +80,13 @@ fn generate_caller_argument_list(pr: &Pr) -> String {
     arguments.join(", ")
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Generates the file with the user actions trait.
+///
 pub fn generate_user_trait_source(
     user_type_name: &str,
     user_trait_module_name: &str,

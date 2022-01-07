@@ -2,6 +2,7 @@ use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::{Cfg, Symbol, Terminal};
 use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPACE};
 
+/// Generates a terminal name from a terminal definition
 pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> String {
     fn primary_non_terminal(cfg: &Cfg, terminal: &str) -> Option<String> {
         cfg.pr

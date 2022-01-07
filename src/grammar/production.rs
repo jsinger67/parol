@@ -3,8 +3,20 @@ use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 use std::ops::Index;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Right-hand side of a production.
+/// A collection of [Symbol]s
+///
 pub type Rhs = Vec<Symbol>;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Production type
 ///
@@ -55,6 +67,7 @@ impl Default for Pr {
 }
 
 impl Pr {
+    /// Creates a new item from a non-terminal name and a [Rhs]
     pub fn new(n: &str, r: Rhs) -> Self {
         if !r.iter().all(Self::is_allowed_symbol) {
             panic!("Unexpected symbol kind!");
@@ -62,30 +75,37 @@ impl Pr {
         Self(Symbol::N(n.to_owned()), r)
     }
 
+    /// Returns a clone of the non-terminal
     pub fn get_n(&self) -> String {
         self.0.get_n().unwrap()
     }
 
+    /// Returns a reference of the non-terminal
     pub fn get_n_str(&self) -> &str {
         self.0.get_n_ref().unwrap()
     }
 
+    /// Returns a reference of the ride-hand side
     pub fn get_r(&self) -> &Rhs {
         &self.1
     }
 
+    /// Extracts the members of self while consuming self
     pub fn take(self) -> (String, Rhs) {
         (self.0.get_n().unwrap(), self.1)
     }
 
+    /// Sets the non-terminal
     pub fn set_n(&mut self, n: String) {
         self.0 = Symbol::N(n);
     }
 
+    /// Checks if [Rhs] is empty
     pub fn is_empty(&self) -> bool {
         self.1.is_empty()
     }
 
+    /// Returns the length of [Rhs]
     pub fn len(&self) -> usize {
         self.1.len()
     }
@@ -94,6 +114,7 @@ impl Pr {
         !(matches!(s, Symbol::T(Terminal::Eps)))
     }
 
+    /// Formats self with the help of a scanner state resolver
     pub fn format<R>(&self, scanner_state_resolver: &R) -> String
     where
         R: Fn(&[usize]) -> String,

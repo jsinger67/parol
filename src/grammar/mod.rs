@@ -1,17 +1,17 @@
+/// Module with the context-free grammar types
 pub mod cfg;
 pub use cfg::Cfg;
 
+/// Module with a grammar position type
 pub mod pos;
 pub use pos::Pos;
 
+/// Module with types related to grammar productions
 pub mod production;
 pub use production::{Pr, Rhs};
 
-pub mod symbol_string;
-pub use symbol_string::SymbolString;
+pub(crate) mod symbol_string;
 
-pub mod symbol_strings;
-pub use symbol_strings::SymbolStrings;
-
+/// Module with symbol types
 pub mod symbol;
 pub use symbol::{Symbol, Terminal};

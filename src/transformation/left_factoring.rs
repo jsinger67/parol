@@ -36,7 +36,7 @@ fn apply_rule_transformation(
     }
 }
 
-pub fn find_prefix<T>(candidates: &[Vec<T>]) -> Vec<T>
+fn find_prefix<T>(candidates: &[Vec<T>]) -> Vec<T>
 where
     T: Eq + Hash + Clone,
 {
@@ -122,6 +122,13 @@ pub fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
     })
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Applies left-factoring to the given grammar.
+///
 pub fn left_factor(g: &Cfg) -> Cfg {
     let Cfg { st, pr } = g.clone();
 

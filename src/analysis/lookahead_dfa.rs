@@ -5,7 +5,9 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};
 
+/// Index type of DFA states
 pub type StateIndex = usize;
+/// Index type of Productions
 pub type ProductionIndex = usize;
 
 const DO_NOT_CARE: ProductionIndex = ProductionIndex::MAX;
@@ -54,6 +56,7 @@ impl Display for DFAState {
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct LookaheadDFA {
+    /// DFA states
     pub states: Vec<DFAState>,
 
     /// The transitions data is the relation: "from-state -> terminal -> to-state"
@@ -85,6 +88,8 @@ enum TransitionInfo {
 }
 
 impl LookaheadDFA {
+    /// Create a DFA from KTuples
+    /// The idea is to convert lists of terminals into a trie data structure
     pub fn from_k_tuples(k_tuples: &KTuples, prod_num: usize) -> Self {
         let mut dfa = Self {
             states: vec![DFAState {
@@ -109,11 +114,7 @@ impl LookaheadDFA {
         dfa
     }
 
-    pub fn add_transition(
-        &mut self,
-        from_state: StateIndex,
-        terminal: TerminalIndex,
-    ) -> StateIndex {
+    fn add_transition(&mut self, from_state: StateIndex, terminal: TerminalIndex) -> StateIndex {
         match self.transition_info(from_state, terminal) {
             TransitionInfo::TransitionExists(to_state) => to_state,
             TransitionInfo::OtherTransitions => {

@@ -61,6 +61,13 @@ struct LexerData {
     scanner_build_configs: StrVec,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Generates the lexer part of the parser output file.
+///
 pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
     let original_augmented_terminals = grammar_config.generate_augmented_terminals();
 
@@ -153,6 +160,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
     Ok(format!("{}", lexer_data))
 }
 
+/// Generates all terminal names of a given grammar
 pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
     grammar_config
         .generate_augmented_terminals()

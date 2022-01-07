@@ -4,6 +4,10 @@ use crate::Cfg;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Configuration information for a context free grammar.
 /// Currently containing comment tokens and maximum lookahead size.
@@ -49,6 +53,7 @@ pub struct GrammarConfig {
 }
 
 impl GrammarConfig {
+    /// Creates a new item
     pub fn new(cfg: Cfg, lookahead_size: usize) -> Self {
         Self {
             cfg,
@@ -59,25 +64,30 @@ impl GrammarConfig {
         }
     }
 
+    /// Sets an optional title
     pub fn with_title(mut self, title: Option<String>) -> Self {
         self.title = title;
         self
     }
 
+    /// Sets an optional comment
     pub fn with_comment(mut self, comment: Option<String>) -> Self {
         self.comment = comment;
         self
     }
 
+    /// Adds a scanner configuration
     pub fn add_scanner(mut self, scanner_config: ScannerConfig) -> Self {
         self.scanner_configurations.push(scanner_config);
         self
     }
 
+    /// Sets the lookahead size
     pub fn update_lookahead_size(&mut self, k: usize) {
         self.lookahead_size = k;
     }
 
+    /// Sets the cfg member
     pub fn update_cfg(&mut self, cfg: Cfg) {
         self.cfg = cfg;
     }

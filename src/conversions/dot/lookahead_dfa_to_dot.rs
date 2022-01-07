@@ -11,6 +11,10 @@ struct NtDotElements<'a> {
     transitions: StrVec,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Formats the given Cfg in a special dot-format.
 /// The basic graph type here resembles the same as the NtGrammarGraph type

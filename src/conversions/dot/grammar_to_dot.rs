@@ -15,6 +15,10 @@ struct NtDotElements<'a> {
     instances_to_types_edges: StrVec,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Formats the given Cfg in a special dot-format.
 /// The basic graph type here resembles the same as the NtGrammarGraph type
@@ -113,9 +117,11 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
 mod test {
     use crate::conversions::dot::render_nt_dot_string;
     use crate::{Cfg, GrammarConfig, Pr, ScannerConfig, Symbol};
+    use regex::Regex;
 
     #[test]
     fn check_dot_format() {
+        let rx_newline: Regex = Regex::new(r"\r\n|\r\n").unwrap();
         let g = Cfg::with_start_symbol("S")
             .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
             .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
@@ -262,8 +268,8 @@ mod test {
 }
 "#;
         assert_eq!(
-            crate::RX_NEWLINE.replace_all(expected, "\n"),
-            crate::RX_NEWLINE.replace_all(&dot_str, "\n")
+            rx_newline.replace_all(expected, "\n"),
+            rx_newline.replace_all(&dot_str, "\n")
         );
     }
 }

@@ -2,6 +2,13 @@ use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::{detect_left_recursions, left_factor, Cfg};
 use miette::{miette, Result};
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+///  Apply all grammar transformation necessary to be able to use the given grammar.
+///
 pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
     let non_productive = non_productive_non_terminals(cfg);
     if !non_productive.is_empty() {

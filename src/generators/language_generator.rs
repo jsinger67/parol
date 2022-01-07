@@ -8,6 +8,7 @@ use std::collections::HashMap;
 const MAX_RESULT_SIZE: usize = 100000;
 const MAX_REPEAT: u32 = 8;
 
+/// Error "Generation does not terminate in good time"
 #[derive(Error, Diagnostic, Debug)]
 #[error("Stopping generation to prevent endless recursion at size {len}")]
 #[diagnostic(
@@ -18,6 +19,13 @@ pub struct SourceSizeExceeded {
     len: usize,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Provides the possibility to generate arbitrary sentences of a given grammar.
+///
 #[derive(Debug)]
 pub struct LanguageGenerator<'a> {
     generator_stack: Vec<Symbol>,
@@ -26,6 +34,7 @@ pub struct LanguageGenerator<'a> {
 }
 
 impl<'a> LanguageGenerator<'a> {
+    /// Creates a new item
     pub fn new(cfg: &'a Cfg) -> Self {
         Self {
             generator_stack: Vec::new(),
@@ -34,6 +43,7 @@ impl<'a> LanguageGenerator<'a> {
         }
     }
 
+    /// Generates a sentence
     pub fn generate(&mut self, max_result_length: Option<usize>) -> Result<String> {
         let mut result = String::new();
         self.process_non_terminal(self.cfg.get_start_symbol())?;

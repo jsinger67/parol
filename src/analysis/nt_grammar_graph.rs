@@ -9,6 +9,13 @@ use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Node type of the grammar graph
+///
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum NtNodeType {
     /// Non-terminal type
@@ -41,6 +48,13 @@ impl Display for NtNodeType {
     }
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+///  Edge type of the grammar graph
+///
 #[derive(Debug, Clone, Copy, Hash, Eq, PartialEq)]
 pub enum NtEdgeType {
     /// Edges from non-terminals to their productions
@@ -53,11 +67,16 @@ pub enum NtEdgeType {
     NtTypeInstance,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 /// Grammar graph over non-terminals and productions of a Cfg
 #[derive(Debug)]
 pub struct NtGrammarGraph(pub DiGraph<NtNodeType, NtEdgeType>);
 
 impl NtGrammarGraph {
+    /// Creates a new graph item
     pub fn new() -> Self {
         Self::default()
     }

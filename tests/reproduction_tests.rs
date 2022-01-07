@@ -1,5 +1,6 @@
 use miette::{IntoDiagnostic, Result};
 use parol::parser::{parse, ParolGrammar};
+use regex::Regex;
 
 use std::fs;
 use std::path;
@@ -14,6 +15,7 @@ fn reproduction_test() -> Result<()> {
         .read_dir()
         .into_diagnostic()?
     {
+        let rx_newline: Regex = Regex::new(r"\r\n|\r\n").unwrap();
         let dir_entry = file_result.into_diagnostic()?;
         let mut file_path = dir_entry.path();
         if file_path.extension().unwrap() == "par" {
@@ -25,8 +27,8 @@ fn reproduction_test() -> Result<()> {
             file_path.set_extension("expected");
             let expected = fs::read_to_string(&file_path).into_diagnostic()?;
             assert_eq!(
-                parol::RX_NEWLINE.replace_all(&expected, "\n"),
-                parol::RX_NEWLINE.replace_all(&representation, "\n"),
+                rx_newline.replace_all(&expected, "\n"),
+                rx_newline.replace_all(&representation, "\n"),
                 "parse result mismatch!"
             );
         }

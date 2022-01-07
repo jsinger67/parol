@@ -8,13 +8,17 @@ use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 use std::rc::Rc;
 
+/// Cache of FirstSets
 pub struct FirstCache(pub Rc<RefCell<HashMap<usize, FirstSet>>>);
+/// Cache of FollowSets
 pub struct FollowCache(pub Rc<RefCell<HashMap<usize, FollowSet>>>);
 
 impl FirstCache {
+    /// Creates a new item
     pub fn new() -> Self {
         Self(Rc::new(RefCell::new(HashMap::new())))
     }
+    /// Utilizes the cache to get a FirstSet
     pub fn get(&self, k: usize, grammar_config: &GrammarConfig) -> FirstSet {
         let exists = {
             let borrowed_entry = self.0.borrow();
@@ -40,9 +44,11 @@ impl Default for FirstCache {
 }
 
 impl FollowCache {
+    /// Creates a new item
     pub fn new() -> Self {
         Self(Rc::new(RefCell::new(HashMap::new())))
     }
+    /// Utilizes the cache to get a FollowSet
     pub fn get(
         &self,
         k: usize,
@@ -195,6 +201,10 @@ pub fn calculate_k_tuples(
         })
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Calculates lookahead DFAs for all non-terminals, where k is the limit.
 ///

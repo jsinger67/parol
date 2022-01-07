@@ -2,6 +2,10 @@ use std::fmt::Debug;
 use std::fmt::{Display, Error, Formatter};
 use std::hash::Hash;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Position within a Cfg
 /// Immutable struct
@@ -19,106 +23,23 @@ pub struct Pos {
 
 impl Pos {
     /// Creates an immutable Pos instance
-    /// Panics on invalid index values.
     pub fn new(pr_index: usize, sy_index: usize) -> Self {
         Self { pr_index, sy_index }
     }
 
+    /// Returns the production index
     pub fn pr_index(&self) -> usize {
         self.pr_index
     }
 
+    /// Returns the symbol index
     pub fn sy_index(&self) -> usize {
         self.sy_index
     }
 
+    /// Returns the members as a tuple
     pub fn as_tuple(&self) -> (usize, usize) {
         (self.pr_index, self.sy_index)
-    }
-
-    pub fn no_pos() -> Self {
-        Self {
-            pr_index: usize::MAX,
-            sy_index: usize::MAX,
-        }
-    }
-    pub fn is_no_pos(&self) -> bool {
-        self.pr_index == usize::MAX && self.sy_index == usize::MAX
-    }
-
-    pub fn next_pos(&self) -> Self {
-        Self {
-            pr_index: self.pr_index,
-            sy_index: self.sy_index + 1,
-        }
-    }
-
-    pub fn next_pos_mut(&mut self) {
-        self.sy_index += 1;
-    }
-
-    ///
-    /// Returns true if self is the immediate successor of the given Pos.
-    /// The relation holds only within a single production, i.e. the pr_index must be equal.
-    ///
-    /// ```
-    /// use parol::Pos;
-    ///
-    /// let this : Pos = (0, 2).into();
-    /// let that : Pos = (0, 1).into();
-    /// assert!(this.follows(&that));
-    /// assert!(!that.follows(&this));
-    ///
-    /// let this : Pos = (0, 1).into();
-    /// let that : Pos = (0, 1).into();
-    /// assert!(!this.follows(&that));
-    /// assert!(!that.follows(&this));
-    ///
-    /// let this : Pos = (0, 2).into();
-    /// let that : Pos = (1, 1).into();
-    /// assert!(!this.preceds(&that));
-    /// assert!(!that.preceds(&this));
-    ///
-    /// let this : Pos = (0, 1).into();
-    /// let that : Pos = (0, 2).into();
-    /// assert!(!this.follows(&that));
-    /// assert!(that.follows(&this));
-    /// ```
-    ///
-    pub fn follows(&self, that: &Self) -> bool {
-        self.pr_index == that.pr_index && self.sy_index == that.sy_index + 1
-    }
-
-    ///
-    /// Returns true if self is the immediate predecessor of the given Pos.
-    /// The relation holds only within a single production, i.e. the pr_index must be equal.
-    ///
-    /// ```
-    /// use parol::Pos;
-    ///
-    /// let this : Pos = (0, 2).into();
-    /// let that : Pos = (0, 1).into();
-    /// assert!(!this.preceds(&that));
-    /// assert!(that.preceds(&this));
-    ///
-    /// let this : Pos = (0, 1).into();
-    /// let that : Pos = (0, 1).into();
-    /// assert!(!this.preceds(&that));
-    /// assert!(!that.preceds(&this));
-    ///
-    /// let this : Pos = (0, 1).into();
-    /// let that : Pos = (1, 2).into();
-    /// assert!(!this.preceds(&that));
-    /// assert!(!that.preceds(&this));
-    ///
-    /// let this : Pos = (0, 1).into();
-    /// let that : Pos = (0, 2).into();
-    /// assert!(this.preceds(&that));
-    /// assert!(!that.preceds(&this));
-    /// ```
-    ///
-    pub fn preceds(&self, that: &Self) -> bool {
-        self.pr_index == that.pr_index && self.sy_index + 1 == that.sy_index
     }
 }
 

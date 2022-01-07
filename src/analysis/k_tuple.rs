@@ -10,17 +10,24 @@ const WHITESPACE: TerminalIndex = 2;
 const LINE_COMMENT: TerminalIndex = 3;
 const BLOCK_COMMENT: TerminalIndex = 4;
 
+/// Common functions needed for terminal handling
 pub trait TerminalMappings<T> {
+    /// Create an epsilon representation
     fn eps() -> T;
+    /// Create an end-of-input representation
     fn end() -> T;
+    /// Check for epsilon
     fn is_eps(&self) -> bool;
+    /// Check for end-of-input
     fn is_end(&self) -> bool;
 }
 
+/// An ordered collection of terminals
 #[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Terminals(pub Vec<CompiledTerminal>);
 
 impl Terminals {
+    /// Creates a new item with initial capacity
     pub fn new() -> Self {
         Self(Vec::with_capacity(MAX_K))
     }
@@ -51,17 +58,21 @@ impl Terminals {
         })
     }
 
+    /// Returns the length of the collection
     pub fn len(&self) -> usize {
         self.0.len()
     }
+    /// Checks if the collection is empty
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
 
+    /// Checks if the collection is k-complete, i.e. no terminals can be added
     pub fn is_k_complete(&self, k: usize) -> bool {
         !self.is_eps() && (self.len() >= k || (!self.is_empty() && self.0.last().unwrap().is_end()))
     }
 
+    /// Returns the k-length, i.e. the number of symbols that contributes to lookahead sizes
     pub fn k_len(&self, k: usize) -> usize {
         let mut k_len = 0;
         for t in &self.0 {
@@ -76,10 +87,12 @@ impl Terminals {
         k_len
     }
 
+    /// Clears the collection
     pub fn clear(&mut self) {
         self.0.clear()
     }
 
+    /// Concatenates two collections with respect to the rules of k-concatenation
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         if other.len() == 1 && other.0[0].is_eps() {
             // w + ε = W
@@ -105,10 +118,12 @@ impl Terminals {
         self
     }
 
+    /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
         self.len() == 1 && self.0[0].is_eps()
     }
 
+    /// Checks if self is an end-of-input symbol
     pub fn is_end(&self) -> bool {
         self.len() == 1 && self.0[0].is_end()
     }
@@ -120,20 +135,26 @@ impl Default for Terminals {
     }
 }
 
+/// Terminal string with support for k-completeness
 #[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum TerminalString {
+    /// Incomplete sequence
     Incomplete(Terminals),
+    /// k-complete sequence
     Complete(Terminals),
 }
 
 impl TerminalString {
+    /// Returns the length of the sequence
     pub fn len(&self) -> usize {
         self.inner().len()
     }
+    /// Checks if the sequence is empty
     pub fn is_empty(&self) -> bool {
         self.inner().is_empty()
     }
 
+    /// Checks if the sequence is k-complete
     pub fn is_k_complete(&self) -> bool {
         match self {
             Self::Incomplete(_) => false,
@@ -141,10 +162,12 @@ impl TerminalString {
         }
     }
 
+    /// Checks if the inner sequence is k-complete
     pub fn is_complete(&self, k: usize) -> bool {
         self.inner().is_k_complete(k)
     }
 
+    /// Change the state to k-complete
     pub fn make_complete(self) -> Self {
         if let Self::Incomplete(e) = self {
             Self::Complete(e)
@@ -153,6 +176,7 @@ impl TerminalString {
         }
     }
 
+    /// Revoke the k-complete state
     pub fn make_incomplete(self) -> Self {
         if let Self::Complete(e) = self {
             Self::Incomplete(e)
@@ -161,10 +185,12 @@ impl TerminalString {
         }
     }
 
+    /// Clear the sequences
     pub fn clear(self) -> Self {
         Self::Incomplete(Terminals::new())
     }
 
+    /// Return the inner sequences
     pub fn inner(&self) -> &Terminals {
         match self {
             Self::Incomplete(v) => v,
@@ -172,6 +198,7 @@ impl TerminalString {
         }
     }
 
+    /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
         match self {
             Self::Incomplete(v) => v.is_eps(),
@@ -179,6 +206,7 @@ impl TerminalString {
         }
     }
 
+    /// Checks if self is an end-of-input symbol
     pub fn is_end(&self) -> bool {
         match self {
             Self::Incomplete(_) => false,
@@ -186,6 +214,7 @@ impl TerminalString {
         }
     }
 
+    /// Push a new terminal
     pub fn push(self, t: CompiledTerminal, k: usize) -> Self {
         match self {
             Self::Incomplete(mut v) => {
@@ -200,6 +229,7 @@ impl TerminalString {
         }
     }
 
+    /// Append a sequence
     pub fn append(self, other: &mut Self, k: usize) -> Self {
         match self {
             Self::Incomplete(mut v) => {
@@ -216,6 +246,7 @@ impl TerminalString {
         }
     }
 
+    /// Concat self with another sequence while consuming self
     pub fn k_concat(self, other: &Self, k: usize) -> Self {
         match self {
             Self::Incomplete(v) => {
@@ -231,12 +262,18 @@ impl TerminalString {
     }
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Terminal symbol string type
 ///
 #[derive(Clone, Eq, Ord, PartialOrd)]
 pub struct KTuple {
+    /// The sequence of terminals
     pub terminals: TerminalString,
+    /// The lookahead size
     pub k: usize,
 }
 
@@ -302,6 +339,7 @@ impl KTuple {
             k: self.k,
         }
     }
+    /// Adds a new terminal to self while consuming self
     pub fn push(self, t: CompiledTerminal) -> Self {
         Self {
             terminals: self.terminals.push(t, self.k),
@@ -309,6 +347,7 @@ impl KTuple {
         }
     }
 
+    /// Appends a sequence to self while consuming self
     pub fn append(self, other: &mut Self) -> Self {
         Self {
             terminals: self.terminals.append(&mut other.terminals, self.k),
@@ -316,22 +355,28 @@ impl KTuple {
         }
     }
 
+    /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
         self.terminals.is_eps()
     }
+    /// Returns the length of the sequence
     pub fn len(&self) -> usize {
         self.terminals.len()
     }
+    /// Checks if the sequence is empty
     pub fn is_empty(&self) -> bool {
         self.terminals.is_empty()
     }
+    /// Returns the k-length of the sequence
     pub fn k_len(&self, k: usize) -> usize {
         self.terminals.inner().k_len(k)
     }
+    /// Checks if the sequence is k-complete
     pub fn is_k_complete(&self) -> bool {
         self.terminals.is_k_complete()
     }
 
+    /// Concat self with another sequence while consuming self
     pub fn k_concat(self, other: &Self, k: usize) -> Self {
         Self {
             terminals: self.terminals.k_concat(&other.terminals, k),
@@ -339,6 +384,7 @@ impl KTuple {
         }
     }
 
+    /// Sets the lookahead size
     pub fn set_k(mut self, k: usize) -> Self {
         if self.terminals.is_complete(k) {
             self.terminals = self.terminals.make_complete();
@@ -349,6 +395,7 @@ impl KTuple {
         self
     }
 
+    /// Conversion to string with the help of the terminals slice
     pub fn to_string(&self, terminals: &[String]) -> String {
         format!(
             "[{}]",

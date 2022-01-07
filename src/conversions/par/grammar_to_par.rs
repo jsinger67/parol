@@ -25,6 +25,10 @@ struct ScannerConfigElements {
     scanner_directives: String,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Formats the given GrammarConfig in the PAR format.
 ///

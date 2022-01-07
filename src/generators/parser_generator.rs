@@ -128,6 +128,13 @@ struct ParserData<'a> {
     scanner_builds: StrVec,
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Generates the parser part of the parser output file.
+///
 pub fn generate_parser_source(
     grammar_config: &GrammarConfig,
     lexer_source: &str,

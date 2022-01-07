@@ -2,6 +2,10 @@ use crate::Cfg;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Configuration information for a scanner.
 /// Contains features like to optionally switch automatic handling off newlines off.
@@ -43,6 +47,7 @@ pub struct ScannerConfig {
 }
 
 impl ScannerConfig {
+    /// Creates a new item
     pub fn new(scanner_name: String, scanner_state: usize) -> Self {
         Self {
             scanner_name,
@@ -54,21 +59,25 @@ impl ScannerConfig {
         }
     }
 
+    /// Adds line comments to self
     pub fn with_line_comments(mut self, line_comments: Vec<String>) -> Self {
         self.line_comments = line_comments;
         self
     }
 
+    /// Adds block comments to self
     pub fn with_block_comments(mut self, block_comments: Vec<(String, String)>) -> Self {
         self.block_comments = block_comments;
         self
     }
 
+    /// Sets auto newline behavior
     pub fn with_auto_newline(mut self, auto_newline: bool) -> Self {
         self.auto_newline = auto_newline;
         self
     }
 
+    /// Sets auto whitespace behavior
     pub fn with_auto_ws(mut self, auto_ws: bool) -> Self {
         self.auto_ws = auto_ws;
         self

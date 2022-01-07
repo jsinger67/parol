@@ -13,15 +13,26 @@ use std::path::PathBuf;
 // Test run:
 // parol -f .\src\parser\parol-grammar.par -v
 
+///
+/// [Factor] is part of the structure of the grammar representation
+///
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub enum Factor {
+    /// A grouping
     Group(Alternations),
+    /// A Repetition
     Repeat(Alternations),
+    /// An Optional
     Optional(Alternations),
+    /// A terminal string with associated scanner states
     Terminal(String, Vec<usize>),
+    /// A non-terminal
     NonTerminal(String),
+    /// A scanner switch instruction
     ScannerSwitch(usize),
+    /// A scanner switch & push instruction
     ScannerSwitchPush(usize),
+    /// A scanner switch + pop instruction
     ScannerSwitchPop,
 }
 
@@ -83,6 +94,9 @@ impl Alternation {
     }
 }
 
+///
+/// [Alternations] is part of the structure of the grammar representation
+///
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Alternations(pub Vec<Alternation>);
 
@@ -110,9 +124,14 @@ impl Display for Alternations {
     }
 }
 
+///
+/// [Production] is part of the structure of the grammar representation
+///
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Production {
+    /// Left-hand side non-terminal
     pub lhs: String,
+    /// Right-hand side
     pub rhs: Alternations,
 }
 
@@ -128,21 +147,20 @@ impl Display for Production {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ScannerConfig {
-    pub name: String,
-    pub line_comments: Vec<String>,
-    pub block_comments: Vec<(String, String)>,
-    pub auto_newline_off: bool,
-    pub auto_ws_off: bool,
-}
-
+///
+/// [ParolGrammarItem] is part of the structure of the grammar representation
+///
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ParolGrammarItem {
+    /// A production
     Prod(Production),
+    /// A collection of alternations
     Alts(Alternations),
+    /// A collection of factors
     Alt(Alternation),
+    /// A Factor
     Fac(Factor),
+    /// A list of scanner states associated with a terminal symbol
     StateList(Vec<usize>),
 }
 
@@ -163,6 +181,23 @@ impl Display for ParolGrammarItem {
             ),
         }
     }
+}
+
+///
+/// [ScannerConfig] is part of the structure of the grammar representation
+///
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ScannerConfig {
+    /// Name of the Scanner State
+    pub name: String,
+    /// Optional line comments
+    pub line_comments: Vec<String>,
+    /// Optional block comments
+    pub block_comments: Vec<(String, String)>,
+    /// Defines whether to handle newlines automatically in scanner
+    pub auto_newline_off: bool,
+    /// Defines whether to handle whitespace automatically in scanner
+    pub auto_ws_off: bool,
 }
 
 impl Display for ScannerConfig {
@@ -187,15 +222,24 @@ impl Default for ScannerConfig {
     }
 }
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ParolGrammar {
+    /// The parsed items are pushed onto the item_stack.
     pub item_stack: Vec<ParolGrammarItem>,
+    /// The optional title of the grammar
     pub title: Option<String>,
+    /// The optional comment of the grammar
     pub comment: Option<String>,
+    /// The mandatory start symbol of the grammar
     pub start_symbol: String,
+    /// All parsed scanner configurations
     pub scanner_configurations: Vec<ScannerConfig>,
     current_scanner: ScannerConfig,
     file_name: PathBuf,
@@ -216,6 +260,9 @@ impl Default for ParolGrammar {
 }
 
 impl ParolGrammar {
+    ///
+    /// Constructs a new item
+    ///
     pub fn new() -> Self {
         ParolGrammar::default()
     }

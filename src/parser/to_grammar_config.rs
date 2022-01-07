@@ -9,7 +9,7 @@ use log::trace;
 use miette::{bail, miette, Result};
 use std::convert::TryFrom;
 
-pub fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
+pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
     let pr = transform_productions(parol_grammar.item_stack)?;
     let cfg = Cfg { st, pr };
@@ -58,7 +58,7 @@ fn try_from_scanner_config(
     Ok(scanner_config)
 }
 
-pub fn try_from_factor(factor: Factor) -> Result<Symbol> {
+pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
         Factor::NonTerminal(n) => Ok(Symbol::n(&n)),
         Factor::Terminal(t, s) => Ok(Symbol::t(&t, s)),
