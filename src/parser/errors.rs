@@ -1,7 +1,7 @@
 use miette::{Diagnostic, NamedSource, SourceSpan};
 
 ///
-/// Error types used by the [ParolGrammar]'s semantic actions
+/// Error types used by the [crate::parser::ParolGrammar]'s semantic actions
 #[derive(Error, Diagnostic, Debug)]
 #[diagnostic(help("Error during parse parol grammar"), code(parol::parser))]
 pub enum ParolParserError {

@@ -21,7 +21,7 @@ id_tree_layout = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.14"
 miette = { version = "3.2.0", features = ["fancy"] }
-parol_runtime = "0.5.3"
+parol_runtime = "0.5.4"
 petgraph = "0.6.0"
 rand_regex = "0.15.1"
 rand = "0.8.4"

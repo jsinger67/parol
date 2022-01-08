@@ -20,7 +20,7 @@ pub mod parol_parser;
 pub use parol_parser::parse;
 
 ///
-/// Conversion [ParolGrammar] to [GrammarConfig]
+/// Conversion [parol_grammar::ParolGrammar] to [crate::generators::GrammarConfig]
 ///
 #[forbid(missing_docs)]
 pub mod to_grammar_config;
