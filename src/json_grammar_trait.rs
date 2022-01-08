@@ -254,7 +254,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
+    /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
     fn string_19(
         &mut self,
@@ -266,7 +266,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
+    /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
     fn number_20(
         &mut self,

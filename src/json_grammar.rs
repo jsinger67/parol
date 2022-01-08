@@ -138,7 +138,7 @@ impl JsonGrammarTrait for JsonGrammar {
         match self.pop(context) {
             Some(JsonGrammarItem::Object(mut pairs)) => {
                 pairs.reverse();
-                self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
+                self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
             _ => Err(miette!("{}: expecting Object on top of stack", context)),
@@ -196,20 +196,15 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "object_list_4";
-        let top_of_stack1 = self.pop(context);
-        let top_of_stack2 = self.pop(context);
-        match (&top_of_stack1, &top_of_stack2) {
-            (Some(JsonGrammarItem::Object(pairs)), Some(pair)) => {
-                let mut pairs = pairs.clone();
-                pairs.push(pair.clone());
-                self.push(JsonGrammarItem::Object(pairs.to_vec()), context);
+        match (self.pop(context), self.pop(context)) {
+            (Some(JsonGrammarItem::Object(mut pairs)), Some(pair)) => {
+                pairs.push(pair);
+                self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
             _ => Err(miette!(
-                "{}: unexpected ({:?}, {:?}",
+                "{}: expected Object, Pair on top of stack",
                 context,
-                top_of_stack1,
-                top_of_stack2
             )),
         }
     }
@@ -236,17 +231,12 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "pair_6";
-        let value = self.pop(context);
-        let name = self.pop(context);
-        match (&name, &value) {
-            (Some(JsonGrammarItem::String(string)), Some(value)) => {
-                self.push(
-                    JsonGrammarItem::Pair((string.to_string(), Box::new(value.clone()))),
-                    context,
-                );
+        match (self.pop(context), self.pop(context)) {
+            (Some(value), Some(JsonGrammarItem::String(string))) => {
+                self.push(JsonGrammarItem::Pair((string, Box::new(value))), context);
                 Ok(())
             }
-            _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, value, name)),
+            _ => Err(miette!("{}: expected Value, Name on top of stack", context)),
         }
     }
 
@@ -261,15 +251,13 @@ impl JsonGrammarTrait for JsonGrammar {
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "array_7";
-        let top_of_stack = self.pop(context);
-        match &top_of_stack {
-            Some(JsonGrammarItem::Array(list)) => {
-                let mut list = list.clone();
+        match self.pop(context) {
+            Some(JsonGrammarItem::Array(mut list)) => {
                 list.reverse();
-                self.push(JsonGrammarItem::Array(list.to_vec()), context);
+                self.push(JsonGrammarItem::Array(list), context);
                 Ok(())
             }
-            _ => Err(miette!("{}: unexpected ({:?}", context, top_of_stack)),
+            _ => Err(miette!("{}: Expecting Array on top of stack", context)),
         }
     }
 

@@ -19,8 +19,8 @@ fn main() {
     } else {
         // CLI equivalent
         // parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
-        
-        // Unlike Builder::with_cargo_output, explciit names for the parser and actions files are
+
+        // Unlike Builder::with_cargo_output, explicit names for the parser and actions files are
         // required!
         Builder::with_explicit_output_dir("src")
             .grammar_file("json.par")
