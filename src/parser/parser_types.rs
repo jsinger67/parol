@@ -4,7 +4,7 @@ use crate::parser::{
     LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeStackEntry, ParseTreeType, ParseType,
     ProductionIndex, UserActionsTrait,
 };
-use id_tree::{InsertBehavior, MoveBehavior, Node, Tree};
+use id_tree::{InsertBehavior, MoveBehavior, Node, RemoveBehavior, Tree};
 use log::{debug, trace};
 use miette::{bail, miette, Result, WrapErr};
 use std::cell::RefCell;
@@ -198,36 +198,65 @@ impl<'t> LLKParser<'t> {
         let children = self
             .parse_tree_stack
             .split_off(self.parse_tree_stack.len() - l);
+
+        // With the children we can call the user's semantic action
         user_actions.call_semantic_action_for_production_number(
             prod_num,
             &children,
             &self.parse_tree,
         )?;
-        let tos = self.parse_tree_stack.pop();
-        if let Some(ParseTreeStackEntry::Id(node_id)) = tos {
-            let result = children.into_iter().fold(Ok(()), |mut acc, c| match c {
-                ParseTreeStackEntry::Id(child_node_id) => {
-                    if acc.is_ok() {
-                        acc = self
-                            .parse_tree
-                            .move_node(&child_node_id, MoveBehavior::ToParent(&node_id));
-                    }
-                    acc
-                }
-                ParseTreeStackEntry::Nd(node) => {
-                    if acc.is_ok() {
-                        acc = self
-                            .parse_tree
-                            .insert(node, InsertBehavior::UnderNode(&node_id))
-                            .map(|_| ());
-                    }
-                    acc
-                }
-            });
 
-            result
-                .map(|_| self.parse_tree_stack.push(ParseTreeStackEntry::Id(node_id)))
-                .map_err(|e| miette!(ParserError::IdTreeError { source: e }))
+        // At the top of the parse tree stack we find the node id of the left-hand side of the
+        // current processed production.
+        let tos = self.parse_tree_stack.pop();
+
+        if let Some(ParseTreeStackEntry::Id(non_terminal_node_id)) = tos {
+            if cfg!(feature = "trim_parse_tree") {
+                // Remove the node from the tree unless it is the root node.
+                if Some(&non_terminal_node_id) == self.parse_tree.root_node_id() {
+                    self.parse_tree_stack
+                        .push(ParseTreeStackEntry::Id(non_terminal_node_id));
+                    Ok(())
+                } else {
+                    self.parse_tree
+                        .remove_node(non_terminal_node_id, RemoveBehavior::DropChildren)
+                        .map(|_| {
+                            self.parse_tree_stack.push(ParseTreeStackEntry::Id(
+                                self.parse_tree.root_node_id().unwrap().clone(),
+                            ))
+                        })
+                        .map_err(|e| miette!(ParserError::IdTreeError { source: e }))
+                }
+            } else {
+                // Insert the children under the non-terminal node
+                children
+                    .into_iter()
+                    .fold(Ok(()), |mut acc, c| match c {
+                        ParseTreeStackEntry::Id(child_node_id) => {
+                            if acc.is_ok() {
+                                acc = self.parse_tree.move_node(
+                                    &child_node_id,
+                                    MoveBehavior::ToParent(&non_terminal_node_id),
+                                );
+                            }
+                            acc
+                        }
+                        ParseTreeStackEntry::Nd(node) => {
+                            if acc.is_ok() {
+                                acc = self
+                                    .parse_tree
+                                    .insert(node, InsertBehavior::UnderNode(&non_terminal_node_id))
+                                    .map(|_| ());
+                            }
+                            acc
+                        }
+                    })
+                    .map(|_| {
+                        self.parse_tree_stack
+                            .push(ParseTreeStackEntry::Id(non_terminal_node_id))
+                    })
+                    .map_err(|e| miette!(ParserError::IdTreeError { source: e }))
+            }
         } else {
             bail!(ParserError::InternalError(format!(
                 "Expected node id on parse tree stack, found {:?}",
