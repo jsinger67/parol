@@ -22,11 +22,11 @@ if performance is a goal and the full parse tree is not needed at the end of the
 You can activate this feature in your dependencies like this
 
     ```toml
-    parol_runtime = { path = "0.5.4", default-features = false, features = ["trim_parse_tree"] }"
+    parol_runtime = { path = "0.5.4", default-features = false, features = ["trim_parse_tree"] }
     ```
 
     The parse tree returned from `LLKParser::parse` contains only the root node and is therefore
-useless if the feature is activated. Also node that you can't access the children of the nodes
+useless if the feature is activated. Also note that you can't access the children of the nodes
 provided as parameters of your semantic actions (each of type `&ParseTreeStackEntry`) don't have
 children anymore. Therefore to navigate them will fail.
 
