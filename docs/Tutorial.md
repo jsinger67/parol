@@ -364,8 +364,10 @@ Fine. Let's check if the parser works.
 ```shell
 cargo run
 ...
-Error: Please provide a file name as single parameter!
-error: process didn't exit successfully: `target[0-9]ebug\json_parser.exe` (exit code: 1
+Error: 
+  × Please provide a file name as first parameter!
+
+error: process didn't exit successfully: `target\debug\json_parser.exe` (exit code: 1)
 ```
 
 We need an example json file. Create a new folder named `json` in your crates root and place a new file `JsonParserTest.json` with the following content into it:
@@ -1259,7 +1261,7 @@ Err(miette!("An error is occurred"))
 
 This will terminate the parsing process and generate an output with the text you provided.
 If you want to convey some information about the error position you can use position information from the `Token` of the `ParseTreeStackEntry` object.
-Also it is advised to implement the init function from the trait for semantic actions:
+Also it is advised to implement the `init` function from the trait for semantic actions:
 
 ```rust
 impl CalcGrammarTrait for CalcGrammar {
