@@ -1,4 +1,4 @@
-use crate::{Cfg, Symbol, Terminal};
+use crate::{Cfg, Pr, Symbol, Terminal};
 use log::trace;
 use miette::IntoDiagnostic;
 use miette::{miette, Diagnostic, Result};
@@ -46,10 +46,15 @@ impl<'a> LanguageGenerator<'a> {
     /// Generates a sentence
     pub fn generate(&mut self, max_result_length: Option<usize>) -> Result<String> {
         let mut result = String::new();
-        self.process_non_terminal(self.cfg.get_start_symbol())?;
+        let termination_threshold = max_result_length.unwrap_or(MAX_RESULT_SIZE) / 2;
+        trace!(
+            "Try to terminate at result length {}",
+            termination_threshold
+        );
+        self.process_non_terminal(self.cfg.get_start_symbol(), false)?;
         while let Some(symbol) = self.generator_stack.pop() {
             match symbol {
-                Symbol::N(n) => self.process_non_terminal(&n),
+                Symbol::N(n) => self.process_non_terminal(&n, result.len() > termination_threshold),
                 Symbol::T(Terminal::Trm(t, _)) => {
                     self.process_terminal(t.clone(), &mut result, max_result_length)
                 }
@@ -59,15 +64,20 @@ impl<'a> LanguageGenerator<'a> {
         Ok(result)
     }
 
-    fn process_non_terminal(&mut self, non_terminal: &str) -> Result<()> {
+    fn process_non_terminal(&mut self, non_terminal: &str, terminate: bool) -> Result<()> {
         let productions_of_nt = self.cfg.matching_productions(non_terminal);
-        let chosen_index = rand::thread_rng().gen_range(0..productions_of_nt.len());
+        let chosen_index = if terminate {
+            Self::chose_minimal_expanding_production(&productions_of_nt)
+        } else {
+            rand::thread_rng().gen_range(0..productions_of_nt.len())
+        };
         trace!(
-            "/* {} */ {} {}/{}",
+            "/* {} */ {} {}/{} {}",
             productions_of_nt[chosen_index].0,
             productions_of_nt[chosen_index].1,
             chosen_index + 1,
-            productions_of_nt.len()
+            productions_of_nt.len(),
+            if terminate { "term" } else { "" }
         );
         productions_of_nt[chosen_index]
             .1
@@ -120,5 +130,34 @@ impl<'a> LanguageGenerator<'a> {
             }
             Err(err) => Err(miette!(err)),
         }
+    }
+
+    fn chose_minimal_expanding_production(productions_of_nt: &[(usize, &Pr)]) -> usize {
+        // The strategy here is to select the production with least number of non-terminals on the
+        // right-hand side.
+        // This should force the generation process to stop eventually.
+        let production_index = productions_of_nt
+            .iter()
+            .min_by(|(_, a), (_, b)| {
+                let a_nt_count = a.get_r().iter().fold(0, |mut acc, s| {
+                    if s.is_n() {
+                        acc += 1
+                    }
+                    acc
+                });
+                let b_nt_count = b.get_r().iter().fold(0, |mut acc, s| {
+                    if s.is_n() {
+                        acc += 1
+                    }
+                    acc
+                });
+                a_nt_count.cmp(&b_nt_count)
+            })
+            .unwrap()
+            .0;
+        productions_of_nt
+            .iter()
+            .position(|(idx, _)| *idx == production_index)
+            .unwrap()
     }
 }
