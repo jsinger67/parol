@@ -8,17 +8,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## v0.5.6-pre - unreleased yet
 
 * Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch
- over to `clap v3`.
+over to `clap v3`.
 * Fixed issue #4: *It appears the --only-lookahead option (-c) doesn't work*. This option is useless
- and was removed.
+and was removed.
 * Builder: Write out a preliminary version of the expanded grammar after parsing to support grammars
- that fail later checks.
+that fail later checks.
 * Added CONTRIBUTING.md
 * Consolidated Public API (fixes #11)
 * Updated documentation
   * Using `parol` like an installed tool in example invocations instead of
 `cargo run --bin parol -- ...` now
   * Fixed links in cargo's doc output
+* Improved termination behavior of the language generation feature (`parol generate`) introduced in
+v0.5.3
+* Improved error report (Undeclared variable) in example `calc`
 
 ## v0.5.5 - 2022-01-05
 
@@ -47,16 +50,16 @@ given grammar.
 You can use it this way:
 
 ```shell
-    >parol generate ./examples/json/json-exp.par
+    >parol generate -f ./examples/json/json-exp.par
 { "\r" : "uA7Fcu8a4A񚥚\r" , "\b\f\nuD1C0u5daf\b" : null , "\n\/\f𘃈򘱵" : true , "\\󸽿\\\\uCfC4𚍑𞱁uD852" : "\b\buEA01\\" } 
 ```
 
 I already found some quirks in a few regular expressions 😉.
 
-Also you can run endless stress tests like in this example using a powershell one-liner:
+Also you can run endless stress tests like in this example using a *powershell* one-liner:
 
 ```powershell
-for (;;) { parol generate ./examples/json/json-exp.par | Set-Content "$env:Temp/x.json"; json_parser "$env:Temp/x.json"; if (-not $?) { break } }
+for (;;) {parol generate -f ./examples/json/json-exp.par | Set-Content "$env:Temp/x.json"; json_parser "$env:Temp/x.json"; if (-not $?) { break } }
 ```
 
 #### Acknowledge
