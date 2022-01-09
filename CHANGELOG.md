@@ -27,7 +27,7 @@ You can activate this feature in your dependencies like this
 
     The parse tree returned from `LLKParser::parse` contains only the root node and is therefore
 useless if the feature is activated. Also note that you can't access the children of the nodes
-provided as parameters of your semantic actions (each of type `&ParseTreeStackEntry`) don't have
-children anymore. Therefore to navigate them will fail.
+provided as parameters of your semantic actions (each of type `&ParseTreeStackEntry`) because they
+don't have children anymore. Therefore to navigate them will fail.
 
-    This fixes issue #1
+    This fixes issue (enhancement) #1
