@@ -3,7 +3,7 @@ use parol::{obtain_grammar_config, LanguageGenerator};
 
 pub fn sub_command() -> clap::App<'static, 'static> {
     clap::SubCommand::with_name("generate")
-        .about("Generates an arbitrary sentence of the given grammar. It can be used to verify your language description.")
+        .about("Generates a random sentence of the given grammar. It can be used to verify your language description.")
         .arg(
             clap::Arg::with_name("grammar_file")
                 .required(true)

@@ -45,8 +45,8 @@ have been made since last version of `parol`.
 
 ### Generation of sentences
 
-An new tool (subcommand) `generate` was added to `parol` to generate an arbitrary sentence of a
-given grammar.
+An new tool (subcommand) `generate` was added to `parol` to generate a random sentence of a given
+grammar.
 You can use it this way:
 
 ```shell

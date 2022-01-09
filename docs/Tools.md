@@ -93,7 +93,7 @@ Calculates the FOLLOW(k) sets for each non-terminal. The number k defaults to 1 
 
 ## `generate`
 
-Generates an arbitrary sentence of the given grammar. It can be used to verify your language description.
+Generates a random sentence of the given grammar. It can be used to verify your language description.
 
 On complex grammars the generation can get into deeply branching the grammar productions again and again because productions are randomly selected. Therefore generation is aborted with an error if the resulting sentence exceeds a certain limit. This limit currently defaults to a string length of 100 000. This value can be overwritten by giving an additional parameter after the grammar file.
 If generation fails with error `parol::generators::language_generator::source_size_exceeded` please give it another try.

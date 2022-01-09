@@ -24,7 +24,7 @@ pub struct SourceSizeExceeded {
 // *Changes will affect crate's version according to semver*
 // ---------------------------------------------------
 ///
-/// Provides the possibility to generate arbitrary sentences of a given grammar.
+/// Provides the possibility to generate random sentences of a given grammar.
 ///
 #[derive(Debug)]
 pub struct LanguageGenerator<'a> {
