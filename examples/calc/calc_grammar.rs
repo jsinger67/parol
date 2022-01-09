@@ -5,7 +5,7 @@ use crate::errors::CalcError;
 use crate::unary_operator::UnaryOperator;
 use id_tree::Tree;
 use log::trace;
-use miette::{bail, miette, Result, WrapErr};
+use miette::{bail, miette, IntoDiagnostic, Result, WrapErr};
 use parol_runtime::errors::FileSource;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
@@ -1255,6 +1255,7 @@ impl CalcGrammarTrait for CalcGrammar {
             Ok(number) => number,
             Err(error) => {
                 return Err(miette!(CalcError::ParseISizeFailed {
+                    context: context.to_owned(),
                     input: FileSource::try_new(self.file_name.clone())?.into(),
                     token: tk_number_0.token(parse_tree)?.into()
                 }))
@@ -1271,8 +1272,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn idref_80(
         &mut self,
-        _id_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        id_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "idref_80";
         let top_of_stack = self.pop(context);
@@ -1281,7 +1282,21 @@ impl CalcGrammarTrait for CalcGrammar {
                 if let Some(val) = self.value(&id) {
                     self.push(CalcGrammarItem::Num(val), context);
                 } else {
-                    return Err(miette!("{}: undeclared variable {}", context, id));
+                    if let ParseTreeStackEntry::Id(node_id) = id_0 {
+                        // We need to navigate to the one and only child of the Identifier
+                        // non-terminal to access the actual token.
+                        let child = parse_tree
+                            .get(node_id)
+                            .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
+                            .into_diagnostic()?;
+                        return Err(miette!(CalcError::UndeclaredVariable {
+                            context: context.to_owned(),
+                            input: FileSource::try_new(self.file_name.clone())?.into(),
+                            token: child.data().token()?.into()
+                        }));
+                    } else {
+                        return Err(miette!("{}: undeclared variable {}", context, id));
+                    }
                 }
                 Ok(())
             }
