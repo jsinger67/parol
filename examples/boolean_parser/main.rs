@@ -16,7 +16,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// cargo run --bin parol -- -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
+// parol -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
 
 // To run the example
 // cargo run --example boolean_parser -- ./examples/boolean_parser/boolean_parser_test.txt

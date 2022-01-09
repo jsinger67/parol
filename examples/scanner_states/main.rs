@@ -16,7 +16,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// cargo run --bin parol -- -f ./examples/scanner_states/scanner_states.par -e ./examples/scanner_states/scanner_states-exp.par -p ./examples/scanner_states/scanner_states_parser.rs -a ./examples/scanner_states/scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar
+// parol -f ./examples/scanner_states/scanner_states.par -e ./examples/scanner_states/scanner_states-exp.par -p ./examples/scanner_states/scanner_states_parser.rs -a ./examples/scanner_states/scanner_states_grammar_trait.rs -t ScannerStatesGrammar -m scanner_states_grammar
 
 // To run the example
 // cargo run --example scanner_states -- ./examples/scanner_states/scanner_states_test.txt

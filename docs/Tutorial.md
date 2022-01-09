@@ -48,7 +48,7 @@ For now let's assume that our grammar is sufficient and flawless.
 We can first detect if we have produced a syntactically correct grammar description.
 
 ```shell
-cargo run --bin parol -- -f ./examples/json/json.par -e ./examples/json/json-exp.par  -v
+parol -f ./examples/json/json.par -e ./examples/json/json-exp.par  -v
 
 title: Some("Json grammar")
 comment: Some("Derived from http://Json.org for parol by Joerg Singer.")
@@ -69,8 +69,7 @@ This prints the internal structure of the parsed grammar definition, which is a 
 As an example for an additional tool I will name the `decidable` tool:
 
 ```shell
-    cargo run --bin parol decidable -f ./examples/json/json-exp.par
-...
+    parol decidable -f ./examples/json/json-exp.par
 Grammar is LL1    
 ```
 
@@ -100,7 +99,7 @@ Value    : String
 To see more clearly what this message means we first save the expanded grammar to a separate file. Please ignore the error in this case. The `json-exp.par` is generated anyway.
 
 ```shell
-cargo run --bin parol -- -f ./examples/json/json.par -e ./examples/json/json-exp.par
+parol -f ./examples/json/json.par -e ./examples/json/json-exp.par
 ```
 
 When you open this expanded version which contains an equivalent transformation of your initial grammar definition you can understand the message better.
@@ -111,7 +110,7 @@ Now please undo this additional alternation and return to the original version.
 Generate the expanded grammar again:
 
 ```shell
-cargo run --bin parol -- -f ./examples/json/json.par -e ./examples/json/json-exp.par
+parol -f ./examples/json/json.par -e ./examples/json/json-exp.par
 ```
 
 <!-- markdownlint-disable no-inline-html -->
@@ -213,7 +212,7 @@ Push-Location ..
 cargo new json_parser --bin
 Pop-Location
 Copy-Item ./examples/json/json*.par ../json_parser/
-cargo run --bin parol -- -f ../json_parser/json.par -e ../json_parser/json-exp.par -p ../json_parser/src/json_parser.rs -a ../json_parser/src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
+parol -f ../json_parser/json.par -e ../json_parser/json-exp.par -p ../json_parser/src/json_parser.rs -a ../json_parser/src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
 ```
 
 The last command line is extended with more parameters that instruct `parol` how to generate the parser's code. And the generated sources go into the folder of our new json_parser crate. If you have chosen another location please change the paths accordingly.

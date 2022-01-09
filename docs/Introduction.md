@@ -16,7 +16,10 @@ You can opt for installing parol via the command
 cargo install parol
 ```
 
-or from local repository
+This can be done when you don't want to clone parol.
+
+When you have a local clone of this repository and want to install your local version you can do it
+this way:
 
 ```shell
 cargo install --path .
@@ -31,7 +34,7 @@ When built successfully you can just call the `parol` parser generator to get a 
 Simple command line usage:
 
 ```shell
-    cargo run --bin parol -- -f ./examples/list/list.par -s -v
+    parol -f ./examples/list/list.par -s -v
 ```
 
 or when installed
@@ -57,7 +60,7 @@ To have a visualization of a certain parse tree while you're implementing your g
 `parol` itself provides several tools with special tasks (see [Supplementary tools](./Tools.md)) as subcommands. As an example let's have a look at the `decidable` subcommand:
 
 ```shell
-    cargo run --bin parol decidable -f ./examples/list/list-exp.par
+    parol decidable -f ./examples/list/list-exp.par
 ```
 
 This tool generates this output:

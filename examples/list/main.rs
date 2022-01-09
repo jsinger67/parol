@@ -16,7 +16,7 @@ use std::env;
 use std::fs;
 
 // To generate:
-// cargo run --bin parol -- -f .\examples\list\list.par -e .\examples\list\list-exp.par -p .\examples\list\list_parser.rs -a .\examples\list\list_grammar_trait.rs -t ListGrammar -m list_grammar
+// parol -f .\examples\list\list.par -e .\examples\list\list-exp.par -p .\examples\list\list_parser.rs -a .\examples\list\list_grammar_trait.rs -t ListGrammar -m list_grammar
 
 // To run the example
 // cargo run --example list -- .\examples\list\list_test.txt

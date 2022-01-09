@@ -7,7 +7,7 @@ Please note, that you do not need to use these tools normally when you want to g
 Hint: All subcommands give a short help output when called after parameter `help`:
 
 ```shell
-    >cargo run --bin parol help calculate_k
+    >parol help calculate_k
 parol.exe-calculate_k 
 Calculates the maximum lookahead needed for your grammar, similar to `decidable`.
 
@@ -26,7 +26,7 @@ OPTIONS:
 Or call `parol` with the subcommand as only parameter:
 
 ```shell
-    >cargo run --bin parol calculate_k
+    >parol calculate_k
 error: The following required arguments were not provided:
     --grammar-file <grammar_file>
 

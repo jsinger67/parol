@@ -7,14 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.5.6-pre - unreleased yet
 
-* Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch over to `clap v3`.
-* Fixed issue #4: *It appears the --only-lookahead option (-c) doesn't work*. This option is useless and was removed.
-* Builder: Write out a preliminary version of the expanded grammar after parsing to support grammars that fail later checks.
+* Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch
+ over to `clap v3`.
+* Fixed issue #4: *It appears the --only-lookahead option (-c) doesn't work*. This option is useless
+ and was removed.
+* Builder: Write out a preliminary version of the expanded grammar after parsing to support grammars
+ that fail later checks.
+* Added CONTRIBUTING.md
 * Consolidated Public API (fixes #11)
+* Updated documentation
+  * Using `parol` like an installed tool in example invocations instead of
+`cargo run --bin parol -- ...` now
+  * Fixed links in cargo's doc output
 
 ## v0.5.5 - 2022-01-05
 
-* Included PR #8: *Rename default actions file from grammar.rs -> grammar_trait.rs*. ***Thanks a lot to Techcable***
+* Included PR #8: *Rename default actions file from grammar.rs -> grammar_trait.rs*. ***Thanks a lot
+ to Techcable***
 
 ## v0.5.4 - 2022-01-05
 
@@ -28,11 +37,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## v0.5.3 - 2022-01-02
 
-As of this version a detailed changelog is maintained to help people to keep track of changes that have been made since last version of `parol`.
+As of this version a detailed changelog is maintained to help people to keep track of changes that
+have been made since last version of `parol`.
 
 ### Generation of sentences
 
-An new tool (subcommand) `generate` was added to `parol` to generate an arbitrary sentence of a given grammar.
+An new tool (subcommand) `generate` was added to `parol` to generate an arbitrary sentence of a
+given grammar.
 You can use it this way:
 
 ```shell
@@ -50,9 +61,14 @@ for (;;) { parol generate ./examples/json/json-exp.par | Set-Content "$env:Temp/
 
 #### Acknowledge
 
-This was possible with the help of the awesome [rand_regex](https://github.com/kennytm/rand_regex.git) crate.
+This was possible with the help of the awesome
+[rand_regex](https://github.com/kennytm/rand_regex.git) crate.
 
 #### Disclaimer
 
-On complex grammars the generation can get into deeply branching the grammar productions again and again because productions are randomly selected. Therefore generation is aborted with an error if the resulting sentence exceeds a certain limit. This limit currently defaults to a string length of 100 000. This value can be overwritten by giving an additional parameter after the grammar file.
-If generation fails with error `parol::generators::language_generator::source_size_exceeded` please give it another try.
+On complex grammars the generation can get into deeply branching the grammar productions again and
+again because productions are randomly selected. Therefore generation is aborted with an error if
+the resulting sentence exceeds a certain limit. This limit currently defaults to a string length of
+100 000. This value can be overwritten by giving an additional parameter after the grammar file.
+If generation fails with error `parol::generators::language_generator::source_size_exceeded` please
+give it another try.
