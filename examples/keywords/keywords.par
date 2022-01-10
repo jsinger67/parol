@@ -1,0 +1,18 @@
+%start Grammar
+%title "How to handle keywords"
+%comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
+
+%%
+
+Grammar     : { Items };
+Items       : Declaration
+            | Block;
+Declaration : Var Identifier ";";
+Block       : Begin Items End;
+
+// 1. Declare the keyword tokens before the conflicting identifier token.
+// 2. Enclose keywords with word boundaries.
+Begin:      "(?i)\bBegin\b";
+End:        "(?i)\bEnd\b";
+Var:        "(?i)\bVar\b";
+Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
