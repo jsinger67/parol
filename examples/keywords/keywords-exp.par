@@ -1,0 +1,19 @@
+%start Grammar
+%title "How to handle keywords - approach 1"
+%comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
+
+%%
+
+/*  0 */ Grammar: GrammarList;
+/*  1 */ GrammarList: Items GrammarList;
+/*  2 */ GrammarList: ;
+/*  3 */ Items: Declaration;
+/*  4 */ Items: Block;
+/*  5 */ Declaration: Var Identifier ";";
+/*  6 */ Block: Begin BlockList End;
+/*  7 */ BlockList: Items BlockList;
+/*  8 */ BlockList: ;
+/*  9 */ Begin: "(?i)\bBegin\b";
+/* 10 */ End: "(?i)\bEnd\b";
+/* 11 */ Var: "(?i)\bVar\b";
+/* 12 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";

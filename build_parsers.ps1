@@ -45,6 +45,23 @@ if ($LASTEXITCODE -ne 0) {
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building Boolean Parser example..." -ForegroundColor Cyan
 ./target/release/parol -f ./examples/boolean_parser/boolean-parser.par -e ./examples/boolean_parser/boolean-parser-exp.par -p ./examples/boolean_parser/boolean_parser.rs -a ./examples/boolean_parser/boolean_grammar_trait.rs -t BooleanGrammar -m boolean_grammar
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCont    
+}
+
+# --------------------------------------------------------------------------------------------------
+Write-Host "Building Keywords example..." -ForegroundColor Cyan
+./target/release/parol -f ./examples/keywords/keywords.par -e ./examples/keywords/keywords-exp.par -p ./examples/keywords/keywords_parser.rs -a ./examples/keywords/keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCont    
+}
+
+# --------------------------------------------------------------------------------------------------
+Write-Host "Building Keywords2 example..." -ForegroundColor Cyan
+./target/release/parol -f ./examples/keywords2/keywords.par -e ./examples/keywords2/keywords-exp.par -p ./examples/keywords2/keywords_parser.rs -a ./examples/keywords2/keywords_grammar_trait.rs -t KeywordsGrammar -m keywords_grammar
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCont    
+}
 
 # --------------------------------------------------------------------------------------------------
 # Final message

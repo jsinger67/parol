@@ -54,6 +54,44 @@ if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
+# --------------------------------------------------------------------------------------------------
+Write-Host "Running Keywords example..." -ForegroundColor Cyan
+Get-ChildItem ./examples/keywords/testfiles/valid/*.txt |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
+    ./target/release/examples/keywords $_.FullName
+    if ($LASTEXITCODE -ne 0) {
+        ++$ErrorCount    
+    }
+}
+Get-ChildItem ./examples/keywords/testfiles/invalid/*.txt |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
+    ./target/release/examples/keywords $_.FullName
+    if ($LASTEXITCODE -eq 0) {
+        ++$ErrorCount    
+    }
+}
+
+# --------------------------------------------------------------------------------------------------
+Write-Host "Running Keywords2 example..." -ForegroundColor Cyan
+Get-ChildItem ./examples/keywords/testfiles/valid/*.txt |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
+    ./target/release/examples/keywords2 $_.FullName
+    if ($LASTEXITCODE -ne 0) {
+        ++$ErrorCount    
+    }
+}
+Get-ChildItem ./examples/keywords/testfiles/invalid/*.txt |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
+    ./target/release/examples/keywords2 $_.FullName
+    if ($LASTEXITCODE -eq 0) {
+        ++$ErrorCount    
+    }
+}
+
 # Some of the example grammars will fail because they don't pass the basic grammar checks.
 # Get-ChildItem ./data/*.par | ForEach-Object { Write-Host $_.FullName -ForegroundColor Blue; ./target/release/parol -f $_.FullName }
 

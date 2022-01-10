@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## v0.5.7-pre - unreleased yet
+
+* New examples [Keywords](./examples/keywords) and [Keywords2](./examples/keywords2) to demonstrate
+handling of keywords in `parol`'s scanner
+
 ## v0.5.6 - 2022-01-10
 
 * Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch

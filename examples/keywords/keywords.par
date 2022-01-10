@@ -1,5 +1,7 @@
+// This example uses special regular expressions and ordering of tokens to solve conflicts.
+// This works in all cases.
 %start Grammar
-%title "How to handle keywords"
+%title "How to handle keywords - approach 1"
 %comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
 
 %%
@@ -8,7 +10,7 @@ Grammar     : { Items };
 Items       : Declaration
             | Block;
 Declaration : Var Identifier ";";
-Block       : Begin Items End;
+Block       : Begin { Items } End;
 
 // 1. Declare the keyword tokens before the conflicting identifier token.
 // 2. Enclose keywords with word boundaries.

@@ -1,0 +1,23 @@
+// This example uses a special scanner state to solve conflicts.
+// This works only if the grammar supports this.
+%start Grammar
+%title "How to handle keywords - approach 2"
+%comment "A demonstration how to handle keywords and avoid conflicts with other identifiers"
+
+%scanner Identifier {}
+
+%%
+
+Grammar     : { Items };
+Items       : Declaration
+            | Block;
+// We switch the scanner state around Identifier            
+Declaration : Var %sc(Identifier) Identifier %sc() ";";
+Block       : Begin { Items } End;
+
+// Special sort order is not needed here.
+Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
+
+Begin:      "(?i)\bBegin\b";
+End:        "(?i)\bEnd\b";
+Var:        "(?i)\bVar\b";
