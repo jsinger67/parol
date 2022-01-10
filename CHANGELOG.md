@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## v0.5.6-pre - unreleased yet
+## v0.5.6 - 2022-01-10
 
 * Even better integration of tools, i.e. subcommands with `clap`. Preparation for planned switch
 over to `clap v3`.
