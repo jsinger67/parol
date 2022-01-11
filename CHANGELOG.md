@@ -5,10 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+Be aware that this project is still v0.y.z which means that anything can change anytime:
+
+>"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The public API SHOULD NOT be considered stable."
+>
+>(Semantic Versioning Specification)
+
+But we try to mark incompatible changes with a new minor version.
+
 ## v0.5.7-pre - unreleased yet
 
 * New examples [Keywords](./examples/keywords) and [Keywords2](./examples/keywords2) to demonstrate
 handling of keywords in `parol`'s scanner
+* Compiling more test grammars in `run_parsers.ps1`. Also negative cases are checked.
 
 ## v0.5.6 - 2022-01-10
 

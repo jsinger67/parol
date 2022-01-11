@@ -21,4 +21,5 @@ impl Display for KeywordsGrammar {
 
 ///
 /// We don't implement any semantic actions. We use the parser solely as acceptor.
+///
 impl KeywordsGrammarTrait for KeywordsGrammar {}

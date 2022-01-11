@@ -20,6 +20,25 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --------------------------------------------------------------------------------------------------
+Write-Host "Running parol on some example grammars..." -ForegroundColor Cyan
+Get-ChildItem ./data/valid/*.par |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
+    ./target/release/parol -f $_.FullName
+    if ($LASTEXITCODE -ne 0) {
+        ++$ErrorCount    
+    }
+}
+Get-ChildItem ./data/invalid/*.par |
+ForEach-Object {
+    Write-Host "Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
+    ./target/release/parol -f $_.FullName
+    if ($LASTEXITCODE -eq 0) {
+        ++$ErrorCount    
+    }
+}
+
+# --------------------------------------------------------------------------------------------------
 Write-Host "Running Calc example..." -ForegroundColor Cyan
 ./target/release/examples/calc ./examples/calc/calc_test.txt
 if ($LASTEXITCODE -ne 0) {
@@ -91,9 +110,6 @@ ForEach-Object {
         ++$ErrorCount    
     }
 }
-
-# Some of the example grammars will fail because they don't pass the basic grammar checks.
-# Get-ChildItem ./data/*.par | ForEach-Object { Write-Host $_.FullName -ForegroundColor Blue; ./target/release/parol -f $_.FullName }
 
 # --------------------------------------------------------------------------------------------------
 # Final message
