@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use std::path::Path;
 
 ///
 /// Common formatting for Token and OwnedToken
@@ -9,5 +9,5 @@ pub trait FormatToken {
     ///
     fn format<T>(&self, file_name: &T, terminal_names: &'static [&'static str]) -> String
     where
-        T: Debug;
+        T: AsRef<Path>;
 }

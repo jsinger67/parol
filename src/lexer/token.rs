@@ -135,14 +135,14 @@ impl FormatToken for Token<'_> {
         terminal_names: &'static [&'static str],
     ) -> std::string::String
     where
-        T: Debug,
+        T: AsRef<std::path::Path>,
     {
         let name = terminal_names[self.token_type];
         format!(
-            "'{}'({}) at {:?}:{}:{}",
+            "'{}'({}) at {}:{}:{}",
             self.symbol.escape_default(),
             name,
-            file_name,
+            file_name.as_ref().display(),
             self.line,
             self.column,
         )

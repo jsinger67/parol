@@ -13,16 +13,20 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.5-pre - unreleased yet
+
+* Better formatting of file paths
+
 ## v0.5.4 - 2022-01-08
 
 * As of this version a detailed changelog is maintained to help people to keep track of changes that
 have been made since last version of `parol_runtime`.
 * A new (non-default) feature `trim_parse_tree` was added. The feature `trim_parse_tree` is useful
 if performance is a goal and the full parse tree is not needed at the end of the parse process.
-You can activate this feature in your dependencies like this
+You can activate this feature in your dependencies with this entry
 
     ```toml
-    parol_runtime = { path = "0.5.4", default-features = false, features = ["trim_parse_tree"] }
+    parol_runtime = { version = "0.5.5", default-features = false, features = ["trim_parse_tree"] }
     ```
 
     The parse tree returned from `LLKParser::parse` contains only the root node and is therefore
