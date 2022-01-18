@@ -18,6 +18,7 @@ But we try to mark incompatible changes with a new minor version.
 * New examples [Keywords](./examples/keywords) and [Keywords2](./examples/keywords2) to demonstrate
 handling of keywords in `parol`'s scanner
 * Compiling more test grammars in `run_parsers.ps1`. Also negative cases are checked.
+* Factored out grammar transformation from the parser to the module transformation
 
 ## v0.5.6 - 2022-01-10
 
