@@ -13,6 +13,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.8-pre - unreleased yet
+
+* Included PR #13: *Clap 3.0 (derive + builder styles)*. ***Thanks a lot to oaleaf.***
+  This closes Issue #10
+
 ## v0.5.7 - 2022-01-22
 
 * New examples [Keywords](./examples/keywords) and [Keywords2](./examples/keywords2) to demonstrate

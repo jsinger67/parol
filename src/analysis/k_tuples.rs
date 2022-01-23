@@ -208,7 +208,7 @@ impl KTuples {
 impl Debug for KTuples {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         // Use the implementation of Display
-        write!(f, "{}", format!("{}", self))
+        write!(f, "{}", self)
     }
 }
 

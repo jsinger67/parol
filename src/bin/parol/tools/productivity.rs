@@ -11,19 +11,6 @@ pub struct Args {
     grammar_file: PathBuf,
 }
 
-pub fn sub_command() -> clap::App<'static> {
-    clap::App::new("productivity")
-        .about("Checks the given grammar for non-productive non-terminals.")
-        .arg(
-            clap::Arg::new("grammar_file")
-                .required(true)
-                .short('f')
-                .long("grammar-file")
-                .takes_value(true)
-                .help("The grammar file to use"),
-        )
-}
-
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 

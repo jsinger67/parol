@@ -15,26 +15,6 @@ pub struct Args {
     max_len: Option<usize>,
 }
 
-pub fn sub_command() -> clap::App<'static> {
-    clap::App::new("generate")
-        .about("Generates a random sentence of the given grammar. It can be used to verify your language description.")
-        .arg(
-            clap::Arg::new("grammar_file")
-                .required(true)
-                .short('f')
-                .long("grammar-file")
-                .takes_value(true)
-                .help("The grammar file to use")
-        )
-        .arg(
-            clap::Arg::new("max_len")
-                .short('l')
-                .long("max-len")
-                .takes_value(true)
-                .help("The maximum length of generated sentence")
-        )
-}
-
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 

@@ -11,19 +11,6 @@ pub struct Args {
     grammar_file: PathBuf,
 }
 
-pub fn sub_command() -> clap::App<'static> {
-    clap::App::new("serialize")
-        .about("Serializes a grammar to json format. Seldom to apply.")
-        .arg(
-            clap::Arg::new("grammar_file")
-                .required(true)
-                .short('f')
-                .long("grammar-file")
-                .takes_value(true)
-                .help("The grammar file to use"),
-        )
-}
-
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
     let grammar_config = obtain_grammar_config(&file_name, false)?;

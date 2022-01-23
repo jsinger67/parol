@@ -17,27 +17,6 @@ pub struct Args {
     lookahead: usize,
 }
 
-pub fn sub_command() -> clap::App<'static> {
-    clap::App::new("calculate_k_tuples")
-        .about("Calculates the lookahead tokens with size k for each non-terminal.")
-        .arg(
-            clap::Arg::new("grammar_file")
-                .required(true)
-                .short('f')
-                .long("grammar-file")
-                .takes_value(true)
-                .help("The grammar file to use"),
-        )
-        .arg(
-            clap::Arg::new("lookahead")
-                .short('k')
-                .long("lookahead")
-                .takes_value(true)
-                .default_value("5")
-                .help("The maximum number of lookahead tokens to be used"),
-        )
-}
-
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 
