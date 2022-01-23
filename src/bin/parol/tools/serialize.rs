@@ -1,23 +1,31 @@
 use miette::Result;
 use parol::obtain_grammar_config;
+use std::path::PathBuf;
 
-pub fn sub_command() -> clap::App<'static, 'static> {
-    clap::SubCommand::with_name("serialize")
+/// Serializes a grammar to json format. Seldom to apply.
+#[derive(clap::Parser)]
+#[clap(name = "serialize")]
+pub struct Args {
+    /// The grammar file to use
+    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    grammar_file: PathBuf,
+}
+
+pub fn sub_command() -> clap::App<'static> {
+    clap::App::new("serialize")
         .about("Serializes a grammar to json format. Seldom to apply.")
         .arg(
-            clap::Arg::with_name("grammar_file")
+            clap::Arg::new("grammar_file")
                 .required(true)
-                .short("f")
+                .short('f')
                 .long("grammar-file")
                 .takes_value(true)
-                .help("The grammar file to use")
+                .help("The grammar file to use"),
         )
 }
 
-pub fn main(args: &clap::ArgMatches) -> Result<()> {
-    let file_name = args
-        .value_of("grammar_file")
-        .unwrap();
+pub fn main(args: &Args) -> Result<()> {
+    let file_name = &args.grammar_file;
     let grammar_config = obtain_grammar_config(&file_name, false)?;
     let serialized = serde_json::to_string(&grammar_config).unwrap();
     println!("{}", serialized);

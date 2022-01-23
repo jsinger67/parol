@@ -1,42 +1,48 @@
-use miette::{bail, IntoDiagnostic, Result, WrapErr};
+use miette::{bail, Result};
 use parol::analysis::k_decision::{calculate_k_tuples, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
 use parol::obtain_grammar_config;
 use parol::MAX_K;
+use std::path::PathBuf;
 
-pub fn sub_command() -> clap::App<'static, 'static> {
-    clap::SubCommand::with_name("calculate_k_tuples")
+/// Calculates the lookahead tokens with size k for each non-terminal.
+#[derive(clap::Parser)]
+#[clap(name = "calculate_k_tuples")]
+pub struct Args {
+    /// The grammar file to use
+    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    grammar_file: PathBuf,
+    /// The maximum number of lookahead tokens to be used
+    #[clap(short = 'k', long = "lookahead", default_value = "5")]
+    lookahead: usize,
+}
+
+pub fn sub_command() -> clap::App<'static> {
+    clap::App::new("calculate_k_tuples")
         .about("Calculates the lookahead tokens with size k for each non-terminal.")
         .arg(
-            clap::Arg::with_name("grammar_file")
+            clap::Arg::new("grammar_file")
                 .required(true)
-                .short("f")
+                .short('f')
                 .long("grammar-file")
                 .takes_value(true)
-                .help("The grammar file to use")
+                .help("The grammar file to use"),
         )
         .arg(
-            clap::Arg::with_name("lookahead")
-                .short("k")
+            clap::Arg::new("lookahead")
+                .short('k')
                 .long("lookahead")
                 .takes_value(true)
                 .default_value("5")
-                .help("The maximum number of lookahead tokens to be used")
+                .help("The maximum number of lookahead tokens to be used"),
         )
 }
 
-pub fn main(args: &clap::ArgMatches) -> Result<()> {
-    let file_name = args
-        .value_of("grammar_file")
-        .unwrap();
+pub fn main(args: &Args) -> Result<()> {
+    let file_name = &args.grammar_file;
 
     let grammar_config = obtain_grammar_config(&file_name, true)?;
-    let max_k = args
-        .value_of("lookahead")
-        .unwrap()
-        .parse::<usize>()
-        .into_diagnostic()
-        .wrap_err("Provide a valid integer value for second argument")?;
+    let max_k = args.lookahead;
 
     if max_k > MAX_K {
         bail!("Maximum lookahead is {}", MAX_K);

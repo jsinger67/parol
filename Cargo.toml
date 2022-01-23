@@ -14,7 +14,7 @@ edition = "2018"
 [dependencies]
 bart = "0.1.4"
 bart_derive = "0.1.4"
-clap = { version = "2.33.3", default-features = false, features = [ "suggestions", "color", "yaml" ] }
+clap = { version = "3.0.0", features = [ "derive", "cargo" ] }
 env_logger = "0.9.0"
 id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
