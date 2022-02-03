@@ -16,6 +16,7 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.5.5-pre - unreleased yet
 
 * Better formatting of file paths
+* Revived `OwnedToken` type for auto-generation feature of `parol`
 
 ## v0.5.4 - 2022-01-08
 

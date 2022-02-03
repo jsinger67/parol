@@ -1,4 +1,4 @@
-use crate::lexer::{FormatToken, TerminalIndex};
+use crate::lexer::{FormatToken, OwnedToken, TerminalIndex};
 use miette::SourceSpan;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -105,6 +105,21 @@ impl<'t> Token<'t> {
     pub fn is_skip_token(&self) -> bool {
         self.token_type > EOI && self.token_type < FIRST_USER_TOKEN
     }
+
+    ///
+    /// Creates an owned variant of the token
+    ///
+    pub fn to_owned(&self) -> OwnedToken {
+        OwnedToken {
+            symbol: self.symbol.to_owned(),
+            token_type: self.token_type,
+            line: self.line,
+            column: self.column,
+            length: self.length,
+            start_pos: self.start_pos,
+            pos: self.pos,
+        }
+    }
 }
 
 impl Display for Token<'_> {
@@ -149,8 +164,14 @@ impl FormatToken for Token<'_> {
     }
 }
 
-impl<'t> From<&Token<'t>> for SourceSpan {
-    fn from(token: &Token<'t>) -> Self {
+impl From<&Token<'_>> for SourceSpan {
+    fn from(token: &Token<'_>) -> Self {
         (token.start_pos + token.pos - token.length, token.length).into()
+    }
+}
+
+impl From<Token<'_>> for OwnedToken {
+    fn from(token: Token<'_>) -> Self {
+        token.to_owned()
     }
 }
