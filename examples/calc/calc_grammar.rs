@@ -149,21 +149,21 @@ impl CalcGrammar {
         trace!("apply_assign_item: {}: {} {} {}", context, lhs, op, rhs);
         match op {
             AssignOperator::Assign => *lhs = rhs,
-            AssignOperator::PlusAssign => *lhs += rhs,
-            AssignOperator::MinusAssign => *lhs -= rhs,
-            AssignOperator::MulAssign => *lhs *= rhs,
-            AssignOperator::DivAssign => {
+            AssignOperator::Plus => *lhs += rhs,
+            AssignOperator::Minus => *lhs -= rhs,
+            AssignOperator::Mul => *lhs *= rhs,
+            AssignOperator::Div => {
                 if rhs == 0 {
                     bail!("Division by zero detected!");
                 }
                 *lhs /= rhs
             }
-            AssignOperator::ModAssign => *lhs %= rhs,
-            AssignOperator::ShiftLeftAssign => *lhs <<= rhs,
-            AssignOperator::ShiftRightAssign => *lhs >>= rhs,
-            AssignOperator::BitwiseAndAssign => *lhs &= rhs,
-            AssignOperator::BitwiseXOrAssign => *lhs ^= rhs,
-            AssignOperator::BitwiseOrAssign => *lhs |= rhs,
+            AssignOperator::Mod => *lhs %= rhs,
+            AssignOperator::ShiftLeft => *lhs <<= rhs,
+            AssignOperator::ShiftRight => *lhs >>= rhs,
+            AssignOperator::BitwiseAnd => *lhs &= rhs,
+            AssignOperator::BitwiseXOr => *lhs ^= rhs,
+            AssignOperator::BitwiseOr => *lhs |= rhs,
         }
         trace!("apply_assign_item:      = {}", lhs);
         Ok(())
@@ -1281,22 +1281,20 @@ impl CalcGrammarTrait for CalcGrammar {
             Some(CalcGrammarItem::Id(id)) => {
                 if let Some(val) = self.value(&id) {
                     self.push(CalcGrammarItem::Num(val), context);
+                } else if let ParseTreeStackEntry::Id(node_id) = id_0 {
+                    // We need to navigate to the one and only child of the Identifier
+                    // non-terminal to access the actual token.
+                    let child = parse_tree
+                        .get(node_id)
+                        .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
+                        .into_diagnostic()?;
+                    return Err(miette!(CalcError::UndeclaredVariable {
+                        context: context.to_owned(),
+                        input: FileSource::try_new(self.file_name.clone())?.into(),
+                        token: child.data().token()?.into()
+                    }));
                 } else {
-                    if let ParseTreeStackEntry::Id(node_id) = id_0 {
-                        // We need to navigate to the one and only child of the Identifier
-                        // non-terminal to access the actual token.
-                        let child = parse_tree
-                            .get(node_id)
-                            .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
-                            .into_diagnostic()?;
-                        return Err(miette!(CalcError::UndeclaredVariable {
-                            context: context.to_owned(),
-                            input: FileSource::try_new(self.file_name.clone())?.into(),
-                            token: child.data().token()?.into()
-                        }));
-                    } else {
-                        return Err(miette!("{}: undeclared variable {}", context, id));
-                    }
+                    return Err(miette!("{}: undeclared variable {}", context, id));
                 }
                 Ok(())
             }

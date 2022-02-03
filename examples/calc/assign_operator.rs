@@ -4,32 +4,32 @@ use std::result::Result;
 #[derive(Debug, Clone)]
 pub enum AssignOperator {
     Assign,
-    PlusAssign,
-    MinusAssign,
-    MulAssign,
-    DivAssign,
-    ModAssign,
-    ShiftLeftAssign,
-    ShiftRightAssign,
-    BitwiseAndAssign,
-    BitwiseXOrAssign,
-    BitwiseOrAssign,
+    Plus,
+    Minus,
+    Mul,
+    Div,
+    Mod,
+    ShiftLeft,
+    ShiftRight,
+    BitwiseAnd,
+    BitwiseXOr,
+    BitwiseOr,
 }
 
 impl Display for AssignOperator {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
             Self::Assign => write!(f, "="),
-            Self::PlusAssign => write!(f, "+="),
-            Self::MinusAssign => write!(f, "-="),
-            Self::MulAssign => write!(f, "*="),
-            Self::DivAssign => write!(f, "/="),
-            Self::ModAssign => write!(f, "%="),
-            Self::ShiftLeftAssign => write!(f, "<<="),
-            Self::ShiftRightAssign => write!(f, ">>="),
-            Self::BitwiseAndAssign => write!(f, "&="),
-            Self::BitwiseXOrAssign => write!(f, "^="),
-            Self::BitwiseOrAssign => write!(f, "|="),
+            Self::Plus => write!(f, "+="),
+            Self::Minus => write!(f, "-="),
+            Self::Mul => write!(f, "*="),
+            Self::Div => write!(f, "/="),
+            Self::Mod => write!(f, "%="),
+            Self::ShiftLeft => write!(f, "<<="),
+            Self::ShiftRight => write!(f, ">>="),
+            Self::BitwiseAnd => write!(f, "&="),
+            Self::BitwiseXOr => write!(f, "^="),
+            Self::BitwiseOr => write!(f, "|="),
         }
     }
 }
@@ -38,16 +38,16 @@ impl From<&str> for AssignOperator {
     fn from(s: &str) -> Self {
         match s {
             "=" => Self::Assign,
-            "+=" => Self::PlusAssign,
-            "-=" => Self::MinusAssign,
-            "*=" => Self::MulAssign,
-            "/=" => Self::DivAssign,
-            "%=" => Self::ModAssign,
-            "<<=" => Self::ShiftLeftAssign,
-            ">>=" => Self::ShiftRightAssign,
-            "&=" => Self::BitwiseAndAssign,
-            "^=" => Self::BitwiseXOrAssign,
-            "|=" => Self::BitwiseOrAssign,
+            "+=" => Self::Plus,
+            "-=" => Self::Minus,
+            "*=" => Self::Mul,
+            "/=" => Self::Div,
+            "%=" => Self::Mod,
+            "<<=" => Self::ShiftLeft,
+            ">>=" => Self::ShiftRight,
+            "&=" => Self::BitwiseAnd,
+            "^=" => Self::BitwiseXOr,
+            "|=" => Self::BitwiseOr,
             _ => panic!("Unexpected assignment operator {}", s),
         }
     }
