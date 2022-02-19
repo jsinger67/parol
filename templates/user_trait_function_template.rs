@@ -2,6 +2,6 @@
     /// 
     /// {{{prod_string}}}
     /// 
-    fn {{fn_name}}_{{prod_num}}(&mut self, {{{fn_arguments}}}) -> Result<()> {
+    fn {{fn_name}}(&mut self, {{{fn_arguments}}}) -> Result<()> {
         Ok(())
     }

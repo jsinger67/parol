@@ -1,9 +1,13 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
+use crate::generators::NamingHelper as NmHlp;
 use crate::{Cfg, Symbol, Terminal};
 use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPACE};
 
 /// Generates a terminal name from a terminal definition
-pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> String {
+/// The parameter of type `Option<TerminalIndex>` is used to handle fixed terminal indices like EOI.
+/// When only 'normal' terminal strings are processed and a terminal index is not relevant
+/// simply provide None for this value.
+pub fn generate_terminal_name(terminal: &str, i: Option<TerminalIndex>, cfg: &Cfg) -> String {
     fn primary_non_terminal(cfg: &Cfg, terminal: &str) -> Option<String> {
         cfg.pr
             .iter()
@@ -20,23 +24,7 @@ pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> St
             })
             .map(|r| r.get_n())
     }
-    fn capitalize(s: String) -> String {
-        if !s.is_empty() {
-            let mut prev_char = '_';
-            let mut res = String::new();
-            for c in s.chars() {
-                if prev_char == '_' {
-                    res.push(c.to_uppercase().next().unwrap());
-                } else if c != '_' {
-                    res.push(c);
-                }
-                prev_char = c;
-            }
-            res
-        } else {
-            s
-        }
-    }
+
     fn generate_name(s: &str) -> String {
         let (_, name) = s
             .chars()
@@ -81,7 +69,6 @@ pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> St
                         '\'' => "Tick",
                         '"' => "Quote",
                         '`' => "Backtick",
-                        '´' => "Accent",
                         ',' => "Comma",
                         '#' => "Hash",
                         _ => "_",
@@ -100,14 +87,14 @@ pub fn generate_terminal_name(terminal: &str, i: TerminalIndex, cfg: &Cfg) -> St
         "Error".to_owned()
     } else {
         match i {
-            EOI => "EndOfInput".to_owned(),
-            NEW_LINE => "Newline".to_owned(),
-            WHITESPACE => "Whitespace".to_owned(),
-            LINE_COMMENT => "LineComment".to_owned(),
-            BLOCK_COMMENT => "BlockComment".to_owned(),
+            Some(EOI) => "EndOfInput".to_owned(),
+            Some(NEW_LINE) => "Newline".to_owned(),
+            Some(WHITESPACE) => "Whitespace".to_owned(),
+            Some(LINE_COMMENT) => "LineComment".to_owned(),
+            Some(BLOCK_COMMENT) => "BlockComment".to_owned(),
             _ => {
                 if let Some(nt) = primary_non_terminal(cfg, terminal) {
-                    capitalize(nt)
+                    NmHlp::to_upper_camel_case(&nt)
                 } else {
                     generate_name(terminal)
                 }

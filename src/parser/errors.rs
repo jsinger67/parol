@@ -3,7 +3,6 @@ use miette::{Diagnostic, NamedSource, SourceSpan};
 ///
 /// Error types used by the [crate::parser::ParolGrammar]'s semantic actions
 #[derive(Error, Diagnostic, Debug)]
-#[diagnostic(help("Error during parse parol grammar"), code(parol::parser))]
 pub enum ParolParserError {
     /// Undeclared scanner found. Pease declare a scanner via %scanner name {{...}}
     #[error("{context} - Unknown scanner {name}")]

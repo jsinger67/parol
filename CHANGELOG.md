@@ -13,6 +13,20 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.9 - 2022-02-19
+
+* Updated some dependencies and referenced some crates with caret requirements in semver.
+  * Most prominent change was to reference `miette ^4.0` now.
+  * Also `parol_runtime` is referenced with a new version (0.5.6).
+* Using derive_builder to handle `bart` template data
+  * The use of builder pattern shall be extended in the future
+* More robust name generation with check against Rust keywords
+* Enable use of `prettyplease` instead of `rustfmt` for code formatting.
+  * This is enabled by non-default feature "pretty".
+  * Also note that this is still experimental and the result of code formatting by `prettyplease` is
+  currently not optimal. Mostly because of suppressed comments. Therefore I don't encourage to use
+  this feature yet.
+
 ## v0.5.8 - 2022-02-03
 
 * Included PR #13: *Clap 3.0 (derive + builder styles)*. ***Thanks a lot to oaleaf.***

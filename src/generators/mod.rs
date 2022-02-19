@@ -1,3 +1,7 @@
+/// Module with functions to generate variable names and type names
+pub mod naming_helper;
+pub use naming_helper::NamingHelper;
+
 /// Module with type GrammarConfig
 pub mod grammar_config;
 pub use grammar_config::GrammarConfig;
@@ -29,6 +33,8 @@ pub use user_trait_generator::generate_user_trait_source;
 /// Module with the code formatting function
 pub mod rust_code_formatter;
 pub use rust_code_formatter::try_format;
+
+mod template_data;
 
 /// Module with the terminal name generator
 pub mod terminal_name_generator;

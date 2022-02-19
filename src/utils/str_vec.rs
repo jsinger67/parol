@@ -1,6 +1,6 @@
 use std::fmt::{Debug, Display, Error, Formatter};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct StrVec {
     vec: Vec<String>,
     indent: String,

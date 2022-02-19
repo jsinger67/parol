@@ -1,7 +1,6 @@
 use miette::{NamedSource, SourceSpan};
 
 #[derive(Error, Diagnostic, Debug)]
-#[diagnostic(help("Error during parse"), code(parol::examples::calc))]
 pub enum CalcError {
     #[error("{context} isize parse error")]
     #[diagnostic(

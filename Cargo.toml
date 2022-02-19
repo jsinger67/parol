@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.5.8"
+version = "0.5.9"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust."
 documentation = "https://docs.rs/parol"
@@ -14,23 +14,27 @@ edition = "2018"
 [dependencies]
 bart = "0.1.4"
 bart_derive = "0.1.4"
-clap = { version = "3.0.0", features = [ "derive", "cargo" ] }
+cfg-if = "1.0.0"
+clap = { version = "^3.1.0", features = [ "derive", "cargo" ] }
 env_logger = "0.9.0"
-id_tree = "1.8.0"
-id_tree_layout = "2.0.2"
-lazy_static = "1.4.0"
+id_tree = "^1.8"
+id_tree_layout = "^2.0"
+lazy_static = "^1.4"
 log = "0.4.14"
-miette = { version = "3.2.0", features = ["fancy"] }
-parol_runtime = "0.5.4"
+miette = { version = "^4.0", features = ["fancy"] }
+parol_runtime = "0.5.6"
 petgraph = "0.6.0"
+prettyplease = { version = "0.1.7", optional = true }
 rand_regex = "0.15.1"
-rand = "0.8.4"
-regex = "1.5.4"
+rand = "0.8.5"
+regex = "^1.5"
 regex-syntax = "0.6.25"
-serde = "1.0.130"
-serde_derive = "1.0.130"
-serde_json = "1.0.69"
-thiserror = "1.0.30"
+serde = "^1.0"
+serde_derive = "^1.0"
+serde_json = "^1.0"
+syn = { version = "1", default-features = false, features = ["full", "parsing"] }
+thiserror = "^1.0"
+derive_builder = "0.10.2"
 
 [profile.release]
 debug = true
@@ -39,6 +43,8 @@ debug = true
 default = ["build"]
 # Includes logic for invoking from build.rs script
 build = []
+# Using prettyplease instead of rustfmt for code formatting
+pretty = ["prettyplease"]
 
 [[bin]]
 name = "parol"

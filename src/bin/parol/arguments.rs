@@ -1,14 +1,12 @@
 use crate::PathBuf;
 
-use clap::{AppSettings, Parser};
+use clap::Parser;
 
 #[derive(Parser)]
 #[clap(
     author = "Jörg Singer <singer.joerg@gmx.de>",
     version,
-    about = "A LL(k) Parser Generator written in Rust.",
-    long_about = None,
-    setting(AppSettings::ArgsNegateSubcommands),
+    about = "A LL(k) Parser Generator written in Rust."
 )]
 pub(crate) struct ClapApp {
     /// Input grammar file
