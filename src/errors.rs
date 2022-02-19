@@ -7,7 +7,6 @@ use std::fmt::{Display, Formatter};
 use std::path::PathBuf;
 
 #[derive(Error, Diagnostic, Debug)]
-#[diagnostic(help("Error during parse"), code(parol_runtime::parser))]
 pub enum ParserError {
     #[error(transparent)]
     #[diagnostic(
@@ -54,10 +53,6 @@ pub enum ParserError {
 }
 
 #[derive(Error, Diagnostic, Debug)]
-#[diagnostic(
-    help("Error in input"),
-    code(parol_runtime::production_prediction_error)
-)]
 pub enum LookaheadError {
     #[error("{0}")]
     #[diagnostic(

@@ -13,7 +13,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
-## v0.5.5-pre - unreleased yet
+## v0.5.6-pre - unreleased yet
+
+* Referencing `miette ^4.0` now.
+
+## v0.5.5 - 2022-02-03
 
 * Better formatting of file paths
 * Revived `OwnedToken` type for auto-generation feature of `parol`
