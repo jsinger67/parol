@@ -22,7 +22,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 0:
     ///
-    /// Start: StartList;
+    /// Start: StartList /* Vec */;
     ///
     fn start_0(
         &mut self,
@@ -47,7 +47,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// StartList: ;
+    /// StartList: ; // Vec<T>::New
     ///
     fn start_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())

@@ -20,16 +20,16 @@
 /* 11 */ ScannerDirectives: "%auto_ws_off";
 /* 12 */ ScannerStates: ScannerState ScannerStates;
 /* 13 */ ScannerStates: ;
-/* 14 */ GrammarDefinition: "%%" Production GrammarDefinitionList;
+/* 14 */ GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
 /* 15 */ GrammarDefinitionList: Production GrammarDefinitionList;
-/* 16 */ GrammarDefinitionList: ;
+/* 16 */ GrammarDefinitionList: ; // Vec<T>::New
 /* 17 */ Production: Identifier ":" Alternations ";";
-/* 18 */ Alternations: Alternation AlternationsList;
+/* 18 */ Alternations: Alternation AlternationsList /* Vec */;
 /* 19 */ AlternationsList: "\|" Alternation AlternationsList;
-/* 20 */ AlternationsList: ;
-/* 21 */ Alternation: AlternationList;
+/* 20 */ AlternationsList: ; // Vec<T>::New
+/* 21 */ Alternation: AlternationList /* Vec */;
 /* 22 */ AlternationList: Factor AlternationList;
-/* 23 */ AlternationList: ;
+/* 23 */ AlternationList: ; // Vec<T>::New
 /* 24 */ Factor: Group;
 /* 25 */ Factor: Repeat;
 /* 26 */ Factor: Optional;
@@ -45,9 +45,9 @@
 /* 36 */ Repeat: "\{" Alternations "\}";
 /* 37 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
 /* 38 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
-/* 39 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList "\}";
+/* 39 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
 /* 40 */ ScannerStateList: ScannerDirectives ScannerStateList;
-/* 41 */ ScannerStateList: ;
+/* 41 */ ScannerStateList: ; // Vec<T>::New
 /* 42 */ StateList: Identifier StateListRest;
 /* 43 */ StateListRest: "," Identifier StateListRest;
 /* 44 */ StateListRest: ;

@@ -20,7 +20,7 @@ where
 pub enum ProductionAttribute {
     /// No valid attribute, default value
     None,
-    /// Indicates a start of repetition, i.e. a collections
+    /// Indicates a start of repetition, i.e. a collection
     CollectionStart,
     /// Add to a collection
     AddToCollection,

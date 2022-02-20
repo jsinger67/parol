@@ -1,6 +1,6 @@
-use crate::grammar::SymbolAttribute;
+use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute};
 use crate::{Symbol, Terminal};
-use miette::Result;
+use miette::{IntoDiagnostic, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 use std::ops::Index;
@@ -23,7 +23,7 @@ pub type Rhs = Vec<Symbol>;
 /// Production type
 ///
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
-pub struct Pr(pub Symbol, pub Rhs);
+pub struct Pr(pub Symbol, pub Rhs, pub ProductionAttribute);
 
 impl Display for Pr {
     ///
@@ -64,7 +64,11 @@ impl Display for Pr {
 
 impl Default for Pr {
     fn default() -> Self {
-        Self(Symbol::n(""), Rhs::default())
+        Self(
+            Symbol::n(""),
+            Rhs::default(),
+            ProductionAttribute::default(),
+        )
     }
 }
 
@@ -74,7 +78,7 @@ impl Pr {
         if !r.iter().all(Self::is_allowed_symbol) {
             panic!("Unexpected symbol kind!");
         }
-        Self(Symbol::n(n), r)
+        Self(Symbol::n(n), r, ProductionAttribute::default())
     }
 
     /// Returns a clone of the non-terminal
@@ -121,21 +125,29 @@ impl Pr {
     where
         R: Fn(&[usize]) -> String,
     {
-        Ok(format!(
-            "{}: {};",
-            self.0,
-            self.1
-                .iter()
-                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
-                    if let Ok(mut acc) = acc {
-                        acc.push(s.format(scanner_state_resolver)?);
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
-                })
-                .map(|v| v.join(" "))?
-        ))
+        let mut s = String::new();
+        self.2
+            .decorate(
+                &mut s,
+                &format!(
+                    "{}: {};",
+                    self.0,
+                    self.1
+                        .iter()
+                        .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
+                            if let Ok(mut acc) = acc {
+                                acc.push(s.format(scanner_state_resolver)?);
+                                Ok(acc)
+                            } else {
+                                acc
+                            }
+                        })
+                        .map(|v| v.join(" "))?
+                ),
+            )
+            .into_diagnostic()?;
+
+        Ok(s)
     }
 }
 

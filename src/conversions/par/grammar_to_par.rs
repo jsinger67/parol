@@ -37,16 +37,17 @@ pub fn render_par_string(
     grammar_config: &GrammarConfig,
     add_index_comment: bool,
 ) -> Result<String> {
-    let title = format!(
-        "\n%title \"{}\"",
-        grammar_config.title.clone().unwrap_or_default()
-    );
+    let title = grammar_config
+        .title
+        .as_ref()
+        .map_or("".to_owned(), |title| format!("\n%title \"{}\"", title));
 
-    let comment = if let Some(comment) = grammar_config.comment.as_ref() {
-        format!("\n%comment \"{}\"", comment)
-    } else {
-        "".to_owned()
-    };
+    let comment = grammar_config
+        .comment
+        .as_ref()
+        .map_or("".to_owned(), |comment| {
+            format!("\n%comment \"{}\"", comment)
+        });
 
     let line_comments = grammar_config.scanner_configurations[0]
         .line_comments
@@ -213,7 +214,7 @@ mod test {
             .with_comment(comment)
             .add_scanner(ScannerConfig::default());
 
-        let par_str = render_par_string(&grammar_config, true);
+        let par_str = render_par_string(&grammar_config, true).unwrap();
         let par_str = par_str.replace("\r\n", "\n");
         let expected = r#"%start S
 %title "Test grammar"

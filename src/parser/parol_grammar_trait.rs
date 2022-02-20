@@ -193,7 +193,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// GrammarDefinition: "%%" Production GrammarDefinitionList;
+    /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
     ///
     fn grammar_definition_14(
         &mut self,
@@ -220,7 +220,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// GrammarDefinitionList: ;
+    /// GrammarDefinitionList: ; // Vec<T>::New
     ///
     fn grammar_definition_list_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -243,7 +243,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 18:
     ///
-    /// Alternations: Alternation AlternationsList;
+    /// Alternations: Alternation AlternationsList /* Vec */;
     ///
     fn alternations_18(
         &mut self,
@@ -270,7 +270,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// AlternationsList: ;
+    /// AlternationsList: ; // Vec<T>::New
     ///
     fn alternations_list_20(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -278,7 +278,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// Alternation: AlternationList;
+    /// Alternation: AlternationList /* Vec */;
     ///
     fn alternation_21(
         &mut self,
@@ -303,7 +303,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// AlternationList: ;
+    /// AlternationList: ; // Vec<T>::New
     ///
     fn alternation_list_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -500,7 +500,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 39:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList "\}";
+    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
     ///
     fn scanner_state_39(
         &mut self,
@@ -529,7 +529,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 41:
     ///
-    /// ScannerStateList: ;
+    /// ScannerStateList: ; // Vec<T>::New
     ///
     fn scanner_state_list_41(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())

@@ -22,7 +22,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 0:
     ///
-    /// Expressions: Expression ExpressionsList ExpressionsSuffix;
+    /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
     ///
     fn expressions_0(
         &mut self,
@@ -70,7 +70,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ExpressionsList: ;
+    /// ExpressionsList: ; // Vec<T>::New
     ///
     fn expressions_list_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -91,7 +91,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// TailExpression: TailExpressionList;
+    /// TailExpression: TailExpressionList /* Vec */;
     ///
     fn tail_expression_6(
         &mut self,
@@ -117,7 +117,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// TailExpressionList: ;
+    /// TailExpressionList: ; // Vec<T>::New
     ///
     fn tail_expression_list_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())

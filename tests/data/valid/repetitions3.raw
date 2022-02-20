@@ -1,11 +1,10 @@
 %start Start
-%title ""
 
 %%
 
-Start: StartList;
-StartList: StartListGroup StartList;
+Start: StartList /* Vec */;
+StartList: StartListGroup StartList; // Vec<T>::Push
 StartListGroup: "a";
 StartListGroup: "b";
 StartListGroup: "c";
-StartList: ;
+StartList: ; // Vec<T>::New

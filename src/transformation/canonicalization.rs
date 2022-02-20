@@ -1,5 +1,6 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generate_name;
+use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::{Alternation, Alternations, Factor, ParolGrammarItem, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
@@ -60,6 +61,7 @@ fn finalize(productions: Vec<Production>) -> Result<Vec<Pr>> {
                             });
                     prod?
                 },
+                single_alternative.1
             ))
         })
         .collect()
@@ -71,7 +73,7 @@ fn variable_names(productions: &[Production]) -> Vec<String> {
         res.push(variable.clone());
         let mut alternation_vars = r.rhs.0.iter().fold(vec![], |mut res, a| {
             let mut factors_vars = a.0.iter().fold(vec![], |mut res, f| {
-                if let Factor::NonTerminal(n) = f {
+                if let Factor::NonTerminal(n, _) = f {
                     res.push(n.clone());
                 }
                 res
@@ -175,13 +177,13 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
 // R  -> x { a } y
 // =>
 // Case 1: Iff a is only of size 1
-// R  -> x R' y        (1)
-// R' -> a R'          (2)
-// R' ->               (2a)
+// R  -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
+// R' -> a R'          (2) - Alternation receives ProductionAttribute::AddToCollection
+// R' ->               (2a)- Alternation receives ProductionAttribute::CollectionStart
 // Case 2: Otherwise
-// R  -> x R' y        (1)
-// R' -> (a) R'        (2)
-// R' ->               (2a)
+// R  -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
+// R' -> (a) R'        (2) - Alternation receives ProductionAttribute::AddToCollection
+// R' ->               (2a)- Alternation receives ProductionAttribute::CollectionStart
 ///
 fn eliminate_single_rep(
     exclusions: &[String],
@@ -198,46 +200,44 @@ fn eliminate_single_rep(
         if let Factor::Repeat(repeat) = production.rhs.0[alt_index].0[rpt_index_in_alt].clone() {
             let mut production1 = production.clone();
             production1.rhs.0[alt_index].0[rpt_index_in_alt] =
-                Factor::NonTerminal(r_tick_name.clone());
+                Factor::NonTerminal(r_tick_name.clone(), SymbolAttribute::RepetitionAnchor);
 
-            if repeat.0.len() == 1 {
+            let production2 = if repeat.0.len() == 1 {
                 // Case 1
                 let mut rhs_p2 = repeat.0;
-                rhs_p2[0].push(Factor::NonTerminal(r_tick_name.clone()));
+                rhs_p2[0].push(Factor::default_non_terminal(r_tick_name.clone()));
 
-                let production2 = Production {
+                Production {
                     lhs: r_tick_name.clone(),
                     rhs: Alternations(rhs_p2),
-                };
-
-                let production2a = Production {
-                    lhs: r_tick_name,
-                    rhs: Alternations(vec![Alternation::new()]),
-                };
-
-                vec![production1, production2, production2a]
+                }
             } else {
                 // Case 2
-                let production2 = Production {
+                Production {
                     lhs: r_tick_name.clone(),
-                    rhs: Alternations(vec![Alternation(if repeat.0.len() == 1 {
-                        let mut fs = repeat.0[0].0.clone();
-                        fs.push(Factor::NonTerminal(r_tick_name.clone()));
-                        fs
-                    } else {
-                        vec![
-                            Factor::Group(repeat),
-                            Factor::NonTerminal(r_tick_name.clone()),
-                        ]
-                    })]),
-                };
-                let production2a = Production {
-                    lhs: r_tick_name,
-                    rhs: Alternations(vec![Alternation::new()]),
-                };
+                    rhs: Alternations(vec![Alternation::new()
+                        .with_factors(if repeat.0.len() == 1 {
+                            let mut fs = repeat.0[0].0.clone();
+                            fs.push(Factor::default_non_terminal(r_tick_name.clone()));
+                            fs
+                        } else {
+                            vec![
+                                Factor::Group(repeat),
+                                Factor::default_non_terminal(r_tick_name.clone()),
+                            ]
+                        })
+                        .with_attribute(ProductionAttribute::AddToCollection)]),
+                }
+            };
 
-                vec![production1, production2, production2a]
-            }
+            let production2a = Production {
+                lhs: r_tick_name,
+                rhs: Alternations(vec![
+                    Alternation::new().with_attribute(ProductionAttribute::CollectionStart)
+                ]),
+            };
+
+            vec![production1, production2, production2a]
         } else {
             panic!("Expected Factor::Repeat!");
         }
@@ -321,7 +321,7 @@ fn eliminate_single_opt(
                 let r_tick_name = generate_name(exclusions, production_name + "Opt");
                 let mut production1 = production.clone();
                 production1.rhs.0[alt_index].0[opt_index_in_alt] =
-                    Factor::NonTerminal(r_tick_name.clone());
+                    Factor::default_non_terminal(r_tick_name.clone());
 
                 let mut production1a = production1.clone();
                 production1a.rhs.0[0].0.remove(opt_index_in_alt);
@@ -329,7 +329,9 @@ fn eliminate_single_opt(
                 let production2 = Production {
                     lhs: r_tick_name,
                     rhs: if optional.0.len() == 1 {
-                        Alternations(vec![Alternation(optional.0[0].0.clone())])
+                        Alternations(vec![
+                            Alternation::new().with_factors(optional.0[0].0.clone())
+                        ])
                     } else {
                         optional
                     },
@@ -415,7 +417,7 @@ fn eliminate_single_grp(
                 {
                     let mut production1 = production.clone();
                     production1.rhs.0[alt_index].0[grp_index_in_alt] =
-                        Factor::NonTerminal(g_name.clone());
+                        Factor::default_non_terminal(g_name.clone());
                     let production2 = Production {
                         lhs: g_name,
                         rhs: group,
@@ -501,9 +503,9 @@ fn eliminate_duplicates(opd: TransformationOperand) -> TransformationOperand {
                 let pr = &mut productions[pi];
                 debug_assert!(pr.rhs.0.len() == 1, "Only one single Alternation expected!");
                 for s in &mut pr.rhs.0[0].0 {
-                    if let Factor::NonTerminal(n) = s {
+                    if let Factor::NonTerminal(n, _) = s {
                         if n == &to_find {
-                            *s = Factor::NonTerminal(replace_with.clone());
+                            *s = Factor::default_non_terminal(replace_with.clone());
                         }
                     }
                 }
@@ -574,6 +576,7 @@ mod test {
         eliminate_single_grp, eliminate_single_opt, eliminate_single_rep, Alternation,
         Alternations, Factor, Production,
     };
+    use crate::grammar::{ProductionAttribute, SymbolAttribute};
 
     // R  -> x { r1 r2 } y
     // =>
@@ -586,9 +589,9 @@ mod test {
         // Start: x { r1 r2 } y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
-                Factor::Repeat(Alternations(vec![Alternation(vec![
+                Factor::Repeat(Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("r1".to_string(), vec![0]),
                     Factor::Terminal("r2".to_string(), vec![0]),
                 ])])),
@@ -602,9 +605,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
-                    Factor::NonTerminal("StartList".to_string()),
+                    Factor::NonTerminal("StartList".to_string(), SymbolAttribute::RepetitionAnchor),
                     Factor::Terminal("y".to_string(), vec![0]),
                 ])])
             },
@@ -614,10 +617,10 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "StartList".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("r1".to_string(), vec![0]),
                     Factor::Terminal("r2".to_string(), vec![0]),
-                    Factor::NonTerminal("StartList".to_string()),
+                    Factor::default_non_terminal("StartList".to_string()),
                 ])])
             },
             productions[1]
@@ -626,7 +629,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "StartList".to_string(),
-                rhs: Alternations(vec![Alternation(vec![])])
+                rhs: Alternations(vec![
+                    Alternation::new().with_attribute(ProductionAttribute::CollectionStart)
+                ])
             },
             productions[2]
         );
@@ -642,11 +647,13 @@ mod test {
         // Start: x { r1 | r2 } y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
                 Factor::Repeat(Alternations(vec![
-                    Alternation(vec![Factor::Terminal("r1".to_string(), vec![0])]),
-                    Alternation(vec![Factor::Terminal("r2".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("r1".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("r2".to_string(), vec![0])]),
                 ])),
                 Factor::Terminal("y".to_string(), vec![0]),
             ])]),
@@ -658,9 +665,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
-                    Factor::NonTerminal("StartList".to_string()),
+                    Factor::NonTerminal("StartList".to_string(), SymbolAttribute::RepetitionAnchor),
                     Factor::Terminal("y".to_string(), vec![0]),
                 ])])
             },
@@ -670,13 +677,17 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "StartList".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
-                    Factor::Group(Alternations(vec![
-                        Alternation(vec![Factor::Terminal("r1".to_string(), vec![0]),]),
-                        Alternation(vec![Factor::Terminal("r2".to_string(), vec![0]),]),
-                    ])),
-                    Factor::NonTerminal("StartList".to_string()),
-                ])])
+                rhs: Alternations(vec![Alternation::new()
+                    .with_factors(vec![
+                        Factor::Group(Alternations(vec![
+                            Alternation::new()
+                                .with_factors(vec![Factor::Terminal("r1".to_string(), vec![0]),]),
+                            Alternation::new()
+                                .with_factors(vec![Factor::Terminal("r2".to_string(), vec![0]),]),
+                        ])),
+                        Factor::default_non_terminal("StartList".to_string()),
+                    ])
+                    .with_attribute(ProductionAttribute::AddToCollection)])
             },
             productions[1]
         );
@@ -684,7 +695,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "StartList".to_string(),
-                rhs: Alternations(vec![Alternation(vec![])])
+                rhs: Alternations(vec![
+                    Alternation::new().with_attribute(ProductionAttribute::CollectionStart)
+                ])
             },
             productions[2]
         );
@@ -699,9 +712,9 @@ mod test {
         // Start: x [ o1 o2 ] y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
-                Factor::Optional(Alternations(vec![Alternation(vec![
+                Factor::Optional(Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("o1".to_string(), vec![0]),
                     Factor::Terminal("o2".to_string(), vec![0]),
                 ])])),
@@ -715,7 +728,7 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
                     Factor::Terminal("o1".to_string(), vec![0]),
                     Factor::Terminal("o2".to_string(), vec![0]),
@@ -728,7 +741,7 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
                     Factor::Terminal("y".to_string(), vec![0]),
                 ])])
@@ -747,11 +760,13 @@ mod test {
         // Start: x [ o1 | o2 ] y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
                 Factor::Optional(Alternations(vec![
-                    Alternation(vec![Factor::Terminal("o1".to_string(), vec![0])]),
-                    Alternation(vec![Factor::Terminal("o2".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("o1".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("o2".to_string(), vec![0])]),
                 ])),
                 Factor::Terminal("y".to_string(), vec![0]),
             ])]),
@@ -763,9 +778,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
-                    Factor::NonTerminal("StartOpt".to_string()),
+                    Factor::default_non_terminal("StartOpt".to_string()),
                     Factor::Terminal("y".to_string(), vec![0]),
                 ])])
             },
@@ -775,7 +790,7 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
                     Factor::Terminal("y".to_string(), vec![0])
                 ]),])
@@ -787,8 +802,10 @@ mod test {
             Production {
                 lhs: "StartOpt".to_string(),
                 rhs: Alternations(vec![
-                    Alternation(vec![Factor::Terminal("o1".to_string(), vec![0])]),
-                    Alternation(vec![Factor::Terminal("o2".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("o1".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("o2".to_string(), vec![0])]),
                 ])
             },
             productions[2]
@@ -803,9 +820,9 @@ mod test {
         // Start: x ( g1 g2 ) y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
-                Factor::Group(Alternations(vec![Alternation(vec![
+                Factor::Group(Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("g1".to_string(), vec![0]),
                     Factor::Terminal("g2".to_string(), vec![0]),
                 ])])),
@@ -819,7 +836,7 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
                     Factor::Terminal("g1".to_string(), vec![0]),
                     Factor::Terminal("g2".to_string(), vec![0]),
@@ -839,11 +856,13 @@ mod test {
         // Start: x ( g1 | g2 ) y;
         let production = Production {
             lhs: "Start".to_string(),
-            rhs: Alternations(vec![Alternation(vec![
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
                 Factor::Terminal("x".to_string(), vec![0]),
                 Factor::Group(Alternations(vec![
-                    Alternation(vec![Factor::Terminal("g1".to_string(), vec![0])]),
-                    Alternation(vec![Factor::Terminal("g2".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("g1".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("g2".to_string(), vec![0])]),
                 ])),
                 Factor::Terminal("y".to_string(), vec![0]),
             ])]),
@@ -855,9 +874,9 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "Start".to_string(),
-                rhs: Alternations(vec![Alternation(vec![
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
                     Factor::Terminal("x".to_string(), vec![0]),
-                    Factor::NonTerminal("StartGroup".to_string()),
+                    Factor::default_non_terminal("StartGroup".to_string()),
                     Factor::Terminal("y".to_string(), vec![0]),
                 ])])
             },
@@ -868,8 +887,10 @@ mod test {
             Production {
                 lhs: "StartGroup".to_string(),
                 rhs: Alternations(vec![
-                    Alternation(vec![Factor::Terminal("g1".to_string(), vec![0])]),
-                    Alternation(vec![Factor::Terminal("g2".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("g1".to_string(), vec![0])]),
+                    Alternation::new()
+                        .with_factors(vec![Factor::Terminal("g2".to_string(), vec![0])]),
                 ])
             },
             productions[1]

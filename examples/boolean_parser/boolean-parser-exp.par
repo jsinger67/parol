@@ -6,15 +6,15 @@
 
 %%
 
-/*  0 */ Expressions: Expression ExpressionsList ExpressionsSuffix;
+/*  0 */ Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
 /*  1 */ ExpressionsSuffix: Semicolon;
 /*  2 */ ExpressionsSuffix: ;
 /*  3 */ ExpressionsList: Semicolon Expression ExpressionsList;
-/*  4 */ ExpressionsList: ;
+/*  4 */ ExpressionsList: ; // Vec<T>::New
 /*  5 */ Expression: Term TailExpression;
-/*  6 */ TailExpression: TailExpressionList;
+/*  6 */ TailExpression: TailExpressionList /* Vec */;
 /*  7 */ TailExpressionList: BinaryOperator Term TailExpressionList;
-/*  8 */ TailExpressionList: ;
+/*  8 */ TailExpressionList: ; // Vec<T>::New
 /*  9 */ Term: UnaryOperator Factor;
 /* 10 */ Term: Factor;
 /* 11 */ Boolean: True;

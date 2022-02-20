@@ -1,8 +1,7 @@
 %start Start
-%title ""
 
 %%
 
-Start: StartList;
+Start: StartList /* Vec */;
 StartList: "a" StartList;
-StartList: ;
+StartList: ; // Vec<T>::New
