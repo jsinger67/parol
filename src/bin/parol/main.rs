@@ -125,7 +125,7 @@ impl BuildListener for CLIListener<'_> {
             // no passes yet
             IntermediateGrammar::Untransformed => {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
-                    let serialized = render_par_string(grammar_config, false);
+                    let serialized = render_par_string(grammar_config, false)?;
                     fs::write(file_name, serialized)
                         .into_diagnostic()
                         .wrap_err("Error writing untransformed grammar!")?;
@@ -135,7 +135,7 @@ impl BuildListener for CLIListener<'_> {
             IntermediateGrammar::LAST => {
                 if let Some(file_name) = self.config.expanded.as_ref() {
                     // NOTE: We still need special handling for writing to stdout
-                    let lf_source = render_par_string(grammar_config, true);
+                    let lf_source = render_par_string(grammar_config, true)?;
                     if *file_name == OsStr::new("--") {
                         print!("{}", lf_source);
                     } else {

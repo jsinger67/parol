@@ -59,7 +59,7 @@ impl<'a> UserTraitGenerator<'a> {
             .filter(|(_, s)| !s.is_switch())
             .map(|(i, a)| {
                 let n = match a {
-                    Symbol::N(n) => n,
+                    Symbol::N(n, _) => n,
                     Symbol::T(Terminal::Trm(t, _)) => &self.terminal_names[get_terminal_index(t)],
                     _ => panic!("Invalid symbol type in production!"),
                 };
@@ -100,7 +100,7 @@ impl<'a> UserTraitGenerator<'a> {
             |acc: Result<StrVec>, (i, p)| {
                 if let Ok(mut acc) = acc {
                     let fn_name = NmHlp::to_lower_snake_case(&format!("{}_{}", p.get_n_str(), i));
-                    let prod_string = p.format(&scanner_state_resolver);
+                    let prod_string = p.format(&scanner_state_resolver)?;
                     let fn_arguments = self.generate_argument_list(p);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
@@ -139,7 +139,7 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(&self.user_type_name)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .user_trait_module_name(&self.module_name)
+            .user_trait_module_name(self.module_name)
             .build()
             .into_diagnostic()?;
 

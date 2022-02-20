@@ -54,7 +54,9 @@ impl<'a> LanguageGenerator<'a> {
         self.process_non_terminal(self.cfg.get_start_symbol(), false)?;
         while let Some(symbol) = self.generator_stack.pop() {
             match symbol {
-                Symbol::N(n) => self.process_non_terminal(&n, result.len() > termination_threshold),
+                Symbol::N(n, _) => {
+                    self.process_non_terminal(&n, result.len() > termination_threshold)
+                }
                 Symbol::T(Terminal::Trm(t, _)) => {
                     self.process_terminal(t.clone(), &mut result, max_result_length)
                 }

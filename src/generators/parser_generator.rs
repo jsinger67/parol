@@ -85,7 +85,7 @@ impl Production {
                 .rev()
                 .fold(StrVec::new(4).first_line_no_indent(), |mut acc, s| {
                     match s {
-                        Symbol::N(n) => {
+                        Symbol::N(n, _) => {
                             acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
                         }
                         Symbol::T(Terminal::Trm(t, _)) => {

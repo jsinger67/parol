@@ -442,7 +442,7 @@ impl GrammarGenerator<'_> {
         if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
             fs::write(
                 expanded_file,
-                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+                crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
             .into_diagnostic()
             .wrap_err("Error writing left-factored grammar!")?;
@@ -456,7 +456,7 @@ impl GrammarGenerator<'_> {
         if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
             fs::write(
                 expanded_file,
-                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+                crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
             .into_diagnostic()
             .wrap_err("Error writing left-factored grammar!")?;

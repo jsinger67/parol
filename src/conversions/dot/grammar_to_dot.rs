@@ -82,7 +82,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
         let mut from_node = format!("{}", pi);
         inside_production_edges.push(format!("edge [label=\"{}\"];", pi));
         p.get_r().iter().enumerate().for_each(|(si, s)| match s {
-            Symbol::N(n) => {
+            Symbol::N(n, _) => {
                 let to_node = format!("n{}_{}", pi, si + 1);
                 inside_production_edges.push(format!("\"{}\"->\"{}\";", from_node, to_node));
 

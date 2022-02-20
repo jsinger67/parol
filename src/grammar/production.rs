@@ -1,4 +1,6 @@
+use crate::grammar::SymbolAttribute;
 use crate::{Symbol, Terminal};
+use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 use std::ops::Index;
@@ -62,7 +64,7 @@ impl Display for Pr {
 
 impl Default for Pr {
     fn default() -> Self {
-        Self(Symbol::N("".to_owned()), Rhs::default())
+        Self(Symbol::n(""), Rhs::default())
     }
 }
 
@@ -72,7 +74,7 @@ impl Pr {
         if !r.iter().all(Self::is_allowed_symbol) {
             panic!("Unexpected symbol kind!");
         }
-        Self(Symbol::N(n.to_owned()), r)
+        Self(Symbol::n(n), r)
     }
 
     /// Returns a clone of the non-terminal
@@ -97,7 +99,7 @@ impl Pr {
 
     /// Sets the non-terminal
     pub fn set_n(&mut self, n: String) {
-        self.0 = Symbol::N(n);
+        self.0 = Symbol::N(n, SymbolAttribute::default());
     }
 
     /// Checks if [Rhs] is empty
@@ -115,21 +117,25 @@ impl Pr {
     }
 
     /// Formats self with the help of a scanner state resolver
-    pub fn format<R>(&self, scanner_state_resolver: &R) -> String
+    pub fn format<R>(&self, scanner_state_resolver: &R) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
     {
-        format!(
+        Ok(format!(
             "{}: {};",
             self.0,
             self.1
                 .iter()
-                .fold(Vec::new(), |mut acc, s| {
-                    acc.push(s.format(scanner_state_resolver));
-                    acc
+                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
+                    if let Ok(mut acc) = acc {
+                        acc.push(s.format(scanner_state_resolver)?);
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
                 })
-                .join(" ")
-        )
+                .map(|v| v.join(" "))?
+        ))
     }
 }
 

@@ -45,7 +45,7 @@ fn finalize(productions: Vec<Production>) -> Result<Vec<Pr>> {
             }
             let single_alternative = e.pop().unwrap();
             Ok(Pr(
-                Symbol::N(r.lhs),
+                Symbol::n(&r.lhs),
                 if single_alternative.0.is_empty() {
                     vec![]
                 } else {

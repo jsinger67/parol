@@ -1,3 +1,9 @@
+///
+/// Module with attributes used at certain items of a grammar.
+///
+pub mod attributes;
+pub use attributes::{Decorate, ProductionAttribute, SymbolAttribute};
+
 /// Module with the context-free grammar types
 pub mod cfg;
 pub use cfg::Cfg;

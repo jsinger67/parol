@@ -2,6 +2,7 @@
 //! The module contains the conversion to a the PAR format.
 //!
 use crate::{GrammarConfig, ScannerConfig, StrVec};
+use miette::Result;
 use std::fmt::Debug;
 
 #[derive(BartDisplay, Debug, Default)]
@@ -32,7 +33,10 @@ struct ScannerConfigElements {
 ///
 /// Formats the given GrammarConfig in the PAR format.
 ///
-pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool) -> String {
+pub fn render_par_string(
+    grammar_config: &GrammarConfig,
+    add_index_comment: bool,
+) -> Result<String> {
     let title = format!(
         "\n%title \"{}\"",
         grammar_config.title.clone().unwrap_or_default()
@@ -72,11 +76,19 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
 
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
 
-    let mut productions = Vec::new();
-
-    grammar_config.cfg.pr.iter().for_each(|p| {
-        productions.push(p.format(&scanner_state_resolver));
-    });
+    let mut productions =
+        grammar_config
+            .cfg
+            .pr
+            .iter()
+            .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
+                if let Ok(mut acc) = acc {
+                    acc.push(p.format(&scanner_state_resolver)?);
+                    Ok(acc)
+                } else {
+                    acc
+                }
+            })?;
 
     if add_index_comment {
         let width = (productions.len() as f32).log10() as usize + 1;
@@ -118,7 +130,7 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         scanner_states,
         productions,
     };
-    format!("{}", elements)
+    Ok(format!("{}", elements))
 }
 
 fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {

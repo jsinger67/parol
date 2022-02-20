@@ -180,7 +180,7 @@ fn combine_production_equation<'a, 'c: 'a>(
         .fold(Vec::<SymbolString>::new(), |mut acc, s| {
             match s {
                 // For each non-terminal create a separate SymbolString
-                Symbol::N(_) => acc.push(SymbolString(vec![s.clone()])),
+                Symbol::N(_, _) => acc.push(SymbolString(vec![s.clone()])),
                 // Stack terminals as long as possible
                 Symbol::T(_) => {
                     if acc.is_empty() {
@@ -232,7 +232,7 @@ fn combine_production_equation<'a, 'c: 'a>(
                     )
                 });
             }
-            Symbol::N(nt) => {
+            Symbol::N(nt, _) => {
                 let f = create_union_access_function(nt, pr_count, non_terminal_index);
                 result_function = Box::new(move |result_vector: &ResultVector| {
                     result_function(result_vector).k_concat(&f(result_vector), k)
