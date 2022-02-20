@@ -163,6 +163,8 @@ pub struct Builder {
     ///
     /// The CLI needs to be able to override this (mostly for debugging), hence the option.
     output_sanity_checks: bool,
+    /// Enables auto-generation of expanded grammar's semantic actions - experimental
+    auto_generate: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
 }
@@ -233,6 +235,7 @@ impl Builder {
             parser_output_file: None,
             actions_output_file: None,
             expanded_grammar_output_file: None,
+            auto_generate: false,
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
         }
@@ -323,6 +326,14 @@ impl Builder {
     #[doc(hidden)]
     pub fn debug_verbose(&mut self) -> &mut Self {
         self.debug_verbose = true;
+        self
+    }
+    /// Enables the auto-generation of expanded grammar's semantic actions - experimental
+    ///
+    /// This is an internal method, and is only intended for the CLI.
+    #[doc(hidden)]
+    pub fn enable_auto_generation(&mut self) -> &mut Self {
+        self.auto_generate = true;
         self
     }
 
@@ -524,6 +535,7 @@ impl GrammarGenerator<'_> {
         let user_trait_generator = UserTraitGenerator::try_new(
             &self.builder.user_type_name,
             &self.builder.module_name,
+            self.builder.auto_generate,
             grammar_config,
         )?;
         let user_trait_source = user_trait_generator

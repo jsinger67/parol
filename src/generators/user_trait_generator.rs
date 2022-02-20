@@ -13,6 +13,8 @@ pub struct UserTraitGenerator<'a> {
     user_type_name: String,
     /// User type's module name
     module_name: &'a str,
+    /// Enable feature auto-generation for expanded grammar's semantic actions
+    auto_generate: bool,
     /// Compiled grammar configuration
     grammar_config: &'a GrammarConfig,
     /// Helper list for name generation
@@ -26,6 +28,7 @@ impl<'a> UserTraitGenerator<'a> {
     pub fn try_new(
         user_type_name: &'a str,
         module_name: &'a str,
+        auto_generate: bool,
         grammar_config: &'a GrammarConfig,
     ) -> Result<Self> {
         let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
@@ -43,6 +46,7 @@ impl<'a> UserTraitGenerator<'a> {
         UserTraitGeneratorBuilder::default()
             .user_type_name(user_type_name)
             .module_name(module_name)
+            .auto_generate(auto_generate)
             .grammar_config(grammar_config)
             .terminals(terminals)
             .terminal_names(terminal_names)

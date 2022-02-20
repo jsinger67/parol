@@ -60,6 +60,9 @@ fn main() -> Result<()> {
     if let Some(parser_file) = &config.parser {
         builder.parser_output_file(parser_file);
     }
+    if config.auto_generate {
+        builder.enable_auto_generation();
+    }
     if let Some(expanded_grammar_file) = &config.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)
