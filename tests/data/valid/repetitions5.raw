@@ -3,5 +3,5 @@
 %%
 
 Start: "x" StartList /* Vec */ "y";
-StartList: "a" StartList;
+StartList: "a" StartList; // Vec<T>::Push
 StartList: ; // Vec<T>::New

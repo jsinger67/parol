@@ -206,6 +206,7 @@ fn eliminate_single_rep(
                 // Case 1
                 let mut rhs_p2 = repeat.0;
                 rhs_p2[0].push(Factor::default_non_terminal(r_tick_name.clone()));
+                rhs_p2[0].1 = ProductionAttribute::AddToCollection;
 
                 Production {
                     lhs: r_tick_name.clone(),
@@ -617,11 +618,13 @@ mod test {
         assert_eq!(
             Production {
                 lhs: "StartList".to_string(),
-                rhs: Alternations(vec![Alternation::new().with_factors(vec![
-                    Factor::Terminal("r1".to_string(), vec![0]),
-                    Factor::Terminal("r2".to_string(), vec![0]),
-                    Factor::default_non_terminal("StartList".to_string()),
-                ])])
+                rhs: Alternations(vec![Alternation::new()
+                    .with_factors(vec![
+                        Factor::Terminal("r1".to_string(), vec![0]),
+                        Factor::Terminal("r2".to_string(), vec![0]),
+                        Factor::default_non_terminal("StartList".to_string()),
+                    ])
+                    .with_attribute(ProductionAttribute::AddToCollection)])
             },
             productions[1]
         );
