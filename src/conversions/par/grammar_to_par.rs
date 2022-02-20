@@ -70,16 +70,7 @@ pub fn render_par_string(grammar_config: &GrammarConfig, add_index_comment: bool
         "\n%auto_ws_off".to_owned()
     };
 
-    let scanner_state_resolver = |s: &[usize]| {
-        s.iter()
-            .map(|s| {
-                grammar_config.scanner_configurations[*s]
-                    .scanner_name
-                    .clone()
-            })
-            .collect::<Vec<String>>()
-            .join(", ")
-    };
+    let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
 
     let mut productions = Vec::new();
 

@@ -4,6 +4,12 @@ use crate::Cfg;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+lazy_static! {
+    /// Used for implementation of trait `Default` for `&GrammarConfig`.
+    static ref DEFAULT_GRAMMAR_CONFIG: GrammarConfig =
+        GrammarConfig::default();
+}
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -115,6 +121,21 @@ impl GrammarConfig {
         terminals.push("ERROR_TOKEN".to_owned());
         terminals
     }
+
+    /// Generates a function that can be uses as scanner_state_resolver argument on Pr::format
+    pub fn get_scanner_state_resolver(&self) -> Box<dyn Fn(&[usize]) -> String> {
+        let scanner_names = self
+            .scanner_configurations
+            .iter()
+            .map(|s| s.scanner_name.clone())
+            .collect::<Vec<String>>();
+        Box::new(move |s: &[usize]| {
+            s.iter()
+                .map(|s| scanner_names[*s].clone())
+                .collect::<Vec<String>>()
+                .join(", ")
+        })
+    }
 }
 
 impl Default for GrammarConfig {
@@ -126,6 +147,12 @@ impl Default for GrammarConfig {
             scanner_configurations: vec![ScannerConfig::default()], // There must always be a default scanner
             lookahead_size: 0,
         }
+    }
+}
+
+impl Default for &GrammarConfig {
+    fn default() -> Self {
+        &DEFAULT_GRAMMAR_CONFIG
     }
 }
 

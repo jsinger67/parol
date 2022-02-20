@@ -28,7 +28,7 @@ pub use parser_generator::generate_parser_source;
 
 /// Module with the user-trait generator
 pub mod user_trait_generator;
-pub use user_trait_generator::generate_user_trait_source;
+pub use user_trait_generator::UserTraitGenerator;
 
 /// Module with the code formatting function
 pub mod rust_code_formatter;

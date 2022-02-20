@@ -58,8 +58,8 @@ pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_st
 #[forbid(missing_docs)]
 pub mod generators;
 pub use generators::{
-    check_and_transform_grammar, generate_lexer_source, generate_parser_source,
-    generate_user_trait_source, try_format, GrammarConfig, LanguageGenerator, ScannerConfig,
+    check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
+    GrammarConfig, LanguageGenerator, ScannerConfig, UserTraitGenerator,
 };
 
 pub mod parser;

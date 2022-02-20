@@ -13,6 +13,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.10-pre - Not released yet
+
+* Refactoring of module user_trait_generator
+  * Changed from a bunch of functions to a struct `UserTraitGenerator` with `impl`.
+
 ## v0.5.9 - 2022-02-19
 
 * Updated some dependencies and referenced some crates with caret requirements in semver.
