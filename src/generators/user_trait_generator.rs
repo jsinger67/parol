@@ -139,7 +139,7 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(&self.user_type_name)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .user_trait_module_name(&self.module_name)
+            .user_trait_module_name(self.module_name)
             .build()
             .into_diagnostic()?;
 
