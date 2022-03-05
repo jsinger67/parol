@@ -5,13 +5,13 @@
 %%
 
 /*  0 */ Grammar: GrammarList /* Vec */;
-/*  1 */ GrammarList: Items GrammarList;
+/*  1 */ GrammarList: Items GrammarList; // Vec<T>::Push
 /*  2 */ GrammarList: ; // Vec<T>::New
 /*  3 */ Items: Declaration;
 /*  4 */ Items: Block;
 /*  5 */ Declaration: Var Identifier ";";
 /*  6 */ Block: Begin BlockList /* Vec */ End;
-/*  7 */ BlockList: Items BlockList;
+/*  7 */ BlockList: Items BlockList; // Vec<T>::Push
 /*  8 */ BlockList: ; // Vec<T>::New
 /*  9 */ Begin: "(?i)\bBegin\b";
 /* 10 */ End: "(?i)\bEnd\b";

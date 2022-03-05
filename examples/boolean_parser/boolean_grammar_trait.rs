@@ -56,7 +56,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ExpressionsList: Semicolon Expression ExpressionsList;
+    /// ExpressionsList: Semicolon Expression ExpressionsList; // Vec<T>::Push
     ///
     fn expressions_list_3(
         &mut self,
@@ -103,7 +103,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// TailExpressionList: BinaryOperator Term TailExpressionList;
+    /// TailExpressionList: BinaryOperator Term TailExpressionList; // Vec<T>::Push
     ///
     fn tail_expression_list_7(
         &mut self,

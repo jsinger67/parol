@@ -24,36 +24,6 @@ pub struct UserTraitGenerator<'a> {
 }
 
 impl<'a> UserTraitGenerator<'a> {
-    /// Creates a new item
-    pub fn try_new(
-        user_type_name: &'a str,
-        module_name: &'a str,
-        auto_generate: bool,
-        grammar_config: &'a GrammarConfig,
-    ) -> Result<Self> {
-        let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
-        let terminals = grammar_config
-            .cfg
-            .get_ordered_terminals()
-            .iter()
-            .map(|(t, _)| *t)
-            .collect::<Vec<&str>>();
-        let terminal_names = terminals.iter().fold(Vec::new(), |mut acc, e| {
-            let n = generate_terminal_name(e, None, &grammar_config.cfg);
-            acc.push(n);
-            acc
-        });
-        UserTraitGeneratorBuilder::default()
-            .user_type_name(user_type_name)
-            .module_name(module_name)
-            .auto_generate(auto_generate)
-            .grammar_config(grammar_config)
-            .terminals(terminals)
-            .terminal_names(terminal_names)
-            .build()
-            .into_diagnostic()
-    }
-
     fn generate_argument_list(&self, pr: &Pr) -> String {
         let get_terminal_index = |tr: &str| self.terminals.iter().position(|t| *t == tr).unwrap();
         let mut arguments = pr
@@ -148,5 +118,35 @@ impl<'a> UserTraitGenerator<'a> {
             .into_diagnostic()?;
 
         Ok(format!("{}", user_trait_data))
+    }
+
+    /// Creates a new item
+    pub fn try_new(
+        user_type_name: &'a str,
+        module_name: &'a str,
+        auto_generate: bool,
+        grammar_config: &'a GrammarConfig,
+    ) -> Result<Self> {
+        let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
+        let terminals = grammar_config
+            .cfg
+            .get_ordered_terminals()
+            .iter()
+            .map(|(t, _)| *t)
+            .collect::<Vec<&str>>();
+        let terminal_names = terminals.iter().fold(Vec::new(), |mut acc, e| {
+            let n = generate_terminal_name(e, None, &grammar_config.cfg);
+            acc.push(n);
+            acc
+        });
+        UserTraitGeneratorBuilder::default()
+            .user_type_name(user_type_name)
+            .module_name(module_name)
+            .auto_generate(auto_generate)
+            .grammar_config(grammar_config)
+            .terminals(terminals)
+            .terminal_names(terminal_names)
+            .build()
+            .into_diagnostic()
     }
 }

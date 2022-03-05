@@ -34,7 +34,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// StartList: Content StartList;
+    /// StartList: Content StartList; // Vec<T>::Push
     ///
     fn start_list_1(
         &mut self,

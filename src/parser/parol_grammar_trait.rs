@@ -207,7 +207,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinitionList: Production GrammarDefinitionList;
+    /// GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
     ///
     fn grammar_definition_list_15(
         &mut self,
@@ -256,7 +256,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// AlternationsList: "\|" Alternation AlternationsList;
+    /// AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
     ///
     fn alternations_list_19(
         &mut self,
@@ -290,7 +290,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationList: Factor AlternationList;
+    /// AlternationList: Factor AlternationList; // Vec<T>::Push
     ///
     fn alternation_list_22(
         &mut self,
@@ -516,7 +516,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 40:
     ///
-    /// ScannerStateList: ScannerDirectives ScannerStateList;
+    /// ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
     ///
     fn scanner_state_list_40(
         &mut self,

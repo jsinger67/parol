@@ -34,7 +34,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// GrammarList: Items GrammarList;
+    /// GrammarList: Items GrammarList; // Vec<T>::Push
     ///
     fn grammar_list_1(
         &mut self,
@@ -107,7 +107,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// BlockList: Items BlockList;
+    /// BlockList: Items BlockList; // Vec<T>::Push
     ///
     fn block_list_7(
         &mut self,
