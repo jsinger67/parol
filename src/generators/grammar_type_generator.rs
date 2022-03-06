@@ -1,8 +1,9 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::{generate_terminal_name, NamingHelper as NmHlp};
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::Cfg;
-use miette::Result;
+use crate::{Cfg, Pr, Symbol, Terminal};
+use log::trace;
+use miette::{miette, IntoDiagnostic, Result};
 use std::collections::BTreeMap;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -16,11 +17,11 @@ pub enum ASTType {
     None,
     /// Unit type ()
     Unit,
-    /// Will be generated to a Token structure
+    /// Will be generated as Token structure
     Token(String),
     /// A type name
     TypeRef(String),
-    /// A struct, i.e. a collection of types
+    /// A struct, i.e. a named collection of (name, type) tuples
     Struct(String, Vec<(String, ASTType)>),
     /// Will be generated as enum with given name
     Enum(String, Vec<ASTType>),
@@ -202,6 +203,155 @@ pub struct GrammarTypeInfo {
 }
 
 impl GrammarTypeInfo {
+    /// Add non-terminal type
+    fn add_non_terminal_type(&mut self, non_terminal: &str, nt_type: ASTType) -> Result<()> {
+        self.non_terminal_types
+            .insert(non_terminal.to_owned(), nt_type)
+            .map_or_else(
+                || {
+                    trace!("Setting type for non-terminal {}", non_terminal);
+                    Ok(())
+                },
+                |_| {
+                    Err(miette!(
+                        "Type for non-terminal {} already specified",
+                        non_terminal
+                    ))
+                },
+            )
+    }
+
+    fn build_argument_list(&self, prod: &Pr) -> Result<Vec<Argument>> {
+        let mut types = prod.get_r().iter().filter(|s| s.is_t() || s.is_n()).fold(
+            Ok(Vec::new()),
+            |acc, s| {
+                acc.and_then(|mut acc| {
+                    Self::deduce_type_of_symbol(s).map(|t| {
+                        acc.push((t, s.attribute()));
+                        acc
+                    })
+                })
+            },
+        )?;
+
+        Ok(
+            NmHlp::generate_member_names(prod.get_r(), &self.terminals, &self.terminal_names)
+                .iter()
+                .enumerate()
+                .zip(types.drain(..))
+                .map(|((i, n), (t, a))| {
+                    // Tokens are taken from the parameter list per definition.
+                    let used = matches!(t, ASTType::Token(_));
+                    ArgumentBuilder::default()
+                        .name(n.to_string())
+                        .arg_type(t)
+                        .used(used)
+                        .index(Some(i))
+                        .sem(a)
+                        .build()
+                        .unwrap()
+                })
+                .collect::<Vec<Argument>>(),
+        )
+    }
+
+    fn deduce_action_type_from_production(&self, prod: &Pr) -> Result<ASTType> {
+        match prod.effective_len() {
+            0 => match prod.2 {
+                ProductionAttribute::None => Ok(ASTType::Unit), // Normal empty production
+                ProductionAttribute::CollectionStart => Ok(ASTType::Repeat(
+                    NmHlp::to_upper_camel_case(prod.0.get_n_ref().unwrap()),
+                )),
+                ProductionAttribute::AddToCollection => Err(miette!(
+                    "AddToCollection attribute should not be applied on an empty production"
+                )),
+            },
+            _ => Ok(self.struct_data_of_production(prod)?),
+        }
+    }
+
+    /// Creates the list of actions from the Cfg.
+    fn deduce_actions(&mut self, cfg: &Cfg) -> Result<()> {
+        self.actions = Vec::with_capacity(cfg.pr.len());
+        for (i, pr) in cfg.pr.iter().enumerate() {
+            self.actions.push(
+                ActionBuilder::default()
+                    .non_terminal(pr.get_n())
+                    .prod_num(i)
+                    .fn_name(NmHlp::to_lower_snake_case(&format!(
+                        "{}_{}",
+                        pr.get_n_str(),
+                        i
+                    )))
+                    .args(self.build_argument_list(pr)?)
+                    .out_type(self.deduce_action_type_from_production(pr)?)
+                    .sem(pr.2.clone())
+                    .build()
+                    .into_diagnostic()?,
+            );
+        }
+        Ok(())
+    }
+
+    fn deduce_type_of_non_terminal(&mut self, actions: Vec<usize>) -> Option<ASTType> {
+        match actions.len() {
+            // Productions can be optimized away, when they have duplicates!
+            0 => None,
+            // Only one production for this non-terminal: we take the out-type of the single action
+            1 => Some(self.actions[actions[0]].out_type.clone()),
+            _ => {
+                // Otherwise: we generate an Enum form the out-types of each action
+                let nt_ref = &self.actions[actions[0]].non_terminal;
+                Some(ASTType::Enum(
+                    NmHlp::to_upper_camel_case(nt_ref),
+                    actions
+                        .iter()
+                        .map(|i| self.actions[*i].out_type.clone())
+                        .collect::<Vec<ASTType>>(),
+                ))
+            }
+        }
+    }
+
+    fn deduce_type_of_non_terminals(&mut self, cfg: &Cfg) -> Result<()> {
+        for nt in cfg.get_non_terminal_set() {
+            let actions = self.matching_actions(&nt);
+            if let Some(nt_type) = self.deduce_type_of_non_terminal(actions) {
+                self.add_non_terminal_type(&nt, nt_type)?;
+            }
+        }
+        Ok(())
+    }
+
+    fn deduce_type_of_symbol(symbol: &Symbol) -> Result<ASTType> {
+        match symbol {
+            Symbol::T(Terminal::Trm(t, _)) => Ok(ASTType::Token(t.to_string())),
+            Symbol::N(n, a) => {
+                let inner_type_name = NmHlp::to_upper_camel_case(n);
+                match a {
+                    SymbolAttribute::None => Ok(ASTType::TypeRef(inner_type_name)),
+                    SymbolAttribute::RepetitionAnchor => Ok(ASTType::Repeat(inner_type_name)),
+                }
+            }
+            _ => Err(miette!("Unexpected symbol kind: {}", symbol)),
+        }
+    }
+
+    ///
+    /// Returns a vector of action indices matching the given non-terminal n
+    ///
+    fn matching_actions(&self, n: &str) -> Vec<usize> {
+        self.actions
+            .iter()
+            .enumerate()
+            .fold(Vec::new(), |mut acc, (i, a)| {
+                if a.non_terminal == n {
+                    acc.push(i);
+                }
+                acc
+            })
+    }
+
     /// Create a new item
     /// Initializes the helper data `terminals` and `terminal_names`.
     pub fn new(cfg: &Cfg) -> Self {
@@ -218,6 +368,21 @@ impl GrammarTypeInfo {
             acc
         });
         me
+    }
+
+    fn struct_data_of_production(&self, prod: &Pr) -> Result<ASTType> {
+        let mut arguments = self.build_argument_list(prod)?;
+        if matches!(prod.2, ProductionAttribute::AddToCollection) {
+            // Remove the iterative/recursive part of the production
+            arguments.pop();
+        }
+        Ok(ASTType::Struct(
+            NmHlp::to_upper_camel_case(prod.get_n_str()),
+            arguments
+                .drain(..)
+                .map(|arg| (arg.name, arg.arg_type))
+                .collect::<Vec<(String, ASTType)>>(),
+        ))
     }
 }
 
@@ -237,9 +402,9 @@ impl Display for GrammarTypeInfo {
 impl TryFrom<&Cfg> for GrammarTypeInfo {
     type Error = miette::Error;
     fn try_from(cfg: &Cfg) -> Result<Self> {
-        let me = Self::new(cfg);
-        // me.deduce_actions(cfg)?;
-        // me.deduce_type_of_non_terminals(cfg)?;
+        let mut me = Self::new(cfg);
+        me.deduce_actions(cfg)?;
+        me.deduce_type_of_non_terminals(cfg)?;
         Ok(me)
     }
 }

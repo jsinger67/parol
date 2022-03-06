@@ -120,6 +120,17 @@ impl Pr {
         !(matches!(s, Symbol::T(Terminal::Eps)))
     }
 
+    /// Returns the length of [Rhs] while counting only parser relevant symbols
+    pub fn effective_len(&self) -> usize {
+        self.1.iter().fold(0, |count, s| {
+            if s.is_t() || s.is_n() {
+                count + 1
+            } else {
+                count
+            }
+        })
+    }
+
     /// Formats self with the help of a scanner state resolver
     pub fn format<R>(&self, scanner_state_resolver: &R) -> Result<String>
     where

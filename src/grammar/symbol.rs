@@ -221,7 +221,7 @@ impl Symbol {
         }
     }
     /// Returns a non-terminal reference if available
-    pub fn get_n_ref(&self) -> Option<&String> {
+    pub fn get_n_ref(&self) -> Option<&str> {
         if let Self::N(n, _) = &self {
             Some(n)
         } else {
