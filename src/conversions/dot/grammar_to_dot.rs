@@ -121,7 +121,7 @@ mod test {
 
     #[test]
     fn check_dot_format() {
-        let rx_newline: Regex = Regex::new(r"\r\n|\r\n").unwrap();
+        let rx_newline: Regex = Regex::new(r"\r?\n").unwrap();
         let g = Cfg::with_start_symbol("S")
             .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
             .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))

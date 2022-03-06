@@ -121,9 +121,20 @@ where
     let input = fs::read_to_string(&file_name)
         .into_diagnostic()
         .wrap_err(format!("Can't read file {:?}", file_name))?;
+    obtain_grammar_config_from_string(&input, verbose)
+}
+
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
+/// Utility function to parse a text with a grammar in PAR syntax.
+///
+pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<GrammarConfig> {
     let mut parol_grammar = ParolGrammar::new();
-    let _syntax_tree = parse(&input, &file_name, &mut parol_grammar)
-        .wrap_err(format!("Failed parsing file {:?}", file_name))?;
+    let _syntax_tree = parse(input, "No file", &mut parol_grammar)
+        .wrap_err(format!("Failed parsing text {}", input))?;
 
     if verbose {
         println!("{}", parol_grammar);

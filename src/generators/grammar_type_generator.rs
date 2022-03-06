@@ -300,15 +300,59 @@ impl GrammarTypeInfo {
             // Only one production for this non-terminal: we take the out-type of the single action
             1 => Some(self.actions[actions[0]].out_type.clone()),
             _ => {
-                // Otherwise: we generate an Enum form the out-types of each action
-                let nt_ref = &self.actions[actions[0]].non_terminal;
-                Some(ASTType::Enum(
-                    NmHlp::to_upper_camel_case(nt_ref),
-                    actions
-                        .iter()
-                        .map(|i| self.actions[*i].out_type.clone())
-                        .collect::<Vec<ASTType>>(),
-                ))
+                let actions = actions
+                    .iter()
+                    .map(|i| &self.actions[*i])
+                    .collect::<Vec<&Action>>();
+                match &actions[..] {
+                    [Action {
+                        non_terminal,
+                        args,
+                        sem: _s0 @ ProductionAttribute::AddToCollection,
+                        ..
+                    }, Action {
+                        sem: _s1 @ ProductionAttribute::CollectionStart,
+                        ..
+                    }] => {
+                        let mut arguments = args.clone();
+                        Some(ASTType::Struct(
+                            NmHlp::to_upper_camel_case(&non_terminal),
+                            arguments
+                                .drain(..)
+                                .map(|arg| (arg.name, arg.arg_type))
+                                .collect::<Vec<(String, ASTType)>>(),
+                        ))
+                    }
+                    [Action {
+                        sem: _s0 @ ProductionAttribute::CollectionStart,
+                        ..
+                    }, Action {
+                        non_terminal,
+                        args,
+                        sem: _s1 @ ProductionAttribute::AddToCollection,
+                        ..
+                    }] => {
+                        let mut arguments = args.clone();
+                        Some(ASTType::Struct(
+                            NmHlp::to_upper_camel_case(&non_terminal),
+                            arguments
+                                .drain(..)
+                                .map(|arg| (arg.name, arg.arg_type))
+                                .collect::<Vec<(String, ASTType)>>(),
+                        ))
+                    }
+                    _ => {
+                        // Otherwise: we generate an Enum form the out-types of each action
+                        let nt_ref = &actions[0].non_terminal;
+                        Some(ASTType::Enum(
+                            NmHlp::to_upper_camel_case(nt_ref),
+                            actions
+                                .iter()
+                                .map(|a| a.out_type.clone())
+                                .collect::<Vec<ASTType>>(),
+                        ))
+                    }
+                }
             }
         }
     }
@@ -373,16 +417,18 @@ impl GrammarTypeInfo {
     fn struct_data_of_production(&self, prod: &Pr) -> Result<ASTType> {
         let mut arguments = self.build_argument_list(prod)?;
         if matches!(prod.2, ProductionAttribute::AddToCollection) {
-            // Remove the iterative/recursive part of the production
-            arguments.pop();
+            Ok(ASTType::Repeat(NmHlp::to_upper_camel_case(
+                prod.get_n_str(),
+            )))
+        } else {
+            Ok(ASTType::Struct(
+                NmHlp::to_upper_camel_case(prod.get_n_str()),
+                arguments
+                    .drain(..)
+                    .map(|arg| (arg.name, arg.arg_type))
+                    .collect::<Vec<(String, ASTType)>>(),
+            ))
         }
-        Ok(ASTType::Struct(
-            NmHlp::to_upper_camel_case(prod.get_n_str()),
-            arguments
-                .drain(..)
-                .map(|arg| (arg.name, arg.arg_type))
-                .collect::<Vec<(String, ASTType)>>(),
-        ))
     }
 }
 
@@ -406,5 +452,139 @@ impl TryFrom<&Cfg> for GrammarTypeInfo {
         me.deduce_actions(cfg)?;
         me.deduce_type_of_non_terminals(cfg)?;
         Ok(me)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use regex::Regex;
+
+    use super::GrammarTypeInfo;
+    use crate::{left_factor, obtain_grammar_config_from_string, render_par_string, Cfg};
+    use std::convert::TryInto;
+
+    static GRAMMAR1: &str = r#"%start S %% S: "a" {"b-rpt"} "c" {"d-rpt"};"#;
+    static GRAMMAR2: &str = r#"%start S %% S: "a" ["b-opt"] "c" ["d-opt"];"#;
+
+    lazy_static! {
+        /*
+        S: "a" {"b-rpt"} "c" {"d-rpt"};
+        =>
+        /* 0 */ S: "a" SList /* Vec */ "c" SList1 /* Vec */;
+        /* 1 */ SList1: "d-rpt" SList1; // Vec<T>::Push
+        /* 2 */ SList1: ; // Vec<T>::New
+        /* 3 */ SList: "b-rpt" SList; // Vec<T>::Push
+        /* 4 */ SList: ; // Vec<T>::New
+        */
+        static ref G1: Cfg = left_factor(
+            &obtain_grammar_config_from_string(GRAMMAR1, false).unwrap().cfg);
+        static ref TYPE_INFO1: GrammarTypeInfo = (&*G1).try_into().unwrap();
+
+        /*
+        S: "a" ["b-opt"] "c" ["d-opt"];
+        =>
+        /* 0 */ S: "a" "b-opt" "c" "d-opt";
+        /* 1 */ S: "a" "b-opt" "c";
+        /* 2 */ S: "a" "c" "d-opt";
+        /* 3 */ S: "a" "c";
+        */
+        static ref G2: Cfg = left_factor(
+            &obtain_grammar_config_from_string(GRAMMAR2, false).unwrap().cfg);
+        static ref TYPE_INFO2: GrammarTypeInfo = (&*G2).try_into().unwrap();
+
+        static ref RX_NEWLINE: Regex = Regex::new(r"\r?\n").unwrap();
+    }
+
+    #[test]
+    fn test_presentation_of_grammar_1() {
+        let expected = r#"%start S
+
+%%
+
+/* 0 */ S: "a" SList /* Vec */ "c" SList1 /* Vec */;
+/* 1 */ SList1: "d-rpt" SList1; // Vec<T>::Push
+/* 2 */ SList1: ; // Vec<T>::New
+/* 3 */ SList: "b-rpt" SList; // Vec<T>::Push
+/* 4 */ SList: ; // Vec<T>::New
+"#;
+
+        let par_str = render_par_string(
+            &obtain_grammar_config_from_string(GRAMMAR1, false).unwrap(),
+            true,
+        )
+        .unwrap();
+
+        assert_eq!(
+            RX_NEWLINE.replace_all(expected, "\n"),
+            RX_NEWLINE.replace_all(&par_str, "\n")
+        );
+    }
+
+    #[test]
+    fn test_presentation_of_grammar_2() {
+        let expected = r#"%start S
+
+%%
+
+/* 0 */ S: "a" "b-opt" "c" "d-opt";
+/* 1 */ S: "a" "b-opt" "c";
+/* 2 */ S: "a" "c" "d-opt";
+/* 3 */ S: "a" "c";
+"#;
+
+        let par_str = render_par_string(
+            &obtain_grammar_config_from_string(GRAMMAR2, false).unwrap(),
+            true,
+        )
+        .unwrap();
+
+        assert_eq!(
+            RX_NEWLINE.replace_all(expected, "\n"),
+            RX_NEWLINE.replace_all(&par_str, "\n")
+        );
+    }
+
+    #[test]
+    fn test_presentation_of_type_info_1() {
+        let expected = r#"/* 0 */ ((OwnedToken /* a */, Vec<SList>) -> struct S { s_list_1: OwnedToken /* a */, s_list1_3: Vec<SList> })  { - }
+/* 1 */ ((OwnedToken /* d-rpt */) -> Vec<SList1>)  { Vec<T>::Push }
+/* 2 */ (() -> Vec<SList1>)  { Vec<T>::New }
+/* 3 */ ((OwnedToken /* b-rpt */) -> Vec<SList>)  { Vec<T>::Push }
+/* 4 */ (() -> Vec<SList>)  { Vec<T>::New }
+
+S:  struct S { s_list_1: OwnedToken /* a */, s_list1_3: Vec<SList> }
+SList:  struct SList { s_list_1: OwnedToken /* b-rpt */ }
+SList1:  struct SList1 { s_list1_1: OwnedToken /* d-rpt */ }
+"#;
+
+        let presentation = format!("{}", *TYPE_INFO1);
+
+        assert_eq!(
+            RX_NEWLINE.replace_all(expected, "\n"),
+            RX_NEWLINE.replace_all(&presentation, "\n")
+        );
+    }
+
+    #[test]
+    fn test_presentation_of_type_info_2() {
+        let expected = r#"/* 0 */ ((OwnedToken /* a */) -> struct S { s_suffix2_1: OwnedToken /* a */ })  { - }
+/* 1 */ ((OwnedToken /* c */) -> struct SSuffix2 { s_suffix1_1: OwnedToken /* c */ })  { - }
+/* 2 */ ((OwnedToken /* b-opt */) -> struct SSuffix2 { s_suffix_2: OwnedToken /* b-opt */ })  { - }
+/* 3 */ (() -> struct SSuffix1 {  })  { - }
+/* 4 */ (() -> ())  { - }
+/* 5 */ (() -> struct SSuffix {  })  { - }
+/* 6 */ (() -> ())  { - }
+
+S:  struct S { s_suffix2_1: OwnedToken /* a */ }
+SSuffix:  enum SSuffix { SSuffix0(struct SSuffix {  }), SSuffix1(()) }
+SSuffix1:  enum SSuffix1 { SSuffix10(struct SSuffix1 {  }), SSuffix11(()) }
+SSuffix2:  enum SSuffix2 { SSuffix20(struct SSuffix2 { s_suffix1_1: OwnedToken /* c */ }), SSuffix21(struct SSuffix2 { s_suffix_2: OwnedToken /* b-opt */ }) }
+"#;
+        let presentation = format!("{}", *TYPE_INFO2);
+
+        assert_eq!(
+            RX_NEWLINE.replace_all(expected, "\n"),
+            RX_NEWLINE.replace_all(&presentation, "\n")
+        );
     }
 }

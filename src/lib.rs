@@ -74,7 +74,7 @@ pub use transformation::left_factor;
 
 #[forbid(missing_docs)]
 mod utils;
-pub use utils::{generate_tree_layout, obtain_grammar_config};
+pub use utils::{generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string};
 
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};
