@@ -4,7 +4,7 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::{Cfg, Pr, Symbol, Terminal};
 use log::trace;
 use miette::{miette, IntoDiagnostic, Result};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashSet};
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -24,7 +24,7 @@ pub enum ASTType {
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct(String, Vec<(String, ASTType)>),
     /// Will be generated as enum with given name
-    Enum(String, Vec<ASTType>),
+    Enum(String, Vec<(String, ASTType)>),
     /// Will be generated as Vec<T> where T is the type, similar to TypeRef
     Repeat(String),
 }
@@ -64,8 +64,7 @@ impl Display for ASTType {
                 "enum {} {{ {} }}",
                 n,
                 t.iter()
-                    .enumerate()
-                    .map(|(i, t)| format!("{}{}({})", n, i, t))
+                    .map(|(c, t)| format!("{}({})", c, t))
                     .collect::<Vec<String>>()
                     .join(", ")
             ),
@@ -197,9 +196,13 @@ pub struct GrammarTypeInfo {
     /// Calculated type of non-terminals
     pub(crate) non_terminal_types: BTreeMap<String, ASTType>,
 
+    pub(crate) ast_enum_type: ASTType,
+
     /// Helper
     terminals: Vec<String>,
     terminal_names: Vec<String>,
+    // Contains non-terminals that should be represented as vectors in the AST Enum type
+    vector_typed_non_terminals: HashSet<String>,
 }
 
 impl GrammarTypeInfo {
@@ -219,6 +222,12 @@ impl GrammarTypeInfo {
                     ))
                 },
             )
+    }
+
+    fn build(&mut self, cfg: &Cfg) -> Result<()> {
+        self.deduce_actions(cfg)?;
+        self.deduce_type_of_non_terminals(cfg)?;
+        self.generate_ast_enum_type()
     }
 
     fn build_argument_list(&self, prod: &Pr) -> Result<Vec<Argument>> {
@@ -294,7 +303,8 @@ impl GrammarTypeInfo {
     }
 
     fn deduce_type_of_non_terminal(&mut self, actions: Vec<usize>) -> Option<ASTType> {
-        match actions.len() {
+        let mut vector_typed_non_terminal_opt = None;
+        let result_type = match actions.len() {
             // Productions can be optimized away, when they have duplicates!
             0 => None,
             // Only one production for this non-terminal: we take the out-type of the single action
@@ -315,6 +325,7 @@ impl GrammarTypeInfo {
                         ..
                     }] => {
                         let mut arguments = args.clone();
+                        vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
                             NmHlp::to_upper_camel_case(&non_terminal),
                             arguments
@@ -333,6 +344,7 @@ impl GrammarTypeInfo {
                         ..
                     }] => {
                         let mut arguments = args.clone();
+                        vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
                             NmHlp::to_upper_camel_case(&non_terminal),
                             arguments
@@ -348,13 +360,28 @@ impl GrammarTypeInfo {
                             NmHlp::to_upper_camel_case(nt_ref),
                             actions
                                 .iter()
-                                .map(|a| a.out_type.clone())
-                                .collect::<Vec<ASTType>>(),
+                                .map(|a| {
+                                    (
+                                        NmHlp::to_upper_camel_case(&format!(
+                                            "{}{}",
+                                            a.non_terminal, a.prod_num
+                                        )),
+                                        a.out_type.clone(),
+                                    )
+                                })
+                                .collect::<Vec<(String, ASTType)>>(),
                         ))
                     }
                 }
             }
+        };
+
+        if let Some(vector_typed_non_terminal) = vector_typed_non_terminal_opt {
+            self.vector_typed_non_terminals
+                .insert(vector_typed_non_terminal);
         }
+
+        result_type
     }
 
     fn deduce_type_of_non_terminals(&mut self, cfg: &Cfg) -> Result<()> {
@@ -379,6 +406,26 @@ impl GrammarTypeInfo {
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),
         }
+    }
+
+    fn generate_ast_enum_type(&mut self) -> Result<()> {
+        self.ast_enum_type = ASTType::Enum(
+            "ASTType".to_owned(),
+            self.non_terminal_types
+                .iter()
+                .map(|(n, t)| {
+                    (
+                        NmHlp::to_upper_camel_case(n),
+                        if self.vector_typed_non_terminals.contains(n) {
+                            ASTType::Repeat(t.type_name())
+                        } else {
+                            ASTType::TypeRef(t.type_name())
+                        },
+                    )
+                })
+                .collect::<Vec<(String, ASTType)>>(),
+        );
+        Ok(())
     }
 
     ///
@@ -441,6 +488,8 @@ impl Display for GrammarTypeInfo {
         for (non_terminal, ast_type) in &self.non_terminal_types {
             writeln!(f, "{}:  {}", non_terminal, ast_type)?;
         }
+        writeln!(f)?;
+        writeln!(f, "{}", self.ast_enum_type)?;
         Ok(())
     }
 }
@@ -449,8 +498,7 @@ impl TryFrom<&Cfg> for GrammarTypeInfo {
     type Error = miette::Error;
     fn try_from(cfg: &Cfg) -> Result<Self> {
         let mut me = Self::new(cfg);
-        me.deduce_actions(cfg)?;
-        me.deduce_type_of_non_terminals(cfg)?;
+        me.build(cfg)?;
         Ok(me)
     }
 }
@@ -555,6 +603,8 @@ mod tests {
 S:  struct S { s_list_1: OwnedToken /* a */, s_list1_3: Vec<SList> }
 SList:  struct SList { s_list_1: OwnedToken /* b-rpt */ }
 SList1:  struct SList1 { s_list1_1: OwnedToken /* d-rpt */ }
+
+enum ASTType { S(Box<S>), SList(Vec<SList>), SList1(Vec<SList1>) }
 "#;
 
         let presentation = format!("{}", *TYPE_INFO1);
@@ -576,9 +626,11 @@ SList1:  struct SList1 { s_list1_1: OwnedToken /* d-rpt */ }
 /* 6 */ (() -> ())  { - }
 
 S:  struct S { s_suffix2_1: OwnedToken /* a */ }
-SSuffix:  enum SSuffix { SSuffix0(struct SSuffix {  }), SSuffix1(()) }
-SSuffix1:  enum SSuffix1 { SSuffix10(struct SSuffix1 {  }), SSuffix11(()) }
-SSuffix2:  enum SSuffix2 { SSuffix20(struct SSuffix2 { s_suffix1_1: OwnedToken /* c */ }), SSuffix21(struct SSuffix2 { s_suffix_2: OwnedToken /* b-opt */ }) }
+SSuffix:  enum SSuffix { SSuffix5(struct SSuffix {  }), SSuffix6(()) }
+SSuffix1:  enum SSuffix1 { SSuffix13(struct SSuffix1 {  }), SSuffix14(()) }
+SSuffix2:  enum SSuffix2 { SSuffix21(struct SSuffix2 { s_suffix1_1: OwnedToken /* c */ }), SSuffix22(struct SSuffix2 { s_suffix_2: OwnedToken /* b-opt */ }) }
+
+enum ASTType { S(Box<S>), SSuffix(Box<SSuffix>), SSuffix1(Box<SSuffix1>), SSuffix2(Box<SSuffix2>) }
 "#;
         let presentation = format!("{}", *TYPE_INFO2);
 
