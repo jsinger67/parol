@@ -134,7 +134,7 @@ where
 pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<GrammarConfig> {
     let mut parol_grammar = ParolGrammar::new();
     let _syntax_tree = parse(input, "No file", &mut parol_grammar)
-        .wrap_err(format!("Failed parsing text {}", input))?;
+        .wrap_err(format!("Failed parsing text {}", input.escape_default()))?;
 
     if verbose {
         println!("{}", parol_grammar);
