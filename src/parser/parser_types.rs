@@ -309,12 +309,9 @@ impl<'t> LLKParser<'t> {
             Ok(prod_num) => prod_num,
             Err(source) => {
                 let nt_name = self.non_terminal_names[self.start_symbol_index];
-                let (message, unexpected_tokens, expected_tokens) =
-                    self.lookahead_automata[self.start_symbol_index].build_error(
-                        self.terminal_names,
-                        &stream.borrow().tokens,
-                        &stream.borrow().file_name,
-                    )?;
+                let (message, unexpected_tokens, expected_tokens) = self.lookahead_automata
+                    [self.start_symbol_index]
+                    .build_error(self.terminal_names, &stream.borrow())?;
                 let error = miette!(ParserError::PredictionErrorWithExpectations {
                     cause: self.diagnostic_message(
                         format!(
@@ -322,11 +319,11 @@ impl<'t> LLKParser<'t> {
                                 Current scanner is {}",
                             message,
                             nt_name,
-                            stream.borrow().current_scanner(),
+                            &stream.borrow().current_scanner(),
                         )
                         .as_str(),
                     ),
-                    input: FileSource::try_new(stream.borrow().file_name.to_owned())?.into(),
+                    input: FileSource::from_stream(&stream.borrow()).into(),
                     unexpected_tokens,
                     expected_tokens,
                 })
@@ -367,12 +364,11 @@ impl<'t> LLKParser<'t> {
                                     )
                                     .as_str(),
                                 ),
-                                input: FileSource::try_new(stream.borrow().file_name.to_owned())?
-                                    .into(),
+                                input: FileSource::from_stream(&stream.borrow()).into(),
                                 unexpected_tokens: vec![UnexpectedToken::new(
                                     "LA(1)".to_owned(),
                                     self.terminal_names[token.token_type].to_owned(),
-                                    FileSource::try_new(file_name)?.into(),
+                                    FileSource::from_stream(&stream.borrow()).into(),
                                     &token
                                 )],
                                 expected_tokens
@@ -386,12 +382,9 @@ impl<'t> LLKParser<'t> {
                         }
                         Err(source) => {
                             let nt_name = self.non_terminal_names[n];
-                            let (message, unexpected_tokens, expected_tokens) =
-                                self.lookahead_automata[n].build_error(
-                                    self.terminal_names,
-                                    &stream.borrow().tokens,
-                                    &stream.borrow().file_name,
-                                )?;
+                            let (message, unexpected_tokens, expected_tokens) = self
+                                .lookahead_automata[n]
+                                .build_error(self.terminal_names, &stream.borrow())?;
                             let error = miette!(ParserError::PredictionErrorWithExpectations {
                                 cause: self.diagnostic_message(
                                     format!(
@@ -399,12 +392,11 @@ impl<'t> LLKParser<'t> {
                                             Current scanner is {}",
                                         message,
                                         nt_name,
-                                        stream.borrow().current_scanner(),
+                                        &stream.borrow().current_scanner(),
                                     )
                                     .as_str(),
                                 ),
-                                input: FileSource::try_new(stream.borrow().file_name.to_owned())?
-                                    .into(),
+                                input: FileSource::from_stream(&stream.borrow()).into(),
                                 unexpected_tokens,
                                 expected_tokens,
                             })
@@ -436,7 +428,7 @@ impl<'t> LLKParser<'t> {
 
         if !stream.borrow().all_input_consumed() {
             Err(miette!(ParserError::UnprocessedInput {
-                input: FileSource::try_new(stream.borrow().file_name.to_owned())?.into(),
+                input: FileSource::from_stream(&stream.borrow()).into(),
                 last_token: stream.borrow().last_token()?.into()
             }))
         } else {

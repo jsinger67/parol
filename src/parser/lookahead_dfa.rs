@@ -1,11 +1,11 @@
 use crate::errors::{FileSource, LookaheadError, TokenVec, UnexpectedToken};
-use crate::lexer::{FormatToken, TerminalIndex, Token, TokenStream};
+use crate::lexer::{FormatToken, TerminalIndex, TokenStream};
 use crate::parser::{ProductionIndex, StateIndex};
 use log::trace;
 use miette::{miette, Result, WrapErr};
+use std::borrow::Borrow;
 use std::cmp::Ordering;
 use std::fmt::Debug;
-use std::path::Path;
 
 ///
 /// Data structure to represent a DFA state
@@ -165,20 +165,16 @@ impl LookaheadDFA {
     ///
     /// Returns all terminals that lead from state 0 to a valid next state
     ///
-    pub fn build_error<T>(
+    pub fn build_error(
         &self,
         terminal_names: &'static [&'static str],
-        tokens: &[Token],
-        file_name: T,
-    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec)>
-    where
-        T: AsRef<Path> + Debug,
-    {
+        token_stream: &TokenStream<'_>,
+    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec)> {
         let mut state = 0;
         let mut diag_msg = String::new();
         let mut unexpected_tokens = Vec::new();
         let mut expected_tokens = TokenVec::default();
-        for (lookahead, token) in tokens.iter().enumerate() {
+        for (lookahead, token) in token_stream.tokens.iter().enumerate() {
             let token_type = token.token_type;
             if let Some(transition) = self
                 .transitions
@@ -189,14 +185,14 @@ impl LookaheadDFA {
                     format!(
                         "LA({}): {} ",
                         lookahead + 1,
-                        token.format(&file_name, terminal_names)
+                        token.format(&token_stream.file_name, terminal_names)
                     )
                     .as_str(),
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),
                     terminal_names[token_type].to_owned(),
-                    FileSource::try_new(file_name.as_ref().to_path_buf())?.into(),
+                    FileSource::from_stream(token_stream.borrow()).into(),
                     token,
                 ));
                 state = self.transitions[transition].2;
@@ -205,14 +201,14 @@ impl LookaheadDFA {
                     format!(
                         "LA({}): {}.",
                         lookahead + 1,
-                        token.format(&file_name, terminal_names),
+                        token.format(&token_stream.file_name, terminal_names),
                     )
                     .as_str(),
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),
                     terminal_names[token_type].to_owned(),
-                    FileSource::try_new(file_name.as_ref().to_path_buf())?.into(),
+                    FileSource::from_stream(token_stream.borrow()).into(),
                     token,
                 ));
                 expected_tokens = self.transitions.iter().filter(|t| t.0 == state).fold(

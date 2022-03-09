@@ -1,3 +1,4 @@
+use crate::lexer::token_stream::TokenStream;
 use crate::lexer::Token;
 use miette::{
     Diagnostic, IntoDiagnostic, MietteError, NamedSource, Result, SourceCode, SourceSpan,
@@ -135,6 +136,12 @@ impl FileSource {
     pub fn try_new(file_name: PathBuf) -> Result<Self> {
         let input = std::fs::read_to_string(&file_name).into_diagnostic()?;
         Ok(Self { file_name, input })
+    }
+
+    pub(crate) fn from_stream(token_stream: &TokenStream<'_>) -> Self {
+        let file_name = token_stream.file_name.to_owned();
+        let input = token_stream.input.to_string();
+        Self { file_name, input }
     }
 }
 
