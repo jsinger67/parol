@@ -13,6 +13,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.8-pre - not released yet
+
+* New test for scanner state switching and the consistence of `miette::NamedSource` which is
+produced from token stream and token span.
+* `TokenStream::ensure_buffer` is called at the end of `TokenStream::consume` to have a more
+consistent behavior of `TokenStream::all_input_consumed`
+
 ## v0.5.7 - 2022-03-09
 
 * Optimized creation of errors::FileSource using the TokenStream
