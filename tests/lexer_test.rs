@@ -80,7 +80,7 @@ fn lexer_token_production() {
         print!("{:?}", tok);
         token_stream.borrow_mut().consume().unwrap();
     }
-    assert_eq!(k - 1, token_stream.borrow().tokens.len());
+    assert_eq!(k, token_stream.borrow().tokens.len());
     assert_eq!(Token::with(";", 8, 19, 39, 1, 0, 545), tok);
     assert_eq!(Token::eoi(), token_stream.borrow().tokens[0]);
 }

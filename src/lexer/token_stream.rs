@@ -165,6 +165,7 @@ impl<'t> TokenStream<'t> {
                 self.column,
             );
             self.tokens.remove(0);
+            self.ensure_buffer();
             Ok(())
         }
     }

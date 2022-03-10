@@ -138,7 +138,7 @@ impl FileSource {
         Ok(Self { file_name, input })
     }
 
-    pub(crate) fn from_stream(token_stream: &TokenStream<'_>) -> Self {
+    pub fn from_stream(token_stream: &TokenStream<'_>) -> Self {
         let file_name = token_stream.file_name.to_owned();
         let input = token_stream.input.to_string();
         Self { file_name, input }
