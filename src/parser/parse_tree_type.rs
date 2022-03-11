@@ -11,13 +11,13 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug, Clone)]
 pub enum ParseTreeType<'t> {
     ///
-    /// An owned representation of a scanned terminal symbol.
+    /// A scanned token.
     ///
     T(Token<'t>),
 
     ///
-    /// A reference into the slice of non-terminal names.
-    /// These names are of static lifetime.
+    /// A non-terminal name.
+    /// All names are of static lifetime (see NON_TERMINALS slice of non-terminal names).
     ///
     N(&'static str),
 }
