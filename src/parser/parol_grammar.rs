@@ -10,6 +10,12 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::path::PathBuf;
 
+lazy_static! {
+    /// Used for implementation of trait `Default` for `&ParolGrammar`.
+    static ref DEFAULT_PAROL_GRAMMAR: ParolGrammar =
+        ParolGrammar::default();
+}
+
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
 // Test run:
@@ -286,6 +292,12 @@ impl Default for ParolGrammar {
             current_scanner: ScannerConfig::default(),
             file_name: PathBuf::default(),
         }
+    }
+}
+
+impl Default for &ParolGrammar {
+    fn default() -> Self {
+        &DEFAULT_PAROL_GRAMMAR
     }
 }
 

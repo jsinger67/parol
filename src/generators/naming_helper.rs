@@ -154,7 +154,7 @@ impl NamingHelper {
     ) -> Vec<String> {
         rhs.iter()
             .enumerate()
-            .filter(|(_, s)| s.is_n() || !s.is_t())
+            .filter(|(_, s)| s.is_n() || s.is_t())
             .map(|(i, s)| Self::generate_member_name(s, i, terminals, terminal_names))
             .collect::<Vec<String>>()
     }

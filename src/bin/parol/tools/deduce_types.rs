@@ -33,7 +33,7 @@ pub fn main(args: &Args) -> Result<()> {
     grammar_config.update_cfg(cfg);
 
     let width = (grammar_config.cfg.pr.len() as f32).log10() as usize + 1;
-    let type_info: GrammarTypeInfo = (&grammar_config.cfg).try_into().unwrap();
+    let type_info: GrammarTypeInfo = (&grammar_config).try_into().unwrap();
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
         println!(

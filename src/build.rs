@@ -167,6 +167,8 @@ pub struct Builder {
     auto_generate: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
+    /// Used for auto generation of user's grammar semantic action trait
+    parol_grammar: ParolGrammar,
 }
 impl Builder {
     /// Create a new builder fr use in a Cargo build script (`build.rs`).
@@ -238,6 +240,7 @@ impl Builder {
             auto_generate: false,
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
+            parol_grammar: ParolGrammar::new(),
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -519,6 +522,9 @@ impl GrammarGenerator<'_> {
         let parser_source = crate::generate_parser_source(
             grammar_config,
             &lexer_source,
+            self.builder.auto_generate,
+            &self.builder.user_type_name,
+            &self.builder.module_name,
             self.lookahead_dfa_s.as_ref().unwrap(),
         )
         .wrap_err("Failed to generate parser source!")?;
@@ -536,6 +542,7 @@ impl GrammarGenerator<'_> {
             &self.builder.user_type_name,
             &self.builder.module_name,
             self.builder.auto_generate,
+            &self.builder.parol_grammar,
             grammar_config,
         )?;
         let user_trait_source = user_trait_generator

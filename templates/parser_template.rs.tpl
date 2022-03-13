@@ -8,10 +8,13 @@ use id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use miette::Result;
 use parol_runtime::parser::{
-    ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, UserActionsTrait,
+    ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production,{{^auto_generate?}} UserActionsTrait,{{/auto_generate}}
 };
 use std::cell::RefCell;
 use std::path::Path;
+{{#auto_generate?}}
+use crate::{{module_name}}::{{user_type_name}};
+use crate::{{module_name}}_trait::{{user_type_name}}Auto;{{/auto_generate}}
 
 {{{lexer_source}}}
 
@@ -32,7 +35,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait,
+{{^auto_generate?}}    user_actions: &mut dyn UserActionsTrait,{{/auto_generate}}{{#auto_generate?}}    user_actions: &mut {{user_type_name}},{{/auto_generate}}
 ) -> Result<Tree<ParseTreeType<'t>>> where T: AsRef<Path> {
     let mut llk_parser = LLKParser::new(
         {{start_symbol_index}},
@@ -43,8 +46,10 @@ pub fn parse<'t, T>(
     );
     let token_stream = RefCell::new(
         TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
-    );
-    let result = llk_parser.parse(token_stream, user_actions);
+    );{{#auto_generate?}}
+    // Initialize wrapper
+    let mut user_actions = {{user_type_name}}Auto::new(user_actions);{{/auto_generate}}
+    let result = llk_parser.parse(token_stream, {{#auto_generate?}}&mut {{/auto_generate}}user_actions);
     match result {
         Ok(()) => Ok(llk_parser.parse_tree),
         Err(e) => Err(e),

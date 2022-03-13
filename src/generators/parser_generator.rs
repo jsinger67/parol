@@ -12,7 +12,7 @@ use crate::StrVec;
 use std::fmt::Debug;
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/parser_dfa_template.rs"]
+#[template = "templates/parser_dfa_template.rs.tpl"]
 struct Dfa {
     states: StrVec,
     transitions: StrVec,
@@ -52,14 +52,14 @@ impl Dfa {
 }
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/parser_dfas_template.rs"]
+#[template = "templates/parser_dfas_template.rs.tpl"]
 struct Dfas {
     dfa_count: usize,
     lookahead_dfa_s: String,
 }
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/parser_production_template.rs"]
+#[template = "templates/parser_production_template.rs.tpl"]
 struct Production {
     lhs: usize,
     production: StrVec,
@@ -109,14 +109,14 @@ impl Production {
 }
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/parser_productions_template.rs"]
+#[template = "templates/parser_productions_template.rs.tpl"]
 struct Productions {
     production_count: usize,
     productions: String,
 }
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/parser_template.rs"]
+#[template = "templates/parser_template.rs.tpl"]
 struct ParserData<'a> {
     start_symbol_index: usize,
     lexer_source: &'a str,
@@ -126,6 +126,9 @@ struct ParserData<'a> {
     productions: String,
     max_k: usize,
     scanner_builds: StrVec,
+    auto_generate: bool,
+    user_type_name: &'a str,
+    module_name: &'a str,
 }
 
 // ---------------------------------------------------
@@ -138,6 +141,9 @@ struct ParserData<'a> {
 pub fn generate_parser_source(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
+    auto_generate: bool,
+    user_type_name: &str,
+    module_name: &str,
     la_dfa: &BTreeMap<String, LookaheadDFA>,
 ) -> Result<String> {
     let terminals = grammar_config
@@ -195,6 +201,9 @@ pub fn generate_parser_source(
         productions,
         max_k,
         scanner_builds,
+        auto_generate,
+        user_type_name,
+        module_name,
     };
 
     Ok(format!("{}", parser_data))
