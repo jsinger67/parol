@@ -222,8 +222,8 @@ impl Display for Action {
 }
 
 impl Action {
-    pub(crate) fn adjust_arguments_used(&mut self, used: bool) {
-        self.args.iter_mut().for_each(|a| a.used = used);
+    fn adjust_arguments_used(&mut self, used: bool) {
+        self.args.iter_mut().for_each(|a| a.used &= used);
     }
 }
 
@@ -244,9 +244,13 @@ pub struct GrammarTypeInfo {
     /// We use this as ASTType for the generated source.
     pub(crate) ast_enum_type: ASTType,
 
+    /// Indicates if the auto generation mode is active
+    pub(crate) auto_generate: bool,
+
     /// Helper
     terminals: Vec<String>,
     terminal_names: Vec<String>,
+
     // Contains non-terminals that should be represented as vectors in the AST Enum type
     vector_typed_non_terminals: HashSet<String>,
 }
@@ -528,8 +532,18 @@ impl GrammarTypeInfo {
         me
     }
 
-    pub(crate) fn adjust_arguments_used(&mut self, used: bool) {
-        self.actions.iter_mut().for_each(|a| a.adjust_arguments_used(used))
+    /// Set the auto-generate mode
+    /// Internally it adjust the used flags on the arguments of the actions.
+    /// The arguments keep their used state only if auto generation is active.
+    pub(crate) fn set_auto_generate(&mut self, auto_generate: bool) {
+        self.auto_generate = auto_generate;
+        self.adjust_arguments_used(auto_generate)
+    }
+
+    fn adjust_arguments_used(&mut self, used: bool) {
+        self.actions
+            .iter_mut()
+            .for_each(|a| a.adjust_arguments_used(used))
     }
 
     fn struct_data_of_production(&self, prod: &Pr, prod_num: ProductionIndex) -> Result<ASTType> {

@@ -10,11 +10,15 @@ pub(crate) struct UserTraitCallerFunctionData {
 
 #[derive(BartDisplay, Builder, Debug, Default)]
 #[template = "templates/user_trait_function_template.rs.tpl"]
-pub(crate) struct UserTraitFunctionData {
-    fn_name: String,
-    prod_num: usize,
-    fn_arguments: String,
-    prod_string: String,
+pub(crate) struct UserTraitFunctionData<'a> {
+    pub fn_name: &'a str,
+    pub prod_num: usize,
+    pub fn_arguments: String,
+    pub prod_string: String,
+    pub code: StrVec,
+    // Inner means the expanded version of the grammar.
+    // If set to false the actual user grammar is meant.
+    pub inner: bool,
 }
 
 #[derive(BartDisplay, Builder, Debug, Default)]
@@ -34,7 +38,7 @@ pub(crate) struct UserTraitData<'a> {
 #[derive(BartDisplay, Debug, Default)]
 #[template = "templates/non_terminal_type_struct_template.rs.tpl"]
 pub(crate) struct NonTerminalTypeStruct {
-    pub comment: String,
+    pub comment: StrVec,
     pub non_terminal: String,
     pub members: StrVec,
 }
@@ -42,7 +46,7 @@ pub(crate) struct NonTerminalTypeStruct {
 #[derive(BartDisplay, Debug, Default)]
 #[template = "templates/non_terminal_type_enum_template.rs.tpl"]
 pub(crate) struct NonTerminalTypeEnum {
-    pub comment: String,
+    pub comment: StrVec,
     pub non_terminal: String,
     pub members: StrVec,
 }
@@ -50,7 +54,7 @@ pub(crate) struct NonTerminalTypeEnum {
 #[derive(BartDisplay, Debug, Default)]
 #[template = "templates/non_terminal_type_vec_template.rs.tpl"]
 pub(crate) struct NonTerminalTypeVec {
-    pub comment: String,
+    pub comment: StrVec,
     pub non_terminal: String,
     pub type_ref: String,
 }

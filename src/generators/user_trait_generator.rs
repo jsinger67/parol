@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::convert::TryInto;
 
 use super::grammar_type_generator::{ASTType, Argument, GrammarTypeInfo};
@@ -7,7 +8,9 @@ use super::template_data::{
 };
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
+use crate::parser::{ParolGrammarItem, Production};
 use crate::{ParolGrammar, Pr, StrVec};
+use log::trace;
 use miette::{IntoDiagnostic, Result};
 
 /// Generator for user trait code
@@ -35,6 +38,10 @@ impl<'a> UserTraitGenerator<'a> {
         arguments.join(", ")
     }
 
+    fn generate_user_action_args(non_terminal: &str) -> String {
+        format!("_arg: {}", NmHlp::to_upper_camel_case(non_terminal))
+    }
+
     fn generate_caller_argument_list(pr: &Pr) -> String {
         let mut arguments = pr
             .get_r()
@@ -51,7 +58,7 @@ impl<'a> UserTraitGenerator<'a> {
         ast_type: &ASTType,
         non_terminal: &str,
         prod_num: Option<usize>,
-        comment: String,
+        comment: StrVec,
     ) -> Option<String> {
         let non_terminal = if let Some(prod_num) = prod_num {
             NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, prod_num))
@@ -115,7 +122,7 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     pub fn generate_user_trait_source(&self) -> Result<String> {
         let mut type_info: GrammarTypeInfo = (self.grammar_config).try_into()?;
-        type_info.adjust_arguments_used(self.auto_generate);
+        type_info.set_auto_generate(self.auto_generate);
 
         let production_output_types = if self.auto_generate {
             type_info
@@ -123,14 +130,17 @@ impl<'a> UserTraitGenerator<'a> {
                 .iter()
                 .filter(|a| a.alts > 1)
                 .fold(StrVec::new(0), |mut acc, a| {
+                    let mut comment = StrVec::new(0);
+                    comment.push(String::default());
+                    comment.push(format!("Type derived for production {}", a.prod_num));
+                    comment.push(String::default());
+                    comment.push(a.prod_string.clone());
+                    comment.push(String::default());
                     Self::format_type(
                         &a.out_type,
                         &a.non_terminal,
                         Some(a.prod_num),
-                        format!(
-                            "Type derived for production {}: {}",
-                            a.prod_num, a.prod_string
-                        ),
+                        comment,
                     )
                     .into_iter()
                     .for_each(|s| acc.push(s));
@@ -145,7 +155,11 @@ impl<'a> UserTraitGenerator<'a> {
                 .non_terminal_types
                 .iter()
                 .fold(StrVec::new(0), |mut acc, (s, t)| {
-                    Self::format_type(t, s, None, format!("Type derived for non-terminal {}", s))
+                    let mut comment = StrVec::new(0);
+                    comment.push(String::default());
+                    comment.push(format!("Type derived for non-terminal {}", s));
+                    comment.push(String::default());
+                    Self::format_type(t, s, None, comment)
                         .into_iter()
                         .for_each(|s| acc.push(s));
                     acc
@@ -155,11 +169,15 @@ impl<'a> UserTraitGenerator<'a> {
         };
 
         let ast_type_decl = if self.auto_generate {
+            let mut comment = StrVec::new(0);
+            comment.push(String::default());
+            comment.push("Deduced ASTType of expanded grammar".to_string());
+            comment.push(String::default());
             Self::format_type(
                 &type_info.ast_enum_type,
                 "ASTType",
                 None,
-                "Deduced ASTType of expanded grammar".to_string(),
+                comment,
             )
             .unwrap()
         } else {
@@ -170,14 +188,17 @@ impl<'a> UserTraitGenerator<'a> {
             Ok(StrVec::new(0).first_line_no_indent()),
             |acc: Result<StrVec>, a| {
                 if let Ok(mut acc) = acc {
-                    let fn_name = a.fn_name.clone();
+                    let fn_name = &a.fn_name;
                     let prod_string = a.prod_string.clone();
                     let fn_arguments = self.generate_argument_list(&a.args);
+                    let code = StrVec::default();
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
                         .prod_num(a.prod_num)
                         .fn_arguments(fn_arguments)
                         .prod_string(prod_string)
+                        .code(code)
+                        .inner(true)
                         .build()
                         .into_diagnostic()?;
                     acc.push(format!("{}", user_trait_function_data));
@@ -187,6 +208,53 @@ impl<'a> UserTraitGenerator<'a> {
                 }
             },
         )?;
+
+        let user_trait_functions = if self.auto_generate {
+            trace!("parol_grammar.item_stack:\n{:?}", self.parol_grammar.item_stack);
+
+            let mut processed_non_terminals: HashSet<String> = HashSet::new();
+            self.parol_grammar
+                .item_stack
+                .iter()
+                .fold(
+                    Ok((StrVec::new(0).first_line_no_indent(), 0)),
+                    |acc: Result<(StrVec, usize)>, p| {
+                        if let Ok((mut acc, mut i)) = acc {
+                            if let ParolGrammarItem::Prod(Production { lhs, rhs: _ }) = p {
+                                if !processed_non_terminals.contains(lhs) {
+                                    let fn_name =
+                                        NmHlp::escape_rust_keyword(NmHlp::to_lower_snake_case(lhs));
+                                    let prod_string = p.to_par();
+                                    let fn_arguments = Self::generate_user_action_args(lhs);
+                                    let code = StrVec::default();
+                                    let user_trait_function_data =
+                                        UserTraitFunctionDataBuilder::default()
+                                            .fn_name(&fn_name)
+                                            .prod_num(i)
+                                            .fn_arguments(fn_arguments)
+                                            .prod_string(prod_string)
+                                            .code(code)
+                                            .inner(false)
+                                            .build()
+                                            .into_diagnostic()?;
+
+                                    acc.push(format!("{}", user_trait_function_data));
+                                    processed_non_terminals.insert(lhs.to_string());
+                                }
+                                i += 1;
+                            }
+                            Ok((acc, i))
+                        } else {
+                            acc
+                        }
+                    },
+                )?
+                .0
+        } else {
+            StrVec::default()
+        };
+
+        trace!("user_trait_functions:\n{}", user_trait_functions);
 
         let trait_caller = self.grammar_config.cfg.pr.iter().enumerate().fold(
             Ok(StrVec::new(12)),
@@ -216,7 +284,7 @@ impl<'a> UserTraitGenerator<'a> {
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
             .module_name(&self.module_name)
-            .user_trait_functions(StrVec::new(0))
+            .user_trait_functions(user_trait_functions)
             .build()
             .into_diagnostic()?;
 

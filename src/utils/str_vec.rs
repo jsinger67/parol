@@ -74,3 +74,13 @@ impl<'a> Iterator for StrVecIterator<'a> {
         }
     }
 }
+
+impl<'a> IntoIterator for &'a StrVec {
+    type Item = &'a String;
+    type IntoIter = StrVecIterator<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
+

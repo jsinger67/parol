@@ -434,6 +434,7 @@ impl GrammarGenerator<'_> {
                 "Failed parsing grammar file {}",
                 self.grammar_file.display()
             ))?;
+        self.builder.parol_grammar = parol_grammar.clone();
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
