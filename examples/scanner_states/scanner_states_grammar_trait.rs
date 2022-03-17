@@ -219,35 +219,20 @@ impl UserActionsTrait for ScannerStatesGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.start_0(&children[0], parse_tree),
-
             1 => self.start_list_1(&children[0], &children[1], parse_tree),
-
             2 => self.start_list_2(parse_tree),
-
             3 => self.content_3(&children[0], parse_tree),
-
             4 => self.content_4(&children[0], &children[1], &children[2], parse_tree),
-
             5 => self.string_content_5(&children[0], &children[1], parse_tree),
-
             6 => self.string_content_6(parse_tree),
-
             7 => self.string_element_7(&children[0], parse_tree),
-
             8 => self.string_element_8(&children[0], parse_tree),
-
             9 => self.string_element_9(&children[0], parse_tree),
-
             10 => self.identifier_10(&children[0], parse_tree),
-
             11 => self.escaped_11(&children[0], parse_tree),
-
             12 => self.escaped_line_end_12(&children[0], parse_tree),
-
             13 => self.none_quote_13(&children[0], parse_tree),
-
             14 => self.string_delimiter_14(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

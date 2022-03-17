@@ -461,75 +461,40 @@ impl UserActionsTrait for BooleanGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.expressions_0(&children[0], &children[1], &children[2], parse_tree),
-
             1 => self.expressions_suffix_1(&children[0], parse_tree),
-
             2 => self.expressions_suffix_2(parse_tree),
-
             3 => self.expressions_list_3(&children[0], &children[1], &children[2], parse_tree),
-
             4 => self.expressions_list_4(parse_tree),
-
             5 => self.expression_5(&children[0], &children[1], parse_tree),
-
             6 => self.tail_expression_6(&children[0], parse_tree),
-
             7 => self.tail_expression_list_7(&children[0], &children[1], &children[2], parse_tree),
-
             8 => self.tail_expression_list_8(parse_tree),
-
             9 => self.term_9(&children[0], &children[1], parse_tree),
-
             10 => self.term_10(&children[0], parse_tree),
-
             11 => self.boolean_11(&children[0], parse_tree),
-
             12 => self.boolean_12(&children[0], parse_tree),
-
             13 => self.unary_operator_13(&children[0], parse_tree),
-
             14 => self.binary_operator_14(&children[0], parse_tree),
-
             15 => self.binary_operator_15(&children[0], parse_tree),
-
             16 => self.binary_operator_16(&children[0], parse_tree),
-
             17 => self.binary_operator_17(&children[0], parse_tree),
-
             18 => self.binary_operator_18(&children[0], parse_tree),
-
             19 => self.binary_operator_19(&children[0], parse_tree),
-
             20 => self.and_op_20(&children[0], parse_tree),
-
             21 => self.or_op_21(&children[0], parse_tree),
-
             22 => self.xor_op_22(&children[0], parse_tree),
-
             23 => self.nor_op_23(&children[0], parse_tree),
-
             24 => self.nand_op_24(&children[0], parse_tree),
-
             25 => self.xnor_op_25(&children[0], parse_tree),
-
             26 => self.true_26(&children[0], parse_tree),
-
             27 => self.false_27(&children[0], parse_tree),
-
             28 => self.not_28(&children[0], parse_tree),
-
             29 => self.parenthesized_29(&children[0], &children[1], &children[2], parse_tree),
-
             30 => self.semicolon_30(&children[0], parse_tree),
-
             31 => self.left_parenthesis_31(&children[0], parse_tree),
-
             32 => self.right_parenthesis_32(&children[0], parse_tree),
-
             33 => self.factor_33(&children[0], parse_tree),
-
             34 => self.factor_34(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

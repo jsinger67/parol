@@ -197,31 +197,18 @@ impl UserActionsTrait for KeywordsGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.grammar_0(&children[0], parse_tree),
-
             1 => self.grammar_list_1(&children[0], &children[1], parse_tree),
-
             2 => self.grammar_list_2(parse_tree),
-
             3 => self.items_3(&children[0], parse_tree),
-
             4 => self.items_4(&children[0], parse_tree),
-
             5 => self.declaration_5(&children[0], &children[1], &children[2], parse_tree),
-
             6 => self.block_6(&children[0], &children[1], &children[2], parse_tree),
-
             7 => self.block_list_7(&children[0], &children[1], parse_tree),
-
             8 => self.block_list_8(parse_tree),
-
             9 => self.identifier_9(&children[0], parse_tree),
-
             10 => self.begin_10(&children[0], parse_tree),
-
             11 => self.end_11(&children[0], parse_tree),
-
             12 => self.var_12(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

@@ -119,19 +119,12 @@ impl UserActionsTrait for ListGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),
-
             1 => self.list_suffix_1(&children[0], parse_tree),
-
             2 => self.list_suffix_2(parse_tree),
-
             3 => self.list_3(parse_tree),
-
             4 => self.list_rest_4(&children[0], &children[1], &children[2], parse_tree),
-
             5 => self.list_rest_5(parse_tree),
-
             6 => self.num_6(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

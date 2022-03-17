@@ -1355,9 +1355,7 @@ impl UserActionsTrait for Oberon0Grammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.selector_0(&children[0], parse_tree),
-
             1 => self.selectorlist_1(&children[0], &children[1], &children[2], parse_tree),
-
             2 => self.selectorlist_2(
                 &children[0],
                 &children[1],
@@ -1365,47 +1363,26 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             3 => self.selectorlist_3(parse_tree),
-
             4 => self.factor_4(&children[0], &children[1], parse_tree),
-
             5 => self.factor_5(&children[0], parse_tree),
-
             6 => self.factor_6(&children[0], &children[1], &children[2], parse_tree),
-
             7 => self.factor_7(&children[0], &children[1], parse_tree),
-
             8 => self.factor_8(&children[0], &children[1], parse_tree),
-
             9 => self.term_9(&children[0], &children[1], parse_tree),
-
             10 => self.mul_expression_10(&children[0], &children[1], &children[2], parse_tree),
-
             11 => self.mul_expression_11(parse_tree),
-
             12 => self.simple_expression_12(&children[0], &children[1], parse_tree),
-
             13 => self.add_expression_13(&children[0], &children[1], &children[2], parse_tree),
-
             14 => self.add_expression_14(parse_tree),
-
             15 => self.assign_op_15(&children[0], parse_tree),
-
             16 => self.relation_op_16(&children[0], parse_tree),
-
             17 => self.relation_op_17(&children[0], parse_tree),
-
             18 => self.relational_ops_18(&children[0], parse_tree),
-
             19 => self.assign_op_19(&children[0], parse_tree),
-
             20 => self.expression_20(&children[0], &children[1], parse_tree),
-
             21 => self.expression_suffix_21(&children[0], &children[1], parse_tree),
-
             22 => self.expression_suffix_22(parse_tree),
-
             23 => self.assignment_23(
                 &children[0],
                 &children[1],
@@ -1413,34 +1390,22 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             24 => self.actual_parameters_24(&children[0], &children[1], parse_tree),
-
             25 => self.actual_parameters_suffix_25(&children[0], parse_tree),
-
             26 => self.actual_parameters_suffix_26(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-
             27 => self.expressionlistrest_27(&children[0], &children[1], &children[2], parse_tree),
-
             28 => self.expressionlistrest_28(parse_tree),
-
             29 => self.procedure_call_29(&children[0], &children[1], parse_tree),
-
             30 => self.procedure_call_suffix_30(&children[0], parse_tree),
-
             31 => self.procedure_call_suffix_31(parse_tree),
-
             32 => self.if_statement_32(&children[0], &children[1], parse_tree),
-
             33 => self.if_statement_suffix_33(&children[0], &children[1], &children[2], parse_tree),
-
             34 => self.if_statement_suffix_34(&children[0], parse_tree),
-
             35 => self.if_prefix_35(
                 &children[0],
                 &children[1],
@@ -1449,7 +1414,6 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             36 => self.elseiflist_36(
                 &children[0],
                 &children[1],
@@ -1458,9 +1422,7 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             37 => self.elseiflist_37(parse_tree),
-
             38 => self.while_statement_38(
                 &children[0],
                 &children[1],
@@ -1469,7 +1431,6 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             39 => self.repeat_statement_39(
                 &children[0],
                 &children[1],
@@ -1477,36 +1438,23 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             40 => self.statement_40(&children[0], parse_tree),
-
             41 => self.statement_41(&children[0], parse_tree),
-
             42 => self.statement_42(&children[0], parse_tree),
-
             43 => self.statement_43(&children[0], parse_tree),
-
             44 => self.statement_44(&children[0], parse_tree),
-
             45 => self.statement_45(parse_tree),
-
             46 => self.statement_sequence_46(&children[0], &children[1], parse_tree),
-
             47 => self.statement_sequence_rest_47(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-
             48 => self.statement_sequence_rest_48(parse_tree),
-
             49 => self.ident_list_49(&children[0], &children[1], parse_tree),
-
             50 => self.ident_list_rest_50(&children[0], &children[1], &children[2], parse_tree),
-
             51 => self.ident_list_rest_51(parse_tree),
-
             52 => self.array_type_52(
                 &children[0],
                 &children[1],
@@ -1514,11 +1462,8 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             53 => self.field_list_53(&children[0], &children[1], &children[2], parse_tree),
-
             54 => self.field_list_54(parse_tree),
-
             55 => self.record_type_55(
                 &children[0],
                 &children[1],
@@ -1526,17 +1471,11 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             56 => self.field_list_rest_56(&children[0], &children[1], &children[2], parse_tree),
-
             57 => self.field_list_rest_57(parse_tree),
-
             58 => self.type_58(&children[0], parse_tree),
-
             59 => self.type_59(&children[0], parse_tree),
-
             60 => self.type_60(&children[0], parse_tree),
-
             61 => self.f_p_section_61(
                 &children[0],
                 &children[1],
@@ -1544,36 +1483,24 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             62 => self.f_p_section_62(&children[0], &children[1], &children[2], parse_tree),
-
             63 => self.formal_parameters_63(&children[0], &children[1], parse_tree),
-
             64 => self.formal_parameters_suffix_64(&children[0], parse_tree),
-
             65 => self.formal_parameters_suffix_65(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-
             66 => self.f_p_section_rest_66(&children[0], &children[1], &children[2], parse_tree),
-
             67 => self.f_p_section_rest_67(parse_tree),
-
             68 => self.procedure_heading_68(&children[0], &children[1], &children[2], parse_tree),
-
             69 => self.procedure_heading_suffix_69(&children[0], parse_tree),
-
             70 => self.procedure_heading_suffix_70(parse_tree),
-
             71 => self.procedure_body_71(&children[0], &children[1], parse_tree),
-
             72 => {
                 self.procedure_body_suffix1_72(&children[0], &children[1], &children[2], parse_tree)
             }
-
             73 => self.procedure_body_suffix1_73(
                 &children[0],
                 &children[1],
@@ -1581,9 +1508,7 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             74 => self.procedure_body_suffix1_74(&children[0], &children[1], parse_tree),
-
             75 => self.procedure_body_suffix_75(
                 &children[0],
                 &children[1],
@@ -1591,50 +1516,34 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[3],
                 parse_tree,
             ),
-
             76 => self.procedure_body_suffix_76(&children[0], &children[1], parse_tree),
-
             77 => {
                 self.procedure_declaration_77(&children[0], &children[1], &children[2], parse_tree)
             }
-
             78 => self.declarations_78(&children[0], &children[1], &children[2], parse_tree),
-
             79 => self.declarations_79(&children[0], &children[1], &children[2], parse_tree),
-
             80 => {
                 self.declarations_suffix2_80(&children[0], &children[1], &children[2], parse_tree)
             }
-
             81 => self.declarations_suffix2_81(&children[0], parse_tree),
-
             82 => self.declarations_82(&children[0], &children[1], &children[2], parse_tree),
-
             83 => self.declarations_83(&children[0], parse_tree),
-
             84 => {
                 self.declarations_suffix1_84(&children[0], &children[1], &children[2], parse_tree)
             }
-
             85 => {
                 self.declarations_suffix1_85(&children[0], &children[1], &children[2], parse_tree)
             }
-
             86 => self.declarations_suffix1_86(&children[0], parse_tree),
-
             87 => self.declarations_suffix_87(&children[0], &children[1], &children[2], parse_tree),
-
             88 => self.declarations_suffix_88(&children[0], parse_tree),
-
             89 => self.procedure_declaration_list_89(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-
             90 => self.procedure_declaration_list_90(parse_tree),
-
             91 => self.const_decls_91(
                 &children[0],
                 &children[1],
@@ -1643,9 +1552,7 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             92 => self.const_decls_92(parse_tree),
-
             93 => self.type_decls_93(
                 &children[0],
                 &children[1],
@@ -1654,9 +1561,7 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             94 => self.type_decls_94(parse_tree),
-
             95 => self.var_decls_95(
                 &children[0],
                 &children[1],
@@ -1665,9 +1570,7 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             96 => self.var_decls_96(parse_tree),
-
             97 => self.module_97(
                 &children[0],
                 &children[1],
@@ -1676,7 +1579,6 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             98 => self.module_suffix_98(
                 &children[0],
                 &children[1],
@@ -1685,19 +1587,12 @@ impl UserActionsTrait for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-
             99 => self.module_suffix_99(&children[0], &children[1], &children[2], parse_tree),
-
             100 => self.mul_operator_100(&children[0], parse_tree),
-
             101 => self.add_operator_101(&children[0], parse_tree),
-
             102 => self.unary_op_102(&children[0], parse_tree),
-
             103 => self.ident_103(&children[0], parse_tree),
-
             104 => self.integer_104(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
