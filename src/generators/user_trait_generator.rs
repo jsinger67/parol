@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::convert::TryInto;
 
-use super::grammar_type_generator::{ASTType, Argument, GrammarTypeInfo};
+use super::grammar_type_generator::{ASTType, Argument, GrammarTypeInfo, Action};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, NonTerminalTypeVec,
     UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
@@ -29,13 +29,36 @@ pub struct UserTraitGenerator<'a> {
 }
 
 impl<'a> UserTraitGenerator<'a> {
-    fn generate_argument_list(&self, args: &[Argument]) -> String {
-        let mut arguments = args
+    fn generate_argument_list(&self, action: &Action) -> String {
+        // We reference the parse_tree argument only if a token is in the argument list
+        let mut parse_tree_argument_used = false;
+        let mut arguments = action
+            .args
             .iter()
-            .map(|a| format!("{}: &ParseTreeStackEntry", a.name(),))
+            .map(|a| {
+                if matches!(a.arg_type, ASTType::Token(_)) {
+                    parse_tree_argument_used = true;
+                }
+                format!(
+                    "{}{}: &ParseTreeStackEntry",
+                    NmHlp::item_unused_indicator(self.auto_generate && a.used),
+                    a.name,
+                )
+            })
             .collect::<Vec<String>>();
-        arguments.push("_parse_tree: &Tree<ParseTreeType>".to_string());
+        arguments.push(format!(
+            "{}parse_tree: &Tree<ParseTreeType>",
+            NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used)
+        ));
         arguments.join(", ")
+    }
+
+    fn generate_token_assignments(str_vec: &mut StrVec, action: &Action) {
+        action.args.iter().filter(|a| matches!(a.arg_type, ASTType::Token(_))).for_each(|arg| {
+            let arg_name = arg.name();
+            // let num_0 = num_0.token(parse_tree)?.to_owned();
+            str_vec.push(format!("let {} = {}.token(parse_tree)?.to_owned();", arg_name, arg_name))
+        });
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
@@ -190,8 +213,9 @@ impl<'a> UserTraitGenerator<'a> {
                 if let Ok(mut acc) = acc {
                     let fn_name = &a.fn_name;
                     let prod_string = a.prod_string.clone();
-                    let fn_arguments = self.generate_argument_list(&a.args);
-                    let code = StrVec::default();
+                    let fn_arguments = self.generate_argument_list(a);
+                    let mut code = StrVec::new(8);
+                    Self::generate_token_assignments(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
                         .prod_num(a.prod_num)
