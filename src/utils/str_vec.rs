@@ -82,5 +82,3 @@ impl<'a> IntoIterator for &'a StrVec {
         self.iter()
     }
 }
-
-

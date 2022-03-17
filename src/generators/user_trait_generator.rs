@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::convert::TryInto;
 
-use super::grammar_type_generator::{ASTType, Argument, GrammarTypeInfo, Action};
+use super::grammar_type_generator::{ASTType, Action, GrammarTypeInfo};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, NonTerminalTypeVec,
     UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
@@ -54,11 +54,18 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     fn generate_token_assignments(str_vec: &mut StrVec, action: &Action) {
-        action.args.iter().filter(|a| matches!(a.arg_type, ASTType::Token(_))).for_each(|arg| {
-            let arg_name = arg.name();
-            // let num_0 = num_0.token(parse_tree)?.to_owned();
-            str_vec.push(format!("let {} = {}.token(parse_tree)?.to_owned();", arg_name, arg_name))
-        });
+        action
+            .args
+            .iter()
+            .filter(|a| matches!(a.arg_type, ASTType::Token(_)))
+            .for_each(|arg| {
+                let arg_name = arg.name();
+                // let num_0 = num_0.token(parse_tree)?.to_owned();
+                str_vec.push(format!(
+                    "let {} = {}.token(parse_tree)?.to_owned();",
+                    arg_name, arg_name
+                ))
+            });
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
@@ -159,14 +166,9 @@ impl<'a> UserTraitGenerator<'a> {
                     comment.push(String::default());
                     comment.push(a.prod_string.clone());
                     comment.push(String::default());
-                    Self::format_type(
-                        &a.out_type,
-                        &a.non_terminal,
-                        Some(a.prod_num),
-                        comment,
-                    )
-                    .into_iter()
-                    .for_each(|s| acc.push(s));
+                    Self::format_type(&a.out_type, &a.non_terminal, Some(a.prod_num), comment)
+                        .into_iter()
+                        .for_each(|s| acc.push(s));
                     acc
                 })
         } else {
@@ -196,13 +198,7 @@ impl<'a> UserTraitGenerator<'a> {
             comment.push(String::default());
             comment.push("Deduced ASTType of expanded grammar".to_string());
             comment.push(String::default());
-            Self::format_type(
-                &type_info.ast_enum_type,
-                "ASTType",
-                None,
-                comment,
-            )
-            .unwrap()
+            Self::format_type(&type_info.ast_enum_type, "ASTType", None, comment).unwrap()
         } else {
             String::default()
         };
@@ -234,7 +230,10 @@ impl<'a> UserTraitGenerator<'a> {
         )?;
 
         let user_trait_functions = if self.auto_generate {
-            trace!("parol_grammar.item_stack:\n{:?}", self.parol_grammar.item_stack);
+            trace!(
+                "parol_grammar.item_stack:\n{:?}",
+                self.parol_grammar.item_stack
+            );
 
             let mut processed_non_terminals: HashSet<String> = HashSet::new();
             self.parol_grammar
