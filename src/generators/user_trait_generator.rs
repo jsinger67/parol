@@ -39,11 +39,7 @@ impl<'a> UserTraitGenerator<'a> {
                 if matches!(a.arg_type, ASTType::Token(_)) {
                     parse_tree_argument_used = true;
                 }
-                format!(
-                    "{}{}: &ParseTreeStackEntry",
-                    NmHlp::item_unused_indicator(self.auto_generate && a.used),
-                    a.name,
-                )
+                format!("{}: &ParseTreeStackEntry", a.name(),)
             })
             .collect::<Vec<String>>();
         arguments.push(format!(
@@ -53,19 +49,21 @@ impl<'a> UserTraitGenerator<'a> {
         arguments.join(", ")
     }
 
-    fn generate_token_assignments(str_vec: &mut StrVec, action: &Action) {
-        action
-            .args
-            .iter()
-            .filter(|a| matches!(a.arg_type, ASTType::Token(_)))
-            .for_each(|arg| {
-                let arg_name = arg.name();
-                // let num_0 = num_0.token(parse_tree)?.to_owned();
-                str_vec.push(format!(
-                    "let {} = {}.token(parse_tree)?.to_owned();",
-                    arg_name, arg_name
-                ))
-            });
+    fn generate_token_assignments(&self, str_vec: &mut StrVec, action: &Action) {
+        if self.auto_generate {
+            action
+                .args
+                .iter()
+                .filter(|a| matches!(a.arg_type, ASTType::Token(_)))
+                .for_each(|arg| {
+                    let arg_name = arg.name();
+                    // let num_0 = num_0.token(parse_tree)?.to_owned();
+                    str_vec.push(format!(
+                        "let {} = {}.token(parse_tree)?.to_owned();",
+                        arg_name, arg_name
+                    ))
+                });
+        }
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
@@ -211,7 +209,7 @@ impl<'a> UserTraitGenerator<'a> {
                     let prod_string = a.prod_string.clone();
                     let fn_arguments = self.generate_argument_list(a);
                     let mut code = StrVec::new(8);
-                    Self::generate_token_assignments(&mut code, a);
+                    self.generate_token_assignments(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
                         .prod_num(a.prod_num)
