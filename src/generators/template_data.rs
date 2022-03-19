@@ -22,6 +22,14 @@ pub(crate) struct UserTraitFunctionData<'a> {
 }
 
 #[derive(BartDisplay, Builder, Debug, Default)]
+#[template = "templates/user_trait_function_stack_pop_template.rs.tpl"]
+pub(crate) struct UserTraitFunctionStackPopData {
+    pub arg_name: String,
+    pub arg_type: String,
+    pub vec_anchor: bool,
+}
+
+#[derive(BartDisplay, Builder, Debug, Default)]
 #[template = "templates/user_trait_template.rs.tpl"]
 pub(crate) struct UserTraitData<'a> {
     pub user_type_name: &'a str,

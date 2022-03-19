@@ -5,9 +5,11 @@ use super::grammar_type_generator::{ASTType, Action, GrammarTypeInfo};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, NonTerminalTypeVec,
     UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
+    UserTraitFunctionStackPopDataBuilder,
 };
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
+use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::{ParolGrammarItem, Production};
 use crate::{ParolGrammar, Pr, StrVec};
 use log::trace;
@@ -29,7 +31,7 @@ pub struct UserTraitGenerator<'a> {
 }
 
 impl<'a> UserTraitGenerator<'a> {
-    fn generate_argument_list(&self, action: &Action) -> String {
+    fn generate_inner_action_args(&self, action: &Action) -> String {
         // We reference the parse_tree argument only if a token is in the argument list
         let mut parse_tree_argument_used = false;
         let mut arguments = action
@@ -49,7 +51,13 @@ impl<'a> UserTraitGenerator<'a> {
         arguments.join(", ")
     }
 
-    fn generate_token_assignments(&self, str_vec: &mut StrVec, action: &Action) {
+    fn generate_context(&self, code: &mut StrVec, action: &Action) {
+        if self.auto_generate {
+            code.push(format!("let context = \"{}\";", action.fn_name))
+        }
+    }
+
+    fn generate_token_assignments(&self, code: &mut StrVec, action: &Action) {
         if self.auto_generate {
             action
                 .args
@@ -57,12 +65,93 @@ impl<'a> UserTraitGenerator<'a> {
                 .filter(|a| matches!(a.arg_type, ASTType::Token(_)))
                 .for_each(|arg| {
                     let arg_name = arg.name();
-                    // let num_0 = num_0.token(parse_tree)?.to_owned();
-                    str_vec.push(format!(
+                    code.push(format!(
                         "let {} = {}.token(parse_tree)?.to_owned();",
                         arg_name, arg_name
                     ))
                 });
+        }
+    }
+
+    fn generate_stack_pops(&self, code: &mut StrVec, action: &Action) -> Result<()> {
+        if self.auto_generate {
+            action
+                .args
+                .iter()
+                .filter(|a| !matches!(a.arg_type, ASTType::Token(_)))
+                .fold(Ok(()), |res: Result<()>, arg| {
+                    res?;
+                    let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
+                        .arg_name(arg.name.clone())
+                        .arg_type(arg.arg_type.inner_type_name())
+                        .vec_anchor(arg.sem == SymbolAttribute::RepetitionAnchor)
+                        .build()
+                        .into_diagnostic()?;
+                    code.push(format!("{}", stack_pop_data));
+                    Ok(())
+                })
+        } else {
+            Ok(())
+        }
+    }
+
+    fn generate_result_builder(&self, code: &mut StrVec, action: &Action) {
+        if self.auto_generate {
+            if action.sem == ProductionAttribute::CollectionStart {
+                code.push(format!("let {} = Vec::new();", action.fn_name));
+            } else if action.sem == ProductionAttribute::AddToCollection {
+                // No code needed here
+            } else {
+                let builder_prefix = if action.alts == 1 {
+                    &action.non_terminal
+                } else {
+                    &action.fn_name
+                };
+                code.push(format!(
+                    "let {} = {}Builder::default()",
+                    action.fn_name,
+                    NmHlp::to_upper_camel_case(builder_prefix)
+                ));
+                action
+                    .args
+                    .iter()
+                    .filter(|a| matches!(a.arg_type, ASTType::TypeRef(_)))
+                    .for_each(|_arg| {});
+                code.push("    .build()".to_string());
+                code.push("    .into_diagnostic()?;".to_string());
+                if action.alts > 1 {
+                    // Type adjustment to the non-terminal enum
+                    // let list_0 = List::List0(list_0);
+                    code.push(format!(
+                        "let {} = {}::{}({});",
+                        action.fn_name,
+                        NmHlp::to_upper_camel_case(&action.non_terminal),
+                        NmHlp::to_upper_camel_case(builder_prefix),
+                        action.fn_name
+                    ));
+                }
+            }
+        }
+    }
+
+    fn generate_user_action_call(&self, _code: &mut StrVec, action: &Action) {
+        if self.auto_generate {
+            action
+                .args
+                .iter()
+                .filter(|a| matches!(a.arg_type, ASTType::TypeRef(_)))
+                .for_each(|_arg| {});
+        }
+    }
+
+    fn generate_stack_push(&self, code: &mut StrVec, action: &Action) {
+        if self.auto_generate {
+            // self.push(ASTType::Num(num), context);
+            code.push(format!(
+                "self.push(ASTType::{}({}), context);",
+                NmHlp::to_upper_camel_case(&action.non_terminal),
+                action.fn_name
+            ));
         }
     }
 
@@ -207,9 +296,14 @@ impl<'a> UserTraitGenerator<'a> {
                 if let Ok(mut acc) = acc {
                     let fn_name = &a.fn_name;
                     let prod_string = a.prod_string.clone();
-                    let fn_arguments = self.generate_argument_list(a);
+                    let fn_arguments = self.generate_inner_action_args(a);
                     let mut code = StrVec::new(8);
+                    self.generate_context(&mut code, a);
                     self.generate_token_assignments(&mut code, a);
+                    self.generate_stack_pops(&mut code, a)?;
+                    self.generate_result_builder(&mut code, a);
+                    self.generate_user_action_call(&mut code, a);
+                    self.generate_stack_push(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
                         .prod_num(a.prod_num)
@@ -304,7 +398,7 @@ impl<'a> UserTraitGenerator<'a> {
             .ast_type_decl(&ast_type_decl)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .module_name(&self.module_name)
+            .module_name(self.module_name)
             .user_trait_functions(user_trait_functions)
             .build()
             .into_diagnostic()?;

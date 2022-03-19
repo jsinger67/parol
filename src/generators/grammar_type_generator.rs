@@ -45,6 +45,19 @@ impl ASTType {
         }
     }
 
+    pub(crate) fn inner_type_name(&self) -> String {
+        match self {
+            Self::None => "*TypeError*".to_owned(),
+            Self::Unit => "()".to_owned(),
+            Self::Token(t) => format!("OwnedToken /* {} */", t),
+            Self::TypeRef(r) => r.clone(),
+            Self::TypeName(n) => n.clone(),
+            Self::Struct(n, _) => n.to_string(),
+            Self::Enum(n, _) => n.to_string(),
+            Self::Repeat(r) => r.clone(),
+        }
+    }
+
     /// Change the type's name
     pub fn with_name(self, name: String) -> Self {
         let name = NmHlp::to_upper_camel_case(&name);
@@ -394,7 +407,7 @@ impl GrammarTypeInfo {
                         let mut arguments = args.clone();
                         vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
-                            NmHlp::to_upper_camel_case(&non_terminal),
+                            NmHlp::to_upper_camel_case(non_terminal),
                             arguments
                                 .drain(..)
                                 .map(|arg| (arg.name, arg.arg_type))
@@ -413,7 +426,7 @@ impl GrammarTypeInfo {
                         let mut arguments = args.clone();
                         vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
-                            NmHlp::to_upper_camel_case(&non_terminal),
+                            NmHlp::to_upper_camel_case(non_terminal),
                             arguments
                                 .drain(..)
                                 .map(|arg| (arg.name, arg.arg_type))

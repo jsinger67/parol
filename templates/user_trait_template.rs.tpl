@@ -7,7 +7,8 @@
 use id_tree::Tree;
 {{#auto_generate?}}use parol_runtime::lexer::OwnedToken;{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use miette::{miette, Result};
+{{#auto_generate?}}use log::trace;
+{{/auto_generate}}use miette::{miette, {{#auto_generate?}}IntoDiagnostic, {{/auto_generate}}Result};
 {{#auto_generate?}}#[allow(unused_imports)]{{/auto_generate}}
 use crate::{{module_name}}::{{user_type_name}};
 {{#auto_generate?}}use std::path::{Path, PathBuf};{{/auto_generate}}{{^auto_generate?}}use std::path::Path;{{/auto_generate}}
@@ -65,6 +66,24 @@ impl<'a> {{{user_type_name}}}Auto<'a> {
             file_name: PathBuf::default(),
         }
     }
+
+    fn push(&mut self, item: ASTType, context: &str) {
+        trace!("push    {}: {:?}", context, item);
+        self.item_stack.push(item)
+    }
+
+    fn pop(&mut self, context: &str) -> Option<ASTType> {
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
+            if let Some(ref item) = item {
+                trace!("pop     {}: {:?}", context, item);
+            }
+            item
+        } else {
+            None
+        }
+    }
+
 {{/auto_generate}}
 {{^auto_generate?}}
 ///
