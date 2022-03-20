@@ -55,6 +55,10 @@ impl StrVec {
         let space = " ".to_string();
         space.repeat(amount)
     }
+
+    pub fn pop(&mut self) -> Option<String> {
+        self.vec.pop()
+    }
 }
 
 pub struct StrVecIterator<'a> {

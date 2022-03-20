@@ -27,6 +27,7 @@ pub(crate) struct UserTraitFunctionStackPopData {
     pub arg_name: String,
     pub arg_type: String,
     pub vec_anchor: bool,
+    pub vec_push_semantic: bool,
 }
 
 #[derive(BartDisplay, Builder, Debug, Default)]
