@@ -1,6 +1,6 @@
 [package]
-name = "json_parser"
-version = "0.4.2"
+name = "json_parser_auto"
+version = "0.1.0"
 edition = "2018"
 build = "build.rs"
 
@@ -16,7 +16,7 @@ thiserror = "^1.0"
 derive_builder = "0.11.1"
 
 [build-dependencies]
-parol = { path = "../parol" }
+parol = "0.6.0"
 
 [profile.release]
 debug = true

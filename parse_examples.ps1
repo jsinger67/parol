@@ -8,7 +8,7 @@ if ($LASTEXITCODE -ne 0) {
 
 Get-ChildItem .\json\*.json | ForEach-Object {
     Write-Host "Parsing example $($_.FullName)..." -ForegroundColor Cyan
-    ./target/release/json_parser $_.FullName
+    ./target/release/json_parser_auto $_.FullName
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }
