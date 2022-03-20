@@ -306,6 +306,11 @@ impl GrammarTypeInfo {
             },
         )?;
 
+        if prod.2 == ProductionAttribute::AddToCollection {
+            let ref_mut_last_type = &mut types.last_mut().unwrap().0;
+            *ref_mut_last_type = ASTType::Repeat(ref_mut_last_type.inner_type_name());
+        }
+
         Ok(
             NmHlp::generate_member_names(prod.get_r(), &self.terminals, &self.terminal_names)
                 .iter()
@@ -405,6 +410,7 @@ impl GrammarTypeInfo {
                         ..
                     }] => {
                         let mut arguments = args.clone();
+                        arguments.pop(); // Remove the recursive part. Vec is wrapped outside.
                         vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
                             NmHlp::to_upper_camel_case(non_terminal),
@@ -424,6 +430,7 @@ impl GrammarTypeInfo {
                         ..
                     }] => {
                         let mut arguments = args.clone();
+                        arguments.pop(); // Remove the recursive part. Vec is wrapped outside.
                         vector_typed_non_terminal_opt = Some(non_terminal.clone());
                         Some(ASTType::Struct(
                             NmHlp::to_upper_camel_case(non_terminal),

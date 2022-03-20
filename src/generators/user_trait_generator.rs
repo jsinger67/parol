@@ -53,7 +53,8 @@ impl<'a> UserTraitGenerator<'a> {
 
     fn generate_context(&self, code: &mut StrVec, action: &Action) {
         if self.auto_generate {
-            code.push(format!("let context = \"{}\";", action.fn_name))
+            code.push(format!("let context = \"{}\";", action.fn_name));
+            code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
         }
     }
 
@@ -78,6 +79,7 @@ impl<'a> UserTraitGenerator<'a> {
             action
                 .args
                 .iter()
+                .rev()
                 .enumerate()
                 .filter(|(_, a)| !matches!(a.arg_type, ASTType::Token(_)))
                 .fold(Ok(()), |res: Result<()>, (i, arg)| {
@@ -87,8 +89,7 @@ impl<'a> UserTraitGenerator<'a> {
                         .arg_type(arg.arg_type.inner_type_name())
                         .vec_anchor(arg.sem == SymbolAttribute::RepetitionAnchor)
                         .vec_push_semantic(
-                            action.sem == ProductionAttribute::AddToCollection
-                                && i == action.args.len() - 1,
+                            action.sem == ProductionAttribute::AddToCollection && i == 0,
                         )
                         .build()
                         .into_diagnostic()?;
@@ -97,6 +98,17 @@ impl<'a> UserTraitGenerator<'a> {
                 })
         } else {
             Ok(())
+        }
+    }
+
+    fn generate_push_semantic(&self, code: &mut StrVec, action: &Action) {
+        if self.auto_generate && action.sem == ProductionAttribute::AddToCollection {
+            code.push("// Add an element to the vector".to_string());
+            code.push(format!(
+                " {}.push({});",
+                action.args.iter().last().unwrap().name,
+                &action.fn_name,
+            ));
         }
     }
 
@@ -110,7 +122,7 @@ impl<'a> UserTraitGenerator<'a> {
                     action.fn_name,
                     NmHlp::to_upper_camel_case(&action.non_terminal)
                 ));
-                action.args.iter().for_each(|arg| {
+                action.args.iter().rev().skip(1).for_each(|arg| {
                     let setter_name = &arg.name;
                     let arg_name = if matches!(arg.arg_type, ASTType::TypeRef(_))
                         && arg.sem == SymbolAttribute::None
@@ -121,7 +133,6 @@ impl<'a> UserTraitGenerator<'a> {
                     };
                     code.push(format!("    .{}({})", setter_name, arg_name));
                 });
-                code.pop(); // The last is thew vector itself. We have to remove it.
                 code.push("    .build()".to_string());
                 code.push("    .into_diagnostic()?;".to_string());
             } else {
@@ -191,12 +202,6 @@ impl<'a> UserTraitGenerator<'a> {
     fn generate_stack_push(&self, code: &mut StrVec, action: &Action) {
         if self.auto_generate {
             if action.sem == ProductionAttribute::AddToCollection {
-                code.push("// Add an element to the vector".to_string());
-                code.push(format!(
-                    "{}.push({});",
-                    action.args.iter().last().unwrap().name,
-                    &action.fn_name,
-                ));
                 // The output type of the action is the type generated for the action's non-terminal
                 // filled with type of the action's last argument (the vector)
                 code.push(format!(
@@ -363,6 +368,7 @@ impl<'a> UserTraitGenerator<'a> {
                     self.generate_token_assignments(&mut code, a);
                     self.generate_stack_pops(&mut code, a)?;
                     self.generate_result_builder(&mut code, a);
+                    self.generate_push_semantic(&mut code, a);
                     self.generate_user_action_call(&mut code, a, &self.parol_grammar);
                     self.generate_stack_push(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()

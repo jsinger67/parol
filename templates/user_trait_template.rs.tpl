@@ -84,6 +84,22 @@ impl<'a> {{{user_type_name}}}Auto<'a> {
         }
     }
 
+    #[allow(dead_code)]
+    // Use this function for debugging purposes:
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> std::string::String {
+        format!(
+            "Item stack at {}:\n{}",
+            context,
+            self.item_stack
+                .iter()
+                .rev()
+                .map(|s| format!("  {:?}", s))
+                .collect::<Vec<std::string::String>>()
+                .join("\n")
+        )
+    }
+
 {{/auto_generate}}
 {{^auto_generate?}}
 ///
