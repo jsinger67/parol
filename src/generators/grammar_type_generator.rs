@@ -708,14 +708,14 @@ mod tests {
     #[test]
     fn test_presentation_of_type_info_1() {
         let expected = r#"/* 0 */ ((OwnedToken /* a */, Vec<SList>, OwnedToken /* c */, Vec<SList1>) -> struct S0 { a_0: OwnedToken /* a */, s_list_1: Vec<SList>, c_2: OwnedToken /* c */, s_list1_3: Vec<SList1> })  { - }
-/* 1 */ ((OwnedToken /* d-rpt */, Box<SList1>) -> Vec<SList1>)  { Vec<T>::Push }
+/* 1 */ ((OwnedToken /* d-rpt */, Vec<SList1>) -> Vec<SList1>)  { Vec<T>::Push }
 /* 2 */ (() -> Vec<SList1>)  { Vec<T>::New }
-/* 3 */ ((OwnedToken /* b-rpt */, Box<SList>) -> Vec<SList>)  { Vec<T>::Push }
+/* 3 */ ((OwnedToken /* b-rpt */, Vec<SList>) -> Vec<SList>)  { Vec<T>::Push }
 /* 4 */ (() -> Vec<SList>)  { Vec<T>::New }
 
 S:  struct S { a_0: OwnedToken /* a */, s_list_1: Vec<SList>, c_2: OwnedToken /* c */, s_list1_3: Vec<SList1> }
-SList:  struct SList { b_minus_rpt_0: OwnedToken /* b-rpt */, s_list_1: Box<SList> }
-SList1:  struct SList1 { d_minus_rpt_0: OwnedToken /* d-rpt */, s_list1_1: Box<SList1> }
+SList:  struct SList { b_minus_rpt_0: OwnedToken /* b-rpt */ }
+SList1:  struct SList1 { d_minus_rpt_0: OwnedToken /* d-rpt */ }
 
 enum ASTType { S(S), SList(Vec<SList>), SList1(Vec<SList1>) }
 "#;
