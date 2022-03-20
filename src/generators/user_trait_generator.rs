@@ -86,7 +86,10 @@ impl<'a> UserTraitGenerator<'a> {
                         .arg_name(arg.name.clone())
                         .arg_type(arg.arg_type.inner_type_name())
                         .vec_anchor(arg.sem == SymbolAttribute::RepetitionAnchor)
-                        .vec_push_semantic(action.sem == ProductionAttribute::AddToCollection && i == action.args.len() - 1)
+                        .vec_push_semantic(
+                            action.sem == ProductionAttribute::AddToCollection
+                                && i == action.args.len() - 1,
+                        )
                         .build()
                         .into_diagnostic()?;
                     code.push(format!("{}", stack_pop_data));
@@ -158,13 +161,30 @@ impl<'a> UserTraitGenerator<'a> {
         }
     }
 
-    fn generate_user_action_call(&self, _code: &mut StrVec, action: &Action) {
+    fn generate_user_action_call(
+        &self,
+        code: &mut StrVec,
+        action: &Action,
+        parol_grammar: &'a ParolGrammar,
+    ) {
         if self.auto_generate {
-            action
-                .args
+            if parol_grammar
+                .item_stack
                 .iter()
-                .filter(|a| matches!(a.arg_type, ASTType::TypeRef(_)))
-                .for_each(|_arg| {});
+                .filter_map(|item| match item {
+                    ParolGrammarItem::Prod(Production { lhs, .. }) => Some(lhs),
+                    _ => None,
+                })
+                .any(|lhs| &action.non_terminal == lhs)
+            {
+                code.push("// Calling user action here".to_string());
+                // self.user_grammar.num(num_4.clone())?;
+                code.push(format!(
+                    "self.user_grammar.{}({}.clone())?;",
+                    NmHlp::to_lower_snake_case(&action.non_terminal),
+                    action.fn_name
+                ));
+            }
         }
     }
 
@@ -343,7 +363,7 @@ impl<'a> UserTraitGenerator<'a> {
                     self.generate_token_assignments(&mut code, a);
                     self.generate_stack_pops(&mut code, a)?;
                     self.generate_result_builder(&mut code, a);
-                    self.generate_user_action_call(&mut code, a);
+                    self.generate_user_action_call(&mut code, a, &self.parol_grammar);
                     self.generate_stack_push(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
