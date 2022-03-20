@@ -87,9 +87,9 @@ pub trait JsonGrammarTrait {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectSuffix2 {
-    pair_0: Box<Pair>,
-    object_list_1: Vec<ObjectList>,
-    r_brace_2: OwnedToken, /* \} */
+    pub pair_0: Box<Pair>,
+    pub object_list_1: Vec<ObjectList>,
+    pub r_brace_2: OwnedToken, /* \} */
 }
 
 ///
@@ -100,7 +100,7 @@ pub struct ObjectSuffix2 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectSuffix3 {
-    r_brace_0: OwnedToken, /* \} */
+    pub r_brace_0: OwnedToken, /* \} */
 }
 
 ///
@@ -111,9 +111,9 @@ pub struct ObjectSuffix3 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArraySuffix8 {
-    value_0: Box<Value>,
-    array_list_1: Vec<ArrayList>,
-    r_bracket_2: OwnedToken, /* \] */
+    pub value_0: Box<Value>,
+    pub array_list_1: Vec<ArrayList>,
+    pub r_bracket_2: OwnedToken, /* \] */
 }
 
 ///
@@ -124,7 +124,7 @@ pub struct ArraySuffix8 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArraySuffix9 {
-    r_bracket_0: OwnedToken, /* \] */
+    pub r_bracket_0: OwnedToken, /* \] */
 }
 
 ///
@@ -135,7 +135,7 @@ pub struct ArraySuffix9 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value12 {
-    string_0: Box<String>,
+    pub string_0: Box<String>,
 }
 
 ///
@@ -146,7 +146,7 @@ pub struct Value12 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value13 {
-    number_0: Box<Number>,
+    pub number_0: Box<Number>,
 }
 
 ///
@@ -157,7 +157,7 @@ pub struct Value13 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value14 {
-    object_0: Box<Object>,
+    pub object_0: Box<Object>,
 }
 
 ///
@@ -168,7 +168,7 @@ pub struct Value14 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value15 {
-    array_0: Box<Array>,
+    pub array_0: Box<Array>,
 }
 
 ///
@@ -179,7 +179,7 @@ pub struct Value15 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value16 {
-    r#true_0: OwnedToken, /* true */
+    pub r#true_0: OwnedToken, /* true */
 }
 
 ///
@@ -190,7 +190,7 @@ pub struct Value16 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value17 {
-    r#false_0: OwnedToken, /* false */
+    pub r#false_0: OwnedToken, /* false */
 }
 
 ///
@@ -201,7 +201,7 @@ pub struct Value17 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Value18 {
-    null_0: OwnedToken, /* null */
+    pub null_0: OwnedToken, /* null */
 }
 
 //
@@ -214,8 +214,8 @@ pub struct Value18 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Array {
-    l_bracket_0: OwnedToken, /* \[ */
-    array_suffix_1: Box<ArraySuffix>,
+    pub l_bracket_0: OwnedToken, /* \[ */
+    pub array_suffix_1: Box<ArraySuffix>,
 }
 
 ///
@@ -224,8 +224,8 @@ pub struct Array {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArrayList {
-    comma_0: OwnedToken, /* , */
-    value_1: Box<Value>,
+    pub comma_0: OwnedToken, /* , */
+    pub value_1: Box<Value>,
 }
 
 ///
@@ -244,7 +244,7 @@ pub enum ArraySuffix {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Json {
-    value_0: Box<Value>,
+    pub value_0: Box<Value>,
 }
 
 ///
@@ -253,7 +253,7 @@ pub struct Json {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Number {
-    number_0: OwnedToken, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
+    pub number_0: OwnedToken, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
 }
 
 ///
@@ -262,8 +262,8 @@ pub struct Number {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Object {
-    l_brace_0: OwnedToken, /* \{ */
-    object_suffix_1: Box<ObjectSuffix>,
+    pub l_brace_0: OwnedToken, /* \{ */
+    pub object_suffix_1: Box<ObjectSuffix>,
 }
 
 ///
@@ -272,8 +272,8 @@ pub struct Object {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectList {
-    comma_0: OwnedToken, /* , */
-    pair_1: Box<Pair>,
+    pub comma_0: OwnedToken, /* , */
+    pub pair_1: Box<Pair>,
 }
 
 ///
@@ -292,9 +292,9 @@ pub enum ObjectSuffix {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Pair {
-    string_0: Box<String>,
-    colon_1: OwnedToken, /* : */
-    value_2: Box<Value>,
+    pub string_0: Box<String>,
+    pub colon_1: OwnedToken, /* : */
+    pub value_2: Box<Value>,
 }
 
 ///
@@ -303,7 +303,7 @@ pub struct Pair {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String {
-    string_0: OwnedToken, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
+    pub string_0: OwnedToken, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
 }
 
 ///

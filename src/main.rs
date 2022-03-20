@@ -56,7 +56,7 @@ fn main() -> Result<()> {
         if args.len() > 2 && args[2] == "-q" {
             Ok(())
         } else {
-            println!("Success!\n{:?}", json_grammar.json);
+            println!("Success!\n{}", json_grammar);
             generate_tree_layout(&syntax_tree, &file_name)
         }
     } else {
