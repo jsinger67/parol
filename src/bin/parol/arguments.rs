@@ -49,6 +49,10 @@ pub(crate) struct ClapApp {
     #[clap(short = 'm', long = "module")]
     pub module: Option<String>,
 
+    /// Activates the auto-generation of semantic actions in expanded grammar - experimental
+    #[clap(short = 'g', long = "auto_generate")]
+    pub auto_generate: bool,
+
     /// Activates the generation of a SVG file with the parse tree of the given grammar
     #[clap(short = 's', long = "svg")]
     pub generate_tree_graph: bool,

@@ -60,6 +60,9 @@ fn main() -> Result<()> {
     if let Some(parser_file) = &config.parser {
         builder.parser_output_file(parser_file);
     }
+    if config.auto_generate {
+        builder.enable_auto_generation();
+    }
     if let Some(expanded_grammar_file) = &config.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)
@@ -125,7 +128,7 @@ impl BuildListener for CLIListener<'_> {
             // no passes yet
             IntermediateGrammar::Untransformed => {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
-                    let serialized = render_par_string(grammar_config, false);
+                    let serialized = render_par_string(grammar_config, false)?;
                     fs::write(file_name, serialized)
                         .into_diagnostic()
                         .wrap_err("Error writing untransformed grammar!")?;
@@ -135,7 +138,7 @@ impl BuildListener for CLIListener<'_> {
             IntermediateGrammar::LAST => {
                 if let Some(file_name) = self.config.expanded.as_ref() {
                     // NOTE: We still need special handling for writing to stdout
-                    let lf_source = render_par_string(grammar_config, true);
+                    let lf_source = render_par_string(grammar_config, true)?;
                     if *file_name == OsStr::new("--") {
                         print!("{}", lf_source);
                     } else {

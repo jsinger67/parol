@@ -1,6 +1,8 @@
 //! This module provides functionality for generating variable names and type names so that they
 //! adhere to the Rust naming conventions.
 
+use crate::{Symbol, Terminal};
+
 const KEYWORDS: &[&str; 52] = &[
     "abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate",
     "do", "dyn", "else", "enum", "extern", "false", "final", "fn", "for", "if", "impl", "in",
@@ -122,5 +124,38 @@ impl NamingHelper {
             }
             acc
         })
+    }
+
+    /// Generates a member name from a symbol that stems from a production's right-hand side
+    pub fn generate_member_name(
+        s: &Symbol,
+        arg_index: usize,
+        terminals: &[String],
+        terminal_names: &[String],
+    ) -> String {
+        let get_terminal_index = |tr: &str| terminals.iter().position(|t| *t == tr).unwrap();
+        match s {
+            Symbol::N(n, _) => {
+                format!("{}_{}", Self::to_lower_snake_case(n), arg_index)
+            }
+            Symbol::T(Terminal::Trm(t, _)) => {
+                let terminal_name = &terminal_names[get_terminal_index(t)];
+                format!("{}_{}", Self::to_lower_snake_case(terminal_name), arg_index)
+            }
+            _ => panic!("Invalid symbol type {}", s),
+        }
+    }
+
+    /// Convenience function
+    pub fn generate_member_names(
+        rhs: &[Symbol],
+        terminals: &[String],
+        terminal_names: &[String],
+    ) -> Vec<String> {
+        rhs.iter()
+            .enumerate()
+            .filter(|(_, s)| s.is_n() || s.is_t())
+            .map(|(i, s)| Self::generate_member_name(s, i, terminals, terminal_names))
+            .collect::<Vec<String>>()
     }
 }

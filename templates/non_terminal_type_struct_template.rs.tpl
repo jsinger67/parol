@@ -1,0 +1,7 @@
+{{#comment}}
+/// {{{.}}}{{/comment}}
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct {{non_terminal}} {
+{{#members}}
+  pub {{{.}}}{{/members}}}

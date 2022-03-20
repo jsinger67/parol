@@ -61,7 +61,7 @@ impl Cfg {
         self.pr.iter().fold(set, |mut acc, p| {
             acc.insert(p.get_n());
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::N(n) = s {
+                if let Symbol::N(n, _) = s {
                     acc.insert(n.clone());
                 }
                 acc
@@ -87,7 +87,7 @@ impl Cfg {
             }
             acc = p.get_r().iter().enumerate().fold(acc, |mut acc, (si, s)| {
                 let pos = (pi, si + 1).into();
-                if let Symbol::N(n) = s {
+                if let Symbol::N(n, _) = s {
                     let entry = (n.clone(), pos);
                     if !acc.contains(&entry) {
                         acc.push(entry);
@@ -155,7 +155,7 @@ impl Cfg {
             .fold(BTreeMap::new(), |mut acc, (pi, p)| {
                 acc.insert(Pos::new(pi, 0), p.get_n());
                 acc = p.get_r().iter().enumerate().fold(acc, |mut acc, (si, s)| {
-                    if let Symbol::N(n) = s {
+                    if let Symbol::N(n, _) = s {
                         acc.insert(Pos::new(pi, si + 1), n.clone());
                     }
                     acc
@@ -226,7 +226,7 @@ impl Cfg {
             fn has_nullable_alt(prods: Vec<&Pr>, nullables: &HashSet<String>) -> bool {
                 fn is_already_nullable(s: &Symbol, nullables: &HashSet<String>) -> bool {
                     match s {
-                        Symbol::N(n) => nullables.contains(n),
+                        Symbol::N(n, _) => nullables.contains(n),
                         _ => false,
                     }
                 }

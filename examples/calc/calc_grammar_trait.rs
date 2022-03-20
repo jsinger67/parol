@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use crate::calc_grammar::CalcGrammar;
 use id_tree::Tree;
+
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use crate::calc_grammar::CalcGrammar;
+use std::path::Path;
 
 ///
 /// The `CalcGrammarTrait` trait is automatically generated for the
@@ -18,7 +21,7 @@ pub trait CalcGrammarTrait {
     ///
     /// Implement this method if you need the provided information
     ///
-    fn init(&mut self, _file_name: &std::path::Path) {}
+    fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for production 0:
     ///
@@ -1002,9 +1005,7 @@ impl UserActionsTrait for CalcGrammar {
     /// This function is called by the parser before parsing starts.
     /// Is is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        CalcGrammarTrait::init(self, file_name);
-    }
+    fn init(&mut self, _file_name: &Path) {}
 
     ///
     /// This function is implemented automatically for the user's item CalcGrammar.
@@ -1017,169 +1018,87 @@ impl UserActionsTrait for CalcGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.calc_0(&children[0], parse_tree),
-
             1 => self.calc_lst1_1(&children[0], &children[1], parse_tree),
-
             2 => self.calc_lst1_itm1_2(&children[0], &children[1], parse_tree),
-
             3 => self.calc_lst1_3(parse_tree),
-
             4 => self.instruction_4(&children[0], parse_tree),
-
             5 => self.instruction_5(&children[0], parse_tree),
-
             6 => self.equality_op_6(&children[0], parse_tree),
-
             7 => self.assign_op_7(&children[0], parse_tree),
-
             8 => self.assign_item_8(&children[0], &children[1], parse_tree),
-
             9 => self.assignment_9(&children[0], &children[1], &children[2], parse_tree),
-
             10 => self.assignment_lst1_10(&children[0], &children[1], parse_tree),
-
             11 => self.assignment_lst1_itm1_11(&children[0], parse_tree),
-
             12 => self.assignment_lst1_12(parse_tree),
-
             13 => self.logical_or_13(&children[0], &children[1], parse_tree),
-
             14 => self.logical_or_lst1_14(&children[0], &children[1], parse_tree),
-
             15 => self.logical_or_lst1_itm1_15(&children[0], parse_tree),
-
             16 => self.logical_or_lst1_16(parse_tree),
-
             17 => self.logical_or_op_17(&children[0], parse_tree),
-
             18 => self.logical_or_item_18(&children[0], &children[1], parse_tree),
-
             19 => self.logical_and_19(&children[0], &children[1], parse_tree),
-
             20 => self.logical_and_lst1_20(&children[0], &children[1], parse_tree),
-
             21 => self.logical_and_lst1_itm1_21(&children[0], parse_tree),
-
             22 => self.logical_and_lst1_22(parse_tree),
-
             23 => self.logical_and_op_23(&children[0], parse_tree),
-
             24 => self.logical_and_item_24(&children[0], &children[1], parse_tree),
-
             25 => self.bitwise_or_25(&children[0], &children[1], parse_tree),
-
             26 => self.bitwise_or_lst1_26(&children[0], &children[1], parse_tree),
-
             27 => self.bitwise_or_lst1_itm1_27(&children[0], parse_tree),
-
             28 => self.bitwise_or_lst1_28(parse_tree),
-
             29 => self.bitwise_or_op_29(&children[0], parse_tree),
-
             30 => self.bitwise_or_item_30(&children[0], &children[1], parse_tree),
-
             31 => self.bitwise_and_31(&children[0], &children[1], parse_tree),
-
             32 => self.bitwise_and_lst1_32(&children[0], &children[1], parse_tree),
-
             33 => self.bitwise_and_lst1_itm1_33(&children[0], parse_tree),
-
             34 => self.bitwise_and_lst1_34(parse_tree),
-
             35 => self.bitwise_and_op_35(&children[0], parse_tree),
-
             36 => self.bitwise_and_item_36(&children[0], &children[1], parse_tree),
-
             37 => self.equality_37(&children[0], &children[1], parse_tree),
-
             38 => self.equality_lst1_38(&children[0], &children[1], parse_tree),
-
             39 => self.equality_lst1_itm1_39(&children[0], parse_tree),
-
             40 => self.equality_lst1_40(parse_tree),
-
             41 => self.equality_item_41(&children[0], &children[1], parse_tree),
-
             42 => self.bitwise_shift_op_42(&children[0], parse_tree),
-
             43 => self.relational_43(&children[0], &children[1], parse_tree),
-
             44 => self.relational_lst1_44(&children[0], &children[1], parse_tree),
-
             45 => self.relational_lst1_itm1_45(&children[0], parse_tree),
-
             46 => self.relational_lst1_46(parse_tree),
-
             47 => self.relational_op_47(&children[0], parse_tree),
-
             48 => self.relational_item_48(&children[0], &children[1], parse_tree),
-
             49 => self.bitwise_shift_49(&children[0], &children[1], parse_tree),
-
             50 => self.bitwise_shift_lst1_50(&children[0], &children[1], parse_tree),
-
             51 => self.bitwise_shift_lst1_itm1_51(&children[0], parse_tree),
-
             52 => self.bitwise_shift_lst1_52(parse_tree),
-
             53 => self.bitwise_shift_item_53(&children[0], &children[1], parse_tree),
-
             54 => self.summ_54(&children[0], &children[1], parse_tree),
-
             55 => self.summ_lst1_55(&children[0], &children[1], parse_tree),
-
             56 => self.summ_lst1_itm1_56(&children[0], parse_tree),
-
             57 => self.summ_lst1_57(parse_tree),
-
             58 => self.plus_58(&children[0], parse_tree),
-
             59 => self.minus_59(&children[0], parse_tree),
-
             60 => self.add_op_60(&children[0], parse_tree),
-
             61 => self.add_op_61(&children[0], parse_tree),
-
             62 => self.summ_item_62(&children[0], &children[1], parse_tree),
-
             63 => self.pow_op_63(&children[0], parse_tree),
-
             64 => self.mult_64(&children[0], &children[1], parse_tree),
-
             65 => self.mult_lst1_65(&children[0], &children[1], parse_tree),
-
             66 => self.mult_lst1_itm1_66(&children[0], parse_tree),
-
             67 => self.mult_lst1_67(parse_tree),
-
             68 => self.mult_op_68(&children[0], parse_tree),
-
             69 => self.mult_item_69(&children[0], &children[1], parse_tree),
-
             70 => self.power_70(&children[0], &children[1], parse_tree),
-
             71 => self.power_lst1_71(&children[0], &children[1], parse_tree),
-
             72 => self.power_lst1_itm1_72(&children[0], &children[1], parse_tree),
-
             73 => self.power_lst1_73(parse_tree),
-
             74 => self.negate_74(&children[0], parse_tree),
-
             75 => self.factor_75(&children[0], parse_tree),
-
             76 => self.factor_76(&children[0], parse_tree),
-
             77 => self.factor_77(&children[0], &children[1], parse_tree),
-
             78 => self.factor_78(&children[0], &children[1], &children[2], parse_tree),
-
             79 => self.number_79(&children[0], parse_tree),
-
             80 => self.idref_80(&children[0], parse_tree),
-
             81 => self.id_81(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

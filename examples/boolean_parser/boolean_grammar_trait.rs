@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use crate::boolean_grammar::BooleanGrammar;
 use id_tree::Tree;
+
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use crate::boolean_grammar::BooleanGrammar;
+use std::path::Path;
 
 ///
 /// The `BooleanGrammarTrait` trait is automatically generated for the
@@ -18,11 +21,11 @@ pub trait BooleanGrammarTrait {
     ///
     /// Implement this method if you need the provided information
     ///
-    fn init(&mut self, _file_name: &std::path::Path) {}
+    fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for production 0:
     ///
-    /// Expressions: Expression ExpressionsList ExpressionsSuffix;
+    /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
     ///
     fn expressions_0(
         &mut self,
@@ -56,7 +59,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ExpressionsList: Semicolon Expression ExpressionsList;
+    /// ExpressionsList: Semicolon Expression ExpressionsList; // Vec<T>::Push
     ///
     fn expressions_list_3(
         &mut self,
@@ -70,7 +73,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ExpressionsList: ;
+    /// ExpressionsList: ; // Vec<T>::New
     ///
     fn expressions_list_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -91,7 +94,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// TailExpression: TailExpressionList;
+    /// TailExpression: TailExpressionList /* Vec */;
     ///
     fn tail_expression_6(
         &mut self,
@@ -103,7 +106,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// TailExpressionList: BinaryOperator Term TailExpressionList;
+    /// TailExpressionList: BinaryOperator Term TailExpressionList; // Vec<T>::Push
     ///
     fn tail_expression_list_7(
         &mut self,
@@ -117,7 +120,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// TailExpressionList: ;
+    /// TailExpressionList: ; // Vec<T>::New
     ///
     fn tail_expression_list_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -445,9 +448,7 @@ impl UserActionsTrait for BooleanGrammar {
     /// This function is called by the parser before parsing starts.
     /// Is is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        BooleanGrammarTrait::init(self, file_name);
-    }
+    fn init(&mut self, _file_name: &Path) {}
 
     ///
     /// This function is implemented automatically for the user's item BooleanGrammar.
@@ -460,75 +461,40 @@ impl UserActionsTrait for BooleanGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.expressions_0(&children[0], &children[1], &children[2], parse_tree),
-
             1 => self.expressions_suffix_1(&children[0], parse_tree),
-
             2 => self.expressions_suffix_2(parse_tree),
-
             3 => self.expressions_list_3(&children[0], &children[1], &children[2], parse_tree),
-
             4 => self.expressions_list_4(parse_tree),
-
             5 => self.expression_5(&children[0], &children[1], parse_tree),
-
             6 => self.tail_expression_6(&children[0], parse_tree),
-
             7 => self.tail_expression_list_7(&children[0], &children[1], &children[2], parse_tree),
-
             8 => self.tail_expression_list_8(parse_tree),
-
             9 => self.term_9(&children[0], &children[1], parse_tree),
-
             10 => self.term_10(&children[0], parse_tree),
-
             11 => self.boolean_11(&children[0], parse_tree),
-
             12 => self.boolean_12(&children[0], parse_tree),
-
             13 => self.unary_operator_13(&children[0], parse_tree),
-
             14 => self.binary_operator_14(&children[0], parse_tree),
-
             15 => self.binary_operator_15(&children[0], parse_tree),
-
             16 => self.binary_operator_16(&children[0], parse_tree),
-
             17 => self.binary_operator_17(&children[0], parse_tree),
-
             18 => self.binary_operator_18(&children[0], parse_tree),
-
             19 => self.binary_operator_19(&children[0], parse_tree),
-
             20 => self.and_op_20(&children[0], parse_tree),
-
             21 => self.or_op_21(&children[0], parse_tree),
-
             22 => self.xor_op_22(&children[0], parse_tree),
-
             23 => self.nor_op_23(&children[0], parse_tree),
-
             24 => self.nand_op_24(&children[0], parse_tree),
-
             25 => self.xnor_op_25(&children[0], parse_tree),
-
             26 => self.true_26(&children[0], parse_tree),
-
             27 => self.false_27(&children[0], parse_tree),
-
             28 => self.not_28(&children[0], parse_tree),
-
             29 => self.parenthesized_29(&children[0], &children[1], &children[2], parse_tree),
-
             30 => self.semicolon_30(&children[0], parse_tree),
-
             31 => self.left_parenthesis_31(&children[0], parse_tree),
-
             32 => self.right_parenthesis_32(&children[0], parse_tree),
-
             33 => self.factor_33(&children[0], parse_tree),
-
             34 => self.factor_34(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

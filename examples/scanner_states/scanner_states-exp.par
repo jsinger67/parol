@@ -8,9 +8,9 @@
 
 %%
 
-/*  0 */ Start: StartList;
-/*  1 */ StartList: Content StartList;
-/*  2 */ StartList: ;
+/*  0 */ Start: StartList /* Vec */;
+/*  1 */ StartList: Content StartList; // Vec<T>::Push
+/*  2 */ StartList: ; // Vec<T>::New
 /*  3 */ Content: Identifier;
 /*  4 */ Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
 /*  5 */ StringContent: StringElement StringContent;

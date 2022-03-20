@@ -142,7 +142,7 @@ impl From<&Cfg> for NtGrammarGraph {
                 let mut from_node_index = pr_node_index;
                 for (si, s) in p.get_r().iter().enumerate().filter(|(_, s)| !s.is_switch()) {
                     let to_node_index = match s {
-                        Symbol::N(n) => {
+                        Symbol::N(n, _) => {
                             // Add edge from from RHS non-terminal instances to their non-terminal types
                             let from_index = nt_positions.get(&(pi, si + 1)).unwrap();
                             let nt_type_index = nt_node_indices.get(n).unwrap();

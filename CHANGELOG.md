@@ -13,7 +13,14 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
-## v0.5.10-pre - Not released yet
+## v0.6.0 - 2022-03-20
+
+* New experimental auto-generation feature is available now
+  * Documentation still has to be added.
+  * There will soon be a new example that uses the new feature here [JSON parser auto](https://github.com/jsinger67/json_parser_auto.git).
+  * The old behavior is still intact and should be usable without restrictions.
+
+## v0.5.10-pre - Not separately released, but included in 0.6.0
 
 * Refactoring of module user_trait_generator
   * Changed from a bunch of functions to a struct `UserTraitGenerator` with `impl`.

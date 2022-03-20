@@ -150,7 +150,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 13] = &[
-    // 0 - Grammar: GrammarList;
+    // 0 - Grammar: GrammarList /* Vec */;
     Production {
         lhs: 5,
         production: &[ParseType::N(6)],
@@ -180,7 +180,7 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 3,
         production: &[ParseType::T(5), ParseType::N(7), ParseType::N(9)],
     },
-    // 6 - Block: Begin BlockList End;
+    // 6 - Block: Begin BlockList /* Vec */ End;
     Production {
         lhs: 1,
         production: &[ParseType::N(4), ParseType::N(2), ParseType::N(0)],

@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
+
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use crate::parser::parol_grammar::ParolGrammar;
+use std::path::Path;
 
 ///
 /// The `ParolGrammarTrait` trait is automatically generated for the
@@ -18,7 +21,7 @@ pub trait ParolGrammarTrait {
     ///
     /// Implement this method if you need the provided information
     ///
-    fn init(&mut self, _file_name: &std::path::Path) {}
+    fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for production 0:
     ///
@@ -193,7 +196,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// GrammarDefinition: "%%" Production GrammarDefinitionList;
+    /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
     ///
     fn grammar_definition_14(
         &mut self,
@@ -207,7 +210,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinitionList: Production GrammarDefinitionList;
+    /// GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
     ///
     fn grammar_definition_list_15(
         &mut self,
@@ -220,7 +223,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// GrammarDefinitionList: ;
+    /// GrammarDefinitionList: ; // Vec<T>::New
     ///
     fn grammar_definition_list_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -243,7 +246,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 18:
     ///
-    /// Alternations: Alternation AlternationsList;
+    /// Alternations: Alternation AlternationsList /* Vec */;
     ///
     fn alternations_18(
         &mut self,
@@ -256,7 +259,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// AlternationsList: "\|" Alternation AlternationsList;
+    /// AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
     ///
     fn alternations_list_19(
         &mut self,
@@ -270,7 +273,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// AlternationsList: ;
+    /// AlternationsList: ; // Vec<T>::New
     ///
     fn alternations_list_20(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -278,7 +281,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// Alternation: AlternationList;
+    /// Alternation: AlternationList /* Vec */;
     ///
     fn alternation_21(
         &mut self,
@@ -290,7 +293,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationList: Factor AlternationList;
+    /// AlternationList: Factor AlternationList; // Vec<T>::Push
     ///
     fn alternation_list_22(
         &mut self,
@@ -303,7 +306,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// AlternationList: ;
+    /// AlternationList: ; // Vec<T>::New
     ///
     fn alternation_list_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -500,7 +503,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 39:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList "\}";
+    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
     ///
     fn scanner_state_39(
         &mut self,
@@ -516,7 +519,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 40:
     ///
-    /// ScannerStateList: ScannerDirectives ScannerStateList;
+    /// ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
     ///
     fn scanner_state_list_40(
         &mut self,
@@ -529,7 +532,7 @@ pub trait ParolGrammarTrait {
 
     /// Semantic action for production 41:
     ///
-    /// ScannerStateList: ;
+    /// ScannerStateList: ; // Vec<T>::New
     ///
     fn scanner_state_list_41(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -641,9 +644,7 @@ impl UserActionsTrait for ParolGrammar {
     /// This function is called by the parser before parsing starts.
     /// Is is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        ParolGrammarTrait::init(self, file_name);
-    }
+    fn init(&mut self, _file_name: &Path) {}
 
     ///
     /// This function is implemented automatically for the user's item ParolGrammar.
@@ -656,39 +657,22 @@ impl UserActionsTrait for ParolGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.parol_0(&children[0], &children[1], parse_tree),
-
             1 => self.prolog_1(&children[0], &children[1], &children[2], parse_tree),
-
             2 => self.start_declaration_2(&children[0], &children[1], parse_tree),
-
             3 => self.declarations_3(&children[0], &children[1], parse_tree),
-
             4 => self.declarations_4(parse_tree),
-
             5 => self.declaration_5(&children[0], &children[1], parse_tree),
-
             6 => self.declaration_6(&children[0], &children[1], parse_tree),
-
             7 => self.declaration_7(&children[0], parse_tree),
-
             8 => self.scanner_directives_8(&children[0], &children[1], parse_tree),
-
             9 => self.scanner_directives_9(&children[0], &children[1], &children[2], parse_tree),
-
             10 => self.scanner_directives_10(&children[0], parse_tree),
-
             11 => self.scanner_directives_11(&children[0], parse_tree),
-
             12 => self.scanner_states_12(&children[0], &children[1], parse_tree),
-
             13 => self.scanner_states_13(parse_tree),
-
             14 => self.grammar_definition_14(&children[0], &children[1], &children[2], parse_tree),
-
             15 => self.grammar_definition_list_15(&children[0], &children[1], parse_tree),
-
             16 => self.grammar_definition_list_16(parse_tree),
-
             17 => self.production_17(
                 &children[0],
                 &children[1],
@@ -696,37 +680,21 @@ impl UserActionsTrait for ParolGrammar {
                 &children[3],
                 parse_tree,
             ),
-
             18 => self.alternations_18(&children[0], &children[1], parse_tree),
-
             19 => self.alternations_list_19(&children[0], &children[1], &children[2], parse_tree),
-
             20 => self.alternations_list_20(parse_tree),
-
             21 => self.alternation_21(&children[0], parse_tree),
-
             22 => self.alternation_list_22(&children[0], &children[1], parse_tree),
-
             23 => self.alternation_list_23(parse_tree),
-
             24 => self.factor_24(&children[0], parse_tree),
-
             25 => self.factor_25(&children[0], parse_tree),
-
             26 => self.factor_26(&children[0], parse_tree),
-
             27 => self.factor_27(&children[0], parse_tree),
-
             28 => self.symbol_28(&children[0], parse_tree),
-
             29 => self.symbol_29(&children[0], parse_tree),
-
             30 => self.symbol_30(&children[0], parse_tree),
-
             31 => self.symbol_31(&children[0], parse_tree),
-
             32 => self.simple_token_32(&children[0], parse_tree),
-
             33 => self.token_with_states_33(
                 &children[0],
                 &children[1],
@@ -734,17 +702,11 @@ impl UserActionsTrait for ParolGrammar {
                 &children[3],
                 parse_tree,
             ),
-
             34 => self.group_34(&children[0], &children[1], &children[2], parse_tree),
-
             35 => self.optional_35(&children[0], &children[1], &children[2], parse_tree),
-
             36 => self.repeat_36(&children[0], &children[1], &children[2], parse_tree),
-
             37 => self.identifier_37(&children[0], parse_tree),
-
             38 => self.string_38(&children[0], parse_tree),
-
             39 => self.scanner_state_39(
                 &children[0],
                 &children[1],
@@ -753,17 +715,11 @@ impl UserActionsTrait for ParolGrammar {
                 &children[4],
                 parse_tree,
             ),
-
             40 => self.scanner_state_list_40(&children[0], &children[1], parse_tree),
-
             41 => self.scanner_state_list_41(parse_tree),
-
             42 => self.state_list_42(&children[0], &children[1], parse_tree),
-
             43 => self.state_list_rest_43(&children[0], &children[1], &children[2], parse_tree),
-
             44 => self.state_list_rest_44(parse_tree),
-
             45 => self.scanner_switch_45(
                 &children[0],
                 &children[1],
@@ -771,7 +727,6 @@ impl UserActionsTrait for ParolGrammar {
                 &children[3],
                 parse_tree,
             ),
-
             46 => self.scanner_switch_46(
                 &children[0],
                 &children[1],
@@ -779,13 +734,9 @@ impl UserActionsTrait for ParolGrammar {
                 &children[3],
                 parse_tree,
             ),
-
             47 => self.scanner_switch_47(&children[0], &children[1], &children[2], parse_tree),
-
             48 => self.scanner_name_opt_48(&children[0], parse_tree),
-
             49 => self.scanner_name_opt_49(parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

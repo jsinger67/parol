@@ -163,8 +163,12 @@ pub struct Builder {
     ///
     /// The CLI needs to be able to override this (mostly for debugging), hence the option.
     output_sanity_checks: bool,
+    /// Enables auto-generation of expanded grammar's semantic actions - experimental
+    auto_generate: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
+    /// Used for auto generation of user's grammar semantic action trait
+    parol_grammar: ParolGrammar,
 }
 impl Builder {
     /// Create a new builder fr use in a Cargo build script (`build.rs`).
@@ -233,8 +237,10 @@ impl Builder {
             parser_output_file: None,
             actions_output_file: None,
             expanded_grammar_output_file: None,
+            auto_generate: false,
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
+            parol_grammar: ParolGrammar::new(),
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -323,6 +329,14 @@ impl Builder {
     #[doc(hidden)]
     pub fn debug_verbose(&mut self) -> &mut Self {
         self.debug_verbose = true;
+        self
+    }
+    /// Enables the auto-generation of expanded grammar's semantic actions - experimental
+    ///
+    /// This is an internal method, and is only intended for the CLI.
+    #[doc(hidden)]
+    pub fn enable_auto_generation(&mut self) -> &mut Self {
+        self.auto_generate = true;
         self
     }
 
@@ -420,6 +434,7 @@ impl GrammarGenerator<'_> {
                 "Failed parsing grammar file {}",
                 self.grammar_file.display()
             ))?;
+        self.builder.parol_grammar = parol_grammar.clone();
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
@@ -442,7 +457,7 @@ impl GrammarGenerator<'_> {
         if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
             fs::write(
                 expanded_file,
-                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+                crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
             .into_diagnostic()
             .wrap_err("Error writing left-factored grammar!")?;
@@ -456,7 +471,7 @@ impl GrammarGenerator<'_> {
         if let Some(ref expanded_file) = self.builder.expanded_grammar_output_file {
             fs::write(
                 expanded_file,
-                crate::render_par_string(grammar_config, /* add_index_comment */ true),
+                crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
             .into_diagnostic()
             .wrap_err("Error writing left-factored grammar!")?;
@@ -508,6 +523,9 @@ impl GrammarGenerator<'_> {
         let parser_source = crate::generate_parser_source(
             grammar_config,
             &lexer_source,
+            self.builder.auto_generate,
+            &self.builder.user_type_name,
+            &self.builder.module_name,
             self.lookahead_dfa_s.as_ref().unwrap(),
         )
         .wrap_err("Failed to generate parser source!")?;
@@ -524,6 +542,8 @@ impl GrammarGenerator<'_> {
         let user_trait_generator = UserTraitGenerator::try_new(
             &self.builder.user_type_name,
             &self.builder.module_name,
+            self.builder.auto_generate,
+            &self.builder.parol_grammar,
             grammar_config,
         )?;
         let user_trait_source = user_trait_generator

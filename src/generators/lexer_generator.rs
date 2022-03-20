@@ -6,7 +6,7 @@ use crate::StrVec;
 use std::fmt::Debug;
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/scanner_build_info.rs"]
+#[template = "templates/scanner_build_info.rs.tpl"]
 struct ScannerBuildInfo {
     scanner_index: usize,
     scanner_name: String,
@@ -52,7 +52,7 @@ impl ScannerBuildInfo {
 }
 
 #[derive(BartDisplay, Debug, Default)]
-#[template = "templates/lexer_template.rs"]
+#[template = "templates/lexer_template.rs.tpl"]
 struct LexerData {
     augmented_terminals: StrVec,
     used_token_constants: String,

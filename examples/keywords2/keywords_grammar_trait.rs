@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use crate::keywords_grammar::KeywordsGrammar;
 use id_tree::Tree;
+
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use crate::keywords_grammar::KeywordsGrammar;
+use std::path::Path;
 
 ///
 /// The `KeywordsGrammarTrait` trait is automatically generated for the
@@ -18,11 +21,11 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Implement this method if you need the provided information
     ///
-    fn init(&mut self, _file_name: &std::path::Path) {}
+    fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for production 0:
     ///
-    /// Grammar: GrammarList;
+    /// Grammar: GrammarList /* Vec */;
     ///
     fn grammar_0(
         &mut self,
@@ -34,7 +37,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// GrammarList: Items GrammarList;
+    /// GrammarList: Items GrammarList; // Vec<T>::Push
     ///
     fn grammar_list_1(
         &mut self,
@@ -47,7 +50,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// GrammarList: ;
+    /// GrammarList: ; // Vec<T>::New
     ///
     fn grammar_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -93,7 +96,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// Block: Begin BlockList End;
+    /// Block: Begin BlockList /* Vec */ End;
     ///
     fn block_6(
         &mut self,
@@ -107,7 +110,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// BlockList: Items BlockList;
+    /// BlockList: Items BlockList; // Vec<T>::Push
     ///
     fn block_list_7(
         &mut self,
@@ -120,7 +123,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// BlockList: ;
+    /// BlockList: ; // Vec<T>::New
     ///
     fn block_list_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -181,9 +184,7 @@ impl UserActionsTrait for KeywordsGrammar {
     /// This function is called by the parser before parsing starts.
     /// Is is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        KeywordsGrammarTrait::init(self, file_name);
-    }
+    fn init(&mut self, _file_name: &Path) {}
 
     ///
     /// This function is implemented automatically for the user's item KeywordsGrammar.
@@ -196,31 +197,18 @@ impl UserActionsTrait for KeywordsGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.grammar_0(&children[0], parse_tree),
-
             1 => self.grammar_list_1(&children[0], &children[1], parse_tree),
-
             2 => self.grammar_list_2(parse_tree),
-
             3 => self.items_3(&children[0], parse_tree),
-
             4 => self.items_4(&children[0], parse_tree),
-
             5 => self.declaration_5(&children[0], &children[1], &children[2], parse_tree),
-
             6 => self.block_6(&children[0], &children[1], &children[2], parse_tree),
-
             7 => self.block_list_7(&children[0], &children[1], parse_tree),
-
             8 => self.block_list_8(parse_tree),
-
             9 => self.identifier_9(&children[0], parse_tree),
-
             10 => self.begin_10(&children[0], parse_tree),
-
             11 => self.end_11(&children[0], parse_tree),
-
             12 => self.var_12(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

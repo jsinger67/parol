@@ -36,7 +36,7 @@ pub fn reachable_non_terminals(cfg: &Cfg) -> BTreeSet<String> {
         for p in pr {
             if reachable_so_far.contains(&p.get_n()) {
                 for s in p.get_r() {
-                    if let Symbol::N(n) = s {
+                    if let Symbol::N(n, _) = s {
                         reachable_so_far.insert(n.clone());
                     }
                 }
@@ -194,7 +194,7 @@ pub fn reachable_from_production(cfg: &Cfg, prod_num: usize) -> BTreeSet<String>
         for p in pr {
             if reachable_so_far.contains(&p.get_n()) {
                 for s in p.get_r() {
-                    if let Symbol::N(n) = s {
+                    if let Symbol::N(n, _) = s {
                         reachable_so_far.insert(n.clone());
                     }
                 }
@@ -206,7 +206,7 @@ pub fn reachable_from_production(cfg: &Cfg, prod_num: usize) -> BTreeSet<String>
     let mut reachable: BTreeSet<String> = BTreeSet::new();
     let p = &cfg.pr[prod_num];
     for s in p.get_r() {
-        if let Symbol::N(n) = s {
+        if let Symbol::N(n, _) = s {
             reachable.insert(n.clone());
         }
     }
@@ -285,7 +285,7 @@ pub fn reachable_from_non_terminal(cfg: &Cfg, nt: &str) -> BTreeSet<String> {
         for p in pr {
             if reachable_so_far.contains(&p.get_n()) {
                 for s in p.get_r() {
-                    if let Symbol::N(n) = s {
+                    if let Symbol::N(n, _) = s {
                         reachable_so_far.insert(n.clone());
                     }
                 }
@@ -298,7 +298,7 @@ pub fn reachable_from_non_terminal(cfg: &Cfg, nt: &str) -> BTreeSet<String> {
     let mut reachable: BTreeSet<String> = BTreeSet::new();
     matching_prods.iter().for_each(|(_, p)| {
         for s in p.get_r() {
-            if let Symbol::N(n) = s {
+            if let Symbol::N(n, _) = s {
                 reachable.insert(n.clone());
             }
         }
@@ -369,7 +369,7 @@ pub fn nt_producing_productions(cfg: &Cfg, nt: &str) -> BTreeSet<usize> {
         .fold(BTreeSet::new(), |mut acc, (pi, p)| {
             if p.get_r()
                     .iter()
-                    .any(|s| matches!(s, Symbol::N(n) if reachable_of.get(n).unwrap().contains(nt) || n == nt))
+                    .any(|s| matches!(s, Symbol::N(n, _) if reachable_of.get(n).unwrap().contains(nt) || n == nt))
             {
                 acc.insert(pi);
             }

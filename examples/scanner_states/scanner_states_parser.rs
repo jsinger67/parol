@@ -166,7 +166,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 15] = &[
-    // 0 - Start: StartList;
+    // 0 - Start: StartList /* Vec */;
     Production {
         lhs: 5,
         production: &[ParseType::N(6)],

@@ -162,7 +162,7 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         let suffix_rule_name =
             generate_name(exclusions, first_rule.get_n_str().to_owned() + "Suffix");
         let mut prod = prefix.to_owned();
-        prod.push(Symbol::N(suffix_rule_name.clone()));
+        prod.push(Symbol::n(&suffix_rule_name));
         let prefix_rule = Pr::new(first_rule.get_n_str(), prod);
         let mut left_factored_rules = rules
             .iter()
@@ -179,7 +179,7 @@ pub fn left_factor(g: &Cfg) -> Cfg {
                 acc.push(p.get_n_str().to_owned());
             }
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::N(n) = s {
+                if let Symbol::N(n, _) = s {
                     if !acc.contains(n) {
                         acc.push(n.clone());
                     }

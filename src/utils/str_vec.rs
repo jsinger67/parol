@@ -55,6 +55,10 @@ impl StrVec {
         let space = " ".to_string();
         space.repeat(amount)
     }
+
+    pub fn pop(&mut self) -> Option<String> {
+        self.vec.pop()
+    }
 }
 
 pub struct StrVecIterator<'a> {
@@ -72,5 +76,13 @@ impl<'a> Iterator for StrVecIterator<'a> {
         } else {
             None
         }
+    }
+}
+
+impl<'a> IntoIterator for &'a StrVec {
+    type Item = &'a String;
+    type IntoIter = StrVecIterator<'a>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }

@@ -1,6 +1,8 @@
+use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::parser::parol_grammar::Factor;
 use crate::parser::to_grammar_config::try_from_factor;
+use miette::{IntoDiagnostic, Result};
 use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -77,7 +79,7 @@ impl Terminal {
     ///
     /// Formats self with the help of a scanner state resolver
     ///
-    pub fn format<R>(&self, scanner_state_resolver: R) -> String
+    pub fn format<R>(&self, scanner_state_resolver: R) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
     {
@@ -85,13 +87,13 @@ impl Terminal {
             Self::Trm(t, s) => {
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
-                    format!("\"{}\"", t)
+                    Ok(format!("\"{}\"", t))
                 } else {
-                    format!("<{}>\"{}\"", scanner_state_resolver(s), t)
+                    Ok(format!("<{}>\"{}\"", scanner_state_resolver(s), t))
                 }
             }
-            Self::Eps => "\u{03B5}".to_string(), // Lower creek letter Epsilon (ε)
-            Self::End => "$".to_string(),
+            Self::Eps => Ok("\u{03B5}".to_string()), // Lower creek letter Epsilon (ε)
+            Self::End => Ok("$".to_string()),
         }
     }
 }
@@ -136,7 +138,7 @@ pub enum Symbol {
     ///
     /// Non-terminal symbol, Meta symbol of the grammar.
     ///
-    N(String),
+    N(String, SymbolAttribute),
 
     ///
     /// Terminal symbol of the grammar.
@@ -168,7 +170,7 @@ impl Symbol {
     }
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
-        Self::N(n.to_owned())
+        Self::N(n.to_owned(), SymbolAttribute::default())
     }
     /// Creates a end-of-input terminal symbol
     pub fn e() -> Self {
@@ -184,7 +186,7 @@ impl Symbol {
     }
     /// Checks if self is a non-terminal
     pub fn is_n(&self) -> bool {
-        matches!(self, Self::N(_))
+        matches!(self, Self::N(_, _))
     }
     /// Checks if self is a end-of-input terminal
     pub fn is_end(&self) -> bool {
@@ -212,38 +214,50 @@ impl Symbol {
     }
     /// Returns a non-terminal if available
     pub fn get_n(&self) -> Option<String> {
-        if let Self::N(n) = &self {
+        if let Self::N(n, _) = &self {
             Some(n.clone())
         } else {
             None
         }
     }
     /// Returns a non-terminal reference if available
-    pub fn get_n_ref(&self) -> Option<&String> {
-        if let Self::N(n) = &self {
+    pub fn get_n_ref(&self) -> Option<&str> {
+        if let Self::N(n, _) = &self {
             Some(n)
         } else {
             None
         }
     }
 
+    /// Get the symbol attribute or a default value
+    pub fn attribute(&self) -> SymbolAttribute {
+        match self {
+            Symbol::N(_, a) => a.clone(),
+            _ => SymbolAttribute::None,
+        }
+    }
+
     /// Formats self with the help of a scanner state resolver
-    pub fn format<R>(&self, scanner_state_resolver: &R) -> String
+    pub fn format<R>(&self, scanner_state_resolver: &R) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
     {
         match self {
-            Self::N(n) => n.to_string(),
+            Self::N(n, a) => {
+                let mut s = String::new();
+                a.decorate(&mut s, n).into_diagnostic()?;
+                Ok(s)
+            }
             Self::T(t) => t.format(scanner_state_resolver),
             Self::S(s) => {
                 if *s == 0 {
-                    "%sc()".to_string()
+                    Ok("%sc()".to_string())
                 } else {
-                    format!("%sc({})", scanner_state_resolver(&[*s]))
+                    Ok(format!("%sc({})", scanner_state_resolver(&[*s])))
                 }
             }
-            Self::Push(s) => format!("%push({})", scanner_state_resolver(&[*s])),
-            Self::Pop => "%pop()".to_string(),
+            Self::Push(s) => Ok(format!("%push({})", scanner_state_resolver(&[*s]))),
+            Self::Pop => Ok("%pop()".to_string()),
         }
     }
 }
@@ -251,7 +265,11 @@ impl Symbol {
 impl Display for Symbol {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::N(n) => write!(f, "{}", n),
+            Self::N(n, a) => {
+                let mut s = String::new();
+                a.decorate(&mut s, n)?;
+                write!(f, "{}", s)
+            }
             Self::T(t) => write!(f, "{}", t),
             Self::S(s) => write!(f, "S({})", s),
             Self::Push(s) => write!(f, "Push({})", s),

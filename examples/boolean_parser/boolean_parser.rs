@@ -303,7 +303,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 35] = &[
-    // 0 - Expressions: Expression ExpressionsList ExpressionsSuffix;
+    // 0 - Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
     Production {
         lhs: 4,
         production: &[ParseType::N(6), ParseType::N(5), ParseType::N(3)],
@@ -333,7 +333,7 @@ pub const PRODUCTIONS: &[Production; 35] = &[
         lhs: 3,
         production: &[ParseType::N(17), ParseType::N(19)],
     },
-    // 6 - TailExpression: TailExpressionList;
+    // 6 - TailExpression: TailExpressionList /* Vec */;
     Production {
         lhs: 17,
         production: &[ParseType::N(18)],
