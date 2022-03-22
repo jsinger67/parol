@@ -22,6 +22,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --------------------------------------------------------------------------------------------------
+Write-Host "Building CalcAuto example..." -ForegroundColor Cyan
+./target/release/parol -f ./examples/calc_auto/calc.par -e ./examples/calc_auto/calc-exp.par -p ./examples/calc_auto/calc_parser.rs -a ./examples/calc_auto/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCont    
+}
+
+# --------------------------------------------------------------------------------------------------
 Write-Host "Building List example..." -ForegroundColor Cyan
 ./target/release/parol -f ./examples/list/list.par -e ./examples/list/list-exp.par -p ./examples/list/list_parser.rs -a ./examples/list/list_grammar_trait.rs -t ListGrammar -m list_grammar
 if ($LASTEXITCODE -ne 0) {

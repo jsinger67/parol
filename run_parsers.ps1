@@ -46,6 +46,13 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --------------------------------------------------------------------------------------------------
+Write-Host "Running CalcAuto example..." -ForegroundColor Cyan
+./target/release/examples/calc_auto ./examples/calc_auto/calc_test.txt
+if ($LASTEXITCODE -ne 0) {
+    ++$ErrorCount    
+}
+
+# --------------------------------------------------------------------------------------------------
 Write-Host "Running List example..." -ForegroundColor Cyan
 ./target/release/examples/list ./examples/list/list_test.txt
 if ($LASTEXITCODE -ne 0) {
