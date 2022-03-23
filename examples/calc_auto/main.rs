@@ -1,14 +1,20 @@
 #[macro_use]
 extern crate derive_builder;
-
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate miette;
+#[macro_use]
+extern crate thiserror;
 
 extern crate parol_runtime;
 
+mod assign_operator;
+mod binary_operator;
 mod calc_grammar;
 mod calc_grammar_trait;
 mod calc_parser;
+mod errors;
 
 use crate::calc_grammar::CalcGrammar;
 use crate::calc_parser::parse;
@@ -28,7 +34,7 @@ fn main() -> Result<()> {
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut calc_grammar = CalcGrammar::new();
-        let _syntax_tree = parse(&input, file_name.to_owned(), &mut calc_grammar)
+        let _syntax_tree = parse(&input, file_name.clone(), &mut calc_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("{}", calc_grammar);
         Ok(())

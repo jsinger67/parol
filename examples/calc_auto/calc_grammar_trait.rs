@@ -22,7 +22,7 @@ pub trait CalcGrammarTrait {
     ///
     /// calc: {instruction <0>";"};
     ///
-    fn calc(&mut self, _arg: Calc) -> Result<()> {
+    fn calc(&mut self, _arg: &Calc) -> Result<()> {
         Ok(())
     }
 
@@ -30,7 +30,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_op: <0>"==|!=";
     ///
-    fn equality_op(&mut self, _arg: EqualityOp) -> Result<()> {
+    fn equality_op(&mut self, _arg: &EqualityOp) -> Result<()> {
         Ok(())
     }
 
@@ -38,7 +38,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_op: <0>"(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
-    fn assign_op(&mut self, _arg: AssignOp) -> Result<()> {
+    fn assign_op(&mut self, _arg: &AssignOp) -> Result<()> {
         Ok(())
     }
 
@@ -46,7 +46,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_op: <0>"\|\|";
     ///
-    fn logical_or_op(&mut self, _arg: LogicalOrOp) -> Result<()> {
+    fn logical_or_op(&mut self, _arg: &LogicalOrOp) -> Result<()> {
         Ok(())
     }
 
@@ -54,7 +54,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_op: <0>"&&";
     ///
-    fn logical_and_op(&mut self, _arg: LogicalAndOp) -> Result<()> {
+    fn logical_and_op(&mut self, _arg: &LogicalAndOp) -> Result<()> {
         Ok(())
     }
 
@@ -62,7 +62,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_op: <0>"\|";
     ///
-    fn bitwise_or_op(&mut self, _arg: BitwiseOrOp) -> Result<()> {
+    fn bitwise_or_op(&mut self, _arg: &BitwiseOrOp) -> Result<()> {
         Ok(())
     }
 
@@ -70,7 +70,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_op: <0>"&";
     ///
-    fn bitwise_and_op(&mut self, _arg: BitwiseAndOp) -> Result<()> {
+    fn bitwise_and_op(&mut self, _arg: &BitwiseAndOp) -> Result<()> {
         Ok(())
     }
 
@@ -78,7 +78,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_op: <0>"<<|>>";
     ///
-    fn bitwise_shift_op(&mut self, _arg: BitwiseShiftOp) -> Result<()> {
+    fn bitwise_shift_op(&mut self, _arg: &BitwiseShiftOp) -> Result<()> {
         Ok(())
     }
 
@@ -86,7 +86,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_op: <0>"<=|<|>=|>";
     ///
-    fn relational_op(&mut self, _arg: RelationalOp) -> Result<()> {
+    fn relational_op(&mut self, _arg: &RelationalOp) -> Result<()> {
         Ok(())
     }
 
@@ -94,7 +94,7 @@ pub trait CalcGrammarTrait {
     ///
     /// plus: <0>"\+";
     ///
-    fn plus(&mut self, _arg: Plus) -> Result<()> {
+    fn plus(&mut self, _arg: &Plus) -> Result<()> {
         Ok(())
     }
 
@@ -102,7 +102,7 @@ pub trait CalcGrammarTrait {
     ///
     /// minus: <0>"-";
     ///
-    fn minus(&mut self, _arg: Minus) -> Result<()> {
+    fn minus(&mut self, _arg: &Minus) -> Result<()> {
         Ok(())
     }
 
@@ -110,7 +110,7 @@ pub trait CalcGrammarTrait {
     ///
     /// pow_op: <0>"\*\*";
     ///
-    fn pow_op(&mut self, _arg: PowOp) -> Result<()> {
+    fn pow_op(&mut self, _arg: &PowOp) -> Result<()> {
         Ok(())
     }
 
@@ -118,7 +118,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_op: <0>"\*|/|%";
     ///
-    fn mult_op(&mut self, _arg: MultOp) -> Result<()> {
+    fn mult_op(&mut self, _arg: &MultOp) -> Result<()> {
         Ok(())
     }
 
@@ -126,7 +126,7 @@ pub trait CalcGrammarTrait {
     ///
     /// instruction: assignment;
     ///
-    fn instruction(&mut self, _arg: Instruction) -> Result<()> {
+    fn instruction(&mut self, _arg: &Instruction) -> Result<()> {
         Ok(())
     }
 
@@ -134,7 +134,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_item: id assign_op;
     ///
-    fn assign_item(&mut self, _arg: AssignItem) -> Result<()> {
+    fn assign_item(&mut self, _arg: &AssignItem) -> Result<()> {
         Ok(())
     }
 
@@ -142,7 +142,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment: assign_item {assign_item} logical_or;
     ///
-    fn assignment(&mut self, _arg: Assignment) -> Result<()> {
+    fn assignment(&mut self, _arg: &Assignment) -> Result<()> {
         Ok(())
     }
 
@@ -150,7 +150,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or: logical_and {logical_or_op logical_and};
     ///
-    fn logical_or(&mut self, _arg: LogicalOr) -> Result<()> {
+    fn logical_or(&mut self, _arg: &LogicalOr) -> Result<()> {
         Ok(())
     }
 
@@ -158,7 +158,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and: bitwise_or {logical_and_op bitwise_or};
     ///
-    fn logical_and(&mut self, _arg: LogicalAnd) -> Result<()> {
+    fn logical_and(&mut self, _arg: &LogicalAnd) -> Result<()> {
         Ok(())
     }
 
@@ -166,7 +166,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or: bitwise_and {bitwise_or_op bitwise_and};
     ///
-    fn bitwise_or(&mut self, _arg: BitwiseOr) -> Result<()> {
+    fn bitwise_or(&mut self, _arg: &BitwiseOr) -> Result<()> {
         Ok(())
     }
 
@@ -174,7 +174,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and: equality {bitwise_and_op equality};
     ///
-    fn bitwise_and(&mut self, _arg: BitwiseAnd) -> Result<()> {
+    fn bitwise_and(&mut self, _arg: &BitwiseAnd) -> Result<()> {
         Ok(())
     }
 
@@ -182,7 +182,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality: relational {equality_op relational};
     ///
-    fn equality(&mut self, _arg: Equality) -> Result<()> {
+    fn equality(&mut self, _arg: &Equality) -> Result<()> {
         Ok(())
     }
 
@@ -190,7 +190,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational: bitwise_shift {relational_op bitwise_shift};
     ///
-    fn relational(&mut self, _arg: Relational) -> Result<()> {
+    fn relational(&mut self, _arg: &Relational) -> Result<()> {
         Ok(())
     }
 
@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift: summ {bitwise_shift_op summ};
     ///
-    fn bitwise_shift(&mut self, _arg: BitwiseShift) -> Result<()> {
+    fn bitwise_shift(&mut self, _arg: &BitwiseShift) -> Result<()> {
         Ok(())
     }
 
@@ -206,7 +206,7 @@ pub trait CalcGrammarTrait {
     ///
     /// add_op: plus | minus;
     ///
-    fn add_op(&mut self, _arg: AddOp) -> Result<()> {
+    fn add_op(&mut self, _arg: &AddOp) -> Result<()> {
         Ok(())
     }
 
@@ -214,7 +214,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ: mult {add_op mult};
     ///
-    fn summ(&mut self, _arg: Summ) -> Result<()> {
+    fn summ(&mut self, _arg: &Summ) -> Result<()> {
         Ok(())
     }
 
@@ -222,7 +222,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult: power {mult_op power};
     ///
-    fn mult(&mut self, _arg: Mult) -> Result<()> {
+    fn mult(&mut self, _arg: &Mult) -> Result<()> {
         Ok(())
     }
 
@@ -230,7 +230,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power: factor {pow_op factor};
     ///
-    fn power(&mut self, _arg: Power) -> Result<()> {
+    fn power(&mut self, _arg: &Power) -> Result<()> {
         Ok(())
     }
 
@@ -238,7 +238,7 @@ pub trait CalcGrammarTrait {
     ///
     /// negate: minus;
     ///
-    fn negate(&mut self, _arg: Negate) -> Result<()> {
+    fn negate(&mut self, _arg: &Negate) -> Result<()> {
         Ok(())
     }
 
@@ -246,7 +246,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: number | idref | negate factor | <0>"\(" logical_or <0>"\)";
     ///
-    fn factor(&mut self, _arg: Factor) -> Result<()> {
+    fn factor(&mut self, _arg: &Factor) -> Result<()> {
         Ok(())
     }
 
@@ -254,7 +254,7 @@ pub trait CalcGrammarTrait {
     ///
     /// number: <0>"0|[1-9][0-9]*";
     ///
-    fn number(&mut self, _arg: Number) -> Result<()> {
+    fn number(&mut self, _arg: &Number) -> Result<()> {
         Ok(())
     }
 
@@ -262,7 +262,7 @@ pub trait CalcGrammarTrait {
     ///
     /// idref: id;
     ///
-    fn idref(&mut self, _arg: Idref) -> Result<()> {
+    fn idref(&mut self, _arg: &Idref) -> Result<()> {
         Ok(())
     }
 
@@ -270,7 +270,7 @@ pub trait CalcGrammarTrait {
     ///
     /// id: <0>"[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn id(&mut self, _arg: Id) -> Result<()> {
+    fn id(&mut self, _arg: &Id) -> Result<()> {
         Ok(())
     }
 }
@@ -927,14 +927,14 @@ impl<'a> CalcGrammarAuto<'a> {
             calc_list_0.reverse();
             calc_list_0
         } else {
-            Err(miette!("{}: Expecting ASTType::CalcList", context))?
+            return Err(miette!("{}: Expecting ASTType::CalcList", context));
         };
         let calc_0 = CalcBuilder::default()
             .calc_list_0(calc_list_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.calc(calc_0.clone())?;
+        self.user_grammar.calc(&calc_0)?;
         self.push(ASTType::Calc(calc_0), context);
         Ok(())
     }
@@ -956,12 +956,12 @@ impl<'a> CalcGrammarAuto<'a> {
         let mut calc_list_2 = if let Some(ASTType::CalcList(calc_list_2)) = self.pop(context) {
             calc_list_2
         } else {
-            Err(miette!("{}: Expecting ASTType::CalcList", context))?
+            return Err(miette!("{}: Expecting ASTType::CalcList", context));
         };
         let instruction_0 = if let Some(ASTType::Instruction(instruction_0)) = self.pop(context) {
             instruction_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Instruction", context))?
+            return Err(miette!("{}: Expecting ASTType::Instruction", context));
         };
         let calc_list_1 = CalcListBuilder::default()
             .semicolon_1(semicolon_1)
@@ -1003,7 +1003,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.equality_op(equality_op_3.clone())?;
+        self.user_grammar.equality_op(&equality_op_3)?;
         self.push(ASTType::EqualityOp(equality_op_3), context);
         Ok(())
     }
@@ -1025,7 +1025,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assign_op(assign_op_4.clone())?;
+        self.user_grammar.assign_op(&assign_op_4)?;
         self.push(ASTType::AssignOp(assign_op_4), context);
         Ok(())
     }
@@ -1047,7 +1047,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_or_op(logical_or_op_5.clone())?;
+        self.user_grammar.logical_or_op(&logical_or_op_5)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_5), context);
         Ok(())
     }
@@ -1069,7 +1069,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_and_op(logical_and_op_6.clone())?;
+        self.user_grammar.logical_and_op(&logical_and_op_6)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_6), context);
         Ok(())
     }
@@ -1091,7 +1091,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_or_op(bitwise_or_op_7.clone())?;
+        self.user_grammar.bitwise_or_op(&bitwise_or_op_7)?;
         self.push(ASTType::BitwiseOrOp(bitwise_or_op_7), context);
         Ok(())
     }
@@ -1113,7 +1113,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_and_op(bitwise_and_op_8.clone())?;
+        self.user_grammar.bitwise_and_op(&bitwise_and_op_8)?;
         self.push(ASTType::BitwiseAndOp(bitwise_and_op_8), context);
         Ok(())
     }
@@ -1135,8 +1135,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar
-            .bitwise_shift_op(bitwise_shift_op_9.clone())?;
+        self.user_grammar.bitwise_shift_op(&bitwise_shift_op_9)?;
         self.push(ASTType::BitwiseShiftOp(bitwise_shift_op_9), context);
         Ok(())
     }
@@ -1158,7 +1157,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.relational_op(relational_op_10.clone())?;
+        self.user_grammar.relational_op(&relational_op_10)?;
         self.push(ASTType::RelationalOp(relational_op_10), context);
         Ok(())
     }
@@ -1180,7 +1179,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.plus(plus_11.clone())?;
+        self.user_grammar.plus(&plus_11)?;
         self.push(ASTType::Plus(plus_11), context);
         Ok(())
     }
@@ -1202,7 +1201,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.minus(minus_12.clone())?;
+        self.user_grammar.minus(&minus_12)?;
         self.push(ASTType::Minus(minus_12), context);
         Ok(())
     }
@@ -1224,7 +1223,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.pow_op(pow_op_13.clone())?;
+        self.user_grammar.pow_op(&pow_op_13)?;
         self.push(ASTType::PowOp(pow_op_13), context);
         Ok(())
     }
@@ -1246,7 +1245,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.mult_op(mult_op_14.clone())?;
+        self.user_grammar.mult_op(&mult_op_14)?;
         self.push(ASTType::MultOp(mult_op_14), context);
         Ok(())
     }
@@ -1265,7 +1264,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let assignment_0 = if let Some(ASTType::Assignment(assignment_0)) = self.pop(context) {
             assignment_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Assignment", context))?
+            return Err(miette!("{}: Expecting ASTType::Assignment", context));
         };
         let instruction_15 = Instruction15Builder::default()
             .assignment_0(Box::new(assignment_0))
@@ -1273,7 +1272,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let instruction_15 = Instruction::Instruction15(instruction_15);
         // Calling user action here
-        self.user_grammar.instruction(instruction_15.clone())?;
+        self.user_grammar.instruction(&instruction_15)?;
         self.push(ASTType::Instruction(instruction_15), context);
         Ok(())
     }
@@ -1292,7 +1291,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let logical_or_0 = if let Some(ASTType::LogicalOr(logical_or_0)) = self.pop(context) {
             logical_or_0
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalOr", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
         };
         let instruction_16 = Instruction16Builder::default()
             .logical_or_0(Box::new(logical_or_0))
@@ -1300,7 +1299,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let instruction_16 = Instruction::Instruction16(instruction_16);
         // Calling user action here
-        self.user_grammar.instruction(instruction_16.clone())?;
+        self.user_grammar.instruction(&instruction_16)?;
         self.push(ASTType::Instruction(instruction_16), context);
         Ok(())
     }
@@ -1320,12 +1319,12 @@ impl<'a> CalcGrammarAuto<'a> {
         let assign_op_1 = if let Some(ASTType::AssignOp(assign_op_1)) = self.pop(context) {
             assign_op_1
         } else {
-            Err(miette!("{}: Expecting ASTType::AssignOp", context))?
+            return Err(miette!("{}: Expecting ASTType::AssignOp", context));
         };
         let id_0 = if let Some(ASTType::Id(id_0)) = self.pop(context) {
             id_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Id", context))?
+            return Err(miette!("{}: Expecting ASTType::Id", context));
         };
         let assign_item_17 = AssignItemBuilder::default()
             .id_0(Box::new(id_0))
@@ -1333,7 +1332,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assign_item(assign_item_17.clone())?;
+        self.user_grammar.assign_item(&assign_item_17)?;
         self.push(ASTType::AssignItem(assign_item_17), context);
         Ok(())
     }
@@ -1354,19 +1353,19 @@ impl<'a> CalcGrammarAuto<'a> {
         let logical_or_2 = if let Some(ASTType::LogicalOr(logical_or_2)) = self.pop(context) {
             logical_or_2
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalOr", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
         };
         let assignment_list_1 =
             if let Some(ASTType::AssignmentList(mut assignment_list_1)) = self.pop(context) {
                 assignment_list_1.reverse();
                 assignment_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::AssignmentList", context))?
+                return Err(miette!("{}: Expecting ASTType::AssignmentList", context));
             };
         let assign_item_0 = if let Some(ASTType::AssignItem(assign_item_0)) = self.pop(context) {
             assign_item_0
         } else {
-            Err(miette!("{}: Expecting ASTType::AssignItem", context))?
+            return Err(miette!("{}: Expecting ASTType::AssignItem", context));
         };
         let assignment_18 = AssignmentBuilder::default()
             .assign_item_0(Box::new(assign_item_0))
@@ -1375,7 +1374,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assignment(assignment_18.clone())?;
+        self.user_grammar.assignment(&assignment_18)?;
         self.push(ASTType::Assignment(assignment_18), context);
         Ok(())
     }
@@ -1396,12 +1395,12 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::AssignmentList(assignment_list_1)) = self.pop(context) {
                 assignment_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::AssignmentList", context))?
+                return Err(miette!("{}: Expecting ASTType::AssignmentList", context));
             };
         let assign_item_0 = if let Some(ASTType::AssignItem(assign_item_0)) = self.pop(context) {
             assign_item_0
         } else {
-            Err(miette!("{}: Expecting ASTType::AssignItem", context))?
+            return Err(miette!("{}: Expecting ASTType::AssignItem", context));
         };
         let assignment_list_19 = AssignmentListBuilder::default()
             .assign_item_0(Box::new(assign_item_0))
@@ -1442,12 +1441,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 logical_or_list_1.reverse();
                 logical_or_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::LogicalOrList", context))?
+                return Err(miette!("{}: Expecting ASTType::LogicalOrList", context));
             };
         let logical_and_0 = if let Some(ASTType::LogicalAnd(logical_and_0)) = self.pop(context) {
             logical_and_0
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalAnd", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalAnd", context));
         };
         let logical_or_21 = LogicalOrBuilder::default()
             .logical_and_0(Box::new(logical_and_0))
@@ -1455,7 +1454,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_or(logical_or_21.clone())?;
+        self.user_grammar.logical_or(&logical_or_21)?;
         self.push(ASTType::LogicalOr(logical_or_21), context);
         Ok(())
     }
@@ -1477,18 +1476,18 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::LogicalOrList(logical_or_list_2)) = self.pop(context) {
                 logical_or_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::LogicalOrList", context))?
+                return Err(miette!("{}: Expecting ASTType::LogicalOrList", context));
             };
         let logical_and_1 = if let Some(ASTType::LogicalAnd(logical_and_1)) = self.pop(context) {
             logical_and_1
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalAnd", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalAnd", context));
         };
         let logical_or_op_0 = if let Some(ASTType::LogicalOrOp(logical_or_op_0)) = self.pop(context)
         {
             logical_or_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalOrOp", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalOrOp", context));
         };
         let logical_or_list_22 = LogicalOrListBuilder::default()
             .logical_and_1(Box::new(logical_and_1))
@@ -1530,12 +1529,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 logical_and_list_1.reverse();
                 logical_and_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::LogicalAndList", context))?
+                return Err(miette!("{}: Expecting ASTType::LogicalAndList", context));
             };
         let bitwise_or_0 = if let Some(ASTType::BitwiseOr(bitwise_or_0)) = self.pop(context) {
             bitwise_or_0
         } else {
-            Err(miette!("{}: Expecting ASTType::BitwiseOr", context))?
+            return Err(miette!("{}: Expecting ASTType::BitwiseOr", context));
         };
         let logical_and_24 = LogicalAndBuilder::default()
             .bitwise_or_0(Box::new(bitwise_or_0))
@@ -1543,7 +1542,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_and(logical_and_24.clone())?;
+        self.user_grammar.logical_and(&logical_and_24)?;
         self.push(ASTType::LogicalAnd(logical_and_24), context);
         Ok(())
     }
@@ -1565,18 +1564,18 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::LogicalAndList(logical_and_list_2)) = self.pop(context) {
                 logical_and_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::LogicalAndList", context))?
+                return Err(miette!("{}: Expecting ASTType::LogicalAndList", context));
             };
         let bitwise_or_1 = if let Some(ASTType::BitwiseOr(bitwise_or_1)) = self.pop(context) {
             bitwise_or_1
         } else {
-            Err(miette!("{}: Expecting ASTType::BitwiseOr", context))?
+            return Err(miette!("{}: Expecting ASTType::BitwiseOr", context));
         };
         let logical_and_op_0 =
             if let Some(ASTType::LogicalAndOp(logical_and_op_0)) = self.pop(context) {
                 logical_and_op_0
             } else {
-                Err(miette!("{}: Expecting ASTType::LogicalAndOp", context))?
+                return Err(miette!("{}: Expecting ASTType::LogicalAndOp", context));
             };
         let logical_and_list_25 = LogicalAndListBuilder::default()
             .bitwise_or_1(Box::new(bitwise_or_1))
@@ -1618,12 +1617,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 bitwise_or_list_1.reverse();
                 bitwise_or_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseOrList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseOrList", context));
             };
         let bitwise_and_0 = if let Some(ASTType::BitwiseAnd(bitwise_and_0)) = self.pop(context) {
             bitwise_and_0
         } else {
-            Err(miette!("{}: Expecting ASTType::BitwiseAnd", context))?
+            return Err(miette!("{}: Expecting ASTType::BitwiseAnd", context));
         };
         let bitwise_or_27 = BitwiseOrBuilder::default()
             .bitwise_and_0(Box::new(bitwise_and_0))
@@ -1631,7 +1630,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_or(bitwise_or_27.clone())?;
+        self.user_grammar.bitwise_or(&bitwise_or_27)?;
         self.push(ASTType::BitwiseOr(bitwise_or_27), context);
         Ok(())
     }
@@ -1653,18 +1652,18 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::BitwiseOrList(bitwise_or_list_2)) = self.pop(context) {
                 bitwise_or_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseOrList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseOrList", context));
             };
         let bitwise_and_1 = if let Some(ASTType::BitwiseAnd(bitwise_and_1)) = self.pop(context) {
             bitwise_and_1
         } else {
-            Err(miette!("{}: Expecting ASTType::BitwiseAnd", context))?
+            return Err(miette!("{}: Expecting ASTType::BitwiseAnd", context));
         };
         let bitwise_or_op_0 = if let Some(ASTType::BitwiseOrOp(bitwise_or_op_0)) = self.pop(context)
         {
             bitwise_or_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::BitwiseOrOp", context))?
+            return Err(miette!("{}: Expecting ASTType::BitwiseOrOp", context));
         };
         let bitwise_or_list_28 = BitwiseOrListBuilder::default()
             .bitwise_and_1(Box::new(bitwise_and_1))
@@ -1706,12 +1705,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 bitwise_and_list_1.reverse();
                 bitwise_and_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseAndList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseAndList", context));
             };
         let equality_0 = if let Some(ASTType::Equality(equality_0)) = self.pop(context) {
             equality_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Equality", context))?
+            return Err(miette!("{}: Expecting ASTType::Equality", context));
         };
         let bitwise_and_30 = BitwiseAndBuilder::default()
             .equality_0(Box::new(equality_0))
@@ -1719,7 +1718,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_and(bitwise_and_30.clone())?;
+        self.user_grammar.bitwise_and(&bitwise_and_30)?;
         self.push(ASTType::BitwiseAnd(bitwise_and_30), context);
         Ok(())
     }
@@ -1741,18 +1740,18 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::BitwiseAndList(bitwise_and_list_2)) = self.pop(context) {
                 bitwise_and_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseAndList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseAndList", context));
             };
         let equality_1 = if let Some(ASTType::Equality(equality_1)) = self.pop(context) {
             equality_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Equality", context))?
+            return Err(miette!("{}: Expecting ASTType::Equality", context));
         };
         let bitwise_and_op_0 =
             if let Some(ASTType::BitwiseAndOp(bitwise_and_op_0)) = self.pop(context) {
                 bitwise_and_op_0
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseAndOp", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseAndOp", context));
             };
         let bitwise_and_list_31 = BitwiseAndListBuilder::default()
             .equality_1(Box::new(equality_1))
@@ -1794,12 +1793,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 equality_list_1.reverse();
                 equality_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::EqualityList", context))?
+                return Err(miette!("{}: Expecting ASTType::EqualityList", context));
             };
         let relational_0 = if let Some(ASTType::Relational(relational_0)) = self.pop(context) {
             relational_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Relational", context))?
+            return Err(miette!("{}: Expecting ASTType::Relational", context));
         };
         let equality_33 = EqualityBuilder::default()
             .relational_0(Box::new(relational_0))
@@ -1807,7 +1806,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.equality(equality_33.clone())?;
+        self.user_grammar.equality(&equality_33)?;
         self.push(ASTType::Equality(equality_33), context);
         Ok(())
     }
@@ -1829,17 +1828,17 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::EqualityList(equality_list_2)) = self.pop(context) {
                 equality_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::EqualityList", context))?
+                return Err(miette!("{}: Expecting ASTType::EqualityList", context));
             };
         let relational_1 = if let Some(ASTType::Relational(relational_1)) = self.pop(context) {
             relational_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Relational", context))?
+            return Err(miette!("{}: Expecting ASTType::Relational", context));
         };
         let equality_op_0 = if let Some(ASTType::EqualityOp(equality_op_0)) = self.pop(context) {
             equality_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::EqualityOp", context))?
+            return Err(miette!("{}: Expecting ASTType::EqualityOp", context));
         };
         let equality_list_34 = EqualityListBuilder::default()
             .relational_1(Box::new(relational_1))
@@ -1881,13 +1880,13 @@ impl<'a> CalcGrammarAuto<'a> {
                 relational_list_1.reverse();
                 relational_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::RelationalList", context))?
+                return Err(miette!("{}: Expecting ASTType::RelationalList", context));
             };
         let bitwise_shift_0 =
             if let Some(ASTType::BitwiseShift(bitwise_shift_0)) = self.pop(context) {
                 bitwise_shift_0
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseShift", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseShift", context));
             };
         let relational_36 = RelationalBuilder::default()
             .bitwise_shift_0(Box::new(bitwise_shift_0))
@@ -1895,7 +1894,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.relational(relational_36.clone())?;
+        self.user_grammar.relational(&relational_36)?;
         self.push(ASTType::Relational(relational_36), context);
         Ok(())
     }
@@ -1917,19 +1916,19 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::RelationalList(relational_list_2)) = self.pop(context) {
                 relational_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::RelationalList", context))?
+                return Err(miette!("{}: Expecting ASTType::RelationalList", context));
             };
         let bitwise_shift_1 =
             if let Some(ASTType::BitwiseShift(bitwise_shift_1)) = self.pop(context) {
                 bitwise_shift_1
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseShift", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseShift", context));
             };
         let relational_op_0 =
             if let Some(ASTType::RelationalOp(relational_op_0)) = self.pop(context) {
                 relational_op_0
             } else {
-                Err(miette!("{}: Expecting ASTType::RelationalOp", context))?
+                return Err(miette!("{}: Expecting ASTType::RelationalOp", context));
             };
         let relational_list_37 = RelationalListBuilder::default()
             .bitwise_shift_1(Box::new(bitwise_shift_1))
@@ -1971,12 +1970,12 @@ impl<'a> CalcGrammarAuto<'a> {
                 bitwise_shift_list_1.reverse();
                 bitwise_shift_list_1
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseShiftList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseShiftList", context));
             };
         let summ_0 = if let Some(ASTType::Summ(summ_0)) = self.pop(context) {
             summ_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Summ", context))?
+            return Err(miette!("{}: Expecting ASTType::Summ", context));
         };
         let bitwise_shift_39 = BitwiseShiftBuilder::default()
             .summ_0(Box::new(summ_0))
@@ -1984,7 +1983,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_shift(bitwise_shift_39.clone())?;
+        self.user_grammar.bitwise_shift(&bitwise_shift_39)?;
         self.push(ASTType::BitwiseShift(bitwise_shift_39), context);
         Ok(())
     }
@@ -2006,18 +2005,18 @@ impl<'a> CalcGrammarAuto<'a> {
             if let Some(ASTType::BitwiseShiftList(bitwise_shift_list_2)) = self.pop(context) {
                 bitwise_shift_list_2
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseShiftList", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseShiftList", context));
             };
         let summ_1 = if let Some(ASTType::Summ(summ_1)) = self.pop(context) {
             summ_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Summ", context))?
+            return Err(miette!("{}: Expecting ASTType::Summ", context));
         };
         let bitwise_shift_op_0 =
             if let Some(ASTType::BitwiseShiftOp(bitwise_shift_op_0)) = self.pop(context) {
                 bitwise_shift_op_0
             } else {
-                Err(miette!("{}: Expecting ASTType::BitwiseShiftOp", context))?
+                return Err(miette!("{}: Expecting ASTType::BitwiseShiftOp", context));
             };
         let bitwise_shift_list_40 = BitwiseShiftListBuilder::default()
             .summ_1(Box::new(summ_1))
@@ -2056,7 +2055,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let plus_0 = if let Some(ASTType::Plus(plus_0)) = self.pop(context) {
             plus_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Plus", context))?
+            return Err(miette!("{}: Expecting ASTType::Plus", context));
         };
         let add_op_42 = AddOp42Builder::default()
             .plus_0(Box::new(plus_0))
@@ -2064,7 +2063,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let add_op_42 = AddOp::AddOp42(add_op_42);
         // Calling user action here
-        self.user_grammar.add_op(add_op_42.clone())?;
+        self.user_grammar.add_op(&add_op_42)?;
         self.push(ASTType::AddOp(add_op_42), context);
         Ok(())
     }
@@ -2083,7 +2082,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let minus_0 = if let Some(ASTType::Minus(minus_0)) = self.pop(context) {
             minus_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Minus", context))?
+            return Err(miette!("{}: Expecting ASTType::Minus", context));
         };
         let add_op_43 = AddOp43Builder::default()
             .minus_0(Box::new(minus_0))
@@ -2091,7 +2090,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let add_op_43 = AddOp::AddOp43(add_op_43);
         // Calling user action here
-        self.user_grammar.add_op(add_op_43.clone())?;
+        self.user_grammar.add_op(&add_op_43)?;
         self.push(ASTType::AddOp(add_op_43), context);
         Ok(())
     }
@@ -2112,12 +2111,12 @@ impl<'a> CalcGrammarAuto<'a> {
             summ_list_1.reverse();
             summ_list_1
         } else {
-            Err(miette!("{}: Expecting ASTType::SummList", context))?
+            return Err(miette!("{}: Expecting ASTType::SummList", context));
         };
         let mult_0 = if let Some(ASTType::Mult(mult_0)) = self.pop(context) {
             mult_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Mult", context))?
+            return Err(miette!("{}: Expecting ASTType::Mult", context));
         };
         let summ_44 = SummBuilder::default()
             .mult_0(Box::new(mult_0))
@@ -2125,7 +2124,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.summ(summ_44.clone())?;
+        self.user_grammar.summ(&summ_44)?;
         self.push(ASTType::Summ(summ_44), context);
         Ok(())
     }
@@ -2146,17 +2145,17 @@ impl<'a> CalcGrammarAuto<'a> {
         let mut summ_list_2 = if let Some(ASTType::SummList(summ_list_2)) = self.pop(context) {
             summ_list_2
         } else {
-            Err(miette!("{}: Expecting ASTType::SummList", context))?
+            return Err(miette!("{}: Expecting ASTType::SummList", context));
         };
         let mult_1 = if let Some(ASTType::Mult(mult_1)) = self.pop(context) {
             mult_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Mult", context))?
+            return Err(miette!("{}: Expecting ASTType::Mult", context));
         };
         let add_op_0 = if let Some(ASTType::AddOp(add_op_0)) = self.pop(context) {
             add_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::AddOp", context))?
+            return Err(miette!("{}: Expecting ASTType::AddOp", context));
         };
         let summ_list_45 = SummListBuilder::default()
             .mult_1(Box::new(mult_1))
@@ -2197,12 +2196,12 @@ impl<'a> CalcGrammarAuto<'a> {
             mult_list_1.reverse();
             mult_list_1
         } else {
-            Err(miette!("{}: Expecting ASTType::MultList", context))?
+            return Err(miette!("{}: Expecting ASTType::MultList", context));
         };
         let power_0 = if let Some(ASTType::Power(power_0)) = self.pop(context) {
             power_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Power", context))?
+            return Err(miette!("{}: Expecting ASTType::Power", context));
         };
         let mult_47 = MultBuilder::default()
             .power_0(Box::new(power_0))
@@ -2210,7 +2209,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.mult(mult_47.clone())?;
+        self.user_grammar.mult(&mult_47)?;
         self.push(ASTType::Mult(mult_47), context);
         Ok(())
     }
@@ -2231,17 +2230,17 @@ impl<'a> CalcGrammarAuto<'a> {
         let mut mult_list_2 = if let Some(ASTType::MultList(mult_list_2)) = self.pop(context) {
             mult_list_2
         } else {
-            Err(miette!("{}: Expecting ASTType::MultList", context))?
+            return Err(miette!("{}: Expecting ASTType::MultList", context));
         };
         let power_1 = if let Some(ASTType::Power(power_1)) = self.pop(context) {
             power_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Power", context))?
+            return Err(miette!("{}: Expecting ASTType::Power", context));
         };
         let mult_op_0 = if let Some(ASTType::MultOp(mult_op_0)) = self.pop(context) {
             mult_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::MultOp", context))?
+            return Err(miette!("{}: Expecting ASTType::MultOp", context));
         };
         let mult_list_48 = MultListBuilder::default()
             .power_1(Box::new(power_1))
@@ -2282,12 +2281,12 @@ impl<'a> CalcGrammarAuto<'a> {
             power_list_1.reverse();
             power_list_1
         } else {
-            Err(miette!("{}: Expecting ASTType::PowerList", context))?
+            return Err(miette!("{}: Expecting ASTType::PowerList", context));
         };
         let factor_0 = if let Some(ASTType::Factor(factor_0)) = self.pop(context) {
             factor_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Factor", context))?
+            return Err(miette!("{}: Expecting ASTType::Factor", context));
         };
         let power_50 = PowerBuilder::default()
             .factor_0(Box::new(factor_0))
@@ -2295,7 +2294,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.power(power_50.clone())?;
+        self.user_grammar.power(&power_50)?;
         self.push(ASTType::Power(power_50), context);
         Ok(())
     }
@@ -2316,17 +2315,17 @@ impl<'a> CalcGrammarAuto<'a> {
         let mut power_list_2 = if let Some(ASTType::PowerList(power_list_2)) = self.pop(context) {
             power_list_2
         } else {
-            Err(miette!("{}: Expecting ASTType::PowerList", context))?
+            return Err(miette!("{}: Expecting ASTType::PowerList", context));
         };
         let factor_1 = if let Some(ASTType::Factor(factor_1)) = self.pop(context) {
             factor_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Factor", context))?
+            return Err(miette!("{}: Expecting ASTType::Factor", context));
         };
         let pow_op_0 = if let Some(ASTType::PowOp(pow_op_0)) = self.pop(context) {
             pow_op_0
         } else {
-            Err(miette!("{}: Expecting ASTType::PowOp", context))?
+            return Err(miette!("{}: Expecting ASTType::PowOp", context));
         };
         let power_list_51 = PowerListBuilder::default()
             .factor_1(Box::new(factor_1))
@@ -2365,14 +2364,14 @@ impl<'a> CalcGrammarAuto<'a> {
         let minus_0 = if let Some(ASTType::Minus(minus_0)) = self.pop(context) {
             minus_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Minus", context))?
+            return Err(miette!("{}: Expecting ASTType::Minus", context));
         };
         let negate_53 = NegateBuilder::default()
             .minus_0(Box::new(minus_0))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.negate(negate_53.clone())?;
+        self.user_grammar.negate(&negate_53)?;
         self.push(ASTType::Negate(negate_53), context);
         Ok(())
     }
@@ -2391,7 +2390,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let number_0 = if let Some(ASTType::Number(number_0)) = self.pop(context) {
             number_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Number", context))?
+            return Err(miette!("{}: Expecting ASTType::Number", context));
         };
         let factor_54 = Factor54Builder::default()
             .number_0(Box::new(number_0))
@@ -2399,7 +2398,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let factor_54 = Factor::Factor54(factor_54);
         // Calling user action here
-        self.user_grammar.factor(factor_54.clone())?;
+        self.user_grammar.factor(&factor_54)?;
         self.push(ASTType::Factor(factor_54), context);
         Ok(())
     }
@@ -2418,7 +2417,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let idref_0 = if let Some(ASTType::Idref(idref_0)) = self.pop(context) {
             idref_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Idref", context))?
+            return Err(miette!("{}: Expecting ASTType::Idref", context));
         };
         let factor_55 = Factor55Builder::default()
             .idref_0(Box::new(idref_0))
@@ -2426,7 +2425,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let factor_55 = Factor::Factor55(factor_55);
         // Calling user action here
-        self.user_grammar.factor(factor_55.clone())?;
+        self.user_grammar.factor(&factor_55)?;
         self.push(ASTType::Factor(factor_55), context);
         Ok(())
     }
@@ -2446,12 +2445,12 @@ impl<'a> CalcGrammarAuto<'a> {
         let factor_1 = if let Some(ASTType::Factor(factor_1)) = self.pop(context) {
             factor_1
         } else {
-            Err(miette!("{}: Expecting ASTType::Factor", context))?
+            return Err(miette!("{}: Expecting ASTType::Factor", context));
         };
         let negate_0 = if let Some(ASTType::Negate(negate_0)) = self.pop(context) {
             negate_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Negate", context))?
+            return Err(miette!("{}: Expecting ASTType::Negate", context));
         };
         let factor_56 = Factor56Builder::default()
             .negate_0(Box::new(negate_0))
@@ -2460,7 +2459,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let factor_56 = Factor::Factor56(factor_56);
         // Calling user action here
-        self.user_grammar.factor(factor_56.clone())?;
+        self.user_grammar.factor(&factor_56)?;
         self.push(ASTType::Factor(factor_56), context);
         Ok(())
     }
@@ -2483,7 +2482,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let logical_or_1 = if let Some(ASTType::LogicalOr(logical_or_1)) = self.pop(context) {
             logical_or_1
         } else {
-            Err(miette!("{}: Expecting ASTType::LogicalOr", context))?
+            return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
         };
         let factor_57 = Factor57Builder::default()
             .l_paren_0(l_paren_0)
@@ -2493,7 +2492,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .into_diagnostic()?;
         let factor_57 = Factor::Factor57(factor_57);
         // Calling user action here
-        self.user_grammar.factor(factor_57.clone())?;
+        self.user_grammar.factor(&factor_57)?;
         self.push(ASTType::Factor(factor_57), context);
         Ok(())
     }
@@ -2515,7 +2514,7 @@ impl<'a> CalcGrammarAuto<'a> {
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.number(number_58.clone())?;
+        self.user_grammar.number(&number_58)?;
         self.push(ASTType::Number(number_58), context);
         Ok(())
     }
@@ -2534,14 +2533,14 @@ impl<'a> CalcGrammarAuto<'a> {
         let id_0 = if let Some(ASTType::Id(id_0)) = self.pop(context) {
             id_0
         } else {
-            Err(miette!("{}: Expecting ASTType::Id", context))?
+            return Err(miette!("{}: Expecting ASTType::Id", context));
         };
         let idref_59 = IdrefBuilder::default()
             .id_0(Box::new(id_0))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.idref(idref_59.clone())?;
+        self.user_grammar.idref(&idref_59)?;
         self.push(ASTType::Idref(idref_59), context);
         Ok(())
     }
@@ -2560,7 +2559,7 @@ impl<'a> CalcGrammarAuto<'a> {
         let id_0 = id_0.token(parse_tree)?.to_owned();
         let id_60 = IdBuilder::default().id_0(id_0).build().into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.id(id_60.clone())?;
+        self.user_grammar.id(&id_60)?;
         self.push(ASTType::Id(id_60), context);
         Ok(())
     }

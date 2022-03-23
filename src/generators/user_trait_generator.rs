@@ -178,8 +178,8 @@ impl<'a> UserTraitGenerator<'a> {
         action: &Action,
         parol_grammar: &'a ParolGrammar,
     ) {
-        if self.auto_generate {
-            if parol_grammar
+        if self.auto_generate
+            && parol_grammar
                 .item_stack
                 .iter()
                 .filter_map(|item| match item {
@@ -187,15 +187,13 @@ impl<'a> UserTraitGenerator<'a> {
                     _ => None,
                 })
                 .any(|lhs| &action.non_terminal == lhs)
-            {
-                code.push("// Calling user action here".to_string());
-                // self.user_grammar.num(num_4.clone())?;
-                code.push(format!(
-                    "self.user_grammar.{}({}.clone())?;",
-                    NmHlp::to_lower_snake_case(&action.non_terminal),
-                    action.fn_name
-                ));
-            }
+        {
+            code.push("// Calling user action here".to_string());
+            code.push(format!(
+                "self.user_grammar.{}(&{})?;",
+                NmHlp::to_lower_snake_case(&action.non_terminal),
+                action.fn_name
+            ));
         }
     }
 
@@ -222,7 +220,7 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
-        format!("_arg: {}", NmHlp::to_upper_camel_case(non_terminal))
+        format!("_arg: &{}", NmHlp::to_upper_camel_case(non_terminal))
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
@@ -369,7 +367,7 @@ impl<'a> UserTraitGenerator<'a> {
                     self.generate_stack_pops(&mut code, a)?;
                     self.generate_result_builder(&mut code, a);
                     self.generate_push_semantic(&mut code, a);
-                    self.generate_user_action_call(&mut code, a, &self.parol_grammar);
+                    self.generate_user_action_call(&mut code, a, self.parol_grammar);
                     self.generate_stack_push(&mut code, a);
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
