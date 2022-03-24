@@ -32,7 +32,7 @@ fn main() -> Result<()> {
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut list_grammar = ListGrammar::new();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
+        let syntax_tree = parse(&input, &file_name, &mut list_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("{}", list_grammar);
         generate_tree_layout(&syntax_tree, &file_name).wrap_err("Error generating tree layout")

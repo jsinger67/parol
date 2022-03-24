@@ -32,7 +32,7 @@ fn main() -> Result<()> {
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut oberon_0_grammar = Oberon0Grammar::new();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut oberon_0_grammar)
+        let syntax_tree = parse(&input, &file_name, &mut oberon_0_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("\n{} successfully parsed!", file_name);
         println!("{}", oberon_0_grammar);

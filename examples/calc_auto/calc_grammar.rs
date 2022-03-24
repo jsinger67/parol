@@ -193,11 +193,11 @@ impl CalcGrammar {
                 trace!("assign: to variable {}", id);
                 result = Self::apply_assign_operation(var, &op, result, context)?;
             } else {
-                Err(miette!(CalcError::UndeclaredVariable {
+                return Err(miette!(CalcError::UndeclaredVariable {
                     context: "value".to_owned(),
                     input: FileSource::try_new(self.file_name.clone())?.into(),
                     token: (&assign_item.assign_item_0.id_0.id_0).into()
-                }))?
+                }));
             }
         }
         Ok(())
@@ -343,14 +343,18 @@ impl CalcGrammar {
     fn process_power(&mut self, power: &Power) -> Result<DefinitionRange> {
         let context = "process_power";
         let op = BinaryOperator::Pow;
-        // Calculate from right to left (right associative)
-        let result = power.power_list_1.iter().rev().fold(Ok(1), |acc, f| {
-            if acc.is_err() {
-                return acc;
-            }
-            let val = self.process_factor(&f.factor_1)?;
-            Self::apply_binary_operation(val, &op, acc.unwrap(), context)
-        })?;
+        // Calculate from right to left (power operation is right associative)
+        let result = power
+            .power_list_1
+            .iter()
+            .rev()
+            .fold(Ok(1), |acc, f| match acc {
+                Ok(_) => {
+                    let val = self.process_factor(&f.factor_1)?;
+                    Self::apply_binary_operation(val, &op, acc.unwrap(), context)
+                }
+                Err(_) => acc,
+            })?;
         Self::apply_binary_operation(self.process_factor(&power.factor_0)?, &op, result, context)
     }
 

@@ -16,10 +16,11 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.6.1-pre - Not released yet
 
 * Modifications regarding the new auto-generation feature
-  * New examples `list_auto` `calc_auto`, that uses this new feature
+  * New examples `list_auto` and `calc_auto`, that uses this new feature
     * You can compare them with the examples `list` and `calc` which use the traditional method.
   * Modified code generation for auto-generation (clippy)
   * More efficient call method of user actions (by reference)
+* Referencing `parol_runtime` crate with version v0.5.8 now
 
 ## v0.6.0 - 2022-03-20
 

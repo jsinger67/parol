@@ -34,7 +34,7 @@ fn main() -> Result<()> {
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut list_grammar = ListGrammar::new();
-        let _syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
+        let _syntax_tree = parse(&input, &file_name, &mut list_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("{}", list_grammar);
         Ok(())
