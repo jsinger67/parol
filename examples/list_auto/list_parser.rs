@@ -54,24 +54,36 @@ const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
     &[5 /* Comma */, 6 /* Num */],
 );
 
-const MAX_K: usize = 1;
+const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 3] = &[
-    /* 0 */ "List", /* 1 */ "ListList", /* 2 */ "Num",
+pub const NON_TERMINALS: &[&str; 4] = &[
+    /* 0 */ "List",
+    /* 1 */ "ListList",
+    /* 2 */ "Num",
+    /* 3 */ "TrailingComma",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 3] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
     /* 0 - "List" */
     LookaheadDFA {
         states: &[None, Some(0), Some(3)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 6, 1)],
+        transitions: &[
+            DFATransition(0, 0, 2),
+            DFATransition(0, 5, 2),
+            DFATransition(0, 6, 1),
+        ],
         k: 1,
     },
     /* 1 - "ListList" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
-        k: 1,
+        states: &[None, None, Some(1), Some(2)],
+        transitions: &[
+            DFATransition(0, 0, 3),
+            DFATransition(0, 5, 1),
+            DFATransition(1, 0, 3),
+            DFATransition(1, 6, 2),
+        ],
+        k: 2,
     },
     /* 2 - "Num" */
     LookaheadDFA {
@@ -79,13 +91,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 3] = &[
         transitions: &[],
         k: 0,
     },
+    /* 3 - "TrailingComma" */
+    LookaheadDFA {
+        states: &[None, Some(5), Some(6)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
+        k: 1,
+    },
 ];
 
-pub const PRODUCTIONS: &[Production; 5] = &[
-    // 0 - List: Num ListList /* Vec */;
+pub const PRODUCTIONS: &[Production; 7] = &[
+    // 0 - List: Num ListList /* Vec */ TrailingComma;
     Production {
         lhs: 0,
-        production: &[ParseType::N(1), ParseType::N(2)],
+        production: &[ParseType::N(3), ParseType::N(1), ParseType::N(2)],
     },
     // 1 - ListList: "," Num ListList;
     Production {
@@ -97,15 +115,25 @@ pub const PRODUCTIONS: &[Production; 5] = &[
         lhs: 1,
         production: &[],
     },
-    // 3 - List: ;
+    // 3 - List: TrailingComma;
     Production {
         lhs: 0,
-        production: &[],
+        production: &[ParseType::N(3)],
     },
     // 4 - Num: "0|[1-9][0-9]*";
     Production {
         lhs: 2,
         production: &[ParseType::T(6)],
+    },
+    // 5 - TrailingComma: ",";
+    Production {
+        lhs: 3,
+        production: &[ParseType::T(5)],
+    },
+    // 6 - TrailingComma: ;
+    Production {
+        lhs: 3,
+        production: &[],
     },
 ];
 

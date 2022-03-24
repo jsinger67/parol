@@ -20,7 +20,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for user production 0:
     ///
-    /// List: [Num {<0>"," Num}];
+    /// List: [Num {<0>"," Num}] TrailingComma;
     ///
     fn list(&mut self, _arg: &List) -> Result<()> {
         Ok(())
@@ -33,6 +33,14 @@ pub trait ListGrammarTrait {
     fn num(&mut self, _arg: &Num) -> Result<()> {
         Ok(())
     }
+
+    /// Semantic action for user production 2:
+    ///
+    /// TrailingComma: [<0>","];
+    ///
+    fn trailing_comma(&mut self, _arg: &TrailingComma) -> Result<()> {
+        Ok(())
+    }
 }
 
 //
@@ -42,23 +50,46 @@ pub trait ListGrammarTrait {
 ///
 /// Type derived for production 0
 ///
-/// List: Num ListList /* Vec */;
+/// List: Num ListList /* Vec */ TrailingComma;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct List0 {
     pub num_0: Box<Num>,
     pub list_list_1: Vec<ListList>,
+    pub trailing_comma_2: Box<TrailingComma>,
 }
 
 ///
 /// Type derived for production 3
 ///
-/// List: ;
+/// List: TrailingComma;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct List3 {}
+pub struct List3 {
+    pub trailing_comma_0: Box<TrailingComma>,
+}
+
+///
+/// Type derived for production 5
+///
+/// TrailingComma: ",";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TrailingComma5 {
+    pub comma_0: OwnedToken, /* , */
+}
+
+///
+/// Type derived for production 6
+///
+/// TrailingComma: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TrailingComma6 {}
 
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
@@ -93,6 +124,16 @@ pub struct Num {
     pub num_0: OwnedToken, /* 0|[1-9][0-9]* */
 }
 
+///
+/// Type derived for non-terminal TrailingComma
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum TrailingComma {
+    TrailingComma5(TrailingComma5),
+    TrailingComma6(TrailingComma6),
+}
+
 //
 // AST type of the transformed grammar
 //
@@ -106,6 +147,7 @@ pub enum ASTType {
     List(List),
     ListList(Vec<ListList>),
     Num(Num),
+    TrailingComma(TrailingComma),
 }
 
 /// Auto-implemented adapter grammar
@@ -167,16 +209,23 @@ impl<'a> ListGrammarAuto<'a> {
 
     /// Semantic action for production 0:
     ///
-    /// List: Num ListList /* Vec */;
+    /// List: Num ListList /* Vec */ TrailingComma;
     ///
     fn list_0(
         &mut self,
         _num_0: &ParseTreeStackEntry,
         _list_list_1: &ParseTreeStackEntry,
+        _trailing_comma_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "list_0";
         trace!("{}", self.trace_item_stack(context));
+        let trailing_comma_2 =
+            if let Some(ASTType::TrailingComma(trailing_comma_2)) = self.pop(context) {
+                trailing_comma_2
+            } else {
+                return Err(miette!("{}: Expecting ASTType::TrailingComma", context));
+            };
         let list_list_1 = if let Some(ASTType::ListList(mut list_list_1)) = self.pop(context) {
             list_list_1.reverse();
             list_list_1
@@ -191,6 +240,7 @@ impl<'a> ListGrammarAuto<'a> {
         let list_0 = List0Builder::default()
             .num_0(Box::new(num_0))
             .list_list_1(list_list_1)
+            .trailing_comma_2(Box::new(trailing_comma_2))
             .build()
             .into_diagnostic()?;
         let list_0 = List::List0(list_0);
@@ -249,12 +299,25 @@ impl<'a> ListGrammarAuto<'a> {
 
     /// Semantic action for production 3:
     ///
-    /// List: ;
+    /// List: TrailingComma;
     ///
-    fn list_3(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_3(
+        &mut self,
+        _trailing_comma_0: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         let context = "list_3";
         trace!("{}", self.trace_item_stack(context));
-        let list_3 = List3Builder::default().build().into_diagnostic()?;
+        let trailing_comma_0 =
+            if let Some(ASTType::TrailingComma(trailing_comma_0)) = self.pop(context) {
+                trailing_comma_0
+            } else {
+                return Err(miette!("{}: Expecting ASTType::TrailingComma", context));
+            };
+        let list_3 = List3Builder::default()
+            .trailing_comma_0(Box::new(trailing_comma_0))
+            .build()
+            .into_diagnostic()?;
         let list_3 = List::List3(list_3);
         // Calling user action here
         self.user_grammar.list(&list_3)?;
@@ -283,6 +346,44 @@ impl<'a> ListGrammarAuto<'a> {
         self.push(ASTType::Num(num_4), context);
         Ok(())
     }
+
+    /// Semantic action for production 5:
+    ///
+    /// TrailingComma: ",";
+    ///
+    fn trailing_comma_5(
+        &mut self,
+        comma_0: &ParseTreeStackEntry,
+        parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "trailing_comma_5";
+        trace!("{}", self.trace_item_stack(context));
+        let comma_0 = comma_0.token(parse_tree)?.to_owned();
+        let trailing_comma_5 = TrailingComma5Builder::default()
+            .comma_0(comma_0)
+            .build()
+            .into_diagnostic()?;
+        let trailing_comma_5 = TrailingComma::TrailingComma5(trailing_comma_5);
+        // Calling user action here
+        self.user_grammar.trailing_comma(&trailing_comma_5)?;
+        self.push(ASTType::TrailingComma(trailing_comma_5), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 6:
+    ///
+    /// TrailingComma: ;
+    ///
+    fn trailing_comma_6(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "trailing_comma_6";
+        trace!("{}", self.trace_item_stack(context));
+        let trailing_comma_6 = TrailingComma6Builder::default().build().into_diagnostic()?;
+        let trailing_comma_6 = TrailingComma::TrailingComma6(trailing_comma_6);
+        // Calling user action here
+        self.user_grammar.trailing_comma(&trailing_comma_6)?;
+        self.push(ASTType::TrailingComma(trailing_comma_6), context);
+        Ok(())
+    }
 }
 
 impl UserActionsTrait for ListGrammarAuto<'_> {
@@ -306,11 +407,13 @@ impl UserActionsTrait for ListGrammarAuto<'_> {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.list_0(&children[0], &children[1], parse_tree),
+            0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),
             1 => self.list_list_1(&children[0], &children[1], &children[2], parse_tree),
             2 => self.list_list_2(parse_tree),
-            3 => self.list_3(parse_tree),
+            3 => self.list_3(&children[0], parse_tree),
             4 => self.num_4(&children[0], parse_tree),
+            5 => self.trailing_comma_5(&children[0], parse_tree),
+            6 => self.trailing_comma_6(parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
