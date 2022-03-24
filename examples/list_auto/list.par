@@ -1,0 +1,8 @@
+%start List
+%title "A possibly empty comma separated list of integers"
+%comment "No trailing comma is allowed."
+
+%%
+
+List: [Num {"," Num}];
+Num: "0|[1-9][0-9]*";

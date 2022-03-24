@@ -1,0 +1,11 @@
+%start List
+%title "A possibly empty comma separated list of integers"
+%comment "No trailing comma is allowed."
+
+%%
+
+/* 0 */ List: Num ListList /* Vec */;
+/* 1 */ ListList: "," Num ListList; // Vec<T>::Push
+/* 2 */ ListList: ; // Vec<T>::New
+/* 3 */ List: ;
+/* 4 */ Num: "0|[1-9][0-9]*";

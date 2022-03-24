@@ -23,7 +23,7 @@ Factor              = Group
                     | Optional
                     | Symbol.
 Symbol              = Identifier                        (* EBNF: Meta-identifier *)
-                    | SimpleToken.
+                    | SimpleToken
                     | TokenWithStates
                     | ScannerSwitch.                    (* Instruction to switch to new scanner state *)
 SimpleToken         = String.                           (* EBNF: Terminal-string, always treated as a regular expression! *)
@@ -128,7 +128,7 @@ Fortunately there is a simple way to achieve what we want. We just need a result
 
 This will perfectly do the job.
 
-To get such an order the _decrement_ terminal has to be defined ***before*** the _minus_ terminal as in the following snippet.
+To get such an order the _decrement_ terminal has to be defined __before__ the _minus_ terminal as in the following snippet.
 
 ```ebnf
 decrement: "--"
@@ -156,7 +156,7 @@ Internally the tokenizer will enter a loop and match the empty string over and o
 <h2 id=scanner-states>Scanner states</h2>
 <!-- markdownlint-enable no-inline-html -->
 
-Additionally, *as of version `v0.2.0`* the grammar supports **multiple scanner states**. This feature is known from Flex as [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11) and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
+Additionally, _as of version `v0.2.0`_ the grammar supports __multiple scanner states__. This feature is known from Flex as [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11) and provides more flexibility in defining several scanners for several parts of your grammar. In contrast to Flex the scanner state switching is defined directly within your grammar description and not in semantic actions. This decision is made to foster the principle of strict separation of grammar description and grammar processing in semantic actions.
 
 ### The Default scanner state INITIAL
 
@@ -230,7 +230,7 @@ The `%push` instruction is used to push the index of the current scanner on the 
 
 The `%pop` instruction is used to pop the index of the scanner pushed before and to switch to the scanner configuration with that index.
 
-> Currently the scanner state switching only works if the lookahead at the point where the switch is made is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this should can be circumvented by an appropriate grammar formulation.
+> Currently the scanner state switching only works if the lookahead __at the point where the switch is made__ is only of size 1 because the lookahead mechanism is not aware of scanner states. This means the provision of lookahead tokens will be made with the current active scanner and may fail if a token is not known by it. In most cases this can be circumvented by an appropriate grammar formulation.
 
 To demonstrate the handling of scanner states a new example `scanner_states` was included.
 

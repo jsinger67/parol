@@ -16,9 +16,8 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.6.1-pre - Not released yet
 
 * Modifications regarding the new auto-generation feature
-  * New example `calc_auto`, that uses this new feature
-    * Please note that this is a quite complex grammar. There is a simpler example here [JSON parser auto](https://github.com/jsinger67/json_parser_auto.git).
-    * You can compare it with the example `calc` which uses the traditional method.
+  * New examples `list_auto` `calc_auto`, that uses this new feature
+    * You can compare them with the examples `list` and `calc` which use the traditional method.
   * Modified code generation for auto-generation (clippy)
   * More efficient call method of user actions (by reference)
 

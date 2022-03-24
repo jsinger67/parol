@@ -1,4 +1,7 @@
 #[macro_use]
+extern crate derive_builder;
+
+#[macro_use]
 extern crate lazy_static;
 
 extern crate parol_runtime;
@@ -11,15 +14,14 @@ use crate::list_grammar::ListGrammar;
 use crate::list_parser::parse;
 use log::debug;
 use miette::{miette, IntoDiagnostic, Result, WrapErr};
-use parol::generate_tree_layout;
 use std::env;
 use std::fs;
 
 // To generate:
-// parol -f ./examples/list/list.par -e ./examples/list/list-exp.par -p ./examples/list/list_parser.rs -a ./examples/list/list_grammar_trait.rs -t ListGrammar -m list_grammar
+// parol -f ./examples/list_auto/list.par -e ./examples/list_auto/list-exp.par -p ./examples/list_auto/list_parser.rs -a ./examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar -g
 
 // To run the example
-// cargo run --example list -- ./examples/list/list_test.txt
+// cargo run --example list_auto -- ./examples/list_auto/list_test.txt
 
 fn main() -> Result<()> {
     env_logger::init();
@@ -32,10 +34,10 @@ fn main() -> Result<()> {
             .into_diagnostic()
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut list_grammar = ListGrammar::new();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
+        let _syntax_tree = parse(&input, file_name.to_owned(), &mut list_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         println!("{}", list_grammar);
-        generate_tree_layout(&syntax_tree, &file_name).wrap_err("Error generating tree layout")
+        Ok(())
     } else {
         Err(miette!("Please provide a file name as single parameter!"))
     }

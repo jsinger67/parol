@@ -34,7 +34,7 @@ When built successfully you can just call the `parol` parser generator to get a 
 Simple command line usage:
 
 ```shell
-    parol -f ./examples/list/list.par -s -v
+    cargo run --bin parol -- -f ./examples/list/list.par -s -v
 ```
 
 or when installed
