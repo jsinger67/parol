@@ -22,3 +22,4 @@ Cargo.lock
 /examples/**/*.txt
 
 /src/**/*.svg
+*.svg

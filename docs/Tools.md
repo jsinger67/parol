@@ -2,57 +2,45 @@
 
 As of version v0.5.1. tools are subcommands of the parol binary. Their source code can be found in the `bin/parol/tools` folder. `parol` itself is located in the subfolder `bin/parol`. This sections is devoted to the subcommands only.
 
-Please note, that you do not need to use these tools normally when you want to generate parsers. All of their functionality is completely included in `parol` itself. But when you are about to solve a certain problem they may come handy. So it is useful to know what's available.
+Please note, that all tools are designed to help in specific situations that can show up when you want to generate parsers. So it is useful to know what's available.
 
-Hint: All subcommands give a short help output when called after parameter `help`:
+Hint: Calling `parol help` will list all available subcommands. You get a short help output for each subcommand when called after parameter `help`:
 
 ```shell
-    >parol help calculate_k
-parol.exe-calculate_k 
-Calculates the maximum lookahead needed for your grammar, similar to `decidable`.
+    >parol help calculate-k
+parol.exe-calculate-k 
+Calculates the maximum lookahead needed for your grammar, similar to `decidable`
 
 USAGE:
-    parol.exe calculate_k [OPTIONS] --grammar-file <grammar_file>
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+    parol.exe calculate-k [OPTIONS] --grammar-file <GRAMMAR_FILE>
 
 OPTIONS:
-    -f, --grammar-file <grammar_file>    The grammar file to use
-    -k, --lookahead <lookahead>          The maximum number of lookahead tokens to be used [default: 5]
+    -f, --grammar-file <GRAMMAR_FILE>
+            The grammar file to use
+
+    -h, --help
+            Print help information
+
+    -k, --lookahead <LOOKAHEAD>
+            The maximum number of lookahead tokens to be used [default: 5]     
 ```
 
 Or call `parol` with the subcommand as only parameter:
 
 ```shell
-    >parol calculate_k
+    >parol calculate-k
 error: The following required arguments were not provided:
-    --grammar-file <grammar_file>
+    --grammar-file <GRAMMAR_FILE>
 
 USAGE:
-    parol.exe calculate_k --grammar-file <grammar_file> --lookahead <lookahead>
+    parol.exe calculate-k [OPTIONS] --grammar-file <GRAMMAR_FILE>
 
 For more information try --help
-error: process didn't exit successfully: `target\debug\parol.exe calculate_k` (exit code: 1)
 ```
 
-If you installed parol via
-
 ```shell
-cargo install parol
-```
+    >parol calculate-k  -f ./examples/list/list-exp.par
 
-or from local repository
-
-```shell
-cargo install --path .
-```
-
-you will have another option of calling `parol` and its subcommands which is even easier because the `parol` executable is installed in your `~/.cargo/bin` folder.
-
-```shell
-    >parol calculate_k  -f ./examples/list/list-exp.par
 title: Some("A simple comma separated list of integers")
 comment: Some("A trailing comma is allowed.")
 start_symbol: List
@@ -71,17 +59,21 @@ Ok(
 )
 ```
 
-## `calculate_k_tuples`
+## `calculate-k-tuples`
 
 Calculates the lookahead tokens with size k for each non-terminal. Checks the decidability first.
 
-## `calculate_k`
+## `calculate-k`
 
 Calculates the maximum lookahead needed for your grammar, similar as `decidable`.
 
 ## `decidable`
 
 Can be used to detect the maximum lookahead needed for your grammar.
+
+## `deduce-types`
+
+ Calculates the type structure of the generated expanded grammar (only to verify AST types generated with the auto-generation feature)
 
 ## `first`
 
@@ -98,11 +90,25 @@ Generates a random sentence of the given grammar. It can be used to verify your 
 On complex grammars the generation can get into deeply branching the grammar productions again and again because productions are randomly selected. Therefore generation is aborted with an error if the resulting sentence exceeds a certain limit. This limit currently defaults to a string length of 100 000. This value can be overwritten by giving an additional parameter after the grammar file.
 If generation fails with error `parol::generators::language_generator::source_size_exceeded` please give it another try.
 
-## `left_factor`
+With the help of this command you can run endless stress tests like in this example using a *powershell* one-liner:
+
+```powershell
+for (;;) { parol generate -f ./examples/json/json-exp.par | Set-Content "$env:Temp/x.json"; json_parser "$env:Temp/x.json"; if (-not $?) { break } }
+```
+
+or if examples are generated
+
+```powershell
+for(;;) { parol generate -f ./examples/list_auto/list-exp.par | Set-Content "$env:Temp/x.txt"; ./target/debug/examples/list_auto.exe "$env:Temp/x.txt"; if (-not $?) { break } }
+```
+
+Note that you have to use the expanded grammar here, because the tool currently can't (and perhaps never will be able to) use enhanced features like optional expressions, repetitions and grouping.
+
+## `left-factor`
 
 Applies the left factoring algorithm on the grammar given.
 
-## `left_recursions`
+## `left-recursions`
 
 Checks the given grammar for direct and indirect left recursions.
 

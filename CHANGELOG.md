@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+---
+
 Be aware that this project is still v0.y.z which means that anything can change anytime:
 
 >"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The public API SHOULD NOT be considered stable."
@@ -13,20 +15,24 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
-## v0.6.1-pre - Not released yet
+---
 
-* Modifications regarding the new auto-generation feature
-  * New examples `list_auto` and `calc_auto`, that uses this new feature
+## v0.6.1-pre - Unreleased
+
+* Changes regarding the new auto-generation feature
+  * Added new examples `list_auto` and `calc_auto`, that uses this new feature
     * You can compare them with the examples `list` and `calc` which use the traditional method.
   * Modified code generation for auto-generation (clippy)
   * More efficient call method of user actions (by reference)
+  * Fixed a name clash between a popped AST value and the built result value in auto-generated actions
 * Referencing `parol_runtime` crate with version v0.5.8 now
+* Partly reworked documentation
 
 ## v0.6.0 - 2022-03-20
 
-* New experimental auto-generation feature is available now
+* Added new experimental auto-generation feature is available now
   * Documentation still has to be added.
-  * There will soon be a new example that uses the new feature here [JSON parser auto](https://github.com/jsinger67/json_parser_auto.git).
+  * There exists a new example that uses this feature here: [JSON parser auto](https://github.com/jsinger67/json_parser_auto.git).
   * The old behavior is still intact and should be usable without restrictions.
 
 ## v0.5.10-pre - Not separately released, but included in 0.6.0
@@ -87,7 +93,7 @@ v0.5.3
 
 * Fixed a serious bug in parsing groups, repetitions and optionals introduced in commit [6476e75].
 * Started issuing more detailed miette-like errors from parol itself.
-* Fixed an invalid generation of the %pop() instruction form '%pop' to '%pop()'.
+* Fixed an invalid generation of the %pop() instruction from '%pop' to '%pop()'.
 * More tests to check the parol parser's internal representation.
 * Fixed some problems related to platform specific newline characters.
 * Fixed issues #5: *Bizarre error running scanner_states*. ***Thanks a lot to Techcable***

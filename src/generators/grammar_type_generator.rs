@@ -450,11 +450,11 @@ impl GrammarTypeInfo {
                                 .map(|a| {
                                     (
                                         NmHlp::to_upper_camel_case(&format!(
-                                            "{}{}",
+                                            "{}_{}",
                                             a.non_terminal, a.prod_num
                                         )),
                                         ASTType::TypeName(format!(
-                                            "{}{}",
+                                            "{}_{}",
                                             NmHlp::to_upper_camel_case(nt_ref),
                                             a.prod_num
                                         )),
@@ -739,9 +739,9 @@ enum ASTType { S(S), SList(Vec<SList>), SList1(Vec<SList1>) }
 /* 6 */ (() -> ())  { - }
 
 S:  struct S { a_0: OwnedToken /* a */, s_suffix2_1: Box<SSuffix2> }
-SSuffix:  enum SSuffix { SSuffix5(SSuffix5), SSuffix6(SSuffix6) }
-SSuffix1:  enum SSuffix1 { SSuffix13(SSuffix13), SSuffix14(SSuffix14) }
-SSuffix2:  enum SSuffix2 { SSuffix21(SSuffix21), SSuffix22(SSuffix22) }
+SSuffix:  enum SSuffix { SSuffix5(SSuffix_5), SSuffix6(SSuffix_6) }
+SSuffix1:  enum SSuffix1 { SSuffix1_3(SSuffix1_3), SSuffix1_4(SSuffix1_4) }
+SSuffix2:  enum SSuffix2 { SSuffix2_1(SSuffix2_1), SSuffix2_2(SSuffix2_2) }
 
 enum ASTType { S(S), SSuffix(SSuffix), SSuffix1(SSuffix1), SSuffix2(SSuffix2) }
 "#;

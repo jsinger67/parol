@@ -105,7 +105,7 @@ impl<'a> UserTraitGenerator<'a> {
         if self.auto_generate && action.sem == ProductionAttribute::AddToCollection {
             code.push("// Add an element to the vector".to_string());
             code.push(format!(
-                " {}.push({});",
+                " {}.push({}_built);",
                 action.args.iter().last().unwrap().name,
                 &action.fn_name,
             ));
@@ -115,10 +115,10 @@ impl<'a> UserTraitGenerator<'a> {
     fn generate_result_builder(&self, code: &mut StrVec, action: &Action) {
         if self.auto_generate {
             if action.sem == ProductionAttribute::CollectionStart {
-                code.push(format!("let {} = Vec::new();", action.fn_name));
+                code.push(format!("let {}_built = Vec::new();", action.fn_name));
             } else if action.sem == ProductionAttribute::AddToCollection {
                 code.push(format!(
-                    "let {} = {}Builder::default()",
+                    "let {}_built = {}Builder::default()",
                     action.fn_name,
                     NmHlp::to_upper_camel_case(&action.non_terminal)
                 ));
@@ -142,7 +142,7 @@ impl<'a> UserTraitGenerator<'a> {
                     &action.fn_name
                 };
                 code.push(format!(
-                    "let {} = {}Builder::default()",
+                    "let {}_built = {}Builder::default()",
                     action.fn_name,
                     NmHlp::to_upper_camel_case(builder_prefix)
                 ));
@@ -161,7 +161,7 @@ impl<'a> UserTraitGenerator<'a> {
                     // Type adjustment to the non-terminal enum
                     // let list_0 = List::List0(list_0);
                     code.push(format!(
-                        "let {} = {}::{}({});",
+                        "let {}_built = {}::{}({}_built);",
                         action.fn_name,
                         NmHlp::to_upper_camel_case(&action.non_terminal),
                         NmHlp::to_upper_camel_case(builder_prefix),
@@ -190,7 +190,7 @@ impl<'a> UserTraitGenerator<'a> {
         {
             code.push("// Calling user action here".to_string());
             code.push(format!(
-                "self.user_grammar.{}(&{})?;",
+                "self.user_grammar.{}(&{}_built)?;",
                 NmHlp::to_lower_snake_case(&action.non_terminal),
                 action.fn_name
             ));
@@ -211,7 +211,7 @@ impl<'a> UserTraitGenerator<'a> {
                 // The output type of the action is the type generated for the action's non-terminal
                 // filled with type kind of the action
                 code.push(format!(
-                    "self.push(ASTType::{}({}), context);",
+                    "self.push(ASTType::{}({}_built), context);",
                     NmHlp::to_upper_camel_case(&action.non_terminal),
                     action.fn_name
                 ));
