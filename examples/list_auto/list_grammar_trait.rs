@@ -237,16 +237,16 @@ impl<'a> ListGrammarAuto<'a> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Num", context));
         };
-        let list_0 = List0Builder::default()
+        let list_0_built = List0Builder::default()
             .num_0(Box::new(num_0))
             .list_list_1(list_list_1)
             .trailing_comma_2(Box::new(trailing_comma_2))
             .build()
             .into_diagnostic()?;
-        let list_0 = List::List0(list_0);
+        let list_0_built = List::List0(list_0_built);
         // Calling user action here
-        self.user_grammar.list(&list_0)?;
-        self.push(ASTType::List(list_0), context);
+        self.user_grammar.list(&list_0_built)?;
+        self.push(ASTType::List(list_0_built), context);
         Ok(())
     }
 
@@ -274,13 +274,13 @@ impl<'a> ListGrammarAuto<'a> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Num", context));
         };
-        let list_list_1 = ListListBuilder::default()
+        let list_list_1_built = ListListBuilder::default()
             .num_1(Box::new(num_1))
             .comma_0(comma_0)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        list_list_2.push(list_list_1);
+        list_list_2.push(list_list_1_built);
         self.push(ASTType::ListList(list_list_2), context);
         Ok(())
     }
@@ -292,8 +292,8 @@ impl<'a> ListGrammarAuto<'a> {
     fn list_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "list_list_2";
         trace!("{}", self.trace_item_stack(context));
-        let list_list_2 = Vec::new();
-        self.push(ASTType::ListList(list_list_2), context);
+        let list_list_2_built = Vec::new();
+        self.push(ASTType::ListList(list_list_2_built), context);
         Ok(())
     }
 
@@ -314,14 +314,14 @@ impl<'a> ListGrammarAuto<'a> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::TrailingComma", context));
             };
-        let list_3 = List3Builder::default()
+        let list_3_built = List3Builder::default()
             .trailing_comma_0(Box::new(trailing_comma_0))
             .build()
             .into_diagnostic()?;
-        let list_3 = List::List3(list_3);
+        let list_3_built = List::List3(list_3_built);
         // Calling user action here
-        self.user_grammar.list(&list_3)?;
-        self.push(ASTType::List(list_3), context);
+        self.user_grammar.list(&list_3_built)?;
+        self.push(ASTType::List(list_3_built), context);
         Ok(())
     }
 
@@ -337,13 +337,13 @@ impl<'a> ListGrammarAuto<'a> {
         let context = "num_4";
         trace!("{}", self.trace_item_stack(context));
         let num_0 = num_0.token(parse_tree)?.to_owned();
-        let num_4 = NumBuilder::default()
+        let num_4_built = NumBuilder::default()
             .num_0(num_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.num(&num_4)?;
-        self.push(ASTType::Num(num_4), context);
+        self.user_grammar.num(&num_4_built)?;
+        self.push(ASTType::Num(num_4_built), context);
         Ok(())
     }
 
@@ -359,14 +359,14 @@ impl<'a> ListGrammarAuto<'a> {
         let context = "trailing_comma_5";
         trace!("{}", self.trace_item_stack(context));
         let comma_0 = comma_0.token(parse_tree)?.to_owned();
-        let trailing_comma_5 = TrailingComma5Builder::default()
+        let trailing_comma_5_built = TrailingComma5Builder::default()
             .comma_0(comma_0)
             .build()
             .into_diagnostic()?;
-        let trailing_comma_5 = TrailingComma::TrailingComma5(trailing_comma_5);
+        let trailing_comma_5_built = TrailingComma::TrailingComma5(trailing_comma_5_built);
         // Calling user action here
-        self.user_grammar.trailing_comma(&trailing_comma_5)?;
-        self.push(ASTType::TrailingComma(trailing_comma_5), context);
+        self.user_grammar.trailing_comma(&trailing_comma_5_built)?;
+        self.push(ASTType::TrailingComma(trailing_comma_5_built), context);
         Ok(())
     }
 
@@ -377,11 +377,11 @@ impl<'a> ListGrammarAuto<'a> {
     fn trailing_comma_6(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "trailing_comma_6";
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma_6 = TrailingComma6Builder::default().build().into_diagnostic()?;
-        let trailing_comma_6 = TrailingComma::TrailingComma6(trailing_comma_6);
+        let trailing_comma_6_built = TrailingComma6Builder::default().build().into_diagnostic()?;
+        let trailing_comma_6_built = TrailingComma::TrailingComma6(trailing_comma_6_built);
         // Calling user action here
-        self.user_grammar.trailing_comma(&trailing_comma_6)?;
-        self.push(ASTType::TrailingComma(trailing_comma_6), context);
+        self.user_grammar.trailing_comma(&trailing_comma_6_built)?;
+        self.push(ASTType::TrailingComma(trailing_comma_6_built), context);
         Ok(())
     }
 }
