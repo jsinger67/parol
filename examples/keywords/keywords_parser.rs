@@ -227,7 +227,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait,
+    user_actions: &mut dyn UserActionsTrait<'t>,
 ) -> Result<Tree<ParseTreeType<'t>>>
 where
     T: AsRef<Path>,

@@ -638,7 +638,7 @@ pub trait ParolGrammarTrait {
     }
 }
 
-impl UserActionsTrait for ParolGrammar {
+impl UserActionsTrait<'_> for ParolGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

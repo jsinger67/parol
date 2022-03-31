@@ -200,7 +200,7 @@ pub trait ScannerStatesGrammarTrait {
     }
 }
 
-impl UserActionsTrait for ScannerStatesGrammar {
+impl UserActionsTrait<'_> for ScannerStatesGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

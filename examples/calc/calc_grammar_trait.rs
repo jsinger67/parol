@@ -999,7 +999,7 @@ pub trait CalcGrammarTrait {
     }
 }
 
-impl UserActionsTrait for CalcGrammar {
+impl UserActionsTrait<'_> for CalcGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

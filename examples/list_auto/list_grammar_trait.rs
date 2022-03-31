@@ -9,20 +9,20 @@ use crate::list_grammar::ListGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{miette, IntoDiagnostic, Result};
-use parol_runtime::lexer::OwnedToken;
+use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
-pub trait ListGrammarTrait {
+pub trait ListGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for user production 0:
     ///
     /// List: [Num {<0>"," Num}] TrailingComma;
     ///
-    fn list(&mut self, _arg: &List) -> Result<()> {
+    fn list(&mut self, _arg: &List<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -30,7 +30,7 @@ pub trait ListGrammarTrait {
     ///
     /// Num: <0>"0|[1-9][0-9]*";
     ///
-    fn num(&mut self, _arg: &Num) -> Result<()> {
+    fn num(&mut self, _arg: &Num<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -38,11 +38,12 @@ pub trait ListGrammarTrait {
     ///
     /// TrailingComma: [<0>","];
     ///
-    fn trailing_comma(&mut self, _arg: &TrailingComma) -> Result<()> {
+    fn trailing_comma(&mut self, _arg: &TrailingComma<'t>) -> Result<()> {
         Ok(())
     }
 }
 
+// -------------------------------------------------------------------------------------------------
 //
 // Output Types of productions deduced from the structure of the transformed grammar
 //
@@ -54,10 +55,10 @@ pub trait ListGrammarTrait {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct List0 {
-    pub num_0: Box<Num>,
-    pub list_list_1: Vec<ListList>,
-    pub trailing_comma_2: Box<TrailingComma>,
+pub struct List0<'t> {
+    pub num_0: Box<Num<'t>>,
+    pub list_list_1: Vec<ListList<'t>>,
+    pub trailing_comma_2: Box<TrailingComma<'t>>,
 }
 
 ///
@@ -67,8 +68,8 @@ pub struct List0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct List3 {
-    pub trailing_comma_0: Box<TrailingComma>,
+pub struct List3<'t> {
+    pub trailing_comma_0: Box<TrailingComma<'t>>,
 }
 
 ///
@@ -78,8 +79,8 @@ pub struct List3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TrailingComma5 {
-    pub comma_0: OwnedToken, /* , */
+pub struct TrailingComma5<'t> {
+    pub comma_0: Token<'t>, /* , */
 }
 
 ///
@@ -91,6 +92,7 @@ pub struct TrailingComma5 {
 #[derive(Builder, Debug, Clone)]
 pub struct TrailingComma6 {}
 
+// -------------------------------------------------------------------------------------------------
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
 //
@@ -100,9 +102,9 @@ pub struct TrailingComma6 {}
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum List {
-    List0(List0),
-    List3(List3),
+pub enum List<'t> {
+    List0(List0<'t>),
+    List3(List3<'t>),
 }
 
 ///
@@ -110,9 +112,9 @@ pub enum List {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ListList {
-    pub comma_0: OwnedToken, /* , */
-    pub num_1: Box<Num>,
+pub struct ListList<'t> {
+    pub comma_0: Token<'t>, /* , */
+    pub num_1: Box<Num<'t>>,
 }
 
 ///
@@ -120,8 +122,8 @@ pub struct ListList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Num {
-    pub num_0: OwnedToken, /* 0|[1-9][0-9]* */
+pub struct Num<'t> {
+    pub num_0: Token<'t>, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -129,34 +131,39 @@ pub struct Num {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum TrailingComma {
-    TrailingComma5(TrailingComma5),
+pub enum TrailingComma<'t> {
+    TrailingComma5(TrailingComma5<'t>),
     TrailingComma6(TrailingComma6),
 }
 
-//
-// AST type of the transformed grammar
-//
+// -------------------------------------------------------------------------------------------------
 
 ///
 /// Deduced ASTType of expanded grammar
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTType {
-    List(List),
-    ListList(Vec<ListList>),
-    Num(Num),
-    TrailingComma(TrailingComma),
+pub enum ASTType<'t> {
+    List(List<'t>),
+    ListList(Vec<ListList<'t>>),
+    Num(Num<'t>),
+    TrailingComma(TrailingComma<'t>),
 }
 
 /// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
 #[allow(dead_code)]
-pub struct ListGrammarAuto<'a> {
+pub struct ListGrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
     // Mutable reference of the actual user grammar to be able to call the semantic actions on it
-    user_grammar: &'a mut dyn ListGrammarTrait,
+    user_grammar: &'u mut dyn ListGrammarTrait<'t>,
     // Stack to construct the AST on it
-    item_stack: Vec<ASTType>,
+    item_stack: Vec<ASTType<'t>>,
     // Path of the input file. Used for diagnostics.
     file_name: PathBuf,
 }
@@ -165,8 +172,8 @@ pub struct ListGrammarAuto<'a> {
 /// The `ListGrammarAuto` impl is automatically generated for the
 /// given grammar.
 ///
-impl<'a> ListGrammarAuto<'a> {
-    pub fn new(user_grammar: &'a mut dyn ListGrammarTrait) -> Self {
+impl<'t, 'u> ListGrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn ListGrammarTrait<'t>) -> Self {
         Self {
             user_grammar,
             item_stack: Vec::new(),
@@ -174,12 +181,12 @@ impl<'a> ListGrammarAuto<'a> {
         }
     }
 
-    fn push(&mut self, item: ASTType, context: &str) {
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
-    fn pop(&mut self, context: &str) -> Option<ASTType> {
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -213,10 +220,10 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     fn list_0(
         &mut self,
-        _num_0: &ParseTreeStackEntry,
-        _list_list_1: &ParseTreeStackEntry,
-        _trailing_comma_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _num_0: &ParseTreeStackEntry<'t>,
+        _list_list_1: &ParseTreeStackEntry<'t>,
+        _trailing_comma_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "list_0";
         trace!("{}", self.trace_item_stack(context));
@@ -256,14 +263,14 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     fn list_list_1(
         &mut self,
-        comma_0: &ParseTreeStackEntry,
-        _num_1: &ParseTreeStackEntry,
-        _list_list_2: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        comma_0: &ParseTreeStackEntry<'t>,
+        _num_1: &ParseTreeStackEntry<'t>,
+        _list_list_2: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "list_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let comma_0 = comma_0.token(parse_tree)?.to_owned();
+        let comma_0 = *comma_0.token(parse_tree)?;
         let mut list_list_2 = if let Some(ASTType::ListList(list_list_2)) = self.pop(context) {
             list_list_2
         } else {
@@ -289,7 +296,7 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     /// ListList: ; // Vec<T>::New
     ///
-    fn list_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_list_2(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "list_list_2";
         trace!("{}", self.trace_item_stack(context));
         let list_list_2_built = Vec::new();
@@ -303,8 +310,8 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     fn list_3(
         &mut self,
-        _trailing_comma_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _trailing_comma_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "list_3";
         trace!("{}", self.trace_item_stack(context));
@@ -331,12 +338,12 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     fn num_4(
         &mut self,
-        num_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        num_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "num_4";
         trace!("{}", self.trace_item_stack(context));
-        let num_0 = num_0.token(parse_tree)?.to_owned();
+        let num_0 = *num_0.token(parse_tree)?;
         let num_4_built = NumBuilder::default()
             .num_0(num_0)
             .build()
@@ -353,12 +360,12 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     fn trailing_comma_5(
         &mut self,
-        comma_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        comma_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "trailing_comma_5";
         trace!("{}", self.trace_item_stack(context));
-        let comma_0 = comma_0.token(parse_tree)?.to_owned();
+        let comma_0 = *comma_0.token(parse_tree)?;
         let trailing_comma_5_built = TrailingComma5Builder::default()
             .comma_0(comma_0)
             .build()
@@ -374,7 +381,7 @@ impl<'a> ListGrammarAuto<'a> {
     ///
     /// TrailingComma: ;
     ///
-    fn trailing_comma_6(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn trailing_comma_6(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "trailing_comma_6";
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_6_built = TrailingComma6Builder::default().build().into_diagnostic()?;
@@ -386,7 +393,7 @@ impl<'a> ListGrammarAuto<'a> {
     }
 }
 
-impl UserActionsTrait for ListGrammarAuto<'_> {
+impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
@@ -403,8 +410,8 @@ impl UserActionsTrait for ListGrammarAuto<'_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeStackEntry<'t>],
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
             0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),

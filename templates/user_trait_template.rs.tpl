@@ -5,7 +5,7 @@
 // ---------------------------------------------------------
 
 use id_tree::Tree;
-{{#auto_generate?}}use parol_runtime::lexer::OwnedToken;{{/auto_generate}}
+{{#auto_generate?}}use parol_runtime::lexer::Token;{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 {{#auto_generate?}}use log::trace;
 {{/auto_generate}}use miette::{miette, {{#auto_generate?}}IntoDiagnostic, {{/auto_generate}}Result};
@@ -16,18 +16,20 @@ use crate::{{module_name}}::{{user_type_name}};
 {{#auto_generate?}}
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
-pub trait {{user_type_name}}Trait {
+pub trait {{user_type_name}}Trait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
     {{{user_trait_functions}}}
 }
 
+// -------------------------------------------------------------------------------------------------
 //
 // Output Types of productions deduced from the structure of the transformed grammar
 //
 
 {{{production_output_types}}}
 
+// -------------------------------------------------------------------------------------------------
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
 //
@@ -35,19 +37,21 @@ pub trait {{user_type_name}}Trait {
 {{{non_terminal_types}}}
 
 
-//
-// AST type of the transformed grammar
-//
+// -------------------------------------------------------------------------------------------------
 
 {{{ast_type_decl}}}
 
 /// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
 #[allow(dead_code)]
-pub struct {{{user_type_name}}}Auto<'a> {
+pub struct {{{user_type_name}}}Auto<'t, 'u> where 't: 'u {
     // Mutable reference of the actual user grammar to be able to call the semantic actions on it
-    user_grammar: &'a mut dyn {{user_type_name}}Trait,
+    user_grammar: &'u mut dyn {{user_type_name}}Trait<'t>,
     // Stack to construct the AST on it
-    item_stack: Vec<ASTType>,
+    item_stack: Vec<ASTType<'t>>,
     // Path of the input file. Used for diagnostics.
     file_name: PathBuf,
 }
@@ -58,8 +62,8 @@ pub struct {{{user_type_name}}}Auto<'a> {
 /// The `{{{user_type_name}}}Auto` impl is automatically generated for the
 /// given grammar.
 ///
-impl<'a> {{{user_type_name}}}Auto<'a> {
-    pub fn new(user_grammar: &'a mut dyn {{user_type_name}}Trait) -> Self {
+impl<'t, 'u> {{{user_type_name}}}Auto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn {{user_type_name}}Trait<'t>) -> Self {
         Self {
             user_grammar,
             item_stack: Vec::new(),
@@ -67,12 +71,12 @@ impl<'a> {{{user_type_name}}}Auto<'a> {
         }
     }
 
-    fn push(&mut self, item: ASTType, context: &str) {
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
-    fn pop(&mut self, context: &str) -> Option<ASTType> {
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -118,7 +122,8 @@ pub trait {{{user_type_name}}}Trait {
     {{{trait_functions}}}
 }
 
-impl UserActionsTrait for {{{user_type_name}}}{{#auto_generate?}}Auto<'_>{{/auto_generate}} {
+{{#auto_generate?}}impl<'t> UserActionsTrait<'t> for {{{user_type_name}}}Auto<'t, '_> { {{/auto_generate}}
+{{^auto_generate?}}impl UserActionsTrait<'_> for {{{user_type_name}}} { {{/auto_generate}}
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
@@ -137,8 +142,8 @@ impl UserActionsTrait for {{{user_type_name}}}{{#auto_generate?}}Auto<'_>{{/auto
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        children: &[ParseTreeStackEntry{{#auto_generate?}}<'t>{{/auto_generate}}],
+        parse_tree: &Tree<ParseTreeType{{#auto_generate?}}<'t>{{/auto_generate}}>) -> Result<()> {
         match prod_num {
 {{{trait_caller}}}            _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }

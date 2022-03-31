@@ -6,17 +6,17 @@ use std::fmt::{Debug, Display, Error, Formatter};
 /// Data structure that implements the semantic actions for our list grammar
 ///
 #[derive(Debug, Default)]
-pub struct ListGrammar {
-    pub list: Option<List>,
+pub struct ListGrammar<'t> {
+    pub list: Option<List<'t>>,
 }
 
-impl ListGrammar {
+impl ListGrammar<'_> {
     pub fn new() -> Self {
         ListGrammar::default()
     }
 }
 
-impl Display for List {
+impl Display for List<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match &self {
             List::List0(l) => write!(
@@ -34,13 +34,13 @@ impl Display for List {
     }
 }
 
-impl Display for ListList {
+impl Display for ListList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{} {}", self.comma_0.symbol, self.num_1.num_0.symbol)
     }
 }
 
-impl Display for ListGrammar {
+impl Display for ListGrammar<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match &self.list {
             Some(list) => writeln!(f, "{}", list),
@@ -49,12 +49,12 @@ impl Display for ListGrammar {
     }
 }
 
-impl ListGrammarTrait for ListGrammar {
+impl<'t> ListGrammarTrait<'t> for ListGrammar<'t> {
     /// Semantic action for user production 0:
     ///
     /// List: [Num {<0>"," Num}];
     ///
-    fn list(&mut self, arg: &List) -> Result<()> {
+    fn list(&mut self, arg: &List<'t>) -> Result<()> {
         self.list = Some(arg.clone());
         Ok(())
     }

@@ -1336,7 +1336,7 @@ pub trait Oberon0GrammarTrait {
     }
 }
 
-impl UserActionsTrait for Oberon0Grammar {
+impl UserActionsTrait<'_> for Oberon0Grammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

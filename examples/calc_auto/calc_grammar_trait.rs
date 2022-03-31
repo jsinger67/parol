@@ -9,20 +9,20 @@ use crate::calc_grammar::CalcGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{miette, IntoDiagnostic, Result};
-use parol_runtime::lexer::OwnedToken;
+use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
-pub trait CalcGrammarTrait {
+pub trait CalcGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for user production 0:
     ///
     /// calc: {instruction <0>";"};
     ///
-    fn calc(&mut self, _arg: &Calc) -> Result<()> {
+    fn calc(&mut self, _arg: &Calc<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -30,7 +30,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_op: <0>"==|!=";
     ///
-    fn equality_op(&mut self, _arg: &EqualityOp) -> Result<()> {
+    fn equality_op(&mut self, _arg: &EqualityOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -38,7 +38,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_op: <0>"(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
-    fn assign_op(&mut self, _arg: &AssignOp) -> Result<()> {
+    fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -46,7 +46,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_op: <0>"\|\|";
     ///
-    fn logical_or_op(&mut self, _arg: &LogicalOrOp) -> Result<()> {
+    fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -54,7 +54,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_op: <0>"&&";
     ///
-    fn logical_and_op(&mut self, _arg: &LogicalAndOp) -> Result<()> {
+    fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -62,7 +62,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_op: <0>"\|";
     ///
-    fn bitwise_or_op(&mut self, _arg: &BitwiseOrOp) -> Result<()> {
+    fn bitwise_or_op(&mut self, _arg: &BitwiseOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -70,7 +70,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_op: <0>"&";
     ///
-    fn bitwise_and_op(&mut self, _arg: &BitwiseAndOp) -> Result<()> {
+    fn bitwise_and_op(&mut self, _arg: &BitwiseAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -78,7 +78,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_op: <0>"<<|>>";
     ///
-    fn bitwise_shift_op(&mut self, _arg: &BitwiseShiftOp) -> Result<()> {
+    fn bitwise_shift_op(&mut self, _arg: &BitwiseShiftOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -86,7 +86,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_op: <0>"<=|<|>=|>";
     ///
-    fn relational_op(&mut self, _arg: &RelationalOp) -> Result<()> {
+    fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -94,7 +94,7 @@ pub trait CalcGrammarTrait {
     ///
     /// plus: <0>"\+";
     ///
-    fn plus(&mut self, _arg: &Plus) -> Result<()> {
+    fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -102,7 +102,7 @@ pub trait CalcGrammarTrait {
     ///
     /// minus: <0>"-";
     ///
-    fn minus(&mut self, _arg: &Minus) -> Result<()> {
+    fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -110,7 +110,7 @@ pub trait CalcGrammarTrait {
     ///
     /// pow_op: <0>"\*\*";
     ///
-    fn pow_op(&mut self, _arg: &PowOp) -> Result<()> {
+    fn pow_op(&mut self, _arg: &PowOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -118,7 +118,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_op: <0>"\*|/|%";
     ///
-    fn mult_op(&mut self, _arg: &MultOp) -> Result<()> {
+    fn mult_op(&mut self, _arg: &MultOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -126,7 +126,7 @@ pub trait CalcGrammarTrait {
     ///
     /// instruction: assignment;
     ///
-    fn instruction(&mut self, _arg: &Instruction) -> Result<()> {
+    fn instruction(&mut self, _arg: &Instruction<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -134,7 +134,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_item: id assign_op;
     ///
-    fn assign_item(&mut self, _arg: &AssignItem) -> Result<()> {
+    fn assign_item(&mut self, _arg: &AssignItem<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -142,7 +142,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment: assign_item {assign_item} logical_or;
     ///
-    fn assignment(&mut self, _arg: &Assignment) -> Result<()> {
+    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -150,7 +150,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or: logical_and {logical_or_op logical_and};
     ///
-    fn logical_or(&mut self, _arg: &LogicalOr) -> Result<()> {
+    fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -158,7 +158,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and: bitwise_or {logical_and_op bitwise_or};
     ///
-    fn logical_and(&mut self, _arg: &LogicalAnd) -> Result<()> {
+    fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -166,7 +166,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or: bitwise_and {bitwise_or_op bitwise_and};
     ///
-    fn bitwise_or(&mut self, _arg: &BitwiseOr) -> Result<()> {
+    fn bitwise_or(&mut self, _arg: &BitwiseOr<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -174,7 +174,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and: equality {bitwise_and_op equality};
     ///
-    fn bitwise_and(&mut self, _arg: &BitwiseAnd) -> Result<()> {
+    fn bitwise_and(&mut self, _arg: &BitwiseAnd<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -182,7 +182,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality: relational {equality_op relational};
     ///
-    fn equality(&mut self, _arg: &Equality) -> Result<()> {
+    fn equality(&mut self, _arg: &Equality<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -190,7 +190,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational: bitwise_shift {relational_op bitwise_shift};
     ///
-    fn relational(&mut self, _arg: &Relational) -> Result<()> {
+    fn relational(&mut self, _arg: &Relational<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift: summ {bitwise_shift_op summ};
     ///
-    fn bitwise_shift(&mut self, _arg: &BitwiseShift) -> Result<()> {
+    fn bitwise_shift(&mut self, _arg: &BitwiseShift<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -206,7 +206,7 @@ pub trait CalcGrammarTrait {
     ///
     /// add_op: plus | minus;
     ///
-    fn add_op(&mut self, _arg: &AddOp) -> Result<()> {
+    fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -214,7 +214,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ: mult {add_op mult};
     ///
-    fn summ(&mut self, _arg: &Summ) -> Result<()> {
+    fn summ(&mut self, _arg: &Summ<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -222,7 +222,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult: power {mult_op power};
     ///
-    fn mult(&mut self, _arg: &Mult) -> Result<()> {
+    fn mult(&mut self, _arg: &Mult<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -230,7 +230,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power: factor {pow_op factor};
     ///
-    fn power(&mut self, _arg: &Power) -> Result<()> {
+    fn power(&mut self, _arg: &Power<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -238,7 +238,7 @@ pub trait CalcGrammarTrait {
     ///
     /// negate: minus;
     ///
-    fn negate(&mut self, _arg: &Negate) -> Result<()> {
+    fn negate(&mut self, _arg: &Negate<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -246,7 +246,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: number | idref | negate factor | <0>"\(" logical_or <0>"\)";
     ///
-    fn factor(&mut self, _arg: &Factor) -> Result<()> {
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -254,7 +254,7 @@ pub trait CalcGrammarTrait {
     ///
     /// number: <0>"0|[1-9][0-9]*";
     ///
-    fn number(&mut self, _arg: &Number) -> Result<()> {
+    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -262,7 +262,7 @@ pub trait CalcGrammarTrait {
     ///
     /// idref: id;
     ///
-    fn idref(&mut self, _arg: &Idref) -> Result<()> {
+    fn idref(&mut self, _arg: &Idref<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -270,11 +270,12 @@ pub trait CalcGrammarTrait {
     ///
     /// id: <0>"[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn id(&mut self, _arg: &Id) -> Result<()> {
+    fn id(&mut self, _arg: &Id<'t>) -> Result<()> {
         Ok(())
     }
 }
 
+// -------------------------------------------------------------------------------------------------
 //
 // Output Types of productions deduced from the structure of the transformed grammar
 //
@@ -286,8 +287,8 @@ pub trait CalcGrammarTrait {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction15 {
-    pub assignment_0: Box<Assignment>,
+pub struct Instruction15<'t> {
+    pub assignment_0: Box<Assignment<'t>>,
 }
 
 ///
@@ -297,8 +298,8 @@ pub struct Instruction15 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction16 {
-    pub logical_or_0: Box<LogicalOr>,
+pub struct Instruction16<'t> {
+    pub logical_or_0: Box<LogicalOr<'t>>,
 }
 
 ///
@@ -308,8 +309,8 @@ pub struct Instruction16 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp42 {
-    pub plus_0: Box<Plus>,
+pub struct AddOp42<'t> {
+    pub plus_0: Box<Plus<'t>>,
 }
 
 ///
@@ -319,8 +320,8 @@ pub struct AddOp42 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp43 {
-    pub minus_0: Box<Minus>,
+pub struct AddOp43<'t> {
+    pub minus_0: Box<Minus<'t>>,
 }
 
 ///
@@ -330,8 +331,8 @@ pub struct AddOp43 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor54 {
-    pub number_0: Box<Number>,
+pub struct Factor54<'t> {
+    pub number_0: Box<Number<'t>>,
 }
 
 ///
@@ -341,8 +342,8 @@ pub struct Factor54 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor55 {
-    pub idref_0: Box<Idref>,
+pub struct Factor55<'t> {
+    pub idref_0: Box<Idref<'t>>,
 }
 
 ///
@@ -352,9 +353,9 @@ pub struct Factor55 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor56 {
-    pub negate_0: Box<Negate>,
-    pub factor_1: Box<Factor>,
+pub struct Factor56<'t> {
+    pub negate_0: Box<Negate<'t>>,
+    pub factor_1: Box<Factor<'t>>,
 }
 
 ///
@@ -364,12 +365,13 @@ pub struct Factor56 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor57 {
-    pub l_paren_0: OwnedToken, /* \( */
-    pub logical_or_1: Box<LogicalOr>,
-    pub r_paren_2: OwnedToken, /* \) */
+pub struct Factor57<'t> {
+    pub l_paren_0: Token<'t>, /* \( */
+    pub logical_or_1: Box<LogicalOr<'t>>,
+    pub r_paren_2: Token<'t>, /* \) */
 }
 
+// -------------------------------------------------------------------------------------------------
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
 //
@@ -379,9 +381,9 @@ pub struct Factor57 {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum AddOp {
-    AddOp42(AddOp42),
-    AddOp43(AddOp43),
+pub enum AddOp<'t> {
+    AddOp42(AddOp42<'t>),
+    AddOp43(AddOp43<'t>),
 }
 
 ///
@@ -389,9 +391,9 @@ pub enum AddOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AssignItem {
-    pub id_0: Box<Id>,
-    pub assign_op_1: Box<AssignOp>,
+pub struct AssignItem<'t> {
+    pub id_0: Box<Id<'t>>,
+    pub assign_op_1: Box<AssignOp<'t>>,
 }
 
 ///
@@ -399,8 +401,8 @@ pub struct AssignItem {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AssignOp {
-    pub assign_op_0: OwnedToken, /* (\+|-|\*|/|%|<<|>>|&|\^|\|)?= */
+pub struct AssignOp<'t> {
+    pub assign_op_0: Token<'t>, /* (\+|-|\*|/|%|<<|>>|&|\^|\|)?= */
 }
 
 ///
@@ -408,10 +410,10 @@ pub struct AssignOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Assignment {
-    pub assign_item_0: Box<AssignItem>,
-    pub assignment_list_1: Vec<AssignmentList>,
-    pub logical_or_2: Box<LogicalOr>,
+pub struct Assignment<'t> {
+    pub assign_item_0: Box<AssignItem<'t>>,
+    pub assignment_list_1: Vec<AssignmentList<'t>>,
+    pub logical_or_2: Box<LogicalOr<'t>>,
 }
 
 ///
@@ -419,8 +421,8 @@ pub struct Assignment {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AssignmentList {
-    pub assign_item_0: Box<AssignItem>,
+pub struct AssignmentList<'t> {
+    pub assign_item_0: Box<AssignItem<'t>>,
 }
 
 ///
@@ -428,9 +430,9 @@ pub struct AssignmentList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseAnd {
-    pub equality_0: Box<Equality>,
-    pub bitwise_and_list_1: Vec<BitwiseAndList>,
+pub struct BitwiseAnd<'t> {
+    pub equality_0: Box<Equality<'t>>,
+    pub bitwise_and_list_1: Vec<BitwiseAndList<'t>>,
 }
 
 ///
@@ -438,9 +440,9 @@ pub struct BitwiseAnd {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseAndList {
-    pub bitwise_and_op_0: Box<BitwiseAndOp>,
-    pub equality_1: Box<Equality>,
+pub struct BitwiseAndList<'t> {
+    pub bitwise_and_op_0: Box<BitwiseAndOp<'t>>,
+    pub equality_1: Box<Equality<'t>>,
 }
 
 ///
@@ -448,8 +450,8 @@ pub struct BitwiseAndList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseAndOp {
-    pub bitwise_and_op_0: OwnedToken, /* & */
+pub struct BitwiseAndOp<'t> {
+    pub bitwise_and_op_0: Token<'t>, /* & */
 }
 
 ///
@@ -457,9 +459,9 @@ pub struct BitwiseAndOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseOr {
-    pub bitwise_and_0: Box<BitwiseAnd>,
-    pub bitwise_or_list_1: Vec<BitwiseOrList>,
+pub struct BitwiseOr<'t> {
+    pub bitwise_and_0: Box<BitwiseAnd<'t>>,
+    pub bitwise_or_list_1: Vec<BitwiseOrList<'t>>,
 }
 
 ///
@@ -467,9 +469,9 @@ pub struct BitwiseOr {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseOrList {
-    pub bitwise_or_op_0: Box<BitwiseOrOp>,
-    pub bitwise_and_1: Box<BitwiseAnd>,
+pub struct BitwiseOrList<'t> {
+    pub bitwise_or_op_0: Box<BitwiseOrOp<'t>>,
+    pub bitwise_and_1: Box<BitwiseAnd<'t>>,
 }
 
 ///
@@ -477,8 +479,8 @@ pub struct BitwiseOrList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseOrOp {
-    pub bitwise_or_op_0: OwnedToken, /* \| */
+pub struct BitwiseOrOp<'t> {
+    pub bitwise_or_op_0: Token<'t>, /* \| */
 }
 
 ///
@@ -486,9 +488,9 @@ pub struct BitwiseOrOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseShift {
-    pub summ_0: Box<Summ>,
-    pub bitwise_shift_list_1: Vec<BitwiseShiftList>,
+pub struct BitwiseShift<'t> {
+    pub summ_0: Box<Summ<'t>>,
+    pub bitwise_shift_list_1: Vec<BitwiseShiftList<'t>>,
 }
 
 ///
@@ -496,9 +498,9 @@ pub struct BitwiseShift {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseShiftList {
-    pub bitwise_shift_op_0: Box<BitwiseShiftOp>,
-    pub summ_1: Box<Summ>,
+pub struct BitwiseShiftList<'t> {
+    pub bitwise_shift_op_0: Box<BitwiseShiftOp<'t>>,
+    pub summ_1: Box<Summ<'t>>,
 }
 
 ///
@@ -506,8 +508,8 @@ pub struct BitwiseShiftList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BitwiseShiftOp {
-    pub bitwise_shift_op_0: OwnedToken, /* <<|>> */
+pub struct BitwiseShiftOp<'t> {
+    pub bitwise_shift_op_0: Token<'t>, /* <<|>> */
 }
 
 ///
@@ -515,8 +517,8 @@ pub struct BitwiseShiftOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Calc {
-    pub calc_list_0: Vec<CalcList>,
+pub struct Calc<'t> {
+    pub calc_list_0: Vec<CalcList<'t>>,
 }
 
 ///
@@ -524,9 +526,9 @@ pub struct Calc {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CalcList {
-    pub instruction_0: Box<Instruction>,
-    pub semicolon_1: OwnedToken, /* ; */
+pub struct CalcList<'t> {
+    pub instruction_0: Box<Instruction<'t>>,
+    pub semicolon_1: Token<'t>, /* ; */
 }
 
 ///
@@ -534,9 +536,9 @@ pub struct CalcList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Equality {
-    pub relational_0: Box<Relational>,
-    pub equality_list_1: Vec<EqualityList>,
+pub struct Equality<'t> {
+    pub relational_0: Box<Relational<'t>>,
+    pub equality_list_1: Vec<EqualityList<'t>>,
 }
 
 ///
@@ -544,9 +546,9 @@ pub struct Equality {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct EqualityList {
-    pub equality_op_0: Box<EqualityOp>,
-    pub relational_1: Box<Relational>,
+pub struct EqualityList<'t> {
+    pub equality_op_0: Box<EqualityOp<'t>>,
+    pub relational_1: Box<Relational<'t>>,
 }
 
 ///
@@ -554,8 +556,8 @@ pub struct EqualityList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct EqualityOp {
-    pub equality_op_0: OwnedToken, /* ==|!= */
+pub struct EqualityOp<'t> {
+    pub equality_op_0: Token<'t>, /* ==|!= */
 }
 
 ///
@@ -563,11 +565,11 @@ pub struct EqualityOp {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Factor {
-    Factor54(Factor54),
-    Factor55(Factor55),
-    Factor56(Factor56),
-    Factor57(Factor57),
+pub enum Factor<'t> {
+    Factor54(Factor54<'t>),
+    Factor55(Factor55<'t>),
+    Factor56(Factor56<'t>),
+    Factor57(Factor57<'t>),
 }
 
 ///
@@ -575,8 +577,8 @@ pub enum Factor {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Id {
-    pub id_0: OwnedToken, /* [a-zA-Z_][a-zA-Z0-9_]* */
+pub struct Id<'t> {
+    pub id_0: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
 
 ///
@@ -584,8 +586,8 @@ pub struct Id {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Idref {
-    pub id_0: Box<Id>,
+pub struct Idref<'t> {
+    pub id_0: Box<Id<'t>>,
 }
 
 ///
@@ -593,9 +595,9 @@ pub struct Idref {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Instruction {
-    Instruction15(Instruction15),
-    Instruction16(Instruction16),
+pub enum Instruction<'t> {
+    Instruction15(Instruction15<'t>),
+    Instruction16(Instruction16<'t>),
 }
 
 ///
@@ -603,9 +605,9 @@ pub enum Instruction {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalAnd {
-    pub bitwise_or_0: Box<BitwiseOr>,
-    pub logical_and_list_1: Vec<LogicalAndList>,
+pub struct LogicalAnd<'t> {
+    pub bitwise_or_0: Box<BitwiseOr<'t>>,
+    pub logical_and_list_1: Vec<LogicalAndList<'t>>,
 }
 
 ///
@@ -613,9 +615,9 @@ pub struct LogicalAnd {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalAndList {
-    pub logical_and_op_0: Box<LogicalAndOp>,
-    pub bitwise_or_1: Box<BitwiseOr>,
+pub struct LogicalAndList<'t> {
+    pub logical_and_op_0: Box<LogicalAndOp<'t>>,
+    pub bitwise_or_1: Box<BitwiseOr<'t>>,
 }
 
 ///
@@ -623,8 +625,8 @@ pub struct LogicalAndList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalAndOp {
-    pub logical_and_op_0: OwnedToken, /* && */
+pub struct LogicalAndOp<'t> {
+    pub logical_and_op_0: Token<'t>, /* && */
 }
 
 ///
@@ -632,9 +634,9 @@ pub struct LogicalAndOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalOr {
-    pub logical_and_0: Box<LogicalAnd>,
-    pub logical_or_list_1: Vec<LogicalOrList>,
+pub struct LogicalOr<'t> {
+    pub logical_and_0: Box<LogicalAnd<'t>>,
+    pub logical_or_list_1: Vec<LogicalOrList<'t>>,
 }
 
 ///
@@ -642,9 +644,9 @@ pub struct LogicalOr {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalOrList {
-    pub logical_or_op_0: Box<LogicalOrOp>,
-    pub logical_and_1: Box<LogicalAnd>,
+pub struct LogicalOrList<'t> {
+    pub logical_or_op_0: Box<LogicalOrOp<'t>>,
+    pub logical_and_1: Box<LogicalAnd<'t>>,
 }
 
 ///
@@ -652,8 +654,8 @@ pub struct LogicalOrList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalOrOp {
-    pub logical_or_op_0: OwnedToken, /* \|\| */
+pub struct LogicalOrOp<'t> {
+    pub logical_or_op_0: Token<'t>, /* \|\| */
 }
 
 ///
@@ -661,8 +663,8 @@ pub struct LogicalOrOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Minus {
-    pub minus_0: OwnedToken, /* - */
+pub struct Minus<'t> {
+    pub minus_0: Token<'t>, /* - */
 }
 
 ///
@@ -670,9 +672,9 @@ pub struct Minus {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Mult {
-    pub power_0: Box<Power>,
-    pub mult_list_1: Vec<MultList>,
+pub struct Mult<'t> {
+    pub power_0: Box<Power<'t>>,
+    pub mult_list_1: Vec<MultList<'t>>,
 }
 
 ///
@@ -680,9 +682,9 @@ pub struct Mult {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MultList {
-    pub mult_op_0: Box<MultOp>,
-    pub power_1: Box<Power>,
+pub struct MultList<'t> {
+    pub mult_op_0: Box<MultOp<'t>>,
+    pub power_1: Box<Power<'t>>,
 }
 
 ///
@@ -690,8 +692,8 @@ pub struct MultList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MultOp {
-    pub mult_op_0: OwnedToken, /* \*|/|% */
+pub struct MultOp<'t> {
+    pub mult_op_0: Token<'t>, /* \*|/|% */
 }
 
 ///
@@ -699,8 +701,8 @@ pub struct MultOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Negate {
-    pub minus_0: Box<Minus>,
+pub struct Negate<'t> {
+    pub minus_0: Box<Minus<'t>>,
 }
 
 ///
@@ -708,8 +710,8 @@ pub struct Negate {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number {
-    pub number_0: OwnedToken, /* 0|[1-9][0-9]* */
+pub struct Number<'t> {
+    pub number_0: Token<'t>, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -717,8 +719,8 @@ pub struct Number {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Plus {
-    pub plus_0: OwnedToken, /* \+ */
+pub struct Plus<'t> {
+    pub plus_0: Token<'t>, /* \+ */
 }
 
 ///
@@ -726,8 +728,8 @@ pub struct Plus {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct PowOp {
-    pub pow_op_0: OwnedToken, /* \*\* */
+pub struct PowOp<'t> {
+    pub pow_op_0: Token<'t>, /* \*\* */
 }
 
 ///
@@ -735,9 +737,9 @@ pub struct PowOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Power {
-    pub factor_0: Box<Factor>,
-    pub power_list_1: Vec<PowerList>,
+pub struct Power<'t> {
+    pub factor_0: Box<Factor<'t>>,
+    pub power_list_1: Vec<PowerList<'t>>,
 }
 
 ///
@@ -745,9 +747,9 @@ pub struct Power {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct PowerList {
-    pub pow_op_0: Box<PowOp>,
-    pub factor_1: Box<Factor>,
+pub struct PowerList<'t> {
+    pub pow_op_0: Box<PowOp<'t>>,
+    pub factor_1: Box<Factor<'t>>,
 }
 
 ///
@@ -755,9 +757,9 @@ pub struct PowerList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relational {
-    pub bitwise_shift_0: Box<BitwiseShift>,
-    pub relational_list_1: Vec<RelationalList>,
+pub struct Relational<'t> {
+    pub bitwise_shift_0: Box<BitwiseShift<'t>>,
+    pub relational_list_1: Vec<RelationalList<'t>>,
 }
 
 ///
@@ -765,9 +767,9 @@ pub struct Relational {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct RelationalList {
-    pub relational_op_0: Box<RelationalOp>,
-    pub bitwise_shift_1: Box<BitwiseShift>,
+pub struct RelationalList<'t> {
+    pub relational_op_0: Box<RelationalOp<'t>>,
+    pub bitwise_shift_1: Box<BitwiseShift<'t>>,
 }
 
 ///
@@ -775,8 +777,8 @@ pub struct RelationalList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct RelationalOp {
-    pub relational_op_0: OwnedToken, /* <=|<|>=|> */
+pub struct RelationalOp<'t> {
+    pub relational_op_0: Token<'t>, /* <=|<|>=|> */
 }
 
 ///
@@ -784,9 +786,9 @@ pub struct RelationalOp {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Summ {
-    pub mult_0: Box<Mult>,
-    pub summ_list_1: Vec<SummList>,
+pub struct Summ<'t> {
+    pub mult_0: Box<Mult<'t>>,
+    pub summ_list_1: Vec<SummList<'t>>,
 }
 
 ///
@@ -794,74 +796,79 @@ pub struct Summ {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SummList {
-    pub add_op_0: Box<AddOp>,
-    pub mult_1: Box<Mult>,
+pub struct SummList<'t> {
+    pub add_op_0: Box<AddOp<'t>>,
+    pub mult_1: Box<Mult<'t>>,
 }
 
-//
-// AST type of the transformed grammar
-//
+// -------------------------------------------------------------------------------------------------
 
 ///
 /// Deduced ASTType of expanded grammar
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTType {
-    AddOp(AddOp),
-    AssignItem(AssignItem),
-    AssignOp(AssignOp),
-    Assignment(Assignment),
-    AssignmentList(Vec<AssignmentList>),
-    BitwiseAnd(BitwiseAnd),
-    BitwiseAndList(Vec<BitwiseAndList>),
-    BitwiseAndOp(BitwiseAndOp),
-    BitwiseOr(BitwiseOr),
-    BitwiseOrList(Vec<BitwiseOrList>),
-    BitwiseOrOp(BitwiseOrOp),
-    BitwiseShift(BitwiseShift),
-    BitwiseShiftList(Vec<BitwiseShiftList>),
-    BitwiseShiftOp(BitwiseShiftOp),
-    Calc(Calc),
-    CalcList(Vec<CalcList>),
-    Equality(Equality),
-    EqualityList(Vec<EqualityList>),
-    EqualityOp(EqualityOp),
-    Factor(Factor),
-    Id(Id),
-    Idref(Idref),
-    Instruction(Instruction),
-    LogicalAnd(LogicalAnd),
-    LogicalAndList(Vec<LogicalAndList>),
-    LogicalAndOp(LogicalAndOp),
-    LogicalOr(LogicalOr),
-    LogicalOrList(Vec<LogicalOrList>),
-    LogicalOrOp(LogicalOrOp),
-    Minus(Minus),
-    Mult(Mult),
-    MultList(Vec<MultList>),
-    MultOp(MultOp),
-    Negate(Negate),
-    Number(Number),
-    Plus(Plus),
-    PowOp(PowOp),
-    Power(Power),
-    PowerList(Vec<PowerList>),
-    Relational(Relational),
-    RelationalList(Vec<RelationalList>),
-    RelationalOp(RelationalOp),
-    Summ(Summ),
-    SummList(Vec<SummList>),
+pub enum ASTType<'t> {
+    AddOp(AddOp<'t>),
+    AssignItem(AssignItem<'t>),
+    AssignOp(AssignOp<'t>),
+    Assignment(Assignment<'t>),
+    AssignmentList(Vec<AssignmentList<'t>>),
+    BitwiseAnd(BitwiseAnd<'t>),
+    BitwiseAndList(Vec<BitwiseAndList<'t>>),
+    BitwiseAndOp(BitwiseAndOp<'t>),
+    BitwiseOr(BitwiseOr<'t>),
+    BitwiseOrList(Vec<BitwiseOrList<'t>>),
+    BitwiseOrOp(BitwiseOrOp<'t>),
+    BitwiseShift(BitwiseShift<'t>),
+    BitwiseShiftList(Vec<BitwiseShiftList<'t>>),
+    BitwiseShiftOp(BitwiseShiftOp<'t>),
+    Calc(Calc<'t>),
+    CalcList(Vec<CalcList<'t>>),
+    Equality(Equality<'t>),
+    EqualityList(Vec<EqualityList<'t>>),
+    EqualityOp(EqualityOp<'t>),
+    Factor(Factor<'t>),
+    Id(Id<'t>),
+    Idref(Idref<'t>),
+    Instruction(Instruction<'t>),
+    LogicalAnd(LogicalAnd<'t>),
+    LogicalAndList(Vec<LogicalAndList<'t>>),
+    LogicalAndOp(LogicalAndOp<'t>),
+    LogicalOr(LogicalOr<'t>),
+    LogicalOrList(Vec<LogicalOrList<'t>>),
+    LogicalOrOp(LogicalOrOp<'t>),
+    Minus(Minus<'t>),
+    Mult(Mult<'t>),
+    MultList(Vec<MultList<'t>>),
+    MultOp(MultOp<'t>),
+    Negate(Negate<'t>),
+    Number(Number<'t>),
+    Plus(Plus<'t>),
+    PowOp(PowOp<'t>),
+    Power(Power<'t>),
+    PowerList(Vec<PowerList<'t>>),
+    Relational(Relational<'t>),
+    RelationalList(Vec<RelationalList<'t>>),
+    RelationalOp(RelationalOp<'t>),
+    Summ(Summ<'t>),
+    SummList(Vec<SummList<'t>>),
 }
 
 /// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
 #[allow(dead_code)]
-pub struct CalcGrammarAuto<'a> {
+pub struct CalcGrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
     // Mutable reference of the actual user grammar to be able to call the semantic actions on it
-    user_grammar: &'a mut dyn CalcGrammarTrait,
+    user_grammar: &'u mut dyn CalcGrammarTrait<'t>,
     // Stack to construct the AST on it
-    item_stack: Vec<ASTType>,
+    item_stack: Vec<ASTType<'t>>,
     // Path of the input file. Used for diagnostics.
     file_name: PathBuf,
 }
@@ -870,8 +877,8 @@ pub struct CalcGrammarAuto<'a> {
 /// The `CalcGrammarAuto` impl is automatically generated for the
 /// given grammar.
 ///
-impl<'a> CalcGrammarAuto<'a> {
-    pub fn new(user_grammar: &'a mut dyn CalcGrammarTrait) -> Self {
+impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn CalcGrammarTrait<'t>) -> Self {
         Self {
             user_grammar,
             item_stack: Vec::new(),
@@ -879,12 +886,12 @@ impl<'a> CalcGrammarAuto<'a> {
         }
     }
 
-    fn push(&mut self, item: ASTType, context: &str) {
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
-    fn pop(&mut self, context: &str) -> Option<ASTType> {
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -918,8 +925,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn calc_0(
         &mut self,
-        _calc_list_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _calc_list_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "calc_0";
         trace!("{}", self.trace_item_stack(context));
@@ -945,14 +952,14 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn calc_list_1(
         &mut self,
-        _instruction_0: &ParseTreeStackEntry,
-        semicolon_1: &ParseTreeStackEntry,
-        _calc_list_2: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        _instruction_0: &ParseTreeStackEntry<'t>,
+        semicolon_1: &ParseTreeStackEntry<'t>,
+        _calc_list_2: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "calc_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let semicolon_1 = semicolon_1.token(parse_tree)?.to_owned();
+        let semicolon_1 = *semicolon_1.token(parse_tree)?;
         let mut calc_list_2 = if let Some(ASTType::CalcList(calc_list_2)) = self.pop(context) {
             calc_list_2
         } else {
@@ -978,7 +985,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// calcList: ; // Vec<T>::New
     ///
-    fn calc_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn calc_list_2(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "calc_list_2";
         trace!("{}", self.trace_item_stack(context));
         let calc_list_2_built = Vec::new();
@@ -992,12 +999,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn equality_op_3(
         &mut self,
-        equality_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        equality_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "equality_op_3";
         trace!("{}", self.trace_item_stack(context));
-        let equality_op_0 = equality_op_0.token(parse_tree)?.to_owned();
+        let equality_op_0 = *equality_op_0.token(parse_tree)?;
         let equality_op_3_built = EqualityOpBuilder::default()
             .equality_op_0(equality_op_0)
             .build()
@@ -1014,12 +1021,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn assign_op_4(
         &mut self,
-        assign_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        assign_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "assign_op_4";
         trace!("{}", self.trace_item_stack(context));
-        let assign_op_0 = assign_op_0.token(parse_tree)?.to_owned();
+        let assign_op_0 = *assign_op_0.token(parse_tree)?;
         let assign_op_4_built = AssignOpBuilder::default()
             .assign_op_0(assign_op_0)
             .build()
@@ -1036,12 +1043,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_or_op_5(
         &mut self,
-        logical_or_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        logical_or_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_or_op_5";
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_op_0 = logical_or_op_0.token(parse_tree)?.to_owned();
+        let logical_or_op_0 = *logical_or_op_0.token(parse_tree)?;
         let logical_or_op_5_built = LogicalOrOpBuilder::default()
             .logical_or_op_0(logical_or_op_0)
             .build()
@@ -1058,12 +1065,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_and_op_6(
         &mut self,
-        logical_and_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        logical_and_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_and_op_6";
         trace!("{}", self.trace_item_stack(context));
-        let logical_and_op_0 = logical_and_op_0.token(parse_tree)?.to_owned();
+        let logical_and_op_0 = *logical_and_op_0.token(parse_tree)?;
         let logical_and_op_6_built = LogicalAndOpBuilder::default()
             .logical_and_op_0(logical_and_op_0)
             .build()
@@ -1080,12 +1087,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_or_op_7(
         &mut self,
-        bitwise_or_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        bitwise_or_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_or_op_7";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_or_op_0 = bitwise_or_op_0.token(parse_tree)?.to_owned();
+        let bitwise_or_op_0 = *bitwise_or_op_0.token(parse_tree)?;
         let bitwise_or_op_7_built = BitwiseOrOpBuilder::default()
             .bitwise_or_op_0(bitwise_or_op_0)
             .build()
@@ -1102,12 +1109,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_and_op_8(
         &mut self,
-        bitwise_and_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        bitwise_and_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_and_op_8";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_and_op_0 = bitwise_and_op_0.token(parse_tree)?.to_owned();
+        let bitwise_and_op_0 = *bitwise_and_op_0.token(parse_tree)?;
         let bitwise_and_op_8_built = BitwiseAndOpBuilder::default()
             .bitwise_and_op_0(bitwise_and_op_0)
             .build()
@@ -1124,12 +1131,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_shift_op_9(
         &mut self,
-        bitwise_shift_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        bitwise_shift_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_shift_op_9";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_shift_op_0 = bitwise_shift_op_0.token(parse_tree)?.to_owned();
+        let bitwise_shift_op_0 = *bitwise_shift_op_0.token(parse_tree)?;
         let bitwise_shift_op_9_built = BitwiseShiftOpBuilder::default()
             .bitwise_shift_op_0(bitwise_shift_op_0)
             .build()
@@ -1147,12 +1154,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn relational_op_10(
         &mut self,
-        relational_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        relational_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "relational_op_10";
         trace!("{}", self.trace_item_stack(context));
-        let relational_op_0 = relational_op_0.token(parse_tree)?.to_owned();
+        let relational_op_0 = *relational_op_0.token(parse_tree)?;
         let relational_op_10_built = RelationalOpBuilder::default()
             .relational_op_0(relational_op_0)
             .build()
@@ -1169,12 +1176,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn plus_11(
         &mut self,
-        plus_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        plus_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "plus_11";
         trace!("{}", self.trace_item_stack(context));
-        let plus_0 = plus_0.token(parse_tree)?.to_owned();
+        let plus_0 = *plus_0.token(parse_tree)?;
         let plus_11_built = PlusBuilder::default()
             .plus_0(plus_0)
             .build()
@@ -1191,12 +1198,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn minus_12(
         &mut self,
-        minus_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        minus_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "minus_12";
         trace!("{}", self.trace_item_stack(context));
-        let minus_0 = minus_0.token(parse_tree)?.to_owned();
+        let minus_0 = *minus_0.token(parse_tree)?;
         let minus_12_built = MinusBuilder::default()
             .minus_0(minus_0)
             .build()
@@ -1213,12 +1220,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn pow_op_13(
         &mut self,
-        pow_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        pow_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "pow_op_13";
         trace!("{}", self.trace_item_stack(context));
-        let pow_op_0 = pow_op_0.token(parse_tree)?.to_owned();
+        let pow_op_0 = *pow_op_0.token(parse_tree)?;
         let pow_op_13_built = PowOpBuilder::default()
             .pow_op_0(pow_op_0)
             .build()
@@ -1235,12 +1242,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn mult_op_14(
         &mut self,
-        mult_op_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        mult_op_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "mult_op_14";
         trace!("{}", self.trace_item_stack(context));
-        let mult_op_0 = mult_op_0.token(parse_tree)?.to_owned();
+        let mult_op_0 = *mult_op_0.token(parse_tree)?;
         let mult_op_14_built = MultOpBuilder::default()
             .mult_op_0(mult_op_0)
             .build()
@@ -1257,8 +1264,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn instruction_15(
         &mut self,
-        _assignment_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _assignment_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "instruction_15";
         trace!("{}", self.trace_item_stack(context));
@@ -1284,8 +1291,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn instruction_16(
         &mut self,
-        _logical_or_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _logical_or_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "instruction_16";
         trace!("{}", self.trace_item_stack(context));
@@ -1311,9 +1318,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn assign_item_17(
         &mut self,
-        _id_0: &ParseTreeStackEntry,
-        _assign_op_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _id_0: &ParseTreeStackEntry<'t>,
+        _assign_op_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "assign_item_17";
         trace!("{}", self.trace_item_stack(context));
@@ -1344,10 +1351,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn assignment_18(
         &mut self,
-        _assign_item_0: &ParseTreeStackEntry,
-        _assignment_list_1: &ParseTreeStackEntry,
-        _logical_or_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _assign_item_0: &ParseTreeStackEntry<'t>,
+        _assignment_list_1: &ParseTreeStackEntry<'t>,
+        _logical_or_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "assignment_18";
         trace!("{}", self.trace_item_stack(context));
@@ -1386,9 +1393,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn assignment_list_19(
         &mut self,
-        _assign_item_0: &ParseTreeStackEntry,
-        _assignment_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _assign_item_0: &ParseTreeStackEntry<'t>,
+        _assignment_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "assignment_list_19";
         trace!("{}", self.trace_item_stack(context));
@@ -1417,7 +1424,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// assignmentList: ; // Vec<T>::New
     ///
-    fn assignment_list_20(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn assignment_list_20(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "assignment_list_20";
         trace!("{}", self.trace_item_stack(context));
         let assignment_list_20_built = Vec::new();
@@ -1431,9 +1438,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_or_21(
         &mut self,
-        _logical_and_0: &ParseTreeStackEntry,
-        _logical_or_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _logical_and_0: &ParseTreeStackEntry<'t>,
+        _logical_or_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_or_21";
         trace!("{}", self.trace_item_stack(context));
@@ -1466,10 +1473,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_or_list_22(
         &mut self,
-        _logical_or_op_0: &ParseTreeStackEntry,
-        _logical_and_1: &ParseTreeStackEntry,
-        _logical_or_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _logical_or_op_0: &ParseTreeStackEntry<'t>,
+        _logical_and_1: &ParseTreeStackEntry<'t>,
+        _logical_or_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_or_list_22";
         trace!("{}", self.trace_item_stack(context));
@@ -1505,7 +1512,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// logical_orList: ; // Vec<T>::New
     ///
-    fn logical_or_list_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_or_list_23(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "logical_or_list_23";
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list_23_built = Vec::new();
@@ -1519,9 +1526,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_and_24(
         &mut self,
-        _bitwise_or_0: &ParseTreeStackEntry,
-        _logical_and_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_or_0: &ParseTreeStackEntry<'t>,
+        _logical_and_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_and_24";
         trace!("{}", self.trace_item_stack(context));
@@ -1554,10 +1561,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn logical_and_list_25(
         &mut self,
-        _logical_and_op_0: &ParseTreeStackEntry,
-        _bitwise_or_1: &ParseTreeStackEntry,
-        _logical_and_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _logical_and_op_0: &ParseTreeStackEntry<'t>,
+        _bitwise_or_1: &ParseTreeStackEntry<'t>,
+        _logical_and_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "logical_and_list_25";
         trace!("{}", self.trace_item_stack(context));
@@ -1593,7 +1600,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// logical_andList: ; // Vec<T>::New
     ///
-    fn logical_and_list_26(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_and_list_26(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "logical_and_list_26";
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list_26_built = Vec::new();
@@ -1607,9 +1614,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_or_27(
         &mut self,
-        _bitwise_and_0: &ParseTreeStackEntry,
-        _bitwise_or_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_and_0: &ParseTreeStackEntry<'t>,
+        _bitwise_or_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_or_27";
         trace!("{}", self.trace_item_stack(context));
@@ -1642,10 +1649,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_or_list_28(
         &mut self,
-        _bitwise_or_op_0: &ParseTreeStackEntry,
-        _bitwise_and_1: &ParseTreeStackEntry,
-        _bitwise_or_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_or_op_0: &ParseTreeStackEntry<'t>,
+        _bitwise_and_1: &ParseTreeStackEntry<'t>,
+        _bitwise_or_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_or_list_28";
         trace!("{}", self.trace_item_stack(context));
@@ -1681,7 +1688,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// bitwise_orList: ; // Vec<T>::New
     ///
-    fn bitwise_or_list_29(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_or_list_29(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "bitwise_or_list_29";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_list_29_built = Vec::new();
@@ -1695,9 +1702,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_and_30(
         &mut self,
-        _equality_0: &ParseTreeStackEntry,
-        _bitwise_and_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _equality_0: &ParseTreeStackEntry<'t>,
+        _bitwise_and_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_and_30";
         trace!("{}", self.trace_item_stack(context));
@@ -1730,10 +1737,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_and_list_31(
         &mut self,
-        _bitwise_and_op_0: &ParseTreeStackEntry,
-        _equality_1: &ParseTreeStackEntry,
-        _bitwise_and_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_and_op_0: &ParseTreeStackEntry<'t>,
+        _equality_1: &ParseTreeStackEntry<'t>,
+        _bitwise_and_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_and_list_31";
         trace!("{}", self.trace_item_stack(context));
@@ -1769,7 +1776,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// bitwise_andList: ; // Vec<T>::New
     ///
-    fn bitwise_and_list_32(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_and_list_32(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "bitwise_and_list_32";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_list_32_built = Vec::new();
@@ -1783,9 +1790,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn equality_33(
         &mut self,
-        _relational_0: &ParseTreeStackEntry,
-        _equality_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _relational_0: &ParseTreeStackEntry<'t>,
+        _equality_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "equality_33";
         trace!("{}", self.trace_item_stack(context));
@@ -1818,10 +1825,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn equality_list_34(
         &mut self,
-        _equality_op_0: &ParseTreeStackEntry,
-        _relational_1: &ParseTreeStackEntry,
-        _equality_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _equality_op_0: &ParseTreeStackEntry<'t>,
+        _relational_1: &ParseTreeStackEntry<'t>,
+        _equality_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "equality_list_34";
         trace!("{}", self.trace_item_stack(context));
@@ -1856,7 +1863,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// equalityList: ; // Vec<T>::New
     ///
-    fn equality_list_35(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn equality_list_35(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "equality_list_35";
         trace!("{}", self.trace_item_stack(context));
         let equality_list_35_built = Vec::new();
@@ -1870,9 +1877,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn relational_36(
         &mut self,
-        _bitwise_shift_0: &ParseTreeStackEntry,
-        _relational_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_shift_0: &ParseTreeStackEntry<'t>,
+        _relational_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "relational_36";
         trace!("{}", self.trace_item_stack(context));
@@ -1906,10 +1913,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn relational_list_37(
         &mut self,
-        _relational_op_0: &ParseTreeStackEntry,
-        _bitwise_shift_1: &ParseTreeStackEntry,
-        _relational_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _relational_op_0: &ParseTreeStackEntry<'t>,
+        _bitwise_shift_1: &ParseTreeStackEntry<'t>,
+        _relational_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "relational_list_37";
         trace!("{}", self.trace_item_stack(context));
@@ -1946,7 +1953,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// relationalList: ; // Vec<T>::New
     ///
-    fn relational_list_38(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn relational_list_38(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "relational_list_38";
         trace!("{}", self.trace_item_stack(context));
         let relational_list_38_built = Vec::new();
@@ -1960,9 +1967,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_shift_39(
         &mut self,
-        _summ_0: &ParseTreeStackEntry,
-        _bitwise_shift_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _summ_0: &ParseTreeStackEntry<'t>,
+        _bitwise_shift_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_shift_39";
         trace!("{}", self.trace_item_stack(context));
@@ -1995,10 +2002,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn bitwise_shift_list_40(
         &mut self,
-        _bitwise_shift_op_0: &ParseTreeStackEntry,
-        _summ_1: &ParseTreeStackEntry,
-        _bitwise_shift_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _bitwise_shift_op_0: &ParseTreeStackEntry<'t>,
+        _summ_1: &ParseTreeStackEntry<'t>,
+        _bitwise_shift_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "bitwise_shift_list_40";
         trace!("{}", self.trace_item_stack(context));
@@ -2034,7 +2041,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// bitwise_shiftList: ; // Vec<T>::New
     ///
-    fn bitwise_shift_list_41(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_shift_list_41(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "bitwise_shift_list_41";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_list_41_built = Vec::new();
@@ -2051,8 +2058,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn add_op_42(
         &mut self,
-        _plus_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _plus_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "add_op_42";
         trace!("{}", self.trace_item_stack(context));
@@ -2078,8 +2085,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn add_op_43(
         &mut self,
-        _minus_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _minus_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "add_op_43";
         trace!("{}", self.trace_item_stack(context));
@@ -2105,9 +2112,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn summ_44(
         &mut self,
-        _mult_0: &ParseTreeStackEntry,
-        _summ_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _mult_0: &ParseTreeStackEntry<'t>,
+        _summ_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "summ_44";
         trace!("{}", self.trace_item_stack(context));
@@ -2139,10 +2146,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn summ_list_45(
         &mut self,
-        _add_op_0: &ParseTreeStackEntry,
-        _mult_1: &ParseTreeStackEntry,
-        _summ_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _add_op_0: &ParseTreeStackEntry<'t>,
+        _mult_1: &ParseTreeStackEntry<'t>,
+        _summ_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "summ_list_45";
         trace!("{}", self.trace_item_stack(context));
@@ -2176,7 +2183,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// summList: ; // Vec<T>::New
     ///
-    fn summ_list_46(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn summ_list_46(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "summ_list_46";
         trace!("{}", self.trace_item_stack(context));
         let summ_list_46_built = Vec::new();
@@ -2190,9 +2197,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn mult_47(
         &mut self,
-        _power_0: &ParseTreeStackEntry,
-        _mult_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _power_0: &ParseTreeStackEntry<'t>,
+        _mult_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "mult_47";
         trace!("{}", self.trace_item_stack(context));
@@ -2224,10 +2231,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn mult_list_48(
         &mut self,
-        _mult_op_0: &ParseTreeStackEntry,
-        _power_1: &ParseTreeStackEntry,
-        _mult_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _mult_op_0: &ParseTreeStackEntry<'t>,
+        _power_1: &ParseTreeStackEntry<'t>,
+        _mult_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "mult_list_48";
         trace!("{}", self.trace_item_stack(context));
@@ -2261,7 +2268,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// multList: ; // Vec<T>::New
     ///
-    fn mult_list_49(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn mult_list_49(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "mult_list_49";
         trace!("{}", self.trace_item_stack(context));
         let mult_list_49_built = Vec::new();
@@ -2275,9 +2282,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn power_50(
         &mut self,
-        _factor_0: &ParseTreeStackEntry,
-        _power_list_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _factor_0: &ParseTreeStackEntry<'t>,
+        _power_list_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "power_50";
         trace!("{}", self.trace_item_stack(context));
@@ -2309,10 +2316,10 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn power_list_51(
         &mut self,
-        _pow_op_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _power_list_2: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _pow_op_0: &ParseTreeStackEntry<'t>,
+        _factor_1: &ParseTreeStackEntry<'t>,
+        _power_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "power_list_51";
         trace!("{}", self.trace_item_stack(context));
@@ -2346,7 +2353,7 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     /// powerList: ; // Vec<T>::New
     ///
-    fn power_list_52(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn power_list_52(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = "power_list_52";
         trace!("{}", self.trace_item_stack(context));
         let power_list_52_built = Vec::new();
@@ -2360,8 +2367,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn negate_53(
         &mut self,
-        _minus_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _minus_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "negate_53";
         trace!("{}", self.trace_item_stack(context));
@@ -2386,8 +2393,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn factor_54(
         &mut self,
-        _number_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _number_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "factor_54";
         trace!("{}", self.trace_item_stack(context));
@@ -2413,8 +2420,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn factor_55(
         &mut self,
-        _idref_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _idref_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "factor_55";
         trace!("{}", self.trace_item_stack(context));
@@ -2440,9 +2447,9 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn factor_56(
         &mut self,
-        _negate_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _negate_0: &ParseTreeStackEntry<'t>,
+        _factor_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "factor_56";
         trace!("{}", self.trace_item_stack(context));
@@ -2474,15 +2481,15 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn factor_57(
         &mut self,
-        l_paren_0: &ParseTreeStackEntry,
-        _logical_or_1: &ParseTreeStackEntry,
-        r_paren_2: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        l_paren_0: &ParseTreeStackEntry<'t>,
+        _logical_or_1: &ParseTreeStackEntry<'t>,
+        r_paren_2: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "factor_57";
         trace!("{}", self.trace_item_stack(context));
-        let l_paren_0 = l_paren_0.token(parse_tree)?.to_owned();
-        let r_paren_2 = r_paren_2.token(parse_tree)?.to_owned();
+        let l_paren_0 = *l_paren_0.token(parse_tree)?;
+        let r_paren_2 = *r_paren_2.token(parse_tree)?;
         let logical_or_1 = if let Some(ASTType::LogicalOr(logical_or_1)) = self.pop(context) {
             logical_or_1
         } else {
@@ -2507,12 +2514,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn number_58(
         &mut self,
-        number_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        number_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "number_58";
         trace!("{}", self.trace_item_stack(context));
-        let number_0 = number_0.token(parse_tree)?.to_owned();
+        let number_0 = *number_0.token(parse_tree)?;
         let number_58_built = NumberBuilder::default()
             .number_0(number_0)
             .build()
@@ -2529,8 +2536,8 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn idref_59(
         &mut self,
-        _id_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _id_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "idref_59";
         trace!("{}", self.trace_item_stack(context));
@@ -2555,12 +2562,12 @@ impl<'a> CalcGrammarAuto<'a> {
     ///
     fn id_60(
         &mut self,
-        id_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
+        id_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "id_60";
         trace!("{}", self.trace_item_stack(context));
-        let id_0 = id_0.token(parse_tree)?.to_owned();
+        let id_0 = *id_0.token(parse_tree)?;
         let id_60_built = IdBuilder::default().id_0(id_0).build().into_diagnostic()?;
         // Calling user action here
         self.user_grammar.id(&id_60_built)?;
@@ -2569,7 +2576,7 @@ impl<'a> CalcGrammarAuto<'a> {
     }
 }
 
-impl UserActionsTrait for CalcGrammarAuto<'_> {
+impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
@@ -2586,8 +2593,8 @@ impl UserActionsTrait for CalcGrammarAuto<'_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeStackEntry<'t>],
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
             0 => self.calc_0(&children[0], parse_tree),

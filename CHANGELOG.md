@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.6.1-pre - Unreleased
+## v0.6.1 - 2022-03-31
 
 * Changes regarding the new auto-generation feature
   * Added new examples `list_auto` and `calc_auto`, that uses this new feature
@@ -25,7 +25,8 @@ But we try to mark incompatible changes with a new minor version.
   * Modified code generation for auto-generation (clippy)
   * More efficient call method of user actions (by reference)
   * Fixed a name clash between a popped AST value and the built result value in auto-generated actions
-* Referencing `parol_runtime` crate with version v0.5.8 now
+  * Using Token<'t> instead of OwnedToken in generated code now for performance reasons
+    * This requires `parol_runtime` crate with version v0.5.9 now
 * Partly reworked documentation
 
 ## v0.6.0 - 2022-03-20

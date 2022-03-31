@@ -35,7 +35,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-{{^auto_generate?}}    user_actions: &mut dyn UserActionsTrait,{{/auto_generate}}{{#auto_generate?}}    user_actions: &mut {{user_type_name}},{{/auto_generate}}
+{{^auto_generate?}}    user_actions: &mut dyn UserActionsTrait<'t>,{{/auto_generate}}{{#auto_generate?}}    user_actions: &mut {{user_type_name}}<'t>,{{/auto_generate}}
 ) -> Result<Tree<ParseTreeType<'t>>> where T: AsRef<Path> {
     let mut llk_parser = LLKParser::new(
         {{start_symbol_index}},

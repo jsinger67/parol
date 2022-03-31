@@ -442,7 +442,7 @@ pub trait BooleanGrammarTrait {
     }
 }
 
-impl UserActionsTrait for BooleanGrammar {
+impl UserActionsTrait<'_> for BooleanGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

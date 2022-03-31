@@ -100,7 +100,7 @@ pub trait ListGrammarTrait {
     }
 }
 
-impl UserActionsTrait for ListGrammar {
+impl UserActionsTrait<'_> for ListGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.

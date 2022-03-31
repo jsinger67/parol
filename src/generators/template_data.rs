@@ -49,6 +49,7 @@ pub(crate) struct UserTraitData<'a> {
 pub(crate) struct NonTerminalTypeStruct {
     pub comment: StrVec,
     pub non_terminal: String,
+    pub lifetime: String,
     pub members: StrVec,
 }
 
@@ -57,6 +58,7 @@ pub(crate) struct NonTerminalTypeStruct {
 pub(crate) struct NonTerminalTypeEnum {
     pub comment: StrVec,
     pub non_terminal: String,
+    pub lifetime: String,
     pub members: StrVec,
 }
 
@@ -65,5 +67,6 @@ pub(crate) struct NonTerminalTypeEnum {
 pub(crate) struct NonTerminalTypeVec {
     pub comment: StrVec,
     pub non_terminal: String,
+    pub lifetime: String,
     pub type_ref: String,
 }

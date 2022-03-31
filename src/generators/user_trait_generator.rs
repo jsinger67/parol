@@ -33,6 +33,7 @@ pub struct UserTraitGenerator<'a> {
 impl<'a> UserTraitGenerator<'a> {
     fn generate_inner_action_args(&self, action: &Action) -> String {
         // We reference the parse_tree argument only if a token is in the argument list
+        let lifetime = if self.auto_generate { "<'t>" } else { "" };
         let mut parse_tree_argument_used = false;
         let mut arguments = action
             .args
@@ -41,12 +42,13 @@ impl<'a> UserTraitGenerator<'a> {
                 if matches!(a.arg_type, ASTType::Token(_)) {
                     parse_tree_argument_used = true;
                 }
-                format!("{}: &ParseTreeStackEntry", a.name(),)
+                format!("{}: &ParseTreeStackEntry{}", a.name(), lifetime)
             })
             .collect::<Vec<String>>();
         arguments.push(format!(
-            "{}parse_tree: &Tree<ParseTreeType>",
-            NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used)
+            "{}parse_tree: &Tree<ParseTreeType{}>",
+            NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used),
+            lifetime
         ));
         arguments.join(", ")
     }
@@ -67,7 +69,7 @@ impl<'a> UserTraitGenerator<'a> {
                 .for_each(|arg| {
                     let arg_name = arg.name();
                     code.push(format!(
-                        "let {} = {}.token(parse_tree)?.to_owned();",
+                        "let {} = *{}.token(parse_tree)?;",
                         arg_name, arg_name
                     ))
                 });
@@ -220,7 +222,7 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
-        format!("_arg: &{}", NmHlp::to_upper_camel_case(non_terminal))
+        format!("_arg: &{}<'t>", NmHlp::to_upper_camel_case(non_terminal))
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
@@ -252,6 +254,7 @@ impl<'a> UserTraitGenerator<'a> {
                 let struct_data = NonTerminalTypeStruct {
                     comment,
                     non_terminal,
+                    lifetime: ast_type.lifetime(),
                     members: m.iter().fold(StrVec::new(4), |mut acc, (n, t)| {
                         acc.push(format!("{}: {},", n, t));
                         acc
@@ -263,11 +266,12 @@ impl<'a> UserTraitGenerator<'a> {
                 let struct_data = NonTerminalTypeEnum {
                     comment,
                     non_terminal: n.to_string(),
+                    lifetime: ast_type.lifetime(),
                     members: m.iter().fold(StrVec::new(4), |mut acc, (c, t)| {
                         acc.push(NmHlp::to_upper_camel_case(&format!(
                             "{}({}),",
                             c,
-                            t.type_name()
+                            t.type_name(),
                         )));
                         acc
                     }),
@@ -278,6 +282,7 @@ impl<'a> UserTraitGenerator<'a> {
                 let struct_data = NonTerminalTypeVec {
                     comment,
                     non_terminal,
+                    lifetime: ast_type.lifetime(),
                     type_ref: r.clone(),
                 };
                 Some(format!("{}", struct_data))
@@ -286,6 +291,7 @@ impl<'a> UserTraitGenerator<'a> {
                 let struct_data = NonTerminalTypeStruct {
                     comment,
                     non_terminal,
+                    lifetime: ast_type.lifetime(),
                     members: StrVec::new(0),
                 };
                 Some(format!("{}", struct_data))

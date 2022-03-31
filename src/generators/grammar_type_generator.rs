@@ -36,12 +36,12 @@ impl ASTType {
         match self {
             Self::None => "*TypeError*".to_owned(),
             Self::Unit => "()".to_owned(),
-            Self::Token(t) => format!("OwnedToken /* {} */", t),
-            Self::TypeRef(r) => format!("Box<{}>", r),
+            Self::Token(t) => format!("Token<'t> /* {} */", t),
+            Self::TypeRef(r) => format!("Box<{}<'t>>", r),
             Self::TypeName(n) => n.clone(),
             Self::Struct(n, _) => n.to_string(),
             Self::Enum(n, _) => n.to_string(),
-            Self::Repeat(r) => format!("Vec<{}>", r),
+            Self::Repeat(r) => format!("Vec<{}<'t>>", r),
         }
     }
 
@@ -49,7 +49,7 @@ impl ASTType {
         match self {
             Self::None => "*TypeError*".to_owned(),
             Self::Unit => "()".to_owned(),
-            Self::Token(t) => format!("OwnedToken /* {} */", t),
+            Self::Token(t) => format!("Token<'t> /* {} */", t),
             Self::TypeRef(r) => r.clone(),
             Self::TypeName(n) => n.clone(),
             Self::Struct(n, _) => n.to_string(),
@@ -59,7 +59,7 @@ impl ASTType {
     }
 
     /// Change the type's name
-    pub fn with_name(self, name: String) -> Self {
+    pub(crate) fn with_name(self, name: String) -> Self {
         let name = NmHlp::to_upper_camel_case(&name);
         match self {
             Self::None => self,
@@ -72,6 +72,31 @@ impl ASTType {
             Self::Repeat(_) => self,
         }
     }
+
+    pub(crate) fn has_lifetime(&self) -> bool {
+        match self {
+            Self::None | Self::Unit => false,
+            Self::Token(_) | Self::TypeRef(_) | Self::TypeName(_) | Self::Repeat(_) => true,
+            Self::Struct(_, m) => m.iter().any(|e| e.1.has_lifetime()),
+            Self::Enum(_, m) => m.iter().any(|e| e.1.has_lifetime()),
+        }
+    }
+
+    pub(crate) fn lifetime(&self) -> String {
+        match self {
+            Self::None | Self::Unit => "".to_owned(),
+            Self::Token(_) | Self::TypeRef(_) | Self::TypeName(_) | Self::Repeat(_) => {
+                "<'t>".to_owned()
+            }
+            Self::Struct(_, _) | Self::Enum(_, _) => {
+                if self.has_lifetime() {
+                    "<'t>".to_owned()
+                } else {
+                    "".to_owned()
+                }
+            }
+        }
+    }
 }
 
 impl Display for ASTType {
@@ -79,8 +104,8 @@ impl Display for ASTType {
         match self {
             Self::None => write!(f, "-"),
             Self::Unit => write!(f, "()"),
-            Self::Token(t) => write!(f, "OwnedToken /* {} */", t),
-            Self::TypeRef(r) => write!(f, "Box<{}>", r),
+            Self::Token(t) => write!(f, "Token<'t> /* {} */", t),
+            Self::TypeRef(r) => write!(f, "Box<{}<'t>>", r),
             Self::TypeName(n) => write!(f, "{}", n),
             Self::Struct(n, m) => write!(
                 f,
@@ -100,7 +125,7 @@ impl Display for ASTType {
                     .collect::<Vec<String>>()
                     .join(", ")
             ),
-            Self::Repeat(r) => write!(f, "Vec<{}>", r),
+            Self::Repeat(r) => write!(f, "Vec<{}<'t>>", r),
         }
     }
 }
@@ -378,7 +403,7 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    fn deduce_type_of_non_terminal(&mut self, actions: Vec<usize>) -> Option<ASTType> {
+    fn deduce_type_of_non_terminal(&mut self, actions: Vec<usize>, cfg: &Cfg) -> Option<ASTType> {
         let mut vector_typed_non_terminal_opt = None;
         let result_type = match actions.len() {
             // Productions can be optimized away, when they have duplicates!
@@ -454,9 +479,14 @@ impl GrammarTypeInfo {
                                             a.non_terminal, a.prod_num
                                         )),
                                         ASTType::TypeName(format!(
-                                            "{}_{}",
+                                            "{}_{}{}",
                                             NmHlp::to_upper_camel_case(nt_ref),
-                                            a.prod_num
+                                            a.prod_num,
+                                            if cfg[a.prod_num].effective_len() > 0 {
+                                                "<'t>"
+                                            } else {
+                                                ""
+                                            },
                                         )),
                                     )
                                 })
@@ -478,7 +508,7 @@ impl GrammarTypeInfo {
     fn deduce_type_of_non_terminals(&mut self, cfg: &Cfg) -> Result<()> {
         for nt in cfg.get_non_terminal_set() {
             let actions = self.matching_actions(&nt);
-            if let Some(nt_type) = self.deduce_type_of_non_terminal(actions) {
+            if let Some(nt_type) = self.deduce_type_of_non_terminal(actions, cfg) {
                 self.add_non_terminal_type(&nt, nt_type)?;
             }
         }
@@ -510,7 +540,7 @@ impl GrammarTypeInfo {
                         if self.vector_typed_non_terminals.contains(n) {
                             ASTType::Repeat(t.type_name())
                         } else {
-                            ASTType::TypeName(t.type_name())
+                            ASTType::TypeName(t.type_name() + &t.lifetime())
                         },
                     )
                 })
@@ -707,17 +737,17 @@ mod tests {
 
     #[test]
     fn test_presentation_of_type_info_1() {
-        let expected = r#"/* 0 */ ((OwnedToken /* a */, Vec<SList>, OwnedToken /* c */, Vec<SList1>) -> struct S0 { a_0: OwnedToken /* a */, s_list_1: Vec<SList>, c_2: OwnedToken /* c */, s_list1_3: Vec<SList1> })  { - }
-/* 1 */ ((OwnedToken /* d-rpt */, Vec<SList1>) -> Vec<SList1>)  { Vec<T>::Push }
-/* 2 */ (() -> Vec<SList1>)  { Vec<T>::New }
-/* 3 */ ((OwnedToken /* b-rpt */, Vec<SList>) -> Vec<SList>)  { Vec<T>::Push }
-/* 4 */ (() -> Vec<SList>)  { Vec<T>::New }
+        let expected = r#"/* 0 */ ((Token<'t> /* a */, Vec<SList<'t>>, Token<'t> /* c */, Vec<SList1<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> })  { - }
+/* 1 */ ((Token<'t> /* d-rpt */, Vec<SList1<'t>>) -> Vec<SList1<'t>>)  { Vec<T>::Push }
+/* 2 */ (() -> Vec<SList1<'t>>)  { Vec<T>::New }
+/* 3 */ ((Token<'t> /* b-rpt */, Vec<SList<'t>>) -> Vec<SList<'t>>)  { Vec<T>::Push }
+/* 4 */ (() -> Vec<SList<'t>>)  { Vec<T>::New }
 
-S:  struct S { a_0: OwnedToken /* a */, s_list_1: Vec<SList>, c_2: OwnedToken /* c */, s_list1_3: Vec<SList1> }
-SList:  struct SList { b_minus_rpt_0: OwnedToken /* b-rpt */ }
-SList1:  struct SList1 { d_minus_rpt_0: OwnedToken /* d-rpt */ }
+S:  struct S { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> }
+SList:  struct SList { b_minus_rpt_0: Token<'t> /* b-rpt */ }
+SList1:  struct SList1 { d_minus_rpt_0: Token<'t> /* d-rpt */ }
 
-enum ASTType { S(S), SList(Vec<SList>), SList1(Vec<SList1>) }
+enum ASTType { S(S<'t>), SList(Vec<SList<'t>>), SList1(Vec<SList1<'t>>) }
 "#;
 
         let presentation = format!("{}", *TYPE_INFO1);
@@ -730,20 +760,20 @@ enum ASTType { S(S), SList(Vec<SList>), SList1(Vec<SList1>) }
 
     #[test]
     fn test_presentation_of_type_info_2() {
-        let expected = r#"/* 0 */ ((OwnedToken /* a */, Box<SSuffix2>) -> struct S0 { a_0: OwnedToken /* a */, s_suffix2_1: Box<SSuffix2> })  { - }
-/* 1 */ ((OwnedToken /* c */, Box<SSuffix1>) -> struct SSuffix21 { c_0: OwnedToken /* c */, s_suffix1_1: Box<SSuffix1> })  { - }
-/* 2 */ ((OwnedToken /* b-opt */, OwnedToken /* c */, Box<SSuffix>) -> struct SSuffix22 { b_minus_opt_0: OwnedToken /* b-opt */, c_1: OwnedToken /* c */, s_suffix_2: Box<SSuffix> })  { - }
-/* 3 */ ((OwnedToken /* d-opt */) -> struct SSuffix13 { d_minus_opt_0: OwnedToken /* d-opt */ })  { - }
+        let expected = r#"/* 0 */ ((Token<'t> /* a */, Box<SSuffix2<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> })  { - }
+/* 1 */ ((Token<'t> /* c */, Box<SSuffix1<'t>>) -> struct SSuffix21 { c_0: Token<'t> /* c */, s_suffix1_1: Box<SSuffix1<'t>> })  { - }
+/* 2 */ ((Token<'t> /* b-opt */, Token<'t> /* c */, Box<SSuffix<'t>>) -> struct SSuffix22 { b_minus_opt_0: Token<'t> /* b-opt */, c_1: Token<'t> /* c */, s_suffix_2: Box<SSuffix<'t>> })  { - }
+/* 3 */ ((Token<'t> /* d-opt */) -> struct SSuffix13 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
 /* 4 */ (() -> ())  { - }
-/* 5 */ ((OwnedToken /* d-opt */) -> struct SSuffix5 { d_minus_opt_0: OwnedToken /* d-opt */ })  { - }
+/* 5 */ ((Token<'t> /* d-opt */) -> struct SSuffix5 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
 /* 6 */ (() -> ())  { - }
 
-S:  struct S { a_0: OwnedToken /* a */, s_suffix2_1: Box<SSuffix2> }
-SSuffix:  enum SSuffix { SSuffix5(SSuffix_5), SSuffix6(SSuffix_6) }
-SSuffix1:  enum SSuffix1 { SSuffix1_3(SSuffix1_3), SSuffix1_4(SSuffix1_4) }
-SSuffix2:  enum SSuffix2 { SSuffix2_1(SSuffix2_1), SSuffix2_2(SSuffix2_2) }
+S:  struct S { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> }
+SSuffix:  enum SSuffix { SSuffix5(SSuffix_5<'t>), SSuffix6(SSuffix_6) }
+SSuffix1:  enum SSuffix1 { SSuffix1_3(SSuffix1_3<'t>), SSuffix1_4(SSuffix1_4) }
+SSuffix2:  enum SSuffix2 { SSuffix2_1(SSuffix2_1<'t>), SSuffix2_2(SSuffix2_2<'t>) }
 
-enum ASTType { S(S), SSuffix(SSuffix), SSuffix1(SSuffix1), SSuffix2(SSuffix2) }
+enum ASTType { S(S<'t>), SSuffix(SSuffix<'t>), SSuffix1(SSuffix1<'t>), SSuffix2(SSuffix2<'t>) }
 "#;
         let presentation = format!("{}", *TYPE_INFO2);
 

@@ -178,7 +178,7 @@ pub trait KeywordsGrammarTrait {
     }
 }
 
-impl UserActionsTrait for KeywordsGrammar {
+impl UserActionsTrait<'_> for KeywordsGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
