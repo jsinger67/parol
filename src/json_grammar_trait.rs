@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use crate::json_grammar::JsonGrammar;
 use id_tree::Tree;
+
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use crate::json_grammar::JsonGrammar;
+use std::path::Path;
 
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
@@ -18,7 +21,7 @@ pub trait JsonGrammarTrait {
     ///
     /// Implement this method if you need the provided information
     ///
-    fn init(&mut self, _file_name: &std::path::Path) {}
+    fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for production 0:
     ///
@@ -47,7 +50,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix: Pair ObjectList "\}";
+    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
     ///
     fn object_suffix_2(
         &mut self,
@@ -73,7 +76,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList: "," Pair ObjectList;
+    /// ObjectList: "," Pair ObjectList; // Vec<T>::Push
     ///
     fn object_list_4(
         &mut self,
@@ -87,7 +90,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList: ;
+    /// ObjectList: ; // Vec<T>::New
     ///
     fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -122,7 +125,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// ArraySuffix: Value ArrayList "\]";
+    /// ArraySuffix: Value ArrayList /* Vec */ "\]";
     ///
     fn array_suffix_8(
         &mut self,
@@ -148,7 +151,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList: "," Value ArrayList;
+    /// ArrayList: "," Value ArrayList; // Vec<T>::Push
     ///
     fn array_list_10(
         &mut self,
@@ -162,7 +165,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList: ;
+    /// ArrayList: ; // Vec<T>::New
     ///
     fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -277,15 +280,13 @@ pub trait JsonGrammarTrait {
     }
 }
 
-impl UserActionsTrait for JsonGrammar {
+impl UserActionsTrait<'_> for JsonGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
     /// Is is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        JsonGrammarTrait::init(self, file_name);
-    }
+    fn init(&mut self, _file_name: &Path) {}
 
     ///
     /// This function is implemented automatically for the user's item JsonGrammar.
@@ -298,47 +299,26 @@ impl UserActionsTrait for JsonGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.json_0(&children[0], parse_tree),
-
             1 => self.object_1(&children[0], &children[1], parse_tree),
-
             2 => self.object_suffix_2(&children[0], &children[1], &children[2], parse_tree),
-
             3 => self.object_suffix_3(&children[0], parse_tree),
-
             4 => self.object_list_4(&children[0], &children[1], &children[2], parse_tree),
-
             5 => self.object_list_5(parse_tree),
-
             6 => self.pair_6(&children[0], &children[1], &children[2], parse_tree),
-
             7 => self.array_7(&children[0], &children[1], parse_tree),
-
             8 => self.array_suffix_8(&children[0], &children[1], &children[2], parse_tree),
-
             9 => self.array_suffix_9(&children[0], parse_tree),
-
             10 => self.array_list_10(&children[0], &children[1], &children[2], parse_tree),
-
             11 => self.array_list_11(parse_tree),
-
             12 => self.value_12(&children[0], parse_tree),
-
             13 => self.value_13(&children[0], parse_tree),
-
             14 => self.value_14(&children[0], parse_tree),
-
             15 => self.value_15(&children[0], parse_tree),
-
             16 => self.value_16(&children[0], parse_tree),
-
             17 => self.value_17(&children[0], parse_tree),
-
             18 => self.value_18(&children[0], parse_tree),
-
             19 => self.string_19(&children[0], parse_tree),
-
             20 => self.number_20(&children[0], parse_tree),
-
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

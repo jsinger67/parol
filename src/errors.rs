@@ -1,7 +1,6 @@
 use miette::{NamedSource, SourceSpan};
 
 #[derive(Error, Diagnostic, Debug)]
-#[diagnostic(help("Error during parse"), code(json_parser::error))]
 pub enum JsonError {
     #[error("f64 parse error")]
     #[diagnostic(

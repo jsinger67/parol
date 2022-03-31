@@ -1,33 +1,21 @@
 [package]
 name = "json_parser"
-version = "0.4.2"
+version = "0.5.0"
 edition = "2018"
 build = "build.rs"
 
 [dependencies]
 env_logger = "0.9.0"
 id_tree = "1.8.0"
-id_tree_layout = "2.0.2"
+id_tree_layout = "2.0.3"
 lazy_static = "1.4.0"
-log = "0.4.14"
-miette = { version = "3.2.0", features = ["fancy"] }
-parol_runtime = "0.5.4"
+log = "0.4.16"
+miette = { version = "4.3.0", features = ["fancy"] }
+parol_runtime = "0.5.9"
 thiserror = "1.0.30"
 
 [build-dependencies]
-parol = "0.5.5"
+parol = "0.6.1"
 
 [profile.release]
 debug = true
-
-[features]
-# Use the $OUT_DIR environment variable to store generated build files.
-#
-# This is recomended default for most users, as it requires less configuration (and results in smaller commits)
-#
-# However in this crate it is off by default, because we want to include the generated files in the `src` directory.
-# That way you can more easily browse the generated outputs.
-#
-# See the Cargo book for more details on $OUT_DIR:
-# https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#outputs-of-the-build-script
-use-cargo-output = []

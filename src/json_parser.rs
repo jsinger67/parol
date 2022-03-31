@@ -204,7 +204,7 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 5,
         production: &[ParseType::N(7), ParseType::T(5)],
     },
-    // 2 - ObjectSuffix: Pair ObjectList "\}";
+    // 2 - ObjectSuffix: Pair ObjectList /* Vec */ "\}";
     Production {
         lhs: 7,
         production: &[ParseType::T(6), ParseType::N(6), ParseType::N(8)],
@@ -234,7 +234,7 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 0,
         production: &[ParseType::N(2), ParseType::T(9)],
     },
-    // 8 - ArraySuffix: Value ArrayList "\]";
+    // 8 - ArraySuffix: Value ArrayList /* Vec */ "\]";
     Production {
         lhs: 2,
         production: &[ParseType::T(10), ParseType::N(1), ParseType::N(10)],
@@ -311,7 +311,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut dyn UserActionsTrait,
+    user_actions: &mut dyn UserActionsTrait<'t>,
 ) -> Result<Tree<ParseTreeType<'t>>>
 where
     T: AsRef<Path>,
