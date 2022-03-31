@@ -183,10 +183,10 @@ impl<'t> LLKParser<'t> {
         );
     }
 
-    fn process_item_stack(
+    fn process_item_stack<'u>(
         &mut self,
         prod_num: ProductionIndex,
-        user_actions: &mut dyn UserActionsTrait,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
         let l = self.productions[prod_num]
             .production
@@ -296,10 +296,10 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse(
+    pub fn parse<'u>(
         &mut self,
         stream: RefCell<TokenStream<'t>>,
-        user_actions: &mut dyn UserActionsTrait,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
         let file_name = stream.borrow().file_name.clone();
 

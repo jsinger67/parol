@@ -9,7 +9,9 @@ use std::path::Path;
 /// The trait is generated for the users item and implemented for it
 /// automatically.
 ///
-pub trait UserActionsTrait {
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+///
+pub trait UserActionsTrait<'t> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
@@ -24,7 +26,7 @@ pub trait UserActionsTrait {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeStackEntry<'t>],
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()>;
 }

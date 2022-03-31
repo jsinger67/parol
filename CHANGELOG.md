@@ -13,6 +13,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.5.9 - 2022-03-31
+
+* Add explicit lifetimes in `UserActionsTrait` to aid the use of Token<'t> in `parol`'s auto-generation feature.
+
 ## v0.5.8 - 2022-03-24
 
 * New test for scanner state switching and the consistence of `miette::NamedSource` which is
