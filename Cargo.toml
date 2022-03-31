@@ -11,24 +11,12 @@ id_tree_layout = "^2.0"
 lazy_static = "^1.4"
 log = "0.4.14"
 miette = { version = "^4.0", features = ["fancy"] }
-parol_runtime = "0.5.6"
+parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
 thiserror = "^1.0"
 derive_builder = "0.11.1"
 
 [build-dependencies]
-parol = "0.6.0"
+parol = "0.6.1"
 
 [profile.release]
 debug = true
-
-[features]
-# Use the $OUT_DIR environment variable to store generated build files.
-#
-# This is recomended default for most users, as it requires less configuration (and results in smaller commits)
-#
-# However in this crate it is off by default, because we want to include the generated files in the `src` directory.
-# That way you can more easily browse the generated outputs.
-#
-# See the Cargo book for more details on $OUT_DIR:
-# https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#outputs-of-the-build-script
-use-cargo-output = []

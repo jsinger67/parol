@@ -7,20 +7,8 @@ extern crate lazy_static;
 extern crate parol_runtime;
 
 mod json_grammar;
-// The output is in the $OUT_DIR directory,
-// so we have to include!() it
-#[cfg(feature = "use-cargo-output")]
-mod json_grammar_trait {
-    include!(concat!(env!("OUT_DIR"), "/grammar_trait.rs"));
-}
-#[cfg(feature = "use-cargo-output")]
-mod json_parser {
-    include!(concat!(env!("OUT_DIR"), "/parser.rs"));
-}
 // The output is version controlled
-#[cfg(not(feature = "use-cargo-output"))]
 mod json_grammar_trait;
-#[cfg(not(feature = "use-cargo-output"))]
 mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
@@ -49,7 +37,7 @@ fn main() -> Result<()> {
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
         let now = Instant::now();
-        let syntax_tree = parse(&input, file_name.to_owned(), &mut json_grammar)
+        let syntax_tree = parse(&input, &file_name, &mut json_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         println!("Parsing took {} milliseconds.", elapsed_time.as_millis());

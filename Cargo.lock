@@ -492,9 +492,9 @@ checksum = "20448fd678ec04e6ea15bbe0476874af65e98a01515d667aa49f1434dc44ebf4"
 
 [[package]]
 name = "parol"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5d94f831a72da86419ccbb7a866eb2dc020c47916b1290ed841db65f311ad18"
+checksum = "da7c928715c5d52281c7025658c1c11d239b149999cd962f7c81c815c0ba7bd2"
 dependencies = [
  "bart",
  "bart_derive",
@@ -522,9 +522,9 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.5.7"
+version = "0.5.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77e883ba85c124b05bda685a11248861fe05a9a82491c6fe43ee340e808ad4b4"
+checksum = "075c16fd7c2d3ee5c4bba6686b58edbbf987d968160d2c84eabea1f01559f38a"
 dependencies = [
  "id_tree",
  "id_tree_layout",

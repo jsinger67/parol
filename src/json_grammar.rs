@@ -2,13 +2,13 @@ use crate::json_grammar_trait::*;
 use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
-impl Display for Json {
+impl Display for Json<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{}", self.value_0)
     }
 }
 
-impl Display for Value {
+impl Display for Value<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
             Value::Value12(v) => write!(f, "{}", v.string_0.string_0.symbol),
@@ -22,7 +22,7 @@ impl Display for Value {
     }
 }
 
-impl Display for ObjectSuffix {
+impl Display for ObjectSuffix<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
             ObjectSuffix::ObjectSuffix2(o) => write!(
@@ -40,13 +40,13 @@ impl Display for ObjectSuffix {
     }
 }
 
-impl Display for ObjectList {
+impl Display for ObjectList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{} {}", self.comma_0.symbol, self.pair_1)
     }
 }
 
-impl Display for ArraySuffix {
+impl Display for ArraySuffix<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
             ArraySuffix::ArraySuffix8(a) => write!(
@@ -64,13 +64,13 @@ impl Display for ArraySuffix {
     }
 }
 
-impl Display for ArrayList {
+impl Display for ArrayList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{} {}", self.comma_0.symbol, self.value_1)
     }
 }
 
-impl Display for Pair {
+impl Display for Pair<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{}: {}", self.string_0.string_0.symbol, self.value_2)
     }
@@ -80,11 +80,11 @@ impl Display for Pair {
 /// Data structure used to build up a json structure during parsing
 ///
 #[derive(Debug, Default)]
-pub struct JsonGrammar {
-    pub json: Option<Json>,
+pub struct JsonGrammar<'t> {
+    pub json: Option<Json<'t>>,
 }
 
-impl Display for JsonGrammar {
+impl Display for JsonGrammar<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match &self.json {
             Some(json) => write!(f, "{}", json),
@@ -93,15 +93,15 @@ impl Display for JsonGrammar {
     }
 }
 
-impl JsonGrammar {
+impl JsonGrammar<'_> {
     pub fn new() -> Self {
         JsonGrammar::default()
     }
 }
 
-impl JsonGrammarTrait for JsonGrammar {
-    fn json(&mut self, arg: Json) -> Result<()> {
-        self.json = Some(arg);
+impl<'t> JsonGrammarTrait<'t> for JsonGrammar<'t> {
+    fn json(&mut self, arg: &Json<'t>) -> Result<()> {
+        self.json = Some(arg.clone());
         Ok(())
     }
 }
