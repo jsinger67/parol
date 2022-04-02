@@ -13,11 +13,8 @@ mod json_parser;
 
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
-use id_tree::Tree;
-use id_tree_layout::Layouter;
 use log::debug;
 use miette::{miette, IntoDiagnostic, Result, WrapErr};
-use parol_runtime::parser::ParseTreeType;
 use std::env;
 use std::fs;
 use std::time::Instant;
@@ -37,7 +34,7 @@ fn main() -> Result<()> {
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
         let now = Instant::now();
-        let syntax_tree = parse(&input, &file_name, &mut json_grammar)
+        parse(&input, &file_name, &mut json_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
@@ -45,20 +42,9 @@ fn main() -> Result<()> {
             Ok(())
         } else {
             println!("Success!\n{}", json_grammar);
-            generate_tree_layout(&syntax_tree, &file_name)
+            Ok(())
         }
     } else {
         Err(miette!("Please provide a file name as first parameter!"))
     }
-}
-
-fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
-    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
-    svg_full_file_name.set_extension("svg");
-
-    Layouter::new(syntax_tree)
-        .with_file_path(&svg_full_file_name)
-        .write()
-        .into_diagnostic()
-        .wrap_err("Failed writing layout")
 }
