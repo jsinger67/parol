@@ -2,12 +2,9 @@ use crate::PathBuf;
 
 use clap::Parser;
 
+// LL(k) Parser Generator written in Rust
 #[derive(Parser)]
-#[clap(
-    author = "Jörg Singer <singer.joerg@gmx.de>",
-    version,
-    about = "A LL(k) Parser Generator written in Rust."
-)]
+#[clap(author, version, about)]
 pub(crate) struct ClapApp {
     /// Input grammar file
     #[clap(short = 'f', long = "file", parse(from_os_str))]

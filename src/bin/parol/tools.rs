@@ -43,6 +43,7 @@ declare_tools!(
     generate,
     left_factor,
     left_recursions,
+    new,
     productivity,
     serialize
 );

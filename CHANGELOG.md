@@ -17,6 +17,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.6.2-pre - Unreleased
+
+* Add new subcommand `new`
+
 ## v0.6.1 - 2022-03-31
 
 * Changes regarding the new auto-generation feature
