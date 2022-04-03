@@ -71,11 +71,13 @@ impl<'t, 'u> {{{user_type_name}}}Auto<'t, 'u> {
         }
     }
 
+    #[allow(dead_code)]
     fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
+    #[allow(dead_code)]
     fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();

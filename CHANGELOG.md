@@ -17,9 +17,14 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.6.2-pre - Unreleased
+## v0.6.3-pre - Unreleased
+
+## v0.6.2 - 2022-04-03
 
 * Add new subcommand `new`
+  * Use this to create new crates that use `parol` as parser generator
+  * It can generate both binary and library crates
+  * It needs `cargo` as well as `cargo-edit` to be installed
 
 ## v0.6.1 - 2022-03-31
 
