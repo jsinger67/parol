@@ -1,0 +1,25 @@
+{
+    "name": "parol-vscode",
+    "displayName": "parol-vscode",
+    "description": "Language extension for `parol`",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.66.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "Parol",
+            "aliases": ["Parol", "parol"],
+            "extensions": [".par"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "Parol",
+            "scopeName": "source.parol",
+            "path": "./syntaxes/parol.tmLanguage.json"
+        }]
+    }
+}

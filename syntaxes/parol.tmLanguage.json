@@ -1,0 +1,82 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "parol",
+  "fileTypes": [".par"],
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#identifier"
+    }
+  ],
+  "foldingStartMarker": ":",
+  "foldingStopMarker": ";",
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "begin": "//",
+          "contentName": "comment.line.content.parol",
+          "end": "\\r?\\n|\\r",
+          "name": "comment.line.parol"
+        },
+        {
+          "begin": "/\\*",
+          "contentName": "comment.block.content.parol",
+          "end": "\\*/",
+          "name": "comment.block.parol"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.parol",
+		  "begin": "\"",
+		  "end": "\"",
+		  "patterns": [
+			{
+			  "name": "string.quoted.double.parol",
+			  "match": "\\\\(\\\\|[bfnrt\"]|u\\{[0-9a-fA-F]{1,8}\\})|[^\"]"
+			}
+		  ]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.other.parol",
+          "match": "%(start|title|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off)\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.control.parol",
+          "match": "%%|\\||:|;"
+        }
+      ]
+    },
+    "identifier": {
+		"patterns": [
+		  {
+			"name": "variable.name.parol",
+			"match": "[a-zA-Z_][a-zA-Z0-9_]*"
+		  }
+		]
+	  }
+	},
+  "scopeName": "source.parol"
+}
