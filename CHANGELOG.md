@@ -8,3 +8,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 * Initial release
   * Support for syntax highlighting and folding is available
+
+## v0.1.1
+
+* Language icons are available now
+* Providing vsix package

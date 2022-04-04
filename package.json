@@ -2,7 +2,7 @@
     "name": "parol-vscode",
     "displayName": "parol-vscode",
     "description": "Language extension for `parol`",
-    "version": "0.0.1",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.66.0"
     },
@@ -14,7 +14,11 @@
             "id": "Parol",
             "aliases": ["Parol", "parol"],
             "extensions": [".par"],
-            "configuration": "./language-configuration.json"
+            "configuration": "./language-configuration.json",
+            "icon": {
+                "light": "./icons/parol-light.png",
+                "dark": "./icons/parol-dark.png"
+            }
         }],
         "grammars": [{
             "language": "Parol",
