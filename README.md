@@ -1,6 +1,6 @@
 # parol-vscode README
 
-This is a VS Code extension to supports `parol`'s syntax of grammar description files (.par files).
+This is a VS Code extension to supports [`parol`](https://github.com/jsinger67/parol.git)'s syntax of grammar description files (.par files).
 
 ## Features
 

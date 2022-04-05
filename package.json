@@ -1,6 +1,11 @@
 {
     "name": "parol-vscode",
     "displayName": "parol-vscode",
+    "author": {
+        "name": "Jörg Singer",
+        "email": "singer.joerg@gmx.de"
+    },
+    "publisher": "Jörg Singer",
     "description": "Language extension for `parol`",
     "version": "0.1.2",
     "repository": {
