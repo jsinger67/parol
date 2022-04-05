@@ -2,11 +2,11 @@
     "name": "parol-vscode",
     "displayName": "parol-vscode",
     "description": "Language extension for `parol`",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "repository": {
         "url": "https://github.com/jsinger67/parol-vscode.git"
     },
-    "icon": "https://github.com/jsinger67/parol-vscode/blob/main/icons/parol-vscode.png",
+    "icon": "icons/parol-vscode.png",
     "engines": {
         "vscode": "^1.66.0"
     },
