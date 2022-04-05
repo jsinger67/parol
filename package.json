@@ -11,8 +11,7 @@
     ],
     "contributes": {
         "languages": [{
-            "id": "Parol",
-            "aliases": ["Parol", "parol"],
+            "id": "parol",
             "extensions": [".par"],
             "configuration": "./language-configuration.json",
             "icon": {
@@ -21,7 +20,7 @@
             }
         }],
         "grammars": [{
-            "language": "Parol",
+            "language": "parol",
             "scopeName": "source.parol",
             "path": "./syntaxes/parol.tmLanguage.json"
         }]
