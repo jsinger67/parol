@@ -3,6 +3,7 @@
     "displayName": "parol-vscode",
     "description": "Language extension for `parol`",
     "version": "0.1.1",
+    "icon": "./icons/parol-vscode.png",
     "engines": {
         "vscode": "^1.66.0"
     },
