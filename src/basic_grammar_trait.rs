@@ -20,9 +20,49 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 0:
     ///
-    /// Basic: <0>"Hello world!";
+    /// Basic: [EndOfLine] Line {EndOfLine Line} [EndOfLine];
     ///
     fn basic(&mut self, _arg: &Basic<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 1:
+    ///
+    /// Line: LineNumber Statement {<0>":" Statement};
+    ///
+    fn line(&mut self, _arg: &Line<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 2:
+    ///
+    /// Statement: <0>"REM" [Comment];
+    ///
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 3:
+    ///
+    /// LineNumber: <0>"0|[1-9][0-9]{0,4}";
+    ///
+    fn line_number(&mut self, _arg: &LineNumber<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 4:
+    ///
+    /// EndOfLine: <0>"(\r?\n|\r)+";
+    ///
+    fn end_of_line(&mut self, _arg: &EndOfLine<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 5:
+    ///
+    /// Comment: <0>"[^\r\n]+";
+    ///
+    fn comment(&mut self, _arg: &Comment<'t>) -> Result<()> {
         Ok(())
     }
 }
@@ -31,6 +71,93 @@ pub trait BasicGrammarTrait<'t> {
 //
 // Output Types of productions deduced from the structure of the transformed grammar
 //
+
+///
+/// Type derived for production 0
+///
+/// Basic: Line BasicList /* Vec */ BasicSuffix1;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Basic0<'t> {
+    pub line_0: Box<Line<'t>>,
+    pub basic_list_1: Vec<BasicList<'t>>,
+    pub basic_suffix1_2: Box<BasicSuffix1<'t>>,
+}
+
+///
+/// Type derived for production 1
+///
+/// Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Basic1<'t> {
+    pub end_of_line_0: Box<EndOfLine<'t>>,
+    pub line_1: Box<Line<'t>>,
+    pub basic_list_2: Vec<BasicList<'t>>,
+    pub basic_suffix_3: Box<BasicSuffix<'t>>,
+}
+
+///
+/// Type derived for production 2
+///
+/// BasicSuffix1: EndOfLine;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicSuffix1_2<'t> {
+    pub end_of_line_0: Box<EndOfLine<'t>>,
+}
+
+///
+/// Type derived for production 3
+///
+/// BasicSuffix1: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicSuffix1_3 {}
+
+///
+/// Type derived for production 4
+///
+/// BasicSuffix: EndOfLine;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicSuffix4<'t> {
+    pub end_of_line_0: Box<EndOfLine<'t>>,
+}
+
+///
+/// Type derived for production 5
+///
+/// BasicSuffix: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicSuffix5 {}
+
+///
+/// Type derived for production 12
+///
+/// StatementSuffix: Comment;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementSuffix12<'t> {
+    pub comment_0: Box<Comment<'t>>,
+}
+
+///
+/// Type derived for production 13
+///
+/// StatementSuffix: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementSuffix13 {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -41,9 +168,108 @@ pub trait BasicGrammarTrait<'t> {
 /// Type derived for non-terminal Basic
 ///
 #[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Basic<'t> {
+    Basic0(Basic0<'t>),
+    Basic1(Basic1<'t>),
+}
+
+///
+/// Type derived for non-terminal BasicList
+///
+#[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Basic<'t> {
-    pub basic_0: Token<'t>, /* Hello world! */
+pub struct BasicList<'t> {
+    pub end_of_line_0: Box<EndOfLine<'t>>,
+    pub line_1: Box<Line<'t>>,
+}
+
+///
+/// Type derived for non-terminal BasicSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum BasicSuffix<'t> {
+    BasicSuffix4(BasicSuffix4<'t>),
+    BasicSuffix5(BasicSuffix5),
+}
+
+///
+/// Type derived for non-terminal BasicSuffix1
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum BasicSuffix1<'t> {
+    BasicSuffix1_2(BasicSuffix1_2<'t>),
+    BasicSuffix1_3(BasicSuffix1_3),
+}
+
+///
+/// Type derived for non-terminal Comment
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Comment<'t> {
+    pub comment_0: Token<'t>, /* [^\r\n]+ */
+}
+
+///
+/// Type derived for non-terminal EndOfLine
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct EndOfLine<'t> {
+    pub end_of_line_0: Token<'t>, /* (\r?\n|\r)+ */
+}
+
+///
+/// Type derived for non-terminal Line
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Line<'t> {
+    pub line_number_0: Box<LineNumber<'t>>,
+    pub statement_1: Box<Statement<'t>>,
+    pub line_list_2: Vec<LineList<'t>>,
+}
+
+///
+/// Type derived for non-terminal LineList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct LineList<'t> {
+    pub colon_0: Token<'t>, /* : */
+    pub statement_1: Box<Statement<'t>>,
+}
+
+///
+/// Type derived for non-terminal LineNumber
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct LineNumber<'t> {
+    pub line_number_0: Token<'t>, /* 0|[1-9][0-9]{0,4} */
+}
+
+///
+/// Type derived for non-terminal Statement
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Statement<'t> {
+    pub r_e_m_0: Token<'t>, /* REM */
+    pub statement_suffix_1: Box<StatementSuffix<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum StatementSuffix<'t> {
+    StatementSuffix12(StatementSuffix12<'t>),
+    StatementSuffix13(StatementSuffix13),
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -55,6 +281,16 @@ pub struct Basic<'t> {
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
     Basic(Basic<'t>),
+    BasicList(Vec<BasicList<'t>>),
+    BasicSuffix(BasicSuffix<'t>),
+    BasicSuffix1(BasicSuffix1<'t>),
+    Comment(Comment<'t>),
+    EndOfLine(EndOfLine<'t>),
+    Line(Line<'t>),
+    LineList(Vec<LineList<'t>>),
+    LineNumber(LineNumber<'t>),
+    Statement(Statement<'t>),
+    StatementSuffix(StatementSuffix<'t>),
 }
 
 /// Auto-implemented adapter grammar
@@ -125,23 +361,446 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// Basic: "Hello world!";
+    /// Basic: Line BasicList /* Vec */ BasicSuffix1;
     ///
     fn basic_0(
         &mut self,
-        basic_0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _line_0: &ParseTreeStackEntry<'t>,
+        _basic_list_1: &ParseTreeStackEntry<'t>,
+        _basic_suffix1_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "basic_0";
         trace!("{}", self.trace_item_stack(context));
-        let basic_0 = *basic_0.token(parse_tree)?;
-        let basic_0_built = BasicBuilder::default()
-            .basic_0(basic_0)
+        let basic_suffix1_2 =
+            if let Some(ASTType::BasicSuffix1(basic_suffix1_2)) = self.pop(context) {
+                basic_suffix1_2
+            } else {
+                return Err(miette!("{}: Expecting ASTType::BasicSuffix1", context));
+            };
+        let basic_list_1 = if let Some(ASTType::BasicList(mut basic_list_1)) = self.pop(context) {
+            basic_list_1.reverse();
+            basic_list_1
+        } else {
+            return Err(miette!("{}: Expecting ASTType::BasicList", context));
+        };
+        let line_0 = if let Some(ASTType::Line(line_0)) = self.pop(context) {
+            line_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Line", context));
+        };
+        let basic_0_built = Basic0Builder::default()
+            .line_0(Box::new(line_0))
+            .basic_list_1(basic_list_1)
+            .basic_suffix1_2(Box::new(basic_suffix1_2))
             .build()
             .into_diagnostic()?;
+        let basic_0_built = Basic::Basic0(basic_0_built);
         // Calling user action here
         self.user_grammar.basic(&basic_0_built)?;
         self.push(ASTType::Basic(basic_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 1:
+    ///
+    /// Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
+    ///
+    fn basic_1(
+        &mut self,
+        _end_of_line_0: &ParseTreeStackEntry<'t>,
+        _line_1: &ParseTreeStackEntry<'t>,
+        _basic_list_2: &ParseTreeStackEntry<'t>,
+        _basic_suffix_3: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "basic_1";
+        trace!("{}", self.trace_item_stack(context));
+        let basic_suffix_3 = if let Some(ASTType::BasicSuffix(basic_suffix_3)) = self.pop(context) {
+            basic_suffix_3
+        } else {
+            return Err(miette!("{}: Expecting ASTType::BasicSuffix", context));
+        };
+        let basic_list_2 = if let Some(ASTType::BasicList(mut basic_list_2)) = self.pop(context) {
+            basic_list_2.reverse();
+            basic_list_2
+        } else {
+            return Err(miette!("{}: Expecting ASTType::BasicList", context));
+        };
+        let line_1 = if let Some(ASTType::Line(line_1)) = self.pop(context) {
+            line_1
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Line", context));
+        };
+        let end_of_line_0 = if let Some(ASTType::EndOfLine(end_of_line_0)) = self.pop(context) {
+            end_of_line_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+        };
+        let basic_1_built = Basic1Builder::default()
+            .end_of_line_0(Box::new(end_of_line_0))
+            .line_1(Box::new(line_1))
+            .basic_list_2(basic_list_2)
+            .basic_suffix_3(Box::new(basic_suffix_3))
+            .build()
+            .into_diagnostic()?;
+        let basic_1_built = Basic::Basic1(basic_1_built);
+        // Calling user action here
+        self.user_grammar.basic(&basic_1_built)?;
+        self.push(ASTType::Basic(basic_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 2:
+    ///
+    /// BasicSuffix1: EndOfLine;
+    ///
+    fn basic_suffix1_2(
+        &mut self,
+        _end_of_line_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "basic_suffix1_2";
+        trace!("{}", self.trace_item_stack(context));
+        let end_of_line_0 = if let Some(ASTType::EndOfLine(end_of_line_0)) = self.pop(context) {
+            end_of_line_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+        };
+        let basic_suffix1_2_built = BasicSuffix1_2Builder::default()
+            .end_of_line_0(Box::new(end_of_line_0))
+            .build()
+            .into_diagnostic()?;
+        let basic_suffix1_2_built = BasicSuffix1::BasicSuffix1_2(basic_suffix1_2_built);
+        self.push(ASTType::BasicSuffix1(basic_suffix1_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 3:
+    ///
+    /// BasicSuffix1: ;
+    ///
+    fn basic_suffix1_3(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "basic_suffix1_3";
+        trace!("{}", self.trace_item_stack(context));
+        let basic_suffix1_3_built = BasicSuffix1_3Builder::default().build().into_diagnostic()?;
+        let basic_suffix1_3_built = BasicSuffix1::BasicSuffix1_3(basic_suffix1_3_built);
+        self.push(ASTType::BasicSuffix1(basic_suffix1_3_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 4:
+    ///
+    /// BasicSuffix: EndOfLine;
+    ///
+    fn basic_suffix_4(
+        &mut self,
+        _end_of_line_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "basic_suffix_4";
+        trace!("{}", self.trace_item_stack(context));
+        let end_of_line_0 = if let Some(ASTType::EndOfLine(end_of_line_0)) = self.pop(context) {
+            end_of_line_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+        };
+        let basic_suffix_4_built = BasicSuffix4Builder::default()
+            .end_of_line_0(Box::new(end_of_line_0))
+            .build()
+            .into_diagnostic()?;
+        let basic_suffix_4_built = BasicSuffix::BasicSuffix4(basic_suffix_4_built);
+        self.push(ASTType::BasicSuffix(basic_suffix_4_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 5:
+    ///
+    /// BasicSuffix: ;
+    ///
+    fn basic_suffix_5(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "basic_suffix_5";
+        trace!("{}", self.trace_item_stack(context));
+        let basic_suffix_5_built = BasicSuffix5Builder::default().build().into_diagnostic()?;
+        let basic_suffix_5_built = BasicSuffix::BasicSuffix5(basic_suffix_5_built);
+        self.push(ASTType::BasicSuffix(basic_suffix_5_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 6:
+    ///
+    /// BasicList: EndOfLine Line BasicList; // Vec<T>::Push
+    ///
+    fn basic_list_6(
+        &mut self,
+        _end_of_line_0: &ParseTreeStackEntry<'t>,
+        _line_1: &ParseTreeStackEntry<'t>,
+        _basic_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "basic_list_6";
+        trace!("{}", self.trace_item_stack(context));
+        let mut basic_list_2 = if let Some(ASTType::BasicList(basic_list_2)) = self.pop(context) {
+            basic_list_2
+        } else {
+            return Err(miette!("{}: Expecting ASTType::BasicList", context));
+        };
+        let line_1 = if let Some(ASTType::Line(line_1)) = self.pop(context) {
+            line_1
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Line", context));
+        };
+        let end_of_line_0 = if let Some(ASTType::EndOfLine(end_of_line_0)) = self.pop(context) {
+            end_of_line_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+        };
+        let basic_list_6_built = BasicListBuilder::default()
+            .line_1(Box::new(line_1))
+            .end_of_line_0(Box::new(end_of_line_0))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        basic_list_2.push(basic_list_6_built);
+        self.push(ASTType::BasicList(basic_list_2), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 7:
+    ///
+    /// BasicList: ; // Vec<T>::New
+    ///
+    fn basic_list_7(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "basic_list_7";
+        trace!("{}", self.trace_item_stack(context));
+        let basic_list_7_built = Vec::new();
+        self.push(ASTType::BasicList(basic_list_7_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 8:
+    ///
+    /// Line: LineNumber Statement LineList /* Vec */;
+    ///
+    fn line_8(
+        &mut self,
+        _line_number_0: &ParseTreeStackEntry<'t>,
+        _statement_1: &ParseTreeStackEntry<'t>,
+        _line_list_2: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "line_8";
+        trace!("{}", self.trace_item_stack(context));
+        let line_list_2 = if let Some(ASTType::LineList(mut line_list_2)) = self.pop(context) {
+            line_list_2.reverse();
+            line_list_2
+        } else {
+            return Err(miette!("{}: Expecting ASTType::LineList", context));
+        };
+        let statement_1 = if let Some(ASTType::Statement(statement_1)) = self.pop(context) {
+            statement_1
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Statement", context));
+        };
+        let line_number_0 = if let Some(ASTType::LineNumber(line_number_0)) = self.pop(context) {
+            line_number_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::LineNumber", context));
+        };
+        let line_8_built = LineBuilder::default()
+            .line_number_0(Box::new(line_number_0))
+            .statement_1(Box::new(statement_1))
+            .line_list_2(line_list_2)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.line(&line_8_built)?;
+        self.push(ASTType::Line(line_8_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 9:
+    ///
+    /// LineList: ":" Statement LineList; // Vec<T>::Push
+    ///
+    fn line_list_9(
+        &mut self,
+        colon_0: &ParseTreeStackEntry<'t>,
+        _statement_1: &ParseTreeStackEntry<'t>,
+        _line_list_2: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "line_list_9";
+        trace!("{}", self.trace_item_stack(context));
+        let colon_0 = *colon_0.token(parse_tree)?;
+        let mut line_list_2 = if let Some(ASTType::LineList(line_list_2)) = self.pop(context) {
+            line_list_2
+        } else {
+            return Err(miette!("{}: Expecting ASTType::LineList", context));
+        };
+        let statement_1 = if let Some(ASTType::Statement(statement_1)) = self.pop(context) {
+            statement_1
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Statement", context));
+        };
+        let line_list_9_built = LineListBuilder::default()
+            .statement_1(Box::new(statement_1))
+            .colon_0(colon_0)
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        line_list_2.push(line_list_9_built);
+        self.push(ASTType::LineList(line_list_2), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 10:
+    ///
+    /// LineList: ; // Vec<T>::New
+    ///
+    fn line_list_10(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "line_list_10";
+        trace!("{}", self.trace_item_stack(context));
+        let line_list_10_built = Vec::new();
+        self.push(ASTType::LineList(line_list_10_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 11:
+    ///
+    /// Statement: "REM" StatementSuffix;
+    ///
+    fn statement_11(
+        &mut self,
+        r_e_m_0: &ParseTreeStackEntry<'t>,
+        _statement_suffix_1: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "statement_11";
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_m_0 = *r_e_m_0.token(parse_tree)?;
+        let statement_suffix_1 =
+            if let Some(ASTType::StatementSuffix(statement_suffix_1)) = self.pop(context) {
+                statement_suffix_1
+            } else {
+                return Err(miette!("{}: Expecting ASTType::StatementSuffix", context));
+            };
+        let statement_11_built = StatementBuilder::default()
+            .r_e_m_0(r_e_m_0)
+            .statement_suffix_1(Box::new(statement_suffix_1))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.statement(&statement_11_built)?;
+        self.push(ASTType::Statement(statement_11_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 12:
+    ///
+    /// StatementSuffix: Comment;
+    ///
+    fn statement_suffix_12(
+        &mut self,
+        _comment_0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "statement_suffix_12";
+        trace!("{}", self.trace_item_stack(context));
+        let comment_0 = if let Some(ASTType::Comment(comment_0)) = self.pop(context) {
+            comment_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::Comment", context));
+        };
+        let statement_suffix_12_built = StatementSuffix12Builder::default()
+            .comment_0(Box::new(comment_0))
+            .build()
+            .into_diagnostic()?;
+        let statement_suffix_12_built =
+            StatementSuffix::StatementSuffix12(statement_suffix_12_built);
+        self.push(ASTType::StatementSuffix(statement_suffix_12_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 13:
+    ///
+    /// StatementSuffix: ;
+    ///
+    fn statement_suffix_13(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "statement_suffix_13";
+        trace!("{}", self.trace_item_stack(context));
+        let statement_suffix_13_built = StatementSuffix13Builder::default()
+            .build()
+            .into_diagnostic()?;
+        let statement_suffix_13_built =
+            StatementSuffix::StatementSuffix13(statement_suffix_13_built);
+        self.push(ASTType::StatementSuffix(statement_suffix_13_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 14:
+    ///
+    /// LineNumber: "0|[1-9][0-9]{0,4}";
+    ///
+    fn line_number_14(
+        &mut self,
+        line_number_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "line_number_14";
+        trace!("{}", self.trace_item_stack(context));
+        let line_number_0 = *line_number_0.token(parse_tree)?;
+        let line_number_14_built = LineNumberBuilder::default()
+            .line_number_0(line_number_0)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.line_number(&line_number_14_built)?;
+        self.push(ASTType::LineNumber(line_number_14_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 15:
+    ///
+    /// EndOfLine: "(\r?\n|\r)+";
+    ///
+    fn end_of_line_15(
+        &mut self,
+        end_of_line_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "end_of_line_15";
+        trace!("{}", self.trace_item_stack(context));
+        let end_of_line_0 = *end_of_line_0.token(parse_tree)?;
+        let end_of_line_15_built = EndOfLineBuilder::default()
+            .end_of_line_0(end_of_line_0)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.end_of_line(&end_of_line_15_built)?;
+        self.push(ASTType::EndOfLine(end_of_line_15_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 16:
+    ///
+    /// Comment: "[^\r\n]+";
+    ///
+    fn comment_16(
+        &mut self,
+        comment_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "comment_16";
+        trace!("{}", self.trace_item_stack(context));
+        let comment_0 = *comment_0.token(parse_tree)?;
+        let comment_16_built = CommentBuilder::default()
+            .comment_0(comment_0)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.comment(&comment_16_built)?;
+        self.push(ASTType::Comment(comment_16_built), context);
         Ok(())
     }
 }
@@ -167,7 +826,29 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.basic_0(&children[0], parse_tree),
+            0 => self.basic_0(&children[0], &children[1], &children[2], parse_tree),
+            1 => self.basic_1(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
+            2 => self.basic_suffix1_2(&children[0], parse_tree),
+            3 => self.basic_suffix1_3(parse_tree),
+            4 => self.basic_suffix_4(&children[0], parse_tree),
+            5 => self.basic_suffix_5(parse_tree),
+            6 => self.basic_list_6(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.basic_list_7(parse_tree),
+            8 => self.line_8(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.line_list_9(&children[0], &children[1], &children[2], parse_tree),
+            10 => self.line_list_10(parse_tree),
+            11 => self.statement_11(&children[0], &children[1], parse_tree),
+            12 => self.statement_suffix_12(&children[0], parse_tree),
+            13 => self.statement_suffix_13(parse_tree),
+            14 => self.line_number_14(&children[0], parse_tree),
+            15 => self.end_of_line_15(&children[0], parse_tree),
+            16 => self.comment_16(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

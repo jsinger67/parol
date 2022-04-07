@@ -17,57 +17,243 @@ use std::path::Path;
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_grammar_trait::BasicGrammarAuto;
 
-use parol_runtime::lexer::tokenizer::{
-    ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
-};
+use parol_runtime::lexer::tokenizer::{ERROR_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN};
 
-pub const TERMINALS: &[&str; 7] = &[
-    /* 0 */ UNMATCHABLE_TOKEN,
-    /* 1 */ UNMATCHABLE_TOKEN,
-    /* 2 */ UNMATCHABLE_TOKEN,
-    /* 3 */ UNMATCHABLE_TOKEN,
-    /* 4 */ UNMATCHABLE_TOKEN,
-    /* 5 */ r###"Hello world!"###,
-    /* 6 */ ERROR_TOKEN,
+pub const TERMINALS: &[&str; 11] = &[
+    /*  0 */ UNMATCHABLE_TOKEN,
+    /*  1 */ UNMATCHABLE_TOKEN,
+    /*  2 */ UNMATCHABLE_TOKEN,
+    /*  3 */ UNMATCHABLE_TOKEN,
+    /*  4 */ UNMATCHABLE_TOKEN,
+    /*  5 */ r###":"###,
+    /*  6 */ r###"REM"###,
+    /*  7 */ r###"0|[1-9][0-9]{0,4}"###,
+    /*  8 */ r###"(\r?\n|\r)+"###,
+    /*  9 */ r###"[^\r\n]+"###,
+    /* 10 */ ERROR_TOKEN,
 ];
 
-pub const TERMINAL_NAMES: &[&str; 7] = &[
-    /* 0 */ "EndOfInput",
-    /* 1 */ "Newline",
-    /* 2 */ "Whitespace",
-    /* 3 */ "LineComment",
-    /* 4 */ "BlockComment",
-    /* 5 */ "Basic",
-    /* 6 */ "Error",
+pub const TERMINAL_NAMES: &[&str; 11] = &[
+    /*  0 */ "EndOfInput",
+    /*  1 */ "Newline",
+    /*  2 */ "Whitespace",
+    /*  3 */ "LineComment",
+    /*  4 */ "BlockComment",
+    /*  5 */ "Colon",
+    /*  6 */ "REM",
+    /*  7 */ "LineNumber",
+    /*  8 */ "EndOfLine",
+    /*  9 */ "Comment",
+    /* 10 */ "Error",
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 1]) = (
+const SCANNER_0: (&[&str; 5], &[usize; 5]) = (
     &[
-        /* 0 */ UNMATCHABLE_TOKEN,
-        /* 1 */ NEW_LINE_TOKEN,
-        /* 2 */ WHITESPACE_TOKEN,
-        /* 3 */ UNMATCHABLE_TOKEN,
-        /* 4 */ UNMATCHABLE_TOKEN,
+        /*  0 */ UNMATCHABLE_TOKEN,
+        /*  1 */ UNMATCHABLE_TOKEN,
+        /*  2 */ WHITESPACE_TOKEN,
+        /*  3 */ UNMATCHABLE_TOKEN,
+        /*  4 */ UNMATCHABLE_TOKEN,
     ],
-    &[5 /* Basic */],
+    &[
+        5, /* Colon */
+        6, /* REM */
+        7, /* LineNumber */
+        8, /* EndOfLine */
+        9, /* Comment */
+    ],
 );
 
-const MAX_K: usize = 0;
+const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 1] = &[/* 0 */ "Basic"];
+pub const NON_TERMINALS: &[&str; 11] = &[
+    /*  0 */ "Basic",
+    /*  1 */ "BasicList",
+    /*  2 */ "BasicSuffix",
+    /*  3 */ "BasicSuffix1",
+    /*  4 */ "Comment",
+    /*  5 */ "EndOfLine",
+    /*  6 */ "Line",
+    /*  7 */ "LineList",
+    /*  8 */ "LineNumber",
+    /*  9 */ "Statement",
+    /* 10 */ "StatementSuffix",
+];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 1] = &[/* 0 - "Basic" */ LookaheadDFA {
-    states: &[Some(0)],
-    transitions: &[],
-    k: 0,
-}];
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 11] = &[
+    /* 0 - "Basic" */
+    LookaheadDFA {
+        states: &[None, Some(0), Some(1)],
+        transitions: &[DFATransition(0, 7, 1), DFATransition(0, 8, 2)],
+        k: 1,
+    },
+    /* 1 - "BasicList" */
+    LookaheadDFA {
+        states: &[None, None, Some(6), Some(7)],
+        transitions: &[
+            DFATransition(0, 0, 3),
+            DFATransition(0, 8, 1),
+            DFATransition(1, 0, 3),
+            DFATransition(1, 7, 2),
+        ],
+        k: 2,
+    },
+    /* 2 - "BasicSuffix" */
+    LookaheadDFA {
+        states: &[None, Some(4), Some(5)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 8, 1)],
+        k: 1,
+    },
+    /* 3 - "BasicSuffix1" */
+    LookaheadDFA {
+        states: &[None, Some(2), Some(3)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 8, 1)],
+        k: 1,
+    },
+    /* 4 - "Comment" */
+    LookaheadDFA {
+        states: &[Some(16)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 5 - "EndOfLine" */
+    LookaheadDFA {
+        states: &[Some(15)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 6 - "Line" */
+    LookaheadDFA {
+        states: &[Some(8)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 7 - "LineList" */
+    LookaheadDFA {
+        states: &[None, Some(9), Some(10)],
+        transitions: &[
+            DFATransition(0, 0, 2),
+            DFATransition(0, 5, 1),
+            DFATransition(0, 8, 2),
+        ],
+        k: 1,
+    },
+    /* 8 - "LineNumber" */
+    LookaheadDFA {
+        states: &[Some(14)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 9 - "Statement" */
+    LookaheadDFA {
+        states: &[Some(11)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 10 - "StatementSuffix" */
+    LookaheadDFA {
+        states: &[None, Some(12), Some(13)],
+        transitions: &[
+            DFATransition(0, 0, 2),
+            DFATransition(0, 5, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 1),
+        ],
+        k: 1,
+    },
+];
 
-pub const PRODUCTIONS: &[Production; 1] = &[
-    // 0 - Basic: "Hello world!";
+pub const PRODUCTIONS: &[Production; 17] = &[
+    // 0 - Basic: Line BasicList /* Vec */ BasicSuffix1;
     Production {
         lhs: 0,
-        production: &[ParseType::T(5)],
+        production: &[ParseType::N(3), ParseType::N(1), ParseType::N(6)],
+    },
+    // 1 - Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
+    Production {
+        lhs: 0,
+        production: &[
+            ParseType::N(2),
+            ParseType::N(1),
+            ParseType::N(6),
+            ParseType::N(5),
+        ],
+    },
+    // 2 - BasicSuffix1: EndOfLine;
+    Production {
+        lhs: 3,
+        production: &[ParseType::N(5)],
+    },
+    // 3 - BasicSuffix1: ;
+    Production {
+        lhs: 3,
+        production: &[],
+    },
+    // 4 - BasicSuffix: EndOfLine;
+    Production {
+        lhs: 2,
+        production: &[ParseType::N(5)],
+    },
+    // 5 - BasicSuffix: ;
+    Production {
+        lhs: 2,
+        production: &[],
+    },
+    // 6 - BasicList: EndOfLine Line BasicList;
+    Production {
+        lhs: 1,
+        production: &[ParseType::N(1), ParseType::N(6), ParseType::N(5)],
+    },
+    // 7 - BasicList: ;
+    Production {
+        lhs: 1,
+        production: &[],
+    },
+    // 8 - Line: LineNumber Statement LineList /* Vec */;
+    Production {
+        lhs: 6,
+        production: &[ParseType::N(7), ParseType::N(9), ParseType::N(8)],
+    },
+    // 9 - LineList: ":" Statement LineList;
+    Production {
+        lhs: 7,
+        production: &[ParseType::N(7), ParseType::N(9), ParseType::T(5)],
+    },
+    // 10 - LineList: ;
+    Production {
+        lhs: 7,
+        production: &[],
+    },
+    // 11 - Statement: "REM" StatementSuffix;
+    Production {
+        lhs: 9,
+        production: &[ParseType::N(10), ParseType::T(6)],
+    },
+    // 12 - StatementSuffix: Comment;
+    Production {
+        lhs: 10,
+        production: &[ParseType::N(4)],
+    },
+    // 13 - StatementSuffix: ;
+    Production {
+        lhs: 10,
+        production: &[],
+    },
+    // 14 - LineNumber: "0|[1-9][0-9]{0,4}";
+    Production {
+        lhs: 8,
+        production: &[ParseType::T(7)],
+    },
+    // 15 - EndOfLine: "(\r?\n|\r)+";
+    Production {
+        lhs: 5,
+        production: &[ParseType::T(8)],
+    },
+    // 16 - Comment: "[^\r\n]+";
+    Production {
+        lhs: 4,
+        production: &[ParseType::T(9)],
     },
 ];
 
