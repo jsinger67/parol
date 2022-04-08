@@ -7,7 +7,8 @@ able to use `parol` in real-world projects.
 How about a BASIC interpreter? Maybe you remember the old C64 with its BASIC V2.0?
 
 I decided to re-implement a small part of this BASIC dialect for this tutorial.
-You may ask, why to choose a forty years old language? I say, why not? Because we can and because it's fun. 😉
+You may ask, why to choose a forty years old language? I say, why not? Because we can and because
+it's fun. 😉
 
 ## Prerequisites
 
@@ -46,7 +47,8 @@ Download the vsix package from the latest release and install it with
 >
 >> ```code --install-extension ./parol-vscode-0.1.2.vsix```
 >
->This extension provides syntax highlighting, folding and language icons and will surely be useful for you.
+>This extension provides syntax highlighting, folding and language icons and will surely be useful
+for you.
 
 ## Initial commit
 
@@ -97,8 +99,9 @@ that was given as command line argument. We will provide our basic files here la
 
 ### The parser module `src/basic_parser.rs`
 
-This is the generated parser module. Actually it contains data the LLKParser from the `parol_runtime`
-crate is initialized with. We actually don't need to understand all the internals of it.
+This is the generated parser module. Actually it contains data the LLKParser from the
+`parol_runtime` crate is initialized with. We actually don't need to understand all the internals of
+it.
 
 ### The module with the grammar trait `src/basic_grammar_trait.rs`
 
@@ -126,8 +129,10 @@ We will support the following language elements:
   * GOTO
   * Assignments
 * Expressions
-  * Arithmetic expressions with Addition, Subtraction, Multiplication and Division as well as using parenthesis
+  * Arithmetic expressions with Addition, Subtraction, Multiplication and Division as well as using
+  parenthesis
   * Comparison expressions
+  * Logical expressions
 * BASIC commands
   * PRINT/?
   * STOP
@@ -158,6 +163,8 @@ Statement
        ;
 ```
 
+### Our grammar so far
+
 I will give here the complete content of the `basic.par` at this stage of development:
 
 ```ebnf
@@ -186,7 +193,7 @@ Comment : "[^\r\n]+"
 ```
 
 Some details like the handling of new lines we will explain later (because we are in the 21st
-century now we additionally allow empty lines).
+century now we additionally allow empty lines 😉).
 
 Just let us come quickly up and running.
 
@@ -262,3 +269,264 @@ Error: parol_runtime::unexpected_token
 
 error: process didn't exit successfully: `target\debug\basic.exe .\test.bas` (exit code: 1)
 ```
+
+Wow, great!
+
+With this in mind we can from now on easily develop our BASIC grammar. If the grammar works
+sufficient for us we can then step over to the next stage, the actual grammar processing. In our
+case the grammar processing encompasses the interpreter's functionality.
+
+### Minor details explained
+
+But before we go on we should have a look at some details I previously didn't explain thoroughly.
+
+In contrast to the initial grammar proposal I gave first, I changed a detail in the grammar
+description.
+
+I moved the `EndOfLine` symbol from the `Line` production to the `Basic` production.
+This decision I made to have the new line handling in one single place. A new line in the wrong
+place of the grammar can screw it up literally.
+
+Such decisions are not easy to explain and everybody has his own preferences in writing grammars.
+Additionally these preferences can change over time when one has written more grammars.
+
+So it's up to you to gain a lot of experiences in writing grammars 😉.
+
+Then I want to explain the token literals I presented above without any comment.
+
+> One general word to terminal symbols in `parol`. All terminal symbols (entities in productions
+that are enclosed by a pair of double quotes) are treated as regular expressions. There is no
+exception from this rule. This means that if you want to build in a symbol that is a meta symbol of
+the regular expression language you have to escape it properly. On the other hand you can fully
+benefit from the rich possibilities that Rust `regex` provides.
+
+I explain now the more complex terminals, i.e. regular expressions.
+
+```ebnf
+LineNumber: "[0-9]{1,5}";
+```
+
+Line Numbers in the C64 BASIC can encompass numbers from 0 to 63999. This means that it can consist
+of one up to five digits, denoted by the `{1,5}` at the end. Trailing zeros are not prohibited by
+the C64 so you could possibly get valid line numbers with more then 5 digits (for instance
+`00012000`), but I decided to not support this as a special case.
+The regular expression here boils down to this: **Match one to five digits from `0` to `9`**.
+
+```ebnf
+EndOfLine: "(\r?\n|\r)+";
+```
+
+This means at least one of (the `+` at the end) an optional carriage return character followed by a
+new line character or single carriage return character. They are all necessary because different
+line ending stiles exist on different platforms.
+
+```ebnf
+Comment : "[^\r\n]+";
+```
+
+This defines valid characters within a comment. The `+` at the end again means **at least one of the
+items before** which are defined by a character set (embedded in brackets). The circumflex as first
+symbol makes the character set a negated one meaning it matches all characters except the listed
+ones. So when we put it all together it means **Match at least one character that is neither a
+carriage return nor a new line character**.
+
+With this definition this regex will match all characters until the end of the line. Then the
+`EndOfLine` symbol will be matched as demanded by the grammar definition.
+
+We have to match at least on character (implied by the `+` at the end). This is a general rule:
+
+> Terminals should always match non-empty text portions. This means that you have to avoid terminals
+like this:
+>
+>```regex
+>"a?", "a*", "\b"
+>```
+>
+>Internally the tokenizer will enter a loop and match the empty string over and over again without
+making progress in the input. Currently there is no check for this scenario in `parol_runtime`.
+
+To support empty comments after `REM` I made it optional:
+
+```ebnf
+Statement
+        : "REM" [Comment]
+        ;
+```
+
+With these details out of the way we can continue safely.
+
+## More statements
+
+Next we will extend the set of statements we want to support.
+We again take the easiest one
+
+### The infamous `GOTO`
+
+We extend the Statement rules this way. Note that the pipe symbol `|` separates alternative rules.
+> In `parol` all alternatives of a single non-terminal have the same priority, regardless of their
+order! Their selection is solely made by looking at k lookahead tokens in the input.
+
+```ebnf
+Statement
+        : "REM" [Comment]
+        | "GOTO" LineNumber
+        ;
+```
+
+Well, easy. Lets build and test it:
+
+```basic
+10 REM Hello World!
+20 GOTO 30
+30 REM The End
+```
+
+```shell
+cargo run  -- .\test.bas
+...
+Parsing took 3 milliseconds.
+Success!
+No parse result
+```
+
+Great!
+
+Before we can go on with more statements we now have to choose the expressions first.
+Simply because we need expressions in the remaining statements.
+
+## Expressions
+
+Expressions are mostly calculations in our case. They obtain their operands either form fixed values
+(i.e. literals like 1.0E-6) or from variables like `A`.
+
+So the first part is to define literals and variables as syntactic items.
+
+```ebnf
+Literal : Number
+        ;
+Number  : Float
+        | Integer
+        ;
+Float   : "([0-9] *)*(\. *([0-9] *)*)?(E *-? *([0-9] *)+)?"
+        ;
+Integer : "([0-9] *)+"
+        ;
+```
+
+We introduce a category for literals named `Literal` to be able to easily expand with other literals
+like string literals. But for now there is only one kind, the `Number`. The underlying regex's  for
+integer and float literals are a bit quirky because the C64 accepts spaces anywhere within a numeric
+literal. Later we have to post-process these literals to be parsable by Rust.
+
+To be able to test this regex we temporarily introduce a dummy statement:
+
+```ebnf
+Statement
+        : "REM" [Comment]
+        | "GOTO" LineNumber
+        | Literal // Test statement only. To be removed later
+        ;
+```
+
+Lets test the literal parsing now.
+
+```basic
+10 1 2 3
+20 . 1 E 6
+30 1 22 E -1 2
+```
+
+```shell
+cargo run  -- .\test.bas
+...
+Error: parol_runtime::unexpected_token
+
+  × Unexpected token: LA(1) (LineNumber)
+   ╭─[.\test.bas:1:1]
+ 1 │ 10 1 2 3
+   ·    ┬
+   ·    ╰── Unexpected token
+ 2 │ 20 . 1 E 6
+   ╰────
+  help: Unexpected token
+  ```
+
+Oh, an error! What went wrong? We see it quickly with a little practice. The `1` after the line
+number is detected as `LineNumber` token. This is actually correct. The `1` resembles a valid
+`LineNumber` token.
+
+### Terminal conflicts
+
+We have here our first terminal conflict. This is actually quite common so `parol` provides several
+ways to handle such conflicts.
+
+1. The order of appearance rule
+
+    The first one is the order of appearance rule. Terminals that appear earlier in the grammar
+    match with higher priority.
+
+    >Note that this is different from the priority of alternatives of a non-terminal.
+    Their priorities are independent from their order.
+
+    But this will not help us here because the result would be the other way round: if we want to
+    match a `LineNumber` parols scanner will match a `Number`.
+
+2. Scanner states
+
+    The second one is the more versatile solution. We can group conflicting terminals in groups that are
+    called scanner states. And we then switch the current scanner state in our grammar.
+
+So we have to use a special scanner state here.
+
+```ebnf
+// All numeric literals that are no line numbers
+%scanner NonLn { %auto_newline_off }
+```
+
+This introduces a new scanner state or terminal group named `NonLn` to which we can associate our
+numeric literals:
+
+```ebnf
+Float   : <NonLn>"([0-9] *)*(\. *([0-9] *)*)?(E *-? *([0-9] *)+)?"
+        ;
+Integer : <NonLn>"([0-9] *)+"
+        ;
+Comment : <NonLn>"[^\r\n]+"
+        ;
+```
+
+Also note here that we put the comment terminal in this state. The reason becomes clear when we look
+at the way we switch to this state:
+
+```ebnf
+Line    : LineNumber %push(NonLn) Statement { ":" Statement } %pop()
+        ;
+```
+
+We use the `Line` production to switch the scanner state after we processed the `LineNumber` with
+the `%push(NonLn)` instruction. At the end of the line we switch back to initial scanner with the
+`%pop()` instruction.
+
+Viola! Scanner state switching in our grammar description!
+
+In contrast to other parser generators that switch their scanner states in the semantic actions (one
+prominent example is the lex/yacc pair of scanners and parsers) again `parol` advocates the
+principle of strict separation of grammar description and grammar processing via semantic actions.
+
+This means, you can write your grammar until it works. Than you start with the sematic actions, i.e.
+the actual language processing. No intermingling development is necessary.
+
+Back to our grammar and the application of scanner states. We have to change the belonging to
+scanner states also for the `EndOfLine` terminal:
+
+```ebnf
+EndOfLine
+        : <INITIAL, NonLn>"(\r?\n|\r)+"
+        ;
+```
+
+It should belong to both the INITIAL (the default scanner state) and the NonNl scanner state.
+Can you figure out, why?
+
+I admit, that this is hard to understand because it has to do with how scanner states and
+acquisition of lookahead tokens in `parol_runtime` works.
