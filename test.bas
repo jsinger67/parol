@@ -1,3 +1,3 @@
-10 REM
-20 REM Hello
-30 REM World!
+10 AA
+20 X: X2: XXXXXX
+30 BB
