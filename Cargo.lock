@@ -86,6 +86,7 @@ dependencies = [
  "derive_builder",
  "env_logger",
  "id_tree",
+ "id_tree_layout",
  "lazy_static",
  "log",
  "miette",

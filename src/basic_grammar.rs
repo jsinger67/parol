@@ -1,4 +1,4 @@
-use crate::basic_grammar_trait::{ Basic, BasicGrammarTrait };
+use crate::basic_grammar_trait::{Basic, BasicGrammarTrait};
 #[allow(unused_imports)]
 use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
