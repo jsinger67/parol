@@ -4,7 +4,7 @@
 %auto_newline_off
 
 %scanner Cmnt { %auto_newline_off }
-%scanner Flt { %auto_newline_off }
+%scanner Expr { %auto_newline_off }
 
 %%
 
@@ -23,65 +23,61 @@
 /* 12 */ StatementSuffix: Comment %pop();
 /* 13 */ StatementSuffix: %pop();
 /* 14 */ Statement: "GOTO" LineNumber;
-/* 15 */ Statement: Assignment;
-/* 16 */ Assignment: Variable AssignOrEqualityOp Expression;
-/* 17 */ EndOfLine: "(\r?\n|\r)+";
-/* 18 */ Literal: Number;
-/* 19 */ LineNumber: Integer;
-/* 20 */ Number: %push(Flt) Float %pop();
-/* 21 */ Number: Integer;
-/* 22 */ Integer: <Flt, INITIAL>"([0-9] *)+";
-/* 23 */ DecimalDot: <Flt>"\.";
-/* 24 */ Float: Integer FloatSuffix4;
-/* 25 */ Float: DecimalDot FloatSuffix3;
-/* 26 */ FloatSuffix4: DecimalDot FloatSuffix1;
-/* 27 */ FloatSuffix4: Exponent;
-/* 28 */ FloatSuffix3: Integer FloatSuffix2;
-/* 29 */ FloatSuffix3: Exponent;
-/* 30 */ FloatSuffix3: ;
-/* 31 */ FloatSuffix2: Exponent;
-/* 32 */ FloatSuffix2: ;
-/* 33 */ FloatSuffix1: Integer FloatSuffix;
-/* 34 */ FloatSuffix1: Exponent;
-/* 35 */ FloatSuffix1: ;
-/* 36 */ FloatSuffix: Exponent;
-/* 37 */ FloatSuffix: ;
-/* 38 */ Exponent: <Flt>"E *[-+]? *([0-9] *)+";
-/* 39 */ Variable: "[A-Z][0-9A-Z]*";
-/* 40 */ AssignOrEqualityOp: "=";
-/* 41 */ LogicalOrOp: "N?OR";
-/* 42 */ LogicalAndOp: "AND";
-/* 43 */ LogicalNotOp: "NOT";
-/* 44 */ RelationalOp: "<\s*>|<\s*=|<|>\s*=|>";
-/* 45 */ Plus: "\+";
-/* 46 */ Minus: "-";
-/* 47 */ MulOp: "\*|/";
-/* 48 */ LParen: "\(";
-/* 49 */ RParen: "\)";
-/* 50 */ Comment: "[^\r\n]+";
-/* 51 */ Expression: LogicalOr;
-/* 52 */ LogicalOr: LogicalAnd LogicalOrList /* Vec */;
-/* 53 */ LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList; // Vec<T>::Push
-/* 54 */ LogicalOrList: ; // Vec<T>::New
-/* 55 */ LogicalAnd: LogicalNot LogicalAndList /* Vec */;
-/* 56 */ LogicalAndList: LogicalAndOp LogicalNot LogicalAndList; // Vec<T>::Push
-/* 57 */ LogicalAndList: ; // Vec<T>::New
-/* 58 */ LogicalNot: LogicalNotOp Relational;
-/* 59 */ LogicalNot: Relational;
-/* 60 */ Relational: Summation RelationalList /* Vec */;
-/* 61 */ RelationalList: RelationalListGroup Summation RelationalList; // Vec<T>::Push
-/* 62 */ RelationalListGroup: AssignOrEqualityOp;
-/* 63 */ RelationalListGroup: RelationalOp;
-/* 64 */ RelationalList: ; // Vec<T>::New
-/* 65 */ Summation: Multiplication SummationList /* Vec */;
-/* 66 */ SummationList: SummationListGroup Multiplication SummationList; // Vec<T>::Push
-/* 67 */ SummationListGroup: Plus;
-/* 68 */ SummationListGroup: Minus;
-/* 69 */ SummationList: ; // Vec<T>::New
-/* 70 */ Multiplication: Factor MultiplicationList /* Vec */;
-/* 71 */ MultiplicationList: MulOp Factor MultiplicationList; // Vec<T>::Push
-/* 72 */ MultiplicationList: ; // Vec<T>::New
-/* 73 */ Factor: Literal;
-/* 74 */ Factor: Variable;
-/* 75 */ Factor: Minus Factor;
-/* 76 */ Factor: LParen Expression RParen;
+/* 15 */ Statement: "IF" %push(Expr) Expression %pop() IfBody;
+/* 16 */ Statement: Assignment;
+/* 17 */ Statement: Print;
+/* 18 */ Statement: Stop;
+/* 19 */ Assignment: "LET" Variable AssignOp %push(Expr) Expression %pop();
+/* 20 */ Assignment: Variable AssignOp %push(Expr) Expression %pop();
+/* 21 */ IfBody: "THEN" Statement;
+/* 22 */ IfBody: "GOTO" LineNumber;
+/* 23 */ Print: PrintGroup Expression;
+/* 24 */ PrintGroup: "PRINT";
+/* 25 */ PrintGroup: "\?";
+/* 26 */ Stop: "STOP";
+/* 27 */ EndOfLine: <Expr, INITIAL>"(\r?\n|\r)+";
+/* 28 */ Literal: Number;
+/* 29 */ LineNumber: "([0-9] *){1,5}";
+/* 30 */ Number: Float;
+/* 31 */ Number: Integer;
+/* 32 */ Float: Float1;
+/* 33 */ Float: Float2;
+/* 34 */ Float1: <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?";
+/* 35 */ Float2: <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+";
+/* 36 */ Integer: <Expr>"([0-9] *)+";
+/* 37 */ AssignOp: "=";
+/* 38 */ LogicalOrOp: <Expr>"N?OR";
+/* 39 */ LogicalAndOp: <Expr>"AND";
+/* 40 */ LogicalNotOp: <Expr>"NOT";
+/* 41 */ RelationalOp: <Expr>"<\s*>|<\s*=|<|>\s*=|>|=";
+/* 42 */ Plus: <Expr>"\+";
+/* 43 */ Minus: <Expr>"-";
+/* 44 */ MulOp: <Expr>"\*|/";
+/* 45 */ LParen: <Expr>"\(";
+/* 46 */ RParen: <Expr>"\)";
+/* 47 */ Comment: <Cmnt>"[^\r\n]+";
+/* 48 */ Variable: <Expr, INITIAL>"[A-Z][0-9A-Z]*";
+/* 49 */ Expression: LogicalOr;
+/* 50 */ LogicalOr: LogicalAnd LogicalOrList /* Vec */;
+/* 51 */ LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList; // Vec<T>::Push
+/* 52 */ LogicalOrList: ; // Vec<T>::New
+/* 53 */ LogicalAnd: LogicalNot LogicalAndList /* Vec */;
+/* 54 */ LogicalAndList: LogicalAndOp LogicalNot LogicalAndList; // Vec<T>::Push
+/* 55 */ LogicalAndList: ; // Vec<T>::New
+/* 56 */ LogicalNot: LogicalNotOp Relational;
+/* 57 */ LogicalNot: Relational;
+/* 58 */ Relational: Summation RelationalList /* Vec */;
+/* 59 */ RelationalList: RelationalOp Summation RelationalList; // Vec<T>::Push
+/* 60 */ RelationalList: ; // Vec<T>::New
+/* 61 */ Summation: Multiplication SummationList /* Vec */;
+/* 62 */ SummationList: SummationListGroup Multiplication SummationList; // Vec<T>::Push
+/* 63 */ SummationListGroup: Plus;
+/* 64 */ SummationListGroup: Minus;
+/* 65 */ SummationList: ; // Vec<T>::New
+/* 66 */ Multiplication: Factor MultiplicationList /* Vec */;
+/* 67 */ MultiplicationList: MulOp Factor MultiplicationList; // Vec<T>::Push
+/* 68 */ MultiplicationList: ; // Vec<T>::New
+/* 69 */ Factor: Literal;
+/* 70 */ Factor: Variable;
+/* 71 */ Factor: Minus Factor;
+/* 72 */ Factor: LParen Expression RParen;

@@ -4,7 +4,7 @@
 %auto_newline_off
 
 %scanner Cmnt { %auto_newline_off }
-%scanner Flt { %auto_newline_off }
+%scanner Expr { %auto_newline_off }
 
 %%
 
@@ -15,70 +15,84 @@ Line    : LineNumber Statement { ":" Statement }
 Statement
         : "REM" %push(Cmnt) [Comment] %pop()
         | "GOTO" LineNumber
+        | "IF" %push(Expr) Expression %pop() IfBody
         | Assignment
+        | Print
+        | Stop
         ;
 Assignment
-        : Variable AssignOrEqualityOp Expression
+        : ["LET"] Variable AssignOp %push(Expr) Expression %pop()
+        ;
+IfBody  : "THEN" Statement
+        | "GOTO" LineNumber
+        ;
+Print   : ("PRINT" | "\?") Expression
+        ;
+Stop    : "STOP"
         ;
 EndOfLine
-        : "(\r?\n|\r)+"
+        : <INITIAL, Expr>"(\r?\n|\r)+"
         ;
 Literal : Number
         ;
 LineNumber
-        : Integer
+        : "([0-9] *){1,5}"
         ;
-Number  : %push(Flt) Float %pop()
+Number  : Float
         | Integer
         ;
-Integer : <INITIAL, Flt>"([0-9] *)+"
+Float   : Float1
+        | Float2
         ;
-DecimalDot
-        : <Flt>"\."
+// [Integer] DecimalDot [Integer] [Exponent]
+Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
         ;
-Float   : [Integer] DecimalDot [Integer] [Exponent]
-        | Integer Exponent
+//Integer Exponent
+Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
         ;
-Exponent: <Flt>"E *[-+]? *([0-9] *)+"
-        ;
-Variable: "[A-Z][0-9A-Z]*"
+Integer : <Expr>"([0-9] *)+"
         ;
 
 // -------------------------------------------------------------------------------------------------
 // OPERATOR SYMBOLS
-AssignOrEqualityOp
+AssignOp
         : "="
         ;
 LogicalOrOp
-        : "N?OR"
+        : <Expr>"N?OR"
         ;
 LogicalAndOp
-        : "AND"
+        : <Expr>"AND"
         ;
 LogicalNotOp
-        : "NOT"
+        : <Expr>"NOT"
         ;
 RelationalOp
-        : "<\s*>|<\s*=|<|>\s*=|>"
+        : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
         ;
-Plus    : "\+"
+Plus    : <Expr>"\+"
         ;
-Minus   : "-"
+Minus   : <Expr>"-"
         ;
-MulOp  : "\*|/"
+MulOp   : <Expr>"\*|/"
         ;
 
 
 // -------------------------------------------------------------------------------------------------
 // PARENTHESIS
-LParen  : "\("
+LParen  : <Expr>"\("
         ;
-RParen  : "\)"
+RParen  : <Expr>"\)"
         ;
 
 // -------------------------------------------------------------------------------------------------
 // COMMENT
-Comment : "[^\r\n]+"
+Comment : <Cmnt>"[^\r\n]+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// VARIABLE
+Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*"
         ;
 
 // -------------------------------------------------------------------------------------------------
@@ -97,7 +111,7 @@ LogicalNot
         : [LogicalNotOp] Relational
         ;
 Relational
-        : Summation { (AssignOrEqualityOp | RelationalOp) Summation }
+        : Summation { RelationalOp Summation }
         ;
 Summation
         : Multiplication { (Plus | Minus) Multiplication }
