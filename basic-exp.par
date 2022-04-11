@@ -4,6 +4,7 @@
 %auto_newline_off
 
 %scanner Cmnt { %auto_newline_off }
+%scanner Flt { %auto_newline_off }
 
 %%
 
@@ -27,14 +28,14 @@
 /* 17 */ EndOfLine: "(\r?\n|\r)+";
 /* 18 */ Literal: Number;
 /* 19 */ LineNumber: Integer;
-/* 20 */ Number: Float;
+/* 20 */ Number: %push(Flt) Float %pop();
 /* 21 */ Number: Integer;
-/* 22 */ Integer: "([0-9] *)+";
-/* 23 */ Float: Integer FloatSuffix4;
-/* 24 */ Float: "\." FloatSuffix3;
-/* 25 */ FloatSuffix4: "\." FloatSuffix1;
-/* 26 */ FloatSuffix4: Exponent;
-/* 27 */ Float: Exponent;
+/* 22 */ Integer: <Flt, INITIAL>"([0-9] *)+";
+/* 23 */ DecimalDot: <Flt>"\.";
+/* 24 */ Float: Integer FloatSuffix4;
+/* 25 */ Float: DecimalDot FloatSuffix3;
+/* 26 */ FloatSuffix4: DecimalDot FloatSuffix1;
+/* 27 */ FloatSuffix4: Exponent;
 /* 28 */ FloatSuffix3: Integer FloatSuffix2;
 /* 29 */ FloatSuffix3: Exponent;
 /* 30 */ FloatSuffix3: ;
@@ -45,7 +46,7 @@
 /* 35 */ FloatSuffix1: ;
 /* 36 */ FloatSuffix: Exponent;
 /* 37 */ FloatSuffix: ;
-/* 38 */ Exponent: "E *[-+]? *([0-9] *)+";
+/* 38 */ Exponent: <Flt>"E *[-+]? *([0-9] *)+";
 /* 39 */ Variable: "[A-Z][0-9A-Z]*";
 /* 40 */ AssignOrEqualityOp: "=";
 /* 41 */ LogicalOrOp: "N?OR";

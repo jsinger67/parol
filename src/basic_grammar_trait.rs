@@ -76,7 +76,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 7:
     ///
-    /// Number: Float | Integer;
+    /// Number: %push(2) Float %pop() | Integer;
     ///
     fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
@@ -84,7 +84,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 8:
     ///
-    /// Integer: <0>"([0-9] *)+";
+    /// Integer: <2, 0>"([0-9] *)+";
     ///
     fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
         Ok(())
@@ -92,21 +92,29 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 9:
     ///
-    /// Float: Integer <0>"\." [Integer] [Exponent] | <0>"\." [Integer] [Exponent] | [Integer] Exponent;
+    /// DecimalDot: <2>"\.";
     ///
-    fn float(&mut self, _arg: &Float<'t>) -> Result<()> {
+    fn decimal_dot(&mut self, _arg: &DecimalDot<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for user production 10:
     ///
-    /// Exponent: <0>"E *[-+]? *([0-9] *)+";
+    /// Float: [Integer] DecimalDot [Integer] [Exponent] | Integer Exponent;
+    ///
+    fn float(&mut self, _arg: &Float<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for user production 11:
+    ///
+    /// Exponent: <2>"E *[-+]? *([0-9] *)+";
     ///
     fn exponent(&mut self, _arg: &Exponent<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 11:
+    /// Semantic action for user production 12:
     ///
     /// Variable: <0>"[A-Z][0-9A-Z]*";
     ///
@@ -114,7 +122,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 12:
+    /// Semantic action for user production 13:
     ///
     /// AssignOrEqualityOp: <0>"=";
     ///
@@ -122,7 +130,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 13:
+    /// Semantic action for user production 14:
     ///
     /// LogicalOrOp: <0>"N?OR";
     ///
@@ -130,7 +138,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 14:
+    /// Semantic action for user production 15:
     ///
     /// LogicalAndOp: <0>"AND";
     ///
@@ -138,7 +146,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 15:
+    /// Semantic action for user production 16:
     ///
     /// LogicalNotOp: <0>"NOT";
     ///
@@ -146,7 +154,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 16:
+    /// Semantic action for user production 17:
     ///
     /// RelationalOp: <0>"<\s*>|<\s*=|<|>\s*=|>";
     ///
@@ -154,7 +162,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 17:
+    /// Semantic action for user production 18:
     ///
     /// Plus: <0>"\+";
     ///
@@ -162,7 +170,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 18:
+    /// Semantic action for user production 19:
     ///
     /// Minus: <0>"-";
     ///
@@ -170,7 +178,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 19:
+    /// Semantic action for user production 20:
     ///
     /// MulOp: <0>"\*|/";
     ///
@@ -178,7 +186,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 20:
+    /// Semantic action for user production 21:
     ///
     /// LParen: <0>"\(";
     ///
@@ -186,7 +194,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 21:
+    /// Semantic action for user production 22:
     ///
     /// RParen: <0>"\)";
     ///
@@ -194,7 +202,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 22:
+    /// Semantic action for user production 23:
     ///
     /// Comment: <0>"[^\r\n]+";
     ///
@@ -202,7 +210,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 23:
+    /// Semantic action for user production 24:
     ///
     /// Expression: LogicalOr;
     ///
@@ -210,7 +218,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 24:
+    /// Semantic action for user production 25:
     ///
     /// LogicalOr: LogicalAnd {LogicalOrOp LogicalAnd};
     ///
@@ -218,7 +226,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 25:
+    /// Semantic action for user production 26:
     ///
     /// LogicalAnd: LogicalNot {LogicalAndOp LogicalNot};
     ///
@@ -226,7 +234,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 26:
+    /// Semantic action for user production 27:
     ///
     /// LogicalNot: [LogicalNotOp] Relational;
     ///
@@ -234,7 +242,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 27:
+    /// Semantic action for user production 28:
     ///
     /// Relational: Summation {(AssignOrEqualityOp | RelationalOp) Summation};
     ///
@@ -242,7 +250,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 28:
+    /// Semantic action for user production 29:
     ///
     /// Summation: Multiplication {(Plus | Minus) Multiplication};
     ///
@@ -250,7 +258,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 29:
+    /// Semantic action for user production 30:
     ///
     /// Multiplication: Factor {MulOp Factor};
     ///
@@ -258,7 +266,7 @@ pub trait BasicGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for user production 30:
+    /// Semantic action for user production 31:
     ///
     /// Factor: Literal | Variable | Minus Factor | LParen Expression RParen;
     ///
@@ -397,12 +405,12 @@ pub struct Statement15<'t> {
 ///
 /// Type derived for production 20
 ///
-/// Number: Float;
+/// Number: %push(Flt) Float %pop();
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Number20<'t> {
-    pub float_0: Box<Float<'t>>,
+    pub float_1: Box<Float<'t>>,
 }
 
 ///
@@ -417,60 +425,49 @@ pub struct Number21<'t> {
 }
 
 ///
-/// Type derived for production 23
+/// Type derived for production 24
 ///
 /// Float: Integer FloatSuffix4;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Float23<'t> {
+pub struct Float24<'t> {
     pub integer_0: Box<Integer<'t>>,
     pub float_suffix4_1: Box<FloatSuffix4<'t>>,
 }
 
 ///
-/// Type derived for production 24
-///
-/// Float: "\." FloatSuffix3;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Float24<'t> {
-    pub dot_0: Token<'t>, /* \. */
-    pub float_suffix3_1: Box<FloatSuffix3<'t>>,
-}
-
-///
 /// Type derived for production 25
 ///
-/// FloatSuffix4: "\." FloatSuffix1;
+/// Float: DecimalDot FloatSuffix3;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct FloatSuffix4_25<'t> {
-    pub dot_0: Token<'t>, /* \. */
-    pub float_suffix1_1: Box<FloatSuffix1<'t>>,
+pub struct Float25<'t> {
+    pub decimal_dot_0: Box<DecimalDot<'t>>,
+    pub float_suffix3_1: Box<FloatSuffix3<'t>>,
 }
 
 ///
 /// Type derived for production 26
 ///
-/// FloatSuffix4: Exponent;
+/// FloatSuffix4: DecimalDot FloatSuffix1;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FloatSuffix4_26<'t> {
-    pub exponent_0: Box<Exponent<'t>>,
+    pub decimal_dot_0: Box<DecimalDot<'t>>,
+    pub float_suffix1_1: Box<FloatSuffix1<'t>>,
 }
 
 ///
 /// Type derived for production 27
 ///
-/// Float: Exponent;
+/// FloatSuffix4: Exponent;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Float27<'t> {
+pub struct FloatSuffix4_27<'t> {
     pub exponent_0: Box<Exponent<'t>>,
 }
 
@@ -767,6 +764,15 @@ pub struct Comment<'t> {
 }
 
 ///
+/// Type derived for non-terminal DecimalDot
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct DecimalDot<'t> {
+    pub decimal_dot_0: Token<'t>, /* \. */
+}
+
+///
 /// Type derived for non-terminal EndOfLine
 ///
 #[allow(dead_code)]
@@ -811,9 +817,8 @@ pub enum Factor<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Float<'t> {
-    Float23(Float23<'t>),
     Float24(Float24<'t>),
-    Float27(Float27<'t>),
+    Float25(Float25<'t>),
 }
 
 ///
@@ -864,8 +869,8 @@ pub enum FloatSuffix3<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum FloatSuffix4<'t> {
-    FloatSuffix4_25(FloatSuffix4_25<'t>),
     FloatSuffix4_26(FloatSuffix4_26<'t>),
+    FloatSuffix4_27(FloatSuffix4_27<'t>),
 }
 
 ///
@@ -1182,6 +1187,7 @@ pub enum ASTType<'t> {
     BasicSuffix(BasicSuffix<'t>),
     BasicSuffix1(BasicSuffix1<'t>),
     Comment(Comment<'t>),
+    DecimalDot(DecimalDot<'t>),
     EndOfLine(EndOfLine<'t>),
     Exponent(Exponent<'t>),
     Expression(Expression<'t>),
@@ -1848,22 +1854,22 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// Number: Float;
+    /// Number: %push(Flt) Float %pop();
     ///
     fn number_20(
         &mut self,
-        _float_0: &ParseTreeStackEntry<'t>,
+        _float_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "number_20";
         trace!("{}", self.trace_item_stack(context));
-        let float_0 = if let Some(ASTType::Float(float_0)) = self.pop(context) {
-            float_0
+        let float_1 = if let Some(ASTType::Float(float_1)) = self.pop(context) {
+            float_1
         } else {
             return Err(miette!("{}: Expecting ASTType::Float", context));
         };
         let number_20_built = Number20Builder::default()
-            .float_0(Box::new(float_0))
+            .float_1(Box::new(float_1))
             .build()
             .into_diagnostic()?;
         let number_20_built = Number::Number20(number_20_built);
@@ -1902,7 +1908,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// Integer: "([0-9] *)+";
+    /// Integer: <Flt, INITIAL>"([0-9] *)+";
     ///
     fn integer_22(
         &mut self,
@@ -1924,15 +1930,37 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
+    /// DecimalDot: <Flt>"\.";
+    ///
+    fn decimal_dot_23(
+        &mut self,
+        decimal_dot_0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "decimal_dot_23";
+        trace!("{}", self.trace_item_stack(context));
+        let decimal_dot_0 = *decimal_dot_0.token(parse_tree)?;
+        let decimal_dot_23_built = DecimalDotBuilder::default()
+            .decimal_dot_0(decimal_dot_0)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.decimal_dot(&decimal_dot_23_built)?;
+        self.push(ASTType::DecimalDot(decimal_dot_23_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 24:
+    ///
     /// Float: Integer FloatSuffix4;
     ///
-    fn float_23(
+    fn float_24(
         &mut self,
         _integer_0: &ParseTreeStackEntry<'t>,
         _float_suffix4_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "float_23";
+        let context = "float_24";
         trace!("{}", self.trace_item_stack(context));
         let float_suffix4_1 =
             if let Some(ASTType::FloatSuffix4(float_suffix4_1)) = self.pop(context) {
@@ -1945,40 +1973,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Integer", context));
         };
-        let float_23_built = Float23Builder::default()
+        let float_24_built = Float24Builder::default()
             .integer_0(Box::new(integer_0))
             .float_suffix4_1(Box::new(float_suffix4_1))
-            .build()
-            .into_diagnostic()?;
-        let float_23_built = Float::Float23(float_23_built);
-        // Calling user action here
-        self.user_grammar.float(&float_23_built)?;
-        self.push(ASTType::Float(float_23_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 24:
-    ///
-    /// Float: "\." FloatSuffix3;
-    ///
-    fn float_24(
-        &mut self,
-        dot_0: &ParseTreeStackEntry<'t>,
-        _float_suffix3_1: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = "float_24";
-        trace!("{}", self.trace_item_stack(context));
-        let dot_0 = *dot_0.token(parse_tree)?;
-        let float_suffix3_1 =
-            if let Some(ASTType::FloatSuffix3(float_suffix3_1)) = self.pop(context) {
-                float_suffix3_1
-            } else {
-                return Err(miette!("{}: Expecting ASTType::FloatSuffix3", context));
-            };
-        let float_24_built = Float24Builder::default()
-            .dot_0(dot_0)
-            .float_suffix3_1(Box::new(float_suffix3_1))
             .build()
             .into_diagnostic()?;
         let float_24_built = Float::Float24(float_24_built);
@@ -1990,51 +1987,65 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// FloatSuffix4: "\." FloatSuffix1;
+    /// Float: DecimalDot FloatSuffix3;
     ///
-    fn float_suffix4_25(
+    fn float_25(
         &mut self,
-        dot_0: &ParseTreeStackEntry<'t>,
-        _float_suffix1_1: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _decimal_dot_0: &ParseTreeStackEntry<'t>,
+        _float_suffix3_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "float_suffix4_25";
+        let context = "float_25";
         trace!("{}", self.trace_item_stack(context));
-        let dot_0 = *dot_0.token(parse_tree)?;
+        let float_suffix3_1 =
+            if let Some(ASTType::FloatSuffix3(float_suffix3_1)) = self.pop(context) {
+                float_suffix3_1
+            } else {
+                return Err(miette!("{}: Expecting ASTType::FloatSuffix3", context));
+            };
+        let decimal_dot_0 = if let Some(ASTType::DecimalDot(decimal_dot_0)) = self.pop(context) {
+            decimal_dot_0
+        } else {
+            return Err(miette!("{}: Expecting ASTType::DecimalDot", context));
+        };
+        let float_25_built = Float25Builder::default()
+            .decimal_dot_0(Box::new(decimal_dot_0))
+            .float_suffix3_1(Box::new(float_suffix3_1))
+            .build()
+            .into_diagnostic()?;
+        let float_25_built = Float::Float25(float_25_built);
+        // Calling user action here
+        self.user_grammar.float(&float_25_built)?;
+        self.push(ASTType::Float(float_25_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 26:
+    ///
+    /// FloatSuffix4: DecimalDot FloatSuffix1;
+    ///
+    fn float_suffix4_26(
+        &mut self,
+        _decimal_dot_0: &ParseTreeStackEntry<'t>,
+        _float_suffix1_1: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = "float_suffix4_26";
+        trace!("{}", self.trace_item_stack(context));
         let float_suffix1_1 =
             if let Some(ASTType::FloatSuffix1(float_suffix1_1)) = self.pop(context) {
                 float_suffix1_1
             } else {
                 return Err(miette!("{}: Expecting ASTType::FloatSuffix1", context));
             };
-        let float_suffix4_25_built = FloatSuffix4_25Builder::default()
-            .dot_0(dot_0)
-            .float_suffix1_1(Box::new(float_suffix1_1))
-            .build()
-            .into_diagnostic()?;
-        let float_suffix4_25_built = FloatSuffix4::FloatSuffix4_25(float_suffix4_25_built);
-        self.push(ASTType::FloatSuffix4(float_suffix4_25_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 26:
-    ///
-    /// FloatSuffix4: Exponent;
-    ///
-    fn float_suffix4_26(
-        &mut self,
-        _exponent_0: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = "float_suffix4_26";
-        trace!("{}", self.trace_item_stack(context));
-        let exponent_0 = if let Some(ASTType::Exponent(exponent_0)) = self.pop(context) {
-            exponent_0
+        let decimal_dot_0 = if let Some(ASTType::DecimalDot(decimal_dot_0)) = self.pop(context) {
+            decimal_dot_0
         } else {
-            return Err(miette!("{}: Expecting ASTType::Exponent", context));
+            return Err(miette!("{}: Expecting ASTType::DecimalDot", context));
         };
         let float_suffix4_26_built = FloatSuffix4_26Builder::default()
-            .exponent_0(Box::new(exponent_0))
+            .decimal_dot_0(Box::new(decimal_dot_0))
+            .float_suffix1_1(Box::new(float_suffix1_1))
             .build()
             .into_diagnostic()?;
         let float_suffix4_26_built = FloatSuffix4::FloatSuffix4_26(float_suffix4_26_built);
@@ -2044,28 +2055,26 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// Float: Exponent;
+    /// FloatSuffix4: Exponent;
     ///
-    fn float_27(
+    fn float_suffix4_27(
         &mut self,
         _exponent_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "float_27";
+        let context = "float_suffix4_27";
         trace!("{}", self.trace_item_stack(context));
         let exponent_0 = if let Some(ASTType::Exponent(exponent_0)) = self.pop(context) {
             exponent_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Exponent", context));
         };
-        let float_27_built = Float27Builder::default()
+        let float_suffix4_27_built = FloatSuffix4_27Builder::default()
             .exponent_0(Box::new(exponent_0))
             .build()
             .into_diagnostic()?;
-        let float_27_built = Float::Float27(float_27_built);
-        // Calling user action here
-        self.user_grammar.float(&float_27_built)?;
-        self.push(ASTType::Float(float_27_built), context);
+        let float_suffix4_27_built = FloatSuffix4::FloatSuffix4_27(float_suffix4_27_built);
+        self.push(ASTType::FloatSuffix4(float_suffix4_27_built), context);
         Ok(())
     }
 
@@ -2294,7 +2303,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Exponent: "E *[-+]? *([0-9] *)+";
+    /// Exponent: <Flt>"E *[-+]? *([0-9] *)+";
     ///
     fn exponent_38(
         &mut self,
@@ -3430,11 +3439,11 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             20 => self.number_20(&children[0], parse_tree),
             21 => self.number_21(&children[0], parse_tree),
             22 => self.integer_22(&children[0], parse_tree),
-            23 => self.float_23(&children[0], &children[1], parse_tree),
+            23 => self.decimal_dot_23(&children[0], parse_tree),
             24 => self.float_24(&children[0], &children[1], parse_tree),
-            25 => self.float_suffix4_25(&children[0], &children[1], parse_tree),
-            26 => self.float_suffix4_26(&children[0], parse_tree),
-            27 => self.float_27(&children[0], parse_tree),
+            25 => self.float_25(&children[0], &children[1], parse_tree),
+            26 => self.float_suffix4_26(&children[0], &children[1], parse_tree),
+            27 => self.float_suffix4_27(&children[0], parse_tree),
             28 => self.float_suffix3_28(&children[0], &children[1], parse_tree),
             29 => self.float_suffix3_29(&children[0], parse_tree),
             30 => self.float_suffix3_30(parse_tree),

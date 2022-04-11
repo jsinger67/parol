@@ -4,6 +4,7 @@
 %auto_newline_off
 
 %scanner Cmnt { %auto_newline_off }
+%scanner Flt { %auto_newline_off }
 
 %%
 
@@ -27,16 +28,18 @@ Literal : Number
 LineNumber
         : Integer
         ;
-Number  : Float
+Number  : %push(Flt) Float %pop()
         | Integer
         ;
-Integer : "([0-9] *)+"
+Integer : <INITIAL, Flt>"([0-9] *)+"
         ;
-Float   : Integer "\." [Integer] [Exponent]
-        | "\." [Integer] [Exponent]
-        | [Integer] Exponent
+DecimalDot
+        : <Flt>"\."
         ;
-Exponent: "E *[-+]? *([0-9] *)+"
+Float   : [Integer] DecimalDot [Integer] [Exponent]
+        | Integer Exponent
+        ;
+Exponent: <Flt>"E *[-+]? *([0-9] *)+"
         ;
 Variable: "[A-Z][0-9A-Z]*"
         ;
