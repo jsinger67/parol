@@ -31,7 +31,7 @@
 /* 20 */ Assignment: Variable AssignOp %push(Expr) Expression %pop();
 /* 21 */ IfBody: "THEN" Statement;
 /* 22 */ IfBody: "GOTO" LineNumber;
-/* 23 */ Print: PrintGroup Expression;
+/* 23 */ Print: PrintGroup %push(Expr) Expression %pop();
 /* 24 */ PrintGroup: "PRINT";
 /* 25 */ PrintGroup: "\?";
 /* 26 */ Stop: "STOP";

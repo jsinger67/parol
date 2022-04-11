@@ -733,10 +733,15 @@ pub const PRODUCTIONS: &[Production; 73] = &[
         lhs: 13,
         production: &[ParseType::N(18), ParseType::T(7)],
     },
-    // 23 - Print: PrintGroup Expression;
+    // 23 - Print: PrintGroup Push(2) Expression Pop;
     Production {
         lhs: 34,
-        production: &[ParseType::N(8), ParseType::N(35)],
+        production: &[
+            ParseType::Pop,
+            ParseType::N(8),
+            ParseType::Push(2),
+            ParseType::N(35),
+        ],
     },
     // 24 - PrintGroup: "PRINT";
     Production {

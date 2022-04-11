@@ -60,7 +60,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 5:
     ///
-    /// Print: (<0>"PRINT" | <0>"\?") Expression;
+    /// Print: (<0>"PRINT" | <0>"\?") %push(2) Expression %pop();
     ///
     fn print(&mut self, _arg: &Print<'t>) -> Result<()> {
         Ok(())
@@ -1009,7 +1009,7 @@ pub struct Plus<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Print<'t> {
     pub print_group_0: Box<PrintGroup<'t>>,
-    pub expression_1: Box<Expression<'t>>,
+    pub expression_2: Box<Expression<'t>>,
 }
 
 ///
@@ -1930,18 +1930,18 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// Print: PrintGroup Expression;
+    /// Print: PrintGroup %push(Expr) Expression %pop();
     ///
     fn print_23(
         &mut self,
         _print_group_0: &ParseTreeStackEntry<'t>,
-        _expression_1: &ParseTreeStackEntry<'t>,
+        _expression_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = "print_23";
         trace!("{}", self.trace_item_stack(context));
-        let expression_1 = if let Some(ASTType::Expression(expression_1)) = self.pop(context) {
-            expression_1
+        let expression_2 = if let Some(ASTType::Expression(expression_2)) = self.pop(context) {
+            expression_2
         } else {
             return Err(miette!("{}: Expecting ASTType::Expression", context));
         };
@@ -1952,7 +1952,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         };
         let print_23_built = PrintBuilder::default()
             .print_group_0(Box::new(print_group_0))
-            .expression_1(Box::new(expression_1))
+            .expression_2(Box::new(expression_2))
             .build()
             .into_diagnostic()?;
         // Calling user action here

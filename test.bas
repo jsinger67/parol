@@ -1,1 +1,4 @@
 10 A = 1 AND NOT 1 OR 1
+20 STOP
+30 REM x
+40 ? 3 + 6
