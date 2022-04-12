@@ -13,12 +13,20 @@ Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
 Line    : LineNumber Statement { ":" Statement }
         ;
 Statement
-        : "REM" %push(Cmnt) [Comment] %pop()
-        | "GOTO" LineNumber
-        | "IF" %push(Expr) Expression %pop() IfBody
+        : Remark
+        | GotoStatement
+        | IfStatement
         | Assignment
-        | Print
-        | Stop
+        | PrintStatement
+        | StopStatement
+        ;
+Remark  : "REM" %push(Cmnt) [Comment] %pop()
+        ;
+GotoStatement
+        : "GOTO" LineNumber
+        ;
+IfStatement
+        : "IF" %push(Expr) Expression %pop() IfBody
         ;
 Assignment
         : ["LET"] Variable AssignOp %push(Expr) Expression %pop()
@@ -26,9 +34,11 @@ Assignment
 IfBody  : "THEN" Statement
         | "GOTO" LineNumber
         ;
-Print   : ("PRINT" | "\?") %push(Expr) Expression %pop()
+PrintStatement
+        : ("PRINT" | "\?") %push(Expr) Expression %pop()
         ;
-Stop    : "STOP"
+StopStatement
+        : "STOP"
         ;
 EndOfLine
         : <INITIAL, Expr>"(\r?\n|\r)+"
