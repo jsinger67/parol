@@ -1,8 +1,11 @@
 #[macro_use]
 extern crate derive_builder;
-
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate miette;
+#[macro_use]
+extern crate thiserror;
 
 extern crate parol_runtime;
 
@@ -10,6 +13,7 @@ mod basic_grammar;
 // The output is version controlled
 mod basic_grammar_trait;
 mod basic_parser;
+mod errors;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
