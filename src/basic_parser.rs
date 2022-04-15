@@ -26,19 +26,19 @@ pub const TERMINALS: &[&str; 32] = &[
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###":"###,
-    /*  6 */ r###"REM"###,
-    /*  7 */ r###"GOTO"###,
-    /*  8 */ r###"IF"###,
-    /*  9 */ r###"LET"###,
-    /* 10 */ r###"THEN"###,
-    /* 11 */ r###"PRINT"###,
-    /* 12 */ r###"\?"###,
-    /* 13 */ r###"STOP"###,
-    /* 14 */ r###"(\r?\n|\r)+"###,
-    /* 15 */ r###"([0-9] *){1,5}"###,
-    /* 16 */ r###"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"###,
-    /* 17 */ r###"([0-9] *)+E *[-+]? *([0-9] *)+"###,
-    /* 18 */ r###"([0-9] *)+"###,
+    /*  6 */ r###"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+"###,
+    /*  7 */ r###"REM"###,
+    /*  8 */ r###","###,
+    /*  9 */ r###"(?:\r?\n|\r)+"###,
+    /* 10 */ r###"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?"###,
+    /* 11 */ r###"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+"###,
+    /* 12 */ r###"(?:[0-9] *)+"###,
+    /* 13 */ r###"IF"###,
+    /* 14 */ r###"THEN"###,
+    /* 15 */ r###"GOTO"###,
+    /* 16 */ r###"LET"###,
+    /* 17 */ r###"PRINT|\?"###,
+    /* 18 */ r###"END"###,
     /* 19 */ r###"="###,
     /* 20 */ r###"N?OR"###,
     /* 21 */ r###"AND"###,
@@ -61,19 +61,19 @@ pub const TERMINAL_NAMES: &[&str; 32] = &[
     /*  3 */ "LineComment",
     /*  4 */ "BlockComment",
     /*  5 */ "Colon",
-    /*  6 */ "REM",
-    /*  7 */ "GOTO",
-    /*  8 */ "IF",
-    /*  9 */ "LET",
-    /* 10 */ "THEN",
-    /* 11 */ "PRINT",
-    /* 12 */ "Quest",
-    /* 13 */ "StopStatement",
-    /* 14 */ "EndOfLine",
-    /* 15 */ "LineNumber",
-    /* 16 */ "Float1",
-    /* 17 */ "Float2",
-    /* 18 */ "Integer",
+    /*  6 */ "LineNumber",
+    /*  7 */ "REM",
+    /*  8 */ "Comma",
+    /*  9 */ "EndOfLine",
+    /* 10 */ "Float1",
+    /* 11 */ "Float2",
+    /* 12 */ "Integer",
+    /* 13 */ "If",
+    /* 14 */ "Then",
+    /* 15 */ "Goto",
+    /* 16 */ "Let",
+    /* 17 */ "Print",
+    /* 18 */ "End",
     /* 19 */ "AssignOp",
     /* 20 */ "LogicalOrOp",
     /* 21 */ "LogicalAndOp",
@@ -100,16 +100,16 @@ const SCANNER_0: (&[&str; 5], &[usize; 13]) = (
     ],
     &[
         5,  /* Colon */
-        6,  /* REM */
-        7,  /* GOTO */
-        8,  /* IF */
-        9,  /* LET */
-        10, /* THEN */
-        11, /* PRINT */
-        12, /* Quest */
-        13, /* StopStatement */
-        14, /* EndOfLine */
-        15, /* LineNumber */
+        6,  /* LineNumber */
+        7,  /* REM */
+        8,  /* Comma */
+        9,  /* EndOfLine */
+        13, /* If */
+        14, /* Then */
+        15, /* Goto */
+        16, /* Let */
+        17, /* Print */
+        18, /* End */
         19, /* AssignOp */
         30, /* Variable */
     ],
@@ -128,7 +128,7 @@ const SCANNER_1: (&[&str; 5], &[usize; 1]) = (
 );
 
 /* SCANNER_2: "Expr" */
-const SCANNER_2: (&[&str; 5], &[usize; 14]) = (
+const SCANNER_2: (&[&str; 5], &[usize; 22]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -137,10 +137,18 @@ const SCANNER_2: (&[&str; 5], &[usize; 14]) = (
         /*  4 */ UNMATCHABLE_TOKEN,
     ],
     &[
-        14, /* EndOfLine */
-        16, /* Float1 */
-        17, /* Float2 */
-        18, /* Integer */
+        5,  /* Colon */
+        8,  /* Comma */
+        9,  /* EndOfLine */
+        10, /* Float1 */
+        11, /* Float2 */
+        12, /* Integer */
+        13, /* If */
+        14, /* Then */
+        15, /* Goto */
+        16, /* Let */
+        17, /* Print */
+        18, /* End */
         20, /* LogicalOrOp */
         21, /* LogicalAndOp */
         22, /* LogicalNotOp */
@@ -156,7 +164,7 @@ const SCANNER_2: (&[&str; 5], &[usize; 14]) = (
 
 const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 50] = &[
+pub const NON_TERMINALS: &[&str; 56] = &[
     /*  0 */ "AssignOp",
     /*  1 */ "Assignment",
     /*  2 */ "Basic",
@@ -164,68 +172,74 @@ pub const NON_TERMINALS: &[&str; 50] = &[
     /*  4 */ "BasicSuffix",
     /*  5 */ "BasicSuffix1",
     /*  6 */ "Comment",
-    /*  7 */ "EndOfLine",
-    /*  8 */ "Expression",
-    /*  9 */ "Factor",
-    /* 10 */ "Float",
-    /* 11 */ "Float1",
-    /* 12 */ "Float2",
-    /* 13 */ "GotoStatement",
-    /* 14 */ "IfBody",
-    /* 15 */ "IfStatement",
-    /* 16 */ "Integer",
-    /* 17 */ "LParen",
-    /* 18 */ "Line",
-    /* 19 */ "LineList",
-    /* 20 */ "LineNumber",
-    /* 21 */ "Literal",
-    /* 22 */ "LogicalAnd",
-    /* 23 */ "LogicalAndList",
-    /* 24 */ "LogicalAndOp",
-    /* 25 */ "LogicalNot",
-    /* 26 */ "LogicalNotOp",
-    /* 27 */ "LogicalOr",
-    /* 28 */ "LogicalOrList",
-    /* 29 */ "LogicalOrOp",
-    /* 30 */ "Minus",
-    /* 31 */ "MulOp",
-    /* 32 */ "Multiplication",
-    /* 33 */ "MultiplicationList",
-    /* 34 */ "Number",
-    /* 35 */ "Plus",
-    /* 36 */ "PrintStatement",
-    /* 37 */ "PrintStatementGroup",
-    /* 38 */ "RParen",
-    /* 39 */ "Relational",
-    /* 40 */ "RelationalList",
-    /* 41 */ "RelationalOp",
-    /* 42 */ "Remark",
-    /* 43 */ "RemarkSuffix",
-    /* 44 */ "Statement",
-    /* 45 */ "StopStatement",
-    /* 46 */ "Summation",
-    /* 47 */ "SummationList",
-    /* 48 */ "SummationListGroup",
-    /* 49 */ "Variable",
+    /*  7 */ "End",
+    /*  8 */ "EndOfLine",
+    /*  9 */ "EndStatement",
+    /* 10 */ "Expression",
+    /* 11 */ "Factor",
+    /* 12 */ "Float",
+    /* 13 */ "Float1",
+    /* 14 */ "Float2",
+    /* 15 */ "Goto",
+    /* 16 */ "GotoStatement",
+    /* 17 */ "If",
+    /* 18 */ "IfBody",
+    /* 19 */ "IfStatement",
+    /* 20 */ "Integer",
+    /* 21 */ "LParen",
+    /* 22 */ "Let",
+    /* 23 */ "Line",
+    /* 24 */ "LineList",
+    /* 25 */ "LineNumber",
+    /* 26 */ "Literal",
+    /* 27 */ "LogicalAnd",
+    /* 28 */ "LogicalAndList",
+    /* 29 */ "LogicalAndOp",
+    /* 30 */ "LogicalNot",
+    /* 31 */ "LogicalNotOp",
+    /* 32 */ "LogicalOr",
+    /* 33 */ "LogicalOrList",
+    /* 34 */ "LogicalOrOp",
+    /* 35 */ "Minus",
+    /* 36 */ "MulOp",
+    /* 37 */ "Multiplication",
+    /* 38 */ "MultiplicationList",
+    /* 39 */ "Number",
+    /* 40 */ "Plus",
+    /* 41 */ "Print",
+    /* 42 */ "PrintStatement",
+    /* 43 */ "PrintStatementList",
+    /* 44 */ "RParen",
+    /* 45 */ "Relational",
+    /* 46 */ "RelationalList",
+    /* 47 */ "RelationalOp",
+    /* 48 */ "Remark",
+    /* 49 */ "RemarkSuffix",
+    /* 50 */ "Statement",
+    /* 51 */ "Summation",
+    /* 52 */ "SummationList",
+    /* 53 */ "SummationListGroup",
+    /* 54 */ "Then",
+    /* 55 */ "Variable",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 56] = &[
     /* 0 - "AssignOp" */
     LookaheadDFA {
-        states: &[Some(40)],
+        states: &[Some(46)],
         transitions: &[],
         k: 0,
     },
     /* 1 - "Assignment" */
     LookaheadDFA {
-        states: &[None, Some(22), Some(23)],
-        transitions: &[DFATransition(0, 9, 1), DFATransition(0, 30, 2)],
+        states: &[None, Some(23), Some(24)],
+        transitions: &[DFATransition(0, 16, 1), DFATransition(0, 30, 2)],
         k: 1,
     },
     /* 2 - "Basic" */
     LookaheadDFA {
         states: &[None, Some(0), Some(1)],
-        transitions: &[DFATransition(0, 14, 2), DFATransition(0, 15, 1)],
+        transitions: &[DFATransition(0, 6, 1), DFATransition(0, 9, 2)],
         k: 1,
     },
     /* 3 - "BasicList" */
@@ -233,165 +247,196 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
         states: &[None, None, Some(6), Some(7)],
         transitions: &[
             DFATransition(0, 0, 3),
-            DFATransition(0, 14, 1),
+            DFATransition(0, 9, 1),
             DFATransition(1, 0, 3),
-            DFATransition(1, 15, 2),
+            DFATransition(1, 6, 2),
         ],
         k: 2,
     },
     /* 4 - "BasicSuffix" */
     LookaheadDFA {
         states: &[None, Some(4), Some(5)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 14, 1)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 9, 1)],
         k: 1,
     },
     /* 5 - "BasicSuffix1" */
     LookaheadDFA {
         states: &[None, Some(2), Some(3)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 14, 1)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 9, 1)],
         k: 1,
     },
     /* 6 - "Comment" */
     LookaheadDFA {
-        states: &[Some(50)],
+        states: &[Some(56)],
         transitions: &[],
         k: 0,
     },
-    /* 7 - "EndOfLine" */
+    /* 7 - "End" */
+    LookaheadDFA {
+        states: &[Some(45)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 8 - "EndOfLine" */
+    LookaheadDFA {
+        states: &[Some(31)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 9 - "EndStatement" */
     LookaheadDFA {
         states: &[Some(30)],
         transitions: &[],
         k: 0,
     },
-    /* 8 - "Expression" */
+    /* 10 - "Expression" */
     LookaheadDFA {
-        states: &[Some(52)],
+        states: &[Some(58)],
         transitions: &[],
         k: 0,
     },
-    /* 9 - "Factor" */
+    /* 11 - "Factor" */
     LookaheadDFA {
-        states: &[None, Some(72), Some(73), Some(74), Some(75)],
+        states: &[None, Some(78), Some(79), Some(80), Some(81)],
         transitions: &[
-            DFATransition(0, 16, 1),
-            DFATransition(0, 17, 1),
-            DFATransition(0, 18, 1),
+            DFATransition(0, 10, 1),
+            DFATransition(0, 11, 1),
+            DFATransition(0, 12, 1),
             DFATransition(0, 25, 3),
             DFATransition(0, 27, 4),
             DFATransition(0, 30, 2),
         ],
         k: 1,
     },
-    /* 10 - "Float" */
+    /* 12 - "Float" */
     LookaheadDFA {
         states: &[None, Some(35), Some(36)],
-        transitions: &[DFATransition(0, 16, 1), DFATransition(0, 17, 2)],
+        transitions: &[DFATransition(0, 10, 1), DFATransition(0, 11, 2)],
         k: 1,
     },
-    /* 11 - "Float1" */
+    /* 13 - "Float1" */
     LookaheadDFA {
         states: &[Some(37)],
         transitions: &[],
         k: 0,
     },
-    /* 12 - "Float2" */
+    /* 14 - "Float2" */
     LookaheadDFA {
         states: &[Some(38)],
         transitions: &[],
         k: 0,
     },
-    /* 13 - "GotoStatement" */
+    /* 15 - "Goto" */
     LookaheadDFA {
-        states: &[Some(20)],
+        states: &[Some(42)],
         transitions: &[],
         k: 0,
     },
-    /* 14 - "IfBody" */
-    LookaheadDFA {
-        states: &[None, Some(24), Some(25)],
-        transitions: &[DFATransition(0, 7, 2), DFATransition(0, 10, 1)],
-        k: 1,
-    },
-    /* 15 - "IfStatement" */
+    /* 16 - "GotoStatement" */
     LookaheadDFA {
         states: &[Some(21)],
         transitions: &[],
         k: 0,
     },
-    /* 16 - "Integer" */
+    /* 17 - "If" */
+    LookaheadDFA {
+        states: &[Some(40)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 18 - "IfBody" */
+    LookaheadDFA {
+        states: &[None, Some(25), Some(26)],
+        transitions: &[DFATransition(0, 14, 1), DFATransition(0, 15, 2)],
+        k: 1,
+    },
+    /* 19 - "IfStatement" */
+    LookaheadDFA {
+        states: &[Some(22)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 20 - "Integer" */
     LookaheadDFA {
         states: &[Some(39)],
         transitions: &[],
         k: 0,
     },
-    /* 17 - "LParen" */
+    /* 21 - "LParen" */
     LookaheadDFA {
-        states: &[Some(48)],
+        states: &[Some(54)],
         transitions: &[],
         k: 0,
     },
-    /* 18 - "Line" */
+    /* 22 - "Let" */
+    LookaheadDFA {
+        states: &[Some(43)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 23 - "Line" */
     LookaheadDFA {
         states: &[Some(8)],
         transitions: &[],
         k: 0,
     },
-    /* 19 - "LineList" */
+    /* 24 - "LineList" */
     LookaheadDFA {
         states: &[None, Some(9), Some(10)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 1),
-            DFATransition(0, 14, 2),
+            DFATransition(0, 9, 2),
         ],
         k: 1,
     },
-    /* 20 - "LineNumber" */
+    /* 25 - "LineNumber" */
+    LookaheadDFA {
+        states: &[Some(11)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 26 - "Literal" */
     LookaheadDFA {
         states: &[Some(32)],
         transitions: &[],
         k: 0,
     },
-    /* 21 - "Literal" */
+    /* 27 - "LogicalAnd" */
     LookaheadDFA {
-        states: &[Some(31)],
+        states: &[Some(62)],
         transitions: &[],
         k: 0,
     },
-    /* 22 - "LogicalAnd" */
+    /* 28 - "LogicalAndList" */
     LookaheadDFA {
-        states: &[Some(56)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 23 - "LogicalAndList" */
-    LookaheadDFA {
-        states: &[None, Some(57), Some(58)],
+        states: &[None, Some(63), Some(64)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 10, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 15, 2),
             DFATransition(0, 20, 2),
             DFATransition(0, 21, 1),
             DFATransition(0, 28, 2),
         ],
         k: 1,
     },
-    /* 24 - "LogicalAndOp" */
+    /* 29 - "LogicalAndOp" */
     LookaheadDFA {
-        states: &[Some(42)],
+        states: &[Some(48)],
         transitions: &[],
         k: 0,
     },
-    /* 25 - "LogicalNot" */
+    /* 30 - "LogicalNot" */
     LookaheadDFA {
-        states: &[None, Some(59), Some(60)],
+        states: &[None, Some(65), Some(66)],
         transitions: &[
-            DFATransition(0, 16, 2),
-            DFATransition(0, 17, 2),
-            DFATransition(0, 18, 2),
+            DFATransition(0, 10, 2),
+            DFATransition(0, 11, 2),
+            DFATransition(0, 12, 2),
             DFATransition(0, 22, 1),
             DFATransition(0, 25, 2),
             DFATransition(0, 27, 2),
@@ -399,65 +444,67 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
         ],
         k: 1,
     },
-    /* 26 - "LogicalNotOp" */
+    /* 31 - "LogicalNotOp" */
     LookaheadDFA {
-        states: &[Some(43)],
+        states: &[Some(49)],
         transitions: &[],
         k: 0,
     },
-    /* 27 - "LogicalOr" */
+    /* 32 - "LogicalOr" */
     LookaheadDFA {
-        states: &[Some(53)],
+        states: &[Some(59)],
         transitions: &[],
         k: 0,
     },
-    /* 28 - "LogicalOrList" */
+    /* 33 - "LogicalOrList" */
     LookaheadDFA {
-        states: &[None, Some(54), Some(55)],
+        states: &[None, Some(60), Some(61)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 10, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 15, 2),
             DFATransition(0, 20, 1),
             DFATransition(0, 28, 2),
         ],
         k: 1,
     },
-    /* 29 - "LogicalOrOp" */
-    LookaheadDFA {
-        states: &[Some(41)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 30 - "Minus" */
-    LookaheadDFA {
-        states: &[Some(46)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 31 - "MulOp" */
+    /* 34 - "LogicalOrOp" */
     LookaheadDFA {
         states: &[Some(47)],
         transitions: &[],
         k: 0,
     },
-    /* 32 - "Multiplication" */
+    /* 35 - "Minus" */
     LookaheadDFA {
-        states: &[Some(69)],
+        states: &[Some(52)],
         transitions: &[],
         k: 0,
     },
-    /* 33 - "MultiplicationList" */
+    /* 36 - "MulOp" */
     LookaheadDFA {
-        states: &[None, Some(70), Some(71)],
+        states: &[Some(53)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 37 - "Multiplication" */
+    LookaheadDFA {
+        states: &[Some(75)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 38 - "MultiplicationList" */
+    LookaheadDFA {
+        states: &[None, Some(76), Some(77)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 10, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 15, 2),
             DFATransition(0, 20, 2),
             DFATransition(0, 21, 2),
             DFATransition(0, 23, 2),
@@ -468,55 +515,67 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
         ],
         k: 1,
     },
-    /* 34 - "Number" */
+    /* 39 - "Number" */
     LookaheadDFA {
         states: &[None, Some(33), Some(34)],
         transitions: &[
-            DFATransition(0, 16, 1),
-            DFATransition(0, 17, 1),
-            DFATransition(0, 18, 2),
+            DFATransition(0, 10, 1),
+            DFATransition(0, 11, 1),
+            DFATransition(0, 12, 2),
         ],
         k: 1,
     },
-    /* 35 - "Plus" */
+    /* 40 - "Plus" */
     LookaheadDFA {
-        states: &[Some(45)],
+        states: &[Some(51)],
         transitions: &[],
         k: 0,
     },
-    /* 36 - "PrintStatement" */
+    /* 41 - "Print" */
     LookaheadDFA {
-        states: &[Some(26)],
+        states: &[Some(44)],
         transitions: &[],
         k: 0,
     },
-    /* 37 - "PrintStatementGroup" */
+    /* 42 - "PrintStatement" */
     LookaheadDFA {
-        states: &[None, Some(27), Some(28)],
-        transitions: &[DFATransition(0, 11, 1), DFATransition(0, 12, 2)],
-        k: 1,
-    },
-    /* 38 - "RParen" */
-    LookaheadDFA {
-        states: &[Some(49)],
+        states: &[Some(27)],
         transitions: &[],
         k: 0,
     },
-    /* 39 - "Relational" */
+    /* 43 - "PrintStatementList" */
     LookaheadDFA {
-        states: &[Some(61)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 40 - "RelationalList" */
-    LookaheadDFA {
-        states: &[None, Some(62), Some(63)],
+        states: &[None, Some(28), Some(29)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 10, 2),
+            DFATransition(0, 8, 1),
+            DFATransition(0, 9, 2),
+        ],
+        k: 1,
+    },
+    /* 44 - "RParen" */
+    LookaheadDFA {
+        states: &[Some(55)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 45 - "Relational" */
+    LookaheadDFA {
+        states: &[Some(67)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 46 - "RelationalList" */
+    LookaheadDFA {
+        states: &[None, Some(68), Some(69)],
+        transitions: &[
+            DFATransition(0, 0, 2),
+            DFATransition(0, 5, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 15, 2),
             DFATransition(0, 20, 2),
             DFATransition(0, 21, 2),
             DFATransition(0, 23, 1),
@@ -524,73 +583,67 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
         ],
         k: 1,
     },
-    /* 41 - "RelationalOp" */
+    /* 47 - "RelationalOp" */
     LookaheadDFA {
-        states: &[Some(44)],
+        states: &[Some(50)],
         transitions: &[],
         k: 0,
     },
-    /* 42 - "Remark" */
+    /* 48 - "Remark" */
     LookaheadDFA {
-        states: &[Some(17)],
+        states: &[Some(18)],
         transitions: &[],
         k: 0,
     },
-    /* 43 - "RemarkSuffix" */
+    /* 49 - "RemarkSuffix" */
     LookaheadDFA {
-        states: &[None, Some(18), Some(19)],
+        states: &[None, Some(19), Some(20)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 14, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 29, 1),
         ],
         k: 1,
     },
-    /* 44 - "Statement" */
+    /* 50 - "Statement" */
     LookaheadDFA {
         states: &[
             None,
-            Some(11),
             Some(12),
             Some(13),
             Some(14),
             Some(15),
             Some(16),
+            Some(17),
         ],
         transitions: &[
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 8, 3),
-            DFATransition(0, 9, 4),
-            DFATransition(0, 11, 5),
-            DFATransition(0, 12, 5),
-            DFATransition(0, 13, 6),
+            DFATransition(0, 7, 1),
+            DFATransition(0, 13, 3),
+            DFATransition(0, 15, 2),
+            DFATransition(0, 16, 4),
+            DFATransition(0, 17, 5),
+            DFATransition(0, 18, 6),
             DFATransition(0, 30, 4),
         ],
         k: 1,
     },
-    /* 45 - "StopStatement" */
+    /* 51 - "Summation" */
     LookaheadDFA {
-        states: &[Some(29)],
+        states: &[Some(70)],
         transitions: &[],
         k: 0,
     },
-    /* 46 - "Summation" */
+    /* 52 - "SummationList" */
     LookaheadDFA {
-        states: &[Some(64)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 47 - "SummationList" */
-    LookaheadDFA {
-        states: &[None, Some(65), Some(68)],
+        states: &[None, Some(71), Some(74)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 10, 2),
+            DFATransition(0, 8, 2),
+            DFATransition(0, 9, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 15, 2),
             DFATransition(0, 20, 2),
             DFATransition(0, 21, 2),
             DFATransition(0, 23, 2),
@@ -600,25 +653,31 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 50] = &[
         ],
         k: 1,
     },
-    /* 48 - "SummationListGroup" */
+    /* 53 - "SummationListGroup" */
     LookaheadDFA {
-        states: &[None, Some(66), Some(67)],
+        states: &[None, Some(72), Some(73)],
         transitions: &[DFATransition(0, 24, 1), DFATransition(0, 25, 2)],
         k: 1,
     },
-    /* 49 - "Variable" */
+    /* 54 - "Then" */
     LookaheadDFA {
-        states: &[Some(51)],
+        states: &[Some(41)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 55 - "Variable" */
+    LookaheadDFA {
+        states: &[Some(57)],
         transitions: &[],
         k: 0,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 76] = &[
+pub const PRODUCTIONS: &[Production; 82] = &[
     // 0 - Basic: Line BasicList /* Vec */ BasicSuffix1;
     Production {
         lhs: 2,
-        production: &[ParseType::N(5), ParseType::N(3), ParseType::N(18)],
+        production: &[ParseType::N(5), ParseType::N(3), ParseType::N(23)],
     },
     // 1 - Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
     Production {
@@ -626,14 +685,14 @@ pub const PRODUCTIONS: &[Production; 76] = &[
         production: &[
             ParseType::N(4),
             ParseType::N(3),
-            ParseType::N(18),
-            ParseType::N(7),
+            ParseType::N(23),
+            ParseType::N(8),
         ],
     },
     // 2 - BasicSuffix1: EndOfLine;
     Production {
         lhs: 5,
-        production: &[ParseType::N(7)],
+        production: &[ParseType::N(8)],
     },
     // 3 - BasicSuffix1: ;
     Production {
@@ -643,7 +702,7 @@ pub const PRODUCTIONS: &[Production; 76] = &[
     // 4 - BasicSuffix: EndOfLine;
     Production {
         lhs: 4,
-        production: &[ParseType::N(7)],
+        production: &[ParseType::N(8)],
     },
     // 5 - BasicSuffix: ;
     Production {
@@ -653,7 +712,7 @@ pub const PRODUCTIONS: &[Production; 76] = &[
     // 6 - BasicList: EndOfLine Line BasicList;
     Production {
         lhs: 3,
-        production: &[ParseType::N(3), ParseType::N(18), ParseType::N(7)],
+        production: &[ParseType::N(3), ParseType::N(23), ParseType::N(8)],
     },
     // 7 - BasicList: ;
     Production {
@@ -662,367 +721,398 @@ pub const PRODUCTIONS: &[Production; 76] = &[
     },
     // 8 - Line: LineNumber Statement LineList /* Vec */;
     Production {
-        lhs: 18,
-        production: &[ParseType::N(19), ParseType::N(44), ParseType::N(20)],
+        lhs: 23,
+        production: &[ParseType::N(24), ParseType::N(50), ParseType::N(25)],
     },
     // 9 - LineList: ":" Statement LineList;
     Production {
-        lhs: 19,
-        production: &[ParseType::N(19), ParseType::N(44), ParseType::T(5)],
+        lhs: 24,
+        production: &[ParseType::N(24), ParseType::N(50), ParseType::T(5)],
     },
     // 10 - LineList: ;
     Production {
-        lhs: 19,
+        lhs: 24,
         production: &[],
     },
-    // 11 - Statement: Remark;
+    // 11 - LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
     Production {
-        lhs: 44,
-        production: &[ParseType::N(42)],
+        lhs: 25,
+        production: &[ParseType::T(6)],
     },
-    // 12 - Statement: GotoStatement;
+    // 12 - Statement: Remark;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(13)],
+        lhs: 50,
+        production: &[ParseType::N(48)],
     },
-    // 13 - Statement: IfStatement;
+    // 13 - Statement: GotoStatement;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(15)],
+        lhs: 50,
+        production: &[ParseType::N(16)],
     },
-    // 14 - Statement: Assignment;
+    // 14 - Statement: IfStatement;
     Production {
-        lhs: 44,
+        lhs: 50,
+        production: &[ParseType::N(19)],
+    },
+    // 15 - Statement: Assignment;
+    Production {
+        lhs: 50,
         production: &[ParseType::N(1)],
     },
-    // 15 - Statement: PrintStatement;
+    // 16 - Statement: PrintStatement;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(36)],
+        lhs: 50,
+        production: &[ParseType::N(42)],
     },
-    // 16 - Statement: StopStatement;
+    // 17 - Statement: EndStatement;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(45)],
+        lhs: 50,
+        production: &[ParseType::N(9)],
     },
-    // 17 - Remark: "REM" Push(1) RemarkSuffix;
+    // 18 - Remark: "REM" Push(1) RemarkSuffix;
     Production {
-        lhs: 42,
-        production: &[ParseType::N(43), ParseType::Push(1), ParseType::T(6)],
+        lhs: 48,
+        production: &[ParseType::N(49), ParseType::Push(1), ParseType::T(7)],
     },
-    // 18 - RemarkSuffix: Comment Pop;
+    // 19 - RemarkSuffix: Comment Pop;
     Production {
-        lhs: 43,
+        lhs: 49,
         production: &[ParseType::Pop, ParseType::N(6)],
     },
-    // 19 - RemarkSuffix: Pop;
+    // 20 - RemarkSuffix: Pop;
     Production {
-        lhs: 43,
+        lhs: 49,
         production: &[ParseType::Pop],
     },
-    // 20 - GotoStatement: "GOTO" LineNumber;
+    // 21 - GotoStatement: Goto LineNumber;
     Production {
-        lhs: 13,
-        production: &[ParseType::N(20), ParseType::T(7)],
+        lhs: 16,
+        production: &[ParseType::N(25), ParseType::N(15)],
     },
-    // 21 - IfStatement: "IF" Push(2) Expression Pop IfBody;
+    // 22 - IfStatement: If Push(2) Expression Pop IfBody;
     Production {
-        lhs: 15,
+        lhs: 19,
         production: &[
-            ParseType::N(14),
+            ParseType::N(18),
             ParseType::Pop,
-            ParseType::N(8),
+            ParseType::N(10),
             ParseType::Push(2),
-            ParseType::T(8),
+            ParseType::N(17),
         ],
     },
-    // 22 - Assignment: "LET" Variable AssignOp Push(2) Expression Pop;
+    // 23 - Assignment: Let Variable AssignOp Push(2) Expression Pop;
     Production {
         lhs: 1,
         production: &[
             ParseType::Pop,
-            ParseType::N(8),
+            ParseType::N(10),
             ParseType::Push(2),
             ParseType::N(0),
-            ParseType::N(49),
-            ParseType::T(9),
+            ParseType::N(55),
+            ParseType::N(22),
         ],
     },
-    // 23 - Assignment: Variable AssignOp Push(2) Expression Pop;
+    // 24 - Assignment: Variable AssignOp Push(2) Expression Pop;
     Production {
         lhs: 1,
         production: &[
             ParseType::Pop,
-            ParseType::N(8),
+            ParseType::N(10),
             ParseType::Push(2),
             ParseType::N(0),
-            ParseType::N(49),
+            ParseType::N(55),
         ],
     },
-    // 24 - IfBody: "THEN" Statement;
+    // 25 - IfBody: Then Statement;
     Production {
-        lhs: 14,
-        production: &[ParseType::N(44), ParseType::T(10)],
+        lhs: 18,
+        production: &[ParseType::N(50), ParseType::N(54)],
     },
-    // 25 - IfBody: "GOTO" LineNumber;
+    // 26 - IfBody: Goto LineNumber;
     Production {
-        lhs: 14,
-        production: &[ParseType::N(20), ParseType::T(7)],
+        lhs: 18,
+        production: &[ParseType::N(25), ParseType::N(15)],
     },
-    // 26 - PrintStatement: PrintStatementGroup Push(2) Expression Pop;
+    // 27 - PrintStatement: Print Push(2) Expression PrintStatementList /* Vec */ Pop;
     Production {
-        lhs: 36,
+        lhs: 42,
         production: &[
             ParseType::Pop,
-            ParseType::N(8),
+            ParseType::N(43),
+            ParseType::N(10),
             ParseType::Push(2),
-            ParseType::N(37),
+            ParseType::N(41),
         ],
     },
-    // 27 - PrintStatementGroup: "PRINT";
+    // 28 - PrintStatementList: "," Expression PrintStatementList;
     Production {
-        lhs: 37,
-        production: &[ParseType::T(11)],
+        lhs: 43,
+        production: &[ParseType::N(43), ParseType::N(10), ParseType::T(8)],
     },
-    // 28 - PrintStatementGroup: "\?";
+    // 29 - PrintStatementList: ;
     Production {
-        lhs: 37,
-        production: &[ParseType::T(12)],
+        lhs: 43,
+        production: &[],
     },
-    // 29 - StopStatement: "STOP";
+    // 30 - EndStatement: End;
     Production {
-        lhs: 45,
-        production: &[ParseType::T(13)],
+        lhs: 9,
+        production: &[ParseType::N(7)],
     },
-    // 30 - EndOfLine: "(\r?\n|\r)+";
+    // 31 - EndOfLine: "(?:\r?\n|\r)+";
     Production {
-        lhs: 7,
-        production: &[ParseType::T(14)],
+        lhs: 8,
+        production: &[ParseType::T(9)],
     },
-    // 31 - Literal: Number;
+    // 32 - Literal: Number;
     Production {
-        lhs: 21,
-        production: &[ParseType::N(34)],
-    },
-    // 32 - LineNumber: "([0-9] *){1,5}";
-    Production {
-        lhs: 20,
-        production: &[ParseType::T(15)],
+        lhs: 26,
+        production: &[ParseType::N(39)],
     },
     // 33 - Number: Float;
     Production {
-        lhs: 34,
-        production: &[ParseType::N(10)],
+        lhs: 39,
+        production: &[ParseType::N(12)],
     },
     // 34 - Number: Integer;
     Production {
-        lhs: 34,
-        production: &[ParseType::N(16)],
+        lhs: 39,
+        production: &[ParseType::N(20)],
     },
     // 35 - Float: Float1;
     Production {
-        lhs: 10,
-        production: &[ParseType::N(11)],
+        lhs: 12,
+        production: &[ParseType::N(13)],
     },
     // 36 - Float: Float2;
     Production {
-        lhs: 10,
-        production: &[ParseType::N(12)],
+        lhs: 12,
+        production: &[ParseType::N(14)],
     },
-    // 37 - Float1: "(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?";
+    // 37 - Float1: "(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
     Production {
-        lhs: 11,
+        lhs: 13,
+        production: &[ParseType::T(10)],
+    },
+    // 38 - Float2: "(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
+    Production {
+        lhs: 14,
+        production: &[ParseType::T(11)],
+    },
+    // 39 - Integer: "(?:[0-9] *)+";
+    Production {
+        lhs: 20,
+        production: &[ParseType::T(12)],
+    },
+    // 40 - If: "IF";
+    Production {
+        lhs: 17,
+        production: &[ParseType::T(13)],
+    },
+    // 41 - Then: "THEN";
+    Production {
+        lhs: 54,
+        production: &[ParseType::T(14)],
+    },
+    // 42 - Goto: "GOTO";
+    Production {
+        lhs: 15,
+        production: &[ParseType::T(15)],
+    },
+    // 43 - Let: "LET";
+    Production {
+        lhs: 22,
         production: &[ParseType::T(16)],
     },
-    // 38 - Float2: "([0-9] *)+E *[-+]? *([0-9] *)+";
+    // 44 - Print: "PRINT|\?";
     Production {
-        lhs: 12,
+        lhs: 41,
         production: &[ParseType::T(17)],
     },
-    // 39 - Integer: "([0-9] *)+";
+    // 45 - End: "END";
     Production {
-        lhs: 16,
+        lhs: 7,
         production: &[ParseType::T(18)],
     },
-    // 40 - AssignOp: "=";
+    // 46 - AssignOp: "=";
     Production {
         lhs: 0,
         production: &[ParseType::T(19)],
     },
-    // 41 - LogicalOrOp: "N?OR";
+    // 47 - LogicalOrOp: "N?OR";
     Production {
-        lhs: 29,
+        lhs: 34,
         production: &[ParseType::T(20)],
     },
-    // 42 - LogicalAndOp: "AND";
+    // 48 - LogicalAndOp: "AND";
     Production {
-        lhs: 24,
+        lhs: 29,
         production: &[ParseType::T(21)],
     },
-    // 43 - LogicalNotOp: "NOT";
-    Production {
-        lhs: 26,
-        production: &[ParseType::T(22)],
-    },
-    // 44 - RelationalOp: "<\s*>|<\s*=|<|>\s*=|>|=";
-    Production {
-        lhs: 41,
-        production: &[ParseType::T(23)],
-    },
-    // 45 - Plus: "\+";
-    Production {
-        lhs: 35,
-        production: &[ParseType::T(24)],
-    },
-    // 46 - Minus: "-";
-    Production {
-        lhs: 30,
-        production: &[ParseType::T(25)],
-    },
-    // 47 - MulOp: "\*|/";
+    // 49 - LogicalNotOp: "NOT";
     Production {
         lhs: 31,
+        production: &[ParseType::T(22)],
+    },
+    // 50 - RelationalOp: "<\s*>|<\s*=|<|>\s*=|>|=";
+    Production {
+        lhs: 47,
+        production: &[ParseType::T(23)],
+    },
+    // 51 - Plus: "\+";
+    Production {
+        lhs: 40,
+        production: &[ParseType::T(24)],
+    },
+    // 52 - Minus: "-";
+    Production {
+        lhs: 35,
+        production: &[ParseType::T(25)],
+    },
+    // 53 - MulOp: "\*|/";
+    Production {
+        lhs: 36,
         production: &[ParseType::T(26)],
     },
-    // 48 - LParen: "\(";
+    // 54 - LParen: "\(";
     Production {
-        lhs: 17,
+        lhs: 21,
         production: &[ParseType::T(27)],
     },
-    // 49 - RParen: "\)";
+    // 55 - RParen: "\)";
     Production {
-        lhs: 38,
+        lhs: 44,
         production: &[ParseType::T(28)],
     },
-    // 50 - Comment: "[^\r\n]+";
+    // 56 - Comment: "[^\r\n]+";
     Production {
         lhs: 6,
         production: &[ParseType::T(29)],
     },
-    // 51 - Variable: "[A-Z][0-9A-Z]*";
+    // 57 - Variable: "[A-Z][0-9A-Z]*";
     Production {
-        lhs: 49,
+        lhs: 55,
         production: &[ParseType::T(30)],
     },
-    // 52 - Expression: LogicalOr;
+    // 58 - Expression: LogicalOr;
     Production {
-        lhs: 8,
-        production: &[ParseType::N(27)],
+        lhs: 10,
+        production: &[ParseType::N(32)],
     },
-    // 53 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
-    Production {
-        lhs: 27,
-        production: &[ParseType::N(28), ParseType::N(22)],
-    },
-    // 54 - LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
-    Production {
-        lhs: 28,
-        production: &[ParseType::N(28), ParseType::N(22), ParseType::N(29)],
-    },
-    // 55 - LogicalOrList: ;
-    Production {
-        lhs: 28,
-        production: &[],
-    },
-    // 56 - LogicalAnd: LogicalNot LogicalAndList /* Vec */;
-    Production {
-        lhs: 22,
-        production: &[ParseType::N(23), ParseType::N(25)],
-    },
-    // 57 - LogicalAndList: LogicalAndOp LogicalNot LogicalAndList;
-    Production {
-        lhs: 23,
-        production: &[ParseType::N(23), ParseType::N(25), ParseType::N(24)],
-    },
-    // 58 - LogicalAndList: ;
-    Production {
-        lhs: 23,
-        production: &[],
-    },
-    // 59 - LogicalNot: LogicalNotOp Relational;
-    Production {
-        lhs: 25,
-        production: &[ParseType::N(39), ParseType::N(26)],
-    },
-    // 60 - LogicalNot: Relational;
-    Production {
-        lhs: 25,
-        production: &[ParseType::N(39)],
-    },
-    // 61 - Relational: Summation RelationalList /* Vec */;
-    Production {
-        lhs: 39,
-        production: &[ParseType::N(40), ParseType::N(46)],
-    },
-    // 62 - RelationalList: RelationalOp Summation RelationalList;
-    Production {
-        lhs: 40,
-        production: &[ParseType::N(40), ParseType::N(46), ParseType::N(41)],
-    },
-    // 63 - RelationalList: ;
-    Production {
-        lhs: 40,
-        production: &[],
-    },
-    // 64 - Summation: Multiplication SummationList /* Vec */;
-    Production {
-        lhs: 46,
-        production: &[ParseType::N(47), ParseType::N(32)],
-    },
-    // 65 - SummationList: SummationListGroup Multiplication SummationList;
-    Production {
-        lhs: 47,
-        production: &[ParseType::N(47), ParseType::N(32), ParseType::N(48)],
-    },
-    // 66 - SummationListGroup: Plus;
-    Production {
-        lhs: 48,
-        production: &[ParseType::N(35)],
-    },
-    // 67 - SummationListGroup: Minus;
-    Production {
-        lhs: 48,
-        production: &[ParseType::N(30)],
-    },
-    // 68 - SummationList: ;
-    Production {
-        lhs: 47,
-        production: &[],
-    },
-    // 69 - Multiplication: Factor MultiplicationList /* Vec */;
+    // 59 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     Production {
         lhs: 32,
-        production: &[ParseType::N(33), ParseType::N(9)],
+        production: &[ParseType::N(33), ParseType::N(27)],
     },
-    // 70 - MultiplicationList: MulOp Factor MultiplicationList;
+    // 60 - LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
     Production {
         lhs: 33,
-        production: &[ParseType::N(33), ParseType::N(9), ParseType::N(31)],
+        production: &[ParseType::N(33), ParseType::N(27), ParseType::N(34)],
     },
-    // 71 - MultiplicationList: ;
+    // 61 - LogicalOrList: ;
     Production {
         lhs: 33,
         production: &[],
     },
-    // 72 - Factor: Literal;
+    // 62 - LogicalAnd: LogicalNot LogicalAndList /* Vec */;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(21)],
+        lhs: 27,
+        production: &[ParseType::N(28), ParseType::N(30)],
     },
-    // 73 - Factor: Variable;
+    // 63 - LogicalAndList: LogicalAndOp LogicalNot LogicalAndList;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(49)],
+        lhs: 28,
+        production: &[ParseType::N(28), ParseType::N(30), ParseType::N(29)],
     },
-    // 74 - Factor: Minus Factor;
+    // 64 - LogicalAndList: ;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(9), ParseType::N(30)],
+        lhs: 28,
+        production: &[],
     },
-    // 75 - Factor: LParen Expression RParen;
+    // 65 - LogicalNot: LogicalNotOp Relational;
     Production {
-        lhs: 9,
-        production: &[ParseType::N(38), ParseType::N(8), ParseType::N(17)],
+        lhs: 30,
+        production: &[ParseType::N(45), ParseType::N(31)],
+    },
+    // 66 - LogicalNot: Relational;
+    Production {
+        lhs: 30,
+        production: &[ParseType::N(45)],
+    },
+    // 67 - Relational: Summation RelationalList /* Vec */;
+    Production {
+        lhs: 45,
+        production: &[ParseType::N(46), ParseType::N(51)],
+    },
+    // 68 - RelationalList: RelationalOp Summation RelationalList;
+    Production {
+        lhs: 46,
+        production: &[ParseType::N(46), ParseType::N(51), ParseType::N(47)],
+    },
+    // 69 - RelationalList: ;
+    Production {
+        lhs: 46,
+        production: &[],
+    },
+    // 70 - Summation: Multiplication SummationList /* Vec */;
+    Production {
+        lhs: 51,
+        production: &[ParseType::N(52), ParseType::N(37)],
+    },
+    // 71 - SummationList: SummationListGroup Multiplication SummationList;
+    Production {
+        lhs: 52,
+        production: &[ParseType::N(52), ParseType::N(37), ParseType::N(53)],
+    },
+    // 72 - SummationListGroup: Plus;
+    Production {
+        lhs: 53,
+        production: &[ParseType::N(40)],
+    },
+    // 73 - SummationListGroup: Minus;
+    Production {
+        lhs: 53,
+        production: &[ParseType::N(35)],
+    },
+    // 74 - SummationList: ;
+    Production {
+        lhs: 52,
+        production: &[],
+    },
+    // 75 - Multiplication: Factor MultiplicationList /* Vec */;
+    Production {
+        lhs: 37,
+        production: &[ParseType::N(38), ParseType::N(11)],
+    },
+    // 76 - MultiplicationList: MulOp Factor MultiplicationList;
+    Production {
+        lhs: 38,
+        production: &[ParseType::N(38), ParseType::N(11), ParseType::N(36)],
+    },
+    // 77 - MultiplicationList: ;
+    Production {
+        lhs: 38,
+        production: &[],
+    },
+    // 78 - Factor: Literal;
+    Production {
+        lhs: 11,
+        production: &[ParseType::N(26)],
+    },
+    // 79 - Factor: Variable;
+    Production {
+        lhs: 11,
+        production: &[ParseType::N(55)],
+    },
+    // 80 - Factor: Minus Factor;
+    Production {
+        lhs: 11,
+        production: &[ParseType::N(11), ParseType::N(35)],
+    },
+    // 81 - Factor: LParen Expression RParen;
+    Production {
+        lhs: 11,
+        production: &[ParseType::N(44), ParseType::N(10), ParseType::N(21)],
     },
 ];
 

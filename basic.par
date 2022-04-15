@@ -10,7 +10,10 @@
 
 Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
         ;
-Line    : LineNumber Statement { ":" Statement }
+Line    : LineNumber Statement { <INITIAL, Expr>":" Statement }
+        ;
+LineNumber
+        : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+"
         ;
 Statement
         : Remark
@@ -18,35 +21,32 @@ Statement
         | IfStatement
         | Assignment
         | PrintStatement
-        | StopStatement
+        | EndStatement
         ;
 Remark  : "REM" %push(Cmnt) [Comment] %pop()
         ;
 GotoStatement
-        : "GOTO" LineNumber
+        : Goto LineNumber
         ;
 IfStatement
-        : "IF" %push(Expr) Expression %pop() IfBody
+        : If %push(Expr) Expression %pop() IfBody
         ;
 Assignment
-        : ["LET"] Variable AssignOp %push(Expr) Expression %pop()
+        : [Let] Variable AssignOp %push(Expr) Expression %pop()
         ;
-IfBody  : "THEN" Statement
-        | "GOTO" LineNumber
+IfBody  : Then Statement
+        | Goto LineNumber
         ;
 PrintStatement
-        : ("PRINT" | "\?") %push(Expr) Expression %pop()
+        : Print %push(Expr) Expression  {<INITIAL, Expr>"," Expression } %pop()
         ;
-StopStatement
-        : "STOP"
+EndStatement
+        : End
         ;
 EndOfLine
-        : <INITIAL, Expr>"(\r?\n|\r)+"
+        : <INITIAL, Expr>"(?:\r?\n|\r)+"
         ;
 Literal : Number
-        ;
-LineNumber
-        : "([0-9] *){1,5}"
         ;
 Number  : Float
         | Integer
@@ -55,12 +55,27 @@ Float   : Float1
         | Float2
         ;
 // [Integer] DecimalDot [Integer] [Exponent]
-Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
+Float1  : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?"
         ;
-//Integer Exponent
-Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
+// Integer Exponent
+Float2  : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+"
         ;
-Integer : <Expr>"([0-9] *)+"
+Integer : <Expr>"(?:[0-9] *)+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// KEYWORDS
+If      : <INITIAL, Expr>"IF"
+        ;
+Then    : <INITIAL, Expr>"THEN"
+        ;
+Goto    : <INITIAL, Expr>"GOTO"
+        ;
+Let     : <INITIAL, Expr>"LET"
+        ;
+Print   : <INITIAL, Expr>"PRINT|\?"
+        ;
+End     : <INITIAL, Expr>"END"
         ;
 
 // -------------------------------------------------------------------------------------------------
@@ -86,7 +101,6 @@ Minus   : <Expr>"-"
         ;
 MulOp   : <Expr>"\*|/"
         ;
-
 
 // -------------------------------------------------------------------------------------------------
 // PARENTHESIS
