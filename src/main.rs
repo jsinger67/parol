@@ -14,6 +14,7 @@ mod basic_grammar;
 mod basic_grammar_trait;
 mod basic_parser;
 mod errors;
+mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;

@@ -1,4 +1,8 @@
-use crate::{basic_grammar_trait::*, errors::BasicError};
+use crate::{
+    basic_grammar_trait::*,
+    errors::BasicError,
+    operators::{BinaryOperator, UnaryOperator},
+};
 use log::trace;
 #[allow(unused_imports)]
 use miette::{miette, Result, WrapErr};
@@ -32,10 +36,7 @@ where
 }
 
 #[derive(Debug, Default)]
-pub struct BasicLines<'a, 't>
-where
-    't: 'a,
-{
+pub struct BasicLines<'a, 't> {
     lines: BTreeMap<u16, CompiledLine<'a, 't>>,
 }
 
@@ -56,14 +57,15 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn value(&self, id: &Token<'t>) -> Result<DefinitionRange> {
-        let symbol: &str = &id.symbol[..2];
-        Ok(self.env.get(symbol).cloned().unwrap_or_default())
+        let name: &str = &id.symbol[..2];
+        Ok(self.env.get(name).cloned().unwrap_or_default())
     }
 
-    fn declare(&mut self, id: &str, context: &str) {
-        if !self.env.contains_key(id) {
-            trace!("declare {}: {}", context, id);
-            self.env.insert(id.to_owned(), 0.0);
+    fn set_value(&mut self, id: &str, context: &str, value: DefinitionRange) {
+        let name: &str = &id[..2];
+        if !self.env.contains_key(name) {
+            trace!("set_value {}: {}", context, name);
+            self.env.insert(id.to_owned(), value);
         }
     }
 
@@ -205,7 +207,9 @@ impl<'t> BasicGrammar<'t> {
                 *continue_statements = false;
                 self.process_goto(goto)
             }
-            Statement::Statement14(if_statement) => self.process_if_statement(if_statement),
+            Statement::Statement14(if_statement) => {
+                self.process_if_statement(if_statement, continue_statements)
+            }
             Statement::Statement15(assign) => self.process_assign(assign),
             Statement::Statement16(print_statement) => {
                 self.process_print_statement(print_statement)
@@ -229,21 +233,148 @@ impl<'t> BasicGrammar<'t> {
         Ok(())
     }
 
-    fn process_if_statement(&mut self, _if_statement: &Statement14) -> Result<()> {
-        todo!()
+    fn process_if_statement<'a>(
+        &mut self,
+        if_statement: &'a Statement14<'t>,
+        continue_statements: &mut bool,
+    ) -> Result<()> {
+        let context = "process_if_statement";
+        *continue_statements = true;
+        let predicate = self.process_expression(&*if_statement.if_statement_0.expression_2)?;
+        if predicate != 0.0 {
+            match &*if_statement.if_statement_0.if_body_4 {
+                IfBody::IfBody25(then) => {
+                    self.interpret_statement(&*then.statement_1, continue_statements)
+                }
+                IfBody::IfBody26(goto) => {
+                    let line_number =
+                        self.parse_line_number(context, &goto.line_number_1.line_number_0)?;
+                    self.next_line = Some(line_number);
+                    Ok(())
+                }
+            }
+        } else {
+            Ok(())
+        }
     }
 
-    fn process_assign(&mut self, _assign: &Statement15) -> Result<()> {
-        todo!()
+    fn process_assign(&mut self, assign: &Statement15) -> Result<()> {
+        let context = "process_assign";
+        match &*assign.assignment_0 {
+            Assignment::Assignment23(Assignment23 {
+                variable_1,
+                expression_4,
+                ..
+            }) => {
+                let value = self.process_expression(&*expression_4)?;
+                self.set_value(variable_1.variable_0.symbol, context, value)
+            }
+            Assignment::Assignment24(Assignment24 {
+                variable_0,
+                expression_3,
+                ..
+            }) => {
+                let value = self.process_expression(&*expression_3)?;
+                self.set_value(variable_0.variable_0.symbol, context, value)
+            }
+        }
+        Ok(())
     }
 
-    fn process_print_statement(&mut self, _print_statement: &Statement16) -> Result<()> {
-        todo!()
+    fn process_print_statement(&mut self, print_statement: &Statement16) -> Result<()> {
+        let value = self.process_expression(&*print_statement.print_statement_0.expression_2)?;
+        print!("{value}\t");
+        for elem in &print_statement.print_statement_0.print_statement_list_3 {
+            let value = self.process_expression(&*elem.expression_1)?;
+            print!("{value}\t");
+        }
+        Ok(())
     }
 
     fn process_end_statement(&mut self, _end_statement: &Statement17) -> Result<()> {
         self.next_line = None;
         Ok(())
+    }
+
+    fn process_expression(&mut self, expression: &Expression) -> Result<DefinitionRange> {
+        self.process_logical_or(&*expression.logical_or_0)
+    }
+
+    fn process_logical_or(&mut self, logical_or: &LogicalOr) -> Result<DefinitionRange> {
+        let context = "process_logical_or";
+        let mut result = self.process_logical_and(&logical_or.logical_and_0)?;
+        for item in &logical_or.logical_or_list_1 {
+            let op: BinaryOperator = item.logical_or_op_0.logical_or_op_0.symbol.try_into()?;
+            let next_operand = self.process_logical_and(&item.logical_and_1)?;
+            result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
+        }
+        Ok(result)
+    }
+
+    fn process_logical_and(&mut self, logical_and: &LogicalAnd) -> Result<DefinitionRange> {
+        let context = "process_logical_and";
+        let mut result = self.process_logical_not(&logical_and.logical_not_0)?;
+        for item in &logical_and.logical_and_list_1 {
+            let op: BinaryOperator = item.logical_and_op_0.logical_and_op_0.symbol.try_into()?;
+            let next_operand = self.process_logical_not(&item.logical_not_1)?;
+            result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
+        }
+        Ok(result)
+    }
+
+    fn process_logical_not(&mut self, logical_not: &LogicalNot) -> Result<DefinitionRange> {
+        let context = "process_logical_not";
+        match logical_not {
+            LogicalNot::LogicalNot65(not) => {
+                let result = self.process_relational(&*not.relational_1)?;
+                let op: UnaryOperator = not.logical_not_op_0.logical_not_op_0.symbol.try_into()?;
+                UnaryOperator::apply_unary_operation(&op, result, context)
+            }
+            LogicalNot::LogicalNot66(not) => self.process_relational(&*not.relational_0),
+        }
+    }
+
+    fn process_relational(&mut self, relational: &Relational) -> Result<DefinitionRange> {
+        let context = "process_relational";
+        let mut result = self.process_summation(&*relational.summation_0)?;
+        for item in &relational.relational_list_1 {
+            let op: BinaryOperator = item.relational_op_0.relational_op_0.symbol.try_into()?;
+            let next_operand = self.process_summation(&*item.summation_1)?;
+            result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
+        }
+        Ok(result)
+    }
+
+    fn process_summation(&mut self, summation: &Summation) -> Result<DefinitionRange> {
+        let context = "process_summation";
+        let mut result = self.process_multiplication(&*summation.multiplication_0)?;
+        for item in &summation.summation_list_1 {
+            let op: BinaryOperator = match &*item.summation_list_group_0 {
+                SummationListGroup::SummationListGroup72(plus) => {
+                    plus.plus_0.plus_0.symbol.try_into()
+                }
+                SummationListGroup::SummationListGroup73(minus) => {
+                    minus.minus_0.minus_0.symbol.try_into()
+                }
+            }?;
+            let next_operand = self.process_multiplication(&*item.multiplication_1)?;
+            result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
+        }
+        Ok(result)
+    }
+
+    fn process_multiplication(
+        &mut self,
+        multiplication: &Multiplication,
+    ) -> Result<DefinitionRange> {
+        let context = "process_multiplication";
+        let mut result = self.process_factor(&*multiplication.factor_0)?;
+        for item in &multiplication.multiplication_list_1 {
+            let op: BinaryOperator = item.mul_op_0.mul_op_0.symbol.try_into()?;
+            let next_operand = self.process_factor(&*item.factor_1)?;
+            result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
+        }
+        Ok(result)
     }
 
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
@@ -266,10 +397,6 @@ impl<'t> BasicGrammar<'t> {
                 self.process_expression(expression_1)
             }
         }
-    }
-
-    fn process_expression(&self, expression_1: &Expression) -> Result<f32, miette::Error> {
-        todo!()
     }
 }
 
