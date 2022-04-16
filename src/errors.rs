@@ -53,4 +53,17 @@ pub enum BasicError {
         #[label("Line number is already defined")]
         token: SourceSpan,
     },
+
+    #[error("{context} line not accessible")]
+    #[diagnostic(
+        help("Line number is beyond last line"),
+        code(basic::line_number_beyond_last_line)
+    )]
+    LineNumberBeyondLastLine {
+        context: String,
+        #[source_code]
+        input: NamedSource,
+        #[label("Line number is beyond last line")]
+        token: SourceSpan,
+    },
 }
