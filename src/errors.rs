@@ -46,5 +46,11 @@ pub enum BasicError {
         help("Line number is already defined"),
         code(basic::line_number_already_defined)
     )]
-    LineNumberDefinedTwice { context: String, line_number: u16 },
+    LineNumberDefinedTwice {
+        context: String,
+        #[source_code]
+        input: NamedSource,
+        #[label("Line number is already defined")]
+        token: SourceSpan,
+    },
 }

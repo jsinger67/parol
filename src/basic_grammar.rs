@@ -56,17 +56,21 @@ impl<'t> BasicGrammar<'t> {
         BasicGrammar::default()
     }
 
-    fn value(&self, id: &Token<'t>) -> Result<DefinitionRange> {
-        let name: &str = &id.symbol[..2];
-        Ok(self.env.get(name).cloned().unwrap_or_default())
+    fn value(&self, context: &str, id: &Token<'t>) -> Result<DefinitionRange> {
+        let name: &str = if id.symbol.len() < 2 {
+            id.symbol
+        } else {
+            &id.symbol[..2]
+        };
+        let value = self.env.get(name).cloned().unwrap_or_default();
+        trace!("value @ {context}: {name} = {value}");
+        Ok(value)
     }
 
     fn set_value(&mut self, id: &str, context: &str, value: DefinitionRange) {
-        let name: &str = &id[..2];
-        if !self.env.contains_key(name) {
-            trace!("set_value {}: {}", context, name);
-            self.env.insert(id.to_owned(), value);
-        }
+        let name: &str = if id.len() < 2 { id } else { &id[..2] };
+        trace!("set_value @ {context}: {name} = {value}");
+        self.env.insert(id.to_owned(), value);
     }
 
     fn parse_number(&self, context: &str, token: &Token<'t>) -> Result<DefinitionRange> {
@@ -127,7 +131,8 @@ impl<'t> BasicGrammar<'t> {
             if lines.lines.insert(k, v).is_some() {
                 return Err(miette!(BasicError::LineNumberDefinedTwice {
                     context: context.to_owned(),
-                    line_number: k
+                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    token: (&line.line_1.line_number_0.line_number_0).into()
                 }));
             }
         }
@@ -229,6 +234,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_goto";
         let line_number =
             self.parse_line_number(context, &goto.goto_statement_0.line_number_1.line_number_0)?;
+        trace!("{context}: setting next line to {line_number}");
         self.next_line = Some(line_number);
         Ok(())
     }
@@ -240,8 +246,9 @@ impl<'t> BasicGrammar<'t> {
     ) -> Result<()> {
         let context = "process_if_statement";
         *continue_statements = true;
-        let predicate = self.process_expression(&*if_statement.if_statement_0.expression_2)?;
-        if predicate != 0.0 {
+        let condition = self.process_expression(&*if_statement.if_statement_0.expression_2)?;
+        trace!("{context}: condition: {condition}");
+        if condition != 0.0 {
             match &*if_statement.if_statement_0.if_body_4 {
                 IfBody::IfBody25(then) => {
                     self.interpret_statement(&*then.statement_1, continue_statements)
@@ -267,7 +274,9 @@ impl<'t> BasicGrammar<'t> {
                 ..
             }) => {
                 let value = self.process_expression(&*expression_4)?;
-                self.set_value(variable_1.variable_0.symbol, context, value)
+                let symbol = variable_1.variable_0.symbol;
+                trace!("{context}: {symbol} = {value}");
+                self.set_value(symbol, context, value)
             }
             Assignment::Assignment24(Assignment24 {
                 variable_0,
@@ -275,7 +284,9 @@ impl<'t> BasicGrammar<'t> {
                 ..
             }) => {
                 let value = self.process_expression(&*expression_3)?;
-                self.set_value(variable_0.variable_0.symbol, context, value)
+                let symbol = variable_0.variable_0.symbol;
+                trace!("{context}: {symbol} = {value}");
+                self.set_value(symbol, context, value)
             }
         }
         Ok(())
@@ -292,6 +303,8 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn process_end_statement(&mut self, _end_statement: &Statement17) -> Result<()> {
+        let context = "process_end_statement";
+        trace!("{context}: setting next line to None");
         self.next_line = None;
         Ok(())
     }
@@ -391,7 +404,9 @@ impl<'t> BasicGrammar<'t> {
                 },
                 Number::Number34(int) => Ok(self.parse_number(context, &int.integer_0.integer_0)?),
             },
-            Factor::Factor79(Factor79 { variable_0 }) => self.value(&variable_0.variable_0),
+            Factor::Factor79(Factor79 { variable_0 }) => {
+                self.value(context, &variable_0.variable_0)
+            }
             Factor::Factor80(Factor80 { factor_1, .. }) => Ok(-(self.process_factor(factor_1)?)),
             Factor::Factor81(Factor81 { expression_1, .. }) => {
                 self.process_expression(expression_1)

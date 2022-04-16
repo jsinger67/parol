@@ -49,7 +49,7 @@ fn main() -> Result<()> {
         if args.len() > 2 && args[2] == "-q" {
             Ok(())
         } else {
-            println!("Success!\n{}", basic_grammar);
+            println!("Success!\nVariables:\n{}", basic_grammar);
             generate_tree_layout(&syntax_tree, &file_name)
         }
     } else {
