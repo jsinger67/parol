@@ -9,12 +9,12 @@ extern crate thiserror;
 
 extern crate parol_runtime;
 
-mod basic_grammar;
+pub mod basic_grammar;
 // The output is version controlled
-mod basic_grammar_trait;
-mod basic_parser;
-mod errors;
-mod operators;
+pub mod basic_grammar_trait;
+pub mod basic_parser;
+pub mod errors;
+pub mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
@@ -45,10 +45,11 @@ fn main() -> Result<()> {
         let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
-        println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
         if args.len() > 2 && args[2] == "-q" {
+            println!("\n{}", basic_grammar);
             Ok(())
         } else {
+            println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
             println!("Success!\nVariables:\n{}", basic_grammar);
             generate_tree_layout(&syntax_tree, &file_name)
         }

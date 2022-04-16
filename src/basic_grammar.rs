@@ -313,10 +313,10 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_print_statement(&mut self, print_statement: &Statement16) -> Result<()> {
         let value = self.process_expression(&*print_statement.print_statement_0.expression_2)?;
-        print!("{value}\t");
+        print!("{value} ");
         for elem in &print_statement.print_statement_0.print_statement_list_3 {
             let value = self.process_expression(&*elem.expression_1)?;
-            print!("{value}\t");
+            print!("{value} ");
         }
         Ok(())
     }
@@ -442,10 +442,15 @@ impl Display for Basic<'_> {
 
 impl Display for BasicGrammar<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        self.env.iter().fold(Ok(()), |res, (k, v)| {
-            res?;
-            write!(f, "{k}: {v}")
-        })
+        write!(
+            f,
+            "{}",
+            self.env
+                .iter()
+                .map(|(k, v)| format!("{k}: {v}"))
+                .collect::<Vec<String>>()
+                .join(", ")
+        )
     }
 }
 
