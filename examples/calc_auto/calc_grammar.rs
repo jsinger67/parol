@@ -1,7 +1,5 @@
 use crate::{
-    assign_operator::AssignOperator,
-    binary_operator::BinaryOperator,
-    calc_grammar_trait::*,
+    assign_operator::AssignOperator, binary_operator::BinaryOperator, calc_grammar_trait::*,
     errors::CalcError,
 };
 use log::trace;
@@ -332,9 +330,7 @@ impl<'t> CalcGrammar<'t> {
             }
             Factor::Factor1(Factor1 { idref_0 }) => self.value(&idref_0.id_0.id_0),
             Factor::Factor2(Factor2 { factor_1, .. }) => Ok(-(self.process_factor(factor_1)?)),
-            Factor::Factor3(Factor3 { logical_or_1, .. }) => {
-                self.process_logical_or(logical_or_1)
-            }
+            Factor::Factor3(Factor3 { logical_or_1, .. }) => self.process_logical_or(logical_or_1),
         }
     }
 }

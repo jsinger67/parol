@@ -46,9 +46,9 @@ pub fn main(args: &Args) -> Result<()> {
         args.path
             .as_path()
             .file_name()
-            .ok_or(miette!("Trouble to handle path"))?
+            .ok_or_else(|| miette!("Trouble to handle path"))?
             .to_str()
-            .ok_or(miette!("Trouble to handle path"))?
+            .ok_or_else(|| miette!("Trouble to handle path"))?
     };
 
     let creation_data = CreationDataBuilder::default()
@@ -70,7 +70,7 @@ pub fn main(args: &Args) -> Result<()> {
     Ok(())
 }
 
-const DEPENDENCIES: &[&[&'static str]] = &[
+const DEPENDENCIES: &[&[&str]] = &[
     &["add", "derive_builder", "--vers=0.11.1"],
     &["add", "env_logger", "--vers=0.9.0"],
     &["add", "id_tree", "--vers=^1.8"],
@@ -93,9 +93,9 @@ fn apply_cargo(args: &Args) -> Result<()> {
     }
     if let Some(name) = args.name.as_ref() {
         cargo_args.push("--name");
-        cargo_args.push(&name);
+        cargo_args.push(name);
     }
-    cargo_args.push(args.path.to_str().ok_or(miette!("Please provide a path"))?);
+    cargo_args.push(args.path.to_str().ok_or_else(|| miette!("Please provide a path"))?);
 
     // Call the `cargo new` command
     Command::new("cargo")
