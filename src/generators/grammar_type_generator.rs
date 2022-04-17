@@ -744,11 +744,11 @@ mod tests {
 
     #[test]
     fn test_presentation_of_type_info_1() {
-        let expected = r#"/* 0 */ ((Token<'t> /* a */, Vec<SList<'t>>, Token<'t> /* c */, Vec<SList1<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> })  { - }
-/* 1 */ ((Token<'t> /* d-rpt */, Vec<SList1<'t>>) -> Vec<SList1<'t>>)  { Vec<T>::Push }
-/* 2 */ (() -> Vec<SList1<'t>>)  { Vec<T>::New }
-/* 3 */ ((Token<'t> /* b-rpt */, Vec<SList<'t>>) -> Vec<SList<'t>>)  { Vec<T>::Push }
-/* 4 */ (() -> Vec<SList<'t>>)  { Vec<T>::New }
+        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Vec<SList<'t>>, Token<'t> /* c */, Vec<SList1<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> })  { - }
+/* 1, 0 */ ((Token<'t> /* d-rpt */, Vec<SList1<'t>>) -> Vec<SList1<'t>>)  { Vec<T>::Push }
+/* 2, 1 */ (() -> Vec<SList1<'t>>)  { Vec<T>::New }
+/* 3, 0 */ ((Token<'t> /* b-rpt */, Vec<SList<'t>>) -> Vec<SList<'t>>)  { Vec<T>::Push }
+/* 4, 1 */ (() -> Vec<SList<'t>>)  { Vec<T>::New }
 
 S:  struct S { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> }
 SList:  struct SList { b_minus_rpt_0: Token<'t> /* b-rpt */ }
@@ -767,18 +767,18 @@ enum ASTType { S(S<'t>), SList(Vec<SList<'t>>), SList1(Vec<SList1<'t>>) }
 
     #[test]
     fn test_presentation_of_type_info_2() {
-        let expected = r#"/* 0 */ ((Token<'t> /* a */, Box<SSuffix2<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> })  { - }
-/* 1 */ ((Token<'t> /* c */, Box<SSuffix1<'t>>) -> struct SSuffix21 { c_0: Token<'t> /* c */, s_suffix1_1: Box<SSuffix1<'t>> })  { - }
-/* 2 */ ((Token<'t> /* b-opt */, Token<'t> /* c */, Box<SSuffix<'t>>) -> struct SSuffix22 { b_minus_opt_0: Token<'t> /* b-opt */, c_1: Token<'t> /* c */, s_suffix_2: Box<SSuffix<'t>> })  { - }
-/* 3 */ ((Token<'t> /* d-opt */) -> struct SSuffix13 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
-/* 4 */ (() -> ())  { - }
-/* 5 */ ((Token<'t> /* d-opt */) -> struct SSuffix5 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
-/* 6 */ (() -> ())  { - }
+        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Box<SSuffix2<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> })  { - }
+/* 1, 0 */ ((Token<'t> /* c */, Box<SSuffix1<'t>>) -> struct SSuffix20 { c_0: Token<'t> /* c */, s_suffix1_1: Box<SSuffix1<'t>> })  { - }
+/* 2, 1 */ ((Token<'t> /* b-opt */, Token<'t> /* c */, Box<SSuffix<'t>>) -> struct SSuffix21 { b_minus_opt_0: Token<'t> /* b-opt */, c_1: Token<'t> /* c */, s_suffix_2: Box<SSuffix<'t>> })  { - }
+/* 3, 0 */ ((Token<'t> /* d-opt */) -> struct SSuffix10 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
+/* 4, 1 */ (() -> ())  { - }
+/* 5, 0 */ ((Token<'t> /* d-opt */) -> struct SSuffix0 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
+/* 6, 1 */ (() -> ())  { - }
 
 S:  struct S { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> }
-SSuffix:  enum SSuffix { SSuffix5(SSuffix_5<'t>), SSuffix6(SSuffix_6) }
-SSuffix1:  enum SSuffix1 { SSuffix1_3(SSuffix1_3<'t>), SSuffix1_4(SSuffix1_4) }
-SSuffix2:  enum SSuffix2 { SSuffix2_1(SSuffix2_1<'t>), SSuffix2_2(SSuffix2_2<'t>) }
+SSuffix:  enum SSuffix { SSuffix0(SSuffix_0<'t>), SSuffix1(SSuffix_1) }
+SSuffix1:  enum SSuffix1 { SSuffix1_0(SSuffix1_0<'t>), SSuffix1_1(SSuffix1_1) }
+SSuffix2:  enum SSuffix2 { SSuffix2_0(SSuffix2_0<'t>), SSuffix2_1(SSuffix2_1<'t>) }
 
 enum ASTType { S(S<'t>), SSuffix(SSuffix<'t>), SSuffix1(SSuffix1<'t>), SSuffix2(SSuffix2<'t>) }
 "#;
