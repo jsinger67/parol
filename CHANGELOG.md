@@ -17,7 +17,25 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.6.3-pre - Unreleased
+## v0.7.0 - 2022-04-17
+
+* Changed generated semantic action names
+
+  To be more more invariant when changing a grammar description the names don't include the
+  production number anymore. Instead I generate a relative index which only changes potentially
+  within a certain non-terminal.
+  
+  Note that this change needs a manual readjustment of already used
+  code. Sorry for this inconvenience. But this change generally results in better maintainability.
+
+  We therefore increment the minor version to seven to indicate a rather breaking change.
+
+* Added a new tutorial which is still under construction
+
+  It describes the new approach available since auto-generation is implemented.
+  
+  The old tutorial is moved to [TutorialOld.md](./docs/TutorialOld.md). It is still useful and
+  explains the approaches that are now superseded by the new auto-generation related ones.
 
 ## v0.6.2 - 2022-04-03
 
