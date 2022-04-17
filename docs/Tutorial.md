@@ -1,5 +1,7 @@
 # Tutorial
 
+> This tutorial is still under construction!
+
 This tutorial will help new users to get quickly familiar with the tool `parol`.
 To get something useful we need a goal that is not too complicated but covers the most steps to be
 able to use `parol` in real-world projects.
@@ -920,7 +922,7 @@ Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
 Line    : LineNumber Statement { <INITIAL, Expr>":" Statement }
         ;
 LineNumber
-        : "[0 ]*[1-9] *([0-9] *){1,4}|[0 ]+"
+        : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+"
         ;
 Statement
         : Remark
@@ -945,13 +947,13 @@ IfBody  : Then Statement
         | Goto LineNumber
         ;
 PrintStatement
-        : Print %push(Expr) Expression  {<INITIAL, Expr>"," Expression } %pop() 
+        : Print %push(Expr) Expression  {<INITIAL, Expr>"," Expression } %pop()
         ;
 EndStatement
         : End
         ;
 EndOfLine
-        : <INITIAL, Expr>"(\r?\n|\r)+"
+        : <INITIAL, Expr>"(?:\r?\n|\r)+"
         ;
 Literal : Number
         ;
@@ -962,27 +964,27 @@ Float   : Float1
         | Float2
         ;
 // [Integer] DecimalDot [Integer] [Exponent]
-Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
+Float1  : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?"
         ;
 // Integer Exponent
-Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
+Float2  : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+"
         ;
-Integer : <Expr>"([0-9] *)+"
+Integer : <Expr>"(?:[0-9] *)+"
         ;
 
 // -------------------------------------------------------------------------------------------------
 // KEYWORDS
-If      : <INITIAL, Expr>"IF"
+If      : "IF"
         ;
 Then    : <INITIAL, Expr>"THEN"
         ;
-Goto    : <INITIAL, Expr>"GO *TO"
+Goto    : <INITIAL, Expr>"GOTO"
         ;
-Let     : <INITIAL, Expr>"LET"
+Let     : "LET"
         ;
-Print   : <INITIAL, Expr>"PRINT|\?"
+Print   : "PRINT|\?"
         ;
-End     : <INITIAL, Expr>"End"
+End     : "END"
         ;
 
 // -------------------------------------------------------------------------------------------------
