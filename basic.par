@@ -65,17 +65,17 @@ Integer : <Expr>"(?:[0-9] *)+"
 
 // -------------------------------------------------------------------------------------------------
 // KEYWORDS
-If      : <INITIAL, Expr>"IF"
+If      : "IF"
         ;
 Then    : <INITIAL, Expr>"THEN"
         ;
 Goto    : <INITIAL, Expr>"GOTO"
         ;
-Let     : <INITIAL, Expr>"LET"
+Let     : "LET"
         ;
-Print   : <INITIAL, Expr>"PRINT|\?"
+Print   : "PRINT|\?"
         ;
-End     : <INITIAL, Expr>"END"
+End     : "END"
         ;
 
 // -------------------------------------------------------------------------------------------------

@@ -48,12 +48,12 @@
 /* 37 */ Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
 /* 38 */ Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
 /* 39 */ Integer: <Expr>"(?:[0-9] *)+";
-/* 40 */ If: <Expr, INITIAL>"IF";
+/* 40 */ If: "IF";
 /* 41 */ Then: <Expr, INITIAL>"THEN";
 /* 42 */ Goto: <Expr, INITIAL>"GOTO";
-/* 43 */ Let: <Expr, INITIAL>"LET";
-/* 44 */ Print: <Expr, INITIAL>"PRINT|\?";
-/* 45 */ End: <Expr, INITIAL>"END";
+/* 43 */ Let: "LET";
+/* 44 */ Print: "PRINT|\?";
+/* 45 */ End: "END";
 /* 46 */ AssignOp: "=";
 /* 47 */ LogicalOrOp: <Expr>"N?OR";
 /* 48 */ LogicalAndOp: <Expr>"AND";

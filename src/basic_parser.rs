@@ -128,7 +128,7 @@ const SCANNER_1: (&[&str; 5], &[usize; 1]) = (
 );
 
 /* SCANNER_2: "Expr" */
-const SCANNER_2: (&[&str; 5], &[usize; 22]) = (
+const SCANNER_2: (&[&str; 5], &[usize; 18]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -143,12 +143,8 @@ const SCANNER_2: (&[&str; 5], &[usize; 22]) = (
         10, /* Float1 */
         11, /* Float2 */
         12, /* Integer */
-        13, /* If */
         14, /* Then */
         15, /* Goto */
-        16, /* Let */
-        17, /* Print */
-        18, /* End */
         20, /* LogicalOrOp */
         21, /* LogicalAndOp */
         22, /* LogicalNotOp */

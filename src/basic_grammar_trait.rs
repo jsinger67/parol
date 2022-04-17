@@ -164,7 +164,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 18:
     ///
-    /// If: <2, 0>"IF";
+    /// If: <0>"IF";
     ///
     fn r#if(&mut self, _arg: &If<'t>) -> Result<()> {
         Ok(())
@@ -188,7 +188,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 21:
     ///
-    /// Let: <2, 0>"LET";
+    /// Let: <0>"LET";
     ///
     fn r#let(&mut self, _arg: &Let<'t>) -> Result<()> {
         Ok(())
@@ -196,7 +196,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 22:
     ///
-    /// Print: <2, 0>"PRINT|\?";
+    /// Print: <0>"PRINT|\?";
     ///
     fn print(&mut self, _arg: &Print<'t>) -> Result<()> {
         Ok(())
@@ -204,7 +204,7 @@ pub trait BasicGrammarTrait<'t> {
 
     /// Semantic action for user production 23:
     ///
-    /// End: <2, 0>"END";
+    /// End: <0>"END";
     ///
     fn end(&mut self, _arg: &End<'t>) -> Result<()> {
         Ok(())
@@ -2540,7 +2540,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// If: <Expr, INITIAL>"IF";
+    /// If: "IF";
     ///
     fn if_40(
         &mut self,
@@ -2606,7 +2606,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// Let: <Expr, INITIAL>"LET";
+    /// Let: "LET";
     ///
     fn let_43(
         &mut self,
@@ -2628,7 +2628,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// Print: <Expr, INITIAL>"PRINT|\?";
+    /// Print: "PRINT|\?";
     ///
     fn print_44(
         &mut self,
@@ -2650,7 +2650,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// End: <Expr, INITIAL>"END";
+    /// End: "END";
     ///
     fn end_45(
         &mut self,
