@@ -46,7 +46,7 @@ impl ListGrammarTrait for ListGrammar {
     ///
     /// Num: "[0-9]+";
     ///
-    fn num_6(
+    fn num_0(
         &mut self,
         num_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,

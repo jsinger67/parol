@@ -1,3 +1,4 @@
+use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::{Pos, Pr, Symbol, Terminal};
 use regex::Regex;
 use std::collections::HashSet;
@@ -177,6 +178,34 @@ impl Cfg {
                 }
                 acc
             })
+    }
+
+    ///
+    /// Returns the relative index of a production within its alternatives.
+    /// Used for auto generation to get a more stable generation experience.
+    ///
+    pub fn get_alternation_index_of_production(
+        &self,
+        prod_num: ProductionIndex,
+    ) -> Result<usize, &'static str> {
+        if prod_num >= self.pr.len() {
+            Err("Invalid production number!")
+        } else {
+            self.matching_productions(self.pr[prod_num].get_n_str())
+                .iter()
+                .enumerate()
+                .fold(
+                    Err("Internal error accessing productions"),
+                    |acc, (rel_i, (i, _))| {
+                        if acc.is_err() && *i == prod_num {
+                            Ok(rel_i)
+                        } else {
+                            // Already found
+                            acc
+                        }
+                    },
+                )
+        }
     }
 
     ///

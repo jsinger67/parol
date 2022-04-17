@@ -129,7 +129,7 @@ pub trait {{{user_type_name}}}Trait {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, {{^auto_generate?}}_{{/auto_generate}}file_name: &Path) {
 {{#auto_generate?}}

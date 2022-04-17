@@ -29,7 +29,7 @@ impl Display for List<'_> {
                     .collect::<Vec<std::string::String>>()
                     .join("")
             ),
-            List::List3(_) => write!(f, "[]"),
+            List::List1(_) => write!(f, "[]"),
         }
     }
 }

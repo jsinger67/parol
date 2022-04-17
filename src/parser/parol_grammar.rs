@@ -498,13 +498,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// StartDeclaration: "%start" Identifier;
     ///
-    fn start_declaration_2(
+    fn start_declaration_0(
         &mut self,
         _end_of_input_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "start_declaration_2";
+        let context = "start_declaration_0";
         if let Some(ParolGrammarItem::Fac(Factor::Identifier(s))) = self.pop(context) {
             self.start_symbol = s;
             Ok(())
@@ -520,8 +520,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Declarations: ;
     ///
-    fn declarations_4(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "declarations_4";
+    fn declarations_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "declarations_1";
         trace!("{}", self.trace_item_stack(context));
         self.scanner_configurations[0] = self.current_scanner.clone();
         self.current_scanner = ScannerConfig::default();
@@ -532,13 +532,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Declaration: "%title" String;
     ///
-    fn declaration_5(
+    fn declaration_0(
         &mut self,
         _percent_title_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "declaration_5";
+        let context = "declaration_0";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.title = Some(s);
             Ok(())
@@ -554,13 +554,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Declaration: "%comment" String;
     ///
-    fn declaration_6(
+    fn declaration_1(
         &mut self,
         _percent_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "declaration_6";
+        let context = "declaration_1";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.comment = Some(s);
             Ok(())
@@ -576,13 +576,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Declaration: "%line_comment" String;
     ///
-    fn scanner_directives_8(
+    fn scanner_directives_0(
         &mut self,
         _percent_line_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_directives_8";
+        let context = "scanner_directives_0";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             self.current_scanner.line_comments.push(s);
             Ok(())
@@ -598,14 +598,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerDirectives: "%block_comment" String String;
     ///
-    fn scanner_directives_9(
+    fn scanner_directives_1(
         &mut self,
         _percent_block_underscore_comment_0: &ParseTreeStackEntry,
         _string_1: &ParseTreeStackEntry,
         _string_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_directives_9";
+        let context = "scanner_directives_1";
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s1, _))) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(Factor::Terminal(s2, _))) = self.pop(context) {
                 self.current_scanner.block_comments.push((s2, s1));
@@ -628,12 +628,12 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerDirectives: "%auto_newline_off";
     ///
-    fn scanner_directives_10(
+    fn scanner_directives_2(
         &mut self,
         _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let _context = "scanner_directives_10";
+        let _context = "scanner_directives_2";
         self.current_scanner.auto_newline_off = true;
         Ok(())
     }
@@ -642,12 +642,12 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerDirectives: "%auto_ws_off";
     ///
-    fn scanner_directives_11(
+    fn scanner_directives_3(
         &mut self,
         _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let _context = "scanner_directives_11";
+        let _context = "scanner_directives_3";
         self.current_scanner.auto_ws_off = true;
         Ok(())
     }
@@ -656,7 +656,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
-    fn production_17(
+    fn production_0(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -664,7 +664,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _semicolon_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "production_17";
+        let context = "production_0";
         if let Some(ParolGrammarItem::Alts(rhs)) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(Factor::Identifier(lhs))) = self.pop(context) {
                 self.push(ParolGrammarItem::Prod(Production::new(lhs, rhs)), context);
@@ -684,13 +684,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Alternations: Alternation AlternationsList;
     ///
-    fn alternations_18(
+    fn alternations_0(
         &mut self,
         _alternation_0: &ParseTreeStackEntry,
         _alternations_list_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternations_18";
+        let context = "alternations_0";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
             if let Some(ParolGrammarItem::Alt(alt)) = self.pop(context) {
                 alts.insert(alt);
@@ -708,14 +708,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationsList: "\|" Alternation AlternationsList;
     ///
-    fn alternations_list_19(
+    fn alternations_list_0(
         &mut self,
         _or_0: &ParseTreeStackEntry,
         _alternation_1: &ParseTreeStackEntry,
         _alternations_list_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternations_list_19";
+        let context = "alternations_list_0";
         if let Some(ParolGrammarItem::Alts(mut alts)) = self.pop(context) {
             if let Some(ParolGrammarItem::Alt(alt)) = self.pop(context) {
                 alts.insert(alt);
@@ -733,8 +733,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationsList: ;
     ///
-    fn alternations_list_20(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "alternations_list_20";
+    fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "alternations_list_1";
         self.push(ParolGrammarItem::Alts(Alternations::new()), context);
         Ok(())
     }
@@ -743,13 +743,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationList: Factor AlternationList;
     ///
-    fn alternation_list_22(
+    fn alternation_list_0(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _alternation_list_1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "alternation_list_22";
+        let context = "alternation_list_0";
         //trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alt(mut alt)) = self.pop(context) {
             if let Some(ParolGrammarItem::Fac(fac)) = self.pop(context) {
@@ -768,8 +768,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// AlternationList: ;
     ///
-    fn alternation_list_23(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "alternation_list_23";
+    fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "alternation_list_1";
         self.push(ParolGrammarItem::Alt(Alternation::new()), context);
         Ok(())
     }
@@ -778,12 +778,12 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Symbol: Identifier;
     ///
-    fn symbol_28(
+    fn symbol_0(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "symbol_28";
+        let context = "symbol_0";
         if let Some(ParolGrammarItem::Fac(Factor::Identifier(nt))) = self.pop(context) {
             self.push(
                 ParolGrammarItem::Fac(Factor::NonTerminal(nt, SymbolAttribute::default())),
@@ -802,7 +802,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// TokenWithStates: "<" StateList ">" String;
     ///
-    fn token_with_states_33(
+    fn token_with_states_0(
         &mut self,
         _l_t_0: &ParseTreeStackEntry,
         _state_list_1: &ParseTreeStackEntry,
@@ -810,7 +810,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _string_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "token_with_states_33";
+        let context = "token_with_states_0";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Fac(Factor::Terminal(s, _))) = self.pop(context) {
             if let Some(ParolGrammarItem::StateList(sc)) = self.pop(context) {
@@ -828,14 +828,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Group: "\(" Alternations "\)";
     ///
-    fn group_34(
+    fn group_0(
         &mut self,
         l_paren_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         r_paren_2: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "group_34";
+        let context = "group_0";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
@@ -858,14 +858,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Optional: "\[" Alternations "\]";
     ///
-    fn optional_35(
+    fn optional_0(
         &mut self,
         l_bracket_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         r_bracket_2: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "optional_35";
+        let context = "optional_0";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
@@ -888,14 +888,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Repeat: "\{" Alternations "\}";
     ///
-    fn repeat_36(
+    fn repeat_0(
         &mut self,
         l_brace_0: &ParseTreeStackEntry,
         _alternations_1: &ParseTreeStackEntry,
         r_brace_2: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "repeat_36";
+        let context = "repeat_0";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Alts(alts)) = self.pop(context) {
             if alts.0.is_empty() || (alts.0.len() == 1 && alts.0[0].0.is_empty()) {
@@ -918,12 +918,12 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_37(
+    fn identifier_0(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "identifier_37";
+        let context = "identifier_0";
         let parse_tree_item = identifier_0.get_parse_tree_type(parse_tree);
         if let ParseTreeType::T(t) = parse_tree_item {
             self.push(
@@ -944,12 +944,12 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn string_38(
+    fn string_0(
         &mut self,
         string_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_38";
+        let context = "string_0";
         let parse_tree_item = string_0.get_parse_tree_type(parse_tree);
         if let ParseTreeType::T(t) = parse_tree_item {
             // Trim double quotes here
@@ -969,7 +969,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerState: "%scanner" Identifier "\{" ScannerStateList "\}";
     ///
-    fn scanner_state_39(
+    fn scanner_state_0(
         &mut self,
         _percent_scanner_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
@@ -978,7 +978,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _r_brace_4: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_state_39";
+        let context = "scanner_state_0";
         trace!("{}", self.trace_item_stack(context));
         if let Some(ParolGrammarItem::Fac(Factor::Identifier(n))) = self.pop(context) {
             trace!("{}", self);
@@ -1000,13 +1000,13 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// StateList: Identifier StateListList;
     ///
-    fn state_list_42(
+    fn state_list_0(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         _state_list_list_1: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "state_list_42";
+        let context = "state_list_0";
         trace!("{}", self.trace_item_stack(context));
         self.handle_scanner_state(context, identifier_0, parse_tree)
     }
@@ -1015,14 +1015,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// StateListRest: "," Identifier StateListRest;
     ///
-    fn state_list_rest_43(
+    fn state_list_rest_0(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         identifier_1: &ParseTreeStackEntry,
         _state_list_rest_2: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "state_list_rest_43";
+        let context = "state_list_rest_0";
         trace!("{}", self.trace_item_stack(context));
         self.handle_scanner_state(context, identifier_1, parse_tree)
     }
@@ -1031,8 +1031,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// StateListRest: ;
     ///
-    fn state_list_rest_44(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "state_list_rest_44";
+    fn state_list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "state_list_rest_1";
         // Start with an empty state list
         self.push(ParolGrammarItem::StateList(vec![]), context);
         Ok(())
@@ -1042,7 +1042,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
     ///
-    fn scanner_switch_45(
+    fn scanner_switch_0(
         &mut self,
         _percent_sc_0: &ParseTreeStackEntry,
         _l_paren_1: &ParseTreeStackEntry,
@@ -1050,7 +1050,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _r_paren_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_switch_45";
+        let context = "scanner_switch_0";
         if let Some(ParolGrammarItem::Fac(Factor::Identifier(s))) = self.pop(context) {
             if let Some(scanner_state) = self
                 .scanner_configurations
@@ -1078,7 +1078,7 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerSwitch: "%push" "\(" Identifier "\)";
     ///
-    fn scanner_switch_46(
+    fn scanner_switch_1(
         &mut self,
         _percent_push_0: &ParseTreeStackEntry,
         _l_paren_1: &ParseTreeStackEntry,
@@ -1086,7 +1086,7 @@ impl ParolGrammarTrait for ParolGrammar {
         _r_paren_3: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_switch_46";
+        let context = "scanner_switch_1";
         if let Some(ParolGrammarItem::Fac(Factor::Identifier(s))) = self.pop(context) {
             if let Some(scanner_state) = self
                 .scanner_configurations
@@ -1114,14 +1114,14 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerSwitch: "%pop" "\(" "\)";
     ///
-    fn scanner_switch_47(
+    fn scanner_switch_2(
         &mut self,
         _percent_pop_0: &ParseTreeStackEntry,
         _l_paren_1: &ParseTreeStackEntry,
         _r_paren_2: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "scanner_switch_47";
+        let context = "scanner_switch_2";
         self.push(ParolGrammarItem::Fac(Factor::ScannerSwitchPop), context);
         trace!("{}", self.trace_item_stack(context));
         Ok(())
@@ -1131,8 +1131,8 @@ impl ParolGrammarTrait for ParolGrammar {
     ///
     /// ScannerNameOpt: ;
     ///
-    fn scanner_name_opt_49(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "scanner_name_opt_49";
+    fn scanner_name_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "scanner_name_opt_1";
         self.push(
             ParolGrammarItem::Fac(Factor::Identifier("INITIAL".to_string())),
             context,

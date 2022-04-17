@@ -287,7 +287,7 @@ pub trait CalcGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction15<'t> {
+pub struct Instruction0<'t> {
     pub assignment_0: Box<Assignment<'t>>,
 }
 
@@ -298,7 +298,7 @@ pub struct Instruction15<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction16<'t> {
+pub struct Instruction1<'t> {
     pub logical_or_0: Box<LogicalOr<'t>>,
 }
 
@@ -309,7 +309,7 @@ pub struct Instruction16<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp42<'t> {
+pub struct AddOp0<'t> {
     pub plus_0: Box<Plus<'t>>,
 }
 
@@ -320,7 +320,7 @@ pub struct AddOp42<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp43<'t> {
+pub struct AddOp1<'t> {
     pub minus_0: Box<Minus<'t>>,
 }
 
@@ -331,7 +331,7 @@ pub struct AddOp43<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor54<'t> {
+pub struct Factor0<'t> {
     pub number_0: Box<Number<'t>>,
 }
 
@@ -342,7 +342,7 @@ pub struct Factor54<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor55<'t> {
+pub struct Factor1<'t> {
     pub idref_0: Box<Idref<'t>>,
 }
 
@@ -353,7 +353,7 @@ pub struct Factor55<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor56<'t> {
+pub struct Factor2<'t> {
     pub negate_0: Box<Negate<'t>>,
     pub factor_1: Box<Factor<'t>>,
 }
@@ -365,7 +365,7 @@ pub struct Factor56<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor57<'t> {
+pub struct Factor3<'t> {
     pub l_paren_0: Token<'t>, /* \( */
     pub logical_or_1: Box<LogicalOr<'t>>,
     pub r_paren_2: Token<'t>, /* \) */
@@ -382,8 +382,8 @@ pub struct Factor57<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum AddOp<'t> {
-    AddOp42(AddOp42<'t>),
-    AddOp43(AddOp43<'t>),
+    AddOp0(AddOp0<'t>),
+    AddOp1(AddOp1<'t>),
 }
 
 ///
@@ -566,10 +566,10 @@ pub struct EqualityOp<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    Factor54(Factor54<'t>),
-    Factor55(Factor55<'t>),
-    Factor56(Factor56<'t>),
-    Factor57(Factor57<'t>),
+    Factor0(Factor0<'t>),
+    Factor1(Factor1<'t>),
+    Factor2(Factor2<'t>),
+    Factor3(Factor3<'t>),
 }
 
 ///
@@ -596,8 +596,8 @@ pub struct Idref<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Instruction<'t> {
-    Instruction15(Instruction15<'t>),
-    Instruction16(Instruction16<'t>),
+    Instruction0(Instruction0<'t>),
+    Instruction1(Instruction1<'t>),
 }
 
 ///
@@ -886,11 +886,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         }
     }
 
+    #[allow(dead_code)]
     fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
+    #[allow(dead_code)]
     fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
@@ -950,14 +952,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// calcList: instruction ";" calcList; // Vec<T>::Push
     ///
-    fn calc_list_1(
+    fn calc_list_0(
         &mut self,
         _instruction_0: &ParseTreeStackEntry<'t>,
         semicolon_1: &ParseTreeStackEntry<'t>,
         _calc_list_2: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "calc_list_1";
+        let context = "calc_list_0";
         trace!("{}", self.trace_item_stack(context));
         let semicolon_1 = *semicolon_1.token(parse_tree)?;
         let mut calc_list_2 = if let Some(ASTType::CalcList(calc_list_2)) = self.pop(context) {
@@ -970,13 +972,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Instruction", context));
         };
-        let calc_list_1_built = CalcListBuilder::default()
+        let calc_list_0_built = CalcListBuilder::default()
             .semicolon_1(semicolon_1)
             .instruction_0(Box::new(instruction_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        calc_list_2.push(calc_list_1_built);
+        calc_list_2.push(calc_list_0_built);
         self.push(ASTType::CalcList(calc_list_2), context);
         Ok(())
     }
@@ -985,11 +987,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// calcList: ; // Vec<T>::New
     ///
-    fn calc_list_2(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "calc_list_2";
+    fn calc_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "calc_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let calc_list_2_built = Vec::new();
-        self.push(ASTType::CalcList(calc_list_2_built), context);
+        let calc_list_1_built = Vec::new();
+        self.push(ASTType::CalcList(calc_list_1_built), context);
         Ok(())
     }
 
@@ -997,21 +999,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// equality_op: "==|!=";
     ///
-    fn equality_op_3(
+    fn equality_op_0(
         &mut self,
         equality_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "equality_op_3";
+        let context = "equality_op_0";
         trace!("{}", self.trace_item_stack(context));
         let equality_op_0 = *equality_op_0.token(parse_tree)?;
-        let equality_op_3_built = EqualityOpBuilder::default()
+        let equality_op_0_built = EqualityOpBuilder::default()
             .equality_op_0(equality_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.equality_op(&equality_op_3_built)?;
-        self.push(ASTType::EqualityOp(equality_op_3_built), context);
+        self.user_grammar.equality_op(&equality_op_0_built)?;
+        self.push(ASTType::EqualityOp(equality_op_0_built), context);
         Ok(())
     }
 
@@ -1019,21 +1021,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
-    fn assign_op_4(
+    fn assign_op_0(
         &mut self,
         assign_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "assign_op_4";
+        let context = "assign_op_0";
         trace!("{}", self.trace_item_stack(context));
         let assign_op_0 = *assign_op_0.token(parse_tree)?;
-        let assign_op_4_built = AssignOpBuilder::default()
+        let assign_op_0_built = AssignOpBuilder::default()
             .assign_op_0(assign_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assign_op(&assign_op_4_built)?;
-        self.push(ASTType::AssignOp(assign_op_4_built), context);
+        self.user_grammar.assign_op(&assign_op_0_built)?;
+        self.push(ASTType::AssignOp(assign_op_0_built), context);
         Ok(())
     }
 
@@ -1041,21 +1043,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_or_op: "\|\|";
     ///
-    fn logical_or_op_5(
+    fn logical_or_op_0(
         &mut self,
         logical_or_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_or_op_5";
+        let context = "logical_or_op_0";
         trace!("{}", self.trace_item_stack(context));
         let logical_or_op_0 = *logical_or_op_0.token(parse_tree)?;
-        let logical_or_op_5_built = LogicalOrOpBuilder::default()
+        let logical_or_op_0_built = LogicalOrOpBuilder::default()
             .logical_or_op_0(logical_or_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_or_op(&logical_or_op_5_built)?;
-        self.push(ASTType::LogicalOrOp(logical_or_op_5_built), context);
+        self.user_grammar.logical_or_op(&logical_or_op_0_built)?;
+        self.push(ASTType::LogicalOrOp(logical_or_op_0_built), context);
         Ok(())
     }
 
@@ -1063,21 +1065,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_and_op: "&&";
     ///
-    fn logical_and_op_6(
+    fn logical_and_op_0(
         &mut self,
         logical_and_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_and_op_6";
+        let context = "logical_and_op_0";
         trace!("{}", self.trace_item_stack(context));
         let logical_and_op_0 = *logical_and_op_0.token(parse_tree)?;
-        let logical_and_op_6_built = LogicalAndOpBuilder::default()
+        let logical_and_op_0_built = LogicalAndOpBuilder::default()
             .logical_and_op_0(logical_and_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_and_op(&logical_and_op_6_built)?;
-        self.push(ASTType::LogicalAndOp(logical_and_op_6_built), context);
+        self.user_grammar.logical_and_op(&logical_and_op_0_built)?;
+        self.push(ASTType::LogicalAndOp(logical_and_op_0_built), context);
         Ok(())
     }
 
@@ -1085,21 +1087,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_or_op: "\|";
     ///
-    fn bitwise_or_op_7(
+    fn bitwise_or_op_0(
         &mut self,
         bitwise_or_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_or_op_7";
+        let context = "bitwise_or_op_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_op_0 = *bitwise_or_op_0.token(parse_tree)?;
-        let bitwise_or_op_7_built = BitwiseOrOpBuilder::default()
+        let bitwise_or_op_0_built = BitwiseOrOpBuilder::default()
             .bitwise_or_op_0(bitwise_or_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_or_op(&bitwise_or_op_7_built)?;
-        self.push(ASTType::BitwiseOrOp(bitwise_or_op_7_built), context);
+        self.user_grammar.bitwise_or_op(&bitwise_or_op_0_built)?;
+        self.push(ASTType::BitwiseOrOp(bitwise_or_op_0_built), context);
         Ok(())
     }
 
@@ -1107,21 +1109,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_and_op: "&";
     ///
-    fn bitwise_and_op_8(
+    fn bitwise_and_op_0(
         &mut self,
         bitwise_and_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_and_op_8";
+        let context = "bitwise_and_op_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_op_0 = *bitwise_and_op_0.token(parse_tree)?;
-        let bitwise_and_op_8_built = BitwiseAndOpBuilder::default()
+        let bitwise_and_op_0_built = BitwiseAndOpBuilder::default()
             .bitwise_and_op_0(bitwise_and_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_and_op(&bitwise_and_op_8_built)?;
-        self.push(ASTType::BitwiseAndOp(bitwise_and_op_8_built), context);
+        self.user_grammar.bitwise_and_op(&bitwise_and_op_0_built)?;
+        self.push(ASTType::BitwiseAndOp(bitwise_and_op_0_built), context);
         Ok(())
     }
 
@@ -1129,22 +1131,22 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_shift_op: "<<|>>";
     ///
-    fn bitwise_shift_op_9(
+    fn bitwise_shift_op_0(
         &mut self,
         bitwise_shift_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_shift_op_9";
+        let context = "bitwise_shift_op_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_op_0 = *bitwise_shift_op_0.token(parse_tree)?;
-        let bitwise_shift_op_9_built = BitwiseShiftOpBuilder::default()
+        let bitwise_shift_op_0_built = BitwiseShiftOpBuilder::default()
             .bitwise_shift_op_0(bitwise_shift_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
         self.user_grammar
-            .bitwise_shift_op(&bitwise_shift_op_9_built)?;
-        self.push(ASTType::BitwiseShiftOp(bitwise_shift_op_9_built), context);
+            .bitwise_shift_op(&bitwise_shift_op_0_built)?;
+        self.push(ASTType::BitwiseShiftOp(bitwise_shift_op_0_built), context);
         Ok(())
     }
 
@@ -1152,21 +1154,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// relational_op: "<=|<|>=|>";
     ///
-    fn relational_op_10(
+    fn relational_op_0(
         &mut self,
         relational_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "relational_op_10";
+        let context = "relational_op_0";
         trace!("{}", self.trace_item_stack(context));
         let relational_op_0 = *relational_op_0.token(parse_tree)?;
-        let relational_op_10_built = RelationalOpBuilder::default()
+        let relational_op_0_built = RelationalOpBuilder::default()
             .relational_op_0(relational_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.relational_op(&relational_op_10_built)?;
-        self.push(ASTType::RelationalOp(relational_op_10_built), context);
+        self.user_grammar.relational_op(&relational_op_0_built)?;
+        self.push(ASTType::RelationalOp(relational_op_0_built), context);
         Ok(())
     }
 
@@ -1174,21 +1176,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// plus: "\+";
     ///
-    fn plus_11(
+    fn plus_0(
         &mut self,
         plus_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "plus_11";
+        let context = "plus_0";
         trace!("{}", self.trace_item_stack(context));
         let plus_0 = *plus_0.token(parse_tree)?;
-        let plus_11_built = PlusBuilder::default()
+        let plus_0_built = PlusBuilder::default()
             .plus_0(plus_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.plus(&plus_11_built)?;
-        self.push(ASTType::Plus(plus_11_built), context);
+        self.user_grammar.plus(&plus_0_built)?;
+        self.push(ASTType::Plus(plus_0_built), context);
         Ok(())
     }
 
@@ -1196,21 +1198,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// minus: "-";
     ///
-    fn minus_12(
+    fn minus_0(
         &mut self,
         minus_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "minus_12";
+        let context = "minus_0";
         trace!("{}", self.trace_item_stack(context));
         let minus_0 = *minus_0.token(parse_tree)?;
-        let minus_12_built = MinusBuilder::default()
+        let minus_0_built = MinusBuilder::default()
             .minus_0(minus_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.minus(&minus_12_built)?;
-        self.push(ASTType::Minus(minus_12_built), context);
+        self.user_grammar.minus(&minus_0_built)?;
+        self.push(ASTType::Minus(minus_0_built), context);
         Ok(())
     }
 
@@ -1218,21 +1220,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// pow_op: "\*\*";
     ///
-    fn pow_op_13(
+    fn pow_op_0(
         &mut self,
         pow_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "pow_op_13";
+        let context = "pow_op_0";
         trace!("{}", self.trace_item_stack(context));
         let pow_op_0 = *pow_op_0.token(parse_tree)?;
-        let pow_op_13_built = PowOpBuilder::default()
+        let pow_op_0_built = PowOpBuilder::default()
             .pow_op_0(pow_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.pow_op(&pow_op_13_built)?;
-        self.push(ASTType::PowOp(pow_op_13_built), context);
+        self.user_grammar.pow_op(&pow_op_0_built)?;
+        self.push(ASTType::PowOp(pow_op_0_built), context);
         Ok(())
     }
 
@@ -1240,21 +1242,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// mult_op: "\*|/|%";
     ///
-    fn mult_op_14(
+    fn mult_op_0(
         &mut self,
         mult_op_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "mult_op_14";
+        let context = "mult_op_0";
         trace!("{}", self.trace_item_stack(context));
         let mult_op_0 = *mult_op_0.token(parse_tree)?;
-        let mult_op_14_built = MultOpBuilder::default()
+        let mult_op_0_built = MultOpBuilder::default()
             .mult_op_0(mult_op_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.mult_op(&mult_op_14_built)?;
-        self.push(ASTType::MultOp(mult_op_14_built), context);
+        self.user_grammar.mult_op(&mult_op_0_built)?;
+        self.push(ASTType::MultOp(mult_op_0_built), context);
         Ok(())
     }
 
@@ -1262,26 +1264,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// instruction: assignment;
     ///
-    fn instruction_15(
+    fn instruction_0(
         &mut self,
         _assignment_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "instruction_15";
+        let context = "instruction_0";
         trace!("{}", self.trace_item_stack(context));
         let assignment_0 = if let Some(ASTType::Assignment(assignment_0)) = self.pop(context) {
             assignment_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Assignment", context));
         };
-        let instruction_15_built = Instruction15Builder::default()
+        let instruction_0_built = Instruction0Builder::default()
             .assignment_0(Box::new(assignment_0))
             .build()
             .into_diagnostic()?;
-        let instruction_15_built = Instruction::Instruction15(instruction_15_built);
+        let instruction_0_built = Instruction::Instruction0(instruction_0_built);
         // Calling user action here
-        self.user_grammar.instruction(&instruction_15_built)?;
-        self.push(ASTType::Instruction(instruction_15_built), context);
+        self.user_grammar.instruction(&instruction_0_built)?;
+        self.push(ASTType::Instruction(instruction_0_built), context);
         Ok(())
     }
 
@@ -1289,26 +1291,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// instruction: logical_or;
     ///
-    fn instruction_16(
+    fn instruction_1(
         &mut self,
         _logical_or_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "instruction_16";
+        let context = "instruction_1";
         trace!("{}", self.trace_item_stack(context));
         let logical_or_0 = if let Some(ASTType::LogicalOr(logical_or_0)) = self.pop(context) {
             logical_or_0
         } else {
             return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
         };
-        let instruction_16_built = Instruction16Builder::default()
+        let instruction_1_built = Instruction1Builder::default()
             .logical_or_0(Box::new(logical_or_0))
             .build()
             .into_diagnostic()?;
-        let instruction_16_built = Instruction::Instruction16(instruction_16_built);
+        let instruction_1_built = Instruction::Instruction1(instruction_1_built);
         // Calling user action here
-        self.user_grammar.instruction(&instruction_16_built)?;
-        self.push(ASTType::Instruction(instruction_16_built), context);
+        self.user_grammar.instruction(&instruction_1_built)?;
+        self.push(ASTType::Instruction(instruction_1_built), context);
         Ok(())
     }
 
@@ -1316,13 +1318,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// assign_item: id assign_op;
     ///
-    fn assign_item_17(
+    fn assign_item_0(
         &mut self,
         _id_0: &ParseTreeStackEntry<'t>,
         _assign_op_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "assign_item_17";
+        let context = "assign_item_0";
         trace!("{}", self.trace_item_stack(context));
         let assign_op_1 = if let Some(ASTType::AssignOp(assign_op_1)) = self.pop(context) {
             assign_op_1
@@ -1334,14 +1336,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Id", context));
         };
-        let assign_item_17_built = AssignItemBuilder::default()
+        let assign_item_0_built = AssignItemBuilder::default()
             .id_0(Box::new(id_0))
             .assign_op_1(Box::new(assign_op_1))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assign_item(&assign_item_17_built)?;
-        self.push(ASTType::AssignItem(assign_item_17_built), context);
+        self.user_grammar.assign_item(&assign_item_0_built)?;
+        self.push(ASTType::AssignItem(assign_item_0_built), context);
         Ok(())
     }
 
@@ -1349,14 +1351,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// assignment: assign_item assignmentList /* Vec */ logical_or;
     ///
-    fn assignment_18(
+    fn assignment_0(
         &mut self,
         _assign_item_0: &ParseTreeStackEntry<'t>,
         _assignment_list_1: &ParseTreeStackEntry<'t>,
         _logical_or_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "assignment_18";
+        let context = "assignment_0";
         trace!("{}", self.trace_item_stack(context));
         let logical_or_2 = if let Some(ASTType::LogicalOr(logical_or_2)) = self.pop(context) {
             logical_or_2
@@ -1375,15 +1377,15 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::AssignItem", context));
         };
-        let assignment_18_built = AssignmentBuilder::default()
+        let assignment_0_built = AssignmentBuilder::default()
             .assign_item_0(Box::new(assign_item_0))
             .assignment_list_1(assignment_list_1)
             .logical_or_2(Box::new(logical_or_2))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.assignment(&assignment_18_built)?;
-        self.push(ASTType::Assignment(assignment_18_built), context);
+        self.user_grammar.assignment(&assignment_0_built)?;
+        self.push(ASTType::Assignment(assignment_0_built), context);
         Ok(())
     }
 
@@ -1391,13 +1393,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// assignmentList: assign_item assignmentList; // Vec<T>::Push
     ///
-    fn assignment_list_19(
+    fn assignment_list_0(
         &mut self,
         _assign_item_0: &ParseTreeStackEntry<'t>,
         _assignment_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "assignment_list_19";
+        let context = "assignment_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut assignment_list_1 =
             if let Some(ASTType::AssignmentList(assignment_list_1)) = self.pop(context) {
@@ -1410,12 +1412,12 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::AssignItem", context));
         };
-        let assignment_list_19_built = AssignmentListBuilder::default()
+        let assignment_list_0_built = AssignmentListBuilder::default()
             .assign_item_0(Box::new(assign_item_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        assignment_list_1.push(assignment_list_19_built);
+        assignment_list_1.push(assignment_list_0_built);
         self.push(ASTType::AssignmentList(assignment_list_1), context);
         Ok(())
     }
@@ -1424,11 +1426,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// assignmentList: ; // Vec<T>::New
     ///
-    fn assignment_list_20(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "assignment_list_20";
+    fn assignment_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "assignment_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let assignment_list_20_built = Vec::new();
-        self.push(ASTType::AssignmentList(assignment_list_20_built), context);
+        let assignment_list_1_built = Vec::new();
+        self.push(ASTType::AssignmentList(assignment_list_1_built), context);
         Ok(())
     }
 
@@ -1436,13 +1438,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_or: logical_and logical_orList /* Vec */;
     ///
-    fn logical_or_21(
+    fn logical_or_0(
         &mut self,
         _logical_and_0: &ParseTreeStackEntry<'t>,
         _logical_or_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_or_21";
+        let context = "logical_or_0";
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list_1 =
             if let Some(ASTType::LogicalOrList(mut logical_or_list_1)) = self.pop(context) {
@@ -1456,14 +1458,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::LogicalAnd", context));
         };
-        let logical_or_21_built = LogicalOrBuilder::default()
+        let logical_or_0_built = LogicalOrBuilder::default()
             .logical_and_0(Box::new(logical_and_0))
             .logical_or_list_1(logical_or_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_or(&logical_or_21_built)?;
-        self.push(ASTType::LogicalOr(logical_or_21_built), context);
+        self.user_grammar.logical_or(&logical_or_0_built)?;
+        self.push(ASTType::LogicalOr(logical_or_0_built), context);
         Ok(())
     }
 
@@ -1471,14 +1473,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_orList: logical_or_op logical_and logical_orList; // Vec<T>::Push
     ///
-    fn logical_or_list_22(
+    fn logical_or_list_0(
         &mut self,
         _logical_or_op_0: &ParseTreeStackEntry<'t>,
         _logical_and_1: &ParseTreeStackEntry<'t>,
         _logical_or_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_or_list_22";
+        let context = "logical_or_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut logical_or_list_2 =
             if let Some(ASTType::LogicalOrList(logical_or_list_2)) = self.pop(context) {
@@ -1497,13 +1499,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::LogicalOrOp", context));
         };
-        let logical_or_list_22_built = LogicalOrListBuilder::default()
+        let logical_or_list_0_built = LogicalOrListBuilder::default()
             .logical_and_1(Box::new(logical_and_1))
             .logical_or_op_0(Box::new(logical_or_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        logical_or_list_2.push(logical_or_list_22_built);
+        logical_or_list_2.push(logical_or_list_0_built);
         self.push(ASTType::LogicalOrList(logical_or_list_2), context);
         Ok(())
     }
@@ -1512,11 +1514,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_orList: ; // Vec<T>::New
     ///
-    fn logical_or_list_23(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "logical_or_list_23";
+    fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "logical_or_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_list_23_built = Vec::new();
-        self.push(ASTType::LogicalOrList(logical_or_list_23_built), context);
+        let logical_or_list_1_built = Vec::new();
+        self.push(ASTType::LogicalOrList(logical_or_list_1_built), context);
         Ok(())
     }
 
@@ -1524,13 +1526,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_and: bitwise_or logical_andList /* Vec */;
     ///
-    fn logical_and_24(
+    fn logical_and_0(
         &mut self,
         _bitwise_or_0: &ParseTreeStackEntry<'t>,
         _logical_and_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_and_24";
+        let context = "logical_and_0";
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list_1 =
             if let Some(ASTType::LogicalAndList(mut logical_and_list_1)) = self.pop(context) {
@@ -1544,14 +1546,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::BitwiseOr", context));
         };
-        let logical_and_24_built = LogicalAndBuilder::default()
+        let logical_and_0_built = LogicalAndBuilder::default()
             .bitwise_or_0(Box::new(bitwise_or_0))
             .logical_and_list_1(logical_and_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.logical_and(&logical_and_24_built)?;
-        self.push(ASTType::LogicalAnd(logical_and_24_built), context);
+        self.user_grammar.logical_and(&logical_and_0_built)?;
+        self.push(ASTType::LogicalAnd(logical_and_0_built), context);
         Ok(())
     }
 
@@ -1559,14 +1561,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_andList: logical_and_op bitwise_or logical_andList; // Vec<T>::Push
     ///
-    fn logical_and_list_25(
+    fn logical_and_list_0(
         &mut self,
         _logical_and_op_0: &ParseTreeStackEntry<'t>,
         _bitwise_or_1: &ParseTreeStackEntry<'t>,
         _logical_and_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "logical_and_list_25";
+        let context = "logical_and_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut logical_and_list_2 =
             if let Some(ASTType::LogicalAndList(logical_and_list_2)) = self.pop(context) {
@@ -1585,13 +1587,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::LogicalAndOp", context));
             };
-        let logical_and_list_25_built = LogicalAndListBuilder::default()
+        let logical_and_list_0_built = LogicalAndListBuilder::default()
             .bitwise_or_1(Box::new(bitwise_or_1))
             .logical_and_op_0(Box::new(logical_and_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        logical_and_list_2.push(logical_and_list_25_built);
+        logical_and_list_2.push(logical_and_list_0_built);
         self.push(ASTType::LogicalAndList(logical_and_list_2), context);
         Ok(())
     }
@@ -1600,11 +1602,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// logical_andList: ; // Vec<T>::New
     ///
-    fn logical_and_list_26(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "logical_and_list_26";
+    fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "logical_and_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let logical_and_list_26_built = Vec::new();
-        self.push(ASTType::LogicalAndList(logical_and_list_26_built), context);
+        let logical_and_list_1_built = Vec::new();
+        self.push(ASTType::LogicalAndList(logical_and_list_1_built), context);
         Ok(())
     }
 
@@ -1612,13 +1614,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_or: bitwise_and bitwise_orList /* Vec */;
     ///
-    fn bitwise_or_27(
+    fn bitwise_or_0(
         &mut self,
         _bitwise_and_0: &ParseTreeStackEntry<'t>,
         _bitwise_or_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_or_27";
+        let context = "bitwise_or_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_list_1 =
             if let Some(ASTType::BitwiseOrList(mut bitwise_or_list_1)) = self.pop(context) {
@@ -1632,14 +1634,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::BitwiseAnd", context));
         };
-        let bitwise_or_27_built = BitwiseOrBuilder::default()
+        let bitwise_or_0_built = BitwiseOrBuilder::default()
             .bitwise_and_0(Box::new(bitwise_and_0))
             .bitwise_or_list_1(bitwise_or_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_or(&bitwise_or_27_built)?;
-        self.push(ASTType::BitwiseOr(bitwise_or_27_built), context);
+        self.user_grammar.bitwise_or(&bitwise_or_0_built)?;
+        self.push(ASTType::BitwiseOr(bitwise_or_0_built), context);
         Ok(())
     }
 
@@ -1647,14 +1649,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_orList: bitwise_or_op bitwise_and bitwise_orList; // Vec<T>::Push
     ///
-    fn bitwise_or_list_28(
+    fn bitwise_or_list_0(
         &mut self,
         _bitwise_or_op_0: &ParseTreeStackEntry<'t>,
         _bitwise_and_1: &ParseTreeStackEntry<'t>,
         _bitwise_or_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_or_list_28";
+        let context = "bitwise_or_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut bitwise_or_list_2 =
             if let Some(ASTType::BitwiseOrList(bitwise_or_list_2)) = self.pop(context) {
@@ -1673,13 +1675,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::BitwiseOrOp", context));
         };
-        let bitwise_or_list_28_built = BitwiseOrListBuilder::default()
+        let bitwise_or_list_0_built = BitwiseOrListBuilder::default()
             .bitwise_and_1(Box::new(bitwise_and_1))
             .bitwise_or_op_0(Box::new(bitwise_or_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        bitwise_or_list_2.push(bitwise_or_list_28_built);
+        bitwise_or_list_2.push(bitwise_or_list_0_built);
         self.push(ASTType::BitwiseOrList(bitwise_or_list_2), context);
         Ok(())
     }
@@ -1688,11 +1690,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_orList: ; // Vec<T>::New
     ///
-    fn bitwise_or_list_29(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "bitwise_or_list_29";
+    fn bitwise_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "bitwise_or_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_or_list_29_built = Vec::new();
-        self.push(ASTType::BitwiseOrList(bitwise_or_list_29_built), context);
+        let bitwise_or_list_1_built = Vec::new();
+        self.push(ASTType::BitwiseOrList(bitwise_or_list_1_built), context);
         Ok(())
     }
 
@@ -1700,13 +1702,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_and: equality bitwise_andList /* Vec */;
     ///
-    fn bitwise_and_30(
+    fn bitwise_and_0(
         &mut self,
         _equality_0: &ParseTreeStackEntry<'t>,
         _bitwise_and_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_and_30";
+        let context = "bitwise_and_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_list_1 =
             if let Some(ASTType::BitwiseAndList(mut bitwise_and_list_1)) = self.pop(context) {
@@ -1720,14 +1722,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Equality", context));
         };
-        let bitwise_and_30_built = BitwiseAndBuilder::default()
+        let bitwise_and_0_built = BitwiseAndBuilder::default()
             .equality_0(Box::new(equality_0))
             .bitwise_and_list_1(bitwise_and_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_and(&bitwise_and_30_built)?;
-        self.push(ASTType::BitwiseAnd(bitwise_and_30_built), context);
+        self.user_grammar.bitwise_and(&bitwise_and_0_built)?;
+        self.push(ASTType::BitwiseAnd(bitwise_and_0_built), context);
         Ok(())
     }
 
@@ -1735,14 +1737,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_andList: bitwise_and_op equality bitwise_andList; // Vec<T>::Push
     ///
-    fn bitwise_and_list_31(
+    fn bitwise_and_list_0(
         &mut self,
         _bitwise_and_op_0: &ParseTreeStackEntry<'t>,
         _equality_1: &ParseTreeStackEntry<'t>,
         _bitwise_and_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_and_list_31";
+        let context = "bitwise_and_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut bitwise_and_list_2 =
             if let Some(ASTType::BitwiseAndList(bitwise_and_list_2)) = self.pop(context) {
@@ -1761,13 +1763,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::BitwiseAndOp", context));
             };
-        let bitwise_and_list_31_built = BitwiseAndListBuilder::default()
+        let bitwise_and_list_0_built = BitwiseAndListBuilder::default()
             .equality_1(Box::new(equality_1))
             .bitwise_and_op_0(Box::new(bitwise_and_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        bitwise_and_list_2.push(bitwise_and_list_31_built);
+        bitwise_and_list_2.push(bitwise_and_list_0_built);
         self.push(ASTType::BitwiseAndList(bitwise_and_list_2), context);
         Ok(())
     }
@@ -1776,11 +1778,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_andList: ; // Vec<T>::New
     ///
-    fn bitwise_and_list_32(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "bitwise_and_list_32";
+    fn bitwise_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "bitwise_and_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_and_list_32_built = Vec::new();
-        self.push(ASTType::BitwiseAndList(bitwise_and_list_32_built), context);
+        let bitwise_and_list_1_built = Vec::new();
+        self.push(ASTType::BitwiseAndList(bitwise_and_list_1_built), context);
         Ok(())
     }
 
@@ -1788,13 +1790,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// equality: relational equalityList /* Vec */;
     ///
-    fn equality_33(
+    fn equality_0(
         &mut self,
         _relational_0: &ParseTreeStackEntry<'t>,
         _equality_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "equality_33";
+        let context = "equality_0";
         trace!("{}", self.trace_item_stack(context));
         let equality_list_1 =
             if let Some(ASTType::EqualityList(mut equality_list_1)) = self.pop(context) {
@@ -1808,14 +1810,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Relational", context));
         };
-        let equality_33_built = EqualityBuilder::default()
+        let equality_0_built = EqualityBuilder::default()
             .relational_0(Box::new(relational_0))
             .equality_list_1(equality_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.equality(&equality_33_built)?;
-        self.push(ASTType::Equality(equality_33_built), context);
+        self.user_grammar.equality(&equality_0_built)?;
+        self.push(ASTType::Equality(equality_0_built), context);
         Ok(())
     }
 
@@ -1823,14 +1825,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// equalityList: equality_op relational equalityList; // Vec<T>::Push
     ///
-    fn equality_list_34(
+    fn equality_list_0(
         &mut self,
         _equality_op_0: &ParseTreeStackEntry<'t>,
         _relational_1: &ParseTreeStackEntry<'t>,
         _equality_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "equality_list_34";
+        let context = "equality_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut equality_list_2 =
             if let Some(ASTType::EqualityList(equality_list_2)) = self.pop(context) {
@@ -1848,13 +1850,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::EqualityOp", context));
         };
-        let equality_list_34_built = EqualityListBuilder::default()
+        let equality_list_0_built = EqualityListBuilder::default()
             .relational_1(Box::new(relational_1))
             .equality_op_0(Box::new(equality_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        equality_list_2.push(equality_list_34_built);
+        equality_list_2.push(equality_list_0_built);
         self.push(ASTType::EqualityList(equality_list_2), context);
         Ok(())
     }
@@ -1863,11 +1865,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// equalityList: ; // Vec<T>::New
     ///
-    fn equality_list_35(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "equality_list_35";
+    fn equality_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "equality_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let equality_list_35_built = Vec::new();
-        self.push(ASTType::EqualityList(equality_list_35_built), context);
+        let equality_list_1_built = Vec::new();
+        self.push(ASTType::EqualityList(equality_list_1_built), context);
         Ok(())
     }
 
@@ -1875,13 +1877,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// relational: bitwise_shift relationalList /* Vec */;
     ///
-    fn relational_36(
+    fn relational_0(
         &mut self,
         _bitwise_shift_0: &ParseTreeStackEntry<'t>,
         _relational_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "relational_36";
+        let context = "relational_0";
         trace!("{}", self.trace_item_stack(context));
         let relational_list_1 =
             if let Some(ASTType::RelationalList(mut relational_list_1)) = self.pop(context) {
@@ -1896,14 +1898,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::BitwiseShift", context));
             };
-        let relational_36_built = RelationalBuilder::default()
+        let relational_0_built = RelationalBuilder::default()
             .bitwise_shift_0(Box::new(bitwise_shift_0))
             .relational_list_1(relational_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.relational(&relational_36_built)?;
-        self.push(ASTType::Relational(relational_36_built), context);
+        self.user_grammar.relational(&relational_0_built)?;
+        self.push(ASTType::Relational(relational_0_built), context);
         Ok(())
     }
 
@@ -1911,14 +1913,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// relationalList: relational_op bitwise_shift relationalList; // Vec<T>::Push
     ///
-    fn relational_list_37(
+    fn relational_list_0(
         &mut self,
         _relational_op_0: &ParseTreeStackEntry<'t>,
         _bitwise_shift_1: &ParseTreeStackEntry<'t>,
         _relational_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "relational_list_37";
+        let context = "relational_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut relational_list_2 =
             if let Some(ASTType::RelationalList(relational_list_2)) = self.pop(context) {
@@ -1938,13 +1940,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::RelationalOp", context));
             };
-        let relational_list_37_built = RelationalListBuilder::default()
+        let relational_list_0_built = RelationalListBuilder::default()
             .bitwise_shift_1(Box::new(bitwise_shift_1))
             .relational_op_0(Box::new(relational_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        relational_list_2.push(relational_list_37_built);
+        relational_list_2.push(relational_list_0_built);
         self.push(ASTType::RelationalList(relational_list_2), context);
         Ok(())
     }
@@ -1953,11 +1955,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// relationalList: ; // Vec<T>::New
     ///
-    fn relational_list_38(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "relational_list_38";
+    fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "relational_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let relational_list_38_built = Vec::new();
-        self.push(ASTType::RelationalList(relational_list_38_built), context);
+        let relational_list_1_built = Vec::new();
+        self.push(ASTType::RelationalList(relational_list_1_built), context);
         Ok(())
     }
 
@@ -1965,13 +1967,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_shift: summ bitwise_shiftList /* Vec */;
     ///
-    fn bitwise_shift_39(
+    fn bitwise_shift_0(
         &mut self,
         _summ_0: &ParseTreeStackEntry<'t>,
         _bitwise_shift_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_shift_39";
+        let context = "bitwise_shift_0";
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_list_1 =
             if let Some(ASTType::BitwiseShiftList(mut bitwise_shift_list_1)) = self.pop(context) {
@@ -1985,14 +1987,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Summ", context));
         };
-        let bitwise_shift_39_built = BitwiseShiftBuilder::default()
+        let bitwise_shift_0_built = BitwiseShiftBuilder::default()
             .summ_0(Box::new(summ_0))
             .bitwise_shift_list_1(bitwise_shift_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.bitwise_shift(&bitwise_shift_39_built)?;
-        self.push(ASTType::BitwiseShift(bitwise_shift_39_built), context);
+        self.user_grammar.bitwise_shift(&bitwise_shift_0_built)?;
+        self.push(ASTType::BitwiseShift(bitwise_shift_0_built), context);
         Ok(())
     }
 
@@ -2000,14 +2002,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_shiftList: bitwise_shift_op summ bitwise_shiftList; // Vec<T>::Push
     ///
-    fn bitwise_shift_list_40(
+    fn bitwise_shift_list_0(
         &mut self,
         _bitwise_shift_op_0: &ParseTreeStackEntry<'t>,
         _summ_1: &ParseTreeStackEntry<'t>,
         _bitwise_shift_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "bitwise_shift_list_40";
+        let context = "bitwise_shift_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut bitwise_shift_list_2 =
             if let Some(ASTType::BitwiseShiftList(bitwise_shift_list_2)) = self.pop(context) {
@@ -2026,13 +2028,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             } else {
                 return Err(miette!("{}: Expecting ASTType::BitwiseShiftOp", context));
             };
-        let bitwise_shift_list_40_built = BitwiseShiftListBuilder::default()
+        let bitwise_shift_list_0_built = BitwiseShiftListBuilder::default()
             .summ_1(Box::new(summ_1))
             .bitwise_shift_op_0(Box::new(bitwise_shift_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        bitwise_shift_list_2.push(bitwise_shift_list_40_built);
+        bitwise_shift_list_2.push(bitwise_shift_list_0_built);
         self.push(ASTType::BitwiseShiftList(bitwise_shift_list_2), context);
         Ok(())
     }
@@ -2041,12 +2043,12 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// bitwise_shiftList: ; // Vec<T>::New
     ///
-    fn bitwise_shift_list_41(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "bitwise_shift_list_41";
+    fn bitwise_shift_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "bitwise_shift_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_shift_list_41_built = Vec::new();
+        let bitwise_shift_list_1_built = Vec::new();
         self.push(
-            ASTType::BitwiseShiftList(bitwise_shift_list_41_built),
+            ASTType::BitwiseShiftList(bitwise_shift_list_1_built),
             context,
         );
         Ok(())
@@ -2056,26 +2058,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// add_op: plus;
     ///
-    fn add_op_42(
+    fn add_op_0(
         &mut self,
         _plus_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "add_op_42";
+        let context = "add_op_0";
         trace!("{}", self.trace_item_stack(context));
         let plus_0 = if let Some(ASTType::Plus(plus_0)) = self.pop(context) {
             plus_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Plus", context));
         };
-        let add_op_42_built = AddOp42Builder::default()
+        let add_op_0_built = AddOp0Builder::default()
             .plus_0(Box::new(plus_0))
             .build()
             .into_diagnostic()?;
-        let add_op_42_built = AddOp::AddOp42(add_op_42_built);
+        let add_op_0_built = AddOp::AddOp0(add_op_0_built);
         // Calling user action here
-        self.user_grammar.add_op(&add_op_42_built)?;
-        self.push(ASTType::AddOp(add_op_42_built), context);
+        self.user_grammar.add_op(&add_op_0_built)?;
+        self.push(ASTType::AddOp(add_op_0_built), context);
         Ok(())
     }
 
@@ -2083,26 +2085,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// add_op: minus;
     ///
-    fn add_op_43(
+    fn add_op_1(
         &mut self,
         _minus_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "add_op_43";
+        let context = "add_op_1";
         trace!("{}", self.trace_item_stack(context));
         let minus_0 = if let Some(ASTType::Minus(minus_0)) = self.pop(context) {
             minus_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Minus", context));
         };
-        let add_op_43_built = AddOp43Builder::default()
+        let add_op_1_built = AddOp1Builder::default()
             .minus_0(Box::new(minus_0))
             .build()
             .into_diagnostic()?;
-        let add_op_43_built = AddOp::AddOp43(add_op_43_built);
+        let add_op_1_built = AddOp::AddOp1(add_op_1_built);
         // Calling user action here
-        self.user_grammar.add_op(&add_op_43_built)?;
-        self.push(ASTType::AddOp(add_op_43_built), context);
+        self.user_grammar.add_op(&add_op_1_built)?;
+        self.push(ASTType::AddOp(add_op_1_built), context);
         Ok(())
     }
 
@@ -2110,13 +2112,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// summ: mult summList /* Vec */;
     ///
-    fn summ_44(
+    fn summ_0(
         &mut self,
         _mult_0: &ParseTreeStackEntry<'t>,
         _summ_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "summ_44";
+        let context = "summ_0";
         trace!("{}", self.trace_item_stack(context));
         let summ_list_1 = if let Some(ASTType::SummList(mut summ_list_1)) = self.pop(context) {
             summ_list_1.reverse();
@@ -2129,14 +2131,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Mult", context));
         };
-        let summ_44_built = SummBuilder::default()
+        let summ_0_built = SummBuilder::default()
             .mult_0(Box::new(mult_0))
             .summ_list_1(summ_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.summ(&summ_44_built)?;
-        self.push(ASTType::Summ(summ_44_built), context);
+        self.user_grammar.summ(&summ_0_built)?;
+        self.push(ASTType::Summ(summ_0_built), context);
         Ok(())
     }
 
@@ -2144,14 +2146,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// summList: add_op mult summList; // Vec<T>::Push
     ///
-    fn summ_list_45(
+    fn summ_list_0(
         &mut self,
         _add_op_0: &ParseTreeStackEntry<'t>,
         _mult_1: &ParseTreeStackEntry<'t>,
         _summ_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "summ_list_45";
+        let context = "summ_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut summ_list_2 = if let Some(ASTType::SummList(summ_list_2)) = self.pop(context) {
             summ_list_2
@@ -2168,13 +2170,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::AddOp", context));
         };
-        let summ_list_45_built = SummListBuilder::default()
+        let summ_list_0_built = SummListBuilder::default()
             .mult_1(Box::new(mult_1))
             .add_op_0(Box::new(add_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        summ_list_2.push(summ_list_45_built);
+        summ_list_2.push(summ_list_0_built);
         self.push(ASTType::SummList(summ_list_2), context);
         Ok(())
     }
@@ -2183,11 +2185,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// summList: ; // Vec<T>::New
     ///
-    fn summ_list_46(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "summ_list_46";
+    fn summ_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "summ_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let summ_list_46_built = Vec::new();
-        self.push(ASTType::SummList(summ_list_46_built), context);
+        let summ_list_1_built = Vec::new();
+        self.push(ASTType::SummList(summ_list_1_built), context);
         Ok(())
     }
 
@@ -2195,13 +2197,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// mult: power multList /* Vec */;
     ///
-    fn mult_47(
+    fn mult_0(
         &mut self,
         _power_0: &ParseTreeStackEntry<'t>,
         _mult_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "mult_47";
+        let context = "mult_0";
         trace!("{}", self.trace_item_stack(context));
         let mult_list_1 = if let Some(ASTType::MultList(mut mult_list_1)) = self.pop(context) {
             mult_list_1.reverse();
@@ -2214,14 +2216,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Power", context));
         };
-        let mult_47_built = MultBuilder::default()
+        let mult_0_built = MultBuilder::default()
             .power_0(Box::new(power_0))
             .mult_list_1(mult_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.mult(&mult_47_built)?;
-        self.push(ASTType::Mult(mult_47_built), context);
+        self.user_grammar.mult(&mult_0_built)?;
+        self.push(ASTType::Mult(mult_0_built), context);
         Ok(())
     }
 
@@ -2229,14 +2231,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// multList: mult_op power multList; // Vec<T>::Push
     ///
-    fn mult_list_48(
+    fn mult_list_0(
         &mut self,
         _mult_op_0: &ParseTreeStackEntry<'t>,
         _power_1: &ParseTreeStackEntry<'t>,
         _mult_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "mult_list_48";
+        let context = "mult_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut mult_list_2 = if let Some(ASTType::MultList(mult_list_2)) = self.pop(context) {
             mult_list_2
@@ -2253,13 +2255,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::MultOp", context));
         };
-        let mult_list_48_built = MultListBuilder::default()
+        let mult_list_0_built = MultListBuilder::default()
             .power_1(Box::new(power_1))
             .mult_op_0(Box::new(mult_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        mult_list_2.push(mult_list_48_built);
+        mult_list_2.push(mult_list_0_built);
         self.push(ASTType::MultList(mult_list_2), context);
         Ok(())
     }
@@ -2268,11 +2270,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// multList: ; // Vec<T>::New
     ///
-    fn mult_list_49(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "mult_list_49";
+    fn mult_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "mult_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let mult_list_49_built = Vec::new();
-        self.push(ASTType::MultList(mult_list_49_built), context);
+        let mult_list_1_built = Vec::new();
+        self.push(ASTType::MultList(mult_list_1_built), context);
         Ok(())
     }
 
@@ -2280,13 +2282,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// power: factor powerList /* Vec */;
     ///
-    fn power_50(
+    fn power_0(
         &mut self,
         _factor_0: &ParseTreeStackEntry<'t>,
         _power_list_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "power_50";
+        let context = "power_0";
         trace!("{}", self.trace_item_stack(context));
         let power_list_1 = if let Some(ASTType::PowerList(mut power_list_1)) = self.pop(context) {
             power_list_1.reverse();
@@ -2299,14 +2301,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Factor", context));
         };
-        let power_50_built = PowerBuilder::default()
+        let power_0_built = PowerBuilder::default()
             .factor_0(Box::new(factor_0))
             .power_list_1(power_list_1)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.power(&power_50_built)?;
-        self.push(ASTType::Power(power_50_built), context);
+        self.user_grammar.power(&power_0_built)?;
+        self.push(ASTType::Power(power_0_built), context);
         Ok(())
     }
 
@@ -2314,14 +2316,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// powerList: pow_op factor powerList; // Vec<T>::Push
     ///
-    fn power_list_51(
+    fn power_list_0(
         &mut self,
         _pow_op_0: &ParseTreeStackEntry<'t>,
         _factor_1: &ParseTreeStackEntry<'t>,
         _power_list_2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "power_list_51";
+        let context = "power_list_0";
         trace!("{}", self.trace_item_stack(context));
         let mut power_list_2 = if let Some(ASTType::PowerList(power_list_2)) = self.pop(context) {
             power_list_2
@@ -2338,13 +2340,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::PowOp", context));
         };
-        let power_list_51_built = PowerListBuilder::default()
+        let power_list_0_built = PowerListBuilder::default()
             .factor_1(Box::new(factor_1))
             .pow_op_0(Box::new(pow_op_0))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        power_list_2.push(power_list_51_built);
+        power_list_2.push(power_list_0_built);
         self.push(ASTType::PowerList(power_list_2), context);
         Ok(())
     }
@@ -2353,11 +2355,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// powerList: ; // Vec<T>::New
     ///
-    fn power_list_52(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "power_list_52";
+    fn power_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = "power_list_1";
         trace!("{}", self.trace_item_stack(context));
-        let power_list_52_built = Vec::new();
-        self.push(ASTType::PowerList(power_list_52_built), context);
+        let power_list_1_built = Vec::new();
+        self.push(ASTType::PowerList(power_list_1_built), context);
         Ok(())
     }
 
@@ -2365,25 +2367,25 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// negate: minus;
     ///
-    fn negate_53(
+    fn negate_0(
         &mut self,
         _minus_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "negate_53";
+        let context = "negate_0";
         trace!("{}", self.trace_item_stack(context));
         let minus_0 = if let Some(ASTType::Minus(minus_0)) = self.pop(context) {
             minus_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Minus", context));
         };
-        let negate_53_built = NegateBuilder::default()
+        let negate_0_built = NegateBuilder::default()
             .minus_0(Box::new(minus_0))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.negate(&negate_53_built)?;
-        self.push(ASTType::Negate(negate_53_built), context);
+        self.user_grammar.negate(&negate_0_built)?;
+        self.push(ASTType::Negate(negate_0_built), context);
         Ok(())
     }
 
@@ -2391,26 +2393,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// factor: number;
     ///
-    fn factor_54(
+    fn factor_0(
         &mut self,
         _number_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "factor_54";
+        let context = "factor_0";
         trace!("{}", self.trace_item_stack(context));
         let number_0 = if let Some(ASTType::Number(number_0)) = self.pop(context) {
             number_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Number", context));
         };
-        let factor_54_built = Factor54Builder::default()
+        let factor_0_built = Factor0Builder::default()
             .number_0(Box::new(number_0))
             .build()
             .into_diagnostic()?;
-        let factor_54_built = Factor::Factor54(factor_54_built);
+        let factor_0_built = Factor::Factor0(factor_0_built);
         // Calling user action here
-        self.user_grammar.factor(&factor_54_built)?;
-        self.push(ASTType::Factor(factor_54_built), context);
+        self.user_grammar.factor(&factor_0_built)?;
+        self.push(ASTType::Factor(factor_0_built), context);
         Ok(())
     }
 
@@ -2418,26 +2420,26 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// factor: idref;
     ///
-    fn factor_55(
+    fn factor_1(
         &mut self,
         _idref_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "factor_55";
+        let context = "factor_1";
         trace!("{}", self.trace_item_stack(context));
         let idref_0 = if let Some(ASTType::Idref(idref_0)) = self.pop(context) {
             idref_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Idref", context));
         };
-        let factor_55_built = Factor55Builder::default()
+        let factor_1_built = Factor1Builder::default()
             .idref_0(Box::new(idref_0))
             .build()
             .into_diagnostic()?;
-        let factor_55_built = Factor::Factor55(factor_55_built);
+        let factor_1_built = Factor::Factor1(factor_1_built);
         // Calling user action here
-        self.user_grammar.factor(&factor_55_built)?;
-        self.push(ASTType::Factor(factor_55_built), context);
+        self.user_grammar.factor(&factor_1_built)?;
+        self.push(ASTType::Factor(factor_1_built), context);
         Ok(())
     }
 
@@ -2445,13 +2447,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// factor: negate factor;
     ///
-    fn factor_56(
+    fn factor_2(
         &mut self,
         _negate_0: &ParseTreeStackEntry<'t>,
         _factor_1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "factor_56";
+        let context = "factor_2";
         trace!("{}", self.trace_item_stack(context));
         let factor_1 = if let Some(ASTType::Factor(factor_1)) = self.pop(context) {
             factor_1
@@ -2463,15 +2465,15 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Negate", context));
         };
-        let factor_56_built = Factor56Builder::default()
+        let factor_2_built = Factor2Builder::default()
             .negate_0(Box::new(negate_0))
             .factor_1(Box::new(factor_1))
             .build()
             .into_diagnostic()?;
-        let factor_56_built = Factor::Factor56(factor_56_built);
+        let factor_2_built = Factor::Factor2(factor_2_built);
         // Calling user action here
-        self.user_grammar.factor(&factor_56_built)?;
-        self.push(ASTType::Factor(factor_56_built), context);
+        self.user_grammar.factor(&factor_2_built)?;
+        self.push(ASTType::Factor(factor_2_built), context);
         Ok(())
     }
 
@@ -2479,14 +2481,14 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// factor: "\(" logical_or "\)";
     ///
-    fn factor_57(
+    fn factor_3(
         &mut self,
         l_paren_0: &ParseTreeStackEntry<'t>,
         _logical_or_1: &ParseTreeStackEntry<'t>,
         r_paren_2: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "factor_57";
+        let context = "factor_3";
         trace!("{}", self.trace_item_stack(context));
         let l_paren_0 = *l_paren_0.token(parse_tree)?;
         let r_paren_2 = *r_paren_2.token(parse_tree)?;
@@ -2495,16 +2497,16 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
         };
-        let factor_57_built = Factor57Builder::default()
+        let factor_3_built = Factor3Builder::default()
             .l_paren_0(l_paren_0)
             .logical_or_1(Box::new(logical_or_1))
             .r_paren_2(r_paren_2)
             .build()
             .into_diagnostic()?;
-        let factor_57_built = Factor::Factor57(factor_57_built);
+        let factor_3_built = Factor::Factor3(factor_3_built);
         // Calling user action here
-        self.user_grammar.factor(&factor_57_built)?;
-        self.push(ASTType::Factor(factor_57_built), context);
+        self.user_grammar.factor(&factor_3_built)?;
+        self.push(ASTType::Factor(factor_3_built), context);
         Ok(())
     }
 
@@ -2512,21 +2514,21 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// number: "0|[1-9][0-9]*";
     ///
-    fn number_58(
+    fn number_0(
         &mut self,
         number_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "number_58";
+        let context = "number_0";
         trace!("{}", self.trace_item_stack(context));
         let number_0 = *number_0.token(parse_tree)?;
-        let number_58_built = NumberBuilder::default()
+        let number_0_built = NumberBuilder::default()
             .number_0(number_0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.number(&number_58_built)?;
-        self.push(ASTType::Number(number_58_built), context);
+        self.user_grammar.number(&number_0_built)?;
+        self.push(ASTType::Number(number_0_built), context);
         Ok(())
     }
 
@@ -2534,25 +2536,25 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// idref: id;
     ///
-    fn idref_59(
+    fn idref_0(
         &mut self,
         _id_0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "idref_59";
+        let context = "idref_0";
         trace!("{}", self.trace_item_stack(context));
         let id_0 = if let Some(ASTType::Id(id_0)) = self.pop(context) {
             id_0
         } else {
             return Err(miette!("{}: Expecting ASTType::Id", context));
         };
-        let idref_59_built = IdrefBuilder::default()
+        let idref_0_built = IdrefBuilder::default()
             .id_0(Box::new(id_0))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.idref(&idref_59_built)?;
-        self.push(ASTType::Idref(idref_59_built), context);
+        self.user_grammar.idref(&idref_0_built)?;
+        self.push(ASTType::Idref(idref_0_built), context);
         Ok(())
     }
 
@@ -2560,18 +2562,18 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn id_60(
+    fn id_0(
         &mut self,
         id_0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "id_60";
+        let context = "id_0";
         trace!("{}", self.trace_item_stack(context));
         let id_0 = *id_0.token(parse_tree)?;
-        let id_60_built = IdBuilder::default().id_0(id_0).build().into_diagnostic()?;
+        let id_0_built = IdBuilder::default().id_0(id_0).build().into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.id(&id_60_built)?;
-        self.push(ASTType::Id(id_60_built), context);
+        self.user_grammar.id(&id_0_built)?;
+        self.push(ASTType::Id(id_0_built), context);
         Ok(())
     }
 }
@@ -2580,7 +2582,7 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, file_name: &Path) {
         self.file_name = file_name.to_owned();
@@ -2598,66 +2600,66 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
     ) -> Result<()> {
         match prod_num {
             0 => self.calc_0(&children[0], parse_tree),
-            1 => self.calc_list_1(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.calc_list_2(parse_tree),
-            3 => self.equality_op_3(&children[0], parse_tree),
-            4 => self.assign_op_4(&children[0], parse_tree),
-            5 => self.logical_or_op_5(&children[0], parse_tree),
-            6 => self.logical_and_op_6(&children[0], parse_tree),
-            7 => self.bitwise_or_op_7(&children[0], parse_tree),
-            8 => self.bitwise_and_op_8(&children[0], parse_tree),
-            9 => self.bitwise_shift_op_9(&children[0], parse_tree),
-            10 => self.relational_op_10(&children[0], parse_tree),
-            11 => self.plus_11(&children[0], parse_tree),
-            12 => self.minus_12(&children[0], parse_tree),
-            13 => self.pow_op_13(&children[0], parse_tree),
-            14 => self.mult_op_14(&children[0], parse_tree),
-            15 => self.instruction_15(&children[0], parse_tree),
-            16 => self.instruction_16(&children[0], parse_tree),
-            17 => self.assign_item_17(&children[0], &children[1], parse_tree),
-            18 => self.assignment_18(&children[0], &children[1], &children[2], parse_tree),
-            19 => self.assignment_list_19(&children[0], &children[1], parse_tree),
-            20 => self.assignment_list_20(parse_tree),
-            21 => self.logical_or_21(&children[0], &children[1], parse_tree),
-            22 => self.logical_or_list_22(&children[0], &children[1], &children[2], parse_tree),
-            23 => self.logical_or_list_23(parse_tree),
-            24 => self.logical_and_24(&children[0], &children[1], parse_tree),
-            25 => self.logical_and_list_25(&children[0], &children[1], &children[2], parse_tree),
-            26 => self.logical_and_list_26(parse_tree),
-            27 => self.bitwise_or_27(&children[0], &children[1], parse_tree),
-            28 => self.bitwise_or_list_28(&children[0], &children[1], &children[2], parse_tree),
-            29 => self.bitwise_or_list_29(parse_tree),
-            30 => self.bitwise_and_30(&children[0], &children[1], parse_tree),
-            31 => self.bitwise_and_list_31(&children[0], &children[1], &children[2], parse_tree),
-            32 => self.bitwise_and_list_32(parse_tree),
-            33 => self.equality_33(&children[0], &children[1], parse_tree),
-            34 => self.equality_list_34(&children[0], &children[1], &children[2], parse_tree),
-            35 => self.equality_list_35(parse_tree),
-            36 => self.relational_36(&children[0], &children[1], parse_tree),
-            37 => self.relational_list_37(&children[0], &children[1], &children[2], parse_tree),
-            38 => self.relational_list_38(parse_tree),
-            39 => self.bitwise_shift_39(&children[0], &children[1], parse_tree),
-            40 => self.bitwise_shift_list_40(&children[0], &children[1], &children[2], parse_tree),
-            41 => self.bitwise_shift_list_41(parse_tree),
-            42 => self.add_op_42(&children[0], parse_tree),
-            43 => self.add_op_43(&children[0], parse_tree),
-            44 => self.summ_44(&children[0], &children[1], parse_tree),
-            45 => self.summ_list_45(&children[0], &children[1], &children[2], parse_tree),
-            46 => self.summ_list_46(parse_tree),
-            47 => self.mult_47(&children[0], &children[1], parse_tree),
-            48 => self.mult_list_48(&children[0], &children[1], &children[2], parse_tree),
-            49 => self.mult_list_49(parse_tree),
-            50 => self.power_50(&children[0], &children[1], parse_tree),
-            51 => self.power_list_51(&children[0], &children[1], &children[2], parse_tree),
-            52 => self.power_list_52(parse_tree),
-            53 => self.negate_53(&children[0], parse_tree),
-            54 => self.factor_54(&children[0], parse_tree),
-            55 => self.factor_55(&children[0], parse_tree),
-            56 => self.factor_56(&children[0], &children[1], parse_tree),
-            57 => self.factor_57(&children[0], &children[1], &children[2], parse_tree),
-            58 => self.number_58(&children[0], parse_tree),
-            59 => self.idref_59(&children[0], parse_tree),
-            60 => self.id_60(&children[0], parse_tree),
+            1 => self.calc_list_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.calc_list_1(parse_tree),
+            3 => self.equality_op_0(&children[0], parse_tree),
+            4 => self.assign_op_0(&children[0], parse_tree),
+            5 => self.logical_or_op_0(&children[0], parse_tree),
+            6 => self.logical_and_op_0(&children[0], parse_tree),
+            7 => self.bitwise_or_op_0(&children[0], parse_tree),
+            8 => self.bitwise_and_op_0(&children[0], parse_tree),
+            9 => self.bitwise_shift_op_0(&children[0], parse_tree),
+            10 => self.relational_op_0(&children[0], parse_tree),
+            11 => self.plus_0(&children[0], parse_tree),
+            12 => self.minus_0(&children[0], parse_tree),
+            13 => self.pow_op_0(&children[0], parse_tree),
+            14 => self.mult_op_0(&children[0], parse_tree),
+            15 => self.instruction_0(&children[0], parse_tree),
+            16 => self.instruction_1(&children[0], parse_tree),
+            17 => self.assign_item_0(&children[0], &children[1], parse_tree),
+            18 => self.assignment_0(&children[0], &children[1], &children[2], parse_tree),
+            19 => self.assignment_list_0(&children[0], &children[1], parse_tree),
+            20 => self.assignment_list_1(parse_tree),
+            21 => self.logical_or_0(&children[0], &children[1], parse_tree),
+            22 => self.logical_or_list_0(&children[0], &children[1], &children[2], parse_tree),
+            23 => self.logical_or_list_1(parse_tree),
+            24 => self.logical_and_0(&children[0], &children[1], parse_tree),
+            25 => self.logical_and_list_0(&children[0], &children[1], &children[2], parse_tree),
+            26 => self.logical_and_list_1(parse_tree),
+            27 => self.bitwise_or_0(&children[0], &children[1], parse_tree),
+            28 => self.bitwise_or_list_0(&children[0], &children[1], &children[2], parse_tree),
+            29 => self.bitwise_or_list_1(parse_tree),
+            30 => self.bitwise_and_0(&children[0], &children[1], parse_tree),
+            31 => self.bitwise_and_list_0(&children[0], &children[1], &children[2], parse_tree),
+            32 => self.bitwise_and_list_1(parse_tree),
+            33 => self.equality_0(&children[0], &children[1], parse_tree),
+            34 => self.equality_list_0(&children[0], &children[1], &children[2], parse_tree),
+            35 => self.equality_list_1(parse_tree),
+            36 => self.relational_0(&children[0], &children[1], parse_tree),
+            37 => self.relational_list_0(&children[0], &children[1], &children[2], parse_tree),
+            38 => self.relational_list_1(parse_tree),
+            39 => self.bitwise_shift_0(&children[0], &children[1], parse_tree),
+            40 => self.bitwise_shift_list_0(&children[0], &children[1], &children[2], parse_tree),
+            41 => self.bitwise_shift_list_1(parse_tree),
+            42 => self.add_op_0(&children[0], parse_tree),
+            43 => self.add_op_1(&children[0], parse_tree),
+            44 => self.summ_0(&children[0], &children[1], parse_tree),
+            45 => self.summ_list_0(&children[0], &children[1], &children[2], parse_tree),
+            46 => self.summ_list_1(parse_tree),
+            47 => self.mult_0(&children[0], &children[1], parse_tree),
+            48 => self.mult_list_0(&children[0], &children[1], &children[2], parse_tree),
+            49 => self.mult_list_1(parse_tree),
+            50 => self.power_0(&children[0], &children[1], parse_tree),
+            51 => self.power_list_0(&children[0], &children[1], &children[2], parse_tree),
+            52 => self.power_list_1(parse_tree),
+            53 => self.negate_0(&children[0], parse_tree),
+            54 => self.factor_0(&children[0], parse_tree),
+            55 => self.factor_1(&children[0], parse_tree),
+            56 => self.factor_2(&children[0], &children[1], parse_tree),
+            57 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
+            58 => self.number_0(&children[0], parse_tree),
+            59 => self.idref_0(&children[0], parse_tree),
+            60 => self.id_0(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

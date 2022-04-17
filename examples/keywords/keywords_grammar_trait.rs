@@ -39,7 +39,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// GrammarList: Items GrammarList; // Vec<T>::Push
     ///
-    fn grammar_list_1(
+    fn grammar_list_0(
         &mut self,
         _items_0: &ParseTreeStackEntry,
         _grammar_list_1: &ParseTreeStackEntry,
@@ -52,7 +52,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// GrammarList: ; // Vec<T>::New
     ///
-    fn grammar_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn grammar_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -60,7 +60,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Items: Declaration;
     ///
-    fn items_3(
+    fn items_0(
         &mut self,
         _declaration_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -72,7 +72,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Items: Block;
     ///
-    fn items_4(
+    fn items_1(
         &mut self,
         _block_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -84,7 +84,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Declaration: Var Identifier ";";
     ///
-    fn declaration_5(
+    fn declaration_0(
         &mut self,
         _var_0: &ParseTreeStackEntry,
         _identifier_1: &ParseTreeStackEntry,
@@ -98,7 +98,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Block: Begin BlockList /* Vec */ End;
     ///
-    fn block_6(
+    fn block_0(
         &mut self,
         _begin_0: &ParseTreeStackEntry,
         _block_list_1: &ParseTreeStackEntry,
@@ -112,7 +112,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// BlockList: Items BlockList; // Vec<T>::Push
     ///
-    fn block_list_7(
+    fn block_list_0(
         &mut self,
         _items_0: &ParseTreeStackEntry,
         _block_list_1: &ParseTreeStackEntry,
@@ -125,7 +125,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// BlockList: ; // Vec<T>::New
     ///
-    fn block_list_8(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -133,7 +133,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Begin: "(?i)\bBegin\b";
     ///
-    fn begin_9(
+    fn begin_0(
         &mut self,
         _begin_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -145,7 +145,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// End: "(?i)\bEnd\b";
     ///
-    fn end_10(
+    fn end_0(
         &mut self,
         _end_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -157,7 +157,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Var: "(?i)\bVar\b";
     ///
-    fn var_11(
+    fn var_0(
         &mut self,
         _var_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -169,7 +169,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn identifier_12(
+    fn identifier_0(
         &mut self,
         _identifier_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -182,7 +182,7 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, _file_name: &Path) {}
 
@@ -197,18 +197,18 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.grammar_0(&children[0], parse_tree),
-            1 => self.grammar_list_1(&children[0], &children[1], parse_tree),
-            2 => self.grammar_list_2(parse_tree),
-            3 => self.items_3(&children[0], parse_tree),
-            4 => self.items_4(&children[0], parse_tree),
-            5 => self.declaration_5(&children[0], &children[1], &children[2], parse_tree),
-            6 => self.block_6(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.block_list_7(&children[0], &children[1], parse_tree),
-            8 => self.block_list_8(parse_tree),
-            9 => self.begin_9(&children[0], parse_tree),
-            10 => self.end_10(&children[0], parse_tree),
-            11 => self.var_11(&children[0], parse_tree),
-            12 => self.identifier_12(&children[0], parse_tree),
+            1 => self.grammar_list_0(&children[0], &children[1], parse_tree),
+            2 => self.grammar_list_1(parse_tree),
+            3 => self.items_0(&children[0], parse_tree),
+            4 => self.items_1(&children[0], parse_tree),
+            5 => self.declaration_0(&children[0], &children[1], &children[2], parse_tree),
+            6 => self.block_0(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.block_list_0(&children[0], &children[1], parse_tree),
+            8 => self.block_list_1(parse_tree),
+            9 => self.begin_0(&children[0], parse_tree),
+            10 => self.end_0(&children[0], parse_tree),
+            11 => self.var_0(&children[0], parse_tree),
+            12 => self.identifier_0(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.6.2"
+version = "0.6.3-pre"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 documentation = "https://docs.rs/parol"
@@ -9,7 +9,7 @@ readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
 license = "MIT"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 bart = "0.1.4"

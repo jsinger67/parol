@@ -15,7 +15,7 @@ fn reproduction_test() -> Result<()> {
         .read_dir()
         .into_diagnostic()?
     {
-        let rx_newline: Regex = Regex::new(r"\r\n|\r\n").unwrap();
+        let rx_newline: Regex = Regex::new(r"\r?\n|\r").unwrap();
         let dir_entry = file_result.into_diagnostic()?;
         let mut file_path = dir_entry.path();
         if file_path.extension().unwrap() == "par" {

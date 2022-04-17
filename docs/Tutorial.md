@@ -135,7 +135,7 @@ We will support the following language elements:
   * Logical expressions
 * BASIC commands
   * PRINT/?
-  * STOP
+  * END
 
 ### The structure of a BASIC program
 
@@ -180,10 +180,12 @@ Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
 Line    : LineNumber Statement { ":" Statement }
         ;
 Statement
-        : "REM" [Comment]
+        : Remark
+        ;
+Remark  : "REM" [Comment]
         ;
 LineNumber
-        : "0|[1-9][0-9]{0,4}"
+        : "[0 ]*[1-9] *([0-9] *){1,4}|[0 ]+"
         ;
 EndOfLine
         : "(\r?\n|\r)+"
@@ -195,7 +197,7 @@ Comment : "[^\r\n]+"
 Some details like the handling of new lines we will explain later (because we are in the 21st
 century now we additionally allow empty lines 😉).
 
-Just let us come quickly up and running.
+Just let us just come quickly up and running.
 
 Now we can build our new BASIC interpreter with
 
@@ -292,7 +294,7 @@ Additionally these preferences can change over time when one has written more gr
 
 So it's up to you to gain a lot of experiences in writing grammars 😉.
 
-Then I want to explain the token literals I presented above without any comment.
+Next I want to explain the token literals I presented above without any comment.
 
 > One general word to terminal symbols in `parol`. All terminal symbols (entities in productions
 that are enclosed by a pair of double quotes) are treated as regular expressions. There is no
@@ -303,14 +305,15 @@ benefit from the rich possibilities that Rust `regex` provides.
 I explain now the more complex terminals, i.e. regular expressions.
 
 ```ebnf
-LineNumber: "[0-9]{1,5}";
+LineNumber: "[0 ]*[1-9] *([0-9] *){1,4}|[0 ]+";
 ```
 
 Line Numbers in the C64 BASIC can encompass numbers from 0 to 63999. This means that it can consist
-of one up to five digits, denoted by the `{1,5}` at the end. Trailing zeros are not prohibited by
-the C64 so you could possibly get valid line numbers with more then 5 digits (for instance
-`00012000`), but I decided to not support this as a special case.
-The regular expression here boils down to this: **Match one to five digits from `0` to `9`**.
+of one up to five digits. Also trailing zeros are allowed by the C64 so you could possibly get valid
+line numbers with more then 5 digits (for instance `00012000`). Also, to be close to the original we
+support spaces in between the digits. The regular expression here boils down to this: **Match any
+number of trailing zeros followed by one non-zero digit ant then match up to four digits from `0` to
+`9` and accept spaces in between OR match one or more zeros with spaces in between**.
 
 ```ebnf
 EndOfLine: "(\r?\n|\r)+";
@@ -324,16 +327,16 @@ line ending stiles exist on different platforms.
 Comment : "[^\r\n]+";
 ```
 
-This defines valid characters within a comment. The `+` at the end again means **at least one of the
-items before** which are defined by a character set (embedded in brackets). The circumflex as first
-symbol makes the character set a negated one meaning it matches all characters except the listed
-ones. So when we put it all together it means **Match at least one character that is neither a
-carriage return nor a new line character**.
+This regular expression defines valid characters within a comment. The `+` at the end again means
+**at least one of the items before** which are defined by a character set (embedded in brackets).
+The circumflex as first symbol makes the character set a negated one meaning it matches all
+characters except the listed ones. So when we put it all together it means **Match at least one
+character that is neither a carriage return nor a new line character**.
 
 With this definition this regex will match all characters until the end of the line. Then the
 `EndOfLine` symbol will be matched as demanded by the grammar definition.
 
-We have to match at least on character (implied by the `+` at the end). This is a general rule:
+We have to match at least one character (implied by the `+` at the end). This is a general rule:
 
 > Terminals should always match non-empty text portions. This means that you have to avoid terminals
 like this:
@@ -348,8 +351,7 @@ making progress in the input. Currently there is no check for this scenario in `
 To support empty comments after `REM` I made it optional:
 
 ```ebnf
-Statement
-        : "REM" [Comment]
+Remark  : "REM" [Comment]
         ;
 ```
 
@@ -368,8 +370,11 @@ order! Their selection is solely made by looking at k lookahead tokens in the in
 
 ```ebnf
 Statement
-        : "REM" [Comment]
-        | "GOTO" LineNumber
+        : Remark
+        | GotoStatement
+        ;
+GotoStatement
+        : "GOTO" LineNumber
         ;
 ```
 
@@ -391,8 +396,8 @@ No parse result
 
 Great!
 
-Before we can go on with more statements we now have to choose the expressions first.
-Simply because we need expressions in the remaining statements.
+Before we can go on with more statements we now have to implement the expressions first, simply
+because we need expressions in the remaining statements.
 
 ## Expressions
 
@@ -407,7 +412,14 @@ Literal : Number
 Number  : Float
         | Integer
         ;
-Float   : "([0-9] *)*(\. *([0-9] *)*)?(E *-? *([0-9] *)+)?"
+Float   : Float1
+        | Float2
+        ;
+// [Integer] DecimalDot [Integer] [Exponent]
+Float1  : "(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
+        ;
+// Integer Exponent
+Float2  : "([0-9] *)+E *[-+]? *([0-9] *)+"
         ;
 Integer : "([0-9] *)+"
         ;
@@ -416,15 +428,29 @@ Integer : "([0-9] *)+"
 We introduce a category for literals named `Literal` to be able to easily expand with other literals
 like string literals. But for now there is only one kind, the `Number`. The underlying regex's  for
 integer and float literals are a bit quirky because the C64 accepts spaces anywhere within a numeric
-literal. Later we have to post-process these literals to be parsable by Rust.
+literal. Later we have to post-process the matched tokens to be parsable by Rust.
 
-To be able to test this regex we temporarily introduce a dummy statement:
+To be able to test this regex we also introduce the assign statement `Assignment`:
 
 ```ebnf
 Statement
         : "REM" [Comment]
-        | "GOTO" LineNumber
-        | Literal // Test statement only. To be removed later
+        | GotoStatement
+        | Assignment
+        ;
+Assignment
+        : ["LET"] Variable AssignOp Literal
+        ;
+```
+
+Further we define the missing assign operator and the variable names.
+
+```ebnf
+AssignOp:
+        "="
+        ;
+Variable:
+        "[A-Z][0-9A-Z]*"
         ;
 ```
 
@@ -439,73 +465,155 @@ Lets test the literal parsing now.
 ```shell
 cargo run  -- .\test.bas
 ...
+Error: parol_runtime::parser::syntax_error
+
+  × Failed parsing file .\test.bas
+  ├─▶ Production prediction failed at state 0
+  ╰─▶ LA(1): '\r\n'(EndOfLine) at .\test.bas:1:9.
+      at non-terminal "Statement"
+      Current scanner is INITIAL
+      Current production is:
+      /* 8 */ Line: LineNumber Statement LineList;
+      Expecting one of "REM", "GOTO", "Float1", "Float2", "Integer"
+  help: Syntax error in input prevents prediction of next production
+
 Error: parol_runtime::unexpected_token
 
-  × Unexpected token: LA(1) (LineNumber)
+  × Unexpected token: LA(1) (EndOfLine)
    ╭─[.\test.bas:1:1]
  1 │ 10 1 2 3
-   ·    ┬
-   ·    ╰── Unexpected token
+   ·         ─┬
+   ·          ╰── Unexpected token
  2 │ 20 . 1 E 6
+ 3 │ 30 1 22 E -1 2
    ╰────
   help: Unexpected token
-  ```
 
-Oh, an error! What went wrong? We see it quickly with a little practice. The `1` after the line
-number is detected as `LineNumber` token. This is actually correct. The `1` resembles a valid
-`LineNumber` token.
+error: process didn't exit successfully: `target\debug\basic.exe .\test.bas` (exit code: 1)
+```
+
+Oh, an error! What went wrong? We can't really see here what the problem is. Probably something with
+the tokenizing.
+
+To be able to debug this we can switch on logging, a method supported by `parol` intrinsically.
+
+We have to activate logging by setting the `RUST_LOG` environment variable.
+In my tutorial I use Powershell, but it should be easy to transfer it to your shell's syntax:
+
+```powershell
+$env:RUST_LOG="parol_runtime::lexer::token_iter=trace"  
+```
+
+```shell
+cargo run -- .\test.bas
+...
+[2022-04-12T17:58:42Z TRACE parol_runtime::lexer::token_iter] '10 1 2 3', Ty:7, Loc:1,1-9, newline count: 0
+...
+```
+
+With a little practice we can see here that the line number `10` and our literal `1 2 3` are
+combined due to allowed spaces in between digits.
+The terminal type 7 (Ty:7) can be looked up in the generated `basic_parser.rs`:
+
+```rust
+pub const TERMINAL_NAMES: &[&str; 15] = &[
+    /*  0 */ "EndOfInput",
+    /*  1 */ "Newline",
+    /*  2 */ "Whitespace",
+    /*  3 */ "LineComment",
+    /*  4 */ "BlockComment",
+    /*  5 */ "Colon",
+    /*  6 */ "REM",
+    /*  7 */ "LineNumber",
+    /*  8 */ "GOTO",
+    /*  9 */ "EndOfLine",
+    /* 10 */ "Float1",
+    /* 11 */ "Float2",
+    /* 12 */ "Integer",
+    /* 13 */ "Comment",
+    /* 14 */ "Error",
+];
+```
+
+The seven is actually the terminal type `LineNumber`. We have different terminals (line number and
+integer) that are merged together. How we can solve this?
 
 ### Terminal conflicts
 
 We have here our first terminal conflict. This is actually quite common so `parol` provides several
 ways to handle such conflicts.
 
-1. The order of appearance rule
+1. Avoid conflicts by reusing the terminal
 
-    The first one is the order of appearance rule. Terminals that appear earlier in the grammar
-    match with higher priority.
+    This means that we actually should use the same terminal for both line number and integer.
+    Actually this doesn't help us here because we need different terminals due to different scan
+    requirements.
+
+2. The order of appearance rule
+
+    This rule states that terminals that appear earlier in the grammar description match with higher
+    priority.
 
     >Note that this is different from the priority of alternatives of a non-terminal.
     Their priorities are independent from their order.
 
-    But this will not help us here because the result would be the other way round: if we want to
-    match a `LineNumber` parols scanner will match a `Number`.
+    But this will also not help us here because the result would be the other way round: if we want
+    to match a `LineNumber` `parol`'s scanner will match an `Integer`.
 
-2. Scanner states
+3. Scanner states
 
-    The second one is the more versatile solution. We can group conflicting terminals in groups that are
-    called scanner states. And we then switch the current scanner state in our grammar.
+    The third one is the most versatile solution. We can put conflicting terminals in different
+    groups that are called scanner states. And we then switch the current scanner state in our
+    grammar.
 
-So we have to use a special scanner state here.
+So we have to introduce a special scanner state `Expr` (for expression) here.
 
 ```ebnf
-// All numeric literals that are no line numbers
-%scanner NonLn { %auto_newline_off }
+%scanner Expr { %auto_newline_off }
 ```
 
-This introduces a new scanner state or terminal group named `NonLn` to which we can associate our
+This introduces a new scanner state or terminal group named `Expr` to which we can associate our
 numeric literals:
 
 ```ebnf
-Float   : <NonLn>"([0-9] *)*(\. *([0-9] *)*)?(E *-? *([0-9] *)+)?"
+// [Integer] DecimalDot [Integer] [Exponent]
+Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
         ;
-Integer : <NonLn>"([0-9] *)+"
+// Integer Exponent
+Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
         ;
-Comment : <NonLn>"[^\r\n]+"
+Integer : <Expr>"([0-9] *)+"
         ;
 ```
 
-Also note here that we put the comment terminal in this state. The reason becomes clear when we look
-at the way we switch to this state:
+Also we need a new scanner state for the comment terminal because this would otherwise match pretty
+much everything.
 
 ```ebnf
-Line    : LineNumber %push(NonLn) Statement { ":" Statement } %pop()
+%scanner Cmnt { %auto_newline_off }
+```
+
+Then we attach the terminal to this scanner state:
+
+```ebnf
+Comment : <Cmnt>"[^\r\n]+"
         ;
 ```
 
-We use the `Line` production to switch the scanner state after we processed the `LineNumber` with
-the `%push(NonLn)` instruction. At the end of the line we switch back to initial scanner with the
-`%pop()` instruction.
+And do the state switching in the production for remarks:
+
+```ebnf
+Remark  : "REM" %push(Cmnt) [Comment] %pop()
+        ;
+```
+
+And we add the state switch to `Expr` in the production for assignment:
+
+```ebnf
+Assignment
+        : ["LET"] Variable AssignOp %push(Expr) Literal %pop()
+        ;
+```
 
 Viola! Scanner state switching in our grammar description!
 
@@ -521,12 +629,455 @@ scanner states also for the `EndOfLine` terminal:
 
 ```ebnf
 EndOfLine
-        : <INITIAL, NonLn>"(\r?\n|\r)+"
+        : <INITIAL, Expr>"(\r?\n|\r)+"
         ;
 ```
 
-It should belong to both the INITIAL (the default scanner state) and the NonNl scanner state.
+It should belong to both the `INITIAL` (the default scanner state) and the `Expr` scanner state.
 Can you figure out, why?
 
-I admit, that this is hard to understand because it has to do with how scanner states and
-acquisition of lookahead tokens in `parol_runtime` works.
+Yes, the `EndOfLine` is used in production `Basic` also in the `INITIAL` scanner state.
+
+>There is another reason you may need to associate terminals with multiple scanner states.
+It's because the provision of lookahead tokens will be made with the current active scanner and may
+fail if a token is not known by it. Thus some terminals need to belong to the state from where the
+switch comes from. These are typically special terminals that trigger the scanner switch.
+>
+>I admit, that this is hard to understand because it has to do with the way scanner states and the
+acquisition of lookahead tokens work in `parol_runtime`.
+>
+>Currently we don't need to understand that in depth.
+
+And here is just another explanation:
+
+>Terminals vs. tokens:
+>
+> Terminals are syntactical entities that describe your grammar. You define them in the grammar
+description file usually by means of regular expressions.
+>
+> Tokens are scanned portions of text that belong to a certain terminal type. They emerge during the
+process of parsing.
+
+Now we hopefully understand the nature of terminal conflicts and the ways to handle them. Lets
+continue with the definition of expressions.
+
+Our complete grammar description should now look like this:
+
+```ebnf
+%start Basic
+%title "Basic grammar"
+%comment "Empty grammar generated by `parol`"
+%auto_newline_off
+
+%scanner Cmnt { %auto_newline_off }
+%scanner Expr { %auto_newline_off }
+
+%%
+
+Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
+        ;
+Line    : LineNumber Statement { ":" Statement }
+        ;
+Statement
+        : Remark
+        | GotoStatement
+        | Assignment
+        ;
+Remark  : "REM" %push(Cmnt) [Comment] %pop()
+        ;
+LineNumber
+        : "[0 ]*[1-9] *([0-9] *){1,4}|[0 ]+"
+        ;
+GotoStatement
+        : "GOTO" LineNumber
+        ;
+Assignment
+        : ["LET"] Variable AssignOp %push(Expr) Literal %pop()
+        ;
+EndOfLine
+        : <INITIAL, Expr>"(\r?\n|\r)+"
+        ;
+Literal : Number
+        ;
+Number  : Float
+        | Integer
+        ;
+Float   : Float1
+        | Float2
+        ;
+// [Integer] DecimalDot [Integer] [Exponent]
+Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
+        ;
+// Integer Exponent
+Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
+        ;
+Integer : <Expr>"([0-9] *)+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// OPERATOR SYMBOLS
+AssignOp
+        : "="
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// COMMENT
+Comment : <Cmnt>"[^\r\n]+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// VARIABLE
+Variable: "[A-Z][0-9A-Z]*"
+        ;
+```
+
+### Variables
+
+We silently introduces variables in the previous paragraph. Here we will explain them in more detail.
+A variable's name can only start with an alphabetic character (A to Z). All following characters can
+be alphanumeric if any exist. Actually only the first two characters contribute to the name of a
+variable, i.e. all additional ones are ignored.
+
+We only want to support floating point variables in out interpreter, so we don't support suffixes
+like `%` or `$` for integer and string variables.
+
+So we define the terminal for variable names as already seen above:
+
+```ebnf
+Variable:
+        "[A-Z][0-9A-Z]*"
+        ;
+```
+
+Lets test the variable parsing together with literals now.
+
+```basic
+10 A1 = 1 2 3
+20 BB = . 1 E 6
+30 LET CCC = 1 22 E -1 2
+```
+
+```shell
+cargo run  -- .\test.bas
+```
+
+### Add parse tree visualization
+
+To see if our grammar works right before we start implementing the actual language processing we can
+use the parse tree visualization of parol. Therefore we need to add an additional dependency.
+
+```shell
+cargo add id_tree_layout
+```
+
+Then we add to `main.rs` the following use instructions:
+
+```rust
+use id_tree::Tree;
+use id_tree_layout::Layouter;
+use parol_runtime::parser::ParseTreeType;
+```
+
+and at the end we add this function:
+
+```rust
+fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+    svg_full_file_name.set_extension("svg");
+
+    Layouter::new(syntax_tree)
+        .with_file_path(&svg_full_file_name)
+        .write()
+        .into_diagnostic()
+        .wrap_err("Failed writing layout")
+}
+```
+
+Then we need to assign the returned parse tree to a value:
+
+```rust
+let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
+```
+
+And call the parse tree generation in case of success:
+
+```rust
+        println!("Success!\n{}", basic_grammar);
+        generate_tree_layout(&syntax_tree, &file_name)
+```
+
+Delete the `Ok(())` in the success branch.
+
+Finally `main.rs` should look like this:
+
+```rust
+#[macro_use]
+extern crate derive_builder;
+
+#[macro_use]
+extern crate lazy_static;
+
+extern crate parol_runtime;
+
+mod basic_grammar;
+// The output is version controlled
+mod basic_grammar_trait;
+mod basic_parser;
+
+use crate::basic_grammar::BasicGrammar;
+use crate::basic_parser::parse;
+use id_tree::Tree;
+use id_tree_layout::Layouter;
+use log::debug;
+use miette::{miette, IntoDiagnostic, Result, WrapErr};
+use parol_runtime::parser::ParseTreeType;
+use std::env;
+use std::fs;
+use std::time::Instant;
+
+// To generate:
+// parol -f ./basic.par -e ./basic-exp.par -p ./src/basic_parser.rs -a ./src/basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -g
+
+fn main() -> Result<()> {
+    env_logger::init();
+    debug!("env logger started");
+
+    let args: Vec<String> = env::args().collect();
+    if args.len() >= 2 {
+        let file_name = args[1].clone();
+        let input = fs::read_to_string(file_name.clone())
+            .into_diagnostic()
+            .wrap_err(format!("Can't read file {}", file_name))?;
+        let mut basic_grammar = BasicGrammar::new();
+        let now = Instant::now();
+        let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
+            .wrap_err(format!("Failed parsing file {}", file_name))?;
+        let elapsed_time = now.elapsed();
+        println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
+        if args.len() > 2 && args[2] == "-q" {
+            Ok(())
+        } else {
+            println!("Success!\n{}", basic_grammar);
+            generate_tree_layout(&syntax_tree, &file_name)
+        }
+    } else {
+        Err(miette!("Please provide a file name as first parameter!"))
+    }
+}
+
+fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+    svg_full_file_name.set_extension("svg");
+
+    Layouter::new(syntax_tree)
+        .with_file_path(&svg_full_file_name)
+        .write()
+        .into_diagnostic()
+        .wrap_err("Failed writing layout")
+}
+```
+
+When we now parse our basic file we will find a parse tree beside the `test.bas` as `test.svg`.
+You can open this file in a browser and see if the structure of the tree fits the needs.
+
+It is helpful to minimize the parse tree by only parsing the parts that are interesting for us at
+the moment.
+
+```basic
+10 A1 = 1 2 3
+```
+
+In this tree we should be able to identify the assignment as sub-category of the statement. And
+under the assignment you should find the variable and the other parts of it.
+
+> Eventually, when your grammar is flawless you can remove the parse tree visualization and even
+suppress the generation of a parse tree by using the `trim_parse_tree` feature of the `parol_runtime`
+create. Doing so will increase the performance of the parsing process.
+>
+>```toml
+>[dependencies]
+>parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
+>```
+
+## Complete Basic grammar
+
+To speed up our tutorial I will present here the final grammar description. It is recommended that
+you try to understand it thoroughly.
+
+```ebnf
+%start Basic
+%title "Basic grammar"
+%comment "Empty grammar generated by `parol`"
+%auto_newline_off
+
+%scanner Cmnt { %auto_newline_off }
+%scanner Expr { %auto_newline_off }
+
+%%
+
+Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
+        ;
+Line    : LineNumber Statement { <INITIAL, Expr>":" Statement }
+        ;
+LineNumber
+        : "[0 ]*[1-9] *([0-9] *){1,4}|[0 ]+"
+        ;
+Statement
+        : Remark
+        | GotoStatement
+        | IfStatement
+        | Assignment
+        | PrintStatement
+        | EndStatement
+        ;
+Remark  : "REM" %push(Cmnt) [Comment] %pop()
+        ;
+GotoStatement
+        : Goto LineNumber
+        ;
+IfStatement
+        : If %push(Expr) Expression %pop() IfBody
+        ;
+Assignment
+        : [Let] Variable AssignOp %push(Expr) Expression %pop()
+        ;
+IfBody  : Then Statement
+        | Goto LineNumber
+        ;
+PrintStatement
+        : Print %push(Expr) Expression  {<INITIAL, Expr>"," Expression } %pop() 
+        ;
+EndStatement
+        : End
+        ;
+EndOfLine
+        : <INITIAL, Expr>"(\r?\n|\r)+"
+        ;
+Literal : Number
+        ;
+Number  : Float
+        | Integer
+        ;
+Float   : Float1
+        | Float2
+        ;
+// [Integer] DecimalDot [Integer] [Exponent]
+Float1  : <Expr>"(([0-9] *)+)?\. *(([0-9] *)+)? *(E *[-+]? *([0-9] *)+)?"
+        ;
+// Integer Exponent
+Float2  : <Expr>"([0-9] *)+E *[-+]? *([0-9] *)+"
+        ;
+Integer : <Expr>"([0-9] *)+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// KEYWORDS
+If      : <INITIAL, Expr>"IF"
+        ;
+Then    : <INITIAL, Expr>"THEN"
+        ;
+Goto    : <INITIAL, Expr>"GO *TO"
+        ;
+Let     : <INITIAL, Expr>"LET"
+        ;
+Print   : <INITIAL, Expr>"PRINT|\?"
+        ;
+End     : <INITIAL, Expr>"End"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// OPERATOR SYMBOLS
+AssignOp
+        : "="
+        ;
+LogicalOrOp
+        : <Expr>"N?OR"
+        ;
+LogicalAndOp
+        : <Expr>"AND"
+        ;
+LogicalNotOp
+        : <Expr>"NOT"
+        ;
+RelationalOp
+        : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
+        ;
+Plus    : <Expr>"\+"
+        ;
+Minus   : <Expr>"-"
+        ;
+MulOp   : <Expr>"\*|/"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// PARENTHESIS
+LParen  : <Expr>"\("
+        ;
+RParen  : <Expr>"\)"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// COMMENT
+Comment : <Cmnt>"[^\r\n]+"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// VARIABLE
+Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*"
+        ;
+
+// -------------------------------------------------------------------------------------------------
+// EXPRESSIONS
+
+Expression
+        : LogicalOr
+        ;
+LogicalOr
+        : LogicalAnd { LogicalOrOp LogicalAnd }
+        ;
+LogicalAnd
+        : LogicalNot { LogicalAndOp LogicalNot }
+        ;
+LogicalNot
+        : [LogicalNotOp] Relational
+        ;
+Relational
+        : Summation { RelationalOp Summation }
+        ;
+Summation
+        : Multiplication { (Plus | Minus) Multiplication }
+        ;
+Multiplication
+        : Factor { MulOp Factor }
+        ;
+Factor  : Literal
+        | Variable
+        | Minus Factor
+        | LParen Expression RParen
+        ;
+```
+
+Operator precedence is realized by sub-categorizing higher prioritized elements. By this approach
+you force the parser to branch into those first which leads to earlier evaluation in the end.
+
+Please, try to comprehend this by looking at the parse tree of this program:
+
+```basic
+10 A1 = 1 + 2 * -3
+```
+
+You should now test the grammar with own basic programs to verify the grammar we wrote until now.
+Maybe something like this:
+
+```basic
+0010IFAF=AF THENIFAF GOTO10
+```
+
+## Implementing the interpreter
+
+We were able to postpone the language implementation until now. I appraise this as one of the most
+unique and useful properties of `parol`. One can actually do rapid prototyping on a language!
+
+Anyhow, eventually we need to do some grammar processing to have more than an acceptor for a
+language.
+

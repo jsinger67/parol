@@ -74,12 +74,12 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier_10(
+    fn identifier_0(
         &mut self,
         identifier_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "identifier_10";
+        let context = "identifier_0";
         let id = identifier_0.symbol(parse_tree)?;
         self.push(ScannerStatesGrammarItem::Identifier(id.to_owned()), context);
         Ok(())
@@ -89,12 +89,12 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ///
     /// Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
     ///
-    fn escaped_11(
+    fn escaped_0(
         &mut self,
         escaped_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "escaped_11";
+        let context = "escaped_0";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
             let mut element = escaped_0.symbol(parse_tree)?.to_string();
             element.remove(0);
@@ -118,12 +118,12 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ///
     /// NoneQuote: <String>"[^\u{22}\u{5c}]+";
     ///
-    fn none_quote_13(
+    fn none_quote_0(
         &mut self,
         none_quote_0: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "none_quote_13";
+        let context = "none_quote_0";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
             let element = none_quote_0.symbol(parse_tree)?;
             s.push_str(element);
@@ -138,12 +138,12 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ///
     /// StringDelimiter: <INITIAL, String>"\u{22}";
     ///
-    fn string_delimiter_14(
+    fn string_delimiter_0(
         &mut self,
         _string_delimiter_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_delimiter_14";
+        let context = "string_delimiter_0";
         if self.in_string {
             self.in_string = false;
         } else {

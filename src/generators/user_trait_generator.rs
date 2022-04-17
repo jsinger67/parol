@@ -240,11 +240,11 @@ impl<'a> UserTraitGenerator<'a> {
     fn format_type(
         ast_type: &ASTType,
         non_terminal: &str,
-        prod_num: Option<usize>,
+        rel_idx: Option<usize>,
         comment: StrVec,
     ) -> Option<String> {
-        let non_terminal = if let Some(prod_num) = prod_num {
-            NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, prod_num))
+        let non_terminal = if let Some(rel_idx) = rel_idx {
+            NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, rel_idx))
         } else {
             NmHlp::to_upper_camel_case(non_terminal)
         };
@@ -323,7 +323,7 @@ impl<'a> UserTraitGenerator<'a> {
                     comment.push(String::default());
                     comment.push(a.prod_string.clone());
                     comment.push(String::default());
-                    Self::format_type(&a.out_type, &a.non_terminal, Some(a.prod_num), comment)
+                    Self::format_type(&a.out_type, &a.non_terminal, Some(a.rel_idx), comment)
                         .into_iter()
                         .for_each(|s| acc.push(s));
                     acc
@@ -442,11 +442,18 @@ impl<'a> UserTraitGenerator<'a> {
 
         trace!("user_trait_functions:\n{}", user_trait_functions);
 
+        // TODO: Use type_ifo.actions here too!
         let trait_caller = self.grammar_config.cfg.pr.iter().enumerate().fold(
             Ok(StrVec::new(12)),
             |acc: Result<StrVec>, (i, p)| {
                 if let Ok(mut acc) = acc {
-                    let fn_name = NmHlp::to_lower_snake_case(&format!("{}_{}", p.get_n_str(), i));
+                    let rel_idx = self
+                        .grammar_config
+                        .cfg
+                        .get_alternation_index_of_production(i)
+                        .unwrap();
+                    let fn_name =
+                        NmHlp::to_lower_snake_case(&format!("{}_{}", p.get_n_str(), rel_idx));
                     let fn_arguments = Self::generate_caller_argument_list(p);
                     let user_trait_function_data = UserTraitCallerFunctionDataBuilder::default()
                         .fn_name(fn_name)

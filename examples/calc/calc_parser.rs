@@ -7,6 +7,7 @@
 use id_tree::Tree;
 use miette::Result;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
+#[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };

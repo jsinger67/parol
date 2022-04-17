@@ -219,6 +219,10 @@ pub struct Action {
     /// production and action.
     pub(crate) prod_num: ProductionIndex,
 
+    /// The relative index of a production within its alternatives.
+    /// Used for auto generation to get a more stable generation experience
+    pub(crate) rel_idx: usize,
+
     /// The function name
     pub(crate) fn_name: String,
 
@@ -246,8 +250,9 @@ impl Display for Action {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(
             f,
-            "/* {} */ (({}) -> {})  {{ {} }}",
+            "/* {}, {} */ (({}) -> {})  {{ {} }}",
             self.prod_num,
+            self.rel_idx,
             self.args
                 .iter()
                 .map(|a| a.arg_type.type_name())
@@ -357,7 +362,7 @@ impl GrammarTypeInfo {
         )
     }
 
-    fn deduce_type_of_production(&self, prod: &Pr, prod_num: ProductionIndex) -> Result<ASTType> {
+    fn deduce_type_of_production(&self, prod: &Pr, rel_idx: usize) -> Result<ASTType> {
         match prod.effective_len() {
             0 => match prod.2 {
                 ProductionAttribute::None => Ok(ASTType::Unit), // Normal empty production
@@ -368,7 +373,7 @@ impl GrammarTypeInfo {
                     "AddToCollection attribute should not be applied on an empty production"
                 )),
             },
-            _ => Ok(self.struct_data_of_production(prod, prod_num)?),
+            _ => Ok(self.struct_data_of_production(prod, rel_idx)?),
         }
     }
 
@@ -377,18 +382,23 @@ impl GrammarTypeInfo {
         let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
         self.actions = Vec::with_capacity(grammar_config.cfg.pr.len());
         for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
+            let rel_idx = grammar_config
+                .cfg
+                .get_alternation_index_of_production(i)
+                .unwrap();
             self.actions.push(
                 ActionBuilder::default()
                     .non_terminal(pr.get_n())
                     .prod_num(i)
+                    .rel_idx(rel_idx)
                     .fn_name(NmHlp::to_lower_snake_case(&format!(
                         "{}_{}",
                         pr.get_n_str(),
-                        i
+                        rel_idx
                     )))
                     .prod_string(pr.format(&scanner_state_resolver)?)
                     .args(self.build_argument_list(pr)?)
-                    .out_type(self.deduce_type_of_production(pr, i)?)
+                    .out_type(self.deduce_type_of_production(pr, rel_idx)?)
                     .sem(pr.2.clone())
                     .alts(
                         grammar_config
@@ -416,9 +426,6 @@ impl GrammarTypeInfo {
                     .clone()
                     .with_name(self.actions[actions[0]].non_terminal.clone()),
             ),
-            // Some(ASTType::TypeName(NmHlp::to_upper_camel_case(
-            //     &self.actions[actions[0]].non_terminal,
-            // ))),
             _ => {
                 let actions = actions
                     .iter()
@@ -476,12 +483,12 @@ impl GrammarTypeInfo {
                                     (
                                         NmHlp::to_upper_camel_case(&format!(
                                             "{}_{}",
-                                            a.non_terminal, a.prod_num
+                                            a.non_terminal, a.rel_idx
                                         )),
                                         ASTType::TypeName(format!(
                                             "{}_{}{}",
                                             NmHlp::to_upper_camel_case(nt_ref),
-                                            a.prod_num,
+                                            a.rel_idx,
                                             if cfg[a.prod_num].effective_len() > 0 {
                                                 "<'t>"
                                             } else {
@@ -596,7 +603,7 @@ impl GrammarTypeInfo {
             .for_each(|a| a.adjust_arguments_used(used))
     }
 
-    fn struct_data_of_production(&self, prod: &Pr, prod_num: ProductionIndex) -> Result<ASTType> {
+    fn struct_data_of_production(&self, prod: &Pr, rel_idx: usize) -> Result<ASTType> {
         let mut arguments = self.build_argument_list(prod)?;
         if matches!(prod.2, ProductionAttribute::AddToCollection) {
             Ok(ASTType::Repeat(NmHlp::to_upper_camel_case(
@@ -604,7 +611,7 @@ impl GrammarTypeInfo {
             )))
         } else {
             Ok(ASTType::Struct(
-                NmHlp::to_upper_camel_case(&format!("{}{}", prod.get_n_str(), prod_num)),
+                NmHlp::to_upper_camel_case(&format!("{}{}", prod.get_n_str(), rel_idx)),
                 arguments
                     .drain(..)
                     .map(|arg| (arg.name, arg.arg_type))

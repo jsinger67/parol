@@ -1,11 +1,7 @@
 use crate::{
     assign_operator::AssignOperator,
     binary_operator::BinaryOperator,
-    calc_grammar_trait::{
-        AddOp, Assignment, AssignmentList, BitwiseAnd, BitwiseOr, BitwiseShift, Calc,
-        CalcGrammarTrait, CalcList, Equality, Factor, Factor54, Factor55, Factor56, Factor57,
-        Instruction, LogicalAnd, LogicalOr, Mult, Power, Relational, Summ,
-    },
+    calc_grammar_trait::*,
     errors::CalcError,
 };
 use log::trace;
@@ -162,8 +158,8 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_instruction(&mut self, insn: &Instruction) -> Result<()> {
         match insn {
-            Instruction::Instruction15(ins) => self.process_assignment(&ins.assignment_0),
-            Instruction::Instruction16(ins) => self
+            Instruction::Instruction0(ins) => self.process_assignment(&ins.assignment_0),
+            Instruction::Instruction1(ins) => self
                 .process_logical_or(&ins.logical_or_0)
                 .map(|r| self.calc_results.push(r)),
         }
@@ -290,8 +286,8 @@ impl<'t> CalcGrammar<'t> {
         let mut result = self.process_mult(&summ.mult_0)?;
         for item in &summ.summ_list_1 {
             let op: BinaryOperator = match &*item.add_op_0 {
-                AddOp::AddOp42(plus) => plus.plus_0.plus_0.symbol.try_into(),
-                AddOp::AddOp43(minus) => minus.minus_0.minus_0.symbol.try_into(),
+                AddOp::AddOp0(plus) => plus.plus_0.plus_0.symbol.try_into(),
+                AddOp::AddOp1(minus) => minus.minus_0.minus_0.symbol.try_into(),
             }?;
             let next_operand = self.process_mult(&item.mult_1)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
@@ -331,12 +327,12 @@ impl<'t> CalcGrammar<'t> {
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
-            Factor::Factor54(Factor54 { number_0 }) => {
+            Factor::Factor0(Factor0 { number_0 }) => {
                 Ok(self.parse_number(context, &number_0.number_0)?)
             }
-            Factor::Factor55(Factor55 { idref_0 }) => self.value(&idref_0.id_0.id_0),
-            Factor::Factor56(Factor56 { factor_1, .. }) => Ok(-(self.process_factor(factor_1)?)),
-            Factor::Factor57(Factor57 { logical_or_1, .. }) => {
+            Factor::Factor1(Factor1 { idref_0 }) => self.value(&idref_0.id_0.id_0),
+            Factor::Factor2(Factor2 { factor_1, .. }) => Ok(-(self.process_factor(factor_1)?)),
+            Factor::Factor3(Factor3 { logical_or_1, .. }) => {
                 self.process_logical_or(logical_or_1)
             }
         }

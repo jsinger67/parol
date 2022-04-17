@@ -1,5 +1,5 @@
 $ErrorCont = 0
-$Config = "debug"
+$Config = "release"
 $CargoConfig = if ($Config -eq "release") { "--release" } else { "" }
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan

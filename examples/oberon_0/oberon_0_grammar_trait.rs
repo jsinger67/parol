@@ -39,7 +39,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// selectorlist: "\." ident selectorlist;
     ///
-    fn selectorlist_1(
+    fn selectorlist_0(
         &mut self,
         _dot_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -53,7 +53,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// selectorlist: "\[" expression "]" selectorlist;
     ///
-    fn selectorlist_2(
+    fn selectorlist_1(
         &mut self,
         _l_bracket_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -68,7 +68,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// selectorlist: ;
     ///
-    fn selectorlist_3(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn selectorlist_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -76,7 +76,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// factor: ident selector;
     ///
-    fn factor_4(
+    fn factor_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _selector_1: &ParseTreeStackEntry,
@@ -89,7 +89,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// factor: integer;
     ///
-    fn factor_5(
+    fn factor_1(
         &mut self,
         _integer_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -101,7 +101,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// factor: "\(" expression "\)";
     ///
-    fn factor_6(
+    fn factor_2(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -115,7 +115,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// factor: "~" factor;
     ///
-    fn factor_7(
+    fn factor_3(
         &mut self,
         _tilde_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
@@ -128,7 +128,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// factor: UnaryOp factor;
     ///
-    fn factor_8(
+    fn factor_4(
         &mut self,
         _unary_op_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
@@ -141,7 +141,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// term: factor MulExpression;
     ///
-    fn term_9(
+    fn term_0(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _mul_expression_1: &ParseTreeStackEntry,
@@ -154,7 +154,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// MulExpression: MulOperator factor MulExpression;
     ///
-    fn mul_expression_10(
+    fn mul_expression_0(
         &mut self,
         _mul_operator_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
@@ -168,7 +168,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// MulExpression: ;
     ///
-    fn mul_expression_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn mul_expression_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -176,7 +176,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// SimpleExpression: term AddExpression;
     ///
-    fn simple_expression_12(
+    fn simple_expression_0(
         &mut self,
         _term_0: &ParseTreeStackEntry,
         _add_expression_1: &ParseTreeStackEntry,
@@ -189,7 +189,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// AddExpression: AddOperator term AddExpression;
     ///
-    fn add_expression_13(
+    fn add_expression_0(
         &mut self,
         _add_operator_0: &ParseTreeStackEntry,
         _term_1: &ParseTreeStackEntry,
@@ -203,7 +203,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// AddExpression: ;
     ///
-    fn add_expression_14(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn add_expression_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -211,7 +211,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// AssignOp: ":=";
     ///
-    fn assign_op_15(
+    fn assign_op_0(
         &mut self,
         _colon_equ_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -223,7 +223,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// RelationOp: AssignOp;
     ///
-    fn relation_op_16(
+    fn relation_op_0(
         &mut self,
         _assign_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -235,7 +235,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// RelationOp: RelationalOps;
     ///
-    fn relation_op_17(
+    fn relation_op_1(
         &mut self,
         _relational_ops_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -247,7 +247,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// RelationalOps: ">=|<=|\#|<|>";
     ///
-    fn relational_ops_18(
+    fn relational_ops_0(
         &mut self,
         _relational_ops_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -259,7 +259,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// AssignOp: "=";
     ///
-    fn assign_op_19(
+    fn assign_op_1(
         &mut self,
         _equ_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -271,7 +271,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// expression: SimpleExpression expressionSuffix;
     ///
-    fn expression_20(
+    fn expression_0(
         &mut self,
         _simple_expression_0: &ParseTreeStackEntry,
         _expression_suffix_1: &ParseTreeStackEntry,
@@ -284,7 +284,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// expressionSuffix: RelationOp SimpleExpression;
     ///
-    fn expression_suffix_21(
+    fn expression_suffix_0(
         &mut self,
         _relation_op_0: &ParseTreeStackEntry,
         _simple_expression_1: &ParseTreeStackEntry,
@@ -297,7 +297,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// expressionSuffix: ;
     ///
-    fn expression_suffix_22(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn expression_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -305,7 +305,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// assignment: ident selector AssignOp expression;
     ///
-    fn assignment_23(
+    fn assignment_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _selector_1: &ParseTreeStackEntry,
@@ -320,7 +320,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ActualParameters: "\(" ActualParametersSuffix;
     ///
-    fn actual_parameters_24(
+    fn actual_parameters_0(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
         _actual_parameters_suffix_1: &ParseTreeStackEntry,
@@ -333,7 +333,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ActualParametersSuffix: "\)";
     ///
-    fn actual_parameters_suffix_25(
+    fn actual_parameters_suffix_0(
         &mut self,
         _r_paren_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -345,7 +345,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ActualParametersSuffix: expression expressionlistrest "\)";
     ///
-    fn actual_parameters_suffix_26(
+    fn actual_parameters_suffix_1(
         &mut self,
         _expression_0: &ParseTreeStackEntry,
         _expressionlistrest_1: &ParseTreeStackEntry,
@@ -359,7 +359,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// expressionlistrest: "," expression expressionlistrest;
     ///
-    fn expressionlistrest_27(
+    fn expressionlistrest_0(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -373,7 +373,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// expressionlistrest: ;
     ///
-    fn expressionlistrest_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn expressionlistrest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -381,7 +381,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureCall: ident ProcedureCallSuffix;
     ///
-    fn procedure_call_29(
+    fn procedure_call_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _procedure_call_suffix_1: &ParseTreeStackEntry,
@@ -394,7 +394,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureCallSuffix: ActualParameters;
     ///
-    fn procedure_call_suffix_30(
+    fn procedure_call_suffix_0(
         &mut self,
         _actual_parameters_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -406,7 +406,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureCallSuffix: ;
     ///
-    fn procedure_call_suffix_31(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn procedure_call_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -414,7 +414,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IfStatement: IfPrefix IfStatementSuffix;
     ///
-    fn if_statement_32(
+    fn if_statement_0(
         &mut self,
         _if_prefix_0: &ParseTreeStackEntry,
         _if_statement_suffix_1: &ParseTreeStackEntry,
@@ -427,7 +427,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IfStatementSuffix: "ELSE" StatementSequence "END";
     ///
-    fn if_statement_suffix_33(
+    fn if_statement_suffix_0(
         &mut self,
         _e_l_s_e_0: &ParseTreeStackEntry,
         _statement_sequence_1: &ParseTreeStackEntry,
@@ -441,7 +441,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IfStatementSuffix: "END";
     ///
-    fn if_statement_suffix_34(
+    fn if_statement_suffix_1(
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -453,7 +453,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IfPrefix: "IF" expression "THEN" StatementSequence elseiflist;
     ///
-    fn if_prefix_35(
+    fn if_prefix_0(
         &mut self,
         _i_f_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -469,7 +469,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// elseiflist: "ELSIF" expression "THEN" StatementSequence elseiflist;
     ///
-    fn elseiflist_36(
+    fn elseiflist_0(
         &mut self,
         _e_l_s_i_f_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -485,7 +485,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// elseiflist: ;
     ///
-    fn elseiflist_37(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn elseiflist_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -493,7 +493,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// WhileStatement: "WHILE" expression "DO" StatementSequence "END";
     ///
-    fn while_statement_38(
+    fn while_statement_0(
         &mut self,
         _w_h_i_l_e_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -509,7 +509,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// RepeatStatement: "REPEAT" StatementSequence "UNTIL" expression;
     ///
-    fn repeat_statement_39(
+    fn repeat_statement_0(
         &mut self,
         _r_e_p_e_a_t_0: &ParseTreeStackEntry,
         _statement_sequence_1: &ParseTreeStackEntry,
@@ -524,7 +524,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: assignment;
     ///
-    fn statement_40(
+    fn statement_0(
         &mut self,
         _assignment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -536,7 +536,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: ProcedureCall;
     ///
-    fn statement_41(
+    fn statement_1(
         &mut self,
         _procedure_call_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -548,7 +548,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: IfStatement;
     ///
-    fn statement_42(
+    fn statement_2(
         &mut self,
         _if_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -560,7 +560,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: WhileStatement;
     ///
-    fn statement_43(
+    fn statement_3(
         &mut self,
         _while_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -572,7 +572,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: RepeatStatement;
     ///
-    fn statement_44(
+    fn statement_4(
         &mut self,
         _repeat_statement_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -584,7 +584,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// statement: ;
     ///
-    fn statement_45(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn statement_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -592,7 +592,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// StatementSequence: statement StatementSequenceRest;
     ///
-    fn statement_sequence_46(
+    fn statement_sequence_0(
         &mut self,
         _statement_0: &ParseTreeStackEntry,
         _statement_sequence_rest_1: &ParseTreeStackEntry,
@@ -605,7 +605,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// StatementSequenceRest: ";" statement StatementSequenceRest;
     ///
-    fn statement_sequence_rest_47(
+    fn statement_sequence_rest_0(
         &mut self,
         _semicolon_0: &ParseTreeStackEntry,
         _statement_1: &ParseTreeStackEntry,
@@ -619,7 +619,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// StatementSequenceRest: ;
     ///
-    fn statement_sequence_rest_48(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn statement_sequence_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -627,7 +627,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IdentList: ident IdentListRest;
     ///
-    fn ident_list_49(
+    fn ident_list_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _ident_list_rest_1: &ParseTreeStackEntry,
@@ -640,7 +640,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IdentListRest: "," ident IdentListRest;
     ///
-    fn ident_list_rest_50(
+    fn ident_list_rest_0(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -654,7 +654,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// IdentListRest: ;
     ///
-    fn ident_list_rest_51(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn ident_list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -662,7 +662,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ArrayType: "ARRAY" expression "OF" type;
     ///
-    fn array_type_52(
+    fn array_type_0(
         &mut self,
         _a_r_r_a_y_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -677,7 +677,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FieldList: IdentList ":" type;
     ///
-    fn field_list_53(
+    fn field_list_0(
         &mut self,
         _ident_list_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -691,7 +691,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FieldList: ;
     ///
-    fn field_list_54(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn field_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -699,7 +699,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// RecordType: "RECORD" FieldList FieldListRest "END";
     ///
-    fn record_type_55(
+    fn record_type_0(
         &mut self,
         _r_e_c_o_r_d_0: &ParseTreeStackEntry,
         _field_list_1: &ParseTreeStackEntry,
@@ -714,7 +714,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FieldListRest: ";" FieldList FieldListRest;
     ///
-    fn field_list_rest_56(
+    fn field_list_rest_0(
         &mut self,
         _semicolon_0: &ParseTreeStackEntry,
         _field_list_1: &ParseTreeStackEntry,
@@ -728,7 +728,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FieldListRest: ;
     ///
-    fn field_list_rest_57(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn field_list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -736,7 +736,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// type: ident;
     ///
-    fn type_58(
+    fn type_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -748,7 +748,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// type: ArrayType;
     ///
-    fn type_59(
+    fn type_1(
         &mut self,
         _array_type_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -760,7 +760,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// type: RecordType;
     ///
-    fn type_60(
+    fn type_2(
         &mut self,
         _record_type_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -772,7 +772,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FPSection: "VAR" IdentList ":" type;
     ///
-    fn f_p_section_61(
+    fn f_p_section_0(
         &mut self,
         _v_a_r_0: &ParseTreeStackEntry,
         _ident_list_1: &ParseTreeStackEntry,
@@ -787,7 +787,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FPSection: IdentList ":" type;
     ///
-    fn f_p_section_62(
+    fn f_p_section_1(
         &mut self,
         _ident_list_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -801,7 +801,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FormalParameters: "\(" FormalParametersSuffix;
     ///
-    fn formal_parameters_63(
+    fn formal_parameters_0(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
         _formal_parameters_suffix_1: &ParseTreeStackEntry,
@@ -814,7 +814,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FormalParametersSuffix: "\)";
     ///
-    fn formal_parameters_suffix_64(
+    fn formal_parameters_suffix_0(
         &mut self,
         _r_paren_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -826,7 +826,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FormalParametersSuffix: FPSection FPSectionRest "\)";
     ///
-    fn formal_parameters_suffix_65(
+    fn formal_parameters_suffix_1(
         &mut self,
         _f_p_section_0: &ParseTreeStackEntry,
         _f_p_section_rest_1: &ParseTreeStackEntry,
@@ -840,7 +840,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FPSectionRest: ";" FPSection FPSectionRest;
     ///
-    fn f_p_section_rest_66(
+    fn f_p_section_rest_0(
         &mut self,
         _semicolon_0: &ParseTreeStackEntry,
         _f_p_section_1: &ParseTreeStackEntry,
@@ -854,7 +854,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// FPSectionRest: ;
     ///
-    fn f_p_section_rest_67(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn f_p_section_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -862,7 +862,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureHeading: "PROCEDURE" ident ProcedureHeadingSuffix;
     ///
-    fn procedure_heading_68(
+    fn procedure_heading_0(
         &mut self,
         _p_r_o_c_e_d_u_r_e_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -876,7 +876,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureHeadingSuffix: FormalParameters;
     ///
-    fn procedure_heading_suffix_69(
+    fn procedure_heading_suffix_0(
         &mut self,
         _formal_parameters_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -888,7 +888,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureHeadingSuffix: ;
     ///
-    fn procedure_heading_suffix_70(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn procedure_heading_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -896,7 +896,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBody: declarations ProcedureBodySuffix1;
     ///
-    fn procedure_body_71(
+    fn procedure_body_0(
         &mut self,
         _declarations_0: &ParseTreeStackEntry,
         _procedure_body_suffix1_1: &ParseTreeStackEntry,
@@ -909,7 +909,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBodySuffix1: "BEGIN" StatementSequence ProcedureBodySuffix;
     ///
-    fn procedure_body_suffix1_72(
+    fn procedure_body_suffix1_0(
         &mut self,
         _b_e_g_i_n_0: &ParseTreeStackEntry,
         _statement_sequence_1: &ParseTreeStackEntry,
@@ -923,7 +923,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBodySuffix1: "RETURN" expression "END" ident;
     ///
-    fn procedure_body_suffix1_73(
+    fn procedure_body_suffix1_1(
         &mut self,
         _r_e_t_u_r_n_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -938,7 +938,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBodySuffix1: "END" ident;
     ///
-    fn procedure_body_suffix1_74(
+    fn procedure_body_suffix1_2(
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -951,7 +951,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBodySuffix: "RETURN" expression "END" ident;
     ///
-    fn procedure_body_suffix_75(
+    fn procedure_body_suffix_0(
         &mut self,
         _r_e_t_u_r_n_0: &ParseTreeStackEntry,
         _expression_1: &ParseTreeStackEntry,
@@ -966,7 +966,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureBodySuffix: "END" ident;
     ///
-    fn procedure_body_suffix_76(
+    fn procedure_body_suffix_1(
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -979,7 +979,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureDeclaration: ProcedureHeading ";" ProcedureBody;
     ///
-    fn procedure_declaration_77(
+    fn procedure_declaration_0(
         &mut self,
         _procedure_heading_0: &ParseTreeStackEntry,
         _semicolon_1: &ParseTreeStackEntry,
@@ -993,7 +993,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarations: "TYPE" TypeDecls declarationsSuffix2;
     ///
-    fn declarations_78(
+    fn declarations_0(
         &mut self,
         _t_y_p_e_0: &ParseTreeStackEntry,
         _type_decls_1: &ParseTreeStackEntry,
@@ -1007,7 +1007,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarations: "CONST" ConstDecls declarationsSuffix1;
     ///
-    fn declarations_79(
+    fn declarations_1(
         &mut self,
         _c_o_n_s_t_0: &ParseTreeStackEntry,
         _const_decls_1: &ParseTreeStackEntry,
@@ -1021,7 +1021,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix2: "VAR" VarDecls ProcedureDeclarationList;
     ///
-    fn declarations_suffix2_80(
+    fn declarations_suffix2_0(
         &mut self,
         _v_a_r_0: &ParseTreeStackEntry,
         _var_decls_1: &ParseTreeStackEntry,
@@ -1035,7 +1035,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix2: ProcedureDeclarationList;
     ///
-    fn declarations_suffix2_81(
+    fn declarations_suffix2_1(
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1047,7 +1047,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarations: "VAR" VarDecls ProcedureDeclarationList;
     ///
-    fn declarations_82(
+    fn declarations_2(
         &mut self,
         _v_a_r_0: &ParseTreeStackEntry,
         _var_decls_1: &ParseTreeStackEntry,
@@ -1061,7 +1061,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarations: ProcedureDeclarationList;
     ///
-    fn declarations_83(
+    fn declarations_3(
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1073,7 +1073,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix1: "TYPE" TypeDecls declarationsSuffix;
     ///
-    fn declarations_suffix1_84(
+    fn declarations_suffix1_0(
         &mut self,
         _t_y_p_e_0: &ParseTreeStackEntry,
         _type_decls_1: &ParseTreeStackEntry,
@@ -1087,7 +1087,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
     ///
-    fn declarations_suffix1_85(
+    fn declarations_suffix1_1(
         &mut self,
         _v_a_r_0: &ParseTreeStackEntry,
         _var_decls_1: &ParseTreeStackEntry,
@@ -1101,7 +1101,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix1: ProcedureDeclarationList;
     ///
-    fn declarations_suffix1_86(
+    fn declarations_suffix1_2(
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1113,7 +1113,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;
     ///
-    fn declarations_suffix_87(
+    fn declarations_suffix_0(
         &mut self,
         _v_a_r_0: &ParseTreeStackEntry,
         _var_decls_1: &ParseTreeStackEntry,
@@ -1127,7 +1127,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// declarationsSuffix: ProcedureDeclarationList;
     ///
-    fn declarations_suffix_88(
+    fn declarations_suffix_1(
         &mut self,
         _procedure_declaration_list_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1139,7 +1139,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureDeclarationList: ProcedureDeclaration ";" ProcedureDeclarationList;
     ///
-    fn procedure_declaration_list_89(
+    fn procedure_declaration_list_0(
         &mut self,
         _procedure_declaration_0: &ParseTreeStackEntry,
         _semicolon_1: &ParseTreeStackEntry,
@@ -1153,7 +1153,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ProcedureDeclarationList: ;
     ///
-    fn procedure_declaration_list_90(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn procedure_declaration_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -1161,7 +1161,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ConstDecls: ident AssignOp expression ";" ConstDecls;
     ///
-    fn const_decls_91(
+    fn const_decls_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _assign_op_1: &ParseTreeStackEntry,
@@ -1177,7 +1177,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ConstDecls: ;
     ///
-    fn const_decls_92(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn const_decls_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -1185,7 +1185,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// TypeDecls: ident AssignOp type ";" TypeDecls;
     ///
-    fn type_decls_93(
+    fn type_decls_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _assign_op_1: &ParseTreeStackEntry,
@@ -1201,7 +1201,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// TypeDecls: ;
     ///
-    fn type_decls_94(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn type_decls_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -1209,7 +1209,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// VarDecls: IdentList ":" type ";" VarDecls;
     ///
-    fn var_decls_95(
+    fn var_decls_0(
         &mut self,
         _ident_list_0: &ParseTreeStackEntry,
         _colon_1: &ParseTreeStackEntry,
@@ -1225,7 +1225,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// VarDecls: ;
     ///
-    fn var_decls_96(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn var_decls_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -1233,7 +1233,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// module: "MODULE" ident ";" declarations moduleSuffix;
     ///
-    fn module_97(
+    fn module_0(
         &mut self,
         _m_o_d_u_l_e_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -1249,7 +1249,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// moduleSuffix: "BEGIN" StatementSequence "END" ident "\.";
     ///
-    fn module_suffix_98(
+    fn module_suffix_0(
         &mut self,
         _b_e_g_i_n_0: &ParseTreeStackEntry,
         _statement_sequence_1: &ParseTreeStackEntry,
@@ -1265,7 +1265,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// moduleSuffix: "END" ident "\.";
     ///
-    fn module_suffix_99(
+    fn module_suffix_1(
         &mut self,
         _e_n_d_0: &ParseTreeStackEntry,
         _ident_1: &ParseTreeStackEntry,
@@ -1279,7 +1279,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// MulOperator: "\*|/|DIV|MOD|&";
     ///
-    fn mul_operator_100(
+    fn mul_operator_0(
         &mut self,
         _mul_operator_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1291,7 +1291,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// AddOperator: "\+|-|OR";
     ///
-    fn add_operator_101(
+    fn add_operator_0(
         &mut self,
         _add_operator_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1303,7 +1303,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// UnaryOp: "\+|-";
     ///
-    fn unary_op_102(
+    fn unary_op_0(
         &mut self,
         _unary_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1315,7 +1315,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// ident: "[a-zA-Z][a-zA-Z0-9]*";
     ///
-    fn ident_103(
+    fn ident_0(
         &mut self,
         _ident_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1327,7 +1327,7 @@ pub trait Oberon0GrammarTrait {
     ///
     /// integer: "[0-9]+";
     ///
-    fn integer_104(
+    fn integer_0(
         &mut self,
         _integer_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1340,7 +1340,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, _file_name: &Path) {}
 
@@ -1355,66 +1355,58 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.selector_0(&children[0], parse_tree),
-            1 => self.selectorlist_1(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.selectorlist_2(
+            1 => self.selectorlist_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.selectorlist_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            3 => self.selectorlist_3(parse_tree),
-            4 => self.factor_4(&children[0], &children[1], parse_tree),
-            5 => self.factor_5(&children[0], parse_tree),
-            6 => self.factor_6(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.factor_7(&children[0], &children[1], parse_tree),
-            8 => self.factor_8(&children[0], &children[1], parse_tree),
-            9 => self.term_9(&children[0], &children[1], parse_tree),
-            10 => self.mul_expression_10(&children[0], &children[1], &children[2], parse_tree),
-            11 => self.mul_expression_11(parse_tree),
-            12 => self.simple_expression_12(&children[0], &children[1], parse_tree),
-            13 => self.add_expression_13(&children[0], &children[1], &children[2], parse_tree),
-            14 => self.add_expression_14(parse_tree),
-            15 => self.assign_op_15(&children[0], parse_tree),
-            16 => self.relation_op_16(&children[0], parse_tree),
-            17 => self.relation_op_17(&children[0], parse_tree),
-            18 => self.relational_ops_18(&children[0], parse_tree),
-            19 => self.assign_op_19(&children[0], parse_tree),
-            20 => self.expression_20(&children[0], &children[1], parse_tree),
-            21 => self.expression_suffix_21(&children[0], &children[1], parse_tree),
-            22 => self.expression_suffix_22(parse_tree),
-            23 => self.assignment_23(
+            3 => self.selectorlist_2(parse_tree),
+            4 => self.factor_0(&children[0], &children[1], parse_tree),
+            5 => self.factor_1(&children[0], parse_tree),
+            6 => self.factor_2(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.factor_3(&children[0], &children[1], parse_tree),
+            8 => self.factor_4(&children[0], &children[1], parse_tree),
+            9 => self.term_0(&children[0], &children[1], parse_tree),
+            10 => self.mul_expression_0(&children[0], &children[1], &children[2], parse_tree),
+            11 => self.mul_expression_1(parse_tree),
+            12 => self.simple_expression_0(&children[0], &children[1], parse_tree),
+            13 => self.add_expression_0(&children[0], &children[1], &children[2], parse_tree),
+            14 => self.add_expression_1(parse_tree),
+            15 => self.assign_op_0(&children[0], parse_tree),
+            16 => self.relation_op_0(&children[0], parse_tree),
+            17 => self.relation_op_1(&children[0], parse_tree),
+            18 => self.relational_ops_0(&children[0], parse_tree),
+            19 => self.assign_op_1(&children[0], parse_tree),
+            20 => self.expression_0(&children[0], &children[1], parse_tree),
+            21 => self.expression_suffix_0(&children[0], &children[1], parse_tree),
+            22 => self.expression_suffix_1(parse_tree),
+            23 => self.assignment_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            24 => self.actual_parameters_24(&children[0], &children[1], parse_tree),
-            25 => self.actual_parameters_suffix_25(&children[0], parse_tree),
-            26 => self.actual_parameters_suffix_26(
+            24 => self.actual_parameters_0(&children[0], &children[1], parse_tree),
+            25 => self.actual_parameters_suffix_0(&children[0], parse_tree),
+            26 => self.actual_parameters_suffix_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-            27 => self.expressionlistrest_27(&children[0], &children[1], &children[2], parse_tree),
-            28 => self.expressionlistrest_28(parse_tree),
-            29 => self.procedure_call_29(&children[0], &children[1], parse_tree),
-            30 => self.procedure_call_suffix_30(&children[0], parse_tree),
-            31 => self.procedure_call_suffix_31(parse_tree),
-            32 => self.if_statement_32(&children[0], &children[1], parse_tree),
-            33 => self.if_statement_suffix_33(&children[0], &children[1], &children[2], parse_tree),
-            34 => self.if_statement_suffix_34(&children[0], parse_tree),
-            35 => self.if_prefix_35(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                &children[4],
-                parse_tree,
-            ),
-            36 => self.elseiflist_36(
+            27 => self.expressionlistrest_0(&children[0], &children[1], &children[2], parse_tree),
+            28 => self.expressionlistrest_1(parse_tree),
+            29 => self.procedure_call_0(&children[0], &children[1], parse_tree),
+            30 => self.procedure_call_suffix_0(&children[0], parse_tree),
+            31 => self.procedure_call_suffix_1(parse_tree),
+            32 => self.if_statement_0(&children[0], &children[1], parse_tree),
+            33 => self.if_statement_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            34 => self.if_statement_suffix_1(&children[0], parse_tree),
+            35 => self.if_prefix_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1422,8 +1414,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            37 => self.elseiflist_37(parse_tree),
-            38 => self.while_statement_38(
+            36 => self.elseiflist_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1431,120 +1422,120 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            39 => self.repeat_statement_39(
+            37 => self.elseiflist_1(parse_tree),
+            38 => self.while_statement_0(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                &children[4],
+                parse_tree,
+            ),
+            39 => self.repeat_statement_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            40 => self.statement_40(&children[0], parse_tree),
-            41 => self.statement_41(&children[0], parse_tree),
-            42 => self.statement_42(&children[0], parse_tree),
-            43 => self.statement_43(&children[0], parse_tree),
-            44 => self.statement_44(&children[0], parse_tree),
-            45 => self.statement_45(parse_tree),
-            46 => self.statement_sequence_46(&children[0], &children[1], parse_tree),
-            47 => self.statement_sequence_rest_47(
-                &children[0],
-                &children[1],
-                &children[2],
-                parse_tree,
-            ),
-            48 => self.statement_sequence_rest_48(parse_tree),
-            49 => self.ident_list_49(&children[0], &children[1], parse_tree),
-            50 => self.ident_list_rest_50(&children[0], &children[1], &children[2], parse_tree),
-            51 => self.ident_list_rest_51(parse_tree),
-            52 => self.array_type_52(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
-            53 => self.field_list_53(&children[0], &children[1], &children[2], parse_tree),
-            54 => self.field_list_54(parse_tree),
-            55 => self.record_type_55(
+            40 => self.statement_0(&children[0], parse_tree),
+            41 => self.statement_1(&children[0], parse_tree),
+            42 => self.statement_2(&children[0], parse_tree),
+            43 => self.statement_3(&children[0], parse_tree),
+            44 => self.statement_4(&children[0], parse_tree),
+            45 => self.statement_5(parse_tree),
+            46 => self.statement_sequence_0(&children[0], &children[1], parse_tree),
+            47 => {
+                self.statement_sequence_rest_0(&children[0], &children[1], &children[2], parse_tree)
+            }
+            48 => self.statement_sequence_rest_1(parse_tree),
+            49 => self.ident_list_0(&children[0], &children[1], parse_tree),
+            50 => self.ident_list_rest_0(&children[0], &children[1], &children[2], parse_tree),
+            51 => self.ident_list_rest_1(parse_tree),
+            52 => self.array_type_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            56 => self.field_list_rest_56(&children[0], &children[1], &children[2], parse_tree),
-            57 => self.field_list_rest_57(parse_tree),
-            58 => self.type_58(&children[0], parse_tree),
-            59 => self.type_59(&children[0], parse_tree),
-            60 => self.type_60(&children[0], parse_tree),
-            61 => self.f_p_section_61(
+            53 => self.field_list_0(&children[0], &children[1], &children[2], parse_tree),
+            54 => self.field_list_1(parse_tree),
+            55 => self.record_type_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            62 => self.f_p_section_62(&children[0], &children[1], &children[2], parse_tree),
-            63 => self.formal_parameters_63(&children[0], &children[1], parse_tree),
-            64 => self.formal_parameters_suffix_64(&children[0], parse_tree),
-            65 => self.formal_parameters_suffix_65(
+            56 => self.field_list_rest_0(&children[0], &children[1], &children[2], parse_tree),
+            57 => self.field_list_rest_1(parse_tree),
+            58 => self.type_0(&children[0], parse_tree),
+            59 => self.type_1(&children[0], parse_tree),
+            60 => self.type_2(&children[0], parse_tree),
+            61 => self.f_p_section_0(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
+            62 => self.f_p_section_1(&children[0], &children[1], &children[2], parse_tree),
+            63 => self.formal_parameters_0(&children[0], &children[1], parse_tree),
+            64 => self.formal_parameters_suffix_0(&children[0], parse_tree),
+            65 => self.formal_parameters_suffix_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-            66 => self.f_p_section_rest_66(&children[0], &children[1], &children[2], parse_tree),
-            67 => self.f_p_section_rest_67(parse_tree),
-            68 => self.procedure_heading_68(&children[0], &children[1], &children[2], parse_tree),
-            69 => self.procedure_heading_suffix_69(&children[0], parse_tree),
-            70 => self.procedure_heading_suffix_70(parse_tree),
-            71 => self.procedure_body_71(&children[0], &children[1], parse_tree),
+            66 => self.f_p_section_rest_0(&children[0], &children[1], &children[2], parse_tree),
+            67 => self.f_p_section_rest_1(parse_tree),
+            68 => self.procedure_heading_0(&children[0], &children[1], &children[2], parse_tree),
+            69 => self.procedure_heading_suffix_0(&children[0], parse_tree),
+            70 => self.procedure_heading_suffix_1(parse_tree),
+            71 => self.procedure_body_0(&children[0], &children[1], parse_tree),
             72 => {
-                self.procedure_body_suffix1_72(&children[0], &children[1], &children[2], parse_tree)
+                self.procedure_body_suffix1_0(&children[0], &children[1], &children[2], parse_tree)
             }
-            73 => self.procedure_body_suffix1_73(
+            73 => self.procedure_body_suffix1_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            74 => self.procedure_body_suffix1_74(&children[0], &children[1], parse_tree),
-            75 => self.procedure_body_suffix_75(
+            74 => self.procedure_body_suffix1_2(&children[0], &children[1], parse_tree),
+            75 => self.procedure_body_suffix_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            76 => self.procedure_body_suffix_76(&children[0], &children[1], parse_tree),
+            76 => self.procedure_body_suffix_1(&children[0], &children[1], parse_tree),
             77 => {
-                self.procedure_declaration_77(&children[0], &children[1], &children[2], parse_tree)
+                self.procedure_declaration_0(&children[0], &children[1], &children[2], parse_tree)
             }
-            78 => self.declarations_78(&children[0], &children[1], &children[2], parse_tree),
-            79 => self.declarations_79(&children[0], &children[1], &children[2], parse_tree),
-            80 => {
-                self.declarations_suffix2_80(&children[0], &children[1], &children[2], parse_tree)
-            }
-            81 => self.declarations_suffix2_81(&children[0], parse_tree),
-            82 => self.declarations_82(&children[0], &children[1], &children[2], parse_tree),
-            83 => self.declarations_83(&children[0], parse_tree),
-            84 => {
-                self.declarations_suffix1_84(&children[0], &children[1], &children[2], parse_tree)
-            }
-            85 => {
-                self.declarations_suffix1_85(&children[0], &children[1], &children[2], parse_tree)
-            }
-            86 => self.declarations_suffix1_86(&children[0], parse_tree),
-            87 => self.declarations_suffix_87(&children[0], &children[1], &children[2], parse_tree),
-            88 => self.declarations_suffix_88(&children[0], parse_tree),
-            89 => self.procedure_declaration_list_89(
+            78 => self.declarations_0(&children[0], &children[1], &children[2], parse_tree),
+            79 => self.declarations_1(&children[0], &children[1], &children[2], parse_tree),
+            80 => self.declarations_suffix2_0(&children[0], &children[1], &children[2], parse_tree),
+            81 => self.declarations_suffix2_1(&children[0], parse_tree),
+            82 => self.declarations_2(&children[0], &children[1], &children[2], parse_tree),
+            83 => self.declarations_3(&children[0], parse_tree),
+            84 => self.declarations_suffix1_0(&children[0], &children[1], &children[2], parse_tree),
+            85 => self.declarations_suffix1_1(&children[0], &children[1], &children[2], parse_tree),
+            86 => self.declarations_suffix1_2(&children[0], parse_tree),
+            87 => self.declarations_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            88 => self.declarations_suffix_1(&children[0], parse_tree),
+            89 => self.procedure_declaration_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 parse_tree,
             ),
-            90 => self.procedure_declaration_list_90(parse_tree),
-            91 => self.const_decls_91(
+            90 => self.procedure_declaration_list_1(parse_tree),
+            91 => self.const_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1552,8 +1543,8 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            92 => self.const_decls_92(parse_tree),
-            93 => self.type_decls_93(
+            92 => self.const_decls_1(parse_tree),
+            93 => self.type_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1561,8 +1552,8 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            94 => self.type_decls_94(parse_tree),
-            95 => self.var_decls_95(
+            94 => self.type_decls_1(parse_tree),
+            95 => self.var_decls_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1570,8 +1561,8 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            96 => self.var_decls_96(parse_tree),
-            97 => self.module_97(
+            96 => self.var_decls_1(parse_tree),
+            97 => self.module_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1579,7 +1570,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            98 => self.module_suffix_98(
+            98 => self.module_suffix_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1587,12 +1578,12 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            99 => self.module_suffix_99(&children[0], &children[1], &children[2], parse_tree),
-            100 => self.mul_operator_100(&children[0], parse_tree),
-            101 => self.add_operator_101(&children[0], parse_tree),
-            102 => self.unary_op_102(&children[0], parse_tree),
-            103 => self.ident_103(&children[0], parse_tree),
-            104 => self.integer_104(&children[0], parse_tree),
+            99 => self.module_suffix_1(&children[0], &children[1], &children[2], parse_tree),
+            100 => self.mul_operator_0(&children[0], parse_tree),
+            101 => self.add_operator_0(&children[0], parse_tree),
+            102 => self.unary_op_0(&children[0], parse_tree),
+            103 => self.ident_0(&children[0], parse_tree),
+            104 => self.integer_0(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

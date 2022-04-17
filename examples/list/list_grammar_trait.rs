@@ -41,7 +41,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListSuffix: ",";
     ///
-    fn list_suffix_1(
+    fn list_suffix_0(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -53,7 +53,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListSuffix: ;
     ///
-    fn list_suffix_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -61,7 +61,7 @@ pub trait ListGrammarTrait {
     ///
     /// List: ;
     ///
-    fn list_3(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -69,7 +69,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListRest: "," Num ListRest;
     ///
-    fn list_rest_4(
+    fn list_rest_0(
         &mut self,
         _comma_0: &ParseTreeStackEntry,
         _num_1: &ParseTreeStackEntry,
@@ -83,7 +83,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListRest: ;
     ///
-    fn list_rest_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -91,7 +91,7 @@ pub trait ListGrammarTrait {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num_6(
+    fn num_0(
         &mut self,
         _num_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -104,7 +104,7 @@ impl UserActionsTrait<'_> for ListGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, _file_name: &Path) {}
 
@@ -119,12 +119,12 @@ impl UserActionsTrait<'_> for ListGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),
-            1 => self.list_suffix_1(&children[0], parse_tree),
-            2 => self.list_suffix_2(parse_tree),
-            3 => self.list_3(parse_tree),
-            4 => self.list_rest_4(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.list_rest_5(parse_tree),
-            6 => self.num_6(&children[0], parse_tree),
+            1 => self.list_suffix_0(&children[0], parse_tree),
+            2 => self.list_suffix_1(parse_tree),
+            3 => self.list_1(parse_tree),
+            4 => self.list_rest_0(&children[0], &children[1], &children[2], parse_tree),
+            5 => self.list_rest_1(parse_tree),
+            6 => self.num_0(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

@@ -39,7 +39,7 @@ pub trait CalcGrammarTrait {
     ///
     /// calc_lst1: calc_lst1_itm1 calc_lst1;
     ///
-    fn calc_lst1_1(
+    fn calc_lst1_0(
         &mut self,
         _calc_lst1_itm1_0: &ParseTreeStackEntry,
         _calc_lst1_1: &ParseTreeStackEntry,
@@ -52,7 +52,7 @@ pub trait CalcGrammarTrait {
     ///
     /// calc_lst1_itm1: instruction ";";
     ///
-    fn calc_lst1_itm1_2(
+    fn calc_lst1_itm1_0(
         &mut self,
         _instruction_0: &ParseTreeStackEntry,
         _semicolon_1: &ParseTreeStackEntry,
@@ -65,7 +65,7 @@ pub trait CalcGrammarTrait {
     ///
     /// calc_lst1: ;
     ///
-    fn calc_lst1_3(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn calc_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -73,7 +73,7 @@ pub trait CalcGrammarTrait {
     ///
     /// instruction: assignment;
     ///
-    fn instruction_4(
+    fn instruction_0(
         &mut self,
         _assignment_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -85,7 +85,7 @@ pub trait CalcGrammarTrait {
     ///
     /// instruction: logical_or;
     ///
-    fn instruction_5(
+    fn instruction_1(
         &mut self,
         _logical_or_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -97,7 +97,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_op: "==|!=";
     ///
-    fn equality_op_6(
+    fn equality_op_0(
         &mut self,
         _equality_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -109,7 +109,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
-    fn assign_op_7(
+    fn assign_op_0(
         &mut self,
         _assign_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -121,7 +121,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assign_item: id assign_op;
     ///
-    fn assign_item_8(
+    fn assign_item_0(
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _assign_op_1: &ParseTreeStackEntry,
@@ -134,7 +134,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment: assign_item assignment_lst1 logical_or;
     ///
-    fn assignment_9(
+    fn assignment_0(
         &mut self,
         _assign_item_0: &ParseTreeStackEntry,
         _assignment_lst1_1: &ParseTreeStackEntry,
@@ -148,7 +148,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment_lst1: assignment_lst1_itm1 assignment_lst1;
     ///
-    fn assignment_lst1_10(
+    fn assignment_lst1_0(
         &mut self,
         _assignment_lst1_itm1_0: &ParseTreeStackEntry,
         _assignment_lst1_1: &ParseTreeStackEntry,
@@ -161,7 +161,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment_lst1_itm1: assign_item;
     ///
-    fn assignment_lst1_itm1_11(
+    fn assignment_lst1_itm1_0(
         &mut self,
         _assign_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -173,7 +173,7 @@ pub trait CalcGrammarTrait {
     ///
     /// assignment_lst1: ;
     ///
-    fn assignment_lst1_12(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn assignment_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -181,7 +181,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or: logical_and logical_or_lst1;
     ///
-    fn logical_or_13(
+    fn logical_or_0(
         &mut self,
         _logical_and_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
@@ -194,7 +194,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_lst1: logical_or_lst1_itm1 logical_or_lst1;
     ///
-    fn logical_or_lst1_14(
+    fn logical_or_lst1_0(
         &mut self,
         _logical_or_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_or_lst1_1: &ParseTreeStackEntry,
@@ -207,7 +207,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_lst1_itm1: logical_or_item;
     ///
-    fn logical_or_lst1_itm1_15(
+    fn logical_or_lst1_itm1_0(
         &mut self,
         _logical_or_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -219,7 +219,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_lst1: ;
     ///
-    fn logical_or_lst1_16(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_or_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -227,7 +227,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_op: "\|\|";
     ///
-    fn logical_or_op_17(
+    fn logical_or_op_0(
         &mut self,
         _logical_or_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -239,7 +239,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_or_item: logical_or_op logical_and;
     ///
-    fn logical_or_item_18(
+    fn logical_or_item_0(
         &mut self,
         _logical_or_op_0: &ParseTreeStackEntry,
         _logical_and_1: &ParseTreeStackEntry,
@@ -252,7 +252,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and: bitwise_or logical_and_lst1;
     ///
-    fn logical_and_19(
+    fn logical_and_0(
         &mut self,
         _bitwise_or_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
@@ -265,7 +265,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_lst1: logical_and_lst1_itm1 logical_and_lst1;
     ///
-    fn logical_and_lst1_20(
+    fn logical_and_lst1_0(
         &mut self,
         _logical_and_lst1_itm1_0: &ParseTreeStackEntry,
         _logical_and_lst1_1: &ParseTreeStackEntry,
@@ -278,7 +278,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_lst1_itm1: logical_and_item;
     ///
-    fn logical_and_lst1_itm1_21(
+    fn logical_and_lst1_itm1_0(
         &mut self,
         _logical_and_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -290,7 +290,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_lst1: ;
     ///
-    fn logical_and_lst1_22(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn logical_and_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -298,7 +298,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_op: "&&";
     ///
-    fn logical_and_op_23(
+    fn logical_and_op_0(
         &mut self,
         _logical_and_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -310,7 +310,7 @@ pub trait CalcGrammarTrait {
     ///
     /// logical_and_item: logical_and_op bitwise_or;
     ///
-    fn logical_and_item_24(
+    fn logical_and_item_0(
         &mut self,
         _logical_and_op_0: &ParseTreeStackEntry,
         _bitwise_or_1: &ParseTreeStackEntry,
@@ -323,7 +323,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or: bitwise_and bitwise_or_lst1;
     ///
-    fn bitwise_or_25(
+    fn bitwise_or_0(
         &mut self,
         _bitwise_and_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
@@ -336,7 +336,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_lst1: bitwise_or_lst1_itm1 bitwise_or_lst1;
     ///
-    fn bitwise_or_lst1_26(
+    fn bitwise_or_lst1_0(
         &mut self,
         _bitwise_or_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_or_lst1_1: &ParseTreeStackEntry,
@@ -349,7 +349,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_lst1_itm1: bitwise_or_item;
     ///
-    fn bitwise_or_lst1_itm1_27(
+    fn bitwise_or_lst1_itm1_0(
         &mut self,
         _bitwise_or_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -361,7 +361,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_lst1: ;
     ///
-    fn bitwise_or_lst1_28(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_or_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -369,7 +369,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_op: "\|";
     ///
-    fn bitwise_or_op_29(
+    fn bitwise_or_op_0(
         &mut self,
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -381,7 +381,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_or_item: bitwise_or_op bitwise_and;
     ///
-    fn bitwise_or_item_30(
+    fn bitwise_or_item_0(
         &mut self,
         _bitwise_or_op_0: &ParseTreeStackEntry,
         _bitwise_and_1: &ParseTreeStackEntry,
@@ -394,7 +394,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and: equality bitwise_and_lst1;
     ///
-    fn bitwise_and_31(
+    fn bitwise_and_0(
         &mut self,
         _equality_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
@@ -407,7 +407,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_lst1: bitwise_and_lst1_itm1 bitwise_and_lst1;
     ///
-    fn bitwise_and_lst1_32(
+    fn bitwise_and_lst1_0(
         &mut self,
         _bitwise_and_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_and_lst1_1: &ParseTreeStackEntry,
@@ -420,7 +420,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_lst1_itm1: bitwise_and_item;
     ///
-    fn bitwise_and_lst1_itm1_33(
+    fn bitwise_and_lst1_itm1_0(
         &mut self,
         _bitwise_and_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -432,7 +432,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_lst1: ;
     ///
-    fn bitwise_and_lst1_34(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_and_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -440,7 +440,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_op: "&";
     ///
-    fn bitwise_and_op_35(
+    fn bitwise_and_op_0(
         &mut self,
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -452,7 +452,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_and_item: bitwise_and_op equality;
     ///
-    fn bitwise_and_item_36(
+    fn bitwise_and_item_0(
         &mut self,
         _bitwise_and_op_0: &ParseTreeStackEntry,
         _equality_1: &ParseTreeStackEntry,
@@ -465,7 +465,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality: relational equality_lst1;
     ///
-    fn equality_37(
+    fn equality_0(
         &mut self,
         _relational_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
@@ -478,7 +478,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_lst1: equality_lst1_itm1 equality_lst1;
     ///
-    fn equality_lst1_38(
+    fn equality_lst1_0(
         &mut self,
         _equality_lst1_itm1_0: &ParseTreeStackEntry,
         _equality_lst1_1: &ParseTreeStackEntry,
@@ -491,7 +491,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_lst1_itm1: equality_item;
     ///
-    fn equality_lst1_itm1_39(
+    fn equality_lst1_itm1_0(
         &mut self,
         _equality_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -503,7 +503,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_lst1: ;
     ///
-    fn equality_lst1_40(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn equality_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -511,7 +511,7 @@ pub trait CalcGrammarTrait {
     ///
     /// equality_item: equality_op relational;
     ///
-    fn equality_item_41(
+    fn equality_item_0(
         &mut self,
         _equality_op_0: &ParseTreeStackEntry,
         _relational_1: &ParseTreeStackEntry,
@@ -524,7 +524,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_op: "<<|>>";
     ///
-    fn bitwise_shift_op_42(
+    fn bitwise_shift_op_0(
         &mut self,
         _bitwise_shift_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -536,7 +536,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational: bitwise_shift relational_lst1;
     ///
-    fn relational_43(
+    fn relational_0(
         &mut self,
         _bitwise_shift_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
@@ -549,7 +549,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_lst1: relational_lst1_itm1 relational_lst1;
     ///
-    fn relational_lst1_44(
+    fn relational_lst1_0(
         &mut self,
         _relational_lst1_itm1_0: &ParseTreeStackEntry,
         _relational_lst1_1: &ParseTreeStackEntry,
@@ -562,7 +562,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_lst1_itm1: relational_item;
     ///
-    fn relational_lst1_itm1_45(
+    fn relational_lst1_itm1_0(
         &mut self,
         _relational_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -574,7 +574,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_lst1: ;
     ///
-    fn relational_lst1_46(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn relational_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -582,7 +582,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_op: "<=|<|>=|>";
     ///
-    fn relational_op_47(
+    fn relational_op_0(
         &mut self,
         _relational_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -594,7 +594,7 @@ pub trait CalcGrammarTrait {
     ///
     /// relational_item: relational_op bitwise_shift;
     ///
-    fn relational_item_48(
+    fn relational_item_0(
         &mut self,
         _relational_op_0: &ParseTreeStackEntry,
         _bitwise_shift_1: &ParseTreeStackEntry,
@@ -607,7 +607,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift: summ bitwise_shift_lst1;
     ///
-    fn bitwise_shift_49(
+    fn bitwise_shift_0(
         &mut self,
         _summ_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
@@ -620,7 +620,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_lst1: bitwise_shift_lst1_itm1 bitwise_shift_lst1;
     ///
-    fn bitwise_shift_lst1_50(
+    fn bitwise_shift_lst1_0(
         &mut self,
         _bitwise_shift_lst1_itm1_0: &ParseTreeStackEntry,
         _bitwise_shift_lst1_1: &ParseTreeStackEntry,
@@ -633,7 +633,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_lst1_itm1: bitwise_shift_item;
     ///
-    fn bitwise_shift_lst1_itm1_51(
+    fn bitwise_shift_lst1_itm1_0(
         &mut self,
         _bitwise_shift_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -645,7 +645,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_lst1: ;
     ///
-    fn bitwise_shift_lst1_52(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn bitwise_shift_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -653,7 +653,7 @@ pub trait CalcGrammarTrait {
     ///
     /// bitwise_shift_item: bitwise_shift_op summ;
     ///
-    fn bitwise_shift_item_53(
+    fn bitwise_shift_item_0(
         &mut self,
         _bitwise_shift_op_0: &ParseTreeStackEntry,
         _summ_1: &ParseTreeStackEntry,
@@ -666,7 +666,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ: mult summ_lst1;
     ///
-    fn summ_54(
+    fn summ_0(
         &mut self,
         _mult_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
@@ -679,7 +679,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ_lst1: summ_lst1_itm1 summ_lst1;
     ///
-    fn summ_lst1_55(
+    fn summ_lst1_0(
         &mut self,
         _summ_lst1_itm1_0: &ParseTreeStackEntry,
         _summ_lst1_1: &ParseTreeStackEntry,
@@ -692,7 +692,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ_lst1_itm1: summ_item;
     ///
-    fn summ_lst1_itm1_56(
+    fn summ_lst1_itm1_0(
         &mut self,
         _summ_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -704,7 +704,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ_lst1: ;
     ///
-    fn summ_lst1_57(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn summ_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -712,7 +712,7 @@ pub trait CalcGrammarTrait {
     ///
     /// plus: "\+";
     ///
-    fn plus_58(
+    fn plus_0(
         &mut self,
         _plus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -724,7 +724,7 @@ pub trait CalcGrammarTrait {
     ///
     /// minus: "-";
     ///
-    fn minus_59(
+    fn minus_0(
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -736,7 +736,7 @@ pub trait CalcGrammarTrait {
     ///
     /// add_op: plus;
     ///
-    fn add_op_60(
+    fn add_op_0(
         &mut self,
         _plus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -748,7 +748,7 @@ pub trait CalcGrammarTrait {
     ///
     /// add_op: minus;
     ///
-    fn add_op_61(
+    fn add_op_1(
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -760,7 +760,7 @@ pub trait CalcGrammarTrait {
     ///
     /// summ_item: add_op mult;
     ///
-    fn summ_item_62(
+    fn summ_item_0(
         &mut self,
         _add_op_0: &ParseTreeStackEntry,
         _mult_1: &ParseTreeStackEntry,
@@ -773,7 +773,7 @@ pub trait CalcGrammarTrait {
     ///
     /// pow_op: "\*\*";
     ///
-    fn pow_op_63(
+    fn pow_op_0(
         &mut self,
         _pow_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -785,7 +785,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult: power mult_lst1;
     ///
-    fn mult_64(
+    fn mult_0(
         &mut self,
         _power_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
@@ -798,7 +798,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_lst1: mult_lst1_itm1 mult_lst1;
     ///
-    fn mult_lst1_65(
+    fn mult_lst1_0(
         &mut self,
         _mult_lst1_itm1_0: &ParseTreeStackEntry,
         _mult_lst1_1: &ParseTreeStackEntry,
@@ -811,7 +811,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_lst1_itm1: mult_item;
     ///
-    fn mult_lst1_itm1_66(
+    fn mult_lst1_itm1_0(
         &mut self,
         _mult_item_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -823,7 +823,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_lst1: ;
     ///
-    fn mult_lst1_67(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn mult_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -831,7 +831,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_op: "\*|/|%";
     ///
-    fn mult_op_68(
+    fn mult_op_0(
         &mut self,
         _mult_op_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -843,7 +843,7 @@ pub trait CalcGrammarTrait {
     ///
     /// mult_item: mult_op power;
     ///
-    fn mult_item_69(
+    fn mult_item_0(
         &mut self,
         _mult_op_0: &ParseTreeStackEntry,
         _power_1: &ParseTreeStackEntry,
@@ -856,7 +856,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power: factor power_lst1;
     ///
-    fn power_70(
+    fn power_0(
         &mut self,
         _factor_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
@@ -869,7 +869,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power_lst1: power_lst1_itm1 power_lst1;
     ///
-    fn power_lst1_71(
+    fn power_lst1_0(
         &mut self,
         _power_lst1_itm1_0: &ParseTreeStackEntry,
         _power_lst1_1: &ParseTreeStackEntry,
@@ -882,7 +882,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power_lst1_itm1: pow_op factor;
     ///
-    fn power_lst1_itm1_72(
+    fn power_lst1_itm1_0(
         &mut self,
         _pow_op_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
@@ -895,7 +895,7 @@ pub trait CalcGrammarTrait {
     ///
     /// power_lst1: ;
     ///
-    fn power_lst1_73(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn power_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -903,7 +903,7 @@ pub trait CalcGrammarTrait {
     ///
     /// negate: minus;
     ///
-    fn negate_74(
+    fn negate_0(
         &mut self,
         _minus_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -915,7 +915,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: number;
     ///
-    fn factor_75(
+    fn factor_0(
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -927,7 +927,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: idref;
     ///
-    fn factor_76(
+    fn factor_1(
         &mut self,
         _idref_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -939,7 +939,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: negate factor;
     ///
-    fn factor_77(
+    fn factor_2(
         &mut self,
         _negate_0: &ParseTreeStackEntry,
         _factor_1: &ParseTreeStackEntry,
@@ -952,7 +952,7 @@ pub trait CalcGrammarTrait {
     ///
     /// factor: "\(" logical_or "\)";
     ///
-    fn factor_78(
+    fn factor_3(
         &mut self,
         _l_paren_0: &ParseTreeStackEntry,
         _logical_or_1: &ParseTreeStackEntry,
@@ -966,7 +966,7 @@ pub trait CalcGrammarTrait {
     ///
     /// number: "0|[1-9][0-9]*";
     ///
-    fn number_79(
+    fn number_0(
         &mut self,
         _number_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -978,7 +978,7 @@ pub trait CalcGrammarTrait {
     ///
     /// idref: id;
     ///
-    fn idref_80(
+    fn idref_0(
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -990,7 +990,7 @@ pub trait CalcGrammarTrait {
     ///
     /// id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn id_81(
+    fn id_0(
         &mut self,
         _id_0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -1003,7 +1003,7 @@ impl UserActionsTrait<'_> for CalcGrammar {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, _file_name: &Path) {}
 
@@ -1018,87 +1018,87 @@ impl UserActionsTrait<'_> for CalcGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.calc_0(&children[0], parse_tree),
-            1 => self.calc_lst1_1(&children[0], &children[1], parse_tree),
-            2 => self.calc_lst1_itm1_2(&children[0], &children[1], parse_tree),
-            3 => self.calc_lst1_3(parse_tree),
-            4 => self.instruction_4(&children[0], parse_tree),
-            5 => self.instruction_5(&children[0], parse_tree),
-            6 => self.equality_op_6(&children[0], parse_tree),
-            7 => self.assign_op_7(&children[0], parse_tree),
-            8 => self.assign_item_8(&children[0], &children[1], parse_tree),
-            9 => self.assignment_9(&children[0], &children[1], &children[2], parse_tree),
-            10 => self.assignment_lst1_10(&children[0], &children[1], parse_tree),
-            11 => self.assignment_lst1_itm1_11(&children[0], parse_tree),
-            12 => self.assignment_lst1_12(parse_tree),
-            13 => self.logical_or_13(&children[0], &children[1], parse_tree),
-            14 => self.logical_or_lst1_14(&children[0], &children[1], parse_tree),
-            15 => self.logical_or_lst1_itm1_15(&children[0], parse_tree),
-            16 => self.logical_or_lst1_16(parse_tree),
-            17 => self.logical_or_op_17(&children[0], parse_tree),
-            18 => self.logical_or_item_18(&children[0], &children[1], parse_tree),
-            19 => self.logical_and_19(&children[0], &children[1], parse_tree),
-            20 => self.logical_and_lst1_20(&children[0], &children[1], parse_tree),
-            21 => self.logical_and_lst1_itm1_21(&children[0], parse_tree),
-            22 => self.logical_and_lst1_22(parse_tree),
-            23 => self.logical_and_op_23(&children[0], parse_tree),
-            24 => self.logical_and_item_24(&children[0], &children[1], parse_tree),
-            25 => self.bitwise_or_25(&children[0], &children[1], parse_tree),
-            26 => self.bitwise_or_lst1_26(&children[0], &children[1], parse_tree),
-            27 => self.bitwise_or_lst1_itm1_27(&children[0], parse_tree),
-            28 => self.bitwise_or_lst1_28(parse_tree),
-            29 => self.bitwise_or_op_29(&children[0], parse_tree),
-            30 => self.bitwise_or_item_30(&children[0], &children[1], parse_tree),
-            31 => self.bitwise_and_31(&children[0], &children[1], parse_tree),
-            32 => self.bitwise_and_lst1_32(&children[0], &children[1], parse_tree),
-            33 => self.bitwise_and_lst1_itm1_33(&children[0], parse_tree),
-            34 => self.bitwise_and_lst1_34(parse_tree),
-            35 => self.bitwise_and_op_35(&children[0], parse_tree),
-            36 => self.bitwise_and_item_36(&children[0], &children[1], parse_tree),
-            37 => self.equality_37(&children[0], &children[1], parse_tree),
-            38 => self.equality_lst1_38(&children[0], &children[1], parse_tree),
-            39 => self.equality_lst1_itm1_39(&children[0], parse_tree),
-            40 => self.equality_lst1_40(parse_tree),
-            41 => self.equality_item_41(&children[0], &children[1], parse_tree),
-            42 => self.bitwise_shift_op_42(&children[0], parse_tree),
-            43 => self.relational_43(&children[0], &children[1], parse_tree),
-            44 => self.relational_lst1_44(&children[0], &children[1], parse_tree),
-            45 => self.relational_lst1_itm1_45(&children[0], parse_tree),
-            46 => self.relational_lst1_46(parse_tree),
-            47 => self.relational_op_47(&children[0], parse_tree),
-            48 => self.relational_item_48(&children[0], &children[1], parse_tree),
-            49 => self.bitwise_shift_49(&children[0], &children[1], parse_tree),
-            50 => self.bitwise_shift_lst1_50(&children[0], &children[1], parse_tree),
-            51 => self.bitwise_shift_lst1_itm1_51(&children[0], parse_tree),
-            52 => self.bitwise_shift_lst1_52(parse_tree),
-            53 => self.bitwise_shift_item_53(&children[0], &children[1], parse_tree),
-            54 => self.summ_54(&children[0], &children[1], parse_tree),
-            55 => self.summ_lst1_55(&children[0], &children[1], parse_tree),
-            56 => self.summ_lst1_itm1_56(&children[0], parse_tree),
-            57 => self.summ_lst1_57(parse_tree),
-            58 => self.plus_58(&children[0], parse_tree),
-            59 => self.minus_59(&children[0], parse_tree),
-            60 => self.add_op_60(&children[0], parse_tree),
-            61 => self.add_op_61(&children[0], parse_tree),
-            62 => self.summ_item_62(&children[0], &children[1], parse_tree),
-            63 => self.pow_op_63(&children[0], parse_tree),
-            64 => self.mult_64(&children[0], &children[1], parse_tree),
-            65 => self.mult_lst1_65(&children[0], &children[1], parse_tree),
-            66 => self.mult_lst1_itm1_66(&children[0], parse_tree),
-            67 => self.mult_lst1_67(parse_tree),
-            68 => self.mult_op_68(&children[0], parse_tree),
-            69 => self.mult_item_69(&children[0], &children[1], parse_tree),
-            70 => self.power_70(&children[0], &children[1], parse_tree),
-            71 => self.power_lst1_71(&children[0], &children[1], parse_tree),
-            72 => self.power_lst1_itm1_72(&children[0], &children[1], parse_tree),
-            73 => self.power_lst1_73(parse_tree),
-            74 => self.negate_74(&children[0], parse_tree),
-            75 => self.factor_75(&children[0], parse_tree),
-            76 => self.factor_76(&children[0], parse_tree),
-            77 => self.factor_77(&children[0], &children[1], parse_tree),
-            78 => self.factor_78(&children[0], &children[1], &children[2], parse_tree),
-            79 => self.number_79(&children[0], parse_tree),
-            80 => self.idref_80(&children[0], parse_tree),
-            81 => self.id_81(&children[0], parse_tree),
+            1 => self.calc_lst1_0(&children[0], &children[1], parse_tree),
+            2 => self.calc_lst1_itm1_0(&children[0], &children[1], parse_tree),
+            3 => self.calc_lst1_1(parse_tree),
+            4 => self.instruction_0(&children[0], parse_tree),
+            5 => self.instruction_1(&children[0], parse_tree),
+            6 => self.equality_op_0(&children[0], parse_tree),
+            7 => self.assign_op_0(&children[0], parse_tree),
+            8 => self.assign_item_0(&children[0], &children[1], parse_tree),
+            9 => self.assignment_0(&children[0], &children[1], &children[2], parse_tree),
+            10 => self.assignment_lst1_0(&children[0], &children[1], parse_tree),
+            11 => self.assignment_lst1_itm1_0(&children[0], parse_tree),
+            12 => self.assignment_lst1_1(parse_tree),
+            13 => self.logical_or_0(&children[0], &children[1], parse_tree),
+            14 => self.logical_or_lst1_0(&children[0], &children[1], parse_tree),
+            15 => self.logical_or_lst1_itm1_0(&children[0], parse_tree),
+            16 => self.logical_or_lst1_1(parse_tree),
+            17 => self.logical_or_op_0(&children[0], parse_tree),
+            18 => self.logical_or_item_0(&children[0], &children[1], parse_tree),
+            19 => self.logical_and_0(&children[0], &children[1], parse_tree),
+            20 => self.logical_and_lst1_0(&children[0], &children[1], parse_tree),
+            21 => self.logical_and_lst1_itm1_0(&children[0], parse_tree),
+            22 => self.logical_and_lst1_1(parse_tree),
+            23 => self.logical_and_op_0(&children[0], parse_tree),
+            24 => self.logical_and_item_0(&children[0], &children[1], parse_tree),
+            25 => self.bitwise_or_0(&children[0], &children[1], parse_tree),
+            26 => self.bitwise_or_lst1_0(&children[0], &children[1], parse_tree),
+            27 => self.bitwise_or_lst1_itm1_0(&children[0], parse_tree),
+            28 => self.bitwise_or_lst1_1(parse_tree),
+            29 => self.bitwise_or_op_0(&children[0], parse_tree),
+            30 => self.bitwise_or_item_0(&children[0], &children[1], parse_tree),
+            31 => self.bitwise_and_0(&children[0], &children[1], parse_tree),
+            32 => self.bitwise_and_lst1_0(&children[0], &children[1], parse_tree),
+            33 => self.bitwise_and_lst1_itm1_0(&children[0], parse_tree),
+            34 => self.bitwise_and_lst1_1(parse_tree),
+            35 => self.bitwise_and_op_0(&children[0], parse_tree),
+            36 => self.bitwise_and_item_0(&children[0], &children[1], parse_tree),
+            37 => self.equality_0(&children[0], &children[1], parse_tree),
+            38 => self.equality_lst1_0(&children[0], &children[1], parse_tree),
+            39 => self.equality_lst1_itm1_0(&children[0], parse_tree),
+            40 => self.equality_lst1_1(parse_tree),
+            41 => self.equality_item_0(&children[0], &children[1], parse_tree),
+            42 => self.bitwise_shift_op_0(&children[0], parse_tree),
+            43 => self.relational_0(&children[0], &children[1], parse_tree),
+            44 => self.relational_lst1_0(&children[0], &children[1], parse_tree),
+            45 => self.relational_lst1_itm1_0(&children[0], parse_tree),
+            46 => self.relational_lst1_1(parse_tree),
+            47 => self.relational_op_0(&children[0], parse_tree),
+            48 => self.relational_item_0(&children[0], &children[1], parse_tree),
+            49 => self.bitwise_shift_0(&children[0], &children[1], parse_tree),
+            50 => self.bitwise_shift_lst1_0(&children[0], &children[1], parse_tree),
+            51 => self.bitwise_shift_lst1_itm1_0(&children[0], parse_tree),
+            52 => self.bitwise_shift_lst1_1(parse_tree),
+            53 => self.bitwise_shift_item_0(&children[0], &children[1], parse_tree),
+            54 => self.summ_0(&children[0], &children[1], parse_tree),
+            55 => self.summ_lst1_0(&children[0], &children[1], parse_tree),
+            56 => self.summ_lst1_itm1_0(&children[0], parse_tree),
+            57 => self.summ_lst1_1(parse_tree),
+            58 => self.plus_0(&children[0], parse_tree),
+            59 => self.minus_0(&children[0], parse_tree),
+            60 => self.add_op_0(&children[0], parse_tree),
+            61 => self.add_op_1(&children[0], parse_tree),
+            62 => self.summ_item_0(&children[0], &children[1], parse_tree),
+            63 => self.pow_op_0(&children[0], parse_tree),
+            64 => self.mult_0(&children[0], &children[1], parse_tree),
+            65 => self.mult_lst1_0(&children[0], &children[1], parse_tree),
+            66 => self.mult_lst1_itm1_0(&children[0], parse_tree),
+            67 => self.mult_lst1_1(parse_tree),
+            68 => self.mult_op_0(&children[0], parse_tree),
+            69 => self.mult_item_0(&children[0], &children[1], parse_tree),
+            70 => self.power_0(&children[0], &children[1], parse_tree),
+            71 => self.power_lst1_0(&children[0], &children[1], parse_tree),
+            72 => self.power_lst1_itm1_0(&children[0], &children[1], parse_tree),
+            73 => self.power_lst1_1(parse_tree),
+            74 => self.negate_0(&children[0], parse_tree),
+            75 => self.factor_0(&children[0], parse_tree),
+            76 => self.factor_1(&children[0], parse_tree),
+            77 => self.factor_2(&children[0], &children[1], parse_tree),
+            78 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
+            79 => self.number_0(&children[0], parse_tree),
+            80 => self.idref_0(&children[0], parse_tree),
+            81 => self.id_0(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
