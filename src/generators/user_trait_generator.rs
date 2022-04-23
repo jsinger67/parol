@@ -243,7 +243,7 @@ impl<'a> UserTraitGenerator<'a> {
         rel_idx: Option<usize>,
         comment: StrVec,
     ) -> Option<String> {
-        let non_terminal = if let Some(rel_idx) = rel_idx {
+        let type_name = if let Some(rel_idx) = rel_idx {
             NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, rel_idx))
         } else {
             NmHlp::to_upper_camel_case(non_terminal)
@@ -253,7 +253,7 @@ impl<'a> UserTraitGenerator<'a> {
             ASTType::Struct(_n, m) => {
                 let struct_data = NonTerminalTypeStruct {
                     comment,
-                    non_terminal,
+                    struct_type_name: type_name,
                     lifetime: ast_type.lifetime(),
                     members: m.iter().fold(StrVec::new(4), |mut acc, (n, t)| {
                         acc.push(format!("{}: {},", n, t));
@@ -281,7 +281,7 @@ impl<'a> UserTraitGenerator<'a> {
             ASTType::Repeat(r) => {
                 let struct_data = NonTerminalTypeVec {
                     comment,
-                    non_terminal,
+                    non_terminal: type_name,
                     lifetime: ast_type.lifetime(),
                     type_ref: r.clone(),
                 };
@@ -290,7 +290,7 @@ impl<'a> UserTraitGenerator<'a> {
             ASTType::Unit => {
                 let struct_data = NonTerminalTypeStruct {
                     comment,
-                    non_terminal,
+                    struct_type_name: type_name,
                     lifetime: ast_type.lifetime(),
                     members: StrVec::new(0),
                 };

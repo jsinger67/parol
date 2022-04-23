@@ -426,7 +426,7 @@ impl GrammarGenerator<'_> {
                 self.grammar_file.display()
             ))?;
         if self.builder.cargo_integration {
-            println!("cargo:rerun-if-changed=");
+            println!("cargo:rerun-if-changed={}", self.grammar_file.display());
         }
         let mut parol_grammar = ParolGrammar::new();
         let syntax_tree = crate::parser::parse(&input, &self.grammar_file, &mut parol_grammar)
