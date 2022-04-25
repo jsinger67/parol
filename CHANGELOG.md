@@ -17,6 +17,12 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.7.1 - 2022-04-xx
+
+* Removed some cases where type name collisions occurred
+  * This involved considerable refactoring of grammar type generation
+* Improved change detection of builder to only trigger build script on changed grammar description
+
 ## v0.7.0 - 2022-04-17
 
 * Changed generated semantic action names
