@@ -27,9 +27,9 @@ But we try to mark incompatible changes with a new minor version.
 
 * Changed generated semantic action names
 
-  To be more more invariant when changing a grammar description the names don't include the
-  production number anymore. Instead I generate a relative index which only changes potentially
-  within a certain non-terminal.
+  To be more invariant when changing a grammar description the names don't include the production
+  number anymore. Instead I generate a relative index which only changes potentially within a
+  certain non-terminal.
   
   Note that this change needs a manual readjustment of already used
   code. Sorry for this inconvenience. But this change generally results in better maintainability.
