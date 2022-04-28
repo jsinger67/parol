@@ -9,7 +9,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
-use super::symbol_table::{Function, FunctionBuilder, SymbolId, SymbolTable, Type, TypeEntrails};
+use super::symbol_table::{Function, FunctionBuilder, SymbolId, SymbolTable, TypeEntrails};
 
 ///
 /// Type information for a given grammar
@@ -121,17 +121,25 @@ impl GrammarTypeInfo {
 
         self.create_initial_non_terminal_types(&grammar_config.cfg)?;
         self.deduce_actions(grammar_config)?;
+        self.finish_non_terminal_types(&grammar_config.cfg)?;
         Ok(())
     }
 
     ///
     /// Returns a vector of action indices matching the given non-terminal n
     ///
-    fn matching_productions(&self, cfg: &Cfg, n: &str) -> Vec<usize> {
-        cfg.matching_productions(n)
-            .into_iter()
-            .map(|(i, _)| i)
-            .collect()
+    fn matching_actions(&self, n: &str) -> Vec<SymbolId> {
+        self.adapter_actions.iter().filter(|a| {
+            match self.symbol_table.symbol(**a) {
+                super::symbol_table::Symbol::Type(t) => match &t.entrails {
+                    TypeEntrails::Function(f) => f.non_terminal == n,
+                    _ => panic!("Expecting a function!"),
+                },
+                _ => panic!("Expecting a type!"),
+            }
+        })
+        .map(|s| *s)
+        .collect::<Vec<SymbolId>>()
     }
 
     fn create_initial_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
@@ -163,6 +171,24 @@ impl GrammarTypeInfo {
                     .insert_global_type(non_terminal, TypeEntrails::Enum),
             ),
         }
+    }
+
+
+    fn finish_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
+        for nt in cfg.get_non_terminal_set() {
+            let alternatives = cfg.matching_productions(&nt).len();
+            self.finish_non_terminal_type(&nt, alternatives)?;
+        }
+        Ok(())
+    }
+
+    fn finish_non_terminal_type(&self, nt: &str, _alternatives: usize) -> Result<()> {
+        let _actions = self.matching_actions(nt);
+        // match actions.len() {
+        //     1 => 
+            
+        // }
+        Ok(())
     }
 
     fn deduce_actions(&mut self, grammar_config: &GrammarConfig) -> Result<()> {

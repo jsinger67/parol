@@ -217,7 +217,7 @@ pub(crate) enum Symbol {
 }
 
 impl Symbol {
-    fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
+    fn _has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
                 TypeEntrails::None | TypeEntrails::Unit | TypeEntrails::Function(_) => false,
@@ -230,14 +230,14 @@ impl Symbol {
                     .scope(t.member_scope)
                     .symbols
                     .iter()
-                    .any(|e| symbol_table.has_lifetime(*e)),
+                    .any(|e| symbol_table._has_lifetime(*e)),
             },
             Self::Instance(_) => false,
         }
     }
 
-    pub(crate) fn lifetime(&self, symbol_table: &SymbolTable) -> String {
-        if self.has_lifetime(symbol_table) {
+    pub(crate) fn _lifetime(&self, symbol_table: &SymbolTable) -> String {
+        if self._has_lifetime(symbol_table) {
             "<'t>".to_string()
         } else {
             "".to_string()
@@ -402,8 +402,8 @@ impl SymbolTable {
         ScopeId(self.scopes.len())
     }
 
-    pub(crate) fn has_lifetime(&self, symbol_id: SymbolId) -> bool {
-        self.symbols[symbol_id.0].has_lifetime(&self)
+    pub(crate) fn _has_lifetime(&self, symbol_id: SymbolId) -> bool {
+        self.symbols[symbol_id.0]._has_lifetime(&self)
     }
 
     pub(crate) fn scope(&self, scope_id: ScopeId) -> &Scope {
