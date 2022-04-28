@@ -1,6 +1,6 @@
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
-use crate::{Symbol, Terminal};
+use crate::{Pr, Symbol, Terminal};
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use std::collections::{BTreeMap, HashSet};
@@ -126,27 +126,30 @@ impl GrammarTypeInfo {
     }
 
     ///
-    /// Returns a vector of action indices matching the given non-terminal n
+    /// Returns a vector of actions matching the given non-terminal n
     ///
     fn matching_actions(&self, n: &str) -> Vec<SymbolId> {
-        self.adapter_actions.iter().filter(|a| {
-            match self.symbol_table.symbol(**a) {
+        self.adapter_actions
+            .iter()
+            .filter(|a| match self.symbol_table.symbol(**a) {
                 super::symbol_table::Symbol::Type(t) => match &t.entrails {
                     TypeEntrails::Function(f) => f.non_terminal == n,
                     _ => panic!("Expecting a function!"),
                 },
                 _ => panic!("Expecting a type!"),
-            }
-        })
-        .map(|s| *s)
-        .collect::<Vec<SymbolId>>()
+            })
+            .map(|s| *s)
+            .collect::<Vec<SymbolId>>()
     }
 
     fn create_initial_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
         for nt in cfg.get_non_terminal_set() {
-            let alternatives = cfg.matching_productions(&nt).len();
-            if let Some(nt_type) = self.create_initial_non_terminal_type(&nt, alternatives) {
-                self.add_non_terminal_type(&nt, nt_type?)?;
+            let alternatives = cfg.matching_productions(&nt);
+            if alternatives.is_empty() {
+                continue;
+            }
+            if let Ok(nt_type) = self.create_initial_non_terminal_type(&nt, alternatives) {
+                self.add_non_terminal_type(&nt, nt_type)?;
             }
         }
         Ok(())
@@ -155,39 +158,141 @@ impl GrammarTypeInfo {
     fn create_initial_non_terminal_type(
         &mut self,
         non_terminal: &str,
-        alternatives: usize,
-    ) -> Option<Result<SymbolId>> {
-        match alternatives {
+        alternatives: Vec<(usize, &Pr)>,
+    ) -> Result<SymbolId> {
+        if alternatives.len() == 2 {
+            let semantics = alternatives.iter().fold(
+                Ok(Vec::new()),
+                |res: Result<Vec<ProductionAttribute>>, (_, p)| {
+                    let mut res = res?;
+                    res.push(p.2.clone());
+                    Ok(res)
+                },
+            )?;
+            if semantics[0] == ProductionAttribute::AddToCollection
+                || semantics[0] == ProductionAttribute::CollectionStart
+            {
+                return self
+                    .symbol_table
+                    .insert_global_type(non_terminal, TypeEntrails::Struct);
+            }
+        }
+        match alternatives.len() {
             // Productions can be optimized away, when they have duplicates!
-            0 => None,
+            0 => bail!("Not supported!"),
             // Only one production for this non-terminal: we create an empty Struct
-            1 => Some(
-                self.symbol_table
-                    .insert_global_type(non_terminal, TypeEntrails::Struct),
-            ),
+            1 => self
+                .symbol_table
+                .insert_global_type(non_terminal, TypeEntrails::Struct),
             // Otherwise: we generate an empty Enum
-            _ => Some(
-                self.symbol_table
-                    .insert_global_type(non_terminal, TypeEntrails::Enum),
-            ),
+            _ => self
+                .symbol_table
+                .insert_global_type(non_terminal, TypeEntrails::Enum),
         }
     }
 
-
     fn finish_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
         for nt in cfg.get_non_terminal_set() {
-            let alternatives = cfg.matching_productions(&nt).len();
-            self.finish_non_terminal_type(&nt, alternatives)?;
+            self.finish_non_terminal_type(&nt)?;
         }
         Ok(())
     }
 
-    fn finish_non_terminal_type(&self, nt: &str, _alternatives: usize) -> Result<()> {
-        let _actions = self.matching_actions(nt);
-        // match actions.len() {
-        //     1 => 
-            
-        // }
+    fn finish_non_terminal_type(&mut self, nt: &str) -> Result<()> {
+        let mut vector_typed_non_terminal_opt = None;
+
+        let actions = self.matching_actions(nt).iter().fold(
+            Ok(Vec::new()),
+            |res: Result<Vec<(SymbolId, ProductionAttribute)>>, a| {
+                let mut res = res?;
+                res.push((*a, self.symbol_table.function_type_semantic(*a)?));
+                Ok(res)
+            },
+        )?;
+
+        let arguments = |action_id: SymbolId| -> Result<Vec<SymbolId>> {
+            let action_scope = self.symbol_table.symbol_as_type(action_id)?.member_scope;
+            Ok(self.symbol_table.scope(action_scope).symbols.clone())
+        };
+
+        if actions.len() == 1 {
+            let arguments = arguments(actions[0].0)?;
+            // Copy the arguments as struct members
+            let non_terminal_type = self.non_terminal_types.get(nt).unwrap();
+            for arg in arguments {
+                let type_id = self.symbol_table.symbol_as_instance(arg)?.type_id;
+                let inst_name = self
+                    .symbol_table
+                    .symbol_as_instance(arg)?
+                    .name(&self.symbol_table);
+                self.symbol_table.insert_instance(
+                    *non_terminal_type,
+                    &inst_name,
+                    type_id,
+                    true,
+                    SymbolAttribute::None,
+                )?;
+            }
+
+        } else if actions.len() == 2
+            && (actions[0].1 == ProductionAttribute::AddToCollection
+                || actions[0].1 == ProductionAttribute::CollectionStart)
+        {
+            let primary_action = match (&actions[0].1, &actions[1].1) {
+                (ProductionAttribute::AddToCollection, ProductionAttribute::CollectionStart) => {
+                    actions[0].0
+                }
+                (ProductionAttribute::CollectionStart, ProductionAttribute::AddToCollection) => {
+                    actions[1].0
+                }
+                _ => bail!("Unexpected combination of production attributes"),
+            };
+            let mut arguments = arguments(primary_action)?;
+            arguments.pop(); // Remove the recursive part. Vec is wrapped outside.
+            vector_typed_non_terminal_opt = Some(nt.to_string());
+            // Copy the arguments as struct members
+            let non_terminal_type = self.non_terminal_types.get(nt).unwrap();
+            for arg in arguments {
+                let type_id = self.symbol_table.symbol_as_instance(arg)?.type_id;
+                let inst_name = self
+                    .symbol_table
+                    .symbol_as_instance(arg)?
+                    .name(&self.symbol_table);
+                self.symbol_table.insert_instance(
+                    *non_terminal_type,
+                    &inst_name,
+                    type_id,
+                    true,
+                    SymbolAttribute::None,
+                )?;
+            }
+        } else {
+            for (action_id, _) in actions {
+                let action_scope = self.symbol_table.symbol_as_type(action_id)?.member_scope;
+                let arguments = self.symbol_table.scope(action_scope).symbols.clone();
+                let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
+                for arg in arguments {
+                    let type_id = self.symbol_table.symbol_as_instance(arg)?.type_id;
+                    let inst_name = self
+                        .symbol_table
+                        .symbol_as_instance(arg)?
+                        .name(&self.symbol_table);
+                    self.symbol_table.insert_instance(
+                        non_terminal_type,
+                        &inst_name,
+                        type_id,
+                        true,
+                        SymbolAttribute::None,
+                    )?;
+                }
+            }
+        }
+
+        if let Some(vector_typed_non_terminal) = vector_typed_non_terminal_opt {
+            self.vector_typed_non_terminals
+                .insert(vector_typed_non_terminal);
+        }
+
         Ok(())
     }
 

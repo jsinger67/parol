@@ -152,7 +152,9 @@ impl Type {
             let name = symbol_table.scope(parent_scope_id).name(self.name_id);
             if name == SymbolTable::UNNAMED_TYPE {
                 match self.entrails {
-                    TypeEntrails::Box(t) | TypeEntrails::Vec(t) => self.entrails.format(t, symbol_table),
+                    TypeEntrails::Box(t) | TypeEntrails::Vec(t) => {
+                        self.entrails.format(t, symbol_table)
+                    }
                     _ => panic!("Should not happen: expecting Box or Vec!"),
                 }
             } else {
@@ -203,7 +205,10 @@ impl Instance {
     }
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
-        symbol_table.scope(self.scope).name(self.name_id).to_string()
+        symbol_table
+            .scope(self.scope)
+            .name(self.name_id)
+            .to_string()
     }
 }
 
@@ -251,7 +256,7 @@ impl Symbol {
         }
     }
 
-    fn member_scope(&self) -> Result<ScopeId> {
+    pub(crate) fn member_scope(&self) -> Result<ScopeId> {
         match self {
             Symbol::Type(t) => Ok(t.member_scope),
             Symbol::Instance(_) => Err(miette!(
@@ -422,10 +427,43 @@ impl SymbolTable {
         &mut self.symbols[symbol_id.0]
     }
 
+    pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> Result<&Instance> {
+        match &self.symbols[symbol_id.0] {
+            Symbol::Type(_) => bail!("Ain't no instance!"),
+            Symbol::Instance(i) => Ok(i),
+        }
+    }
+
     pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> Result<&Type> {
         match &self.symbols[symbol_id.0] {
             Symbol::Type(t) => Ok(t),
+            Symbol::Instance(_) => bail!("Ain't no type!"),
+        }
+    }
+
+    pub(crate) fn symbol_as_type_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Type> {
+        match &mut self.symbols[symbol_id.0] {
+            Symbol::Type(t) => Ok(t),
             Symbol::Instance(_) => bail!("No type!"),
+        }
+    }
+
+    pub(crate) fn symbol_as_function(&self, symbol_id: SymbolId) -> Result<&Function> {
+        let function_type = self.symbol_as_type(symbol_id)?;
+        match &function_type.entrails {
+            TypeEntrails::Function(f) => Ok(f),
+            _ => bail!("Expecting a function here"),
+        }
+    }
+
+    pub(crate) fn function_type_semantic(
+        &self,
+        symbol_id: SymbolId,
+    ) -> Result<ProductionAttribute> {
+        let function_type = self.symbol_as_type(symbol_id)?;
+        match &function_type.entrails {
+            TypeEntrails::Function(f) => Ok(f.sem.clone()),
+            _ => bail!("Expecting a function here"),
         }
     }
 
