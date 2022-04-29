@@ -69,7 +69,7 @@ where
                 let num = match_.as_str().parse::<usize>().unwrap_or(1);
                 (num, preferred_name[0..match_.start()].to_string())
             } else {
-                (1, preferred_name.clone())
+                (0, preferred_name.clone())
             }
         };
         gen_name(exclusions, prefix, suffix_number)

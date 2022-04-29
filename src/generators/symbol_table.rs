@@ -11,7 +11,7 @@ pub(crate) struct SymbolId(usize);
 
 /// Scope local index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
-pub(crate) struct ScopedNameId(usize);
+pub(crate) struct ScopedNameId(ScopeId, usize);
 
 /// Index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -64,18 +64,20 @@ impl Function {
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
     None,
-    /// Unit type ()
-    Unit,
+    // Unit type ()
+    //Unit,
     /// Will be generated as Token structure
     Token(String),
     /// A type with Box semantic
     Box(SymbolId),
-    /// A type name (without Box semantic)
-    TypeName,
+    // A type name (without Box semantic)
+    //TypeName,
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
     Enum,
+    /// A variant of an enum with a type
+    EnumVariant(SymbolId),
     /// Will be generated as Vec<T> where T is the type, similar to TypeRef
     Vec(SymbolId),
     /// A trait, normally the semantic actions trait  generated for the user grammar
@@ -90,13 +92,15 @@ impl TypeEntrails {
             "{}",
             match self {
                 TypeEntrails::None => "*TypeError*".to_string(),
-                TypeEntrails::Unit => "()".to_string(),
+                // TypeEntrails::Unit => "()".to_string(),
                 TypeEntrails::Token(t) => format!("Token<'t> /* {} */", t),
                 TypeEntrails::Box(r) =>
                     format!("Box<{}>", symbol_table.symbol(*r).name(symbol_table)),
-                TypeEntrails::TypeName => "TypeName".to_string(),
+                // TypeEntrails::TypeName => "TypeName".to_string(),
                 TypeEntrails::Struct => "struct".to_string(),
                 TypeEntrails::Enum => "enum".to_string(),
+                TypeEntrails::EnumVariant(t) =>
+                    format!("({})", symbol_table.symbol(*t).name(symbol_table)),
                 TypeEntrails::Vec(r) =>
                     format!("Vec<{}>", symbol_table.symbol(*r).name(symbol_table)),
                 TypeEntrails::Trait => "trait".to_string(),
@@ -138,7 +142,7 @@ impl Type {
             self.entrails.format(self.my_id, &symbol_table),
             self.name(symbol_table),
             self.my_id.0,
-            self.name_id.0,
+            self.name_id.1,
             symbol_table
                 .scope(self.member_scope)
                 .format(symbol_table, scope_depth + 1),
@@ -147,21 +151,10 @@ impl Type {
     }
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
-        let member_scope = symbol_table.scope(self.member_scope);
-        if let Some(parent_scope_id) = member_scope.parent {
-            let name = symbol_table.scope(parent_scope_id).name(self.name_id);
-            if name == SymbolTable::UNNAMED_TYPE {
-                match self.entrails {
-                    TypeEntrails::Box(t) | TypeEntrails::Vec(t) => {
-                        self.entrails.format(t, symbol_table)
-                    }
-                    _ => panic!("Should not happen: expecting Box or Vec!"),
-                }
-            } else {
-                name.to_string()
-            }
+        if self.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
+            self.entrails.format(self.my_id, symbol_table)
         } else {
-            "<unknown>".to_string()
+            symbol_table.name(self.name_id).to_string()
         }
     }
 }
@@ -205,10 +198,7 @@ impl Instance {
     }
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
-        symbol_table
-            .scope(self.scope)
-            .name(self.name_id)
-            .to_string()
+        symbol_table.name(self.name_id).to_string()
     }
 }
 
@@ -225,10 +215,13 @@ impl Symbol {
     fn _has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
-                TypeEntrails::None | TypeEntrails::Unit | TypeEntrails::Function(_) => false,
+                TypeEntrails::None
+                // | TypeEntrails::Unit
+                | TypeEntrails::Function(_)
+                | TypeEntrails::EnumVariant(_) => false,
                 TypeEntrails::Token(_)
                 | TypeEntrails::Box(_)
-                | TypeEntrails::TypeName
+                // | TypeEntrails::TypeName
                 | TypeEntrails::Vec(_)
                 | TypeEntrails::Trait => true,
                 TypeEntrails::Struct | TypeEntrails::Enum => symbol_table
@@ -284,7 +277,7 @@ pub(crate) struct Scope {
 }
 
 impl Scope {
-    pub(crate) const UNNAMED_TYPE_NAME_ID: ScopedNameId = ScopedNameId(0);
+    pub(crate) const UNNAMED_TYPE_NAME_ID: usize = 0;
 
     pub(crate) fn new(parent: Option<ScopeId>, my_id: ScopeId) -> Self {
         Self {
@@ -305,9 +298,9 @@ impl Scope {
 
     pub(crate) fn add_name(&mut self, name: String) -> ScopedNameId {
         if &name == SymbolTable::UNNAMED_TYPE {
-            Self::UNNAMED_TYPE_NAME_ID
+            ScopedNameId(self.my_id, Self::UNNAMED_TYPE_NAME_ID)
         } else {
-            let name_id = ScopedNameId(self.names.len());
+            let name_id = ScopedNameId(self.my_id, self.names.len());
             self.names.push(name);
             name_id
         }
@@ -355,8 +348,9 @@ impl Scope {
         })
     }
 
-    pub(crate) fn name(&self, name_id: ScopedNameId) -> &str {
-        &self.names[name_id.0]
+    pub(crate) fn _name(&self, name_id: ScopedNameId) -> &str {
+        debug_assert_eq!(self.my_id, name_id.0);
+        &self.names[name_id.1]
     }
 
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
@@ -411,6 +405,10 @@ impl SymbolTable {
         self.symbols[symbol_id.0]._has_lifetime(&self)
     }
 
+    pub(crate) fn name(&self, name_id: ScopedNameId) -> &str {
+        &self.scope(name_id.0).names[name_id.1]
+    }
+
     pub(crate) fn scope(&self, scope_id: ScopeId) -> &Scope {
         &self.scopes[scope_id.0]
     }
@@ -423,7 +421,7 @@ impl SymbolTable {
         &self.symbols[symbol_id.0]
     }
 
-    pub(crate) fn symbol_mut(&mut self, symbol_id: SymbolId) -> &mut Symbol {
+    pub(crate) fn _symbol_mut(&mut self, symbol_id: SymbolId) -> &mut Symbol {
         &mut self.symbols[symbol_id.0]
     }
 
@@ -441,7 +439,7 @@ impl SymbolTable {
         }
     }
 
-    pub(crate) fn symbol_as_type_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Type> {
+    pub(crate) fn _symbol_as_type_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Type> {
         match &mut self.symbols[symbol_id.0] {
             Symbol::Type(t) => Ok(t),
             Symbol::Instance(_) => bail!("No type!"),
@@ -586,7 +584,7 @@ mod tests {
 
         if let Symbol::Type(struct_type) = symbol_table.symbol(struct_id) {
             assert_eq!(0, struct_type.my_id.0);
-            assert_eq!(1, struct_type.name_id.0);
+            assert_eq!(1, struct_type.name_id.1);
             assert_eq!(
                 Some(SymbolTable::GLOBAL_SCOPE),
                 symbol_table.scope(struct_type.member_scope).parent
@@ -594,12 +592,7 @@ mod tests {
             assert_eq!(1, struct_type.member_scope.0);
             // UNNAMED_TYPE's pseudo name $$ is already inserted
             assert_eq!(1, symbol_table.scope(struct_type.member_scope).names.len());
-            assert_eq!(
-                "StructA",
-                symbol_table
-                    .scope(SymbolTable::GLOBAL_SCOPE)
-                    .name(struct_type.name_id)
-            );
+            assert_eq!("StructA", symbol_table.name(struct_type.name_id));
         } else {
             panic!("StructA should be a type!");
         }
@@ -623,19 +616,14 @@ mod tests {
 
         if let Symbol::Type(fn_type) = symbol_table.symbol(fn_id) {
             assert_eq!(1, fn_type.my_id.0);
-            assert_eq!(1, fn_type.name_id.0);
+            assert_eq!(1, fn_type.name_id.1);
             assert_eq!(
                 Some(ScopeId(1)),
                 symbol_table.scope(fn_type.member_scope).parent
             );
             assert_eq!(2, fn_type.member_scope.0);
             assert_eq!(1, symbol_table.scope(fn_type.member_scope).names.len());
-            assert_eq!(
-                "new",
-                symbol_table
-                    .scope(symbol_table.scope(fn_type.member_scope).parent.unwrap())
-                    .name(fn_type.name_id)
-            );
+            assert_eq!("new", symbol_table.name(fn_type.name_id));
         }
     }
 }

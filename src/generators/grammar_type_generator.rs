@@ -660,9 +660,9 @@ mod tests {
         /*
         S: "a" {"b-rpt"} "c" {"d-rpt"};
         =>
-        /* 0 */ S: "a" SList /* Vec */ "c" SList1 /* Vec */;
-        /* 1 */ SList1: "d-rpt" SList1; // Vec<T>::Push
-        /* 2 */ SList1: ; // Vec<T>::New
+        /* 0 */ S: "a" SList /* Vec */ "c" SList0 /* Vec */;
+        /* 1 */ SList0: "d-rpt" SList0; // Vec<T>::Push
+        /* 2 */ SList0: ; // Vec<T>::New
         /* 3 */ SList: "b-rpt" SList; // Vec<T>::Push
         /* 4 */ SList: ; // Vec<T>::New
         */
@@ -699,9 +699,9 @@ mod tests {
 
 %%
 
-/* 0 */ S: "a" SList /* Vec */ "c" SList1 /* Vec */;
-/* 1 */ SList1: "d-rpt" SList1; // Vec<T>::Push
-/* 2 */ SList1: ; // Vec<T>::New
+/* 0 */ S: "a" SList /* Vec */ "c" SList0 /* Vec */;
+/* 1 */ SList0: "d-rpt" SList0; // Vec<T>::Push
+/* 2 */ SList0: ; // Vec<T>::New
 /* 3 */ SList: "b-rpt" SList; // Vec<T>::Push
 /* 4 */ SList: ; // Vec<T>::New
 "#;
@@ -744,17 +744,17 @@ mod tests {
 
     #[test]
     fn test_presentation_of_type_info_1() {
-        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Vec<SList<'t>>, Token<'t> /* c */, Vec<SList1<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> })  { - }
-/* 1, 0 */ ((Token<'t> /* d-rpt */, Vec<SList1<'t>>) -> Vec<SList1<'t>>)  { Vec<T>::Push }
-/* 2, 1 */ (() -> Vec<SList1<'t>>)  { Vec<T>::New }
+        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Vec<SList<'t>>, Token<'t> /* c */, Vec<SList0<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list0_3: Vec<SList0<'t>> })  { - }
+/* 1, 0 */ ((Token<'t> /* d-rpt */, Vec<SList0<'t>>) -> Vec<SList0<'t>>)  { Vec<T>::Push }
+/* 2, 1 */ (() -> Vec<SList0<'t>>)  { Vec<T>::New }
 /* 3, 0 */ ((Token<'t> /* b-rpt */, Vec<SList<'t>>) -> Vec<SList<'t>>)  { Vec<T>::Push }
 /* 4, 1 */ (() -> Vec<SList<'t>>)  { Vec<T>::New }
 
-S:  struct S { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list1_3: Vec<SList1<'t>> }
+S:  struct S { a_0: Token<'t> /* a */, s_list_1: Vec<SList<'t>>, c_2: Token<'t> /* c */, s_list0_3: Vec<SList0<'t>> }
 SList:  struct SList { b_minus_rpt_0: Token<'t> /* b-rpt */ }
-SList1:  struct SList1 { d_minus_rpt_0: Token<'t> /* d-rpt */ }
+SList0:  struct SList0 { d_minus_rpt_0: Token<'t> /* d-rpt */ }
 
-enum ASTType { S(S<'t>), SList(Vec<SList<'t>>), SList1(Vec<SList1<'t>>) }
+enum ASTType { S(S<'t>), SList(Vec<SList<'t>>), SList0(Vec<SList0<'t>>) }
 "#;
 
         let presentation = format!("{}", *TYPE_INFO1);
@@ -767,20 +767,20 @@ enum ASTType { S(S<'t>), SList(Vec<SList<'t>>), SList1(Vec<SList1<'t>>) }
 
     #[test]
     fn test_presentation_of_type_info_2() {
-        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Box<SSuffix2<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> })  { - }
-/* 1, 0 */ ((Token<'t> /* c */, Box<SSuffix1<'t>>) -> struct SSuffix20 { c_0: Token<'t> /* c */, s_suffix1_1: Box<SSuffix1<'t>> })  { - }
-/* 2, 1 */ ((Token<'t> /* b-opt */, Token<'t> /* c */, Box<SSuffix<'t>>) -> struct SSuffix21 { b_minus_opt_0: Token<'t> /* b-opt */, c_1: Token<'t> /* c */, s_suffix_2: Box<SSuffix<'t>> })  { - }
-/* 3, 0 */ ((Token<'t> /* d-opt */) -> struct SSuffix10 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
+        let expected = r#"/* 0, 0 */ ((Token<'t> /* a */, Box<SSuffix1<'t>>) -> struct S0 { a_0: Token<'t> /* a */, s_suffix1_1: Box<SSuffix1<'t>> })  { - }
+/* 1, 0 */ ((Token<'t> /* c */, Box<SSuffix0<'t>>) -> struct SSuffix10 { c_0: Token<'t> /* c */, s_suffix0_1: Box<SSuffix0<'t>> })  { - }
+/* 2, 1 */ ((Token<'t> /* b-opt */, Token<'t> /* c */, Box<SSuffix<'t>>) -> struct SSuffix11 { b_minus_opt_0: Token<'t> /* b-opt */, c_1: Token<'t> /* c */, s_suffix_2: Box<SSuffix<'t>> })  { - }
+/* 3, 0 */ ((Token<'t> /* d-opt */) -> struct SSuffix00 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
 /* 4, 1 */ (() -> ())  { - }
 /* 5, 0 */ ((Token<'t> /* d-opt */) -> struct SSuffix0 { d_minus_opt_0: Token<'t> /* d-opt */ })  { - }
 /* 6, 1 */ (() -> ())  { - }
 
-S:  struct S { a_0: Token<'t> /* a */, s_suffix2_1: Box<SSuffix2<'t>> }
+S:  struct S { a_0: Token<'t> /* a */, s_suffix1_1: Box<SSuffix1<'t>> }
 SSuffix:  enum SSuffix { SSuffix0(SSuffix_0<'t>), SSuffix1(SSuffix_1) }
-SSuffix1:  enum SSuffix1 { SSuffix1_0(SSuffix1_0<'t>), SSuffix1_1(SSuffix1_1) }
-SSuffix2:  enum SSuffix2 { SSuffix2_0(SSuffix2_0<'t>), SSuffix2_1(SSuffix2_1<'t>) }
+SSuffix0:  enum SSuffix0 { SSuffix0_0(SSuffix0_0<'t>), SSuffix0_1(SSuffix0_1) }
+SSuffix1:  enum SSuffix1 { SSuffix1_0(SSuffix1_0<'t>), SSuffix1_1(SSuffix1_1<'t>) }
 
-enum ASTType { S(S<'t>), SSuffix(SSuffix<'t>), SSuffix1(SSuffix1<'t>), SSuffix2(SSuffix2<'t>) }
+enum ASTType { S(S<'t>), SSuffix(SSuffix<'t>), SSuffix0(SSuffix0<'t>), SSuffix1(SSuffix1<'t>) }
 "#;
         let presentation = format!("{}", *TYPE_INFO2);
 
