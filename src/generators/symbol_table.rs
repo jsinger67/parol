@@ -9,9 +9,9 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct SymbolId(usize);
 
-/// Index type for SymbolNames
+/// Scope local index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
-pub(crate) struct NameId(usize);
+pub(crate) struct ScopedNameId(usize);
 
 /// Index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -121,7 +121,7 @@ pub(crate) struct Type {
     pub(crate) my_id: SymbolId,
 
     /// The symbol name's id in the enveloping scope
-    pub(crate) name_id: NameId,
+    pub(crate) name_id: ScopedNameId,
 
     /// The type specificities
     pub(crate) entrails: TypeEntrails,
@@ -175,7 +175,7 @@ pub(crate) struct Instance {
     pub(crate) my_id: SymbolId,
 
     /// The symbol name's id in the enveloping scope
-    pub(crate) name_id: NameId,
+    pub(crate) name_id: ScopedNameId,
 
     /// The scope where the instance resides
     pub(crate) scope: ScopeId,
@@ -284,7 +284,7 @@ pub(crate) struct Scope {
 }
 
 impl Scope {
-    pub(crate) const UNNAMED_TYPE_NAME_ID: NameId = NameId(0);
+    pub(crate) const UNNAMED_TYPE_NAME_ID: ScopedNameId = ScopedNameId(0);
 
     pub(crate) fn new(parent: Option<ScopeId>, my_id: ScopeId) -> Self {
         Self {
@@ -303,11 +303,11 @@ impl Scope {
         }
     }
 
-    pub(crate) fn add_name(&mut self, name: String) -> NameId {
+    pub(crate) fn add_name(&mut self, name: String) -> ScopedNameId {
         if &name == SymbolTable::UNNAMED_TYPE {
             Self::UNNAMED_TYPE_NAME_ID
         } else {
-            let name_id = NameId(self.names.len());
+            let name_id = ScopedNameId(self.names.len());
             self.names.push(name);
             name_id
         }
@@ -355,7 +355,7 @@ impl Scope {
         })
     }
 
-    pub(crate) fn name(&self, name_id: NameId) -> &str {
+    pub(crate) fn name(&self, name_id: ScopedNameId) -> &str {
         &self.names[name_id.0]
     }
 
