@@ -126,7 +126,7 @@ impl GrammarTypeInfo {
         self.create_initial_non_terminal_types(&grammar_config.cfg)?;
         self.deduce_actions(grammar_config)?;
         self.finish_non_terminal_types(&grammar_config.cfg)?;
-        Ok(())
+        self.generate_ast_enum_type()
     }
 
     ///
@@ -451,6 +451,26 @@ impl GrammarTypeInfo {
             )?;
         }
         self.production_types.insert(prod_num, production_type);
+        Ok(())
+    }
+
+    fn generate_ast_enum_type(&mut self) -> Result<()> {
+        self.ast_enum_type = self
+            .symbol_table
+            .insert_global_type("ASTType", TypeEntrails::Enum)?;
+
+        let variants = self
+            .non_terminal_types
+            .iter()
+            .fold(Vec::new(), |mut acc, nt| {
+                acc.push((nt.0.to_string(), TypeEntrails::EnumVariant(*nt.1)));
+                acc
+            });
+
+        for (n, e) in variants {
+            self.symbol_table.insert_type(self.ast_enum_type, &n, e)?;
+        }
+
         Ok(())
     }
 }
