@@ -463,7 +463,19 @@ impl GrammarTypeInfo {
             .non_terminal_types
             .iter()
             .fold(Vec::new(), |mut acc, nt| {
-                acc.push((nt.0.to_string(), TypeEntrails::EnumVariant(*nt.1)));
+                let inner_type = if self.vector_typed_non_terminals.contains(nt.0) {
+                    self.symbol_table
+                        .get_or_create_type(
+                            SymbolTable::UNNAMED_TYPE,
+                            SymbolTable::GLOBAL_SCOPE,
+                            TypeEntrails::Vec(*nt.1),
+                        )
+                        .unwrap()
+                } else {
+                    *nt.1
+                };
+
+                acc.push((nt.0.to_string(), TypeEntrails::EnumVariant(inner_type)));
                 acc
             });
 
