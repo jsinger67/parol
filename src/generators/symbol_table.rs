@@ -42,6 +42,10 @@ pub(crate) struct Function {
     /// The relative index of a production within its alternatives.
     pub(crate) rel_idx: usize,
 
+    /// Number of alternatives, the number of productions that exist in the grammar which have the
+    /// same non-terminal
+    pub(crate) alts: usize,
+
     /// Formatted production in PAR syntax.
     pub(crate) prod_string: String,
 }
@@ -70,7 +74,7 @@ pub(crate) enum TypeEntrails {
     // Unit type ()
     //Unit,
     /// Will be generated as Token structure
-    Token(String),
+    Token,
     /// A type with Box semantic
     Box(SymbolId),
     // A type name (without Box semantic)
@@ -105,35 +109,34 @@ impl TypeEntrails {
             String::default()
         };
         let lifetime = symbol_table.lifetime(type_id);
-        format!(
-            "{}",
-            match self {
-                TypeEntrails::None => "*TypeError*".to_string(),
-                // TypeEntrails::Unit => "()".to_string(),
-                TypeEntrails::Token(t) => format!("Token{} /* {} */", lifetime, t),
-                TypeEntrails::Box(r) => format!(
-                    "Box<{}{}>",
-                    symbol_table.symbol(*r).name(symbol_table),
-                    lifetime
-                ),
-                // TypeEntrails::TypeName => "TypeName".to_string(),
-                TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
-                TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
-                TypeEntrails::EnumVariant(t) => format!(
-                    "{}({}{})",
-                    my_type_name,
-                    symbol_table.symbol(*t).name(symbol_table),
-                    symbol_table.lifetime(*t)
-                ),
-                TypeEntrails::Vec(r) => format!(
-                    "Vec<{}{}>",
-                    symbol_table.symbol(*r).name(symbol_table),
-                    symbol_table.lifetime(*r)
-                ),
-                TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
-                TypeEntrails::Function(f) => f.format(my_type_name),
-            }
-        )
+        match self {
+            TypeEntrails::None => "*TypeError*".to_string(),
+            TypeEntrails::Token => format!("Token{}", lifetime),
+            TypeEntrails::Box(r) => format!(
+                "Box<{}{}>",
+                symbol_table.symbol(*r).name(symbol_table),
+                symbol_table.lifetime(*r)
+            ),
+            TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
+            TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
+            TypeEntrails::EnumVariant(t) => format!(
+                "{}({}{})",
+                my_type_name,
+                symbol_table.symbol(*t).name(symbol_table),
+                symbol_table.lifetime(*t)
+            ),
+            TypeEntrails::Vec(r) => format!(
+                "Vec<{}{}>",
+                symbol_table.symbol(*r).name(symbol_table),
+                symbol_table.lifetime(*r)
+            ),
+            TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
+            TypeEntrails::Function(f) => f.format(my_type_name),
+        }
+    }
+
+    fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
+        self.format(type_id, symbol_table)
     }
 }
 
@@ -185,6 +188,10 @@ impl Type {
         )
     }
 
+    fn to_rust(&self, symbol_table: &SymbolTable) -> String {
+        self.entrails.to_rust(self.my_id, symbol_table)
+    }
+
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
         if self.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
             self.entrails.format(self.my_id, symbol_table)
@@ -216,19 +223,42 @@ pub(crate) struct Instance {
 
     /// Semantic information
     pub(crate) sem: SymbolAttribute,
+
+    /// Description
+    pub(crate) description: String,
 }
 
 impl Instance {
     fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
+        let desc = if self.description.is_empty() {
+            String::default()
+        } else {
+            format!("/* {} */", self.description)
+        };
         format!(
-            "{}{}: {}{}",
+            "{}{}: {}{}{}",
             build_indent(scope_depth),
             self.name(symbol_table),
             symbol_table.symbol(self.type_id).name(symbol_table),
+            desc,
             match self.sem {
                 SymbolAttribute::None => "".to_string(),
                 _ => format!(" /* {} */", self.sem),
             }
+        )
+    }
+
+    fn to_rust(&self, symbol_table: &SymbolTable) -> String {
+        let desc = if self.description.is_empty() {
+            String::default()
+        } else {
+            format!("/* {} */", self.description)
+        };
+        format!(
+            "{}: {}{},",
+            self.name(symbol_table),
+            symbol_table.symbol(self.type_id).to_rust(symbol_table),
+            desc,
         )
     }
 
@@ -250,8 +280,11 @@ impl Symbol {
     fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
-                TypeEntrails::None | TypeEntrails::Vec(_) | TypeEntrails::Function(_) => false,
-                TypeEntrails::Token(_) | TypeEntrails::Box(_) | TypeEntrails::Trait => true,
+                TypeEntrails::None
+                | TypeEntrails::Box(_)
+                | TypeEntrails::Vec(_)
+                | TypeEntrails::Function(_) => false,
+                TypeEntrails::Token | TypeEntrails::Trait => true,
                 TypeEntrails::Struct | TypeEntrails::Enum => symbol_table
                     .scope(t.member_scope)
                     .symbols
@@ -275,6 +308,13 @@ impl Symbol {
         match self {
             Symbol::Type(t) => t.format(symbol_table, scope_depth),
             Symbol::Instance(i) => i.format(symbol_table, scope_depth),
+        }
+    }
+
+    pub(crate) fn to_rust(&self, symbol_table: &SymbolTable) -> String {
+        match self {
+            Symbol::Type(t) => t.to_rust(symbol_table),
+            Symbol::Instance(i) => i.to_rust(symbol_table),
         }
     }
 
@@ -363,6 +403,7 @@ impl Scope {
         type_id: SymbolId,
         used: bool,
         sem: SymbolAttribute,
+        description: String,
     ) -> Symbol {
         let instance_name = self.make_unique_name(NmHlp::to_lower_snake_case(name));
         let name_id = self.add_name(instance_name);
@@ -374,6 +415,7 @@ impl Scope {
             type_id,
             used,
             sem,
+            description,
         })
     }
 
@@ -443,6 +485,11 @@ impl SymbolTable {
         &self.scope(name_id.0).names[name_id.1]
     }
 
+    pub(crate) fn members(&self, type_id: SymbolId) -> Result<&Vec<SymbolId>> {
+        let type_symbol = self.symbol_as_type(type_id)?;
+        Ok(&self.scope(type_symbol.member_scope).symbols)
+    }
+
     pub(crate) fn scope(&self, scope_id: ScopeId) -> &Scope {
         &self.scopes[scope_id.0]
     }
@@ -457,6 +504,13 @@ impl SymbolTable {
 
     pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> Result<&Instance> {
         match &self.symbols[symbol_id.0] {
+            Symbol::Type(_) => bail!("Ain't no instance!"),
+            Symbol::Instance(i) => Ok(i),
+        }
+    }
+
+    pub(crate) fn symbol_as_instance_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Instance> {
+        match &mut self.symbols[symbol_id.0] {
             Symbol::Type(_) => bail!("Ain't no instance!"),
             Symbol::Instance(i) => Ok(i),
         }
@@ -539,12 +593,13 @@ impl SymbolTable {
         type_id: SymbolId,
         used: bool,
         sem: SymbolAttribute,
+        description: String,
     ) -> Result<SymbolId> {
         debug_assert!(parent_symbol.0 < self.symbols.len());
         let symbol_id = self.next_symbol_id();
         let symbol = self
             .scope_mut(self.symbol(parent_symbol).member_scope()?)
-            .insert_instance(instance_name, symbol_id, type_id, used, sem);
+            .insert_instance(instance_name, symbol_id, type_id, used, sem, description);
         Ok(self.insert_symbol(symbol))
     }
 
@@ -557,8 +612,8 @@ impl SymbolTable {
         if let Some(symbol_id) = self.scope(scope).symbols.iter().find(|symbol_id| {
             if let Ok(type_symbol) = self.symbol_as_type(**symbol_id) {
                 if type_symbol.entrails == entrails
-                    || matches!(type_symbol.entrails, TypeEntrails::Token(_))
-                        && matches!(entrails, TypeEntrails::Token(_))
+                    || matches!(type_symbol.entrails, TypeEntrails::Token)
+                        && matches!(entrails, TypeEntrails::Token)
                 {
                     true
                 } else {

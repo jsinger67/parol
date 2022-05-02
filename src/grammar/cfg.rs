@@ -181,6 +181,20 @@ impl Cfg {
     }
 
     ///
+    /// Returns the number of alternatives of a given production.
+    /// Used for auto generation to get a more stable generation experience.
+    ///
+    pub fn get_alternations_count(&self, prod_num: ProductionIndex) -> Result<usize, &'static str> {
+        if prod_num >= self.pr.len() {
+            Err("Invalid production number!")
+        } else {
+            Ok(self
+                .matching_productions(self.pr[prod_num].get_n_str())
+                .len())
+        }
+    }
+
+    ///
     /// Returns the relative index of a production within its alternatives.
     /// Used for auto generation to get a more stable generation experience.
     ///
