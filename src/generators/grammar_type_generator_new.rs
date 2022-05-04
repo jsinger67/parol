@@ -298,7 +298,7 @@ impl GrammarTypeInfo {
             }
         } else {
             // This is the "enum case". We generate an enum variant for each production with a name
-            // build from the nt name plus the relative number and the variant's content is the
+            // built from the nt name plus the relative number and the variant's content is the
             // actions production type.
             let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             for (action_id, _) in actions {

@@ -120,7 +120,7 @@ impl TypeEntrails {
             TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
             TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
             TypeEntrails::EnumVariant(t) => format!(
-                "{}({}{})",
+                "{}({}{}),",
                 my_type_name,
                 symbol_table.symbol(*t).name(symbol_table),
                 symbol_table.lifetime(*t)
@@ -280,17 +280,14 @@ impl Symbol {
     fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
-                TypeEntrails::None
-                | TypeEntrails::Box(_)
-                | TypeEntrails::Vec(_)
-                | TypeEntrails::Function(_) => false,
+                TypeEntrails::None | TypeEntrails::Vec(_) | TypeEntrails::Function(_) => false,
                 TypeEntrails::Token | TypeEntrails::Trait => true,
                 TypeEntrails::Struct | TypeEntrails::Enum => symbol_table
                     .scope(t.member_scope)
                     .symbols
                     .iter()
                     .any(|e| symbol_table.has_lifetime(*e)),
-                TypeEntrails::EnumVariant(v) => symbol_table.has_lifetime(v),
+                TypeEntrails::EnumVariant(t) | TypeEntrails::Box(t) => symbol_table.has_lifetime(t),
             },
             Self::Instance(i) => symbol_table.has_lifetime(i.type_id),
         }

@@ -14,7 +14,7 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::{ParolGrammarItem, Production};
 use crate::{ParolGrammar, Pr, StrVec};
 use log::trace;
-use miette::{IntoDiagnostic, Result};
+use miette::{bail, IntoDiagnostic, Result};
 
 /// Generator for user trait code
 #[derive(Builder, Debug, Default)]
@@ -255,7 +255,7 @@ impl<'a> UserTraitGenerator<'a> {
             TypeEntrails::Struct => {
                 let struct_data = NonTerminalTypeStruct {
                     comment,
-                    struct_type_name: type_name,
+                    type_name,
                     lifetime,
                     members: members.iter().fold(StrVec::new(4), |mut acc, m| {
                         acc.push(symbol_table.symbol(*m).to_rust(symbol_table));
@@ -264,32 +264,19 @@ impl<'a> UserTraitGenerator<'a> {
                 };
                 Ok(Some(format!("{}", struct_data)))
             }
-            // ASTType::Enum(n, m) => {
-            //     let struct_data = NonTerminalTypeEnum {
-            //         comment,
-            //         non_terminal: n.to_string(),
-            //         lifetime: type_symbol.lifetime(),
-            //         members: m.iter().fold(StrVec::new(4), |mut acc, (c, t)| {
-            //             acc.push(NmHlp::to_upper_camel_case(&format!(
-            //                 "{}({}),",
-            //                 c,
-            //                 t.type_name(),
-            //             )));
-            //             acc
-            //         }),
-            //     };
-            //     Some(format!("{}", struct_data))
-            // }
-            // ASTType::Repeat(r) => {
-            //     let struct_data = NonTerminalTypeVec {
-            //         comment,
-            //         non_terminal: type_name,
-            //         lifetime: type_symbol.lifetime(),
-            //         type_ref: r.clone(),
-            //     };
-            //     Some(format!("{}", struct_data))
-            // }
-            _ => Ok(None),
+            TypeEntrails::Enum => {
+                let struct_data = NonTerminalTypeEnum {
+                    comment,
+                    type_name,
+                    lifetime,
+                    members: members.iter().fold(StrVec::new(4), |mut acc, m| {
+                        acc.push(symbol_table.symbol(*m).to_rust(symbol_table));
+                        acc
+                    }),
+                };
+                Ok(Some(format!("{}", struct_data)))
+            }
+            _ => bail!("Unexpected type!"),
         }
     }
 
@@ -346,6 +333,38 @@ impl<'a> UserTraitGenerator<'a> {
                 })?
         } else {
             StrVec::new(0)
+        };
+
+        let non_terminal_types = if self.auto_generate {
+            type_info.non_terminal_types.iter().fold(
+                Ok(StrVec::new(0)),
+                |acc: Result<StrVec>, (s, t)| {
+                    if let Ok(mut acc) = acc {
+                        let mut comment = StrVec::new(0);
+                        comment.push(String::default());
+                        comment.push(format!("Type derived for non-terminal {}", s));
+                        comment.push(String::default());
+                        Self::format_type(*t, &type_info.symbol_table, comment)?
+                            .into_iter()
+                            .for_each(|s| acc.push(s));
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
+                },
+            )?
+        } else {
+            StrVec::new(0)
+        };
+
+        let ast_type_decl = if self.auto_generate {
+            let mut comment = StrVec::new(0);
+            comment.push(String::default());
+            comment.push("Deduced ASTType of expanded grammar".to_string());
+            comment.push(String::default());
+            Self::format_type(type_info.ast_enum_type, &type_info.symbol_table, comment)?.unwrap()
+        } else {
+            String::default()
         };
 
         let user_trait_functions = if self.auto_generate {
@@ -424,8 +443,8 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(&self.user_type_name)
             .auto_generate(self.auto_generate)
             .production_output_types(production_output_types)
-            .non_terminal_types(StrVec::default())
-            .ast_type_decl(String::default())
+            .non_terminal_types(non_terminal_types)
+            .ast_type_decl(ast_type_decl)
             .trait_functions(StrVec::default())
             .trait_caller(trait_caller)
             .module_name(self.module_name)

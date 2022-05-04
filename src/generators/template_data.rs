@@ -48,7 +48,7 @@ pub(crate) struct UserTraitData<'a> {
 #[template = "templates/non_terminal_type_struct_template.rs.tpl"]
 pub(crate) struct NonTerminalTypeStruct {
     pub comment: StrVec,
-    pub struct_type_name: String,
+    pub type_name: String,
     pub lifetime: String,
     pub members: StrVec,
 }
@@ -57,7 +57,7 @@ pub(crate) struct NonTerminalTypeStruct {
 #[template = "templates/non_terminal_type_enum_template.rs.tpl"]
 pub(crate) struct NonTerminalTypeEnum {
     pub comment: StrVec,
-    pub non_terminal: String,
+    pub type_name: String,
     pub lifetime: String,
     pub members: StrVec,
 }
