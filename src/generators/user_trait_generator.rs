@@ -32,27 +32,37 @@ pub struct UserTraitGenerator<'a> {
 }
 
 impl<'a> UserTraitGenerator<'a> {
-    // fn generate_inner_action_args(&self, action: &Function) -> String {
-    //     // We reference the parse_tree argument only if a token is in the argument list
-    //     let lifetime = if self.auto_generate { "<'t>" } else { "" };
-    //     let mut parse_tree_argument_used = false;
-    //     let mut arguments = action
-    //         .args
-    //         .iter()
-    //         .map(|a| {
-    //             if matches!(a.arg_type, ASTType::Token(_)) {
-    //                 parse_tree_argument_used = true;
-    //             }
-    //             format!("{}: &ParseTreeStackEntry{}", a.name(), lifetime)
-    //         })
-    //         .collect::<Vec<String>>();
-    //     arguments.push(format!(
-    //         "{}parse_tree: &Tree<ParseTreeType{}>",
-    //         NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used),
-    //         lifetime
-    //     ));
-    //     arguments.join(", ")
-    // }
+    fn generate_inner_action_args(
+        &self,
+        action_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<String> {
+        // We reference the parse_tree argument only if a token is in the argument list
+        let lifetime = if self.auto_generate { "<'t>" } else { "" };
+        let mut parse_tree_argument_used = false;
+        let mut arguments = Vec::new();
+
+        for member_id in symbol_table.members(action_id)? {
+            let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+            let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+            if matches!(arg_type.entrails, TypeEntrails::Token) {
+                parse_tree_argument_used = true;
+            }
+            arguments.push(format!(
+                "{}{}: &ParseTreeStackEntry{}",
+                NmHlp::item_unused_indicator(arg_inst.used),
+                symbol_table.name(arg_inst.name_id),
+                lifetime
+            ));
+        }
+
+        arguments.push(format!(
+            "{}parse_tree: &Tree<ParseTreeType{}>",
+            NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used),
+            lifetime
+        ));
+        Ok(arguments.join(", "))
+    }
 
     // fn generate_context(&self, code: &mut StrVec, action: &Action) {
     //     if self.auto_generate {
@@ -367,6 +377,42 @@ impl<'a> UserTraitGenerator<'a> {
             String::default()
         };
 
+        let trait_functions = type_info.adapter_actions.iter().fold(
+            Ok(StrVec::new(0).first_line_no_indent()),
+            |acc: Result<StrVec>, a| {
+                if let Ok(mut acc) = acc {
+                    let fn_type = type_info.symbol_table.symbol_as_type(*a.1)?;
+                    let fn_name = type_info.symbol_table.name(fn_type.name_id).to_string();
+                    let function = type_info.symbol_table.symbol_as_function(*a.1)?;
+                    let prod_num = function.prod_num;
+                    let prod_string = function.prod_string.clone();
+                    let fn_arguments =
+                        self.generate_inner_action_args(*a.1, &type_info.symbol_table)?;
+                    let code = StrVec::new(8);
+                    // self.generate_context(&mut code, a);
+                    // self.generate_token_assignments(&mut code, a);
+                    // self.generate_stack_pops(&mut code, a)?;
+                    // self.generate_result_builder(&mut code, a);
+                    // self.generate_push_semantic(&mut code, a);
+                    // self.generate_user_action_call(&mut code, a, self.parol_grammar);
+                    // self.generate_stack_push(&mut code, a);
+                    let user_trait_function_data = UserTraitFunctionDataBuilder::default()
+                        .fn_name(&fn_name)
+                        .prod_num(prod_num)
+                        .fn_arguments(fn_arguments)
+                        .prod_string(prod_string)
+                        .code(code)
+                        .inner(true)
+                        .build()
+                        .into_diagnostic()?;
+                    acc.push(format!("{}", user_trait_function_data));
+                    Ok(acc)
+                } else {
+                    acc
+                }
+            },
+        )?;
+
         let user_trait_functions = if self.auto_generate {
             trace!(
                 "parol_grammar.item_stack:\n{:?}",
@@ -445,7 +491,7 @@ impl<'a> UserTraitGenerator<'a> {
             .production_output_types(production_output_types)
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
-            .trait_functions(StrVec::default())
+            .trait_functions(trait_functions)
             .trait_caller(trait_caller)
             .module_name(self.module_name)
             .user_trait_functions(user_trait_functions)
