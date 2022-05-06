@@ -29,9 +29,9 @@ pub trait ListGrammarTrait {
     ///
     fn list_0(
         &mut self,
-        _num_0: &ParseTreeStackEntry,
-        _list_rest_1: &ParseTreeStackEntry,
-        _list_suffix_2: &ParseTreeStackEntry,
+        _num: &ParseTreeStackEntry,
+        _list_rest: &ParseTreeStackEntry,
+        _list_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -43,7 +43,7 @@ pub trait ListGrammarTrait {
     ///
     fn list_suffix_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -71,9 +71,9 @@ pub trait ListGrammarTrait {
     ///
     fn list_rest_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _num_1: &ParseTreeStackEntry,
-        _list_rest_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _num: &ParseTreeStackEntry,
+        _list_rest: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -91,11 +91,7 @@ pub trait ListGrammarTrait {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num_0(
-        &mut self,
-        _num_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 }
@@ -124,7 +120,7 @@ impl UserActionsTrait<'_> for ListGrammar {
             3 => self.list_1(parse_tree),
             4 => self.list_rest_0(&children[0], &children[1], &children[2], parse_tree),
             5 => self.list_rest_1(parse_tree),
-            6 => self.num_0(&children[0], parse_tree),
+            6 => self.num(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

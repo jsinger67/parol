@@ -390,26 +390,26 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// equality_op: "==|!=";
     ///
-    fn equality_op_0(
+    fn equality_op(
         &mut self,
-        tk_equality_op_0: &ParseTreeStackEntry,
+        tk_equality_op: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "equality_op_0";
-        self.process_binary_operator(tk_equality_op_0, parse_tree, context)
+        let context = "equality_op";
+        self.process_binary_operator(tk_equality_op, parse_tree, context)
     }
 
     /// Semantic action for production 7:
     ///
     /// assign_op: "(\+|-|\*|/|%|<<|>>|&|^|\|)?=";
     ///
-    fn assign_op_0(
+    fn assign_op(
         &mut self,
-        tk_assign_op_0: &ParseTreeStackEntry,
+        tk_assign_op: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "assign_op_0";
-        let symbol = tk_assign_op_0.symbol(parse_tree)?;
+        let context = "assign_op";
+        let symbol = tk_assign_op.symbol(parse_tree)?;
         let assign_op: AssignOperator = symbol.into();
         self.push(CalcGrammarItem::AssignOp(assign_op), context);
         Ok(())
@@ -419,13 +419,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// assign_item: id assign_op;
     ///
-    fn assign_item_0(
+    fn assign_item(
         &mut self,
-        _id_0: &ParseTreeStackEntry,
-        _assign_op_1: &ParseTreeStackEntry,
+        _id: &ParseTreeStackEntry,
+        _assign_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "assign_item_0";
+        let context = "assign_item";
         let top_of_stack1 = self.pop(context);
         let top_of_stack2 = self.pop(context);
         match (&top_of_stack1, &top_of_stack2) {
@@ -450,14 +450,14 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// assignment: assign_item assignment_lst1 logical_or;
     ///
-    fn assignment_0(
+    fn assignment(
         &mut self,
-        _assign_item_0: &ParseTreeStackEntry,
-        _assignment_lst1_1: &ParseTreeStackEntry,
-        _logical_or_2: &ParseTreeStackEntry,
+        _assign_item: &ParseTreeStackEntry,
+        _assignment_lst: &ParseTreeStackEntry,
+        _logical_or: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "assignment_0";
+        let context = "assignment";
         let value = self.pop(context);
         let assignment_lst = self.pop(context);
         let assign_item = self.pop(context);
@@ -494,8 +494,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn assignment_lst1_0(
         &mut self,
-        _assignment_lst1_itm1_0: &ParseTreeStackEntry,
-        _assignment_lst1_1: &ParseTreeStackEntry,
+        _assignment_lst1_itm1: &ParseTreeStackEntry,
+        _assignment_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "assignment_lst1_0";
@@ -532,13 +532,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_or: logical_and logical_or_lst1;
     ///
-    fn logical_or_0(
+    fn logical_or(
         &mut self,
-        _logical_and_0: &ParseTreeStackEntry,
-        _logical_or_lst1_1: &ParseTreeStackEntry,
+        _logical_and: &ParseTreeStackEntry,
+        _logical_or_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_or_0";
+        let context = "logical_or";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_associative_operation_list(context)
     }
@@ -549,8 +549,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn logical_or_lst1_0(
         &mut self,
-        _logical_or_lst1_itm1_0: &ParseTreeStackEntry,
-        _logical_or_lst1_1: &ParseTreeStackEntry,
+        _logical_or_lst1_itm1: &ParseTreeStackEntry,
+        _logical_or_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "logical_or_lst1_0";
@@ -572,12 +572,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_or_op: "\|\|";
     ///
-    fn logical_or_op_0(
+    fn logical_or_op(
         &mut self,
-        _logical_or_op_0: &ParseTreeStackEntry,
+        _logical_or_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_or_op_0";
+        let context = "logical_or_op";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::LogOr), context);
         Ok(())
     }
@@ -586,13 +586,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_or_item: logical_or_op logical_and;
     ///
-    fn logical_or_item_0(
+    fn logical_or_item(
         &mut self,
-        _logical_or_op_0: &ParseTreeStackEntry,
-        _logical_and_1: &ParseTreeStackEntry,
+        _logical_or_op: &ParseTreeStackEntry,
+        _logical_and: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_or_item_0";
+        let context = "logical_or_item";
         self.process_right_item(context)
     }
 
@@ -600,13 +600,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_and: bitwise_or logical_and_lst1;
     ///
-    fn logical_and_0(
+    fn logical_and(
         &mut self,
-        _bitwise_or_0: &ParseTreeStackEntry,
-        _logical_and_lst1_1: &ParseTreeStackEntry,
+        _bitwise_or: &ParseTreeStackEntry,
+        _logical_and_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_and_0";
+        let context = "logical_and";
         self.process_left_associative_operation_list(context)
     }
 
@@ -616,8 +616,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn logical_and_lst1_0(
         &mut self,
-        _logical_and_lst1_itm1_0: &ParseTreeStackEntry,
-        _logical_and_lst1_1: &ParseTreeStackEntry,
+        _logical_and_lst1_itm1: &ParseTreeStackEntry,
+        _logical_and_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "logical_and_lst1_0";
@@ -639,12 +639,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_and_op: "&&";
     ///
-    fn logical_and_op_0(
+    fn logical_and_op(
         &mut self,
-        _logical_and_op_0: &ParseTreeStackEntry,
+        _logical_and_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_and_op_0";
+        let context = "logical_and_op";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::LogAnd), context);
         Ok(())
     }
@@ -653,13 +653,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// logical_and_item: logical_and_op bitwise_or;
     ///
-    fn logical_and_item_0(
+    fn logical_and_item(
         &mut self,
-        _logical_and_op_0: &ParseTreeStackEntry,
-        _bitwise_or_1: &ParseTreeStackEntry,
+        _logical_and_op: &ParseTreeStackEntry,
+        _bitwise_or: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "logical_and_item_0";
+        let context = "logical_and_item";
         self.process_right_item(context)
     }
 
@@ -667,13 +667,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_or: bitwise_and bitwise_or_lst1;
     ///
-    fn bitwise_or_0(
+    fn bitwise_or(
         &mut self,
-        _bitwise_and_0: &ParseTreeStackEntry,
-        _bitwise_or_lst1_1: &ParseTreeStackEntry,
+        _bitwise_and: &ParseTreeStackEntry,
+        _bitwise_or_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_or_0";
+        let context = "bitwise_or";
         self.process_left_associative_operation_list(context)
     }
 
@@ -683,8 +683,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn bitwise_or_lst1_0(
         &mut self,
-        _bitwise_or_lst1_itm1_0: &ParseTreeStackEntry,
-        _bitwise_or_lst1_1: &ParseTreeStackEntry,
+        _bitwise_or_lst1_itm1: &ParseTreeStackEntry,
+        _bitwise_or_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "bitwise_or_lst1_0";
@@ -706,12 +706,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_or_op: "\|";
     ///
-    fn bitwise_or_op_0(
+    fn bitwise_or_op(
         &mut self,
-        _bitwise_or_op_0: &ParseTreeStackEntry,
+        _bitwise_or_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_or_op_0";
+        let context = "bitwise_or_op";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::BitOr), context);
         Ok(())
     }
@@ -720,13 +720,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_or_item: bitwise_or_op bitwise_and;
     ///
-    fn bitwise_or_item_0(
+    fn bitwise_or_item(
         &mut self,
-        _bitwise_or_op_0: &ParseTreeStackEntry,
-        _bitwise_and_1: &ParseTreeStackEntry,
+        _bitwise_or_op: &ParseTreeStackEntry,
+        _bitwise_and: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_or_item_0";
+        let context = "bitwise_or_item";
         self.process_right_item(context)
     }
 
@@ -734,13 +734,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_and: equality bitwise_and_lst1;
     ///
-    fn bitwise_and_0(
+    fn bitwise_and(
         &mut self,
-        _equality_0: &ParseTreeStackEntry,
-        _bitwise_and_lst1_1: &ParseTreeStackEntry,
+        _equality: &ParseTreeStackEntry,
+        _bitwise_and_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_and_0";
+        let context = "bitwise_and";
         self.process_left_associative_operation_list(context)
     }
 
@@ -750,8 +750,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn bitwise_and_lst1_0(
         &mut self,
-        _bitwise_and_lst1_itm1_0: &ParseTreeStackEntry,
-        _bitwise_and_lst1_1: &ParseTreeStackEntry,
+        _bitwise_and_lst1_itm1: &ParseTreeStackEntry,
+        _bitwise_and_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "bitwise_and_lst1_0";
@@ -773,12 +773,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_and_op: "&";
     ///
-    fn bitwise_and_op_0(
+    fn bitwise_and_op(
         &mut self,
-        _bitwise_and_op_0: &ParseTreeStackEntry,
+        _bitwise_and_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_and_op_0";
+        let context = "bitwise_and_op";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::BitAnd), context);
         Ok(())
     }
@@ -787,13 +787,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_and_item: bitwise_and_op equality;
     ///
-    fn bitwise_and_item_0(
+    fn bitwise_and_item(
         &mut self,
-        _bitwise_and_op_0: &ParseTreeStackEntry,
-        _equality_1: &ParseTreeStackEntry,
+        _bitwise_and_op: &ParseTreeStackEntry,
+        _equality: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_and_item_0";
+        let context = "bitwise_and_item";
         self.process_right_item(context)
     }
 
@@ -801,13 +801,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// equality: relational equality_lst1;
     ///
-    fn equality_0(
+    fn equality(
         &mut self,
-        _relational_0: &ParseTreeStackEntry,
-        _equality_lst1_1: &ParseTreeStackEntry,
+        _relational: &ParseTreeStackEntry,
+        _equality_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "equality_0";
+        let context = "equality";
         self.process_left_associative_operation_list(context)
     }
 
@@ -817,11 +817,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn equality_lst1_0(
         &mut self,
-        _equality_lst1_itm1_0: &ParseTreeStackEntry,
-        _equality_lst1_1: &ParseTreeStackEntry,
+        _equality_lst1_itm1: &ParseTreeStackEntry,
+        _equality_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "equality_lst1_0";
+        let context = "equality_lst1";
         self.process_right_items(context)
     }
 
@@ -840,13 +840,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// equality_item: equality_op relational;
     ///
-    fn equality_item_0(
+    fn equality_item(
         &mut self,
-        _equality_op_0: &ParseTreeStackEntry,
-        _relational_1: &ParseTreeStackEntry,
+        _equality_op: &ParseTreeStackEntry,
+        _relational: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "equality_item_0";
+        let context = "equality_item";
         self.process_right_item(context)
     }
 
@@ -854,26 +854,26 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_shift_op: "<<|>>";
     ///
-    fn bitwise_shift_op_0(
+    fn bitwise_shift_op(
         &mut self,
-        tk_bitwise_shift_op_0: &ParseTreeStackEntry,
+        tk_bitwise_shift_op: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_shift_op_0";
-        self.process_binary_operator(tk_bitwise_shift_op_0, parse_tree, context)
+        let context = "bitwise_shift_op";
+        self.process_binary_operator(tk_bitwise_shift_op, parse_tree, context)
     }
 
     /// Semantic action for production 43:
     ///
     /// relational: bitwise_shift relational_lst1;
     ///
-    fn relational_0(
+    fn relational(
         &mut self,
-        _bitwise_shift_0: &ParseTreeStackEntry,
-        _relational_lst1_1: &ParseTreeStackEntry,
+        _bitwise_shift: &ParseTreeStackEntry,
+        _relational_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "relational_0";
+        let context = "relational";
         self.process_left_associative_operation_list(context)
     }
 
@@ -883,8 +883,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn relational_lst1_0(
         &mut self,
-        _relational_lst1_itm1_0: &ParseTreeStackEntry,
-        _relational_lst1_1: &ParseTreeStackEntry,
+        _relational_lst1_itm1: &ParseTreeStackEntry,
+        _relational_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "relational_lst1_0";
@@ -906,26 +906,26 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// relational_op: "<=|<|>=|>";
     ///
-    fn relational_op_0(
+    fn relational_op(
         &mut self,
-        tk_relational_op_0: &ParseTreeStackEntry,
+        tk_relational_op: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "relational_op_0";
-        self.process_binary_operator(tk_relational_op_0, parse_tree, context)
+        let context = "relational_op";
+        self.process_binary_operator(tk_relational_op, parse_tree, context)
     }
 
     /// Semantic action for production 48:
     ///
     /// relational_item: relational_op bitwise_shift;
     ///
-    fn relational_item_0(
+    fn relational_item(
         &mut self,
-        _relational_op_0: &ParseTreeStackEntry,
-        _bitwise_shift_1: &ParseTreeStackEntry,
+        _relational_op: &ParseTreeStackEntry,
+        _bitwise_shift: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "relational_item_0";
+        let context = "relational_item";
         self.process_right_item(context)
     }
 
@@ -933,13 +933,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_shift: summ bitwise_shift_lst1;
     ///
-    fn bitwise_shift_0(
+    fn bitwise_shift(
         &mut self,
-        _summ_0: &ParseTreeStackEntry,
-        _bitwise_shift_lst1_1: &ParseTreeStackEntry,
+        _summ: &ParseTreeStackEntry,
+        _bitwise_shift_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_shift_0";
+        let context = "bitwise_shift";
         self.process_left_associative_operation_list(context)
     }
 
@@ -949,8 +949,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn bitwise_shift_lst1_0(
         &mut self,
-        _bitwise_shift_lst1_itm1_0: &ParseTreeStackEntry,
-        _bitwise_shift_lst1_1: &ParseTreeStackEntry,
+        _bitwise_shift_lst1_itm1: &ParseTreeStackEntry,
+        _bitwise_shift_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "bitwise_shift_lst1_0";
@@ -972,13 +972,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// bitwise_shift_item: bitwise_shift_op summ;
     ///
-    fn bitwise_shift_item_0(
+    fn bitwise_shift_item(
         &mut self,
-        _bitwise_shift_op_0: &ParseTreeStackEntry,
-        _summ_1: &ParseTreeStackEntry,
+        _bitwise_shift_op: &ParseTreeStackEntry,
+        _summ: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "bitwise_shift_item_0";
+        let context = "bitwise_shift_item";
         self.process_right_item(context)
     }
 
@@ -986,13 +986,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// summ: mult summ_lst1;
     ///
-    fn summ_0(
+    fn summ(
         &mut self,
-        _mult_0: &ParseTreeStackEntry,
-        _summ_lst1_1: &ParseTreeStackEntry,
+        _mult: &ParseTreeStackEntry,
+        _summ_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "summ_0";
+        let context = "summ";
         self.process_left_associative_operation_list(context)
     }
 
@@ -1002,11 +1002,11 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn summ_lst1_0(
         &mut self,
-        _summ_lst1_itm1_0: &ParseTreeStackEntry,
-        _summ_lst1_1: &ParseTreeStackEntry,
+        _summ_lst1_itm1: &ParseTreeStackEntry,
+        _summ_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "summ_lst1_0";
+        let context = "summ_lst1";
         self.process_right_items(context)
     }
 
@@ -1025,12 +1025,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// plus: "\+";
     ///
-    fn plus_0(
+    fn plus(
         &mut self,
-        _plus_0: &ParseTreeStackEntry,
+        _plus: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "plus_0";
+        let context = "plus";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Add), context);
         Ok(())
     }
@@ -1039,12 +1039,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// minus: "-";
     ///
-    fn minus_0(
+    fn minus(
         &mut self,
-        _minus_0: &ParseTreeStackEntry,
+        _minus: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "minus_0";
+        let context = "minus";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Sub), context);
         Ok(())
     }
@@ -1053,13 +1053,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// summ_item: add_op mult;
     ///
-    fn summ_item_0(
+    fn summ_item(
         &mut self,
-        _add_op_0: &ParseTreeStackEntry,
-        _mult_1: &ParseTreeStackEntry,
+        _add_op: &ParseTreeStackEntry,
+        _mult: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "summ_item_0";
+        let context = "summ_item";
         self.process_right_item(context)
     }
 
@@ -1067,12 +1067,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// pow_op: "\*\*";
     ///
-    fn pow_op_0(
+    fn pow_op(
         &mut self,
-        _pow_op_0: &ParseTreeStackEntry,
+        _pow_op: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "pow_op_0";
+        let context = "pow_op";
         self.push(CalcGrammarItem::BinaryOp(BinaryOperator::Pow), context);
         Ok(())
     }
@@ -1081,13 +1081,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// mult: power mult_lst1;
     ///
-    fn mult_0(
+    fn mult(
         &mut self,
-        _power_0: &ParseTreeStackEntry,
-        _mult_lst1_1: &ParseTreeStackEntry,
+        _power: &ParseTreeStackEntry,
+        _mult_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "mult_0";
+        let context = "mult";
         self.process_left_associative_operation_list(context)
     }
 
@@ -1097,8 +1097,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn mult_lst1_0(
         &mut self,
-        _mult_lst1_itm1_0: &ParseTreeStackEntry,
-        _mult_lst1_1: &ParseTreeStackEntry,
+        _mult_lst1_itm1: &ParseTreeStackEntry,
+        _mult_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "mult_lst1_0";
@@ -1120,26 +1120,26 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// mult_op: "\*|/|%";
     ///
-    fn mult_op_0(
+    fn mult_op(
         &mut self,
-        tk_mult_op_0: &ParseTreeStackEntry,
+        tk_mult_op: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "mult_op_0";
-        self.process_binary_operator(tk_mult_op_0, parse_tree, context)
+        let context = "mult_op";
+        self.process_binary_operator(tk_mult_op, parse_tree, context)
     }
 
     /// Semantic action for production 69:
     ///
     /// mult_item: mult_op power;
     ///
-    fn mult_item_0(
+    fn mult_item(
         &mut self,
-        _mult_op_0: &ParseTreeStackEntry,
-        _power_1: &ParseTreeStackEntry,
+        _mult_op: &ParseTreeStackEntry,
+        _power: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "mult_item_0";
+        let context = "mult_item";
         self.process_right_item(context)
     }
 
@@ -1147,13 +1147,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// power: factor power_lst1;
     ///
-    fn power_0(
+    fn power(
         &mut self,
-        _factor_0: &ParseTreeStackEntry,
-        _power_lst1_1: &ParseTreeStackEntry,
+        _factor: &ParseTreeStackEntry,
+        _power_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "power_0";
+        let context = "power";
         self.process_right_associative_operation_list(context)
     }
 
@@ -1163,8 +1163,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn power_lst1_0(
         &mut self,
-        _power_lst1_itm1_0: &ParseTreeStackEntry,
-        _power_lst1_1: &ParseTreeStackEntry,
+        _power_lst1_itm1: &ParseTreeStackEntry,
+        _power_lst1: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "power_lst1_0";
@@ -1175,13 +1175,13 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// power_lst1_itm1: pow_op factor;
     ///
-    fn power_lst1_itm1_0(
+    fn power_lst1_itm1(
         &mut self,
-        _pow_op_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
+        _pow_op: &ParseTreeStackEntry,
+        _factor: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "power_lst1_itm1_0";
+        let context = "power_lst1_itm1";
         self.process_right_item(context)
     }
 
@@ -1200,12 +1200,12 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// negate: minus;
     ///
-    fn negate_0(
+    fn negate(
         &mut self,
-        _minus_0: &ParseTreeStackEntry,
+        _minus: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "negate_0";
+        let context = "negate";
         let minus = self.pop(context);
         if let Some(CalcGrammarItem::BinaryOp(BinaryOperator::Sub)) = minus {
             self.push(CalcGrammarItem::UnaryOp(UnaryOperator::Negation), context);
@@ -1221,8 +1221,8 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn factor_2(
         &mut self,
-        _negate_0: &ParseTreeStackEntry,
-        _factor_1: &ParseTreeStackEntry,
+        _negate: &ParseTreeStackEntry,
+        _factor: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "factor_2";
@@ -1244,20 +1244,20 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// number: "[0-9]+";
     ///
-    fn number_0(
+    fn number(
         &mut self,
-        tk_number_0: &ParseTreeStackEntry,
+        tk_number: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "number_0";
-        let symbol = tk_number_0.symbol(parse_tree)?;
+        let context = "number";
+        let symbol = tk_number.symbol(parse_tree)?;
         let number = match symbol.parse::<DefinitionRange>() {
             Ok(number) => number,
             Err(error) => {
                 return Err(miette!(CalcError::ParseISizeFailed {
                     context: context.to_owned(),
                     input: FileSource::try_new(self.file_name.clone())?.into(),
-                    token: tk_number_0.token(parse_tree)?.into()
+                    token: tk_number.token(parse_tree)?.into()
                 }))
                 .wrap_err(miette!(error))
             }
@@ -1270,18 +1270,14 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// idref: id;
     ///
-    fn idref_0(
-        &mut self,
-        id_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "idref_0";
+    fn idref(&mut self, id: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "idref";
         let top_of_stack = self.pop(context);
         match top_of_stack {
-            Some(CalcGrammarItem::Id(id)) => {
-                if let Some(val) = self.value(&id) {
+            Some(CalcGrammarItem::Id(ids)) => {
+                if let Some(val) = self.value(&ids) {
                     self.push(CalcGrammarItem::Num(val), context);
-                } else if let ParseTreeStackEntry::Id(node_id) = id_0 {
+                } else if let ParseTreeStackEntry::Id(node_id) = id {
                     // We need to navigate to the one and only child of the Identifier
                     // non-terminal to access the actual token.
                     let child = parse_tree
@@ -1294,7 +1290,7 @@ impl CalcGrammarTrait for CalcGrammar {
                         token: child.data().token()?.into()
                     }));
                 } else {
-                    return Err(miette!("{}: undeclared variable {}", context, id));
+                    return Err(miette!("{}: undeclared variable {}", context, ids));
                 }
                 Ok(())
             }
@@ -1306,13 +1302,9 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     /// id: "[a-zA-Z_]\w*";
     ///
-    fn id_0(
-        &mut self,
-        tk_id_0: &ParseTreeStackEntry,
-        parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        let context = "id_0";
-        let id = tk_id_0.symbol(parse_tree)?;
+    fn id(&mut self, tk_id: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "id";
+        let id = tk_id.symbol(parse_tree)?;
         self.push(CalcGrammarItem::Id(id.to_owned()), context);
         Ok(())
     }

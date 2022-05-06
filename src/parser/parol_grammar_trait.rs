@@ -27,10 +27,10 @@ pub trait ParolGrammarTrait {
     ///
     /// Parol: Prolog GrammarDefinition;
     ///
-    fn parol_0(
+    fn parol(
         &mut self,
-        _prolog_0: &ParseTreeStackEntry,
-        _grammar_definition_1: &ParseTreeStackEntry,
+        _prolog: &ParseTreeStackEntry,
+        _grammar_definition: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -40,11 +40,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Prolog: StartDeclaration Declarations ScannerStates;
     ///
-    fn prolog_0(
+    fn prolog(
         &mut self,
-        _start_declaration_0: &ParseTreeStackEntry,
-        _declarations_1: &ParseTreeStackEntry,
-        _scanner_states_2: &ParseTreeStackEntry,
+        _start_declaration: &ParseTreeStackEntry,
+        _declarations: &ParseTreeStackEntry,
+        _scanner_states: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -54,10 +54,10 @@ pub trait ParolGrammarTrait {
     ///
     /// StartDeclaration: "%start" Identifier;
     ///
-    fn start_declaration_0(
+    fn start_declaration(
         &mut self,
-        _percent_start_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
+        _percent_start: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -69,8 +69,8 @@ pub trait ParolGrammarTrait {
     ///
     fn declarations_0(
         &mut self,
-        _declaration_0: &ParseTreeStackEntry,
-        _declarations_1: &ParseTreeStackEntry,
+        _declaration: &ParseTreeStackEntry,
+        _declarations: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -90,8 +90,8 @@ pub trait ParolGrammarTrait {
     ///
     fn declaration_0(
         &mut self,
-        _percent_title_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
+        _percent_title: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -103,8 +103,8 @@ pub trait ParolGrammarTrait {
     ///
     fn declaration_1(
         &mut self,
-        _percent_comment_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
+        _percent_comment: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -116,7 +116,7 @@ pub trait ParolGrammarTrait {
     ///
     fn declaration_2(
         &mut self,
-        _scanner_directives_0: &ParseTreeStackEntry,
+        _scanner_directives: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -128,8 +128,8 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_0(
         &mut self,
-        _percent_line_underscore_comment_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
+        _percent_line_underscore_comment: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -141,9 +141,9 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_1(
         &mut self,
-        _percent_block_underscore_comment_0: &ParseTreeStackEntry,
-        _string_1: &ParseTreeStackEntry,
-        _string_2: &ParseTreeStackEntry,
+        _percent_block_underscore_comment: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
+        _string0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -155,7 +155,7 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_2(
         &mut self,
-        _percent_auto_underscore_newline_underscore_off_0: &ParseTreeStackEntry,
+        _percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -167,7 +167,7 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_directives_3(
         &mut self,
-        _percent_auto_underscore_ws_underscore_off_0: &ParseTreeStackEntry,
+        _percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -179,8 +179,8 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_states_0(
         &mut self,
-        _scanner_state_0: &ParseTreeStackEntry,
-        _scanner_states_1: &ParseTreeStackEntry,
+        _scanner_state: &ParseTreeStackEntry,
+        _scanner_states: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -198,11 +198,11 @@ pub trait ParolGrammarTrait {
     ///
     /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
     ///
-    fn grammar_definition_0(
+    fn grammar_definition(
         &mut self,
-        _percent_percent_0: &ParseTreeStackEntry,
-        _production_1: &ParseTreeStackEntry,
-        _grammar_definition_list_2: &ParseTreeStackEntry,
+        _percent_percent: &ParseTreeStackEntry,
+        _production: &ParseTreeStackEntry,
+        _grammar_definition_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -214,8 +214,8 @@ pub trait ParolGrammarTrait {
     ///
     fn grammar_definition_list_0(
         &mut self,
-        _production_0: &ParseTreeStackEntry,
-        _grammar_definition_list_1: &ParseTreeStackEntry,
+        _production: &ParseTreeStackEntry,
+        _grammar_definition_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -233,12 +233,12 @@ pub trait ParolGrammarTrait {
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
-    fn production_0(
+    fn production(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
-        _colon_1: &ParseTreeStackEntry,
-        _alternations_2: &ParseTreeStackEntry,
-        _semicolon_3: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _colon: &ParseTreeStackEntry,
+        _alternations: &ParseTreeStackEntry,
+        _semicolon: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -248,10 +248,10 @@ pub trait ParolGrammarTrait {
     ///
     /// Alternations: Alternation AlternationsList /* Vec */;
     ///
-    fn alternations_0(
+    fn alternations(
         &mut self,
-        _alternation_0: &ParseTreeStackEntry,
-        _alternations_list_1: &ParseTreeStackEntry,
+        _alternation: &ParseTreeStackEntry,
+        _alternations_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -263,9 +263,9 @@ pub trait ParolGrammarTrait {
     ///
     fn alternations_list_0(
         &mut self,
-        _or_0: &ParseTreeStackEntry,
-        _alternation_1: &ParseTreeStackEntry,
-        _alternations_list_2: &ParseTreeStackEntry,
+        _or: &ParseTreeStackEntry,
+        _alternation: &ParseTreeStackEntry,
+        _alternations_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -283,9 +283,9 @@ pub trait ParolGrammarTrait {
     ///
     /// Alternation: AlternationList /* Vec */;
     ///
-    fn alternation_0(
+    fn alternation(
         &mut self,
-        _alternation_list_0: &ParseTreeStackEntry,
+        _alternation_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -297,8 +297,8 @@ pub trait ParolGrammarTrait {
     ///
     fn alternation_list_0(
         &mut self,
-        _factor_0: &ParseTreeStackEntry,
-        _alternation_list_1: &ParseTreeStackEntry,
+        _factor: &ParseTreeStackEntry,
+        _alternation_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -318,7 +318,7 @@ pub trait ParolGrammarTrait {
     ///
     fn factor_0(
         &mut self,
-        _group_0: &ParseTreeStackEntry,
+        _group: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -330,7 +330,7 @@ pub trait ParolGrammarTrait {
     ///
     fn factor_1(
         &mut self,
-        _repeat_0: &ParseTreeStackEntry,
+        _repeat: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -342,7 +342,7 @@ pub trait ParolGrammarTrait {
     ///
     fn factor_2(
         &mut self,
-        _optional_0: &ParseTreeStackEntry,
+        _optional: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -354,7 +354,7 @@ pub trait ParolGrammarTrait {
     ///
     fn factor_3(
         &mut self,
-        _symbol_0: &ParseTreeStackEntry,
+        _symbol: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -366,7 +366,7 @@ pub trait ParolGrammarTrait {
     ///
     fn symbol_0(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -378,7 +378,7 @@ pub trait ParolGrammarTrait {
     ///
     fn symbol_1(
         &mut self,
-        _simple_token_0: &ParseTreeStackEntry,
+        _simple_token: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -390,7 +390,7 @@ pub trait ParolGrammarTrait {
     ///
     fn symbol_2(
         &mut self,
-        _token_with_states_0: &ParseTreeStackEntry,
+        _token_with_states: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -402,7 +402,7 @@ pub trait ParolGrammarTrait {
     ///
     fn symbol_3(
         &mut self,
-        _scanner_switch_0: &ParseTreeStackEntry,
+        _scanner_switch: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -412,9 +412,9 @@ pub trait ParolGrammarTrait {
     ///
     /// SimpleToken: String;
     ///
-    fn simple_token_0(
+    fn simple_token(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -424,12 +424,12 @@ pub trait ParolGrammarTrait {
     ///
     /// TokenWithStates: "<" StateList ">" String;
     ///
-    fn token_with_states_0(
+    fn token_with_states(
         &mut self,
-        _l_t_0: &ParseTreeStackEntry,
-        _state_list_1: &ParseTreeStackEntry,
-        _g_t_2: &ParseTreeStackEntry,
-        _string_3: &ParseTreeStackEntry,
+        _l_t: &ParseTreeStackEntry,
+        _state_list: &ParseTreeStackEntry,
+        _g_t: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -439,11 +439,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Group: "\(" Alternations "\)";
     ///
-    fn group_0(
+    fn group(
         &mut self,
-        _l_paren_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _l_paren: &ParseTreeStackEntry,
+        _alternations: &ParseTreeStackEntry,
+        _r_paren: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -453,11 +453,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Optional: "\[" Alternations "\]";
     ///
-    fn optional_0(
+    fn optional(
         &mut self,
-        _l_bracket_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _l_bracket: &ParseTreeStackEntry,
+        _alternations: &ParseTreeStackEntry,
+        _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -467,11 +467,11 @@ pub trait ParolGrammarTrait {
     ///
     /// Repeat: "\{" Alternations "\}";
     ///
-    fn repeat_0(
+    fn repeat(
         &mut self,
-        _l_brace_0: &ParseTreeStackEntry,
-        _alternations_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
+        _l_brace: &ParseTreeStackEntry,
+        _alternations: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -481,9 +481,9 @@ pub trait ParolGrammarTrait {
     ///
     /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn identifier_0(
+    fn identifier(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -493,9 +493,9 @@ pub trait ParolGrammarTrait {
     ///
     /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn string_0(
+    fn string(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -505,13 +505,13 @@ pub trait ParolGrammarTrait {
     ///
     /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
     ///
-    fn scanner_state_0(
+    fn scanner_state(
         &mut self,
-        _percent_scanner_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
-        _l_brace_2: &ParseTreeStackEntry,
-        _scanner_state_list_3: &ParseTreeStackEntry,
-        _r_brace_4: &ParseTreeStackEntry,
+        _percent_scanner: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _l_brace: &ParseTreeStackEntry,
+        _scanner_state_list: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -523,8 +523,8 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_state_list_0(
         &mut self,
-        _scanner_directives_0: &ParseTreeStackEntry,
-        _scanner_state_list_1: &ParseTreeStackEntry,
+        _scanner_directives: &ParseTreeStackEntry,
+        _scanner_state_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -542,10 +542,10 @@ pub trait ParolGrammarTrait {
     ///
     /// StateList: Identifier StateListRest;
     ///
-    fn state_list_0(
+    fn state_list(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
-        _state_list_rest_1: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _state_list_rest: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -557,9 +557,9 @@ pub trait ParolGrammarTrait {
     ///
     fn state_list_rest_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _identifier_1: &ParseTreeStackEntry,
-        _state_list_rest_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _state_list_rest: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -579,10 +579,10 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_switch_0(
         &mut self,
-        _percent_sc_0: &ParseTreeStackEntry,
-        _l_paren_1: &ParseTreeStackEntry,
-        _scanner_name_opt_2: &ParseTreeStackEntry,
-        _r_paren_3: &ParseTreeStackEntry,
+        _percent_sc: &ParseTreeStackEntry,
+        _l_paren: &ParseTreeStackEntry,
+        _scanner_name_opt: &ParseTreeStackEntry,
+        _r_paren: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -594,10 +594,10 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_switch_1(
         &mut self,
-        _percent_push_0: &ParseTreeStackEntry,
-        _l_paren_1: &ParseTreeStackEntry,
-        _identifier_2: &ParseTreeStackEntry,
-        _r_paren_3: &ParseTreeStackEntry,
+        _percent_push: &ParseTreeStackEntry,
+        _l_paren: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _r_paren: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -609,9 +609,9 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_switch_2(
         &mut self,
-        _percent_pop_0: &ParseTreeStackEntry,
-        _l_paren_1: &ParseTreeStackEntry,
-        _r_paren_2: &ParseTreeStackEntry,
+        _percent_pop: &ParseTreeStackEntry,
+        _l_paren: &ParseTreeStackEntry,
+        _r_paren: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -623,7 +623,7 @@ pub trait ParolGrammarTrait {
     ///
     fn scanner_name_opt_0(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -656,9 +656,9 @@ impl UserActionsTrait<'_> for ParolGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.parol_0(&children[0], &children[1], parse_tree),
-            1 => self.prolog_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.start_declaration_0(&children[0], &children[1], parse_tree),
+            0 => self.parol(&children[0], &children[1], parse_tree),
+            1 => self.prolog(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.start_declaration(&children[0], &children[1], parse_tree),
             3 => self.declarations_0(&children[0], &children[1], parse_tree),
             4 => self.declarations_1(parse_tree),
             5 => self.declaration_0(&children[0], &children[1], parse_tree),
@@ -670,20 +670,20 @@ impl UserActionsTrait<'_> for ParolGrammar {
             11 => self.scanner_directives_3(&children[0], parse_tree),
             12 => self.scanner_states_0(&children[0], &children[1], parse_tree),
             13 => self.scanner_states_1(parse_tree),
-            14 => self.grammar_definition_0(&children[0], &children[1], &children[2], parse_tree),
+            14 => self.grammar_definition(&children[0], &children[1], &children[2], parse_tree),
             15 => self.grammar_definition_list_0(&children[0], &children[1], parse_tree),
             16 => self.grammar_definition_list_1(parse_tree),
-            17 => self.production_0(
+            17 => self.production(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            18 => self.alternations_0(&children[0], &children[1], parse_tree),
+            18 => self.alternations(&children[0], &children[1], parse_tree),
             19 => self.alternations_list_0(&children[0], &children[1], &children[2], parse_tree),
             20 => self.alternations_list_1(parse_tree),
-            21 => self.alternation_0(&children[0], parse_tree),
+            21 => self.alternation(&children[0], parse_tree),
             22 => self.alternation_list_0(&children[0], &children[1], parse_tree),
             23 => self.alternation_list_1(parse_tree),
             24 => self.factor_0(&children[0], parse_tree),
@@ -694,20 +694,20 @@ impl UserActionsTrait<'_> for ParolGrammar {
             29 => self.symbol_1(&children[0], parse_tree),
             30 => self.symbol_2(&children[0], parse_tree),
             31 => self.symbol_3(&children[0], parse_tree),
-            32 => self.simple_token_0(&children[0], parse_tree),
-            33 => self.token_with_states_0(
+            32 => self.simple_token(&children[0], parse_tree),
+            33 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            34 => self.group_0(&children[0], &children[1], &children[2], parse_tree),
-            35 => self.optional_0(&children[0], &children[1], &children[2], parse_tree),
-            36 => self.repeat_0(&children[0], &children[1], &children[2], parse_tree),
-            37 => self.identifier_0(&children[0], parse_tree),
-            38 => self.string_0(&children[0], parse_tree),
-            39 => self.scanner_state_0(
+            34 => self.group(&children[0], &children[1], &children[2], parse_tree),
+            35 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            36 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            37 => self.identifier(&children[0], parse_tree),
+            38 => self.string(&children[0], parse_tree),
+            39 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -717,7 +717,7 @@ impl UserActionsTrait<'_> for ParolGrammar {
             ),
             40 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
             41 => self.scanner_state_list_1(parse_tree),
-            42 => self.state_list_0(&children[0], &children[1], parse_tree),
+            42 => self.state_list(&children[0], &children[1], parse_tree),
             43 => self.state_list_rest_0(&children[0], &children[1], &children[2], parse_tree),
             44 => self.state_list_rest_1(parse_tree),
             45 => self.scanner_switch_0(

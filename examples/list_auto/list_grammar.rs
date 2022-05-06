@@ -22,8 +22,8 @@ impl Display for List<'_> {
             List::List0(l) => write!(
                 f,
                 "[{}{}]",
-                l.num_0.num_0.symbol,
-                l.list_list_1
+                l.num.num.symbol,
+                l.list_list
                     .iter()
                     .map(|e| format!("{}", e))
                     .collect::<Vec<std::string::String>>()
@@ -36,7 +36,7 @@ impl Display for List<'_> {
 
 impl Display for ListList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{} {}", self.comma_0.symbol, self.num_1.num_0.symbol)
+        write!(f, "{} {}", self.comma.symbol, self.num.num.symbol)
     }
 }
 

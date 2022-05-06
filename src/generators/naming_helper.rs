@@ -61,9 +61,19 @@ impl NamingHelper {
     }
 
     /// Returns an underscore string if the item is not used.
+    ///
+    /// ```
+    /// use parol::generators::naming_helper::NamingHelper;
+    ///
+    /// assert_eq!(NamingHelper::add_unused_indicator(false, "r#let"), "_let");
+    /// assert_eq!(NamingHelper::add_unused_indicator(false, "x"), "_x");
+    /// assert_eq!(NamingHelper::add_unused_indicator(true, "x"), "x");
+    /// ```
     pub fn add_unused_indicator(used: bool, name: &str) -> String {
         if !used && !Self::is_raw_identifier(name) {
             format!("_{}", name)
+        } else if !used {
+            name.to_string().replace("r#", "_").to_string()
         } else {
             name.to_string()
         }

@@ -182,7 +182,7 @@ pub const NON_TERMINALS: &[&str; 59] = &[
     /* 19 */ "MulOperator",
     /* 20 */ "ProcedureBody",
     /* 21 */ "ProcedureBodySuffix",
-    /* 22 */ "ProcedureBodySuffix1",
+    /* 22 */ "ProcedureBodySuffix0",
     /* 23 */ "ProcedureCall",
     /* 24 */ "ProcedureCallSuffix",
     /* 25 */ "ProcedureDeclaration",
@@ -203,8 +203,8 @@ pub const NON_TERMINALS: &[&str; 59] = &[
     /* 40 */ "assignment",
     /* 41 */ "declarations",
     /* 42 */ "declarationsSuffix",
-    /* 43 */ "declarationsSuffix1",
-    /* 44 */ "declarationsSuffix2",
+    /* 43 */ "declarationsSuffix0",
+    /* 44 */ "declarationsSuffix1",
     /* 45 */ "elseiflist",
     /* 46 */ "expression",
     /* 47 */ "expressionSuffix",
@@ -412,7 +412,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
         transitions: &[DFATransition(0, 16, 2), DFATransition(0, 32, 1)],
         k: 1,
     },
-    /* 22 - "ProcedureBodySuffix1" */
+    /* 22 - "ProcedureBodySuffix0" */
     LookaheadDFA {
         states: &[None, Some(72), Some(73), Some(74)],
         transitions: &[
@@ -593,7 +593,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
         ],
         k: 1,
     },
-    /* 43 - "declarationsSuffix1" */
+    /* 43 - "declarationsSuffix0" */
     LookaheadDFA {
         states: &[None, Some(84), Some(85), Some(86)],
         transitions: &[
@@ -606,7 +606,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 59] = &[
         ],
         k: 1,
     },
-    /* 44 - "declarationsSuffix2" */
+    /* 44 - "declarationsSuffix1" */
     LookaheadDFA {
         states: &[None, Some(80), Some(81)],
         transitions: &[
@@ -1252,17 +1252,17 @@ pub const PRODUCTIONS: &[Production; 105] = &[
         lhs: 28,
         production: &[],
     },
-    // 71 - ProcedureBody: declarations ProcedureBodySuffix1;
+    // 71 - ProcedureBody: declarations ProcedureBodySuffix0;
     Production {
         lhs: 20,
         production: &[ParseType::N(22), ParseType::N(41)],
     },
-    // 72 - ProcedureBodySuffix1: "BEGIN" StatementSequence ProcedureBodySuffix;
+    // 72 - ProcedureBodySuffix0: "BEGIN" StatementSequence ProcedureBodySuffix;
     Production {
         lhs: 22,
         production: &[ParseType::N(21), ParseType::N(34), ParseType::T(31)],
     },
-    // 73 - ProcedureBodySuffix1: "RETURN" expression "END" ident;
+    // 73 - ProcedureBodySuffix0: "RETURN" expression "END" ident;
     Production {
         lhs: 22,
         production: &[
@@ -1272,7 +1272,7 @@ pub const PRODUCTIONS: &[Production; 105] = &[
             ParseType::T(32),
         ],
     },
-    // 74 - ProcedureBodySuffix1: "END" ident;
+    // 74 - ProcedureBodySuffix0: "END" ident;
     Production {
         lhs: 22,
         production: &[ParseType::N(50), ParseType::T(16)],
@@ -1297,22 +1297,22 @@ pub const PRODUCTIONS: &[Production; 105] = &[
         lhs: 25,
         production: &[ParseType::N(20), ParseType::T(24), ParseType::N(27)],
     },
-    // 78 - declarations: "TYPE" TypeDecls declarationsSuffix2;
+    // 78 - declarations: "TYPE" TypeDecls declarationsSuffix1;
     Production {
         lhs: 41,
         production: &[ParseType::N(44), ParseType::N(36), ParseType::T(33)],
     },
-    // 79 - declarations: "CONST" ConstDecls declarationsSuffix1;
+    // 79 - declarations: "CONST" ConstDecls declarationsSuffix0;
     Production {
         lhs: 41,
         production: &[ParseType::N(43), ParseType::N(6), ParseType::T(34)],
     },
-    // 80 - declarationsSuffix2: "VAR" VarDecls ProcedureDeclarationList;
+    // 80 - declarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
     Production {
         lhs: 44,
         production: &[ParseType::N(26), ParseType::N(38), ParseType::T(29)],
     },
-    // 81 - declarationsSuffix2: ProcedureDeclarationList;
+    // 81 - declarationsSuffix1: ProcedureDeclarationList;
     Production {
         lhs: 44,
         production: &[ParseType::N(26)],
@@ -1327,17 +1327,17 @@ pub const PRODUCTIONS: &[Production; 105] = &[
         lhs: 41,
         production: &[ParseType::N(26)],
     },
-    // 84 - declarationsSuffix1: "TYPE" TypeDecls declarationsSuffix;
+    // 84 - declarationsSuffix0: "TYPE" TypeDecls declarationsSuffix;
     Production {
         lhs: 43,
         production: &[ParseType::N(42), ParseType::N(36), ParseType::T(33)],
     },
-    // 85 - declarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
+    // 85 - declarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;
     Production {
         lhs: 43,
         production: &[ParseType::N(26), ParseType::N(38), ParseType::T(29)],
     },
-    // 86 - declarationsSuffix1: ProcedureDeclarationList;
+    // 86 - declarationsSuffix0: ProcedureDeclarationList;
     Production {
         lhs: 43,
         production: &[ParseType::N(26)],

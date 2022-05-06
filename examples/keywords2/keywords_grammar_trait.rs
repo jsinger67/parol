@@ -27,9 +27,9 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Grammar: GrammarList /* Vec */;
     ///
-    fn grammar_0(
+    fn grammar(
         &mut self,
-        _grammar_list_0: &ParseTreeStackEntry,
+        _grammar_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -41,8 +41,8 @@ pub trait KeywordsGrammarTrait {
     ///
     fn grammar_list_0(
         &mut self,
-        _items_0: &ParseTreeStackEntry,
-        _grammar_list_1: &ParseTreeStackEntry,
+        _items: &ParseTreeStackEntry,
+        _grammar_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -62,7 +62,7 @@ pub trait KeywordsGrammarTrait {
     ///
     fn items_0(
         &mut self,
-        _declaration_0: &ParseTreeStackEntry,
+        _declaration: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -74,7 +74,7 @@ pub trait KeywordsGrammarTrait {
     ///
     fn items_1(
         &mut self,
-        _block_0: &ParseTreeStackEntry,
+        _block: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -84,11 +84,11 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Declaration: Var %sc(Identifier) Identifier %sc() ";";
     ///
-    fn declaration_0(
+    fn declaration(
         &mut self,
-        _var_0: &ParseTreeStackEntry,
-        _identifier_2: &ParseTreeStackEntry,
-        _semicolon_4: &ParseTreeStackEntry,
+        _var: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
+        _semicolon: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -98,11 +98,11 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Block: Begin BlockList /* Vec */ End;
     ///
-    fn block_0(
+    fn block(
         &mut self,
-        _begin_0: &ParseTreeStackEntry,
-        _block_list_1: &ParseTreeStackEntry,
-        _end_2: &ParseTreeStackEntry,
+        _begin: &ParseTreeStackEntry,
+        _block_list: &ParseTreeStackEntry,
+        _end: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -114,8 +114,8 @@ pub trait KeywordsGrammarTrait {
     ///
     fn block_list_0(
         &mut self,
-        _items_0: &ParseTreeStackEntry,
-        _block_list_1: &ParseTreeStackEntry,
+        _items: &ParseTreeStackEntry,
+        _block_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -133,9 +133,9 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn identifier_0(
+    fn identifier(
         &mut self,
-        _identifier_0: &ParseTreeStackEntry,
+        _identifier: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -145,9 +145,9 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Begin: "(?i)\bBegin\b";
     ///
-    fn begin_0(
+    fn begin(
         &mut self,
-        _begin_0: &ParseTreeStackEntry,
+        _begin: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -157,11 +157,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// End: "(?i)\bEnd\b";
     ///
-    fn end_0(
-        &mut self,
-        _end_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn end(&mut self, _end: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -169,11 +165,7 @@ pub trait KeywordsGrammarTrait {
     ///
     /// Var: "(?i)\bVar\b";
     ///
-    fn var_0(
-        &mut self,
-        _var_0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn var(&mut self, _var: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 }
@@ -196,19 +188,19 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.grammar_0(&children[0], parse_tree),
+            0 => self.grammar(&children[0], parse_tree),
             1 => self.grammar_list_0(&children[0], &children[1], parse_tree),
             2 => self.grammar_list_1(parse_tree),
             3 => self.items_0(&children[0], parse_tree),
             4 => self.items_1(&children[0], parse_tree),
-            5 => self.declaration_0(&children[0], &children[1], &children[2], parse_tree),
-            6 => self.block_0(&children[0], &children[1], &children[2], parse_tree),
+            5 => self.declaration(&children[0], &children[1], &children[2], parse_tree),
+            6 => self.block(&children[0], &children[1], &children[2], parse_tree),
             7 => self.block_list_0(&children[0], &children[1], parse_tree),
             8 => self.block_list_1(parse_tree),
-            9 => self.identifier_0(&children[0], parse_tree),
-            10 => self.begin_0(&children[0], parse_tree),
-            11 => self.end_0(&children[0], parse_tree),
-            12 => self.var_0(&children[0], parse_tree),
+            9 => self.identifier(&children[0], parse_tree),
+            10 => self.begin(&children[0], parse_tree),
+            11 => self.end(&children[0], parse_tree),
+            12 => self.var(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

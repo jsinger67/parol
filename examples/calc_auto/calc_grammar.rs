@@ -144,43 +144,43 @@ impl<'t> CalcGrammar<'t> {
     }
 
     fn process_calc(&mut self, calc: &Calc) -> Result<()> {
-        calc.calc_list_0.iter().fold(Ok(()), |res, elem| {
+        calc.calc_list.iter().fold(Ok(()), |res, elem| {
             res?;
             self.process_calc_list(elem)
         })
     }
 
     fn process_calc_list(&mut self, elem: &CalcList) -> Result<()> {
-        self.process_instruction(&elem.instruction_0)
+        self.process_instruction(&elem.instruction)
     }
 
     fn process_instruction(&mut self, insn: &Instruction) -> Result<()> {
         match insn {
-            Instruction::Instruction0(ins) => self.process_assignment(&ins.assignment_0),
+            Instruction::Instruction0(ins) => self.process_assignment(&ins.assignment),
             Instruction::Instruction1(ins) => self
-                .process_logical_or(&ins.logical_or_0)
+                .process_logical_or(&ins.logical_or)
                 .map(|r| self.calc_results.push(r)),
         }
     }
 
     fn process_assignment(&mut self, assignment: &Assignment) -> Result<()> {
         let context = "process_assignment";
-        let mut result = self.process_logical_or(&assignment.logical_or_2)?;
-        let mut assignment_list = assignment.assignment_list_1.clone();
+        let mut result = self.process_logical_or(&assignment.logical_or)?;
+        let mut assignment_list = assignment.assignment_list.clone();
         // Prepend the left most (mandatory) assign item
         assignment_list.insert(
             0,
             AssignmentList {
-                assign_item_0: assignment.assign_item_0.clone(),
+                assign_item: assignment.assign_item.clone(),
             },
         );
         // Assign from right to left (right associative)
         for assign_item in assignment_list.iter().rev() {
-            let id = assign_item.assign_item_0.id_0.id_0.symbol;
+            let id = assign_item.assign_item.id.id.symbol;
             let op = assign_item
-                .assign_item_0
-                .assign_op_1
-                .assign_op_0
+                .assign_item
+                .assign_op
+                .assign_op
                 .symbol
                 .try_into()?;
             self.declare(id, context);
@@ -191,7 +191,7 @@ impl<'t> CalcGrammar<'t> {
                 return Err(miette!(CalcError::UndeclaredVariable {
                     context: "value".to_owned(),
                     input: FileSource::try_new(self.file_name.clone())?.into(),
-                    token: (&assign_item.assign_item_0.id_0.id_0).into()
+                    token: (&assign_item.assign_item.id.id).into()
                 }));
             }
         }
@@ -200,10 +200,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_logical_or(&mut self, logical_or: &LogicalOr) -> Result<DefinitionRange> {
         let context = "process_logical_or";
-        let mut result = self.process_logical_and(&logical_or.logical_and_0)?;
-        for item in &logical_or.logical_or_list_1 {
-            let op: BinaryOperator = item.logical_or_op_0.logical_or_op_0.symbol.try_into()?;
-            let next_operand = self.process_logical_and(&item.logical_and_1)?;
+        let mut result = self.process_logical_and(&logical_or.logical_and)?;
+        for item in &logical_or.logical_or_list {
+            let op: BinaryOperator = item.logical_or_op.logical_or_op.symbol.try_into()?;
+            let next_operand = self.process_logical_and(&item.logical_and)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -211,10 +211,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_logical_and(&mut self, logical_and: &LogicalAnd) -> Result<DefinitionRange> {
         let context = "process_logical_and";
-        let mut result = self.process_bitwise_or(&logical_and.bitwise_or_0)?;
-        for item in &logical_and.logical_and_list_1 {
-            let op: BinaryOperator = item.logical_and_op_0.logical_and_op_0.symbol.try_into()?;
-            let next_operand = self.process_bitwise_or(&item.bitwise_or_1)?;
+        let mut result = self.process_bitwise_or(&logical_and.bitwise_or)?;
+        for item in &logical_and.logical_and_list {
+            let op: BinaryOperator = item.logical_and_op.logical_and_op.symbol.try_into()?;
+            let next_operand = self.process_bitwise_or(&item.bitwise_or)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -222,10 +222,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_bitwise_or(&mut self, bitwise_or: &BitwiseOr) -> Result<DefinitionRange> {
         let context = "process_bitwise_or";
-        let mut result = self.process_bitwise_and(&bitwise_or.bitwise_and_0)?;
-        for item in &bitwise_or.bitwise_or_list_1 {
-            let op: BinaryOperator = item.bitwise_or_op_0.bitwise_or_op_0.symbol.try_into()?;
-            let next_operand = self.process_bitwise_and(&item.bitwise_and_1)?;
+        let mut result = self.process_bitwise_and(&bitwise_or.bitwise_and)?;
+        for item in &bitwise_or.bitwise_or_list {
+            let op: BinaryOperator = item.bitwise_or_op.bitwise_or_op.symbol.try_into()?;
+            let next_operand = self.process_bitwise_and(&item.bitwise_and)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -233,10 +233,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_bitwise_and(&mut self, bitwise_and: &BitwiseAnd) -> Result<DefinitionRange> {
         let context = "process_bitwise_and";
-        let mut result = self.process_equality(&bitwise_and.equality_0)?;
-        for item in &bitwise_and.bitwise_and_list_1 {
-            let op: BinaryOperator = item.bitwise_and_op_0.bitwise_and_op_0.symbol.try_into()?;
-            let next_operand = self.process_equality(&item.equality_1)?;
+        let mut result = self.process_equality(&bitwise_and.equality)?;
+        for item in &bitwise_and.bitwise_and_list {
+            let op: BinaryOperator = item.bitwise_and_op.bitwise_and_op.symbol.try_into()?;
+            let next_operand = self.process_equality(&item.equality)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -244,10 +244,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_equality(&mut self, equality: &Equality) -> Result<DefinitionRange> {
         let context = "process_equality";
-        let mut result = self.process_relational(&equality.relational_0)?;
-        for item in &equality.equality_list_1 {
-            let op: BinaryOperator = item.equality_op_0.equality_op_0.symbol.try_into()?;
-            let next_operand = self.process_relational(&item.relational_1)?;
+        let mut result = self.process_relational(&equality.relational)?;
+        for item in &equality.equality_list {
+            let op: BinaryOperator = item.equality_op.equality_op.symbol.try_into()?;
+            let next_operand = self.process_relational(&item.relational)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -255,10 +255,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_relational(&mut self, relational: &Relational) -> Result<DefinitionRange> {
         let context = "process_relational";
-        let mut result = self.process_bitwise_shift(&relational.bitwise_shift_0)?;
-        for item in &relational.relational_list_1 {
-            let op: BinaryOperator = item.relational_op_0.relational_op_0.symbol.try_into()?;
-            let next_operand = self.process_bitwise_shift(&item.bitwise_shift_1)?;
+        let mut result = self.process_bitwise_shift(&relational.bitwise_shift)?;
+        for item in &relational.relational_list {
+            let op: BinaryOperator = item.relational_op.relational_op.symbol.try_into()?;
+            let next_operand = self.process_bitwise_shift(&item.bitwise_shift)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -266,14 +266,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_bitwise_shift(&mut self, bitwise_shift: &BitwiseShift) -> Result<DefinitionRange> {
         let context = "process_bitwise_shift";
-        let mut result = self.process_sum(&bitwise_shift.summ_0)?;
-        for item in &bitwise_shift.bitwise_shift_list_1 {
-            let op: BinaryOperator = item
-                .bitwise_shift_op_0
-                .bitwise_shift_op_0
-                .symbol
-                .try_into()?;
-            let next_operand = self.process_sum(&item.summ_1)?;
+        let mut result = self.process_sum(&bitwise_shift.summ)?;
+        for item in &bitwise_shift.bitwise_shift_list {
+            let op: BinaryOperator = item.bitwise_shift_op.bitwise_shift_op.symbol.try_into()?;
+            let next_operand = self.process_sum(&item.summ)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -281,13 +277,13 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_sum(&mut self, summ: &Summ) -> Result<DefinitionRange> {
         let context = "process_sum";
-        let mut result = self.process_mult(&summ.mult_0)?;
-        for item in &summ.summ_list_1 {
-            let op: BinaryOperator = match &*item.add_op_0 {
-                AddOp::AddOp0(plus) => plus.plus_0.plus_0.symbol.try_into(),
-                AddOp::AddOp1(minus) => minus.minus_0.minus_0.symbol.try_into(),
+        let mut result = self.process_mult(&summ.mult)?;
+        for item in &summ.summ_list {
+            let op: BinaryOperator = match &*item.add_op {
+                AddOp::AddOp0(plus) => plus.plus.plus.symbol.try_into(),
+                AddOp::AddOp1(minus) => minus.minus.minus.symbol.try_into(),
             }?;
-            let next_operand = self.process_mult(&item.mult_1)?;
+            let next_operand = self.process_mult(&item.mult)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -295,10 +291,10 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_mult(&mut self, mult: &Mult) -> Result<DefinitionRange> {
         let context = "process_mult";
-        let mut result = self.process_power(&mult.power_0)?;
-        for item in &mult.mult_list_1 {
-            let op: BinaryOperator = item.mult_op_0.mult_op_0.symbol.try_into()?;
-            let next_operand = self.process_power(&item.power_1)?;
+        let mut result = self.process_power(&mult.power)?;
+        for item in &mult.mult_list {
+            let op: BinaryOperator = item.mult_op.mult_op.symbol.try_into()?;
+            let next_operand = self.process_power(&item.power)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -309,28 +305,26 @@ impl<'t> CalcGrammar<'t> {
         let op = BinaryOperator::Pow;
         // Calculate from right to left (power operation is right associative)
         let result = power
-            .power_list_1
+            .power_list
             .iter()
             .rev()
             .fold(Ok(1), |acc, f| match acc {
                 Ok(_) => {
-                    let val = self.process_factor(&f.factor_1)?;
+                    let val = self.process_factor(&f.factor)?;
                     Self::apply_binary_operation(val, &op, acc.unwrap(), context)
                 }
                 Err(_) => acc,
             })?;
-        Self::apply_binary_operation(self.process_factor(&power.factor_0)?, &op, result, context)
+        Self::apply_binary_operation(self.process_factor(&power.factor)?, &op, result, context)
     }
 
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
-            Factor::Factor0(Factor0 { number_0 }) => {
-                Ok(self.parse_number(context, &number_0.number_0)?)
-            }
-            Factor::Factor1(Factor1 { idref_0 }) => self.value(&idref_0.id_0.id_0),
-            Factor::Factor2(Factor2 { factor_1, .. }) => Ok(-(self.process_factor(factor_1)?)),
-            Factor::Factor3(Factor3 { logical_or_1, .. }) => self.process_logical_or(logical_or_1),
+            Factor::Factor0(Factor0 { number }) => Ok(self.parse_number(context, &number.number)?),
+            Factor::Factor1(Factor1 { idref }) => self.value(&idref.id.id),
+            Factor::Factor2(Factor2 { factor, .. }) => Ok(-(self.process_factor(factor)?)),
+            Factor::Factor3(Factor3 { logical_or, .. }) => self.process_logical_or(logical_or),
         }
     }
 }

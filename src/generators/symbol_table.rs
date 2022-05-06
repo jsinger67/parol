@@ -220,6 +220,13 @@ impl Type {
             Ok(symbol_table.name(self.name_id).to_string())
         }
     }
+
+    pub(crate) fn is_container(&self) -> bool {
+        match self.entrails {
+            TypeEntrails::Box(_) | TypeEntrails::Vec(_) => true,
+            _ => false,
+        }
+    }
 }
 
 ///
@@ -301,21 +308,33 @@ impl Symbol {
     fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
-                TypeEntrails::None | TypeEntrails::Vec(_) | TypeEntrails::Function(_) => false,
+                TypeEntrails::None | TypeEntrails::Function(_) => false,
                 TypeEntrails::Token | TypeEntrails::Trait => true,
                 TypeEntrails::Struct | TypeEntrails::Enum => symbol_table
                     .scope(t.member_scope)
                     .symbols
                     .iter()
                     .any(|e| symbol_table.has_lifetime(*e)),
-                TypeEntrails::EnumVariant(t) | TypeEntrails::Box(t) => symbol_table.has_lifetime(t),
+                TypeEntrails::Vec(t) | TypeEntrails::EnumVariant(t) | TypeEntrails::Box(t) => {
+                    symbol_table.has_lifetime(t)
+                }
             },
             Self::Instance(i) => symbol_table.has_lifetime(i.type_id),
         }
     }
 
     pub(crate) fn lifetime(&self, symbol_table: &SymbolTable) -> String {
-        if self.has_lifetime(symbol_table) {
+        let is_container = match self {
+            Symbol::Type(me) => {
+                if let Ok(me) = symbol_table.symbol_as_type(me.my_id) {
+                    me.is_container()
+                } else {
+                    false
+                }
+            }
+            Symbol::Instance(_) => false,
+        };
+        if self.has_lifetime(symbol_table) && !is_container {
             "<'t>".to_string()
         } else {
             "".to_string()
