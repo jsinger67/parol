@@ -14,7 +14,7 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::{ParolGrammarItem, Production};
 use crate::{ParolGrammar, Pr, StrVec};
 use log::trace;
-use miette::{bail, IntoDiagnostic, Result};
+use miette::{bail, miette, IntoDiagnostic, Result};
 
 /// Generator for user trait code
 #[derive(Builder, Debug, Default)]
@@ -49,9 +49,8 @@ impl<'a> UserTraitGenerator<'a> {
                 parse_tree_argument_used = true;
             }
             arguments.push(format!(
-                "{}{}: &ParseTreeStackEntry{}",
-                NmHlp::item_unused_indicator(arg_inst.used),
-                symbol_table.name(arg_inst.name_id),
+                "{}: &ParseTreeStackEntry{}",
+                NmHlp::add_unused_indicator(arg_inst.used, symbol_table.name(arg_inst.name_id)),
                 lifetime
             ));
         }
@@ -64,173 +63,283 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(arguments.join(", "))
     }
 
-    // fn generate_context(&self, code: &mut StrVec, action: &Action) {
-    //     if self.auto_generate {
-    //         code.push(format!("let context = \"{}\";", action.fn_name));
-    //         code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
-    //     }
-    // }
+    fn generate_context(&self, code: &mut StrVec, fn_name: &str) {
+        if self.auto_generate {
+            code.push(format!("let context = \"{}\";", fn_name));
+            code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
+        }
+    }
 
-    // fn generate_token_assignments(&self, code: &mut StrVec, action: &Action) {
-    //     if self.auto_generate {
-    //         action
-    //             .args
-    //             .iter()
-    //             .filter(|a| matches!(a.arg_type, ASTType::Token(_)))
-    //             .for_each(|arg| {
-    //                 let arg_name = arg.name();
-    //                 code.push(format!(
-    //                     "let {} = *{}.token(parse_tree)?;",
-    //                     arg_name, arg_name
-    //                 ))
-    //             });
-    //     }
-    // }
+    fn generate_token_assignments(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<()> {
+        if !self.auto_generate {
+            return Ok(());
+        }
 
-    // fn generate_stack_pops(&self, code: &mut StrVec, action: &Action) -> Result<()> {
-    //     if self.auto_generate {
-    //         action
-    //             .args
-    //             .iter()
-    //             .rev()
-    //             .enumerate()
-    //             .filter(|(_, a)| !matches!(a.arg_type, ASTType::Token(_)))
-    //             .fold(Ok(()), |res: Result<()>, (i, arg)| {
-    //                 res?;
-    //                 let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
-    //                     .arg_name(arg.name.clone())
-    //                     .arg_type(arg.arg_type.inner_type_name())
-    //                     .vec_anchor(arg.sem == SymbolAttribute::RepetitionAnchor)
-    //                     .vec_push_semantic(
-    //                         action.sem == ProductionAttribute::AddToCollection && i == 0,
-    //                     )
-    //                     .build()
-    //                     .into_diagnostic()?;
-    //                 code.push(format!("{}", stack_pop_data));
-    //                 Ok(())
-    //             })
-    //     } else {
-    //         Ok(())
-    //     }
-    // }
+        for member_id in symbol_table.members(action_id)? {
+            let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+            let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+            if matches!(arg_type.entrails, TypeEntrails::Token) {
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                code.push(format!(
+                    "let {} = *{}.token(parse_tree)?;",
+                    arg_name, arg_name
+                ))
+            }
+        }
+        Ok(())
+    }
 
-    // fn generate_push_semantic(&self, code: &mut StrVec, action: &Action) {
-    //     if self.auto_generate && action.sem == ProductionAttribute::AddToCollection {
-    //         code.push("// Add an element to the vector".to_string());
-    //         code.push(format!(
-    //             " {}.push({}_built);",
-    //             action.args.iter().last().unwrap().name,
-    //             &action.fn_name,
-    //         ));
-    //     }
-    // }
+    fn generate_stack_pops(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<()> {
+        if !self.auto_generate {
+            return Ok(());
+        }
 
-    // fn generate_result_builder(&self, code: &mut StrVec, action: &Action) {
-    //     if self.auto_generate {
-    //         if action.sem == ProductionAttribute::CollectionStart {
-    //             code.push(format!("let {}_built = Vec::new();", action.fn_name));
-    //         } else if action.sem == ProductionAttribute::AddToCollection {
-    //             code.push(format!(
-    //                 "let {}_built = {}Builder::default()",
-    //                 action.fn_name,
-    //                 NmHlp::to_upper_camel_case(&action.non_terminal)
-    //             ));
-    //             action.args.iter().rev().skip(1).for_each(|arg| {
-    //                 let setter_name = &arg.name;
-    //                 let arg_name = if matches!(arg.arg_type, ASTType::TypeRef(_))
-    //                     && arg.sem == SymbolAttribute::None
-    //                 {
-    //                     format!("Box::new({})", &arg.name)
-    //                 } else {
-    //                     arg.name.clone()
-    //                 };
-    //                 code.push(format!("    .{}({})", setter_name, arg_name));
-    //             });
-    //             code.push("    .build()".to_string());
-    //             code.push("    .into_diagnostic()?;".to_string());
-    //         } else {
-    //             let builder_prefix = if action.alts == 1 {
-    //                 &action.non_terminal
-    //             } else {
-    //                 &action.fn_name
-    //             };
-    //             code.push(format!(
-    //                 "let {}_built = {}Builder::default()",
-    //                 action.fn_name,
-    //                 NmHlp::to_upper_camel_case(builder_prefix)
-    //             ));
-    //             action.args.iter().for_each(|arg| {
-    //                 let setter_name = &arg.name;
-    //                 let arg_name = if matches!(arg.arg_type, ASTType::TypeRef(_)) {
-    //                     format!("Box::new({})", &arg.name)
-    //                 } else {
-    //                     arg.name.clone()
-    //                 };
-    //                 code.push(format!("    .{}({})", setter_name, arg_name));
-    //             });
-    //             code.push("    .build()".to_string());
-    //             code.push("    .into_diagnostic()?;".to_string());
-    //             if action.alts > 1 {
-    //                 // Type adjustment to the non-terminal enum
-    //                 // let list_0 = List::List0(list_0);
-    //                 code.push(format!(
-    //                     "let {}_built = {}::{}({}_built);",
-    //                     action.fn_name,
-    //                     NmHlp::to_upper_camel_case(&action.non_terminal),
-    //                     NmHlp::to_upper_camel_case(builder_prefix),
-    //                     action.fn_name
-    //                 ));
-    //             }
-    //         }
-    //     }
-    // }
+        let function = symbol_table.symbol_as_function(action_id)?;
 
-    // fn generate_user_action_call(
-    //     &self,
-    //     code: &mut StrVec,
-    //     action: &Action,
-    //     parol_grammar: &'a ParolGrammar,
-    // ) {
-    //     if self.auto_generate
-    //         && parol_grammar
-    //             .item_stack
-    //             .iter()
-    //             .filter_map(|item| match item {
-    //                 ParolGrammarItem::Prod(Production { lhs, .. }) => Some(lhs),
-    //                 _ => None,
-    //             })
-    //             .any(|lhs| &action.non_terminal == lhs)
-    //     {
-    //         code.push("// Calling user action here".to_string());
-    //         code.push(format!(
-    //             "self.user_grammar.{}(&{}_built)?;",
-    //             NmHlp::to_lower_snake_case(&action.non_terminal),
-    //             action.fn_name
-    //         ));
-    //     }
-    // }
+        for (i, member_id) in symbol_table.members(action_id)?.iter().rev().enumerate() {
+            let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+            let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+            if !matches!(arg_type.entrails, TypeEntrails::Token) {
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
+                    .arg_name(arg_name.to_string())
+                    .arg_type(arg_type.inner_name(symbol_table)?)
+                    .vec_anchor(arg_inst.sem == SymbolAttribute::RepetitionAnchor)
+                    .vec_push_semantic(
+                        function.sem == ProductionAttribute::AddToCollection && i == 0,
+                    )
+                    .build()
+                    .into_diagnostic()?;
+                code.push(format!("{}", stack_pop_data));
+            }
+        }
+        Ok(())
+    }
 
-    // fn generate_stack_push(&self, code: &mut StrVec, action: &Action) {
-    //     if self.auto_generate {
-    //         if action.sem == ProductionAttribute::AddToCollection {
-    //             // The output type of the action is the type generated for the action's non-terminal
-    //             // filled with type of the action's last argument (the vector)
-    //             code.push(format!(
-    //                 "self.push(ASTType::{}({}), context);",
-    //                 NmHlp::to_upper_camel_case(&action.non_terminal),
-    //                 action.args.iter().last().unwrap().name
-    //             ));
-    //         } else {
-    //             // The output type of the action is the type generated for the action's non-terminal
-    //             // filled with type kind of the action
-    //             code.push(format!(
-    //                 "self.push(ASTType::{}({}_built), context);",
-    //                 NmHlp::to_upper_camel_case(&action.non_terminal),
-    //                 action.fn_name
-    //             ));
-    //         }
-    //     }
-    // }
+    fn generate_push_semantic(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<()> {
+        let function = symbol_table.symbol_as_function(action_id)?;
+        let fn_type = symbol_table.symbol_as_type(action_id)?;
+        let fn_name = symbol_table.name(fn_type.name_id).to_string();
+
+        if self.auto_generate && function.sem == ProductionAttribute::AddToCollection {
+            let last_arg = symbol_table
+                .members(action_id)?
+                .iter()
+                .last()
+                .ok_or(miette!("There should be at least one argument!"))?;
+            let arg_inst = symbol_table.symbol_as_instance(*last_arg)?;
+            let arg_name = symbol_table.name(arg_inst.name_id);
+            code.push("// Add an element to the vector".to_string());
+            code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+        }
+        Ok(())
+    }
+
+    fn generate_result_builder(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        type_info: &GrammarTypeInfo,
+    ) -> Result<()> {
+        if !self.auto_generate {
+            return Ok(());
+        }
+
+        let symbol_table = &type_info.symbol_table;
+        let function = symbol_table.symbol_as_function(action_id)?;
+        let fn_type = symbol_table.symbol_as_type(action_id)?;
+        let fn_name = symbol_table.name(fn_type.name_id).to_string();
+        let fn_out_type = symbol_table.symbol_as_type(
+            *type_info
+                .production_types
+                .get(&function.prod_num)
+                .ok_or(miette!("Production output type not accessible!"))?,
+        )?;
+        let nt_type = symbol_table.symbol_as_type(
+            *type_info
+                .non_terminal_types
+                .get(&function.non_terminal)
+                .ok_or(miette!("Non-terminal type not accessible!"))?,
+        )?;
+
+        if function.sem == ProductionAttribute::CollectionStart {
+            code.push(format!("let {}_built = Vec::new();", fn_name));
+        } else if function.sem == ProductionAttribute::AddToCollection {
+            code.push(format!(
+                "let {}_built = {}Builder::default()",
+                fn_name,
+                nt_type.name(symbol_table)
+            ));
+            for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
+                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                let setter_name = &arg_name;
+                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_))
+                    && arg_inst.sem == SymbolAttribute::None
+                {
+                    format!("Box::new({})", &arg_name)
+                } else {
+                    arg_name.to_string()
+                };
+                code.push(format!("    .{}({})", setter_name, arg_name));
+            }
+            code.push("    .build()".to_string());
+            code.push("    .into_diagnostic()?;".to_string());
+        } else {
+            let builder_prefix = if function.alts == 1 {
+                nt_type.name(symbol_table)
+            } else {
+                fn_out_type.name(symbol_table)
+            };
+            code.push(format!(
+                "let {}_built = {}Builder::default()",
+                fn_name, builder_prefix
+            ));
+            for member_id in symbol_table.members(action_id)? {
+                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                let setter_name = &arg_name;
+                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) {
+                    format!("Box::new({})", arg_name)
+                } else {
+                    arg_name.to_string()
+                };
+                code.push(format!("    .{}({})", setter_name, arg_name));
+            }
+            code.push("    .build()".to_string());
+            code.push("    .into_diagnostic()?;".to_string());
+            if function.alts > 1 {
+                // Type adjustment to the non-terminal enum
+                // let list_0 = List::List0(list_0);
+                let enum_variant_name = symbol_table
+                    .members(nt_type.my_id)?
+                    .iter()
+                    .find(|variant| {
+                        if let Ok(enum_variant) = symbol_table.symbol_as_type(**variant) {
+                            if let TypeEntrails::EnumVariant(inner_type) = enum_variant.entrails {
+                                inner_type == fn_out_type.my_id
+                            } else {
+                                false
+                            }
+                        } else {
+                            false
+                        }
+                    })
+                    .map(|enum_variant_id| {
+                        symbol_table
+                            .symbol_as_type(
+                                symbol_table.symbol_as_type(*enum_variant_id).unwrap().my_id,
+                            )
+                            .unwrap()
+                            .name(symbol_table)
+                    })
+                    .ok_or(miette!("Enum variant not found"))?;
+                code.push(format!(
+                    "let {}_built = {}::{}({}_built);",
+                    fn_name,
+                    nt_type.name(symbol_table),
+                    enum_variant_name,
+                    fn_name
+                ));
+            }
+        }
+        Ok(())
+    }
+
+    fn generate_user_action_call(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        type_info: &GrammarTypeInfo,
+        parol_grammar: &'a ParolGrammar,
+    ) -> Result<()> {
+        let symbol_table = &type_info.symbol_table;
+        let function = symbol_table.symbol_as_function(action_id)?;
+        let fn_type = symbol_table.symbol_as_type(action_id)?;
+        let fn_name = symbol_table.name(fn_type.name_id).to_string();
+        let fn_out_type = symbol_table.symbol_as_type(
+            *type_info
+                .production_types
+                .get(&function.prod_num)
+                .ok_or(miette!("Production output type not accessible!"))?,
+        )?;
+
+        if self.auto_generate
+            && parol_grammar
+                .item_stack
+                .iter()
+                .filter_map(|item| match item {
+                    ParolGrammarItem::Prod(Production { lhs, .. }) => Some(lhs),
+                    _ => None,
+                })
+                .any(|lhs| &function.non_terminal == lhs)
+        {
+            code.push("// Calling user action here".to_string());
+            code.push(format!(
+                "self.user_grammar.{}(&{}_built)?;",
+                NmHlp::to_lower_snake_case(&function.non_terminal),
+                fn_name
+            ));
+        }
+        Ok(())
+    }
+
+    fn generate_stack_push(
+        &self,
+        code: &mut StrVec,
+        action_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<()> {
+        if self.auto_generate {
+            let function = symbol_table.symbol_as_function(action_id)?;
+            let fn_type = symbol_table.symbol_as_type(action_id)?;
+            let fn_name = symbol_table.name(fn_type.name_id).to_string();
+
+            if function.sem == ProductionAttribute::AddToCollection {
+                // The output type of the action is the type generated for the action's non-terminal
+                // filled with type of the action's last argument (the vector)
+                let last_arg = symbol_table
+                    .members(action_id)?
+                    .iter()
+                    .last()
+                    .ok_or(miette!("There should be at least one argument!"))?;
+                let arg_inst = symbol_table.symbol_as_instance(*last_arg)?;
+                let arg_name = symbol_table.name(arg_inst.name_id);
+
+                code.push(format!(
+                    "self.push(ASTType::{}({}), context);",
+                    NmHlp::to_upper_camel_case(&function.non_terminal),
+                    arg_name
+                ));
+            } else {
+                // The output type of the action is the type generated for the action's non-terminal
+                // filled with type kind of the action
+                code.push(format!(
+                    "self.push(ASTType::{}({}_built), context);",
+                    NmHlp::to_upper_camel_case(&function.non_terminal),
+                    fn_name
+                ));
+            }
+        }
+        Ok(())
+    }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
         format!("_arg: &{}<'t>", NmHlp::to_upper_camel_case(non_terminal))
@@ -381,21 +490,27 @@ impl<'a> UserTraitGenerator<'a> {
             Ok(StrVec::new(0).first_line_no_indent()),
             |acc: Result<StrVec>, a| {
                 if let Ok(mut acc) = acc {
-                    let fn_type = type_info.symbol_table.symbol_as_type(*a.1)?;
+                    let action_id = *a.1;
+                    let fn_type = type_info.symbol_table.symbol_as_type(action_id)?;
                     let fn_name = type_info.symbol_table.name(fn_type.name_id).to_string();
-                    let function = type_info.symbol_table.symbol_as_function(*a.1)?;
+                    let function = type_info.symbol_table.symbol_as_function(action_id)?;
                     let prod_num = function.prod_num;
                     let prod_string = function.prod_string.clone();
                     let fn_arguments =
-                        self.generate_inner_action_args(*a.1, &type_info.symbol_table)?;
-                    let code = StrVec::new(8);
-                    // self.generate_context(&mut code, a);
-                    // self.generate_token_assignments(&mut code, a);
-                    // self.generate_stack_pops(&mut code, a)?;
-                    // self.generate_result_builder(&mut code, a);
-                    // self.generate_push_semantic(&mut code, a);
-                    // self.generate_user_action_call(&mut code, a, self.parol_grammar);
-                    // self.generate_stack_push(&mut code, a);
+                        self.generate_inner_action_args(action_id, &type_info.symbol_table)?;
+                    let mut code = StrVec::new(8);
+                    self.generate_context(&mut code, &&fn_name);
+                    self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
+                    self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
+                    self.generate_result_builder(&mut code, action_id, &type_info)?;
+                    self.generate_push_semantic(&mut code, action_id, &type_info.symbol_table)?;
+                    self.generate_user_action_call(
+                        &mut code,
+                        action_id,
+                        &type_info,
+                        self.parol_grammar,
+                    )?;
+                    self.generate_stack_push(&mut code, action_id, &type_info.symbol_table)?;
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(&fn_name)
                         .prod_num(prod_num)

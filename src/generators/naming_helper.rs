@@ -25,6 +25,18 @@ impl NamingHelper {
         KEYWORDS.iter().any(|kw| kw == &name)
     }
 
+    /// Checks is the symbol starts with "r#"
+    ///
+    /// ```
+    /// use parol::generators::naming_helper::NamingHelper;
+    ///
+    /// assert!(NamingHelper::is_raw_identifier("r#let"));
+    /// assert!(!NamingHelper::is_raw_identifier("_let"));
+    /// ```
+    pub fn is_raw_identifier(name: &str) -> bool {
+        name.starts_with("r#")
+    }
+
     /// If the given name is a reserved Rust keyword it is converted into a raw identifier
     /// ```
     /// use parol::generators::NamingHelper as NmHlp;
@@ -45,6 +57,15 @@ impl NamingHelper {
             ""
         } else {
             "_"
+        }
+    }
+
+    /// Returns an underscore string if the item is not used.
+    pub fn add_unused_indicator(used: bool, name: &str) -> String {
+        if !used && !Self::is_raw_identifier(name) {
+            format!("_{}", name)
+        } else {
+            name.to_string()
         }
     }
 

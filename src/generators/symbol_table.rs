@@ -135,6 +135,19 @@ impl TypeEntrails {
         }
     }
 
+    pub(crate) fn inner_name(
+        &self,
+        type_id: SymbolId,
+        symbol_table: &SymbolTable,
+    ) -> Result<String> {
+        match self {
+            TypeEntrails::Box(t) | TypeEntrails::Vec(t) => {
+                Ok(symbol_table.symbol(*t).name(symbol_table).to_string())
+            }
+            _ => bail!("No inner name available!"),
+        }
+    }
+
     fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
         self.format(type_id, symbol_table)
     }
@@ -188,7 +201,7 @@ impl Type {
         )
     }
 
-    fn to_rust(&self, symbol_table: &SymbolTable) -> String {
+    pub(crate) fn to_rust(&self, symbol_table: &SymbolTable) -> String {
         self.entrails.to_rust(self.my_id, symbol_table)
     }
 
@@ -197,6 +210,14 @@ impl Type {
             self.entrails.format(self.my_id, symbol_table)
         } else {
             symbol_table.name(self.name_id).to_string()
+        }
+    }
+
+    pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> Result<String> {
+        if self.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
+            self.entrails.inner_name(self.my_id, symbol_table)
+        } else {
+            Ok(symbol_table.name(self.name_id).to_string())
         }
     }
 }
