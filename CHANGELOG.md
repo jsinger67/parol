@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.8.0 - Not released yet
+## v0.8.0 - 2022-05-06
 
 * Removed some cases where type name collisions occurred
   * This involved considerable refactoring of grammar type generation
