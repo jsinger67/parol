@@ -135,14 +135,10 @@ impl TypeEntrails {
         }
     }
 
-    pub(crate) fn inner_name(
-        &self,
-        type_id: SymbolId,
-        symbol_table: &SymbolTable,
-    ) -> Result<String> {
+    pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> Result<String> {
         match self {
             TypeEntrails::Box(t) | TypeEntrails::Vec(t) => {
-                Ok(symbol_table.symbol(*t).name(symbol_table).to_string())
+                Ok(symbol_table.symbol(*t).name(symbol_table))
             }
             _ => bail!("No inner name available!"),
         }
@@ -194,7 +190,7 @@ impl Type {
         format!(
             "{}{} /* Type: my_id {}, name_id: {} */ {}",
             build_indent(scope_depth),
-            self.entrails.format(self.my_id, &symbol_table),
+            self.entrails.format(self.my_id, symbol_table),
             self.my_id.0,
             self.name_id.1,
             scope,
@@ -215,17 +211,14 @@ impl Type {
 
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> Result<String> {
         if self.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
-            self.entrails.inner_name(self.my_id, symbol_table)
+            self.entrails.inner_name(symbol_table)
         } else {
             Ok(symbol_table.name(self.name_id).to_string())
         }
     }
 
     pub(crate) fn is_container(&self) -> bool {
-        match self.entrails {
-            TypeEntrails::Box(_) | TypeEntrails::Vec(_) => true,
-            _ => false,
-        }
+        matches!(self.entrails, TypeEntrails::Box(_) | TypeEntrails::Vec(_))
     }
 }
 
@@ -395,7 +388,7 @@ impl Scope {
     }
 
     pub(crate) fn make_unique_name(&self, preferred_name: String) -> String {
-        if &preferred_name == SymbolTable::UNNAMED_TYPE {
+        if preferred_name == SymbolTable::UNNAMED_TYPE {
             SymbolTable::UNNAMED_TYPE.to_string()
         } else {
             generate_name(&self.names, preferred_name)
@@ -403,7 +396,7 @@ impl Scope {
     }
 
     pub(crate) fn add_name(&mut self, name: String) -> ScopedNameId {
-        if &name == SymbolTable::UNNAMED_TYPE {
+        if name == SymbolTable::UNNAMED_TYPE {
             ScopedNameId(self.my_id, Self::UNNAMED_TYPE_NAME_ID)
         } else {
             let name_id = ScopedNameId(self.my_id, self.names.len());
@@ -424,7 +417,7 @@ impl Scope {
             _ => self.make_unique_name(NmHlp::to_upper_camel_case(name)),
         };
         let name_id = self.add_name(type_name);
-        self.symbols.push(symbol_id.clone());
+        self.symbols.push(symbol_id);
         Symbol::Type(Type {
             my_id: symbol_id,
             name_id,
@@ -444,7 +437,7 @@ impl Scope {
     ) -> Symbol {
         let instance_name = self.make_unique_name(NmHlp::to_lower_snake_case(name));
         let name_id = self.add_name(instance_name);
-        self.symbols.push(symbol_id.clone());
+        self.symbols.push(symbol_id);
         Symbol::Instance(Instance {
             my_id: symbol_id,
             name_id,
@@ -511,11 +504,11 @@ impl SymbolTable {
     }
 
     pub(crate) fn has_lifetime(&self, symbol_id: SymbolId) -> bool {
-        self.symbols[symbol_id.0].has_lifetime(&self)
+        self.symbols[symbol_id.0].has_lifetime(self)
     }
 
     pub(crate) fn lifetime(&self, symbol_id: SymbolId) -> String {
-        self.symbols[symbol_id.0].lifetime(&self)
+        self.symbols[symbol_id.0].lifetime(self)
     }
 
     pub(crate) fn name(&self, name_id: ScopedNameId) -> &str {
@@ -648,14 +641,9 @@ impl SymbolTable {
     ) -> Result<SymbolId> {
         if let Some(symbol_id) = self.scope(scope).symbols.iter().find(|symbol_id| {
             if let Ok(type_symbol) = self.symbol_as_type(**symbol_id) {
-                if type_symbol.entrails == entrails
+                type_symbol.entrails == entrails
                     || matches!(type_symbol.entrails, TypeEntrails::Token)
                         && matches!(entrails, TypeEntrails::Token)
-                {
-                    true
-                } else {
-                    false
-                }
             } else {
                 false
             }
@@ -669,7 +657,7 @@ impl SymbolTable {
 
 impl Display for SymbolTable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{}", self.scope(Self::GLOBAL_SCOPE).format(&self, 0))
+        write!(f, "{}", self.scope(Self::GLOBAL_SCOPE).format(self, 0))
     }
 }
 

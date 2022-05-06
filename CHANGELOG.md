@@ -17,11 +17,18 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.7.1 - 2022-04-xx
+## v0.8.0 - Not released yet
 
 * Removed some cases where type name collisions occurred
   * This involved considerable refactoring of grammar type generation
+  * Another effect of these changes is that the generated source contains names of types and
+  arguments that are more catchy and don't always contain suffixes like "_0" etc. Also the resulting
+  code should be more robust against changes in your grammar. The downside is that all user code has
+  to be adapted to the new generated names.
+  We therefore increment the minor version to eight to indicate a rather breaking change.
 * Improved change detection of builder to only trigger build script on changed grammar description
+* If you used the auto-generation functionality of `parol` it is strongly recommended to switch over
+to this new ^0.8 version.
 
 ## v0.7.0 - 2022-04-17
 

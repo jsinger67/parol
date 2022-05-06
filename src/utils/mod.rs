@@ -53,17 +53,14 @@ where
     {
         let mut num = start_num;
         let mut new_name = format!("{}{}", prefix, num);
-        while exclusions.into_iter().any(|n| n.as_ref() == &new_name) {
+        while exclusions.iter().any(|n| n.as_ref() == new_name) {
             num += 1;
             new_name = format!("{}{}", prefix, num);
         }
         new_name
     }
 
-    if exclusions
-        .into_iter()
-        .any(|n| n.as_ref() == &preferred_name)
-    {
+    if exclusions.iter().any(|n| n.as_ref() == preferred_name) {
         let (suffix_number, prefix) = {
             if let Some(match_) = RX_NUM_SUFFIX.find(&preferred_name) {
                 let num = match_.as_str().parse::<usize>().unwrap_or(1);

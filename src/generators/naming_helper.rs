@@ -25,7 +25,7 @@ impl NamingHelper {
         KEYWORDS.iter().any(|kw| kw == &name)
     }
 
-    /// Checks is the symbol starts with "r#"
+    /// Checks whether the symbol starts with "r#"
     ///
     /// ```
     /// use parol::generators::naming_helper::NamingHelper;
@@ -73,7 +73,7 @@ impl NamingHelper {
         if !used && !Self::is_raw_identifier(name) {
             format!("_{}", name)
         } else if !used {
-            name.to_string().replace("r#", "_").to_string()
+            name.to_string().replace("r#", "_")
         } else {
             name.to_string()
         }

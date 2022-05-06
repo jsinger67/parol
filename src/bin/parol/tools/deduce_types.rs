@@ -1,5 +1,5 @@
 use miette::{miette, Result};
-use parol::generators::grammar_type_generator_new::GrammarTypeInfo;
+use parol::generators::grammar_type_generator::GrammarTypeInfo;
 use parol::{left_factor, obtain_grammar_config, obtain_grammar_config_from_string};
 use std::path::PathBuf;
 

@@ -1,12 +1,10 @@
 use std::collections::HashSet;
-use std::convert::TryInto;
 
-use super::grammar_type_generator_new::GrammarTypeInfo;
-use super::symbol_table::{self, Function, SymbolId, SymbolTable, Type, TypeEntrails};
+use super::grammar_type_generator::GrammarTypeInfo;
+use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails};
 use super::template_data::{
-    NonTerminalTypeEnum, NonTerminalTypeStruct, NonTerminalTypeVec,
-    UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
-    UserTraitFunctionStackPopDataBuilder,
+    NonTerminalTypeEnum, NonTerminalTypeStruct, UserTraitCallerFunctionDataBuilder,
+    UserTraitDataBuilder, UserTraitFunctionDataBuilder, UserTraitFunctionStackPopDataBuilder,
 };
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
@@ -141,7 +139,7 @@ impl<'a> UserTraitGenerator<'a> {
                 .members(action_id)?
                 .iter()
                 .last()
-                .ok_or(miette!("There should be at least one argument!"))?;
+                .ok_or_else(|| miette!("There should be at least one argument!"))?;
             let arg_inst = symbol_table.symbol_as_instance(*last_arg)?;
             let arg_name = symbol_table.name(arg_inst.name_id);
             code.push("// Add an element to the vector".to_string());
@@ -168,13 +166,13 @@ impl<'a> UserTraitGenerator<'a> {
             *type_info
                 .production_types
                 .get(&function.prod_num)
-                .ok_or(miette!("Production output type not accessible!"))?,
+                .ok_or_else(|| miette!("Production output type not accessible!"))?,
         )?;
         let nt_type = symbol_table.symbol_as_type(
             *type_info
                 .non_terminal_types
                 .get(&function.non_terminal)
-                .ok_or(miette!("Non-terminal type not accessible!"))?,
+                .ok_or_else(|| miette!("Non-terminal type not accessible!"))?,
         )?;
 
         if function.sem == ProductionAttribute::CollectionStart {
@@ -250,7 +248,7 @@ impl<'a> UserTraitGenerator<'a> {
                             .unwrap()
                             .name(symbol_table)
                     })
-                    .ok_or(miette!("Enum variant not found"))?;
+                    .ok_or_else(|| miette!("Enum variant not found"))?;
                 code.push(format!(
                     "let {}_built = {}::{}({}_built);",
                     fn_name,
@@ -274,12 +272,6 @@ impl<'a> UserTraitGenerator<'a> {
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id)?;
         let fn_name = symbol_table.name(fn_type.name_id).to_string();
-        let fn_out_type = symbol_table.symbol_as_type(
-            *type_info
-                .production_types
-                .get(&function.prod_num)
-                .ok_or(miette!("Production output type not accessible!"))?,
-        )?;
 
         if self.auto_generate
             && parol_grammar
@@ -319,7 +311,7 @@ impl<'a> UserTraitGenerator<'a> {
                     .members(action_id)?
                     .iter()
                     .last()
-                    .ok_or(miette!("There should be at least one argument!"))?;
+                    .ok_or_else(|| miette!("There should be at least one argument!"))?;
                 let arg_inst = symbol_table.symbol_as_instance(*last_arg)?;
                 let arg_name = symbol_table.name(arg_inst.name_id);
 
@@ -408,7 +400,7 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     pub fn generate_user_trait_source(&self) -> Result<String> {
         let mut type_info: GrammarTypeInfo = GrammarTypeInfo::try_new(&self.user_type_name)?;
-        type_info.build(&self.grammar_config)?;
+        type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(self.auto_generate)?;
 
         let production_output_types = if self.auto_generate {
@@ -420,7 +412,7 @@ impl<'a> UserTraitGenerator<'a> {
                         type_id,
                         type_info
                             .symbol_table
-                            .symbol_as_function(*type_info.adapter_actions.get(&prod_num).unwrap()),
+                            .symbol_as_function(*type_info.adapter_actions.get(prod_num).unwrap()),
                     )
                 })
                 .filter_map(|(t, f)| {
@@ -499,7 +491,7 @@ impl<'a> UserTraitGenerator<'a> {
                     let fn_arguments =
                         self.generate_inner_action_args(action_id, &type_info.symbol_table)?;
                     let mut code = StrVec::new(8);
-                    self.generate_context(&mut code, &&fn_name);
+                    self.generate_context(&mut code, &fn_name);
                     self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_result_builder(&mut code, action_id, &type_info)?;
@@ -615,183 +607,6 @@ impl<'a> UserTraitGenerator<'a> {
 
         Ok(format!("{}", user_trait_data))
     }
-
-    // pub fn generate_user_trait_source(&self) -> Result<String> {
-    //     let mut type_info: GrammarTypeInfo = GrammarTypeInfo::try_new(&self.user_type_name)?;
-    //     type_info.set_auto_generate(self.auto_generate);
-
-    //     let production_output_types = if self.auto_generate {
-    //         type_info
-    //             .actions
-    //             .iter()
-    //             .filter(|a| a.alts > 1 && a.sem == ProductionAttribute::None)
-    //             .fold(StrVec::new(0), |mut acc, a| {
-    //                 let mut comment = StrVec::new(0);
-    //                 comment.push(String::default());
-    //                 comment.push(format!("Type derived for production {}", a.prod_num));
-    //                 comment.push(String::default());
-    //                 comment.push(a.prod_string.clone());
-    //                 comment.push(String::default());
-    //                 Self::format_type(&a.out_type, &a.non_terminal, Some(a.rel_idx), comment)
-    //                     .into_iter()
-    //                     .for_each(|s| acc.push(s));
-    //                 acc
-    //             })
-    //     } else {
-    //         StrVec::new(0)
-    //     };
-
-    //     let non_terminal_types = if self.auto_generate {
-    //         type_info
-    //             .non_terminal_types
-    //             .iter()
-    //             .fold(StrVec::new(0), |mut acc, (s, t)| {
-    //                 let mut comment = StrVec::new(0);
-    //                 comment.push(String::default());
-    //                 comment.push(format!("Type derived for non-terminal {}", s));
-    //                 comment.push(String::default());
-    //                 Self::format_type(t, s, None, comment)
-    //                     .into_iter()
-    //                     .for_each(|s| acc.push(s));
-    //                 acc
-    //             })
-    //     } else {
-    //         StrVec::new(0)
-    //     };
-
-    //     let ast_type_decl = if self.auto_generate {
-    //         let mut comment = StrVec::new(0);
-    //         comment.push(String::default());
-    //         comment.push("Deduced ASTType of expanded grammar".to_string());
-    //         comment.push(String::default());
-    //         Self::format_type(&type_info.ast_enum_type, "ASTType", None, comment).unwrap()
-    //     } else {
-    //         String::default()
-    //     };
-
-    //     let trait_functions = type_info.actions.iter().fold(
-    //         Ok(StrVec::new(0).first_line_no_indent()),
-    //         |acc: Result<StrVec>, a| {
-    //             if let Ok(mut acc) = acc {
-    //                 let fn_name = &a.fn_name;
-    //                 let prod_string = a.prod_string.clone();
-    //                 let fn_arguments = self.generate_inner_action_args(a);
-    //                 let mut code = StrVec::new(8);
-    //                 self.generate_context(&mut code, a);
-    //                 self.generate_token_assignments(&mut code, a);
-    //                 self.generate_stack_pops(&mut code, a)?;
-    //                 self.generate_result_builder(&mut code, a);
-    //                 self.generate_push_semantic(&mut code, a);
-    //                 self.generate_user_action_call(&mut code, a, self.parol_grammar);
-    //                 self.generate_stack_push(&mut code, a);
-    //                 let user_trait_function_data = UserTraitFunctionDataBuilder::default()
-    //                     .fn_name(fn_name)
-    //                     .prod_num(a.prod_num)
-    //                     .fn_arguments(fn_arguments)
-    //                     .prod_string(prod_string)
-    //                     .code(code)
-    //                     .inner(true)
-    //                     .build()
-    //                     .into_diagnostic()?;
-    //                 acc.push(format!("{}", user_trait_function_data));
-    //                 Ok(acc)
-    //             } else {
-    //                 acc
-    //             }
-    //         },
-    //     )?;
-
-    //     let user_trait_functions = if self.auto_generate {
-    //         trace!(
-    //             "parol_grammar.item_stack:\n{:?}",
-    //             self.parol_grammar.item_stack
-    //         );
-
-    //         let mut processed_non_terminals: HashSet<String> = HashSet::new();
-    //         self.parol_grammar
-    //             .item_stack
-    //             .iter()
-    //             .fold(
-    //                 Ok((StrVec::new(0).first_line_no_indent(), 0)),
-    //                 |acc: Result<(StrVec, usize)>, p| {
-    //                     if let Ok((mut acc, mut i)) = acc {
-    //                         if let ParolGrammarItem::Prod(Production { lhs, rhs: _ }) = p {
-    //                             if !processed_non_terminals.contains(lhs) {
-    //                                 let fn_name =
-    //                                     NmHlp::escape_rust_keyword(NmHlp::to_lower_snake_case(lhs));
-    //                                 let prod_string = p.to_par();
-    //                                 let fn_arguments = Self::generate_user_action_args(lhs);
-    //                                 let code = StrVec::default();
-    //                                 let user_trait_function_data =
-    //                                     UserTraitFunctionDataBuilder::default()
-    //                                         .fn_name(&fn_name)
-    //                                         .prod_num(i)
-    //                                         .fn_arguments(fn_arguments)
-    //                                         .prod_string(prod_string)
-    //                                         .code(code)
-    //                                         .inner(false)
-    //                                         .build()
-    //                                         .into_diagnostic()?;
-
-    //                                 acc.push(format!("{}", user_trait_function_data));
-    //                                 processed_non_terminals.insert(lhs.to_string());
-    //                             }
-    //                             i += 1;
-    //                         }
-    //                         Ok((acc, i))
-    //                     } else {
-    //                         acc
-    //                     }
-    //                 },
-    //             )?
-    //             .0
-    //     } else {
-    //         StrVec::default()
-    //     };
-
-    //     trace!("user_trait_functions:\n{}", user_trait_functions);
-
-    //     // TODO: Use type_ifo.actions here too!
-    //     let trait_caller = self.grammar_config.cfg.pr.iter().enumerate().fold(
-    //         Ok(StrVec::new(12)),
-    //         |acc: Result<StrVec>, (i, p)| {
-    //             if let Ok(mut acc) = acc {
-    //                 let rel_idx = self
-    //                     .grammar_config
-    //                     .cfg
-    //                     .get_alternation_index_of_production(i)
-    //                     .unwrap();
-    //                 let fn_name =
-    //                     NmHlp::to_lower_snake_case(&format!("{}_{}", p.get_n_str(), rel_idx));
-    //                 let fn_arguments = Self::generate_caller_argument_list(p);
-    //                 let user_trait_function_data = UserTraitCallerFunctionDataBuilder::default()
-    //                     .fn_name(fn_name)
-    //                     .prod_num(i)
-    //                     .fn_arguments(fn_arguments)
-    //                     .build()
-    //                     .into_diagnostic()?;
-    //                 acc.push(format!("{}", user_trait_function_data));
-    //                 Ok(acc)
-    //             } else {
-    //                 acc
-    //             }
-    //         },
-    //     )?;
-    //     let user_trait_data = UserTraitDataBuilder::default()
-    //         .user_type_name(&self.user_type_name)
-    //         .auto_generate(self.auto_generate)
-    //         .production_output_types(production_output_types)
-    //         .non_terminal_types(non_terminal_types)
-    //         .ast_type_decl(&ast_type_decl)
-    //         .trait_functions(trait_functions)
-    //         .trait_caller(trait_caller)
-    //         .module_name(self.module_name)
-    //         .user_trait_functions(user_trait_functions)
-    //         .build()
-    //         .into_diagnostic()?;
-
-    //     Ok(format!("{}", user_trait_data))
-    // }
 
     /// Creates a new item
     pub fn try_new(

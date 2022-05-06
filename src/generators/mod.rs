@@ -17,9 +17,6 @@ pub use grammar_trans::check_and_transform_grammar;
 /// Module that generates type information (AST etc.) for the generated sources
 pub mod grammar_type_generator;
 
-/// Module that generates type information (AST etc.) for the generated sources
-pub mod grammar_type_generator_new;
-
 /// Module with the language generator
 pub mod language_generator;
 pub use language_generator::LanguageGenerator;
