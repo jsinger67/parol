@@ -166,7 +166,7 @@ pub const NON_TERMINALS: &[&str; 56] = &[
     /*  2 */ "Basic",
     /*  3 */ "BasicList",
     /*  4 */ "BasicSuffix",
-    /*  5 */ "BasicSuffix1",
+    /*  5 */ "BasicSuffix0",
     /*  6 */ "Comment",
     /*  7 */ "End",
     /*  8 */ "EndOfLine",
@@ -255,7 +255,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 56] = &[
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 9, 1)],
         k: 1,
     },
-    /* 5 - "BasicSuffix1" */
+    /* 5 - "BasicSuffix0" */
     LookaheadDFA {
         states: &[None, Some(2), Some(3)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 9, 1)],
@@ -670,7 +670,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 56] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 82] = &[
-    // 0 - Basic: Line BasicList /* Vec */ BasicSuffix1;
+    // 0 - Basic: Line BasicList /* Vec */ BasicSuffix0;
     Production {
         lhs: 2,
         production: &[ParseType::N(5), ParseType::N(3), ParseType::N(23)],
@@ -685,12 +685,12 @@ pub const PRODUCTIONS: &[Production; 82] = &[
             ParseType::N(8),
         ],
     },
-    // 2 - BasicSuffix1: EndOfLine;
+    // 2 - BasicSuffix0: EndOfLine;
     Production {
         lhs: 5,
         production: &[ParseType::N(8)],
     },
-    // 3 - BasicSuffix1: ;
+    // 3 - BasicSuffix0: ;
     Production {
         lhs: 5,
         production: &[],
