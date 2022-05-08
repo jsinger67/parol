@@ -1,7 +1,7 @@
 use miette::Result;
 use std::path::PathBuf;
 
-use parol::{left_factor, obtain_grammar_config};
+use parol::{left_factor, obtain_grammar_config, conversions::par::grammar_to_par};
 
 /// Applies the left factoring algorithm on the grammar given.
 #[derive(clap::Parser)]
@@ -20,5 +20,7 @@ pub fn main(args: &Args) -> Result<()> {
 
     // Exchange original grammar with transformed one
     grammar_config.update_cfg(cfg);
+
+    println!("{}", grammar_to_par::render_par_string(&grammar_config, true)?);
     Ok(())
 }

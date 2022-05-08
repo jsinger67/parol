@@ -61,9 +61,9 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(arguments.join(", "))
     }
 
-    fn generate_context(&self, code: &mut StrVec, fn_name: &str) {
+    fn generate_context(&self, code: &mut StrVec) {
         if self.auto_generate {
-            code.push(format!("let context = \"{}\";", fn_name));
+            code.push("let context = function_name!();".to_string());
             code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
         }
     }
@@ -491,7 +491,7 @@ impl<'a> UserTraitGenerator<'a> {
                     let fn_arguments =
                         self.generate_inner_action_args(action_id, &type_info.symbol_table)?;
                     let mut code = StrVec::new(8);
-                    self.generate_context(&mut code, &fn_name);
+                    self.generate_context(&mut code);
                     self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_result_builder(&mut code, action_id, &type_info)?;
@@ -508,6 +508,7 @@ impl<'a> UserTraitGenerator<'a> {
                         .prod_num(prod_num)
                         .fn_arguments(fn_arguments)
                         .prod_string(prod_string)
+                        .named(self.auto_generate)
                         .code(code)
                         .inner(true)
                         .build()
@@ -536,8 +537,7 @@ impl<'a> UserTraitGenerator<'a> {
                         if let Ok((mut acc, mut i)) = acc {
                             if let ParolGrammarItem::Prod(Production { lhs, rhs: _ }) = p {
                                 if !processed_non_terminals.contains(lhs) {
-                                    let fn_name =
-                                        NmHlp::escape_rust_keyword(NmHlp::to_lower_snake_case(lhs));
+                                    let fn_name = NmHlp::to_lower_snake_case(lhs);
                                     let prod_string = p.to_par();
                                     let fn_arguments = Self::generate_user_action_args(lhs);
                                     let code = StrVec::default();
@@ -548,6 +548,7 @@ impl<'a> UserTraitGenerator<'a> {
                                             .fn_arguments(fn_arguments)
                                             .prod_string(prod_string)
                                             .code(code)
+                                            .named(false)
                                             .inner(false)
                                             .build()
                                             .into_diagnostic()?;
@@ -608,6 +609,10 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(format!("{}", user_trait_data))
     }
 
+    // ---------------------------------------------------
+    // Part of the Public API
+    // *Changes will affect crate's version according to semver*
+    // ---------------------------------------------------
     /// Creates a new item
     pub fn try_new(
         user_type_name: &'a str,

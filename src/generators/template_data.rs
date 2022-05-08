@@ -15,6 +15,8 @@ pub(crate) struct UserTraitFunctionData<'a> {
     pub prod_num: usize,
     pub fn_arguments: String,
     pub prod_string: String,
+    // This is used to control whether the #[named] is generated
+    pub named: bool,
     pub code: StrVec,
     // Inner means the expanded version of the grammar.
     // If set to false the actual user grammar is meant.

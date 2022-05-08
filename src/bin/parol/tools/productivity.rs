@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use parol::analysis::non_productive_non_terminals;
 use parol::obtain_grammar_config;
 
+// Checks the given grammar for non-productive non-terminals.
 #[derive(clap::Parser)]
 pub struct Args {
     /// The grammar file to use

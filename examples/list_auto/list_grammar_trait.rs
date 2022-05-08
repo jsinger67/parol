@@ -220,6 +220,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// List: Num ListList /* Vec */ TrailingComma;
     ///
+    #[named]
     fn list_0(
         &mut self,
         _num: &ParseTreeStackEntry<'t>,
@@ -227,7 +228,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         _trailing_comma: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "list_0";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma = if let Some(ASTType::TrailingComma(trailing_comma)) = self.pop(context)
         {
@@ -263,6 +264,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ListList: "," Num ListList; // Vec<T>::Push
     ///
+    #[named]
     fn list_list_0(
         &mut self,
         comma: &ParseTreeStackEntry<'t>,
@@ -270,7 +272,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         _list_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "list_list_0";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comma = *comma.token(parse_tree)?;
         let mut list_list = if let Some(ASTType::ListList(list_list)) = self.pop(context) {
@@ -298,8 +300,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ListList: ; // Vec<T>::New
     ///
+    #[named]
     fn list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "list_list_1";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let list_list_1_built = Vec::new();
         self.push(ASTType::ListList(list_list_1_built), context);
@@ -310,12 +313,13 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// List: TrailingComma;
     ///
+    #[named]
     fn list_1(
         &mut self,
         _trailing_comma: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "list_1";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma = if let Some(ASTType::TrailingComma(trailing_comma)) = self.pop(context)
         {
@@ -338,12 +342,13 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
+    #[named]
     fn num(
         &mut self,
         num: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "num";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let num = *num.token(parse_tree)?;
         let num_built = NumBuilder::default().num(num).build().into_diagnostic()?;
@@ -357,12 +362,13 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// TrailingComma: ",";
     ///
+    #[named]
     fn trailing_comma_0(
         &mut self,
         comma: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "trailing_comma_0";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comma = *comma.token(parse_tree)?;
         let trailing_comma_0_built = TrailingComma0Builder::default()
@@ -380,8 +386,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// TrailingComma: ;
     ///
+    #[named]
     fn trailing_comma_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "trailing_comma_1";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_1_built = TrailingComma1Builder::default().build().into_diagnostic()?;
         let trailing_comma_1_built = TrailingComma::TrailingComma1(trailing_comma_1_built);

@@ -1,8 +1,6 @@
 //! This module provides functionality for generating variable names and type names so that they
 //! adhere to the Rust naming conventions.
 
-use crate::{Symbol, Terminal};
-
 const KEYWORDS: &[&str; 52] = &[
     "abstract", "as", "async", "await", "become", "box", "break", "const", "continue", "crate",
     "do", "dyn", "else", "enum", "extern", "false", "final", "fn", "for", "if", "impl", "in",
@@ -81,8 +79,8 @@ impl NamingHelper {
 
     ///
     /// Produces a lower snake camel case version of the given name.
-    /// Since these names are supposed to be used as identifiers a clash with rust keywords is detected
-    /// and prevented.
+    /// Since these names are supposed to be used as identifiers a clash with rust keywords is
+    /// detected and prevented.
     ///
     /// ```
     /// use parol::generators::NamingHelper as NmHlp;
@@ -157,36 +155,46 @@ impl NamingHelper {
         })
     }
 
-    /// Generates a member name from a symbol that stems from a production's right-hand side
-    pub fn generate_member_name(
-        s: &Symbol,
-        arg_index: usize,
-        terminals: &[String],
-        terminal_names: &[String],
-    ) -> String {
-        let get_terminal_index = |tr: &str| terminals.iter().position(|t| *t == tr).unwrap();
-        match s {
-            Symbol::N(n, _) => {
-                format!("{}_{}", Self::to_lower_snake_case(n), arg_index)
-            }
-            Symbol::T(Terminal::Trm(t, _)) => {
-                let terminal_name = &terminal_names[get_terminal_index(t)];
-                format!("{}_{}", Self::to_lower_snake_case(terminal_name), arg_index)
-            }
-            _ => panic!("Invalid symbol type {}", s),
-        }
+    /// This is a very restrictive definition of allowed characters in identifiers `parol` allows.
+    /// Invalid characters in terminal names, non-terminal names and module names are typically
+    /// replaced by the underscore character and can later be removed during name generations using
+    /// special casing rules like UpperCamelCase.
+    ///
+    /// ```
+    /// use parol::generators::naming_helper::NamingHelper;
+    ///
+    /// assert!(NamingHelper::is_valid_name_character('a'));
+    /// assert!(NamingHelper::is_valid_name_character('A'));
+    /// assert!(NamingHelper::is_valid_name_character('1'));
+    /// assert!(NamingHelper::is_valid_name_character('_'));
+    ///
+    /// assert!(!NamingHelper::is_valid_name_character('-'));
+    /// assert!(!NamingHelper::is_valid_name_character(':'));
+    /// assert!(!NamingHelper::is_valid_name_character('/'));
+    /// ```
+    pub fn is_valid_name_character(c: char) -> bool {
+        c.is_alphanumeric() || c == '_'
     }
 
-    /// Convenience function
-    pub fn generate_member_names(
-        rhs: &[Symbol],
-        terminals: &[String],
-        terminal_names: &[String],
-    ) -> Vec<String> {
-        rhs.iter()
-            .enumerate()
-            .filter(|(_, s)| s.is_n() || s.is_t())
-            .map(|(i, s)| Self::generate_member_name(s, i, terminals, terminal_names))
-            .collect::<Vec<String>>()
+    /// Replaces all invalid characters from the given name with underscores. It is used to process
+    /// user given names which are for instance given as command arguments.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use parol::generators::naming_helper::NamingHelper;
+    ///
+    /// assert_eq!(NamingHelper::purge_name("test-module"), "test_module");
+    /// ```
+    pub fn purge_name(name: &str) -> String {
+        let mut result = String::with_capacity(name.len());
+        for c in name.chars() {
+            result.push(if Self::is_valid_name_character(c) {
+                c
+            } else {
+                '_'
+            });
+        }
+        result
     }
 }

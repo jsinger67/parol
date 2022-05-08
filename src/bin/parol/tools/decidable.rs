@@ -5,7 +5,7 @@ use parol::obtain_grammar_config;
 use parol::MAX_K;
 use std::path::PathBuf;
 
-/// Can be used to detect the maximum lookahead needed for your grammar.
+/// Detects the maximum lookahead needed for your grammar and shows possible conflicts in k-tuples.
 #[derive(clap::Parser)]
 #[clap(name = "decidable")]
 pub struct Args {

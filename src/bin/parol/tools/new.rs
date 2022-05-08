@@ -7,7 +7,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-/// Create a new `parol` package
+/// Creates a new crate that uses `parol`.
 #[derive(clap::Parser)]
 #[clap(name = "new")]
 #[clap(group(ArgGroup::new("lib_or_bin").args(&["lib", "bin"]).multiple(false).required(true)))]
@@ -40,7 +40,7 @@ struct CreationData<'a> {
 pub fn main(args: &Args) -> Result<()> {
     apply_cargo(args)?;
 
-    let crate_name = if let Some(name) = args.name.as_ref() {
+    let crate_name = NmHlp::purge_name(if let Some(name) = args.name.as_ref() {
         name
     } else {
         args.path
@@ -49,11 +49,11 @@ pub fn main(args: &Args) -> Result<()> {
             .ok_or_else(|| miette!("Trouble to handle path"))?
             .to_str()
             .ok_or_else(|| miette!("Trouble to handle path"))?
-    };
+    });
 
     let creation_data = CreationDataBuilder::default()
-        .crate_name(crate_name)
-        .grammar_name(NmHlp::to_upper_camel_case(crate_name))
+        .crate_name(&crate_name)
+        .grammar_name(NmHlp::to_upper_camel_case(&crate_name))
         .path(args.path.clone())
         .is_bin(args.bin)
         .build()
@@ -73,13 +73,14 @@ pub fn main(args: &Args) -> Result<()> {
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "derive_builder", "--vers=0.11.1"],
     &["add", "env_logger", "--vers=0.9.0"],
+    &["add", "function_name"],
     &["add", "id_tree", "--vers=^1.8"],
     &["add", "lazy_static", "--vers=^1.4"],
     &["add", "log", "--vers=0.4.14"],
     &["add", "miette", "--vers=^4.0", "--features", "fancy"],
     &["add", "parol_runtime", "--vers=0.5.9"],
     &["add", "thiserror", "--vers=^1.0"],
-    &["add", "parol", "--build", "--vers=^0.6"],
+    &["add", "parol", "--build", "--vers=^0.8.1"],
 ];
 
 fn apply_cargo(args: &Args) -> Result<()> {
