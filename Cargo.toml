@@ -1,6 +1,6 @@
 [package]
 name = "basic"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 derive_builder = "0.11.1"
 env_logger = "0.9.0"
+function_name = "0.3.0"
 id_tree = "^1.8"
 id_tree_layout = "2.0.3"
 lazy_static = "^1.4"
@@ -17,7 +18,7 @@ parol_runtime = "0.5.9"
 thiserror = "^1.0"
 
 [build-dependencies]
-parol = "^0.8"
+parol = "^0.8.2"
 
 [dev-dependencies]
 regex = "1.5.5"
