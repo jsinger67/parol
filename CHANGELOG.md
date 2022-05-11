@@ -17,6 +17,11 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.8.2 - 2022-05-11
+
+* Using updated version of `function-name` crate to fix the raw identifier problem occurred at
+context generation
+
 ## v0.8.1 - 2022-05-08
 
 * Minor cleanups

@@ -73,14 +73,14 @@ pub fn main(args: &Args) -> Result<()> {
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "derive_builder", "--vers=0.11.1"],
     &["add", "env_logger", "--vers=0.9.0"],
-    &["add", "function_name"],
+    &["add", "function_name", "--vers=0.3.0"],
     &["add", "id_tree", "--vers=^1.8"],
     &["add", "lazy_static", "--vers=^1.4"],
     &["add", "log", "--vers=0.4.14"],
     &["add", "miette", "--vers=^4.0", "--features", "fancy"],
     &["add", "parol_runtime", "--vers=0.5.9"],
     &["add", "thiserror", "--vers=^1.0"],
-    &["add", "parol", "--build", "--vers=^0.8.1"],
+    &["add", "parol", "--build", "--vers=^0.8.2"],
 ];
 
 fn apply_cargo(args: &Args) -> Result<()> {
