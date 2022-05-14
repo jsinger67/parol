@@ -18,354 +18,222 @@ use std::path::{Path, PathBuf};
 pub trait BasicGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
-    /// Semantic action for user production 0:
-    ///
-    /// Basic: [EndOfLine] Line {EndOfLine Line} [EndOfLine];
-    ///
+    /// Semantic action for non-terminal 'Basic'
     fn basic(&mut self, _arg: &Basic<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 1:
-    ///
-    /// Line: LineNumber Statement {<2, 0>":" Statement};
-    ///
+    /// Semantic action for non-terminal 'Line'
     fn line(&mut self, _arg: &Line<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 2:
-    ///
-    /// LineNumber: <0>"[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
-    ///
+    /// Semantic action for non-terminal 'LineNumber'
     fn line_number(&mut self, _arg: &LineNumber<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 3:
-    ///
-    /// Statement: Remark | GotoStatement | IfStatement | Assignment | PrintStatement | EndStatement;
-    ///
+    /// Semantic action for non-terminal 'Statement'
     fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 4:
-    ///
-    /// Remark: <0>"REM" %push(1) [Comment] %pop();
-    ///
+    /// Semantic action for non-terminal 'Remark'
     fn remark(&mut self, _arg: &Remark<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 5:
-    ///
-    /// GotoStatement: Goto LineNumber;
-    ///
+    /// Semantic action for non-terminal 'GotoStatement'
     fn goto_statement(&mut self, _arg: &GotoStatement<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 6:
-    ///
-    /// IfStatement: If %push(2) Expression %pop() IfBody;
-    ///
+    /// Semantic action for non-terminal 'IfStatement'
     fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 7:
-    ///
-    /// Assignment: [Let] Variable AssignOp %push(2) Expression %pop();
-    ///
+    /// Semantic action for non-terminal 'Assignment'
     fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 8:
-    ///
-    /// IfBody: Then Statement | Goto LineNumber;
-    ///
+    /// Semantic action for non-terminal 'IfBody'
     fn if_body(&mut self, _arg: &IfBody<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 9:
-    ///
-    /// PrintStatement: Print %push(2) Expression {<2, 0>"," Expression} %pop();
-    ///
+    /// Semantic action for non-terminal 'PrintStatement'
     fn print_statement(&mut self, _arg: &PrintStatement<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 10:
-    ///
-    /// EndStatement: End;
-    ///
+    /// Semantic action for non-terminal 'EndStatement'
     fn end_statement(&mut self, _arg: &EndStatement<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 11:
-    ///
-    /// EndOfLine: <2, 0>"(?:\r?\n|\r)+";
-    ///
+    /// Semantic action for non-terminal 'EndOfLine'
     fn end_of_line(&mut self, _arg: &EndOfLine<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 12:
-    ///
-    /// Literal: Number;
-    ///
+    /// Semantic action for non-terminal 'Literal'
     fn literal(&mut self, _arg: &Literal<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 13:
-    ///
-    /// Number: Float | Integer;
-    ///
+    /// Semantic action for non-terminal 'Number'
     fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 14:
-    ///
-    /// Float: Float1 | Float2;
-    ///
+    /// Semantic action for non-terminal 'Float'
     fn float(&mut self, _arg: &Float<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 15:
-    ///
-    /// Float1: <2>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
-    ///
+    /// Semantic action for non-terminal 'Float1'
     fn float1(&mut self, _arg: &Float1<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 16:
-    ///
-    /// Float2: <2>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
-    ///
+    /// Semantic action for non-terminal 'Float2'
     fn float2(&mut self, _arg: &Float2<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 17:
-    ///
-    /// Integer: <2>"(?:[0-9] *)+";
-    ///
+    /// Semantic action for non-terminal 'Integer'
     fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 18:
-    ///
-    /// If: <0>"IF";
-    ///
+    /// Semantic action for non-terminal 'If'
     fn r#if(&mut self, _arg: &If<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 19:
-    ///
-    /// Then: <2, 0>"THEN";
-    ///
+    /// Semantic action for non-terminal 'Then'
     fn then(&mut self, _arg: &Then<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 20:
-    ///
-    /// Goto: <2, 0>"GOTO";
-    ///
+    /// Semantic action for non-terminal 'Goto'
     fn goto(&mut self, _arg: &Goto<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 21:
-    ///
-    /// Let: <0>"LET";
-    ///
+    /// Semantic action for non-terminal 'Let'
     fn r#let(&mut self, _arg: &Let<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 22:
-    ///
-    /// Print: <0>"PRINT|\?";
-    ///
+    /// Semantic action for non-terminal 'Print'
     fn print(&mut self, _arg: &Print<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 23:
-    ///
-    /// End: <0>"END";
-    ///
+    /// Semantic action for non-terminal 'End'
     fn end(&mut self, _arg: &End<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 24:
-    ///
-    /// AssignOp: <0>"=";
-    ///
+    /// Semantic action for non-terminal 'AssignOp'
     fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 25:
-    ///
-    /// LogicalOrOp: <2>"N?OR";
-    ///
+    /// Semantic action for non-terminal 'LogicalOrOp'
     fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 26:
-    ///
-    /// LogicalAndOp: <2>"AND";
-    ///
+    /// Semantic action for non-terminal 'LogicalAndOp'
     fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 27:
-    ///
-    /// LogicalNotOp: <2>"NOT";
-    ///
+    /// Semantic action for non-terminal 'LogicalNotOp'
     fn logical_not_op(&mut self, _arg: &LogicalNotOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 28:
-    ///
-    /// RelationalOp: <2>"<\s*>|<\s*=|<|>\s*=|>|=";
-    ///
+    /// Semantic action for non-terminal 'RelationalOp'
     fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 29:
-    ///
-    /// Plus: <2>"\+";
-    ///
+    /// Semantic action for non-terminal 'Plus'
     fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 30:
-    ///
-    /// Minus: <2>"-";
-    ///
+    /// Semantic action for non-terminal 'Minus'
     fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 31:
-    ///
-    /// MulOp: <2>"\*|/";
-    ///
+    /// Semantic action for non-terminal 'MulOp'
     fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 32:
-    ///
-    /// LParen: <2>"\(";
-    ///
+    /// Semantic action for non-terminal 'LParen'
     fn l_paren(&mut self, _arg: &LParen<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 33:
-    ///
-    /// RParen: <2>"\)";
-    ///
+    /// Semantic action for non-terminal 'RParen'
     fn r_paren(&mut self, _arg: &RParen<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 34:
-    ///
-    /// Comment: <1>"[^\r\n]+";
-    ///
+    /// Semantic action for non-terminal 'Comment'
     fn comment(&mut self, _arg: &Comment<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 35:
-    ///
-    /// Variable: <2, 0>"[A-Z][0-9A-Z]*";
-    ///
+    /// Semantic action for non-terminal 'Variable'
     fn variable(&mut self, _arg: &Variable<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 36:
-    ///
-    /// Expression: LogicalOr;
-    ///
+    /// Semantic action for non-terminal 'Expression'
     fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 37:
-    ///
-    /// LogicalOr: LogicalAnd {LogicalOrOp LogicalAnd};
-    ///
+    /// Semantic action for non-terminal 'LogicalOr'
     fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 38:
-    ///
-    /// LogicalAnd: LogicalNot {LogicalAndOp LogicalNot};
-    ///
+    /// Semantic action for non-terminal 'LogicalAnd'
     fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 39:
-    ///
-    /// LogicalNot: [LogicalNotOp] Relational;
-    ///
+    /// Semantic action for non-terminal 'LogicalNot'
     fn logical_not(&mut self, _arg: &LogicalNot<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 40:
-    ///
-    /// Relational: Summation {RelationalOp Summation};
-    ///
+    /// Semantic action for non-terminal 'Relational'
     fn relational(&mut self, _arg: &Relational<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 41:
-    ///
-    /// Summation: Multiplication {(Plus | Minus) Multiplication};
-    ///
+    /// Semantic action for non-terminal 'Summation'
     fn summation(&mut self, _arg: &Summation<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 42:
-    ///
-    /// Multiplication: Factor {MulOp Factor};
-    ///
+    /// Semantic action for non-terminal 'Multiplication'
     fn multiplication(&mut self, _arg: &Multiplication<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 43:
-    ///
-    /// Factor: Literal | Variable | Minus Factor | LParen Expression RParen;
-    ///
+    /// Semantic action for non-terminal 'Factor'
     fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
