@@ -266,28 +266,20 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
-        parol_grammar: &'a ParolGrammar,
     ) -> Result<()> {
+        if !self.auto_generate {
+            return Ok(());
+        }
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id)?;
         let fn_name = symbol_table.name(fn_type.name_id).to_string();
-
-        if self.auto_generate
-            && parol_grammar
-                .item_stack
-                .iter()
-                .filter_map(|item| match item {
-                    ParolGrammarItem::Prod(Production { lhs, .. }) => Some(lhs),
-                    _ => None,
-                })
-                .any(|lhs| &function.non_terminal == lhs)
-        {
+        if let Ok(user_action_id) = type_info.get_user_action(&function.non_terminal) {
+            let user_action_name = symbol_table.type_name(user_action_id)?;
             code.push("// Calling user action here".to_string());
             code.push(format!(
                 "self.user_grammar.{}(&{}_built)?;",
-                NmHlp::to_lower_snake_case(&function.non_terminal),
-                fn_name
+                user_action_name, fn_name
             ));
         }
         Ok(())
@@ -331,6 +323,23 @@ impl<'a> UserTraitGenerator<'a> {
             }
         }
         Ok(())
+    }
+
+    pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
+        let mut processed_non_terminals: HashSet<String> = HashSet::new();
+        self.parol_grammar
+            .item_stack
+            .iter()
+            .fold(Ok(()), |acc: Result<()>, p| {
+                acc?;
+                if let ParolGrammarItem::Prod(Production { lhs, .. }) = p {
+                    if !processed_non_terminals.contains(lhs) {
+                        type_info.add_user_action(lhs)?;
+                        processed_non_terminals.insert(lhs.to_string());
+                    }
+                }
+                Ok(())
+            })
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
@@ -402,6 +411,8 @@ impl<'a> UserTraitGenerator<'a> {
         let mut type_info: GrammarTypeInfo = GrammarTypeInfo::try_new(&self.user_type_name)?;
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(self.auto_generate)?;
+
+        self.add_user_actions(&mut type_info)?;
 
         let production_output_types = if self.auto_generate {
             type_info
@@ -496,12 +507,7 @@ impl<'a> UserTraitGenerator<'a> {
                     self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_result_builder(&mut code, action_id, &type_info)?;
                     self.generate_push_semantic(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_user_action_call(
-                        &mut code,
-                        action_id,
-                        &type_info,
-                        self.parol_grammar,
-                    )?;
+                    self.generate_user_action_call(&mut code, action_id, &type_info)?;
                     self.generate_stack_push(&mut code, action_id, &type_info.symbol_table)?;
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(&fn_name)
@@ -527,44 +533,25 @@ impl<'a> UserTraitGenerator<'a> {
                 self.parol_grammar.item_stack
             );
 
-            let mut processed_non_terminals: HashSet<String> = HashSet::new();
-            self.parol_grammar
-                .item_stack
-                .iter()
-                .fold(
-                    Ok((StrVec::new(0).first_line_no_indent(), 0)),
-                    |acc: Result<(StrVec, usize)>, p| {
-                        if let Ok((mut acc, mut i)) = acc {
-                            if let ParolGrammarItem::Prod(Production { lhs, rhs: _ }) = p {
-                                if !processed_non_terminals.contains(lhs) {
-                                    let fn_name = NmHlp::to_lower_snake_case(lhs);
-                                    let prod_string = p.to_par();
-                                    let fn_arguments = Self::generate_user_action_args(lhs);
-                                    let code = StrVec::default();
-                                    let user_trait_function_data =
-                                        UserTraitFunctionDataBuilder::default()
-                                            .fn_name(&fn_name)
-                                            .prod_num(i)
-                                            .fn_arguments(fn_arguments)
-                                            .prod_string(prod_string)
-                                            .code(code)
-                                            .named(false)
-                                            .inner(false)
-                                            .build()
-                                            .into_diagnostic()?;
-
-                                    acc.push(format!("{}", user_trait_function_data));
-                                    processed_non_terminals.insert(lhs.to_string());
-                                }
-                                i += 1;
-                            }
-                            Ok((acc, i))
-                        } else {
-                            acc
-                        }
-                    },
-                )?
-                .0
+            type_info.user_actions.iter().fold(
+                Ok(StrVec::new(0).first_line_no_indent()),
+                |acc: Result<StrVec>, (nt, fn_id)| {
+                    if let Ok(mut acc) = acc {
+                        let fn_name = type_info.symbol_table.type_name(*fn_id)?;
+                        let fn_arguments = Self::generate_user_action_args(nt);
+                        let user_trait_function_data = UserTraitFunctionDataBuilder::default()
+                            .fn_name(fn_name)
+                            .non_terminal(nt.to_string())
+                            .fn_arguments(fn_arguments)
+                            .build()
+                            .into_diagnostic()?;
+                        acc.push(format!("{}", user_trait_function_data));
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
+                },
+            )?
         } else {
             StrVec::default()
         };

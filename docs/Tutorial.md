@@ -1,6 +1,12 @@
 # Tutorial
 
 > This tutorial is still under construction!
+>
+> If you find any inconsistencies or bugs, if you have questions or suggestions feel free to create
+an issue against it or contribute to our [discussions](https://github.com/jsinger67/parol/discussions).
+>
+> The old tutorial is moved to [TutorialOld.md](./TutorialOld.md). It is still useful and
+explains the approaches that are now superseded by the new auto-generation related ones.
 
 This tutorial will help new users to get quickly familiar with the tool `parol`.
 To get something useful we need a goal that is not too complicated but covers the most steps to be
@@ -1147,9 +1153,33 @@ to evaluate some parsing properties but not to check for complete compatibility.
 ## Implementing the interpreter
 
 We were able to postpone the language implementation until now. I appraise this as one of the most
-unique and useful properties of `parol`. One can actually do rapid prototyping on a language!
+unique and useful properties of `parol`. One can actually do rapid prototyping of a language!
 
 Anyhow, eventually we need to do some grammar processing to have more than an acceptor for a
 language.
 
 ### Understand the data structures generated for our grammar
+
+All the traits and types parol generated for us and which we need further on can be found in the
+`src/basic_grammar_traits.rs`.
+
+First we start at the beginning of this file and find the trait `BasicGrammarTrait`. It contains at
+the top an `init` function. This function is called by the parser before parsing starts an conveys
+the file name of the input to us. We typically use this for error messages.
+After the `init` function follow functions for each non-terminal of your language. All these
+functions have default implementations to enable us to skip them in our implementation.
+To have an idea how we use this trait please look into the `src/basic_grammar.rs`. Near the end of
+this file you find that we implement the `BasicGrammarTrait` for our `BasicGrammar` that will hold
+our basic interpreter.
+
+Back to the non-terminal functions. The parser or better a special adapter layer will call them any
+time a non-terminal was parsed completely.
+
+This means we can chose those non-terminals we are interested in to build appropriate actions on
+them.
+Because we are lazy we chose only one non-terminal, the start symbol, for our implementation. Is
+this sufficient? Yes, because the function for the start non-terminal is called, like any
+non-terminal function, when the non-terminal is completely parsed. The start symbol is completely
+parsed exactly then when the complete input is parsed.
+
+The start symbol of our Basic grammar is the symbol `Basic`. See `basic.par` for this detail.

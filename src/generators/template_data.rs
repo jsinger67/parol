@@ -12,14 +12,21 @@ pub(crate) struct UserTraitCallerFunctionData {
 #[template = "templates/user_trait_function_template.rs.tpl"]
 pub(crate) struct UserTraitFunctionData<'a> {
     pub fn_name: &'a str,
+    #[builder(default)]
     pub prod_num: usize,
     pub fn_arguments: String,
+    #[builder(default)]
     pub prod_string: String,
+    #[builder(default)]
+    pub non_terminal: String,
     // This is used to control whether the #[named] is generated
+    #[builder(default)]
     pub named: bool,
+    #[builder(default)]
     pub code: StrVec,
     // Inner means the expanded version of the grammar.
     // If set to false the actual user grammar is meant.
+    #[builder(default)]
     pub inner: bool,
 }
 

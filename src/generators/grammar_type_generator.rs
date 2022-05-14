@@ -27,6 +27,11 @@ pub struct GrammarTypeInfo {
     pub(crate) adapter_grammar_struct_id: Option<SymbolId>,
     pub(crate) action_caller_trait_id: Option<SymbolId>,
 
+    // Function in the user action trait
+    // For each non-terminal a function. Sorted by order of appearance in the user grammar
+    pub(crate) user_actions: Vec<(String, SymbolId)>,
+
+    // Functions in the inner actions trait
     pub(crate) adapter_actions: BTreeMap<ProductionIndex, SymbolId>,
 
     // Output types of productions
@@ -68,6 +73,14 @@ impl GrammarTypeInfo {
             TypeEntrails::Trait,
         )?);
 
+        // Insert the fix 'init' function into the user action trait to avoid name clashes with a
+        // possible non-terminal 'Init'
+        me.symbol_table.insert_type(
+            me.user_action_trait_id.unwrap(),
+            "init",
+            TypeEntrails::Function(Function::default()),
+        )?;
+
         // Insert the fix <GrammarName>Auto struct into the global scope
         me.adapter_grammar_struct_id = Some(me.symbol_table.insert_global_type(
             &format!("{}Auto", NmHlp::to_upper_camel_case(grammar_type_name)),
@@ -94,6 +107,35 @@ impl GrammarTypeInfo {
     pub(crate) fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
         self.auto_generate = auto_generate;
         self.adjust_arguments_used(auto_generate)
+    }
+
+    pub(crate) fn add_user_action(&mut self, non_terminal: &str) -> Result<SymbolId> {
+        let action_fn = self.symbol_table.insert_type(
+            self.user_action_trait_id.unwrap(),
+            non_terminal,
+            TypeEntrails::Function(
+                FunctionBuilder::default()
+                    .non_terminal(non_terminal.to_string())
+                    .build()
+                    .into_diagnostic()?,
+            ),
+        )?;
+        self.user_actions
+            .push((non_terminal.to_string(), action_fn));
+        Ok(action_fn)
+    }
+
+    pub(crate) fn get_user_action(&self, non_terminal: &str) -> Result<SymbolId> {
+        self.user_actions
+            .iter()
+            .find(|(nt, _)| nt == non_terminal)
+            .map(|(_, fn_id)| *fn_id)
+            .ok_or_else(|| {
+                miette!(
+                    "There should be a user action for non-terminal '{}'!",
+                    non_terminal
+                )
+            })
     }
 
     fn adjust_arguments_used(&mut self, used: bool) -> Result<()> {

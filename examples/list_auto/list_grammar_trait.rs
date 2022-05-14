@@ -18,26 +18,17 @@ use std::path::{Path, PathBuf};
 pub trait ListGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
-    /// Semantic action for user production 0:
-    ///
-    /// List: [Num {<0>"," Num}] TrailingComma;
-    ///
+    /// Semantic action for non-terminal 'List'
     fn list(&mut self, _arg: &List<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 1:
-    ///
-    /// Num: <0>"0|[1-9][0-9]*";
-    ///
+    /// Semantic action for non-terminal 'Num'
     fn num(&mut self, _arg: &Num<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 2:
-    ///
-    /// TrailingComma: [<0>","];
-    ///
+    /// Semantic action for non-terminal 'TrailingComma'
     fn trailing_comma(&mut self, _arg: &TrailingComma<'t>) -> Result<()> {
         Ok(())
     }

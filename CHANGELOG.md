@@ -17,6 +17,12 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.8.3 - 2022-05-14
+
+* Fixed comments on generated user actions
+* Avoid possible name clashes on user action names with the `init` function
+* Worked on tutorial
+
 ## v0.8.2 - 2022-05-11
 
 * Using updated version of `function-name` crate to fix the raw identifier problem occurred at

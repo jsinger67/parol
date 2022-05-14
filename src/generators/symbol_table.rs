@@ -34,19 +34,24 @@ pub(crate) struct Function {
     pub(crate) non_terminal: String,
 
     /// Semantic specification
+    #[builder(default)]
     pub(crate) sem: ProductionAttribute,
 
     /// Production number
+    #[builder(default)]
     pub(crate) prod_num: ProductionIndex,
 
     /// The relative index of a production within its alternatives.
+    #[builder(default)]
     pub(crate) rel_idx: usize,
 
     /// Number of alternatives, the number of productions that exist in the grammar which have the
     /// same non-terminal
+    #[builder(default)]
     pub(crate) alts: usize,
 
     /// Formatted production in PAR syntax.
+    #[builder(default)]
     pub(crate) prod_string: String,
 }
 
@@ -530,6 +535,16 @@ impl SymbolTable {
 
     pub(crate) fn symbol(&self, symbol_id: SymbolId) -> &Symbol {
         &self.symbols[symbol_id.0]
+    }
+
+    pub(crate) fn type_name(&self, symbol_id: SymbolId) -> Result<&str> {
+        let type_symbol = self.symbol_as_type(symbol_id)?;
+        Ok(self.name(type_symbol.name_id))
+    }
+
+    pub(crate) fn _instance_name(&self, symbol_id: SymbolId) -> Result<&str> {
+        let instance_symbol = self.symbol_as_instance(symbol_id)?;
+        Ok(self.name(instance_symbol.name_id))
     }
 
     pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> Result<&Instance> {

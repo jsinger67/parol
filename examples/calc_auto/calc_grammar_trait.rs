@@ -18,258 +18,162 @@ use std::path::{Path, PathBuf};
 pub trait CalcGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
-    /// Semantic action for user production 0:
-    ///
-    /// calc: {instruction <0>";"};
-    ///
+    /// Semantic action for non-terminal 'calc'
     fn calc(&mut self, _arg: &Calc<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 1:
-    ///
-    /// equality_op: <0>"==|!=";
-    ///
+    /// Semantic action for non-terminal 'equality_op'
     fn equality_op(&mut self, _arg: &EqualityOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 2:
-    ///
-    /// assign_op: <0>"(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
-    ///
+    /// Semantic action for non-terminal 'assign_op'
     fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 3:
-    ///
-    /// logical_or_op: <0>"\|\|";
-    ///
+    /// Semantic action for non-terminal 'logical_or_op'
     fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 4:
-    ///
-    /// logical_and_op: <0>"&&";
-    ///
+    /// Semantic action for non-terminal 'logical_and_op'
     fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 5:
-    ///
-    /// bitwise_or_op: <0>"\|";
-    ///
+    /// Semantic action for non-terminal 'bitwise_or_op'
     fn bitwise_or_op(&mut self, _arg: &BitwiseOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 6:
-    ///
-    /// bitwise_and_op: <0>"&";
-    ///
+    /// Semantic action for non-terminal 'bitwise_and_op'
     fn bitwise_and_op(&mut self, _arg: &BitwiseAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 7:
-    ///
-    /// bitwise_shift_op: <0>"<<|>>";
-    ///
+    /// Semantic action for non-terminal 'bitwise_shift_op'
     fn bitwise_shift_op(&mut self, _arg: &BitwiseShiftOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 8:
-    ///
-    /// relational_op: <0>"<=|<|>=|>";
-    ///
+    /// Semantic action for non-terminal 'relational_op'
     fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 9:
-    ///
-    /// plus: <0>"\+";
-    ///
+    /// Semantic action for non-terminal 'plus'
     fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 10:
-    ///
-    /// minus: <0>"-";
-    ///
+    /// Semantic action for non-terminal 'minus'
     fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 11:
-    ///
-    /// pow_op: <0>"\*\*";
-    ///
+    /// Semantic action for non-terminal 'pow_op'
     fn pow_op(&mut self, _arg: &PowOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 12:
-    ///
-    /// mult_op: <0>"\*|/|%";
-    ///
+    /// Semantic action for non-terminal 'mult_op'
     fn mult_op(&mut self, _arg: &MultOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 13:
-    ///
-    /// instruction: assignment;
-    ///
+    /// Semantic action for non-terminal 'instruction'
     fn instruction(&mut self, _arg: &Instruction<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 15:
-    ///
-    /// assign_item: id assign_op;
-    ///
+    /// Semantic action for non-terminal 'assign_item'
     fn assign_item(&mut self, _arg: &AssignItem<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 16:
-    ///
-    /// assignment: assign_item {assign_item} logical_or;
-    ///
+    /// Semantic action for non-terminal 'assignment'
     fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 17:
-    ///
-    /// logical_or: logical_and {logical_or_op logical_and};
-    ///
+    /// Semantic action for non-terminal 'logical_or'
     fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 18:
-    ///
-    /// logical_and: bitwise_or {logical_and_op bitwise_or};
-    ///
+    /// Semantic action for non-terminal 'logical_and'
     fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 19:
-    ///
-    /// bitwise_or: bitwise_and {bitwise_or_op bitwise_and};
-    ///
+    /// Semantic action for non-terminal 'bitwise_or'
     fn bitwise_or(&mut self, _arg: &BitwiseOr<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 20:
-    ///
-    /// bitwise_and: equality {bitwise_and_op equality};
-    ///
+    /// Semantic action for non-terminal 'bitwise_and'
     fn bitwise_and(&mut self, _arg: &BitwiseAnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 21:
-    ///
-    /// equality: relational {equality_op relational};
-    ///
+    /// Semantic action for non-terminal 'equality'
     fn equality(&mut self, _arg: &Equality<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 22:
-    ///
-    /// relational: bitwise_shift {relational_op bitwise_shift};
-    ///
+    /// Semantic action for non-terminal 'relational'
     fn relational(&mut self, _arg: &Relational<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 23:
-    ///
-    /// bitwise_shift: summ {bitwise_shift_op summ};
-    ///
+    /// Semantic action for non-terminal 'bitwise_shift'
     fn bitwise_shift(&mut self, _arg: &BitwiseShift<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 24:
-    ///
-    /// add_op: plus | minus;
-    ///
+    /// Semantic action for non-terminal 'add_op'
     fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 25:
-    ///
-    /// summ: mult {add_op mult};
-    ///
+    /// Semantic action for non-terminal 'summ'
     fn summ(&mut self, _arg: &Summ<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 26:
-    ///
-    /// mult: power {mult_op power};
-    ///
+    /// Semantic action for non-terminal 'mult'
     fn mult(&mut self, _arg: &Mult<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 27:
-    ///
-    /// power: factor {pow_op factor};
-    ///
+    /// Semantic action for non-terminal 'power'
     fn power(&mut self, _arg: &Power<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 28:
-    ///
-    /// negate: minus;
-    ///
+    /// Semantic action for non-terminal 'negate'
     fn negate(&mut self, _arg: &Negate<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 29:
-    ///
-    /// factor: number | idref | negate factor | <0>"\(" logical_or <0>"\)";
-    ///
+    /// Semantic action for non-terminal 'factor'
     fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 30:
-    ///
-    /// number: <0>"0|[1-9][0-9]*";
-    ///
+    /// Semantic action for non-terminal 'number'
     fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 31:
-    ///
-    /// idref: id;
-    ///
+    /// Semantic action for non-terminal 'idref'
     fn idref(&mut self, _arg: &Idref<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 32:
-    ///
-    /// id: <0>"[a-zA-Z_][a-zA-Z0-9_]*";
-    ///
+    /// Semantic action for non-terminal 'id'
     fn id(&mut self, _arg: &Id<'t>) -> Result<()> {
         Ok(())
     }
