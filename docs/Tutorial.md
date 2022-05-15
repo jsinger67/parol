@@ -2,11 +2,12 @@
 
 > This tutorial is still under construction!
 >
-> If you find any inconsistencies or bugs, if you have questions or suggestions feel free to create
-an issue against it or contribute to our [discussions](https://github.com/jsinger67/parol/discussions).
+> If you find any inconsistencies, typos or bugs, if you have questions or suggestions feel free to
+create an issue against it or contribute to our [discussions](https://github.com/jsinger67/parol/discussions).
 >
-> The old tutorial is moved to [TutorialOld.md](./TutorialOld.md). It is still useful and
-explains the approaches that are now superseded by the new auto-generation related ones.
+> The old tutorial can be found here [Old Tutorial](./TutorialOld.md). It is still useful and
+explains the approaches that are now superseded by the new auto-generation related ones, but which
+are still applicable. Also the old tutorial explains the grammar transformation `parol` applies.
 
 This tutorial will help new users to get quickly familiar with the tool `parol`.
 To get something useful we need a goal that is not too complicated but covers the most steps to be
@@ -37,7 +38,7 @@ Change your working directory to where the new project should be created in a su
 parol new --bin --path ./basic
 ```
 
-Then change into the new project folder and start the initial build. Here parol is already
+Then change into the new project folder and start the initial build. Here `parol` is already
 generating two files from the initial grammar definition.
 
 ```shell
@@ -88,18 +89,18 @@ We are more interested in the parts that are specific for a `parol` project.
 
 ### The grammar description file `basic.par`
 
-This file is the initial grammar description file that parol has created for us.
+This file is the initial grammar description file that `parol` has created for us.
 Our grammar will be developed here later on.
 
 ### The expanded grammar description file `basic-exp.par`
 
-This file was derived from the `basic.par` by parol. It is actually a equivalent transformation of
+This file was derived from the `basic.par` by `parol`. It is actually an equivalent transformation of
 our original grammar definition. This transformation is optimized for LL parsing. Normally we seldom
 need to look at it.
 
 ### The build script `build.rs`
 
-This file contains the build instructions for parol to generate the necessary output files from the
+This file contains the build instructions for `parol` to generate the necessary output files from the
 file `basic.par` during cargo build.
 
 ### The main module `src/main.rs`
@@ -109,13 +110,13 @@ that was given as command line argument. We will provide our basic files here la
 
 ### The parser module `src/basic_parser.rs`
 
-This is the generated parser module. Actually it contains data the LLKParser from the
-`parol_runtime` crate is initialized with. We actually don't need to understand all the internals of
+This is the generated parser module we never change manually. It contains data the LL(k) parser from
+the `parol_runtime` crate is initialized with. We actually don't need to understand the internals of
 it.
 
 ### The module with the grammar trait `src/basic_grammar_trait.rs`
 
-This is also a generated file that receives a special-made trait `BasicGrammarTrait` whit default
+This is also a generated file that receives a special-made trait `BasicGrammarTrait` with default
 implementations of our semantic actions. We will later look into it in more detail.
 
 ### The grammar implementation module `src/basic_grammar.rs`
@@ -139,12 +140,12 @@ We will support the following language elements:
   * GOTO
   * Assignments
 * Expressions
-  * Arithmetic expressions with Addition, Subtraction, Multiplication and Division as well as using
+  * Arithmetic expressions with addition, subtraction, multiplication and division as well as using
   parenthesis
   * Comparison expressions
   * Logical expressions
 * BASIC commands
-  * PRINT/?
+  * PRINT or ?
   * END
 
 ### The structure of a BASIC program
@@ -158,7 +159,7 @@ Basic  : { Line }
        ;
 ```
 
-In turn a line is a list of statements:
+In turn a line is a list of statements separated by colons:
 
 ```ebnf
 Line   : LineNumber Statement { ":" Statement } EndOfLine
@@ -238,7 +239,7 @@ No parse result
 Wow, very impressive! We can parse BASIC just out of the box only by defining some lines in the
 `basic.par` grammar description. No code had to be written by us until now.
 
-Here you can see one of the principles in parol. Grammar definition and grammar processing are kept
+Here you can see one of the principles in `parol`. Grammar definition and grammar processing are kept
 separate to be able to develop both sides independently of each other.
 
 Also `parol` works by default as acceptor, i.e. if you don't do any language processing, we can
@@ -297,7 +298,10 @@ But before we go on we should have a look at some details I previously didn't ex
 In contrast to the initial grammar proposal I gave first, I changed a detail in the grammar
 description.
 
-I moved the `EndOfLine` symbol from the `Line` production to the `Basic` production.
+First I changed the `Basic` so that it must contain at least one line. An empty basic program is no
+valid program now.
+
+Then I moved the `EndOfLine` symbol from the `Line` production to the `Basic` production.
 This decision I made to have the new line handling in one single place. A new line in the wrong
 place of the grammar can screw it up literally.
 
@@ -637,8 +641,8 @@ ways to handle such conflicts.
     groups that are called scanner states. And we then switch the current scanner state in our
     grammar.
 
-So we have to introduce a special scanner state `Expr` (for expression) here. Add these line right
-before the %% mark in `basic.par`.
+So we have to introduce a special scanner state `Expr` (for expression) here. Please, add this line
+right before the `%%` mark in `basic.par`.
 
 ```ebnf
 %scanner Expr { %auto_newline_off }
@@ -659,7 +663,7 @@ Integer : <Expr>"([0-9] *)+"
 ```
 
 Also we need a new scanner state for the comment terminal because this would otherwise match pretty
-much everything. Add this line after the scanner state `Expr`.
+much everything. Add this line after the scanner state `Expr` and before the `%%` mark.
 
 ```ebnf
 %scanner Cmnt { %auto_newline_off }
@@ -1158,28 +1162,153 @@ unique and useful properties of `parol`. One can actually do rapid prototyping o
 Anyhow, eventually we need to do some grammar processing to have more than an acceptor for a
 language.
 
-### Understand the data structures generated for our grammar
+### Where our implementation starts
 
-All the traits and types parol generated for us and which we need further on can be found in the
+All the traits and types `parol` generated for us and which we need further on can be found in the
 `src/basic_grammar_traits.rs`.
 
 First we start at the beginning of this file and find the trait `BasicGrammarTrait`. It contains at
-the top an `init` function. This function is called by the parser before parsing starts an conveys
-the file name of the input to us. We typically use this for error messages.
-After the `init` function follow functions for each non-terminal of your language. All these
-functions have default implementations to enable us to skip them in our implementation.
-To have an idea how we use this trait please look into the `src/basic_grammar.rs`. Near the end of
-this file you find that we implement the `BasicGrammarTrait` for our `BasicGrammar` that will hold
-our basic interpreter.
+the top an `init` function. This function is called by the parser before parsing starts and it
+conveys the file name of the input to us. We typically use this for error messages.
+We implement this function for our `BasicGrammar` item, more precisely in out implementation of the
+`BasicGrammarTrait` for it. Copy it into the
 
-Back to the non-terminal functions. The parser or better a special adapter layer will call them any
-time a non-terminal was parsed completely.
+```rust
+impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {}
+```
+
+block at the end of the `src/basic_grammar.rs`. We will capture the file name the init function is
+called with in a member of `BasicGrammar`. Please, add the member `file_name` now:
+
+```rust
+#[derive(Debug, Default)]
+pub struct BasicGrammar<'t> {
+    // ...
+    file_name: PathBuf,
+    // ...
+    phantom: PhantomData<&'t str>, // Just to hold the lifetime generated by parol
+}
+```
+
+Then we change the init function like this:
+
+```rust
+    fn init(&mut self, file_name: &Path) {
+        self.file_name = file_name.into();
+    }
+```
+
+In this impl block we will add our Basic interpreter functionality.
+
+No please switch back to the file `src/basic_grammar_traits.rs`. Further on in the
+`BasicGrammarTrait` and after the `init` function follow functions for each non-terminal of our
+language. All these functions have default implementations to enable us to skip them in our
+implementation.
+
+The parser or better a special adapter layer will call them any time a non-terminal was parsed
+completely.
 
 This means we can chose those non-terminals we are interested in to build appropriate actions on
 them.
 Because we are lazy we chose only one non-terminal, the start symbol, for our implementation. Is
 this sufficient? Yes, because the function for the start non-terminal is called, like any
 non-terminal function, when the non-terminal is completely parsed. The start symbol is completely
-parsed exactly then when the complete input is parsed.
+parsed exactly then when the complete input is parsed. So effectively we implement a single semantic
+action on the completely parsed input.
 
 The start symbol of our Basic grammar is the symbol `Basic`. See `basic.par` for this detail.
+
+So please copy the default implementation of the `fn basic` our of the `src/basic_grammar_traits.rs`
+into the `impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t>` block right after the `init` function:
+
+```rust
+impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
+    fn init(&mut self, file_name: &Path) {
+        self.file_name = file_name.into();
+    }
+
+    /// Semantic action for non-terminal 'Basic'
+    fn basic(&mut self, basic: &Basic<'t>) -> Result<()> {
+        Ok(())
+    }
+}
+```
+
+### Understand the data structures generated for our grammar
+
+As I mentioned above the semantic action `basic` is called at the end of the parse process an its
+argument `basic` contains the complete basic program in some kind of data structure.
+
+The interesting thing is how this structure is formed. And indeed `parol` has analyzed our Basic
+grammar and created all data structures accordingly.
+So all `parol` needs is a grammar description to be able to create fitting data types for it.
+
+Let's have a look at the type `Basic<'t>`. You can find it in the file `src/basic_grammar_traits.rs`.
+
+```rust
+///
+/// Type derived for non-terminal Basic
+///
+pub enum Basic<'t> {
+    Basic0(Basic0<'t>),
+    Basic1(Basic1<'t>),
+}
+```
+
+It is an enum with two variants. Why two variants? To understand this let's look at the inner types
+of both variants:
+
+```rust
+///
+/// Type derived for production 0
+///
+/// Basic: Line BasicList /* Vec */ BasicSuffix0;
+///
+pub struct Basic0<'t> {
+    pub line: Box<Line<'t>>,
+    pub basic_list: Vec<BasicList<'t>>,
+    pub basic_suffix0: Box<BasicSuffix0<'t>>,
+}
+
+///
+/// Type derived for production 1
+///
+/// Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
+///
+pub struct Basic1<'t> {
+    pub end_of_line: Box<EndOfLine<'t>>,
+    pub line: Box<Line<'t>>,
+    pub basic_list: Vec<BasicList<'t>>,
+    pub basic_suffix: Box<BasicSuffix<'t>>,
+}
+```
+
+Also we need to look at the expanded grammar `basic-exp.par` the first time. Especially at the
+productions 0 and 1.
+
+```ebnf
+Basic: Line BasicList /* Vec */ BasicSuffix0;
+Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
+```
+
+The reason why we have two enum variants here is that the grammar transformation of our original
+production
+
+```ebnf
+Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine];
+```
+
+has created two alternations for then non-terminal `Basic`.
+
+Both structures `Basic0` and `Basic1` can be regarded as variations of our original production and
+they only differ in the presence or absence of the `EndOfLine` non-terminal at the beginning. The
+rest is structural equivalent.
+
+>One thing is noticeable in the structures `Basic0` and `Basic1`. Members that constitute other
+non-terminals are wrapped in `Box`es. This is necessary due to the recursive nature of each grammar.
+If we used members that are non-terminals directly in our structures we'll soon get error messages
+from the Rust compiler complaining about infinitive type sizes. If you see `Box`es in generated
+structures you can easily recognize them as data types which are generated for non-terminals.
+>
+>The same holds for `Vec`s. But they have another additional semantic and, you guess it, they
+represent repetitions or collections of other grammar items.
