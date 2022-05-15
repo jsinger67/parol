@@ -71,7 +71,7 @@ pub fn main(args: &Args) -> Result<()> {
 }
 
 const DEPENDENCIES: &[&[&str]] = &[
-    &["add", "derive_builder", "--vers=0.11.1"],
+    &["add", "derive_builder", "--vers=^0.11"],
     &["add", "env_logger", "--vers=0.9.0"],
     &["add", "function_name", "--vers=0.3.0"],
     &["add", "id_tree", "--vers=^1.8"],
@@ -80,7 +80,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     &["add", "miette", "--vers=^4.0", "--features", "fancy"],
     &["add", "parol_runtime", "--vers=0.5.9"],
     &["add", "thiserror", "--vers=^1.0"],
-    &["add", "parol", "--build", "--vers=^0.8.2"],
+    &["add", "parol", "--build", concat!("--vers=^", env!("CARGO_PKG_VERSION"))],
 ];
 
 fn apply_cargo(args: &Args) -> Result<()> {
