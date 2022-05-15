@@ -445,10 +445,7 @@ impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
         self.file_name = file_name.into();
     }
 
-    /// Semantic action for user production 0:
-    ///
-    /// Basic: [EndOfLine] Line {EndOfLine Line} [EndOfLine];
-    ///
+    /// Semantic action for non-terminal 'Basic'
     fn basic(&mut self, basic: &Basic<'t>) -> Result<()> {
         self.process_basic(basic)
     }
