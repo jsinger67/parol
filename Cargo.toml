@@ -1,6 +1,6 @@
 [package]
 name = "json_parser_auto"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2018"
 build = "build.rs"
 
@@ -8,14 +8,15 @@ build = "build.rs"
 env_logger = "0.9.0"
 id_tree = "^1.8"
 lazy_static = "^1.4"
-log = "0.4.14"
+log = "0.4.17"
 miette = { version = "^4.0", features = ["fancy"] }
 parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
 thiserror = "^1.0"
-derive_builder = "0.11.1"
+derive_builder = "^0.11"
+function_name = "0.3.0"
 
 [build-dependencies]
-parol = "0.6.1"
+parol = "^0.8.3"
 
 [profile.release]
 debug = true

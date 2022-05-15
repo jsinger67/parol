@@ -18,58 +18,37 @@ use std::path::{Path, PathBuf};
 pub trait JsonGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
-    /// Semantic action for user production 0:
-    ///
-    /// Json: Value;
-    ///
+    /// Semantic action for non-terminal 'Json'
     fn json(&mut self, _arg: &Json<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 1:
-    ///
-    /// Object: <0>"\{" Pair {<0>"," Pair} <0>"\}" | <0>"\{" <0>"\}";
-    ///
+    /// Semantic action for non-terminal 'Object'
     fn object(&mut self, _arg: &Object<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 2:
-    ///
-    /// Pair: String <0>":" Value;
-    ///
+    /// Semantic action for non-terminal 'Pair'
     fn pair(&mut self, _arg: &Pair<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 3:
-    ///
-    /// Array: <0>"\[" Value {<0>"," Value} <0>"\]" | <0>"\[" <0>"\]";
-    ///
+    /// Semantic action for non-terminal 'Array'
     fn array(&mut self, _arg: &Array<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 4:
-    ///
-    /// Value: String | Number | Object | Array | <0>"true" | <0>"false" | <0>"null";
-    ///
+    /// Semantic action for non-terminal 'Value'
     fn value(&mut self, _arg: &Value<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 5:
-    ///
-    /// String: <0>"\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
-    ///
+    /// Semantic action for non-terminal 'String'
     fn string(&mut self, _arg: &String<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for user production 6:
-    ///
-    /// Number: <0>"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
-    ///
+    /// Semantic action for non-terminal 'Number'
     fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
@@ -87,10 +66,10 @@ pub trait JsonGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ObjectSuffix2<'t> {
-    pub pair_0: Box<Pair<'t>>,
-    pub object_list_1: Vec<ObjectList<'t>>,
-    pub r_brace_2: Token<'t>, /* \} */
+pub struct ObjectSuffix0<'t> {
+    pub pair: Box<Pair<'t>>,
+    pub object_list: Vec<ObjectList<'t>>,
+    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
@@ -100,8 +79,8 @@ pub struct ObjectSuffix2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ObjectSuffix3<'t> {
-    pub r_brace_0: Token<'t>, /* \} */
+pub struct ObjectSuffix1<'t> {
+    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
@@ -111,10 +90,10 @@ pub struct ObjectSuffix3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ArraySuffix8<'t> {
-    pub value_0: Box<Value<'t>>,
-    pub array_list_1: Vec<ArrayList<'t>>,
-    pub r_bracket_2: Token<'t>, /* \] */
+pub struct ArraySuffix0<'t> {
+    pub value: Box<Value<'t>>,
+    pub array_list: Vec<ArrayList<'t>>,
+    pub r_bracket: Token<'t>, /* \] */
 }
 
 ///
@@ -124,8 +103,8 @@ pub struct ArraySuffix8<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ArraySuffix9<'t> {
-    pub r_bracket_0: Token<'t>, /* \] */
+pub struct ArraySuffix1<'t> {
+    pub r_bracket: Token<'t>, /* \] */
 }
 
 ///
@@ -135,8 +114,8 @@ pub struct ArraySuffix9<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value12<'t> {
-    pub string_0: Box<String<'t>>,
+pub struct Value0<'t> {
+    pub string: Box<String<'t>>,
 }
 
 ///
@@ -146,8 +125,8 @@ pub struct Value12<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value13<'t> {
-    pub number_0: Box<Number<'t>>,
+pub struct Value1<'t> {
+    pub number: Box<Number<'t>>,
 }
 
 ///
@@ -157,8 +136,8 @@ pub struct Value13<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value14<'t> {
-    pub object_0: Box<Object<'t>>,
+pub struct Value2<'t> {
+    pub object: Box<Object<'t>>,
 }
 
 ///
@@ -168,8 +147,8 @@ pub struct Value14<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value15<'t> {
-    pub array_0: Box<Array<'t>>,
+pub struct Value3<'t> {
+    pub array: Box<Array<'t>>,
 }
 
 ///
@@ -179,8 +158,8 @@ pub struct Value15<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value16<'t> {
-    pub r#true_0: Token<'t>, /* true */
+pub struct Value4<'t> {
+    pub r#true: Token<'t>, /* true */
 }
 
 ///
@@ -190,8 +169,8 @@ pub struct Value16<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value17<'t> {
-    pub r#false_0: Token<'t>, /* false */
+pub struct Value5<'t> {
+    pub r#false: Token<'t>, /* false */
 }
 
 ///
@@ -201,8 +180,8 @@ pub struct Value17<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value18<'t> {
-    pub null_0: Token<'t>, /* null */
+pub struct Value6<'t> {
+    pub null: Token<'t>, /* null */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -216,8 +195,8 @@ pub struct Value18<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Array<'t> {
-    pub l_bracket_0: Token<'t>, /* \[ */
-    pub array_suffix_1: Box<ArraySuffix<'t>>,
+    pub l_bracket: Token<'t>, /* \[ */
+    pub array_suffix: Box<ArraySuffix<'t>>,
 }
 
 ///
@@ -226,8 +205,8 @@ pub struct Array<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArrayList<'t> {
-    pub comma_0: Token<'t>, /* , */
-    pub value_1: Box<Value<'t>>,
+    pub comma: Token<'t>, /* , */
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -236,8 +215,8 @@ pub struct ArrayList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ArraySuffix<'t> {
-    ArraySuffix8(ArraySuffix8<'t>),
-    ArraySuffix9(ArraySuffix9<'t>),
+    ArraySuffix0(ArraySuffix0<'t>),
+    ArraySuffix1(ArraySuffix1<'t>),
 }
 
 ///
@@ -246,7 +225,7 @@ pub enum ArraySuffix<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Json<'t> {
-    pub value_0: Box<Value<'t>>,
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -255,7 +234,7 @@ pub struct Json<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Number<'t> {
-    pub number_0: Token<'t>, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
+    pub number: Token<'t>, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
 }
 
 ///
@@ -264,8 +243,8 @@ pub struct Number<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Object<'t> {
-    pub l_brace_0: Token<'t>, /* \{ */
-    pub object_suffix_1: Box<ObjectSuffix<'t>>,
+    pub l_brace: Token<'t>, /* \{ */
+    pub object_suffix: Box<ObjectSuffix<'t>>,
 }
 
 ///
@@ -274,8 +253,8 @@ pub struct Object<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectList<'t> {
-    pub comma_0: Token<'t>, /* , */
-    pub pair_1: Box<Pair<'t>>,
+    pub comma: Token<'t>, /* , */
+    pub pair: Box<Pair<'t>>,
 }
 
 ///
@@ -284,8 +263,8 @@ pub struct ObjectList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ObjectSuffix<'t> {
-    ObjectSuffix2(ObjectSuffix2<'t>),
-    ObjectSuffix3(ObjectSuffix3<'t>),
+    ObjectSuffix0(ObjectSuffix0<'t>),
+    ObjectSuffix1(ObjectSuffix1<'t>),
 }
 
 ///
@@ -294,9 +273,9 @@ pub enum ObjectSuffix<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Pair<'t> {
-    pub string_0: Box<String<'t>>,
-    pub colon_1: Token<'t>, /* : */
-    pub value_2: Box<Value<'t>>,
+    pub string: Box<String<'t>>,
+    pub colon: Token<'t>, /* : */
+    pub value: Box<Value<'t>>,
 }
 
 ///
@@ -305,7 +284,7 @@ pub struct Pair<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String<'t> {
-    pub string_0: Token<'t>, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
+    pub string: Token<'t>, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
 }
 
 ///
@@ -314,13 +293,13 @@ pub struct String<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Value<'t> {
-    Value12(Value12<'t>),
-    Value13(Value13<'t>),
-    Value14(Value14<'t>),
-    Value15(Value15<'t>),
-    Value16(Value16<'t>),
-    Value17(Value17<'t>),
-    Value18(Value18<'t>),
+    Value0(Value0<'t>),
+    Value1(Value1<'t>),
+    Value2(Value2<'t>),
+    Value3(Value3<'t>),
+    Value4(Value4<'t>),
+    Value5(Value5<'t>),
+    Value6(Value6<'t>),
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -375,11 +354,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         }
     }
 
+    #[allow(dead_code)]
     fn push(&mut self, item: ASTType<'t>, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
+    #[allow(dead_code)]
     fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
@@ -412,25 +393,26 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Json: Value;
     ///
-    fn json_0(
+    #[named]
+    fn json(
         &mut self,
-        _value_0: &ParseTreeStackEntry<'t>,
+        _value: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "json_0";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_0 = if let Some(ASTType::Value(value_0)) = self.pop(context) {
-            value_0
+        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
+            value
         } else {
             return Err(miette!("{}: Expecting ASTType::Value", context));
         };
-        let json_0_built = JsonBuilder::default()
-            .value_0(Box::new(value_0))
+        let json_built = JsonBuilder::default()
+            .value(Box::new(value))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.json(&json_0_built)?;
-        self.push(ASTType::Json(json_0_built), context);
+        self.user_grammar.json(&json_built)?;
+        self.push(ASTType::Json(json_built), context);
         Ok(())
     }
 
@@ -438,29 +420,29 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Object: "\{" ObjectSuffix;
     ///
-    fn object_1(
+    #[named]
+    fn object(
         &mut self,
-        l_brace_0: &ParseTreeStackEntry<'t>,
-        _object_suffix_1: &ParseTreeStackEntry<'t>,
+        l_brace: &ParseTreeStackEntry<'t>,
+        _object_suffix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "object_1";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace_0 = *l_brace_0.token(parse_tree)?;
-        let object_suffix_1 =
-            if let Some(ASTType::ObjectSuffix(object_suffix_1)) = self.pop(context) {
-                object_suffix_1
-            } else {
-                return Err(miette!("{}: Expecting ASTType::ObjectSuffix", context));
-            };
-        let object_1_built = ObjectBuilder::default()
-            .l_brace_0(l_brace_0)
-            .object_suffix_1(Box::new(object_suffix_1))
+        let l_brace = *l_brace.token(parse_tree)?;
+        let object_suffix = if let Some(ASTType::ObjectSuffix(object_suffix)) = self.pop(context) {
+            object_suffix
+        } else {
+            return Err(miette!("{}: Expecting ASTType::ObjectSuffix", context));
+        };
+        let object_built = ObjectBuilder::default()
+            .l_brace(l_brace)
+            .object_suffix(Box::new(object_suffix))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.object(&object_1_built)?;
-        self.push(ASTType::Object(object_1_built), context);
+        self.user_grammar.object(&object_built)?;
+        self.push(ASTType::Object(object_built), context);
         Ok(())
     }
 
@@ -468,36 +450,36 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
     ///
-    fn object_suffix_2(
+    #[named]
+    fn object_suffix_0(
         &mut self,
-        _pair_0: &ParseTreeStackEntry<'t>,
-        _object_list_1: &ParseTreeStackEntry<'t>,
-        r_brace_2: &ParseTreeStackEntry<'t>,
+        _pair: &ParseTreeStackEntry<'t>,
+        _object_list: &ParseTreeStackEntry<'t>,
+        r_brace: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "object_suffix_2";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_brace_2 = *r_brace_2.token(parse_tree)?;
-        let object_list_1 = if let Some(ASTType::ObjectList(mut object_list_1)) = self.pop(context)
-        {
-            object_list_1.reverse();
-            object_list_1
+        let r_brace = *r_brace.token(parse_tree)?;
+        let object_list = if let Some(ASTType::ObjectList(mut object_list)) = self.pop(context) {
+            object_list.reverse();
+            object_list
         } else {
             return Err(miette!("{}: Expecting ASTType::ObjectList", context));
         };
-        let pair_0 = if let Some(ASTType::Pair(pair_0)) = self.pop(context) {
-            pair_0
+        let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
+            pair
         } else {
             return Err(miette!("{}: Expecting ASTType::Pair", context));
         };
-        let object_suffix_2_built = ObjectSuffix2Builder::default()
-            .pair_0(Box::new(pair_0))
-            .object_list_1(object_list_1)
-            .r_brace_2(r_brace_2)
+        let object_suffix_0_built = ObjectSuffix0Builder::default()
+            .pair(Box::new(pair))
+            .object_list(object_list)
+            .r_brace(r_brace)
             .build()
             .into_diagnostic()?;
-        let object_suffix_2_built = ObjectSuffix::ObjectSuffix2(object_suffix_2_built);
-        self.push(ASTType::ObjectSuffix(object_suffix_2_built), context);
+        let object_suffix_0_built = ObjectSuffix::ObjectSuffix0(object_suffix_0_built);
+        self.push(ASTType::ObjectSuffix(object_suffix_0_built), context);
         Ok(())
     }
 
@@ -505,20 +487,21 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectSuffix: "\}";
     ///
-    fn object_suffix_3(
+    #[named]
+    fn object_suffix_1(
         &mut self,
-        r_brace_0: &ParseTreeStackEntry<'t>,
+        r_brace: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "object_suffix_3";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_brace_0 = *r_brace_0.token(parse_tree)?;
-        let object_suffix_3_built = ObjectSuffix3Builder::default()
-            .r_brace_0(r_brace_0)
+        let r_brace = *r_brace.token(parse_tree)?;
+        let object_suffix_1_built = ObjectSuffix1Builder::default()
+            .r_brace(r_brace)
             .build()
             .into_diagnostic()?;
-        let object_suffix_3_built = ObjectSuffix::ObjectSuffix3(object_suffix_3_built);
-        self.push(ASTType::ObjectSuffix(object_suffix_3_built), context);
+        let object_suffix_1_built = ObjectSuffix::ObjectSuffix1(object_suffix_1_built);
+        self.push(ASTType::ObjectSuffix(object_suffix_1_built), context);
         Ok(())
     }
 
@@ -526,35 +509,35 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectList: "," Pair ObjectList; // Vec<T>::Push
     ///
-    fn object_list_4(
+    #[named]
+    fn object_list_0(
         &mut self,
-        comma_0: &ParseTreeStackEntry<'t>,
-        _pair_1: &ParseTreeStackEntry<'t>,
-        _object_list_2: &ParseTreeStackEntry<'t>,
+        comma: &ParseTreeStackEntry<'t>,
+        _pair: &ParseTreeStackEntry<'t>,
+        _object_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "object_list_4";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma_0 = *comma_0.token(parse_tree)?;
-        let mut object_list_2 = if let Some(ASTType::ObjectList(object_list_2)) = self.pop(context)
-        {
-            object_list_2
+        let comma = *comma.token(parse_tree)?;
+        let mut object_list = if let Some(ASTType::ObjectList(object_list)) = self.pop(context) {
+            object_list
         } else {
             return Err(miette!("{}: Expecting ASTType::ObjectList", context));
         };
-        let pair_1 = if let Some(ASTType::Pair(pair_1)) = self.pop(context) {
-            pair_1
+        let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
+            pair
         } else {
             return Err(miette!("{}: Expecting ASTType::Pair", context));
         };
-        let object_list_4_built = ObjectListBuilder::default()
-            .pair_1(Box::new(pair_1))
-            .comma_0(comma_0)
+        let object_list_0_built = ObjectListBuilder::default()
+            .pair(Box::new(pair))
+            .comma(comma)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        object_list_2.push(object_list_4_built);
-        self.push(ASTType::ObjectList(object_list_2), context);
+        object_list.push(object_list_0_built);
+        self.push(ASTType::ObjectList(object_list), context);
         Ok(())
     }
 
@@ -562,11 +545,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectList: ; // Vec<T>::New
     ///
-    fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "object_list_5";
+    #[named]
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_list_5_built = Vec::new();
-        self.push(ASTType::ObjectList(object_list_5_built), context);
+        let object_list_1_built = Vec::new();
+        self.push(ASTType::ObjectList(object_list_1_built), context);
         Ok(())
     }
 
@@ -574,35 +558,36 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Pair: String ":" Value;
     ///
-    fn pair_6(
+    #[named]
+    fn pair(
         &mut self,
-        _string_0: &ParseTreeStackEntry<'t>,
-        colon_1: &ParseTreeStackEntry<'t>,
-        _value_2: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        colon: &ParseTreeStackEntry<'t>,
+        _value: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "pair_6";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_1 = *colon_1.token(parse_tree)?;
-        let value_2 = if let Some(ASTType::Value(value_2)) = self.pop(context) {
-            value_2
+        let colon = *colon.token(parse_tree)?;
+        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
+            value
         } else {
             return Err(miette!("{}: Expecting ASTType::Value", context));
         };
-        let string_0 = if let Some(ASTType::String(string_0)) = self.pop(context) {
-            string_0
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
         } else {
             return Err(miette!("{}: Expecting ASTType::String", context));
         };
-        let pair_6_built = PairBuilder::default()
-            .string_0(Box::new(string_0))
-            .colon_1(colon_1)
-            .value_2(Box::new(value_2))
+        let pair_built = PairBuilder::default()
+            .string(Box::new(string))
+            .colon(colon)
+            .value(Box::new(value))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.pair(&pair_6_built)?;
-        self.push(ASTType::Pair(pair_6_built), context);
+        self.user_grammar.pair(&pair_built)?;
+        self.push(ASTType::Pair(pair_built), context);
         Ok(())
     }
 
@@ -610,28 +595,29 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Array: "\[" ArraySuffix;
     ///
-    fn array_7(
+    #[named]
+    fn array(
         &mut self,
-        l_bracket_0: &ParseTreeStackEntry<'t>,
-        _array_suffix_1: &ParseTreeStackEntry<'t>,
+        l_bracket: &ParseTreeStackEntry<'t>,
+        _array_suffix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "array_7";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket_0 = *l_bracket_0.token(parse_tree)?;
-        let array_suffix_1 = if let Some(ASTType::ArraySuffix(array_suffix_1)) = self.pop(context) {
-            array_suffix_1
+        let l_bracket = *l_bracket.token(parse_tree)?;
+        let array_suffix = if let Some(ASTType::ArraySuffix(array_suffix)) = self.pop(context) {
+            array_suffix
         } else {
             return Err(miette!("{}: Expecting ASTType::ArraySuffix", context));
         };
-        let array_7_built = ArrayBuilder::default()
-            .l_bracket_0(l_bracket_0)
-            .array_suffix_1(Box::new(array_suffix_1))
+        let array_built = ArrayBuilder::default()
+            .l_bracket(l_bracket)
+            .array_suffix(Box::new(array_suffix))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.array(&array_7_built)?;
-        self.push(ASTType::Array(array_7_built), context);
+        self.user_grammar.array(&array_built)?;
+        self.push(ASTType::Array(array_built), context);
         Ok(())
     }
 
@@ -639,35 +625,36 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArraySuffix: Value ArrayList /* Vec */ "\]";
     ///
-    fn array_suffix_8(
+    #[named]
+    fn array_suffix_0(
         &mut self,
-        _value_0: &ParseTreeStackEntry<'t>,
-        _array_list_1: &ParseTreeStackEntry<'t>,
-        r_bracket_2: &ParseTreeStackEntry<'t>,
+        _value: &ParseTreeStackEntry<'t>,
+        _array_list: &ParseTreeStackEntry<'t>,
+        r_bracket: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "array_suffix_8";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_bracket_2 = *r_bracket_2.token(parse_tree)?;
-        let array_list_1 = if let Some(ASTType::ArrayList(mut array_list_1)) = self.pop(context) {
-            array_list_1.reverse();
-            array_list_1
+        let r_bracket = *r_bracket.token(parse_tree)?;
+        let array_list = if let Some(ASTType::ArrayList(mut array_list)) = self.pop(context) {
+            array_list.reverse();
+            array_list
         } else {
             return Err(miette!("{}: Expecting ASTType::ArrayList", context));
         };
-        let value_0 = if let Some(ASTType::Value(value_0)) = self.pop(context) {
-            value_0
+        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
+            value
         } else {
             return Err(miette!("{}: Expecting ASTType::Value", context));
         };
-        let array_suffix_8_built = ArraySuffix8Builder::default()
-            .value_0(Box::new(value_0))
-            .array_list_1(array_list_1)
-            .r_bracket_2(r_bracket_2)
+        let array_suffix_0_built = ArraySuffix0Builder::default()
+            .value(Box::new(value))
+            .array_list(array_list)
+            .r_bracket(r_bracket)
             .build()
             .into_diagnostic()?;
-        let array_suffix_8_built = ArraySuffix::ArraySuffix8(array_suffix_8_built);
-        self.push(ASTType::ArraySuffix(array_suffix_8_built), context);
+        let array_suffix_0_built = ArraySuffix::ArraySuffix0(array_suffix_0_built);
+        self.push(ASTType::ArraySuffix(array_suffix_0_built), context);
         Ok(())
     }
 
@@ -675,20 +662,21 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArraySuffix: "\]";
     ///
-    fn array_suffix_9(
+    #[named]
+    fn array_suffix_1(
         &mut self,
-        r_bracket_0: &ParseTreeStackEntry<'t>,
+        r_bracket: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "array_suffix_9";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_bracket_0 = *r_bracket_0.token(parse_tree)?;
-        let array_suffix_9_built = ArraySuffix9Builder::default()
-            .r_bracket_0(r_bracket_0)
+        let r_bracket = *r_bracket.token(parse_tree)?;
+        let array_suffix_1_built = ArraySuffix1Builder::default()
+            .r_bracket(r_bracket)
             .build()
             .into_diagnostic()?;
-        let array_suffix_9_built = ArraySuffix::ArraySuffix9(array_suffix_9_built);
-        self.push(ASTType::ArraySuffix(array_suffix_9_built), context);
+        let array_suffix_1_built = ArraySuffix::ArraySuffix1(array_suffix_1_built);
+        self.push(ASTType::ArraySuffix(array_suffix_1_built), context);
         Ok(())
     }
 
@@ -696,34 +684,35 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArrayList: "," Value ArrayList; // Vec<T>::Push
     ///
-    fn array_list_10(
+    #[named]
+    fn array_list_0(
         &mut self,
-        comma_0: &ParseTreeStackEntry<'t>,
-        _value_1: &ParseTreeStackEntry<'t>,
-        _array_list_2: &ParseTreeStackEntry<'t>,
+        comma: &ParseTreeStackEntry<'t>,
+        _value: &ParseTreeStackEntry<'t>,
+        _array_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "array_list_10";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma_0 = *comma_0.token(parse_tree)?;
-        let mut array_list_2 = if let Some(ASTType::ArrayList(array_list_2)) = self.pop(context) {
-            array_list_2
+        let comma = *comma.token(parse_tree)?;
+        let mut array_list = if let Some(ASTType::ArrayList(array_list)) = self.pop(context) {
+            array_list
         } else {
             return Err(miette!("{}: Expecting ASTType::ArrayList", context));
         };
-        let value_1 = if let Some(ASTType::Value(value_1)) = self.pop(context) {
-            value_1
+        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
+            value
         } else {
             return Err(miette!("{}: Expecting ASTType::Value", context));
         };
-        let array_list_10_built = ArrayListBuilder::default()
-            .value_1(Box::new(value_1))
-            .comma_0(comma_0)
+        let array_list_0_built = ArrayListBuilder::default()
+            .value(Box::new(value))
+            .comma(comma)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        array_list_2.push(array_list_10_built);
-        self.push(ASTType::ArrayList(array_list_2), context);
+        array_list.push(array_list_0_built);
+        self.push(ASTType::ArrayList(array_list), context);
         Ok(())
     }
 
@@ -731,11 +720,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArrayList: ; // Vec<T>::New
     ///
-    fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = "array_list_11";
+    #[named]
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_list_11_built = Vec::new();
-        self.push(ASTType::ArrayList(array_list_11_built), context);
+        let array_list_1_built = Vec::new();
+        self.push(ASTType::ArrayList(array_list_1_built), context);
         Ok(())
     }
 
@@ -743,26 +733,27 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: String;
     ///
-    fn value_12(
+    #[named]
+    fn value_0(
         &mut self,
-        _string_0: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_12";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string_0 = if let Some(ASTType::String(string_0)) = self.pop(context) {
-            string_0
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
         } else {
             return Err(miette!("{}: Expecting ASTType::String", context));
         };
-        let value_12_built = Value12Builder::default()
-            .string_0(Box::new(string_0))
+        let value_0_built = Value0Builder::default()
+            .string(Box::new(string))
             .build()
             .into_diagnostic()?;
-        let value_12_built = Value::Value12(value_12_built);
+        let value_0_built = Value::Value0(value_0_built);
         // Calling user action here
-        self.user_grammar.value(&value_12_built)?;
-        self.push(ASTType::Value(value_12_built), context);
+        self.user_grammar.value(&value_0_built)?;
+        self.push(ASTType::Value(value_0_built), context);
         Ok(())
     }
 
@@ -770,26 +761,27 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Number;
     ///
-    fn value_13(
+    #[named]
+    fn value_1(
         &mut self,
-        _number_0: &ParseTreeStackEntry<'t>,
+        _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_13";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number_0 = if let Some(ASTType::Number(number_0)) = self.pop(context) {
-            number_0
+        let number = if let Some(ASTType::Number(number)) = self.pop(context) {
+            number
         } else {
             return Err(miette!("{}: Expecting ASTType::Number", context));
         };
-        let value_13_built = Value13Builder::default()
-            .number_0(Box::new(number_0))
+        let value_1_built = Value1Builder::default()
+            .number(Box::new(number))
             .build()
             .into_diagnostic()?;
-        let value_13_built = Value::Value13(value_13_built);
+        let value_1_built = Value::Value1(value_1_built);
         // Calling user action here
-        self.user_grammar.value(&value_13_built)?;
-        self.push(ASTType::Value(value_13_built), context);
+        self.user_grammar.value(&value_1_built)?;
+        self.push(ASTType::Value(value_1_built), context);
         Ok(())
     }
 
@@ -797,26 +789,27 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Object;
     ///
-    fn value_14(
+    #[named]
+    fn value_2(
         &mut self,
-        _object_0: &ParseTreeStackEntry<'t>,
+        _object: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_14";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_0 = if let Some(ASTType::Object(object_0)) = self.pop(context) {
-            object_0
+        let object = if let Some(ASTType::Object(object)) = self.pop(context) {
+            object
         } else {
             return Err(miette!("{}: Expecting ASTType::Object", context));
         };
-        let value_14_built = Value14Builder::default()
-            .object_0(Box::new(object_0))
+        let value_2_built = Value2Builder::default()
+            .object(Box::new(object))
             .build()
             .into_diagnostic()?;
-        let value_14_built = Value::Value14(value_14_built);
+        let value_2_built = Value::Value2(value_2_built);
         // Calling user action here
-        self.user_grammar.value(&value_14_built)?;
-        self.push(ASTType::Value(value_14_built), context);
+        self.user_grammar.value(&value_2_built)?;
+        self.push(ASTType::Value(value_2_built), context);
         Ok(())
     }
 
@@ -824,26 +817,27 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Array;
     ///
-    fn value_15(
+    #[named]
+    fn value_3(
         &mut self,
-        _array_0: &ParseTreeStackEntry<'t>,
+        _array: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_15";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_0 = if let Some(ASTType::Array(array_0)) = self.pop(context) {
-            array_0
+        let array = if let Some(ASTType::Array(array)) = self.pop(context) {
+            array
         } else {
             return Err(miette!("{}: Expecting ASTType::Array", context));
         };
-        let value_15_built = Value15Builder::default()
-            .array_0(Box::new(array_0))
+        let value_3_built = Value3Builder::default()
+            .array(Box::new(array))
             .build()
             .into_diagnostic()?;
-        let value_15_built = Value::Value15(value_15_built);
+        let value_3_built = Value::Value3(value_3_built);
         // Calling user action here
-        self.user_grammar.value(&value_15_built)?;
-        self.push(ASTType::Value(value_15_built), context);
+        self.user_grammar.value(&value_3_built)?;
+        self.push(ASTType::Value(value_3_built), context);
         Ok(())
     }
 
@@ -851,22 +845,23 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "true";
     ///
-    fn value_16(
+    #[named]
+    fn value_4(
         &mut self,
-        r#true_0: &ParseTreeStackEntry<'t>,
+        r#true: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_16";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#true_0 = *r#true_0.token(parse_tree)?;
-        let value_16_built = Value16Builder::default()
-            .r#true_0(r#true_0)
+        let r#true = *r#true.token(parse_tree)?;
+        let value_4_built = Value4Builder::default()
+            .r#true(r#true)
             .build()
             .into_diagnostic()?;
-        let value_16_built = Value::Value16(value_16_built);
+        let value_4_built = Value::Value4(value_4_built);
         // Calling user action here
-        self.user_grammar.value(&value_16_built)?;
-        self.push(ASTType::Value(value_16_built), context);
+        self.user_grammar.value(&value_4_built)?;
+        self.push(ASTType::Value(value_4_built), context);
         Ok(())
     }
 
@@ -874,22 +869,23 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "false";
     ///
-    fn value_17(
+    #[named]
+    fn value_5(
         &mut self,
-        r#false_0: &ParseTreeStackEntry<'t>,
+        r#false: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_17";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#false_0 = *r#false_0.token(parse_tree)?;
-        let value_17_built = Value17Builder::default()
-            .r#false_0(r#false_0)
+        let r#false = *r#false.token(parse_tree)?;
+        let value_5_built = Value5Builder::default()
+            .r#false(r#false)
             .build()
             .into_diagnostic()?;
-        let value_17_built = Value::Value17(value_17_built);
+        let value_5_built = Value::Value5(value_5_built);
         // Calling user action here
-        self.user_grammar.value(&value_17_built)?;
-        self.push(ASTType::Value(value_17_built), context);
+        self.user_grammar.value(&value_5_built)?;
+        self.push(ASTType::Value(value_5_built), context);
         Ok(())
     }
 
@@ -897,22 +893,23 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "null";
     ///
-    fn value_18(
+    #[named]
+    fn value_6(
         &mut self,
-        null_0: &ParseTreeStackEntry<'t>,
+        null: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "value_18";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let null_0 = *null_0.token(parse_tree)?;
-        let value_18_built = Value18Builder::default()
-            .null_0(null_0)
+        let null = *null.token(parse_tree)?;
+        let value_6_built = Value6Builder::default()
+            .null(null)
             .build()
             .into_diagnostic()?;
-        let value_18_built = Value::Value18(value_18_built);
+        let value_6_built = Value::Value6(value_6_built);
         // Calling user action here
-        self.user_grammar.value(&value_18_built)?;
-        self.push(ASTType::Value(value_18_built), context);
+        self.user_grammar.value(&value_6_built)?;
+        self.push(ASTType::Value(value_6_built), context);
         Ok(())
     }
 
@@ -920,21 +917,22 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_19(
+    #[named]
+    fn string(
         &mut self,
-        string_0: &ParseTreeStackEntry<'t>,
+        string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "string_19";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string_0 = *string_0.token(parse_tree)?;
-        let string_19_built = StringBuilder::default()
-            .string_0(string_0)
+        let string = *string.token(parse_tree)?;
+        let string_built = StringBuilder::default()
+            .string(string)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.string(&string_19_built)?;
-        self.push(ASTType::String(string_19_built), context);
+        self.user_grammar.string(&string_built)?;
+        self.push(ASTType::String(string_built), context);
         Ok(())
     }
 
@@ -942,21 +940,22 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
-    fn number_20(
+    #[named]
+    fn number(
         &mut self,
-        number_0: &ParseTreeStackEntry<'t>,
+        number: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
-        let context = "number_20";
+        let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number_0 = *number_0.token(parse_tree)?;
-        let number_20_built = NumberBuilder::default()
-            .number_0(number_0)
+        let number = *number.token(parse_tree)?;
+        let number_built = NumberBuilder::default()
+            .number(number)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.number(&number_20_built)?;
-        self.push(ASTType::Number(number_20_built), context);
+        self.user_grammar.number(&number_built)?;
+        self.push(ASTType::Number(number_built), context);
         Ok(())
     }
 }
@@ -965,7 +964,7 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
+    /// It is used to transport necessary data from parser to user.
     ///
     fn init(&mut self, file_name: &Path) {
         self.file_name = file_name.to_owned();
@@ -982,27 +981,27 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.json_0(&children[0], parse_tree),
-            1 => self.object_1(&children[0], &children[1], parse_tree),
-            2 => self.object_suffix_2(&children[0], &children[1], &children[2], parse_tree),
-            3 => self.object_suffix_3(&children[0], parse_tree),
-            4 => self.object_list_4(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.object_list_5(parse_tree),
-            6 => self.pair_6(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.array_7(&children[0], &children[1], parse_tree),
-            8 => self.array_suffix_8(&children[0], &children[1], &children[2], parse_tree),
-            9 => self.array_suffix_9(&children[0], parse_tree),
-            10 => self.array_list_10(&children[0], &children[1], &children[2], parse_tree),
-            11 => self.array_list_11(parse_tree),
-            12 => self.value_12(&children[0], parse_tree),
-            13 => self.value_13(&children[0], parse_tree),
-            14 => self.value_14(&children[0], parse_tree),
-            15 => self.value_15(&children[0], parse_tree),
-            16 => self.value_16(&children[0], parse_tree),
-            17 => self.value_17(&children[0], parse_tree),
-            18 => self.value_18(&children[0], parse_tree),
-            19 => self.string_19(&children[0], parse_tree),
-            20 => self.number_20(&children[0], parse_tree),
+            0 => self.json(&children[0], parse_tree),
+            1 => self.object(&children[0], &children[1], parse_tree),
+            2 => self.object_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            3 => self.object_suffix_1(&children[0], parse_tree),
+            4 => self.object_list_0(&children[0], &children[1], &children[2], parse_tree),
+            5 => self.object_list_1(parse_tree),
+            6 => self.pair(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.array(&children[0], &children[1], parse_tree),
+            8 => self.array_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.array_suffix_1(&children[0], parse_tree),
+            10 => self.array_list_0(&children[0], &children[1], &children[2], parse_tree),
+            11 => self.array_list_1(parse_tree),
+            12 => self.value_0(&children[0], parse_tree),
+            13 => self.value_1(&children[0], parse_tree),
+            14 => self.value_2(&children[0], parse_tree),
+            15 => self.value_3(&children[0], parse_tree),
+            16 => self.value_4(&children[0], parse_tree),
+            17 => self.value_5(&children[0], parse_tree),
+            18 => self.value_6(&children[0], parse_tree),
+            19 => self.string(&children[0], parse_tree),
+            20 => self.number(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
