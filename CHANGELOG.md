@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.8.4-pre - Not release yet
+## v0.8.4-pre - Not released yet
 
 * Worked on tutorial
 * In `parol new` the referenced version of `parol` is taken from CARGO_PKG_VERSION environment
