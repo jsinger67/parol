@@ -6,9 +6,6 @@
 extern crate lazy_static;
 
 #[macro_use]
-extern crate serde_derive;
-
-#[macro_use]
 extern crate bart_derive;
 
 #[macro_use]
@@ -19,8 +16,6 @@ extern crate derive_builder;
 
 extern crate rand;
 extern crate rand_regex;
-extern crate serde;
-extern crate serde_json;
 
 #[cfg(feature = "build")]
 pub mod build;

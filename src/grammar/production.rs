@@ -22,7 +22,7 @@ pub type Rhs = Vec<Symbol>;
 ///
 /// Production type
 ///
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Pr(pub Symbol, pub Rhs, pub ProductionAttribute);
 
 impl Display for Pr {

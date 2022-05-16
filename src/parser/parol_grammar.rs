@@ -24,7 +24,7 @@ lazy_static! {
 ///
 /// [Factor] is part of the structure of the grammar representation
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Factor {
     /// A grouping
     Group(Alternations),
@@ -113,7 +113,7 @@ impl Factor {
 /// An Alternation is a sequence of factors.
 /// Valid operation on Alternation is "|".
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Alternation(pub Vec<Factor>, pub ProductionAttribute);
 
 impl Display for Alternation {
@@ -171,7 +171,7 @@ impl Alternation {
 ///
 /// [Alternations] is part of the structure of the grammar representation
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Alternations(pub Vec<Alternation>);
 
 impl Alternations {
@@ -210,7 +210,7 @@ impl Display for Alternations {
 ///
 /// [Production] is part of the structure of the grammar representation
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Production {
     /// Left-hand side non-terminal
     pub lhs: String,
@@ -233,7 +233,7 @@ impl Display for Production {
 ///
 /// [ParolGrammarItem] is part of the structure of the grammar representation
 ///
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub enum ParolGrammarItem {
     /// A production
     Prod(Production),
@@ -286,7 +286,7 @@ impl ParolGrammarItem {
 ///
 /// [ScannerConfig] is part of the structure of the grammar representation
 ///
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub struct ScannerConfig {
     /// Name of the Scanner State
     pub name: String,
@@ -329,7 +329,7 @@ impl Default for ScannerConfig {
 ///
 /// Data structure used to build up a parol::GrammarConfig during parsing.
 ///
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub struct ParolGrammar {
     /// The parsed items are pushed onto the item_stack.
     pub item_stack: Vec<ParolGrammarItem>,

@@ -10,7 +10,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 /// Configuration information for a scanner.
 /// Contains features like to optionally switch automatic handling off newlines off.
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ScannerConfig {
     ///
     /// The name of the scanner state taken from the grammar description

@@ -14,7 +14,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 ///
 /// A terminal symbol with different specificities
 ///
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Terminal {
     ///
     /// A physical terminal symbol with the scanner states it belongs to
@@ -133,7 +133,7 @@ impl TerminalMappings<Terminal> for Terminal {
 ///
 /// A grammar symbol with different specificities
 ///
-#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Symbol {
     ///
     /// Non-terminal symbol, Meta symbol of the grammar.

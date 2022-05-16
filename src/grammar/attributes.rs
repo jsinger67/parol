@@ -3,6 +3,10 @@
 //! transformation.
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 
+/// Id type for tracking of optionals during grammar transformation
+#[derive(Debug, Clone, Copy, Hash, Default, PartialEq, Eq, PartialOrd, Ord)]
+pub struct OptionalId(usize);
+
 /// Used to decorate an object's printed format
 pub trait Decorate<T, W>
 where
@@ -16,7 +20,7 @@ where
 ///
 /// Attributes applicable to a production or an alternation
 ///
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
     None,
@@ -59,7 +63,7 @@ where
 ///
 /// Attributes applicable to a grammar symbol
 ///
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
     None,
@@ -69,6 +73,12 @@ pub enum SymbolAttribute {
     /// If an argument with this attribute appears in the argument list of a semantic action
     /// this collection should be reversed.
     RepetitionAnchor,
+
+    /// 'Some case' of an Optional symbol
+    OptionalSome(OptionalId),
+
+    /// 'None case' of an Optional symbol
+    OptionalNone(OptionalId),
 }
 
 impl Display for SymbolAttribute {
@@ -76,6 +86,8 @@ impl Display for SymbolAttribute {
         match self {
             Self::None => Ok(()),
             Self::RepetitionAnchor => write!(f, "Vec<T>"),
+            Self::OptionalSome(id) => write!(f, "Opt({})", id.0),
+            Self::OptionalNone(id) => write!(f, "Opt({})", id.0),
         }
     }
 }
@@ -95,6 +107,8 @@ where
         match self {
             Self::None => out.write_fmt(format_args!("{}", decoratee)),
             Self::RepetitionAnchor => out.write_fmt(format_args!("{} /* Vec */", decoratee)),
+            Self::OptionalSome(_) => todo!(),
+            Self::OptionalNone(_) => todo!(),
         }
     }
 }

@@ -17,7 +17,7 @@ lazy_static! {
 ///
 /// WrapErr free grammar type
 ///
-#[derive(Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Cfg {
     /// Start symbol of the grammar
     pub st: String,
@@ -328,36 +328,4 @@ impl Index<&Pos> for Cfg {
 }
 
 #[cfg(test)]
-mod test {
-    use crate::{Cfg, Pr, Symbol};
-
-    #[test]
-    fn check_serialization() {
-        let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
-            .add_pr(Pr::new(
-                "X",
-                vec![
-                    Symbol::t("a", vec![0]),
-                    Symbol::n("Y"),
-                    Symbol::t("b", vec![0]),
-                    Symbol::n("Y"),
-                ],
-            ))
-            .add_pr(Pr::new(
-                "Y",
-                vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])],
-            ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
-            .add_pr(Pr::new(
-                "Z",
-                vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
-            ));
-
-        let serialized = serde_json::to_string(&g).unwrap();
-        println!("{}", serialized);
-        let g1: Cfg = serde_json::from_str(&serialized).unwrap();
-        assert_eq!(g, g1);
-    }
-}
+mod test {}

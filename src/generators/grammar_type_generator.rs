@@ -487,6 +487,8 @@ impl GrammarTypeInfo {
                 match a {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
+                    SymbolAttribute::OptionalSome(_) => todo!(),
+                    SymbolAttribute::OptionalNone(_) => todo!(),
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),

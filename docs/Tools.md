@@ -188,7 +188,3 @@ cargo install cargo-edit
 ## `productivity`
 
 Checks the given grammar for non-productive non-terminals.
-
-## `serialize`
-
-Serializes a grammar to json format. Seldom to apply.
