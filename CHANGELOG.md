@@ -20,6 +20,7 @@ But we try to mark incompatible changes with a new minor version.
 ## Branch optionals
 
 * Removed serialization support - no use case anymore
+* Removed some useless derives
 
 ## v0.8.4-pre - Not released yet
 

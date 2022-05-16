@@ -26,7 +26,7 @@ lazy_static! {
 ///
 /// Newly added feature is to optionally switch automatic handling off newlines off.
 ///
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone)]
 pub struct GrammarConfig {
     ///
     /// The actual context free grammar.
