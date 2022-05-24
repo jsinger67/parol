@@ -20,7 +20,7 @@ where
 ///
 /// Attributes applicable to a production or an alternation
 ///
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
     None,
@@ -63,7 +63,7 @@ where
 ///
 /// Attributes applicable to a grammar symbol
 ///
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
     None,

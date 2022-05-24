@@ -232,7 +232,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a) => a.clone(),
+            Symbol::N(_, a) => *a,
             _ => SymbolAttribute::None,
         }
     }

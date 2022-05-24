@@ -571,13 +571,27 @@ fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
     finalize(operand.productions)
 }
 
+fn trace_item_stack(item_stack: &[ParolGrammarItem]) {
+    trace!(
+        "Item stack:\n{}",
+        item_stack
+            .iter()
+            .rev()
+            .map(|s| format!("  {}", s))
+            .collect::<Vec<String>>()
+            .join("\n")
+    );
+}
 #[cfg(test)]
 mod test {
     use super::{
         eliminate_single_grp, eliminate_single_opt, eliminate_single_rep, Alternation,
         Alternations, Factor, Production,
     };
-    use crate::grammar::{ProductionAttribute, SymbolAttribute};
+    use crate::{
+        grammar::{ProductionAttribute, SymbolAttribute},
+        transformation::canonicalization::apply_production_transformation,
+    };
 
     // R  -> x { r1 r2 } y
     // =>
@@ -899,16 +913,87 @@ mod test {
             productions[1]
         );
     }
-}
 
-fn trace_item_stack(item_stack: &[ParolGrammarItem]) {
-    trace!(
-        "Item stack:\n{}",
-        item_stack
-            .iter()
-            .rev()
-            .map(|s| format!("  {}", s))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
+    #[test]
+    fn test_apply_production_transformation1() {
+        let mut productions = vec![
+            Production::new("A".to_string(), Alternations::new()),
+            Production::new("B".to_string(), Alternations::new()),
+        ];
+
+        apply_production_transformation(&mut productions, 1, |_| {
+            vec![
+                Production::new("C".to_string(), Alternations::new()),
+                Production::new("D".to_string(), Alternations::new()),
+            ]
+        });
+
+        assert_eq!(
+            vec![
+                Production::new("A".to_string(), Alternations::new()),
+                Production::new("C".to_string(), Alternations::new()),
+                Production::new("D".to_string(), Alternations::new()),
+            ],
+            productions
+        );
+    }
+
+    #[test]
+    fn test_apply_production_transformation2() {
+        let mut productions = vec![
+            Production::new("A".to_string(), Alternations::new()),
+            Production::new("B".to_string(), Alternations::new()),
+        ];
+
+        apply_production_transformation(&mut productions, 0, |_| {
+            vec![
+                Production::new("C".to_string(), Alternations::new()),
+                Production::new("D".to_string(), Alternations::new()),
+            ]
+        });
+
+        assert_eq!(
+            vec![
+                Production::new("C".to_string(), Alternations::new()),
+                Production::new("D".to_string(), Alternations::new()),
+                Production::new("B".to_string(), Alternations::new()),
+            ],
+            productions
+        );
+    }
+
+    #[test]
+    fn test_apply_production_transformation_no_change() {
+        let mut productions = vec![
+            Production::new("A".to_string(), Alternations::new()),
+            Production::new("B".to_string(), Alternations::new()),
+        ];
+
+        apply_production_transformation(&mut productions, 0, |_| {
+            vec![Production::new("A".to_string(), Alternations::new())]
+        });
+
+        assert_eq!(
+            vec![
+                Production::new("A".to_string(), Alternations::new()),
+                Production::new("B".to_string(), Alternations::new()),
+            ],
+            productions
+        );
+    }
+
+    #[test]
+    fn test_apply_production_transformation_empty_substitute() {
+        let mut productions = vec![
+            Production::new("A".to_string(), Alternations::new()),
+            Production::new("B".to_string(), Alternations::new()),
+        ];
+
+        apply_production_transformation(&mut productions, 0, |_| vec![]);
+
+        assert_eq!(
+            vec![Production::new("B".to_string(), Alternations::new()),],
+            productions
+        );
+    }
 }

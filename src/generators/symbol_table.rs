@@ -11,13 +11,31 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct SymbolId(usize);
 
+impl Display for SymbolId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "Sym({})", self.0)
+    }
+}
+
 /// Scope local index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct ScopedNameId(ScopeId, usize);
 
+impl Display for ScopedNameId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "Nam({}, {})", self.0, self.1)
+    }
+}
+
 /// Index type for SymbolNames
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct ScopeId(usize);
+
+impl Display for ScopeId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "Sco({})", self.0)
+    }
+}
 
 fn build_indent(amount: usize) -> String {
     const SPACES_PER_TAB: usize = 4;
@@ -58,13 +76,16 @@ pub(crate) struct Function {
 impl Function {
     pub(crate) fn format(&self, fn_name: String) -> String {
         format!(
-            "fn {} /* NT: {}{} */",
+            "fn {} /* NT: {}{} Prod: {}, Rel: {}, Alts: {} */",
             fn_name,
             self.non_terminal,
             match self.sem {
                 ProductionAttribute::None => "".to_string(),
                 _ => format!(", {}", self.sem),
-            }
+            },
+            self.prod_num,
+            self.rel_idx,
+            self.alts,
         )
     }
 }
@@ -152,6 +173,10 @@ impl TypeEntrails {
     fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
         self.format(type_id, symbol_table)
     }
+
+    pub(crate) fn sem(&self) -> SymbolAttribute {
+        SymbolAttribute::None
+    }
 }
 
 impl Default for TypeEntrails {
@@ -182,8 +207,7 @@ impl Type {
     fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
         let scope = if !matches!(self.entrails, TypeEntrails::EnumVariant(_)) {
             format!(
-                " {{\n{}{}\n{}}}",
-                build_indent(scope_depth),
+                " {{\n{}\n{}}}",
                 symbol_table
                     .scope(self.member_scope)
                     .format(symbol_table, scope_depth + 1),
@@ -196,8 +220,8 @@ impl Type {
             "{}{} /* Type: my_id {}, name_id: {} */ {}",
             build_indent(scope_depth),
             self.entrails.format(self.my_id, symbol_table),
-            self.my_id.0,
-            self.name_id.1,
+            self.my_id,
+            self.name_id,
             scope,
         )
     }
@@ -224,6 +248,10 @@ impl Type {
 
     pub(crate) fn is_container(&self) -> bool {
         matches!(self.entrails, TypeEntrails::Box(_) | TypeEntrails::Vec(_))
+    }
+
+    pub(crate) fn sem(&self) -> SymbolAttribute {
+        self.entrails.sem()
     }
 }
 
@@ -259,13 +287,14 @@ impl Instance {
         let desc = if self.description.is_empty() {
             String::default()
         } else {
-            format!("/* {} */", self.description)
+            format!(" /* {} */", self.description)
         };
         format!(
-            "{}{}: {}{}{}",
+            "{}{}: {}{}{}{}",
             build_indent(scope_depth),
             self.name(symbol_table),
             symbol_table.symbol(self.type_id).name(symbol_table),
+            symbol_table.lifetime(self.type_id),
             desc,
             match self.sem {
                 SymbolAttribute::None => "".to_string(),
@@ -290,6 +319,16 @@ impl Instance {
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
         symbol_table.name(self.name_id).to_string()
+    }
+
+    pub(crate) fn sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
+        if self.sem != SymbolAttribute::None {
+            self.sem
+        } else if let Ok(type_symbol) = symbol_table.symbol_as_type(self.type_id) {
+            type_symbol.sem()
+        } else {
+            SymbolAttribute::None
+        }
     }
 }
 
@@ -366,6 +405,13 @@ impl Symbol {
         match self {
             Symbol::Type(t) => t.name(symbol_table),
             Symbol::Instance(i) => i.name(symbol_table),
+        }
+    }
+
+    pub(crate) fn _sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
+        match self {
+            Symbol::Type(t) => t.sem(),
+            Symbol::Instance(i) => i.sem(symbol_table),
         }
     }
 }
@@ -458,9 +504,9 @@ impl Scope {
         format!(
             "{}// Scope: my_id: {}, parent: {},\n{}",
             build_indent(scope_depth),
-            self.my_id.0,
+            self.my_id,
             self.parent
-                .map_or("No parent".to_string(), |i| format!("{}", i.0)),
+                .map_or("No parent".to_string(), |i| format!("{}", i)),
             self.symbols
                 .iter()
                 .map(|s| symbol_table.symbol(*s).format(symbol_table, scope_depth))
@@ -582,7 +628,7 @@ impl SymbolTable {
     ) -> Result<ProductionAttribute> {
         let function_type = self.symbol_as_type(symbol_id)?;
         match &function_type.entrails {
-            TypeEntrails::Function(f) => Ok(f.sem.clone()),
+            TypeEntrails::Function(f) => Ok(f.sem),
             _ => bail!("Expecting a function here"),
         }
     }

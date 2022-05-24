@@ -579,6 +579,9 @@ impl<'a> UserTraitGenerator<'a> {
                 }
             },
         )?;
+        // $env:RUST_LOG="parol::generators::user_trait_generator=trace
+        trace!("// Type information:");
+        trace!("{}", type_info);
 
         let user_trait_data = UserTraitDataBuilder::default()
             .user_type_name(&self.user_type_name)

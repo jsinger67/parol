@@ -219,7 +219,7 @@ pub struct Production {
 }
 
 impl Production {
-    fn new(lhs: String, rhs: Alternations) -> Self {
+    pub(crate) fn new(lhs: String, rhs: Alternations) -> Self {
         Self { lhs, rhs }
     }
 }

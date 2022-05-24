@@ -230,7 +230,7 @@ impl GrammarTypeInfo {
                 Ok(Vec::new()),
                 |res: Result<Vec<ProductionAttribute>>, (_, p)| {
                     let mut res = res?;
-                    res.push(p.2.clone());
+                    res.push(p.2);
                     Ok(res)
                 },
             )?;
@@ -282,26 +282,9 @@ impl GrammarTypeInfo {
 
         if actions.len() == 1 {
             let arguments = self.arguments(actions[0].0)?;
+            let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             // Copy the arguments as struct members
-            let non_terminal_type = self.non_terminal_types.get(nt).unwrap();
-            for arg in arguments {
-                let inst = self.symbol_table.symbol_as_instance(arg)?;
-                let type_id = inst.type_id;
-                let description = inst.description.clone();
-                let inst_name = self
-                    .symbol_table
-                    .symbol_as_instance(arg)?
-                    .name(&self.symbol_table)
-                    .to_string();
-                self.symbol_table.insert_instance(
-                    *non_terminal_type,
-                    &inst_name,
-                    type_id,
-                    true,
-                    SymbolAttribute::None,
-                    description,
-                )?;
-            }
+            self.arguments_to_struct_members(&arguments, non_terminal_type)?;
         } else if actions.len() == 2
             && (actions[0].1 == ProductionAttribute::AddToCollection
                 || actions[0].1 == ProductionAttribute::CollectionStart)
@@ -318,26 +301,9 @@ impl GrammarTypeInfo {
             let mut arguments = self.arguments(primary_action)?;
             arguments.pop(); // Remove the recursive part. Vec is wrapped outside.
             vector_typed_non_terminal_opt = Some(nt.to_string());
+            let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             // Copy the arguments as struct members
-            let non_terminal_type = self.non_terminal_types.get(nt).unwrap();
-            for arg in arguments {
-                let inst = self.symbol_table.symbol_as_instance(arg)?;
-                let type_id = inst.type_id;
-                let description = inst.description.clone();
-                let inst_name = self
-                    .symbol_table
-                    .symbol_as_instance(arg)?
-                    .name(&self.symbol_table)
-                    .to_string();
-                self.symbol_table.insert_instance(
-                    *non_terminal_type,
-                    &inst_name,
-                    type_id,
-                    true,
-                    SymbolAttribute::None,
-                    description,
-                )?;
-            }
+            self.arguments_to_struct_members(&arguments, non_terminal_type)?;
         } else {
             // This is the "enum case". We generate an enum variant for each production with a name
             // built from the nt name plus the relative number and the variant's content is the
@@ -381,7 +347,7 @@ impl GrammarTypeInfo {
                 .rel_idx(rel_idx)
                 .alts(alts)
                 .prod_string(pr.format(&scanner_state_resolver)?)
-                .sem(pr.2.clone())
+                .sem(pr.2)
                 .build()
                 .into_diagnostic()?;
 
@@ -511,25 +477,36 @@ impl GrammarTypeInfo {
 
         let arguments = self.arguments(function_id)?;
         // Copy the arguments as struct members
+        self.arguments_to_struct_members(&arguments, production_type)?;
+        self.production_types.insert(prod_num, production_type);
+        Ok(())
+    }
+
+    /// Copy the arguments as struct members
+    fn arguments_to_struct_members(
+        &mut self,
+        arguments: &[SymbolId],
+        production_type: SymbolId,
+    ) -> Result<()> {
         for arg in arguments {
-            let inst = self.symbol_table.symbol_as_instance(arg)?;
+            let inst = self.symbol_table.symbol_as_instance(*arg)?;
             let type_id = inst.type_id;
             let description = inst.description.clone();
             let inst_name = self
                 .symbol_table
-                .symbol_as_instance(arg)?
+                .symbol_as_instance(*arg)?
                 .name(&self.symbol_table)
                 .to_string();
+            let sem = inst.sem(&self.symbol_table);
             self.symbol_table.insert_instance(
                 production_type,
                 &inst_name,
                 type_id,
                 true,
-                SymbolAttribute::None,
+                sem,
                 description,
             )?;
         }
-        self.production_types.insert(prod_num, production_type);
         Ok(())
     }
 
@@ -569,6 +546,46 @@ impl GrammarTypeInfo {
 impl Display for GrammarTypeInfo {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "{}", self.symbol_table)?;
+        writeln!(f, "// Production types:")?;
+        for (p, i) in &self.production_types {
+            writeln!(
+                f,
+                "Prod: {}: {} /* {} */",
+                p,
+                i,
+                self.symbol_table.symbol(*i).name(&self.symbol_table)
+            )?;
+        }
+        writeln!(f, "// Non-terminal types:")?;
+        for (n, i) in &self.non_terminal_types {
+            writeln!(
+                f,
+                "{}: {} /* {} */",
+                n,
+                i,
+                self.symbol_table.symbol(*i).name(&self.symbol_table)
+            )?;
+        }
+        writeln!(f, "// User actions:")?;
+        for (n, i) in &self.user_actions {
+            writeln!(
+                f,
+                "{}: {} /* {} */",
+                n,
+                i,
+                self.symbol_table.symbol(*i).name(&self.symbol_table)
+            )?;
+        }
+        writeln!(f, "// Adapter actions:")?;
+        for (p, i) in &self.adapter_actions {
+            writeln!(
+                f,
+                "Prod: {}: {} /* {} */",
+                p,
+                i,
+                self.symbol_table.symbol(*i).name(&self.symbol_table)
+            )?;
+        }
         Ok(())
     }
 }
