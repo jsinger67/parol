@@ -24,6 +24,7 @@ But we try to mark incompatible changes with a new minor version.
 variable
 * Removed serialization support - no use case anymore
 * Removed some useless derives
+* Took over some improvements from branch `optionals`
 
 ## v0.8.3 - 2022-05-14
 
