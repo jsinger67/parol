@@ -81,6 +81,11 @@ impl Pr {
         Self(Symbol::n(n), r, ProductionAttribute::default())
     }
 
+    pub(crate) fn with_attribute(mut self, attribute: ProductionAttribute) -> Self {
+        self.2 = attribute;
+        self
+    }
+
     /// Returns a clone of the non-terminal
     pub fn get_n(&self) -> String {
         self.0.get_n().unwrap()
@@ -97,8 +102,8 @@ impl Pr {
     }
 
     /// Extracts the members of self while consuming self
-    pub fn take(self) -> (String, Rhs) {
-        (self.0.get_n().unwrap(), self.1)
+    pub fn take(self) -> (String, Rhs, ProductionAttribute) {
+        (self.0.get_n().unwrap(), self.1, self.2)
     }
 
     /// Sets the non-terminal

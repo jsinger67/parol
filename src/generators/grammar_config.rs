@@ -58,6 +58,10 @@ pub struct GrammarConfig {
     pub lookahead_size: usize,
 }
 
+/// The type of a scanner state resolver function.
+/// A scanner state resolver function translates a list of scanner states into a printable string
+pub(crate) type FnScannerStateResolver = Box<dyn Fn(&[usize]) -> String>;
+
 impl GrammarConfig {
     /// Creates a new item
     pub fn new(cfg: Cfg, lookahead_size: usize) -> Self {
@@ -122,8 +126,8 @@ impl GrammarConfig {
         terminals
     }
 
-    /// Generates a function that can be uses as scanner_state_resolver argument on Pr::format
-    pub fn get_scanner_state_resolver(&self) -> Box<dyn Fn(&[usize]) -> String> {
+    /// Generates a function that can be used as scanner_state_resolver argument on Pr::format
+    pub fn get_scanner_state_resolver(&self) -> FnScannerStateResolver {
         let scanner_names = self
             .scanner_configurations
             .iter()
@@ -132,6 +136,16 @@ impl GrammarConfig {
         Box::new(move |s: &[usize]| {
             s.iter()
                 .map(|s| scanner_names[*s].clone())
+                .collect::<Vec<String>>()
+                .join(", ")
+        })
+    }
+
+    /// Generates a dummy scanner_state_resolver function that can be used in Pr::format
+    pub fn dummy_scanner_state_resolver() -> FnScannerStateResolver {
+        Box::new(move |s: &[usize]| {
+            s.iter()
+                .map(|s| s.to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         })

@@ -473,7 +473,7 @@ Variable:
 
 The whole `basic.par` should now look like this:
 
-```basic
+```text
 %start Basic
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
@@ -741,7 +741,7 @@ continue with the definition of expressions.
 
 Our complete grammar description should now look like this:
 
-```ebnf
+```text
 %start Basic
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
@@ -982,7 +982,7 @@ create. Doing so will increase the performance of the parsing process.
 To speed up our tutorial I will present here the final grammar description. It is recommended that
 you try to understand it thoroughly.
 
-```ebnf
+```text
 %start Basic
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
@@ -1236,7 +1236,7 @@ impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
 
 ### Understand the data structures generated for our grammar
 
-As I mentioned above the semantic action `basic` is called at the end of the parse process an its
+As I mentioned above the semantic action `basic` is called at the end of the parse process and its
 argument `basic` contains the complete basic program in some kind of data structure.
 
 The interesting thing is how this structure is formed. And indeed `parol` has analyzed our Basic
@@ -1312,3 +1312,5 @@ structures you can easily recognize them as data types which are generated for n
 >
 >The same holds for `Vec`s. But they have another additional semantic and, you guess it, they
 represent repetitions or collections of other grammar items.
+
+*To be continued.*

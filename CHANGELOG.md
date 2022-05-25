@@ -25,6 +25,25 @@ variable
 * Removed serialization support - no use case anymore
 * Removed some useless derives
 * Took over some improvements from branch `optionals`
+* Function `left_factor` now correctly transfers ProductionAttributes. This is a small part of the
+fix of the bug described next.
+* BUG: New known bug in auto-generation detected:
+  * Using an optional expression within a repetition confuses the type generation. The cause is
+  already clear but the bug is not so easy to fix.
+  So currently please avoid constructs like ```{ [A] B }``` until a fix is available.
+  
+  * WORKAROUND: Use instead an alternative grammar form like in this example:
+
+  ```text
+    S: { [A] B }  // Doesn't create correct 'auto-generation code'.
+    =>
+    S: { AOpt B };
+    AOpt: [A];
+  ```
+
+  * Be aware that the auto-generation approach is still experimental and under development.
+  * Also note, that this bug doesn't affect the standard approach described in
+  [TutorialOld.md](./docs/TutorialOld.md).
 
 ## v0.8.3 - 2022-05-14
 

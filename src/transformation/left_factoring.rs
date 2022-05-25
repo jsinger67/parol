@@ -1,22 +1,27 @@
-use crate::{generate_name, group_by, Cfg, Pr, Rhs, Symbol};
+use crate::generators::grammar_config::FnScannerStateResolver;
+use crate::{generate_name, group_by, Cfg, GrammarConfig, Pr, Rhs, Symbol};
+use log::trace;
+use miette::Result;
 use std::collections::hash_map::HashMap;
 use std::hash::Hash;
 
-struct TransformationOperand {
+struct TransformationOperand<'a> {
     modified: bool,
     pr: Vec<Pr>,
+    resolver: &'a FnScannerStateResolver,
 }
 
 /// Substitutes a set of rules with given name in the given rules with the result of
 /// the transformation
-fn apply_rule_transformation(
-    operand: TransformationOperand,
+fn apply_rule_transformation<'a>(
+    operand: TransformationOperand<'a>,
     rule_name: &str,
     trans: impl Fn(Vec<Pr>) -> Vec<Pr>,
-) -> TransformationOperand {
+) -> TransformationOperand<'a> {
     let TransformationOperand {
         modified: _,
         mut pr,
+        resolver,
     } = operand;
     if let Some(rule_index) = pr.iter().position(|r| r.get_n_str() == rule_name) {
         let mut affected_rules = vec![];
@@ -27,11 +32,16 @@ fn apply_rule_transformation(
         pr.append(&mut trans(affected_rules));
         pr.append(&mut upper_rules);
 
-        TransformationOperand { modified: true, pr }
+        TransformationOperand {
+            modified: true,
+            pr,
+            resolver,
+        }
     } else {
         TransformationOperand {
             modified: false,
             pr,
+            resolver,
         }
     }
 }
@@ -105,7 +115,7 @@ where
 
 /// Finds the longest left prefixes in rules given.
 /// Can be used to factor out these left prefixes later.
-pub fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
+fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
     let rule_groups = group_by(rules, |r| r.get_n_str().to_owned());
     rule_groups.iter().fold(Vec::new(), |mut acc, e| {
         let (rule_name, rules) = &e;
@@ -132,18 +142,42 @@ pub fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
 pub fn left_factor(g: &Cfg) -> Cfg {
     let Cfg { st, pr } = g.clone();
 
-    let mut operand = TransformationOperand { modified: true, pr };
+    let scanner_state_resolver = GrammarConfig::dummy_scanner_state_resolver();
+    let format_productions = |pr: &[Pr]| -> Result<String> {
+        Ok(pr
+            .iter()
+            .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
+                if let Ok(mut acc) = acc {
+                    acc.push(p.format(&scanner_state_resolver)?);
+                    Ok(acc)
+                } else {
+                    acc
+                }
+            })?
+            .join("\n"))
+    };
 
-    fn mod_factor(exclusions: &[String], prefix: &[Symbol], rules: Vec<Pr>) -> Vec<Pr> {
+    let mut operand = TransformationOperand {
+        modified: true,
+        pr,
+        resolver: &scanner_state_resolver,
+    };
+
+    fn mod_factor<'a>(
+        exclusions: &[String],
+        prefix: &[Symbol],
+        rules: Vec<Pr>,
+        resolver: &'a FnScannerStateResolver,
+    ) -> Vec<Pr> {
         fn factor_out_rule(pr_name: &str, prefix: &[Symbol], pr: Pr) -> Pr {
             let prefix_len = prefix.len();
             if pr.len() < prefix_len || pr.get_r()[0..prefix_len] != prefix[..] {
                 // This production of a production-set don't share the prefix - leave it unchanged.
                 pr
             } else {
-                let (_, mut rhs) = pr.take();
+                let (_, mut rhs, sem) = pr.take();
                 let rhs = rhs.split_off(prefix_len);
-                Pr::new(pr_name, rhs)
+                Pr::new(pr_name, rhs).with_attribute(sem)
             }
         }
 
@@ -164,6 +198,10 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         let mut prod = prefix.to_owned();
         prod.push(Symbol::n(&suffix_rule_name));
         let prefix_rule = Pr::new(first_rule.get_n_str(), prod);
+        trace!(
+            "New prefix rule:\n{}",
+            prefix_rule.format(resolver).expect("format failed")
+        );
         let mut left_factored_rules = rules
             .iter()
             .map(|r| factor_out_rule(&suffix_rule_name, prefix, r.clone()))
@@ -190,24 +228,36 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         })
     }
 
-    fn factor_out_prefix(
-        operand: TransformationOperand,
+    fn factor_out_prefix<'a>(
+        operand: TransformationOperand<'a>,
         prefix: &(String, Rhs),
-    ) -> TransformationOperand {
+    ) -> TransformationOperand<'a> {
         let exclusions = var_names(&operand.pr);
+        let resolver = operand.resolver;
         apply_rule_transformation(operand, &prefix.0, |rs| {
-            mod_factor(&exclusions, &prefix.1, rs)
+            mod_factor(&exclusions, &prefix.1, rs, resolver)
         })
     }
 
     fn factor_out(operand: TransformationOperand) -> TransformationOperand {
         let prefixes = find_longest_prefixes(&operand.pr);
+
         prefixes.iter().fold(operand, &factor_out_prefix)
     }
+
+    // $env:RUST_LOG="parol::transformation::left_factoring=trace"
+    trace!(
+        "\n{}",
+        format_productions(&operand.pr).expect("format failed")
+    );
 
     while operand.modified {
         operand.modified = false;
         operand = factor_out(operand);
+        trace!(
+            "\n{}",
+            format_productions(&operand.pr).expect("format failed")
+        );
     }
     Cfg { st, pr: operand.pr }
 }
