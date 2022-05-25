@@ -20,8 +20,18 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.8.4-pre - Not released yet
 
 * Worked on tutorial
-* In `parol new` the referenced version of `parol` is taken from CARGO_PKG_VERSION environment
-variable
+* Changes in `parol new`:
+  * The referenced version of `parol` is taken from CARGO_PKG_VERSION environment variable. If the
+  current version is not released yet on [crates.io](https://crates.io/crates/parol) you can fallback to github:
+  
+    ```toml
+    [build-dependencies]
+    parol = { git = "https://github.com/jsinger67/parol.git" }
+    ```
+
+  * The parsed data is now printed to standard output automatically.
+  * The `init` function is implemented with default handling.
+  * A file with test input data (`test.txt`) is also created automatically.
 * Removed serialization support - no use case anymore
 * Removed some useless derives
 * Took over some improvements from branch `optionals`
@@ -32,14 +42,16 @@ fix of the bug described next.
   already clear but the bug is not so easy to fix.
   So currently please avoid constructs like ```{ [A] B }``` until a fix is available.
   
-  * WORKAROUND: Use instead an alternative grammar form like in this example:
+  * WORKAROUND: Use an alternative grammar form like in this example instead:
 
-  ```text
-    S: { [A] B }  // Doesn't create correct 'auto-generation code'.
-    =>
-    S: { AOpt B };
-    AOpt: [A];
-  ```
+    ```text
+      // Such a construct doesn't currently result in correct 'auto-generation code'.
+      S: { [A] B }
+      =>
+      // This equivalent version will do the job correctly.
+      S: { AOpt B };
+      AOpt: [A];
+    ```
 
   * Be aware that the auto-generation approach is still experimental and under development.
   * Also note, that this bug doesn't affect the standard approach described in

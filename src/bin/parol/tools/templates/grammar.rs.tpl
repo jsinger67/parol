@@ -1,7 +1,10 @@
 use crate::{{crate_name}}_grammar_trait::{ {{grammar_name}}, {{grammar_name}}GrammarTrait };
 #[allow(unused_imports)]
 use miette::Result;
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::{
+    fmt::{Debug, Display, Error, Formatter},
+    path::{Path, PathBuf},
+};
 
 ///
 /// Data structure that implements the semantic actions for our {{grammar_name}} grammar
@@ -10,6 +13,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 #[derive(Debug, Default)]
 pub struct {{grammar_name}}Grammar<'t> {
     pub {{crate_name}}: Option<{{grammar_name}}<'t>>,
+    file_name: PathBuf,
 }
 
 impl {{grammar_name}}Grammar<'_> {
@@ -20,7 +24,7 @@ impl {{grammar_name}}Grammar<'_> {
 
 impl Display for {{grammar_name}}<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, ":-)")
+        write!(f, "{:?}", self)
     }
 }
 
@@ -34,5 +38,15 @@ impl Display for {{grammar_name}}Grammar<'_> {
 }
 
 impl<'t> {{grammar_name}}GrammarTrait<'t> for {{grammar_name}}Grammar<'t> {
-    // Your implementation starts here
+    // !Adjust your implementation as needed!
+
+    fn init(&mut self, file_name: &Path) {
+        self.file_name = file_name.into();
+    }
+
+    /// Semantic action for non-terminal '{{grammar_name}}'
+    fn {{crate_name}}(&mut self, arg: &{{grammar_name}}<'t>) -> Result<()> {
+        self.{{crate_name}} = Some(arg.clone());
+        Ok(())
+    }
 }

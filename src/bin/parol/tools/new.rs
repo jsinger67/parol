@@ -12,19 +12,19 @@ use std::process::Command;
 #[clap(name = "new")]
 #[clap(group(ArgGroup::new("lib_or_bin").args(&["lib", "bin"]).multiple(false).required(true)))]
 pub struct Args {
-    /// The directory where to create the new package
+    /// The directory where to create the new crate
     #[clap(short, long, parse(from_os_str))]
     path: PathBuf,
 
-    /// The new package should be a binary executable
+    /// The new crate should be a binary executable
     #[clap(short, long)]
     bin: bool,
 
-    /// The new package should be a library
+    /// The new crate should be a library
     #[clap(short, long)]
     lib: bool,
 
-    /// The name of the new package. Defaults to the directory name.
+    /// The name of the new crate. Defaults to the directory name.
     #[clap(short, long)]
     name: Option<String>,
 }
@@ -131,6 +131,7 @@ fn generate_bin_crate(creation_data: CreationData) -> Result<()> {
         generate_lib_rs(&creation_data)?;
     }
     generate_grammar_rs(&creation_data)?;
+    generate_test_txt(&creation_data)?;
 
     Ok(())
 }
@@ -247,6 +248,27 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
     fs::write(grammar_file_out, grammar_source)
         .into_diagnostic()
         .wrap_err("Error writing generated user trait source!")?;
+
+    Ok(())
+}
+
+#[derive(BartDisplay, Builder, Debug, Default)]
+#[template = "src/bin/parol/tools/templates/test.txt"]
+struct TestTxtData<'a> {
+    crate_name: &'a str,
+}
+
+fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
+    let mut test_file = creation_data.path.clone();
+    test_file.push("test.txt");
+    let grammar_data = TestTxtDataBuilder::default()
+        .crate_name(creation_data.crate_name)
+        .build()
+        .into_diagnostic()?;
+    let test_content = format!("{}", grammar_data);
+    fs::write(test_file, test_content)
+        .into_diagnostic()
+        .wrap_err("Error writing test file!")?;
 
     Ok(())
 }
