@@ -4,7 +4,7 @@ use crate::grammar::ProductionAttribute;
 use crate::grammar::{Decorate, SymbolAttribute};
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result};
+use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::errors::FileSource;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -49,6 +49,13 @@ pub enum Factor {
 impl Factor {
     pub(crate) fn default_non_terminal(non_terminal: String) -> Self {
         Self::NonTerminal(non_terminal, SymbolAttribute::default())
+    }
+
+    pub(crate) fn inner_alts_mut(&mut self) -> Result<&mut Alternations> {
+        match self {
+            Factor::Group(alts) | Factor::Repeat(alts) | Factor::Optional(alts) => Ok(alts),
+            _ => bail!("Ain't no inner alternations"),
+        }
     }
 }
 

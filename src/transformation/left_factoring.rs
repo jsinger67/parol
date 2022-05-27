@@ -118,17 +118,15 @@ where
 /// Can be used to factor out these left prefixes later.
 fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
     let rule_groups = rules.iter().group_by(|r| r.get_n_str().to_owned());
-    rule_groups.into_iter().fold(Vec::new(), |mut acc, (rule_name, rules)| {
-        let prefix = find_prefix(
-            &rules
-                .map(|r| r.get_r().clone())
-                .collect::<Vec<Rhs>>(),
-        );
-        if !prefix.is_empty() {
-            acc.push((rule_name.clone(), prefix));
-        }
-        acc
-    })
+    rule_groups
+        .into_iter()
+        .fold(Vec::new(), |mut acc, (rule_name, rules)| {
+            let prefix = find_prefix(&rules.map(|r| r.get_r().clone()).collect::<Vec<Rhs>>());
+            if !prefix.is_empty() {
+                acc.push((rule_name.clone(), prefix));
+            }
+            acc
+        })
 }
 
 // ---------------------------------------------------
@@ -168,6 +166,20 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         rules: Vec<Pr>,
         resolver: &'a FnScannerStateResolver,
     ) -> Vec<Pr> {
+        let format_symbols = |symbols: &[Symbol]| -> Result<String> {
+            Ok(symbols
+                .iter()
+                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
+                    if let Ok(mut acc) = acc {
+                        acc.push(s.format(resolver)?);
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
+                })?
+                .join(" "))
+        };
+
         fn factor_out_rule(pr_name: &str, prefix: &[Symbol], pr: Pr) -> Pr {
             let prefix_len = prefix.len();
             if pr.len() < prefix_len || pr.get_r()[0..prefix_len] != prefix[..] {
@@ -188,6 +200,11 @@ pub fn left_factor(g: &Cfg) -> Cfg {
             );
         }
 
+        trace!(
+            "\nPrefix to factor out:\n{}",
+            format_symbols(prefix).expect("format failed")
+        );
+
         // We change the productions A -> prefix suffix to one new production A -> prefix A'
         // where A' is a new production of the form:
         // A' -> suffix1|suffix2|... i.e. A' -> suffix1;  A' -> suffix2;  ...
@@ -197,10 +214,6 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         let mut prod = prefix.to_owned();
         prod.push(Symbol::n(&suffix_rule_name));
         let prefix_rule = Pr::new(first_rule.get_n_str(), prod);
-        trace!(
-            "New prefix rule:\n{}",
-            prefix_rule.format(resolver).expect("format failed")
-        );
         let mut left_factored_rules = rules
             .iter()
             .map(|r| factor_out_rule(&suffix_rule_name, prefix, r.clone()))

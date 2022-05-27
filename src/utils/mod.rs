@@ -60,6 +60,8 @@ where
     move |x| g(f(x))
 }
 
+/// Optimized combinator on boolean functions
+/// Applies short cut disjunction
 pub(crate) fn short_cut_disjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
 where
     F: Fn(&A) -> bool,
@@ -75,6 +77,8 @@ where
     }
 }
 
+/// Optimized combinator on boolean functions
+/// Applies short cut conjunction
 pub(crate) fn short_cut_conjunction_combine<A, F, G>(f: F, g: G) -> impl Fn(&A) -> bool
 where
     F: Fn(&A) -> bool,

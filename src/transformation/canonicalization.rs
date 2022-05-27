@@ -122,6 +122,141 @@ fn find_production_with_factor(
     }
 }
 
+// fn contains_optional(alts: &[Alternation]) -> bool {
+//     alts.iter()
+//         .any(|a| a.0.iter().any(|f| matches!(f, Factor::Optional(_))))
+// }
+
+fn format_productions(prods: &[Production]) -> String {
+    prods
+        .iter()
+        .fold(Vec::new(), |mut acc: Vec<String>, p| {
+            acc.push(p.to_string());
+            acc
+        })
+        .join("\n")
+}
+
+// Extract inner options into own productions to avoid a combinatorial explosion and some problems
+// related to auto-generation.
+// A production with n optionals is normally expanded into n^2 productions:
+// Example:
+// S: [A] [B] [C];
+// =>
+// S: ε | A | B | C | A B | A C | B C | A B C;
+//
+// If you extract the optionals as extra productions, you get less productions (2 * n + 1) and a
+// much simpler "type representation" of it.
+// S: [A] [B] [C];
+// =>
+// S: AOpt BOpt COpt;
+// AOpt: ε | A;
+// BOpt: ε | B;
+// COpt: ε | C;
+//
+// This transformation step must be executed first.
+fn extract_options(opd: TransformationOperand) -> TransformationOperand {
+    fn extract_optional_in_alt(
+        alt: &mut Alternation,
+        non_terminal: String,
+        exclusions: &[String],
+    ) -> Option<(String, Alternations)> {
+        for factor in &mut alt.0 {
+            match factor.clone() {
+                Factor::Group(_) | Factor::Repeat(_) => {
+                    return extract_optional_in_alts(
+                        factor.inner_alts_mut().expect("Should always succeed"),
+                        non_terminal,
+                        exclusions,
+                    )
+                }
+                Factor::Optional(alts) => {
+                    let new_opt_production_name =
+                        generate_name(exclusions, format!("{}Opt", non_terminal));
+                    *factor =
+                        Factor::NonTerminal(new_opt_production_name.clone(), SymbolAttribute::None);
+                    trace!(
+                        "Extracting optional {} into production {}",
+                        alts.to_par(),
+                        new_opt_production_name
+                    );
+                    return Some((new_opt_production_name, alts));
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
+    fn extract_optional_in_alts(
+        alts: &mut Alternations,
+        non_terminal: String,
+        exclusions: &[String],
+    ) -> Option<(String, Alternations)> {
+        for alt in &mut alts.0 {
+            if let Some((name, alts)) =
+                extract_optional_in_alt(alt, non_terminal.clone(), exclusions)
+            {
+                return Some((name, alts));
+            }
+        }
+        None
+    }
+
+    fn extract_optional_in_production(
+        prod: &mut Production,
+        non_terminal: String,
+        exclusions: &[String],
+    ) -> Option<(String, Alternations)> {
+        for alt in &mut prod.rhs.0 {
+            if let Some((name, alts)) =
+                extract_optional_in_alt(alt, non_terminal.clone(), exclusions)
+            {
+                return Some((name, alts));
+            }
+        }
+        None
+    }
+
+    fn extract_optional_in_productions(
+        prods: &mut [Production],
+        exclusions: &[String],
+    ) -> Option<(String, Alternations)> {
+        for prod in prods {
+            if let Some((name, alts)) =
+                extract_optional_in_production(prod, prod.lhs.clone(), exclusions)
+            {
+                return Some((name, alts));
+            }
+        }
+        None
+    }
+
+    let mut modified = true;
+    let mut productions = opd.productions;
+
+    let exclusions = variable_names(&productions);
+
+    while modified {
+        if let Some((name, alts)) = extract_optional_in_productions(&mut productions, &exclusions) {
+            modified = true;
+            // Add the new optional productions
+            productions.push(Production::new(name.clone(), alts));
+            productions.push(Production::new(
+                name,
+                Alternations(vec![Alternation::new()]),
+            ));
+        } else {
+            modified = false;
+        }
+    }
+
+    TransformationOperand {
+        modified,
+        productions,
+    }
+}
+
 // Transform productions with multiple alternatives
 fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
     fn production_has_multiple_alts(r: &Production) -> bool {
@@ -270,8 +405,18 @@ fn eliminate_repetitions(opd: TransformationOperand) -> TransformationOperand {
     let mut modified = opd.modified;
     let mut productions = opd.productions;
 
+    // $env:RUST_LOG="parol::transformation::canonicalization=trace"
+    trace!(
+        "\nTry to remove repetitions\n{}",
+        format_productions(&productions)
+    );
+
     while eliminate_repetition(&mut productions) {
         modified |= true;
+        trace!(
+            "\nRemoved repetitions\n{}",
+            format_productions(&productions)
+        );
     }
     TransformationOperand {
         modified,
@@ -369,8 +514,14 @@ fn eliminate_options(opd: TransformationOperand) -> TransformationOperand {
     let mut modified = opd.modified;
     let mut productions = opd.productions;
 
+    trace!(
+        "\nTry to remove options\n{}",
+        format_productions(&productions)
+    );
+
     while eliminate_option(&mut productions) {
         modified |= true;
+        trace!("\nRemoved options\n{}", format_productions(&productions));
     }
     TransformationOperand {
         modified,
@@ -549,6 +700,12 @@ fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
         modified: true,
         productions,
     };
+
+    while operand.modified {
+        operand.modified = false;
+        operand = extract_options(operand);
+    }
+
     let trans_fn = combine(
         combine(
             combine(separate_alternatives, eliminate_repetitions),
@@ -557,6 +714,7 @@ fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
         eliminate_groups,
     );
 
+    operand.modified = true;
     while operand.modified {
         operand.modified = false;
         operand = trans_fn(operand);
