@@ -1,4 +1,7 @@
-use crate::list_grammar_trait::{List, ListGrammarTrait, ListList};
+use crate::list_grammar_trait::{
+    List, ListGrammarTrait, ListOpt, ListOpt0, ListOptList, TrailingComma, TrailingCommaOpt,
+    TrailingCommaOpt0,
+};
 use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -18,25 +21,44 @@ impl ListGrammar<'_> {
 
 impl Display for List<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        match &self {
-            List::List0(l) => write!(
+        write!(f, "[{}{}]", self.list_opt, self.trailing_comma)
+    }
+}
+
+impl Display for ListOpt<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        if let ListOpt::ListOpt0(ListOpt0 { num, list_opt_list }) = self {
+            write!(
                 f,
-                "[{}{}]",
-                l.num.num.symbol,
-                l.list_list
+                "{}{}",
+                num.num.symbol,
+                list_opt_list
                     .iter()
                     .map(|e| format!("{}", e))
                     .collect::<Vec<std::string::String>>()
                     .join("")
-            ),
-            List::List1(_) => write!(f, "[]"),
+            )
+        } else {
+            Ok(())
         }
     }
 }
 
-impl Display for ListList<'_> {
+impl Display for ListOptList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "{} {}", self.comma.symbol, self.num.num.symbol)
+    }
+}
+
+impl Display for TrailingComma<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        if let TrailingCommaOpt::TrailingCommaOpt0(TrailingCommaOpt0 { comma }) =
+            *self.trailing_comma_opt
+        {
+            write!(f, "{}", comma.symbol)
+        } else {
+            Ok(())
+        }
     }
 }
 

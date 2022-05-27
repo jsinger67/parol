@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.8.4-pre - Not released yet
+## v0.9.0 - 2022-05-27
 
 * Worked on tutorial
 * Changes in `parol new`:
@@ -37,25 +37,12 @@ But we try to mark incompatible changes with a new minor version.
 * Took over some improvements from branch `optionals`
 * Function `left_factor` now correctly transfers ProductionAttributes. This is a small part of the
 fix of the bug described next.
-* BUG: New known bug in auto-generation detected:
-  * Using an optional expression within a repetition confuses the type generation. The cause is
-  already clear but the bug is not so easy to fix.
-  So currently please avoid constructs like ```{ [A] B }``` until a fix is available.
-  
-  * WORKAROUND: Use an alternative grammar form like in this example instead:
-
-    ```text
-      // Such a construct doesn't currently result in correct 'auto-generation code'.
-      S: { [A] B }
-      =>
-      // This equivalent version will do the job correctly.
-      S: { AOpt B };
-      AOpt: [A];
-    ```
-
-  * Be aware that the auto-generation approach is still experimental and under development.
-  * Also note, that this bug doesn't affect the standard approach described in
-  [TutorialOld.md](./docs/TutorialOld.md).
+* New known bug in auto-generation detected and fixed:
+  * Using an optional expression within a repetition confused the type generation.
+  So constructs like ```{ [A] B }``` didn't work correctly.
+  * The fix includes major changes in grammar transformation, especially the way optional
+  expressions are handled. I therefore *increment the minor version to nine* to indicate a rather
+  breaking change.
 
 ## v0.8.3 - 2022-05-14
 

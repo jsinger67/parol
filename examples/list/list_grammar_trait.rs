@@ -25,13 +25,11 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 0:
     ///
-    /// List: Num ListRest ListSuffix;
+    /// List: ListOpt;
     ///
-    fn list_0(
+    fn list(
         &mut self,
-        _num: &ParseTreeStackEntry,
-        _list_rest: &ParseTreeStackEntry,
-        _list_suffix: &ParseTreeStackEntry,
+        _list_opt: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -39,11 +37,13 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ListSuffix: ",";
+    /// ListOpt: Num ListRest ListOpt0;
     ///
-    fn list_suffix_0(
+    fn list_opt_0(
         &mut self,
-        _comma: &ParseTreeStackEntry,
+        _num: &ParseTreeStackEntry,
+        _list_rest: &ParseTreeStackEntry,
+        _list_opt0: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -51,25 +51,49 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ListSuffix: ;
+    /// ListOpt0: ",";
     ///
-    fn list_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_opt0_0(
+        &mut self,
+        _comma: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// List: ;
+    /// ListOpt0: ;
     ///
-    fn list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// ListRest: "," Num ListRest;
+    /// ListOpt: ;
     ///
-    fn list_rest_0(
+    fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 5:
+    ///
+    /// ListRest: ListRestOpt;
+    ///
+    fn list_rest(
+        &mut self,
+        _list_rest_opt: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 6:
+    ///
+    /// ListRestOpt: "," Num ListRest;
+    ///
+    fn list_rest_opt_0(
         &mut self,
         _comma: &ParseTreeStackEntry,
         _num: &ParseTreeStackEntry,
@@ -79,15 +103,15 @@ pub trait ListGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 5:
+    /// Semantic action for production 7:
     ///
-    /// ListRest: ;
+    /// ListRestOpt: ;
     ///
-    fn list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_rest_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for production 6:
+    /// Semantic action for production 8:
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
@@ -114,13 +138,15 @@ impl UserActionsTrait<'_> for ListGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.list_0(&children[0], &children[1], &children[2], parse_tree),
-            1 => self.list_suffix_0(&children[0], parse_tree),
-            2 => self.list_suffix_1(parse_tree),
-            3 => self.list_1(parse_tree),
-            4 => self.list_rest_0(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.list_rest_1(parse_tree),
-            6 => self.num(&children[0], parse_tree),
+            0 => self.list(&children[0], parse_tree),
+            1 => self.list_opt_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.list_opt0_0(&children[0], parse_tree),
+            3 => self.list_opt0_1(parse_tree),
+            4 => self.list_opt_1(parse_tree),
+            5 => self.list_rest(&children[0], parse_tree),
+            6 => self.list_rest_opt_0(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.list_rest_opt_1(parse_tree),
+            8 => self.num(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

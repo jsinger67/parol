@@ -87,7 +87,7 @@ const SCANNER_0: (&[&str; 5], &[usize; 12]) = (
 
 const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 24] = &[
+pub const NON_TERMINALS: &[&str; 25] = &[
     /*  0 */ "AndOp",
     /*  1 */ "BinaryOperator",
     /*  2 */ "Boolean",
@@ -108,16 +108,17 @@ pub const NON_TERMINALS: &[&str; 24] = &[
     /* 17 */ "TailExpression",
     /* 18 */ "TailExpressionList",
     /* 19 */ "Term",
-    /* 20 */ "True",
-    /* 21 */ "UnaryOperator",
-    /* 22 */ "XnorOp",
-    /* 23 */ "XorOp",
+    /* 20 */ "TermOpt",
+    /* 21 */ "True",
+    /* 22 */ "UnaryOperator",
+    /* 23 */ "XnorOp",
+    /* 24 */ "XorOp",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
     /* 0 - "AndOp" */
     LookaheadDFA {
-        states: &[Some(20)],
+        states: &[Some(21)],
         transitions: &[],
         k: 0,
     },
@@ -125,12 +126,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
     LookaheadDFA {
         states: &[
             None,
-            Some(14),
             Some(15),
             Some(16),
             Some(17),
             Some(18),
             Some(19),
+            Some(20),
         ],
         transitions: &[
             DFATransition(0, 5, 1),
@@ -144,7 +145,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
     },
     /* 2 - "Boolean" */
     LookaheadDFA {
-        states: &[None, Some(11), Some(12)],
+        states: &[None, Some(12), Some(13)],
         transitions: &[DFATransition(0, 11, 1), DFATransition(0, 12, 2)],
         k: 1,
     },
@@ -182,7 +183,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
     },
     /* 7 - "Factor" */
     LookaheadDFA {
-        states: &[None, Some(33), Some(34)],
+        states: &[None, Some(34), Some(35)],
         transitions: &[
             DFATransition(0, 11, 1),
             DFATransition(0, 12, 1),
@@ -192,55 +193,55 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
     },
     /* 8 - "False" */
     LookaheadDFA {
-        states: &[Some(27)],
+        states: &[Some(28)],
         transitions: &[],
         k: 0,
     },
     /* 9 - "LeftParenthesis" */
     LookaheadDFA {
-        states: &[Some(31)],
+        states: &[Some(32)],
         transitions: &[],
         k: 0,
     },
     /* 10 - "NandOp" */
     LookaheadDFA {
-        states: &[Some(24)],
+        states: &[Some(25)],
         transitions: &[],
         k: 0,
     },
     /* 11 - "NorOp" */
     LookaheadDFA {
-        states: &[Some(23)],
+        states: &[Some(24)],
         transitions: &[],
         k: 0,
     },
     /* 12 - "Not" */
     LookaheadDFA {
-        states: &[Some(28)],
+        states: &[Some(29)],
         transitions: &[],
         k: 0,
     },
     /* 13 - "OrOp" */
     LookaheadDFA {
-        states: &[Some(21)],
+        states: &[Some(22)],
         transitions: &[],
         k: 0,
     },
     /* 14 - "Parenthesized" */
     LookaheadDFA {
-        states: &[Some(29)],
+        states: &[Some(30)],
         transitions: &[],
         k: 0,
     },
     /* 15 - "RightParenthesis" */
     LookaheadDFA {
-        states: &[Some(32)],
+        states: &[Some(33)],
         transitions: &[],
         k: 0,
     },
     /* 16 - "Semicolon" */
     LookaheadDFA {
-        states: &[Some(30)],
+        states: &[Some(31)],
         transitions: &[],
         k: 0,
     },
@@ -268,7 +269,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
     },
     /* 19 - "Term" */
     LookaheadDFA {
-        states: &[None, Some(9), Some(10)],
+        states: &[Some(9)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 20 - "TermOpt" */
+    LookaheadDFA {
+        states: &[None, Some(10), Some(11)],
         transitions: &[
             DFATransition(0, 11, 2),
             DFATransition(0, 12, 2),
@@ -277,33 +284,33 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 24] = &[
         ],
         k: 1,
     },
-    /* 20 - "True" */
+    /* 21 - "True" */
+    LookaheadDFA {
+        states: &[Some(27)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 22 - "UnaryOperator" */
+    LookaheadDFA {
+        states: &[Some(14)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 23 - "XnorOp" */
     LookaheadDFA {
         states: &[Some(26)],
         transitions: &[],
         k: 0,
     },
-    /* 21 - "UnaryOperator" */
+    /* 24 - "XorOp" */
     LookaheadDFA {
-        states: &[Some(13)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 22 - "XnorOp" */
-    LookaheadDFA {
-        states: &[Some(25)],
-        transitions: &[],
-        k: 0,
-    },
-    /* 23 - "XorOp" */
-    LookaheadDFA {
-        states: &[Some(22)],
+        states: &[Some(23)],
         transitions: &[],
         k: 0,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 35] = &[
+pub const PRODUCTIONS: &[Production; 36] = &[
     // 0 - Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
     Production {
         lhs: 4,
@@ -349,132 +356,137 @@ pub const PRODUCTIONS: &[Production; 35] = &[
         lhs: 18,
         production: &[],
     },
-    // 9 - Term: UnaryOperator Factor;
+    // 9 - Term: TermOpt Factor;
     Production {
         lhs: 19,
-        production: &[ParseType::N(7), ParseType::N(21)],
+        production: &[ParseType::N(7), ParseType::N(20)],
     },
-    // 10 - Term: Factor;
+    // 10 - TermOpt: UnaryOperator;
     Production {
-        lhs: 19,
-        production: &[ParseType::N(7)],
+        lhs: 20,
+        production: &[ParseType::N(22)],
     },
-    // 11 - Boolean: True;
+    // 11 - TermOpt: ;
+    Production {
+        lhs: 20,
+        production: &[],
+    },
+    // 12 - Boolean: True;
     Production {
         lhs: 2,
-        production: &[ParseType::N(20)],
+        production: &[ParseType::N(21)],
     },
-    // 12 - Boolean: False;
+    // 13 - Boolean: False;
     Production {
         lhs: 2,
         production: &[ParseType::N(8)],
     },
-    // 13 - UnaryOperator: Not;
+    // 14 - UnaryOperator: Not;
     Production {
-        lhs: 21,
+        lhs: 22,
         production: &[ParseType::N(12)],
     },
-    // 14 - BinaryOperator: AndOp;
+    // 15 - BinaryOperator: AndOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(0)],
     },
-    // 15 - BinaryOperator: OrOp;
+    // 16 - BinaryOperator: OrOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(13)],
     },
-    // 16 - BinaryOperator: XorOp;
+    // 17 - BinaryOperator: XorOp;
     Production {
         lhs: 1,
-        production: &[ParseType::N(23)],
+        production: &[ParseType::N(24)],
     },
-    // 17 - BinaryOperator: NorOp;
+    // 18 - BinaryOperator: NorOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(11)],
     },
-    // 18 - BinaryOperator: NandOp;
+    // 19 - BinaryOperator: NandOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(10)],
     },
-    // 19 - BinaryOperator: XnorOp;
+    // 20 - BinaryOperator: XnorOp;
     Production {
         lhs: 1,
-        production: &[ParseType::N(22)],
+        production: &[ParseType::N(23)],
     },
-    // 20 - AndOp: "(?i)AND";
+    // 21 - AndOp: "(?i)AND";
     Production {
         lhs: 0,
         production: &[ParseType::T(5)],
     },
-    // 21 - OrOp: "(?i)OR";
+    // 22 - OrOp: "(?i)OR";
     Production {
         lhs: 13,
         production: &[ParseType::T(6)],
     },
-    // 22 - XorOp: "(?i)XOR";
+    // 23 - XorOp: "(?i)XOR";
     Production {
-        lhs: 23,
+        lhs: 24,
         production: &[ParseType::T(7)],
     },
-    // 23 - NorOp: "(?i)NOR";
+    // 24 - NorOp: "(?i)NOR";
     Production {
         lhs: 11,
         production: &[ParseType::T(8)],
     },
-    // 24 - NandOp: "(?i)NAND";
+    // 25 - NandOp: "(?i)NAND";
     Production {
         lhs: 10,
         production: &[ParseType::T(9)],
     },
-    // 25 - XnorOp: "(?i)XNOR";
+    // 26 - XnorOp: "(?i)XNOR";
     Production {
-        lhs: 22,
+        lhs: 23,
         production: &[ParseType::T(10)],
     },
-    // 26 - True: "(?i)TRUE";
+    // 27 - True: "(?i)TRUE";
     Production {
-        lhs: 20,
+        lhs: 21,
         production: &[ParseType::T(11)],
     },
-    // 27 - False: "(?i)FALSE";
+    // 28 - False: "(?i)FALSE";
     Production {
         lhs: 8,
         production: &[ParseType::T(12)],
     },
-    // 28 - Not: "(?i)NOT";
+    // 29 - Not: "(?i)NOT";
     Production {
         lhs: 12,
         production: &[ParseType::T(13)],
     },
-    // 29 - Parenthesized: LeftParenthesis Expression RightParenthesis;
+    // 30 - Parenthesized: LeftParenthesis Expression RightParenthesis;
     Production {
         lhs: 14,
         production: &[ParseType::N(15), ParseType::N(3), ParseType::N(9)],
     },
-    // 30 - Semicolon: ";";
+    // 31 - Semicolon: ";";
     Production {
         lhs: 16,
         production: &[ParseType::T(14)],
     },
-    // 31 - LeftParenthesis: "\(";
+    // 32 - LeftParenthesis: "\(";
     Production {
         lhs: 9,
         production: &[ParseType::T(15)],
     },
-    // 32 - RightParenthesis: "\)";
+    // 33 - RightParenthesis: "\)";
     Production {
         lhs: 15,
         production: &[ParseType::T(16)],
     },
-    // 33 - Factor: Boolean;
+    // 34 - Factor: Boolean;
     Production {
         lhs: 7,
         production: &[ParseType::N(2)],
     },
-    // 34 - Factor: Parenthesized;
+    // 35 - Factor: Parenthesized;
     Production {
         lhs: 7,
         production: &[ParseType::N(14)],

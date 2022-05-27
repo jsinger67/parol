@@ -57,17 +57,25 @@ const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
 
 const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 4] = &[
+pub const NON_TERMINALS: &[&str; 6] = &[
     /* 0 */ "List",
-    /* 1 */ "ListList",
-    /* 2 */ "Num",
-    /* 3 */ "TrailingComma",
+    /* 1 */ "ListOpt",
+    /* 2 */ "ListOptList",
+    /* 3 */ "Num",
+    /* 4 */ "TrailingComma",
+    /* 5 */ "TrailingCommaOpt",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
     /* 0 - "List" */
     LookaheadDFA {
-        states: &[None, Some(0), Some(3)],
+        states: &[Some(0)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 1 - "ListOpt" */
+    LookaheadDFA {
+        states: &[None, Some(1), Some(4)],
         transitions: &[
             DFATransition(0, 0, 2),
             DFATransition(0, 5, 2),
@@ -75,9 +83,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
         ],
         k: 1,
     },
-    /* 1 - "ListList" */
+    /* 2 - "ListOptList" */
     LookaheadDFA {
-        states: &[None, None, Some(1), Some(2)],
+        states: &[None, None, Some(2), Some(3)],
         transitions: &[
             DFATransition(0, 0, 3),
             DFATransition(0, 5, 1),
@@ -86,54 +94,70 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
         ],
         k: 2,
     },
-    /* 2 - "Num" */
+    /* 3 - "Num" */
     LookaheadDFA {
-        states: &[Some(4)],
+        states: &[Some(5)],
         transitions: &[],
         k: 0,
     },
-    /* 3 - "TrailingComma" */
+    /* 4 - "TrailingComma" */
     LookaheadDFA {
-        states: &[None, Some(5), Some(6)],
+        states: &[Some(6)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 5 - "TrailingCommaOpt" */
+    LookaheadDFA {
+        states: &[None, Some(7), Some(8)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
         k: 1,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 7] = &[
-    // 0 - List: Num ListList /* Vec */ TrailingComma;
+pub const PRODUCTIONS: &[Production; 9] = &[
+    // 0 - List: ListOpt TrailingComma;
     Production {
         lhs: 0,
-        production: &[ParseType::N(3), ParseType::N(1), ParseType::N(2)],
+        production: &[ParseType::N(4), ParseType::N(1)],
     },
-    // 1 - ListList: "," Num ListList;
+    // 1 - ListOpt: Num ListOptList /* Vec */;
     Production {
         lhs: 1,
-        production: &[ParseType::N(1), ParseType::N(2), ParseType::T(5)],
+        production: &[ParseType::N(2), ParseType::N(3)],
     },
-    // 2 - ListList: ;
+    // 2 - ListOptList: "," Num ListOptList;
+    Production {
+        lhs: 2,
+        production: &[ParseType::N(2), ParseType::N(3), ParseType::T(5)],
+    },
+    // 3 - ListOptList: ;
+    Production {
+        lhs: 2,
+        production: &[],
+    },
+    // 4 - ListOpt: ;
     Production {
         lhs: 1,
         production: &[],
     },
-    // 3 - List: TrailingComma;
+    // 5 - Num: "0|[1-9][0-9]*";
     Production {
-        lhs: 0,
-        production: &[ParseType::N(3)],
-    },
-    // 4 - Num: "0|[1-9][0-9]*";
-    Production {
-        lhs: 2,
+        lhs: 3,
         production: &[ParseType::T(6)],
     },
-    // 5 - TrailingComma: ",";
+    // 6 - TrailingComma: TrailingCommaOpt;
     Production {
-        lhs: 3,
+        lhs: 4,
+        production: &[ParseType::N(5)],
+    },
+    // 7 - TrailingCommaOpt: ",";
+    Production {
+        lhs: 5,
         production: &[ParseType::T(5)],
     },
-    // 6 - TrailingComma: ;
+    // 8 - TrailingCommaOpt: ;
     Production {
-        lhs: 3,
+        lhs: 5,
         production: &[],
     },
 ];

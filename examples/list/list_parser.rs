@@ -54,23 +54,43 @@ const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
 
 const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 4] = &[
+pub const NON_TERMINALS: &[&str; 6] = &[
     /* 0 */ "List",
-    /* 1 */ "ListRest",
-    /* 2 */ "ListSuffix",
-    /* 3 */ "Num",
+    /* 1 */ "ListOpt",
+    /* 2 */ "ListOpt0",
+    /* 3 */ "ListRest",
+    /* 4 */ "ListRestOpt",
+    /* 5 */ "Num",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
     /* 0 - "List" */
     LookaheadDFA {
-        states: &[None, Some(0), Some(3)],
+        states: &[Some(0)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 1 - "ListOpt" */
+    LookaheadDFA {
+        states: &[None, Some(1), Some(4)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 6, 1)],
         k: 1,
     },
-    /* 1 - "ListRest" */
+    /* 2 - "ListOpt0" */
     LookaheadDFA {
-        states: &[None, None, Some(4), Some(5)],
+        states: &[None, Some(2), Some(3)],
+        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
+        k: 1,
+    },
+    /* 3 - "ListRest" */
+    LookaheadDFA {
+        states: &[Some(5)],
+        transitions: &[],
+        k: 0,
+    },
+    /* 4 - "ListRestOpt" */
+    LookaheadDFA {
+        states: &[None, None, Some(6), Some(7)],
         transitions: &[
             DFATransition(0, 0, 3),
             DFATransition(0, 5, 1),
@@ -79,54 +99,58 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 4] = &[
         ],
         k: 2,
     },
-    /* 2 - "ListSuffix" */
+    /* 5 - "Num" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
-        k: 1,
-    },
-    /* 3 - "Num" */
-    LookaheadDFA {
-        states: &[Some(6)],
+        states: &[Some(8)],
         transitions: &[],
         k: 0,
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 7] = &[
-    // 0 - List: Num ListRest ListSuffix;
+pub const PRODUCTIONS: &[Production; 9] = &[
+    // 0 - List: ListOpt;
     Production {
         lhs: 0,
-        production: &[ParseType::N(2), ParseType::N(1), ParseType::N(3)],
+        production: &[ParseType::N(1)],
     },
-    // 1 - ListSuffix: ",";
+    // 1 - ListOpt: Num ListRest ListOpt0;
+    Production {
+        lhs: 1,
+        production: &[ParseType::N(2), ParseType::N(3), ParseType::N(5)],
+    },
+    // 2 - ListOpt0: ",";
     Production {
         lhs: 2,
         production: &[ParseType::T(5)],
     },
-    // 2 - ListSuffix: ;
+    // 3 - ListOpt0: ;
     Production {
         lhs: 2,
         production: &[],
     },
-    // 3 - List: ;
-    Production {
-        lhs: 0,
-        production: &[],
-    },
-    // 4 - ListRest: "," Num ListRest;
-    Production {
-        lhs: 1,
-        production: &[ParseType::N(1), ParseType::N(3), ParseType::T(5)],
-    },
-    // 5 - ListRest: ;
+    // 4 - ListOpt: ;
     Production {
         lhs: 1,
         production: &[],
     },
-    // 6 - Num: "0|[1-9][0-9]*";
+    // 5 - ListRest: ListRestOpt;
     Production {
         lhs: 3,
+        production: &[ParseType::N(4)],
+    },
+    // 6 - ListRestOpt: "," Num ListRest;
+    Production {
+        lhs: 4,
+        production: &[ParseType::N(3), ParseType::N(5), ParseType::T(5)],
+    },
+    // 7 - ListRestOpt: ;
+    Production {
+        lhs: 4,
+        production: &[],
+    },
+    // 8 - Num: "0|[1-9][0-9]*";
+    Production {
+        lhs: 5,
         production: &[ParseType::T(6)],
     },
 ];

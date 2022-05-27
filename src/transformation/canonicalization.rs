@@ -6,7 +6,13 @@ use crate::utils::combine;
 use crate::{Pr, Symbol};
 use log::trace;
 use miette::{bail, Result};
+use regex::Regex;
 use std::convert::TryFrom;
+
+lazy_static! {
+    pub(crate) static ref RX_OPT_WITH_NUM_SUFFIX: Regex =
+        Regex::new(r"Opt[0-9]*$").expect("error parsing regex");
+}
 
 pub(crate) fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
     if !item_stack
@@ -171,8 +177,12 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
                     )
                 }
                 Factor::Optional(alts) => {
-                    let new_opt_production_name =
-                        generate_name(exclusions, format!("{}Opt", non_terminal));
+                    let preferred_name = if RX_OPT_WITH_NUM_SUFFIX.is_match(&non_terminal) {
+                        non_terminal
+                    } else {
+                        format!("{}Opt", non_terminal)
+                    };
+                    let new_opt_production_name = generate_name(exclusions, preferred_name);
                     *factor =
                         Factor::NonTerminal(new_opt_production_name.clone(), SymbolAttribute::None);
                     trace!(

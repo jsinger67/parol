@@ -194,18 +194,22 @@ impl BooleanGrammar {
 
     fn process_unary_operator(&mut self, context: &str) -> Result<()> {
         let context = format!("process_unary_operator {}", context);
-        let value = self.pop(&context);
-        let op = self.pop(&context);
-        match (&value, &op) {
-            (
-                Some(BooleanGrammarItem::Val(val)),
-                Some(BooleanGrammarItem::UnaryOp(UnaryOp::Not)),
-            ) => {
+        if self.item_stack.len() >= 2
+            && matches!(
+                self.item_stack[self.item_stack.len() - 2..],
+                [
+                    BooleanGrammarItem::Val(_),
+                    BooleanGrammarItem::UnaryOp(UnaryOp::Not)
+                ]
+            )
+        {
+            self.pop(&context); // Remove the unary operator from the stack
+            if let BooleanGrammarItem::Val(val) = self.pop(&context).unwrap() {
+                // Invert the value
                 self.push(BooleanGrammarItem::Val(!val), &context);
-                Ok(())
             }
-            _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, op, value)),
         }
+        Ok(())
     }
 
     fn process_left_associations(&mut self, context: &str) -> Result<()> {
@@ -294,17 +298,32 @@ impl BooleanGrammarTrait for BooleanGrammar {
 
     /// Semantic action for production 9:
     ///
-    /// Term: UnaryOperator Factor;
+    /// Term: TermOpt Factor;
     ///
-    fn term_0(
+    fn term(
         &mut self,
-        _unary_operator: &ParseTreeStackEntry,
+        _term_opt: &ParseTreeStackEntry,
         _factor: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "term_0";
+        let context = "term";
         trace!("{}", self.trace_item_stack(context));
         self.process_unary_operator(context)
+    }
+
+    /// Semantic action for production 10:
+    ///
+    /// TermOpt: UnaryOperator;
+    ///
+    fn term_opt_0(
+        &mut self,
+        _unary_operator: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        let context = "term_opt_0";
+        trace!("{}", self.trace_item_stack(context));
+        self.push(BooleanGrammarItem::UnaryOp(UnaryOp::Not), context);
+        Ok(())
     }
 
     /// Semantic action for production 14:

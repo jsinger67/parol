@@ -4,10 +4,12 @@
 
 %%
 
-/* 0 */ List: Num ListRest ListSuffix;
-/* 1 */ ListSuffix: ",";
-/* 2 */ ListSuffix: ;
-/* 3 */ List: ;
-/* 4 */ ListRest: "," Num ListRest;
-/* 5 */ ListRest: ;
-/* 6 */ Num: "0|[1-9][0-9]*";
+/* 0 */ List: ListOpt;
+/* 1 */ ListOpt: Num ListRest ListOpt0;
+/* 2 */ ListOpt0: ",";
+/* 3 */ ListOpt0: ;
+/* 4 */ ListOpt: ;
+/* 5 */ ListRest: ListRestOpt;
+/* 6 */ ListRestOpt: "," Num ListRest;
+/* 7 */ ListRestOpt: ;
+/* 8 */ Num: "0|[1-9][0-9]*";
