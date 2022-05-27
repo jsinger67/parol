@@ -245,74 +245,47 @@ pub trait BasicGrammarTrait<'t> {
 //
 
 ///
-/// Type derived for production 0
-///
-/// Basic: Line BasicList /* Vec */ BasicSuffix0;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Basic0<'t> {
-    pub line: Box<Line<'t>>,
-    pub basic_list: Vec<BasicList<'t>>,
-    pub basic_suffix0: Box<BasicSuffix0<'t>>,
-}
-
-///
 /// Type derived for production 1
-///
-/// Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Basic1<'t> {
-    pub end_of_line: Box<EndOfLine<'t>>,
-    pub line: Box<Line<'t>>,
-    pub basic_list: Vec<BasicList<'t>>,
-    pub basic_suffix: Box<BasicSuffix<'t>>,
-}
-
-///
-/// Type derived for production 2
-///
-/// BasicSuffix0: EndOfLine;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix1<'t> {
-    pub end_of_line: Box<EndOfLine<'t>>,
-}
-
-///
-/// Type derived for production 3
-///
-/// BasicSuffix0: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix2 {}
-
-///
-/// Type derived for production 4
 ///
 /// BasicSuffix: EndOfLine;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix3<'t> {
+pub struct BasicSuffix0<'t> {
     pub end_of_line: Box<EndOfLine<'t>>,
 }
 
 ///
-/// Type derived for production 5
+/// Type derived for production 2
 ///
 /// BasicSuffix: ;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix4 {}
+pub struct BasicSuffix1 {}
 
 ///
-/// Type derived for production 12
+/// Type derived for production 5
+///
+/// BasicOpt: EndOfLine;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicOpt0<'t> {
+    pub end_of_line: Box<EndOfLine<'t>>,
+}
+
+///
+/// Type derived for production 6
+///
+/// BasicOpt: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BasicOpt1 {}
+
+///
+/// Type derived for production 11
 ///
 /// Statement: Remark;
 ///
@@ -323,7 +296,7 @@ pub struct Statement0<'t> {
 }
 
 ///
-/// Type derived for production 13
+/// Type derived for production 12
 ///
 /// Statement: GotoStatement;
 ///
@@ -334,7 +307,7 @@ pub struct Statement1<'t> {
 }
 
 ///
-/// Type derived for production 14
+/// Type derived for production 13
 ///
 /// Statement: IfStatement;
 ///
@@ -345,7 +318,7 @@ pub struct Statement2<'t> {
 }
 
 ///
-/// Type derived for production 15
+/// Type derived for production 14
 ///
 /// Statement: Assignment;
 ///
@@ -356,7 +329,7 @@ pub struct Statement3<'t> {
 }
 
 ///
-/// Type derived for production 16
+/// Type derived for production 15
 ///
 /// Statement: PrintStatement;
 ///
@@ -367,7 +340,7 @@ pub struct Statement4<'t> {
 }
 
 ///
-/// Type derived for production 17
+/// Type derived for production 16
 ///
 /// Statement: EndStatement;
 ///
@@ -378,51 +351,44 @@ pub struct Statement5<'t> {
 }
 
 ///
-/// Type derived for production 19
+/// Type derived for production 18
 ///
-/// RemarkSuffix: Comment %pop();
+/// RemarkOpt: Comment;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct RemarkSuffix0<'t> {
+pub struct RemarkOpt0<'t> {
     pub comment: Box<Comment<'t>>,
 }
 
 ///
-/// Type derived for production 20
+/// Type derived for production 19
 ///
-/// RemarkSuffix: %pop();
+/// RemarkOpt: ;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct RemarkSuffix1 {}
+pub struct RemarkOpt1 {}
 
 ///
 /// Type derived for production 23
 ///
-/// Assignment: Let Variable AssignOp %push(Expr) Expression %pop();
+/// AssignmentOpt: Let;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Assignment0<'t> {
+pub struct AssignmentOpt0<'t> {
     pub r#let: Box<Let<'t>>,
-    pub variable: Box<Variable<'t>>,
-    pub assign_op: Box<AssignOp<'t>>,
-    pub expression: Box<Expression<'t>>,
 }
 
 ///
 /// Type derived for production 24
 ///
-/// Assignment: Variable AssignOp %push(Expr) Expression %pop();
+/// AssignmentOpt: ;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Assignment1<'t> {
-    pub variable: Box<Variable<'t>>,
-    pub assign_op: Box<AssignOp<'t>>,
-    pub expression: Box<Expression<'t>>,
-}
+pub struct AssignmentOpt1 {}
 
 ///
 /// Type derived for production 25
@@ -493,30 +459,27 @@ pub struct Float3<'t> {
 }
 
 ///
-/// Type derived for production 65
-///
-/// LogicalNot: LogicalNotOp Relational;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct LogicalNot0<'t> {
-    pub logical_not_op: Box<LogicalNotOp<'t>>,
-    pub relational: Box<Relational<'t>>,
-}
-
-///
 /// Type derived for production 66
 ///
-/// LogicalNot: Relational;
+/// LogicalNotOpt: LogicalNotOp;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct LogicalNot1<'t> {
-    pub relational: Box<Relational<'t>>,
+pub struct LogicalNotOpt0<'t> {
+    pub logical_not_op: Box<LogicalNotOp<'t>>,
 }
 
 ///
-/// Type derived for production 72
+/// Type derived for production 67
+///
+/// LogicalNotOpt: ;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct LogicalNotOpt1 {}
+
+///
+/// Type derived for production 73
 ///
 /// SummationListGroup: Plus;
 ///
@@ -527,7 +490,7 @@ pub struct SummationListGroup0<'t> {
 }
 
 ///
-/// Type derived for production 73
+/// Type derived for production 74
 ///
 /// SummationListGroup: Minus;
 ///
@@ -538,7 +501,7 @@ pub struct SummationListGroup1<'t> {
 }
 
 ///
-/// Type derived for production 78
+/// Type derived for production 79
 ///
 /// Factor: Literal;
 ///
@@ -549,7 +512,7 @@ pub struct Factor0<'t> {
 }
 
 ///
-/// Type derived for production 79
+/// Type derived for production 80
 ///
 /// Factor: Variable;
 ///
@@ -560,7 +523,7 @@ pub struct Factor1<'t> {
 }
 
 ///
-/// Type derived for production 80
+/// Type derived for production 81
 ///
 /// Factor: Minus Factor;
 ///
@@ -572,7 +535,7 @@ pub struct Factor2<'t> {
 }
 
 ///
-/// Type derived for production 81
+/// Type derived for production 82
 ///
 /// Factor: LParen Expression RParen;
 ///
@@ -602,20 +565,34 @@ pub struct AssignOp<'t> {
 /// Type derived for non-terminal Assignment
 ///
 #[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Assignment<'t> {
+    pub assignment_opt: Box<AssignmentOpt<'t>>,
+    pub variable: Box<Variable<'t>>,
+    pub assign_op: Box<AssignOp<'t>>,
+    pub expression: Box<Expression<'t>>,
+}
+
+///
+/// Type derived for non-terminal AssignmentOpt
+///
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Assignment<'t> {
-    Assignment0(Assignment0<'t>),
-    Assignment1(Assignment1<'t>),
+pub enum AssignmentOpt<'t> {
+    AssignmentOpt0(AssignmentOpt0<'t>),
+    AssignmentOpt1(AssignmentOpt1),
 }
 
 ///
 /// Type derived for non-terminal Basic
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum Basic<'t> {
-    Basic0(Basic0<'t>),
-    Basic1(Basic1<'t>),
+#[derive(Builder, Debug, Clone)]
+pub struct Basic<'t> {
+    pub basic_opt: Box<BasicOpt<'t>>,
+    pub line: Box<Line<'t>>,
+    pub basic_list: Vec<BasicList<'t>>,
+    pub basic_suffix: Box<BasicSuffix<'t>>,
 }
 
 ///
@@ -629,23 +606,23 @@ pub struct BasicList<'t> {
 }
 
 ///
+/// Type derived for non-terminal BasicOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum BasicOpt<'t> {
+    BasicOpt0(BasicOpt0<'t>),
+    BasicOpt1(BasicOpt1),
+}
+
+///
 /// Type derived for non-terminal BasicSuffix
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum BasicSuffix<'t> {
-    BasicSuffix0(BasicSuffix3<'t>),
-    BasicSuffix1(BasicSuffix4),
-}
-
-///
-/// Type derived for non-terminal BasicSuffix0
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum BasicSuffix0<'t> {
-    BasicSuffix00(BasicSuffix1<'t>),
-    BasicSuffix01(BasicSuffix2),
+    BasicSuffix0(BasicSuffix0<'t>),
+    BasicSuffix1(BasicSuffix1),
 }
 
 ///
@@ -881,10 +858,10 @@ pub struct LogicalAndOp<'t> {
 /// Type derived for non-terminal LogicalNot
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum LogicalNot<'t> {
-    LogicalNot0(LogicalNot0<'t>),
-    LogicalNot1(LogicalNot1<'t>),
+#[derive(Builder, Debug, Clone)]
+pub struct LogicalNot<'t> {
+    pub logical_not_opt: Box<LogicalNotOpt<'t>>,
+    pub relational: Box<Relational<'t>>,
 }
 
 ///
@@ -894,6 +871,16 @@ pub enum LogicalNot<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct LogicalNotOp<'t> {
     pub logical_not_op: Token<'t>, /* NOT */
+}
+
+///
+/// Type derived for non-terminal LogicalNotOpt
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum LogicalNotOpt<'t> {
+    LogicalNotOpt0(LogicalNotOpt0<'t>),
+    LogicalNotOpt1(LogicalNotOpt1),
 }
 
 ///
@@ -1057,17 +1044,17 @@ pub struct RelationalOp<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Remark<'t> {
     pub r_e_m: Token<'t>, /* REM */
-    pub remark_suffix: Box<RemarkSuffix<'t>>,
+    pub remark_opt: Box<RemarkOpt<'t>>,
 }
 
 ///
-/// Type derived for non-terminal RemarkSuffix
+/// Type derived for non-terminal RemarkOpt
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum RemarkSuffix<'t> {
-    RemarkSuffix0(RemarkSuffix0<'t>),
-    RemarkSuffix1(RemarkSuffix1),
+pub enum RemarkOpt<'t> {
+    RemarkOpt0(RemarkOpt0<'t>),
+    RemarkOpt1(RemarkOpt1),
 }
 
 ///
@@ -1142,10 +1129,11 @@ pub struct Variable<'t> {
 pub enum ASTType<'t> {
     AssignOp(AssignOp<'t>),
     Assignment(Assignment<'t>),
+    AssignmentOpt(AssignmentOpt<'t>),
     Basic(Basic<'t>),
     BasicList(Vec<BasicList<'t>>),
+    BasicOpt(BasicOpt<'t>),
     BasicSuffix(BasicSuffix<'t>),
-    BasicSuffix0(BasicSuffix0<'t>),
     Comment(Comment<'t>),
     End(End<'t>),
     EndOfLine(EndOfLine<'t>),
@@ -1172,6 +1160,7 @@ pub enum ASTType<'t> {
     LogicalAndOp(LogicalAndOp<'t>),
     LogicalNot(LogicalNot<'t>),
     LogicalNotOp(LogicalNotOp<'t>),
+    LogicalNotOpt(LogicalNotOpt<'t>),
     LogicalOr(LogicalOr<'t>),
     LogicalOrList(Vec<LogicalOrList<'t>>),
     LogicalOrOp(LogicalOrOp<'t>),
@@ -1189,7 +1178,7 @@ pub enum ASTType<'t> {
     RelationalList(Vec<RelationalList<'t>>),
     RelationalOp(RelationalOp<'t>),
     Remark(Remark<'t>),
-    RemarkSuffix(RemarkSuffix<'t>),
+    RemarkOpt(RemarkOpt<'t>),
     Statement(Statement<'t>),
     Summation(Summation<'t>),
     SummationList(Vec<SummationList<'t>>),
@@ -1266,55 +1255,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// Basic: Line BasicList /* Vec */ BasicSuffix0;
+    /// Basic: BasicOpt Line BasicList /* Vec */ BasicSuffix;
     ///
     #[named]
-    fn basic_0(
+    fn basic(
         &mut self,
-        _line: &ParseTreeStackEntry<'t>,
-        _basic_list: &ParseTreeStackEntry<'t>,
-        _basic_suffix0: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let basic_suffix0 = if let Some(ASTType::BasicSuffix0(basic_suffix0)) = self.pop(context) {
-            basic_suffix0
-        } else {
-            return Err(miette!("{}: Expecting ASTType::BasicSuffix0", context));
-        };
-        let basic_list = if let Some(ASTType::BasicList(mut basic_list)) = self.pop(context) {
-            basic_list.reverse();
-            basic_list
-        } else {
-            return Err(miette!("{}: Expecting ASTType::BasicList", context));
-        };
-        let line = if let Some(ASTType::Line(line)) = self.pop(context) {
-            line
-        } else {
-            return Err(miette!("{}: Expecting ASTType::Line", context));
-        };
-        let basic_0_built = Basic0Builder::default()
-            .line(Box::new(line))
-            .basic_list(basic_list)
-            .basic_suffix0(Box::new(basic_suffix0))
-            .build()
-            .into_diagnostic()?;
-        let basic_0_built = Basic::Basic0(basic_0_built);
-        // Calling user action here
-        self.user_grammar.basic(&basic_0_built)?;
-        self.push(ASTType::Basic(basic_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 1:
-    ///
-    /// Basic: EndOfLine Line BasicList /* Vec */ BasicSuffix;
-    ///
-    #[named]
-    fn basic_1(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
+        _basic_opt: &ParseTreeStackEntry<'t>,
         _line: &ParseTreeStackEntry<'t>,
         _basic_list: &ParseTreeStackEntry<'t>,
         _basic_suffix: &ParseTreeStackEntry<'t>,
@@ -1338,66 +1284,25 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Line", context));
         };
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
+        let basic_opt = if let Some(ASTType::BasicOpt(basic_opt)) = self.pop(context) {
+            basic_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+            return Err(miette!("{}: Expecting ASTType::BasicOpt", context));
         };
-        let basic_1_built = Basic1Builder::default()
-            .end_of_line(Box::new(end_of_line))
+        let basic_built = BasicBuilder::default()
+            .basic_opt(Box::new(basic_opt))
             .line(Box::new(line))
             .basic_list(basic_list)
             .basic_suffix(Box::new(basic_suffix))
             .build()
             .into_diagnostic()?;
-        let basic_1_built = Basic::Basic1(basic_1_built);
         // Calling user action here
-        self.user_grammar.basic(&basic_1_built)?;
-        self.push(ASTType::Basic(basic_1_built), context);
+        self.user_grammar.basic(&basic_built)?;
+        self.push(ASTType::Basic(basic_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 2:
-    ///
-    /// BasicSuffix0: EndOfLine;
-    ///
-    #[named]
-    fn basic_suffix0_0(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
-        } else {
-            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
-        };
-        let basic_suffix0_0_built = BasicSuffix1Builder::default()
-            .end_of_line(Box::new(end_of_line))
-            .build()
-            .into_diagnostic()?;
-        let basic_suffix0_0_built = BasicSuffix0::BasicSuffix00(basic_suffix0_0_built);
-        self.push(ASTType::BasicSuffix0(basic_suffix0_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 3:
-    ///
-    /// BasicSuffix0: ;
-    ///
-    #[named]
-    fn basic_suffix0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let basic_suffix0_1_built = BasicSuffix2Builder::default().build().into_diagnostic()?;
-        let basic_suffix0_1_built = BasicSuffix0::BasicSuffix01(basic_suffix0_1_built);
-        self.push(ASTType::BasicSuffix0(basic_suffix0_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 4:
+    /// Semantic action for production 1:
     ///
     /// BasicSuffix: EndOfLine;
     ///
@@ -1414,7 +1319,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
         };
-        let basic_suffix_0_built = BasicSuffix3Builder::default()
+        let basic_suffix_0_built = BasicSuffix0Builder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
             .into_diagnostic()?;
@@ -1423,7 +1328,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 5:
+    /// Semantic action for production 2:
     ///
     /// BasicSuffix: ;
     ///
@@ -1431,13 +1336,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn basic_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_suffix_1_built = BasicSuffix4Builder::default().build().into_diagnostic()?;
+        let basic_suffix_1_built = BasicSuffix1Builder::default().build().into_diagnostic()?;
         let basic_suffix_1_built = BasicSuffix::BasicSuffix1(basic_suffix_1_built);
         self.push(ASTType::BasicSuffix(basic_suffix_1_built), context);
         Ok(())
     }
 
-    /// Semantic action for production 6:
+    /// Semantic action for production 3:
     ///
     /// BasicList: EndOfLine Line BasicList; // Vec<T>::Push
     ///
@@ -1477,7 +1382,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 7:
+    /// Semantic action for production 4:
     ///
     /// BasicList: ; // Vec<T>::New
     ///
@@ -1490,7 +1395,47 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 5:
+    ///
+    /// BasicOpt: EndOfLine;
+    ///
+    #[named]
+    fn basic_opt_0(
+        &mut self,
+        _end_of_line: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
+            end_of_line
+        } else {
+            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+        };
+        let basic_opt_0_built = BasicOpt0Builder::default()
+            .end_of_line(Box::new(end_of_line))
+            .build()
+            .into_diagnostic()?;
+        let basic_opt_0_built = BasicOpt::BasicOpt0(basic_opt_0_built);
+        self.push(ASTType::BasicOpt(basic_opt_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 6:
+    ///
+    /// BasicOpt: ;
+    ///
+    #[named]
+    fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let basic_opt_1_built = BasicOpt1Builder::default().build().into_diagnostic()?;
+        let basic_opt_1_built = BasicOpt::BasicOpt1(basic_opt_1_built);
+        self.push(ASTType::BasicOpt(basic_opt_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 7:
     ///
     /// Line: LineNumber Statement LineList /* Vec */;
     ///
@@ -1532,7 +1477,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 9:
+    /// Semantic action for production 8:
     ///
     /// LineList: <Expr, INITIAL>":" Statement LineList; // Vec<T>::Push
     ///
@@ -1568,7 +1513,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 10:
+    /// Semantic action for production 9:
     ///
     /// LineList: ; // Vec<T>::New
     ///
@@ -1581,7 +1526,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 11:
+    /// Semantic action for production 10:
     ///
     /// LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
     ///
@@ -1604,7 +1549,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 12:
+    /// Semantic action for production 11:
     ///
     /// Statement: Remark;
     ///
@@ -1632,7 +1577,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 12:
     ///
     /// Statement: GotoStatement;
     ///
@@ -1661,7 +1606,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 14:
+    /// Semantic action for production 13:
     ///
     /// Statement: IfStatement;
     ///
@@ -1689,7 +1634,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 15:
+    /// Semantic action for production 14:
     ///
     /// Statement: Assignment;
     ///
@@ -1717,7 +1662,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 16:
+    /// Semantic action for production 15:
     ///
     /// Statement: PrintStatement;
     ///
@@ -1746,7 +1691,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 16:
     ///
     /// Statement: EndStatement;
     ///
@@ -1774,28 +1719,28 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 17:
     ///
-    /// Remark: "REM" %push(Cmnt) RemarkSuffix;
+    /// Remark: "REM" %push(Cmnt) RemarkOpt %pop();
     ///
     #[named]
     fn remark(
         &mut self,
         r_e_m: &ParseTreeStackEntry<'t>,
-        _remark_suffix: &ParseTreeStackEntry<'t>,
+        _remark_opt: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r_e_m = *r_e_m.token(parse_tree)?;
-        let remark_suffix = if let Some(ASTType::RemarkSuffix(remark_suffix)) = self.pop(context) {
-            remark_suffix
+        let remark_opt = if let Some(ASTType::RemarkOpt(remark_opt)) = self.pop(context) {
+            remark_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::RemarkSuffix", context));
+            return Err(miette!("{}: Expecting ASTType::RemarkOpt", context));
         };
         let remark_built = RemarkBuilder::default()
             .r_e_m(r_e_m)
-            .remark_suffix(Box::new(remark_suffix))
+            .remark_opt(Box::new(remark_opt))
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1804,12 +1749,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 18:
     ///
-    /// RemarkSuffix: Comment %pop();
+    /// RemarkOpt: Comment;
     ///
     #[named]
-    fn remark_suffix_0(
+    fn remark_opt_0(
         &mut self,
         _comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -1821,30 +1766,30 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Comment", context));
         };
-        let remark_suffix_0_built = RemarkSuffix0Builder::default()
+        let remark_opt_0_built = RemarkOpt0Builder::default()
             .comment(Box::new(comment))
             .build()
             .into_diagnostic()?;
-        let remark_suffix_0_built = RemarkSuffix::RemarkSuffix0(remark_suffix_0_built);
-        self.push(ASTType::RemarkSuffix(remark_suffix_0_built), context);
+        let remark_opt_0_built = RemarkOpt::RemarkOpt0(remark_opt_0_built);
+        self.push(ASTType::RemarkOpt(remark_opt_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 19:
+    ///
+    /// RemarkOpt: ;
+    ///
+    #[named]
+    fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let remark_opt_1_built = RemarkOpt1Builder::default().build().into_diagnostic()?;
+        let remark_opt_1_built = RemarkOpt::RemarkOpt1(remark_opt_1_built);
+        self.push(ASTType::RemarkOpt(remark_opt_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 20:
-    ///
-    /// RemarkSuffix: %pop();
-    ///
-    #[named]
-    fn remark_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let remark_suffix_1_built = RemarkSuffix1Builder::default().build().into_diagnostic()?;
-        let remark_suffix_1_built = RemarkSuffix::RemarkSuffix1(remark_suffix_1_built);
-        self.push(ASTType::RemarkSuffix(remark_suffix_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 21:
     ///
     /// GotoStatement: Goto LineNumber;
     ///
@@ -1878,7 +1823,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 21:
     ///
     /// IfStatement: If %push(Expr) Expression %pop() IfBody;
     ///
@@ -1919,14 +1864,14 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 22:
     ///
-    /// Assignment: Let Variable AssignOp %push(Expr) Expression %pop();
+    /// Assignment: AssignmentOpt Variable AssignOp %push(Expr) Expression %pop();
     ///
     #[named]
-    fn assignment_0(
+    fn assignment(
         &mut self,
-        _let: &ParseTreeStackEntry<'t>,
+        _assignment_opt: &ParseTreeStackEntry<'t>,
         _variable: &ParseTreeStackEntry<'t>,
         _assign_op: &ParseTreeStackEntry<'t>,
         _expression: &ParseTreeStackEntry<'t>,
@@ -1949,64 +1894,62 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Variable", context));
         };
+        let assignment_opt = if let Some(ASTType::AssignmentOpt(assignment_opt)) = self.pop(context)
+        {
+            assignment_opt
+        } else {
+            return Err(miette!("{}: Expecting ASTType::AssignmentOpt", context));
+        };
+        let assignment_built = AssignmentBuilder::default()
+            .assignment_opt(Box::new(assignment_opt))
+            .variable(Box::new(variable))
+            .assign_op(Box::new(assign_op))
+            .expression(Box::new(expression))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.assignment(&assignment_built)?;
+        self.push(ASTType::Assignment(assignment_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 23:
+    ///
+    /// AssignmentOpt: Let;
+    ///
+    #[named]
+    fn assignment_opt_0(
+        &mut self,
+        _let: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
         let r#let = if let Some(ASTType::Let(r#let)) = self.pop(context) {
             r#let
         } else {
             return Err(miette!("{}: Expecting ASTType::Let", context));
         };
-        let assignment_0_built = Assignment0Builder::default()
+        let assignment_opt_0_built = AssignmentOpt0Builder::default()
             .r#let(Box::new(r#let))
-            .variable(Box::new(variable))
-            .assign_op(Box::new(assign_op))
-            .expression(Box::new(expression))
             .build()
             .into_diagnostic()?;
-        let assignment_0_built = Assignment::Assignment0(assignment_0_built);
-        // Calling user action here
-        self.user_grammar.assignment(&assignment_0_built)?;
-        self.push(ASTType::Assignment(assignment_0_built), context);
+        let assignment_opt_0_built = AssignmentOpt::AssignmentOpt0(assignment_opt_0_built);
+        self.push(ASTType::AssignmentOpt(assignment_opt_0_built), context);
         Ok(())
     }
 
     /// Semantic action for production 24:
     ///
-    /// Assignment: Variable AssignOp %push(Expr) Expression %pop();
+    /// AssignmentOpt: ;
     ///
     #[named]
-    fn assignment_1(
-        &mut self,
-        _variable: &ParseTreeStackEntry<'t>,
-        _assign_op: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
-        };
-        let assign_op = if let Some(ASTType::AssignOp(assign_op)) = self.pop(context) {
-            assign_op
-        } else {
-            return Err(miette!("{}: Expecting ASTType::AssignOp", context));
-        };
-        let variable = if let Some(ASTType::Variable(variable)) = self.pop(context) {
-            variable
-        } else {
-            return Err(miette!("{}: Expecting ASTType::Variable", context));
-        };
-        let assignment_1_built = Assignment1Builder::default()
-            .variable(Box::new(variable))
-            .assign_op(Box::new(assign_op))
-            .expression(Box::new(expression))
-            .build()
-            .into_diagnostic()?;
-        let assignment_1_built = Assignment::Assignment1(assignment_1_built);
-        // Calling user action here
-        self.user_grammar.assignment(&assignment_1_built)?;
-        self.push(ASTType::Assignment(assignment_1_built), context);
+        let assignment_opt_1_built = AssignmentOpt1Builder::default().build().into_diagnostic()?;
+        let assignment_opt_1_built = AssignmentOpt::AssignmentOpt1(assignment_opt_1_built);
+        self.push(ASTType::AssignmentOpt(assignment_opt_1_built), context);
         Ok(())
     }
 
@@ -3060,12 +3003,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// LogicalNot: LogicalNotOp Relational;
+    /// LogicalNot: LogicalNotOpt Relational;
     ///
     #[named]
-    fn logical_not_0(
+    fn logical_not(
         &mut self,
-        _logical_not_op: &ParseTreeStackEntry<'t>,
+        _logical_not_opt: &ParseTreeStackEntry<'t>,
         _relational: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -3076,53 +3019,65 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Relational", context));
         };
+        let logical_not_opt =
+            if let Some(ASTType::LogicalNotOpt(logical_not_opt)) = self.pop(context) {
+                logical_not_opt
+            } else {
+                return Err(miette!("{}: Expecting ASTType::LogicalNotOpt", context));
+            };
+        let logical_not_built = LogicalNotBuilder::default()
+            .logical_not_opt(Box::new(logical_not_opt))
+            .relational(Box::new(relational))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.logical_not(&logical_not_built)?;
+        self.push(ASTType::LogicalNot(logical_not_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 66:
+    ///
+    /// LogicalNotOpt: LogicalNotOp;
+    ///
+    #[named]
+    fn logical_not_opt_0(
+        &mut self,
+        _logical_not_op: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
         let logical_not_op = if let Some(ASTType::LogicalNotOp(logical_not_op)) = self.pop(context)
         {
             logical_not_op
         } else {
             return Err(miette!("{}: Expecting ASTType::LogicalNotOp", context));
         };
-        let logical_not_0_built = LogicalNot0Builder::default()
+        let logical_not_opt_0_built = LogicalNotOpt0Builder::default()
             .logical_not_op(Box::new(logical_not_op))
-            .relational(Box::new(relational))
             .build()
             .into_diagnostic()?;
-        let logical_not_0_built = LogicalNot::LogicalNot0(logical_not_0_built);
-        // Calling user action here
-        self.user_grammar.logical_not(&logical_not_0_built)?;
-        self.push(ASTType::LogicalNot(logical_not_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 66:
-    ///
-    /// LogicalNot: Relational;
-    ///
-    #[named]
-    fn logical_not_1(
-        &mut self,
-        _relational: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let relational = if let Some(ASTType::Relational(relational)) = self.pop(context) {
-            relational
-        } else {
-            return Err(miette!("{}: Expecting ASTType::Relational", context));
-        };
-        let logical_not_1_built = LogicalNot1Builder::default()
-            .relational(Box::new(relational))
-            .build()
-            .into_diagnostic()?;
-        let logical_not_1_built = LogicalNot::LogicalNot1(logical_not_1_built);
-        // Calling user action here
-        self.user_grammar.logical_not(&logical_not_1_built)?;
-        self.push(ASTType::LogicalNot(logical_not_1_built), context);
+        let logical_not_opt_0_built = LogicalNotOpt::LogicalNotOpt0(logical_not_opt_0_built);
+        self.push(ASTType::LogicalNotOpt(logical_not_opt_0_built), context);
         Ok(())
     }
 
     /// Semantic action for production 67:
+    ///
+    /// LogicalNotOpt: ;
+    ///
+    #[named]
+    fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let logical_not_opt_1_built = LogicalNotOpt1Builder::default().build().into_diagnostic()?;
+        let logical_not_opt_1_built = LogicalNotOpt::LogicalNotOpt1(logical_not_opt_1_built);
+        self.push(ASTType::LogicalNotOpt(logical_not_opt_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 68:
     ///
     /// Relational: Summation RelationalList /* Vec */;
     ///
@@ -3158,7 +3113,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 69:
     ///
     /// RelationalList: RelationalOp Summation RelationalList; // Vec<T>::Push
     ///
@@ -3199,7 +3154,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 70:
     ///
     /// RelationalList: ; // Vec<T>::New
     ///
@@ -3212,7 +3167,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 71:
     ///
     /// Summation: Multiplication SummationList /* Vec */;
     ///
@@ -3249,7 +3204,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 72:
     ///
     /// SummationList: SummationListGroup Multiplication SummationList; // Vec<T>::Push
     ///
@@ -3295,7 +3250,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 72:
+    /// Semantic action for production 73:
     ///
     /// SummationListGroup: Plus;
     ///
@@ -3325,7 +3280,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 74:
     ///
     /// SummationListGroup: Minus;
     ///
@@ -3355,7 +3310,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 74:
+    /// Semantic action for production 75:
     ///
     /// SummationList: ; // Vec<T>::New
     ///
@@ -3368,7 +3323,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 75:
+    /// Semantic action for production 76:
     ///
     /// Multiplication: Factor MultiplicationList /* Vec */;
     ///
@@ -3407,7 +3362,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 76:
+    /// Semantic action for production 77:
     ///
     /// MultiplicationList: MulOp Factor MultiplicationList; // Vec<T>::Push
     ///
@@ -3451,7 +3406,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 77:
+    /// Semantic action for production 78:
     ///
     /// MultiplicationList: ; // Vec<T>::New
     ///
@@ -3467,7 +3422,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 78:
+    /// Semantic action for production 79:
     ///
     /// Factor: Literal;
     ///
@@ -3495,7 +3450,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 79:
+    /// Semantic action for production 80:
     ///
     /// Factor: Variable;
     ///
@@ -3523,7 +3478,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 80:
+    /// Semantic action for production 81:
     ///
     /// Factor: Minus Factor;
     ///
@@ -3558,7 +3513,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 81:
+    /// Semantic action for production 82:
     ///
     /// Factor: LParen Expression RParen;
     ///
@@ -3622,43 +3577,43 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.basic_0(&children[0], &children[1], &children[2], parse_tree),
-            1 => self.basic_1(
+            0 => self.basic(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            2 => self.basic_suffix0_0(&children[0], parse_tree),
-            3 => self.basic_suffix0_1(parse_tree),
-            4 => self.basic_suffix_0(&children[0], parse_tree),
-            5 => self.basic_suffix_1(parse_tree),
-            6 => self.basic_list_0(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.basic_list_1(parse_tree),
-            8 => self.line(&children[0], &children[1], &children[2], parse_tree),
-            9 => self.line_list_0(&children[0], &children[1], &children[2], parse_tree),
-            10 => self.line_list_1(parse_tree),
-            11 => self.line_number(&children[0], parse_tree),
-            12 => self.statement_0(&children[0], parse_tree),
-            13 => self.statement_1(&children[0], parse_tree),
-            14 => self.statement_2(&children[0], parse_tree),
-            15 => self.statement_3(&children[0], parse_tree),
-            16 => self.statement_4(&children[0], parse_tree),
-            17 => self.statement_5(&children[0], parse_tree),
-            18 => self.remark(&children[0], &children[1], parse_tree),
-            19 => self.remark_suffix_0(&children[0], parse_tree),
-            20 => self.remark_suffix_1(parse_tree),
-            21 => self.goto_statement(&children[0], &children[1], parse_tree),
-            22 => self.if_statement(&children[0], &children[1], &children[2], parse_tree),
-            23 => self.assignment_0(
+            1 => self.basic_suffix_0(&children[0], parse_tree),
+            2 => self.basic_suffix_1(parse_tree),
+            3 => self.basic_list_0(&children[0], &children[1], &children[2], parse_tree),
+            4 => self.basic_list_1(parse_tree),
+            5 => self.basic_opt_0(&children[0], parse_tree),
+            6 => self.basic_opt_1(parse_tree),
+            7 => self.line(&children[0], &children[1], &children[2], parse_tree),
+            8 => self.line_list_0(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.line_list_1(parse_tree),
+            10 => self.line_number(&children[0], parse_tree),
+            11 => self.statement_0(&children[0], parse_tree),
+            12 => self.statement_1(&children[0], parse_tree),
+            13 => self.statement_2(&children[0], parse_tree),
+            14 => self.statement_3(&children[0], parse_tree),
+            15 => self.statement_4(&children[0], parse_tree),
+            16 => self.statement_5(&children[0], parse_tree),
+            17 => self.remark(&children[0], &children[1], parse_tree),
+            18 => self.remark_opt_0(&children[0], parse_tree),
+            19 => self.remark_opt_1(parse_tree),
+            20 => self.goto_statement(&children[0], &children[1], parse_tree),
+            21 => self.if_statement(&children[0], &children[1], &children[2], parse_tree),
+            22 => self.assignment(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            24 => self.assignment_1(&children[0], &children[1], &children[2], parse_tree),
+            23 => self.assignment_opt_0(&children[0], parse_tree),
+            24 => self.assignment_opt_1(parse_tree),
             25 => self.if_body_0(&children[0], &children[1], parse_tree),
             26 => self.if_body_1(&children[0], &children[1], parse_tree),
             27 => self.print_statement(&children[0], &children[1], &children[2], parse_tree),
@@ -3699,23 +3654,24 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             62 => self.logical_and(&children[0], &children[1], parse_tree),
             63 => self.logical_and_list_0(&children[0], &children[1], &children[2], parse_tree),
             64 => self.logical_and_list_1(parse_tree),
-            65 => self.logical_not_0(&children[0], &children[1], parse_tree),
-            66 => self.logical_not_1(&children[0], parse_tree),
-            67 => self.relational(&children[0], &children[1], parse_tree),
-            68 => self.relational_list_0(&children[0], &children[1], &children[2], parse_tree),
-            69 => self.relational_list_1(parse_tree),
-            70 => self.summation(&children[0], &children[1], parse_tree),
-            71 => self.summation_list_0(&children[0], &children[1], &children[2], parse_tree),
-            72 => self.summation_list_group_0(&children[0], parse_tree),
-            73 => self.summation_list_group_1(&children[0], parse_tree),
-            74 => self.summation_list_1(parse_tree),
-            75 => self.multiplication(&children[0], &children[1], parse_tree),
-            76 => self.multiplication_list_0(&children[0], &children[1], &children[2], parse_tree),
-            77 => self.multiplication_list_1(parse_tree),
-            78 => self.factor_0(&children[0], parse_tree),
-            79 => self.factor_1(&children[0], parse_tree),
-            80 => self.factor_2(&children[0], &children[1], parse_tree),
-            81 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
+            65 => self.logical_not(&children[0], &children[1], parse_tree),
+            66 => self.logical_not_opt_0(&children[0], parse_tree),
+            67 => self.logical_not_opt_1(parse_tree),
+            68 => self.relational(&children[0], &children[1], parse_tree),
+            69 => self.relational_list_0(&children[0], &children[1], &children[2], parse_tree),
+            70 => self.relational_list_1(parse_tree),
+            71 => self.summation(&children[0], &children[1], parse_tree),
+            72 => self.summation_list_0(&children[0], &children[1], &children[2], parse_tree),
+            73 => self.summation_list_group_0(&children[0], parse_tree),
+            74 => self.summation_list_group_1(&children[0], parse_tree),
+            75 => self.summation_list_1(parse_tree),
+            76 => self.multiplication(&children[0], &children[1], parse_tree),
+            77 => self.multiplication_list_0(&children[0], &children[1], &children[2], parse_tree),
+            78 => self.multiplication_list_1(parse_tree),
+            79 => self.factor_0(&children[0], parse_tree),
+            80 => self.factor_1(&children[0], parse_tree),
+            81 => self.factor_2(&children[0], &children[1], parse_tree),
+            82 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

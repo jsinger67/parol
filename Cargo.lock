@@ -514,9 +514,9 @@ checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
 
 [[package]]
 name = "parol"
-version = "0.8.3"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4270888de1ace85b091ff44366bf3d7ff02354fc4edf95413face656a74f0bdb"
+checksum = "47a98718414bf87dada08ed9d65e9cb4bc39e073d2e445e9c0cd669062483e30"
 dependencies = [
  "bart",
  "bart_derive",
@@ -537,9 +537,6 @@ dependencies = [
  "rand_regex",
  "regex",
  "regex-syntax",
- "serde",
- "serde_derive",
- "serde_json",
  "syn 1.0.93",
  "thiserror",
 ]

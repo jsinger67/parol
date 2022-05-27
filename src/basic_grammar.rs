@@ -101,10 +101,7 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn process_basic(&mut self, basic: &Basic<'t>) -> Result<()> {
-        match basic {
-            Basic::Basic0(b0) => self.process_lines(&b0.line, &b0.basic_list),
-            Basic::Basic1(b1) => self.process_lines(&b1.line, &b1.basic_list),
-        }
+        self.process_lines(&basic.line, &basic.basic_list)
     }
 
     fn process_lines(
@@ -282,28 +279,10 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_assign(&mut self, assign: &Statement3) -> Result<()> {
         let context = "process_assign";
-        match &*assign.assignment {
-            Assignment::Assignment0(Assignment0 {
-                variable,
-                expression,
-                ..
-            }) => {
-                let value = self.process_expression(&*expression)?;
-                let symbol = variable.variable.symbol;
-                trace!("{context}: {symbol} = {value}");
-                self.set_value(symbol, context, value)
-            }
-            Assignment::Assignment1(Assignment1 {
-                variable,
-                expression,
-                ..
-            }) => {
-                let value = self.process_expression(&*expression)?;
-                let symbol = variable.variable.symbol;
-                trace!("{context}: {symbol} = {value}");
-                self.set_value(symbol, context, value)
-            }
-        }
+        let value = self.process_expression(&*assign.assignment.expression)?;
+        let symbol = assign.assignment.variable.variable.symbol;
+        trace!("{context}: {symbol} = {value}");
+        self.set_value(symbol, context, value);
         Ok(())
     }
 
@@ -352,13 +331,13 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_logical_not(&mut self, logical_not: &LogicalNot) -> Result<DefinitionRange> {
         let context = "process_logical_not";
-        match logical_not {
-            LogicalNot::LogicalNot0(not) => {
-                let result = self.process_relational(&*not.relational)?;
+        match &*logical_not.logical_not_opt {
+            LogicalNotOpt::LogicalNotOpt0(not) => {
+                let result = self.process_relational(&*logical_not.relational)?;
                 let op: UnaryOperator = not.logical_not_op.logical_not_op.symbol.try_into()?;
                 UnaryOperator::apply_unary_operation(&op, result, context)
             }
-            LogicalNot::LogicalNot1(not) => self.process_relational(&*not.relational),
+            LogicalNotOpt::LogicalNotOpt1(_) => self.process_relational(&*logical_not.relational),
         }
     }
 
