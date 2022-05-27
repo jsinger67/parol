@@ -1,5 +1,6 @@
 use crate::generators::grammar_config::FnScannerStateResolver;
-use crate::{generate_name, group_by, Cfg, GrammarConfig, Pr, Rhs, Symbol};
+use crate::{generate_name, Cfg, GrammarConfig, Pr, Rhs, Symbol};
+use itertools::Itertools;
 use log::trace;
 use miette::Result;
 use std::collections::hash_map::HashMap;
@@ -116,12 +117,10 @@ where
 /// Finds the longest left prefixes in rules given.
 /// Can be used to factor out these left prefixes later.
 fn find_longest_prefixes(rules: &[Pr]) -> Vec<(String, Rhs)> {
-    let rule_groups = group_by(rules, |r| r.get_n_str().to_owned());
-    rule_groups.iter().fold(Vec::new(), |mut acc, e| {
-        let (rule_name, rules) = &e;
+    let rule_groups = rules.iter().group_by(|r| r.get_n_str().to_owned());
+    rule_groups.into_iter().fold(Vec::new(), |mut acc, (rule_name, rules)| {
         let prefix = find_prefix(
             &rules
-                .iter()
                 .map(|r| r.get_r().clone())
                 .collect::<Vec<Rhs>>(),
         );
