@@ -221,13 +221,16 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
     fn extract_optional_in_productions(
         prods: &mut [Production],
         exclusions: &[String],
-    ) -> Option<(String, Alternations)> {
+    ) -> Option<(String, ProductionIndex, Alternations)> {
+        let mut prod_num = 0;
+        #[allow(clippy::explicit_counter_loop)]
         for prod in prods {
             if let Some((name, alts)) =
                 extract_optional_in_production(prod, prod.lhs.clone(), exclusions)
             {
-                return Some((name, alts));
+                return Some((name, prod_num, alts));
             }
+            prod_num += 1;
         }
         None
     }
@@ -235,17 +238,18 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
     let mut modified = true;
     let mut productions = opd.productions;
 
-    let exclusions = variable_names(&productions);
-
     while modified {
-        if let Some((name, alts)) = extract_optional_in_productions(&mut productions, &exclusions) {
+        let exclusions = variable_names(&productions);
+        if let Some((name, prod_num, alts)) =
+            extract_optional_in_productions(&mut productions, &exclusions)
+        {
             modified = true;
             // Add the new optional productions
-            productions.push(Production::new(name.clone(), alts));
-            productions.push(Production::new(
-                name,
-                Alternations(vec![Alternation::new()]),
-            ));
+            productions.insert(
+                prod_num + 1,
+                Production::new(name.clone(), Alternations(vec![Alternation::new()])),
+            );
+            productions.insert(prod_num + 1, Production::new(name, alts));
         } else {
             modified = false;
         }

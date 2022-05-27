@@ -6,12 +6,39 @@ use id_tree::Tree;
 use id_tree_layout::Layouter;
 use miette::{IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::ParseTreeType;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::Debug;
 use std::fs;
+use std::hash::Hash;
 use std::path::Path;
 
 pub mod str_vec;
+
+/// Applies a key-generating function to each element of a vector and yields a vector of
+/// pairs. Each pair consists of a unique key and a vector of all elements of the input
+/// vector which did produce this key by applying the projection function.
+/// The result vector is not sorted.
+pub(crate) fn group_by<P, T, K>(data: &[T], projection: P) -> Vec<(K, Vec<T>)>
+where
+    P: Fn(&T) -> K,
+    K: Eq + Hash,
+    T: Clone,
+{
+    let mut grouping: HashMap<K, Vec<T>> = HashMap::new();
+    data.iter()
+        .fold(&mut grouping, |acc, t| {
+            let key = projection(t);
+            if let Some(vt) = acc.get_mut(&key) {
+                vt.push(t.clone());
+            } else {
+                acc.insert(key, vec![t.clone()]);
+            }
+            acc
+        })
+        .drain()
+        .collect()
+}
 
 /// Generates a new unique name avoiding collisions with the names given in the 'exclusions'.
 /// It takes a preferred name and if it collides it adds an increasing suffix number.
