@@ -2,5 +2,6 @@
 
 %%
 
-Start: "a";
-Start: ;
+Start: StartOpt /* Option */;
+StartOpt: "a"; // Option<T>::Some
+StartOpt: ; // Option<T>::None

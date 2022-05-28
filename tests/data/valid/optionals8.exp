@@ -2,10 +2,10 @@
 
 %%
 
-/* 0 */ Start: "x" StartSuffix;
-/* 1 */ StartSuffix: StartOpt "y";
-/* 2 */ StartSuffix: "y";
-/* 3 */ StartOpt: "a";
-/* 4 */ StartOpt: "b";
-/* 5 */ StartOpt: "c";
-/* 6 */ StartOpt: "d";
+/* 0 */ Start: "x" StartOpt /* Option */ "y";
+/* 1 */ StartOpt: StartOptGroup; // Option<T>::Some
+/* 2 */ StartOptGroup: "a";
+/* 3 */ StartOptGroup: "b";
+/* 4 */ StartOptGroup: "c";
+/* 5 */ StartOptGroup: "d";
+/* 6 */ StartOpt: ; // Option<T>::None

@@ -62,9 +62,9 @@ impl Factor {
 impl Display for Factor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Self::Group(g) => write!(f, "({})", g),
-            Self::Repeat(r) => write!(f, "{{{}}}", r),
-            Self::Optional(o) => write!(f, "[{}]", o),
+            Self::Group(g) => write!(f, "G({})", g),
+            Self::Repeat(r) => write!(f, "R{{{}}}", r),
+            Self::Optional(o) => write!(f, "O[{}]", o),
             Self::Terminal(t, s) => write!(
                 f,
                 "<{}>T({})",

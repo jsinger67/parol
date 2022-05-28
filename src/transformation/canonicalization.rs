@@ -4,6 +4,7 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::{Alternation, Alternations, Factor, ParolGrammarItem, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
+// $env:RUST_LOG="parol::transformation::canonicalization=trace"
 use log::trace;
 use miette::{bail, Result};
 use regex::Regex;
@@ -170,11 +171,13 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
         for factor in &mut alt.0 {
             match factor.clone() {
                 Factor::Group(_) | Factor::Repeat(_) => {
-                    return extract_optional_in_alts(
+                    if let Some((name, alts)) = extract_optional_in_alts(
                         factor.inner_alts_mut().expect("Should always succeed"),
-                        non_terminal,
+                        non_terminal.clone(),
                         exclusions,
-                    )
+                    ) {
+                        return Some((name, alts));
+                    }
                 }
                 Factor::Optional(alts) => {
                     let preferred_name = if RX_OPT_WITH_NUM_SUFFIX.is_match(&non_terminal) {
@@ -435,18 +438,17 @@ fn eliminate_repetitions(opd: TransformationOperand) -> TransformationOperand {
     let mut modified = opd.modified;
     let mut productions = opd.productions;
 
-    // $env:RUST_LOG="parol::transformation::canonicalization=trace"
-    trace!(
-        "\nTry to remove repetitions\n{}",
-        format_productions(&productions)
-    );
+    // trace!(
+    //     "\nTry to remove repetitions\n{}",
+    //     format_productions(&productions)
+    // );
 
     while eliminate_repetition(&mut productions) {
         modified |= true;
-        trace!(
-            "\nRemoved repetitions\n{}",
-            format_productions(&productions)
-        );
+        // trace!(
+        //     "\nRemoved repetitions\n{}",
+        //     format_productions(&productions)
+        // );
     }
     TransformationOperand {
         modified,
@@ -726,6 +728,11 @@ fn eliminate_duplicates(opd: TransformationOperand) -> TransformationOperand {
 // The input order should be preserved as much as possible.
 // -------------------------------------------------------------------------
 fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
+    trace!(
+        "\nStarting transformation\n{}",
+        format_productions(&productions)
+    );
+
     let mut operand = TransformationOperand {
         modified: true,
         productions,

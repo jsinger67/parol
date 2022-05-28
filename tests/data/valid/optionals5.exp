@@ -2,6 +2,6 @@
 
 %%
 
-/* 0 */ Start: "x" StartSuffix;
-/* 1 */ StartSuffix: "a" "y";
-/* 2 */ StartSuffix: "y";
+/* 0 */ Start: "x" StartOpt /* Option */ "y";
+/* 1 */ StartOpt: "a"; // Option<T>::Some
+/* 2 */ StartOpt: ; // Option<T>::None

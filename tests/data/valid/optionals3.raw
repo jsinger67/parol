@@ -2,8 +2,9 @@
 
 %%
 
-Start: StartOpt;
-Start: ;
-StartOpt: "a";
-StartOpt: "b";
-StartOpt: "c";
+Start: StartOpt /* Option */;
+StartOpt: StartOptGroup; // Option<T>::Some
+StartOptGroup: "a";
+StartOptGroup: "b";
+StartOptGroup: "c";
+StartOpt: ; // Option<T>::None
