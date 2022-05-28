@@ -108,12 +108,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 9] = &[
-    // 0 - List: ListOpt;
+    // 0 - List: ListOpt /* Option */;
     Production {
         lhs: 0,
         production: &[ParseType::N(1)],
     },
-    // 1 - ListOpt: Num ListRest ListOpt0;
+    // 1 - ListOpt: Num ListRest ListOpt0 /* Option */;
     Production {
         lhs: 1,
         production: &[ParseType::N(2), ParseType::N(3), ParseType::N(5)],
@@ -133,7 +133,7 @@ pub const PRODUCTIONS: &[Production; 9] = &[
         lhs: 1,
         production: &[],
     },
-    // 5 - ListRest: ListRestOpt;
+    // 5 - ListRest: ListRestOpt /* Option */;
     Production {
         lhs: 3,
         production: &[ParseType::N(4)],

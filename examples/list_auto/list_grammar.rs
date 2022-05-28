@@ -1,7 +1,4 @@
-use crate::list_grammar_trait::{
-    List, ListGrammarTrait, ListOpt, ListOpt0, ListOptList, TrailingComma, TrailingCommaOpt,
-    TrailingCommaOpt0,
-};
+use crate::list_grammar_trait::{List, ListGrammarTrait, ListOpt, ListOptList, TrailingComma};
 use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -21,26 +18,26 @@ impl ListGrammar<'_> {
 
 impl Display for List<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "[{}{}]", self.list_opt, self.trailing_comma)
+        if let Some(list) = &self.list_opt {
+            write!(f, "[{}{}]", list, self.trailing_comma)
+        } else {
+            write!(f, "[{}]", self.trailing_comma)
+        }
     }
 }
 
 impl Display for ListOpt<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        if let ListOpt::ListOpt0(ListOpt0 { num, list_opt_list }) = self {
-            write!(
-                f,
-                "{}{}",
-                num.num.symbol,
-                list_opt_list
-                    .iter()
-                    .map(|e| format!("{}", e))
-                    .collect::<Vec<std::string::String>>()
-                    .join("")
-            )
-        } else {
-            Ok(())
-        }
+        write!(
+            f,
+            "{}{}",
+            self.num.num.symbol,
+            self.list_opt_list
+                .iter()
+                .map(|e| format!("{}", e))
+                .collect::<Vec<std::string::String>>()
+                .join("")
+        )
     }
 }
 
@@ -52,10 +49,8 @@ impl Display for ListOptList<'_> {
 
 impl Display for TrailingComma<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        if let TrailingCommaOpt::TrailingCommaOpt0(TrailingCommaOpt0 { comma }) =
-            *self.trailing_comma_opt
-        {
-            write!(f, "{}", comma.symbol)
+        if let Some(comma) = &self.trailing_comma_opt {
+            write!(f, "{}", comma.comma.symbol)
         } else {
             Ok(())
         }

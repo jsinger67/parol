@@ -183,8 +183,10 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
                         format!("{}Opt", non_terminal)
                     };
                     let new_opt_production_name = generate_name(exclusions, preferred_name);
-                    *factor =
-                        Factor::NonTerminal(new_opt_production_name.clone(), SymbolAttribute::None);
+                    *factor = Factor::NonTerminal(
+                        new_opt_production_name.clone(),
+                        SymbolAttribute::Option,
+                    );
                     trace!(
                         "Extracting optional {} into production {}",
                         alts.to_par(),
@@ -257,9 +259,23 @@ fn extract_options(opd: TransformationOperand) -> TransformationOperand {
             // Add the new optional productions
             productions.insert(
                 prod_num + 1,
-                Production::new(name.clone(), Alternations(vec![Alternation::new()])),
+                Production::new(
+                    name.clone(),
+                    Alternations(vec![
+                        Alternation::new().with_attribute(ProductionAttribute::OptionalNone)
+                    ]),
+                ),
             );
-            productions.insert(prod_num + 1, Production::new(name, alts));
+            productions.insert(
+                prod_num + 1,
+                Production::new(
+                    name,
+                    Alternations(vec![Alternation(
+                        vec![Factor::Group(alts)],
+                        ProductionAttribute::OptionalSome,
+                    )]),
+                ),
+            );
         } else {
             modified = false;
         }

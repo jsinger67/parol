@@ -52,6 +52,9 @@ pub struct GrammarTypeInfo {
 
     // Contains non-terminals that should be represented as vectors in the AST Enum type
     vector_typed_non_terminals: HashSet<String>,
+
+    // Contains non-terminals that should be represented as options in the AST Enum type
+    option_typed_non_terminals: HashSet<String>,
 }
 
 impl GrammarTypeInfo {
@@ -240,6 +243,12 @@ impl GrammarTypeInfo {
                 return self
                     .symbol_table
                     .insert_global_type(non_terminal, TypeEntrails::Struct);
+            } else if semantics[0] == ProductionAttribute::OptionalNone
+                || semantics[0] == ProductionAttribute::OptionalSome
+            {
+                return self
+                    .symbol_table
+                    .insert_global_type(non_terminal, TypeEntrails::Struct);
             }
         }
         match alternatives.len() {
@@ -270,6 +279,7 @@ impl GrammarTypeInfo {
 
     fn finish_non_terminal_type(&mut self, nt: &str) -> Result<()> {
         let mut vector_typed_non_terminal_opt = None;
+        let mut option_typed_non_terminal_opt = None;
 
         let actions = self.matching_actions(nt).iter().fold(
             Ok(Vec::new()),
@@ -304,6 +314,24 @@ impl GrammarTypeInfo {
             let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             // Copy the arguments as struct members
             self.arguments_to_struct_members(&arguments, non_terminal_type)?;
+        } else if actions.len() == 2
+            && (actions[0].1 == ProductionAttribute::OptionalNone
+                || actions[0].1 == ProductionAttribute::OptionalSome)
+        {
+            let primary_action = match (&actions[0].1, &actions[1].1) {
+                (ProductionAttribute::OptionalSome, ProductionAttribute::OptionalNone) => {
+                    actions[0].0
+                }
+                (ProductionAttribute::OptionalNone, ProductionAttribute::OptionalSome) => {
+                    actions[1].0
+                }
+                _ => bail!("Unexpected combination of production attributes"),
+            };
+            let arguments = self.arguments(primary_action)?;
+            option_typed_non_terminal_opt = Some(nt.to_string());
+            let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
+            // Copy the arguments as struct members
+            self.arguments_to_struct_members(&arguments, non_terminal_type)?;
         } else {
             // This is the "enum case". We generate an enum variant for each production with a name
             // built from the nt name plus the relative number and the variant's content is the
@@ -326,6 +354,11 @@ impl GrammarTypeInfo {
         if let Some(vector_typed_non_terminal) = vector_typed_non_terminal_opt {
             self.vector_typed_non_terminals
                 .insert(vector_typed_non_terminal);
+        }
+
+        if let Some(option_typed_non_terminal) = option_typed_non_terminal_opt {
+            self.option_typed_non_terminals
+                .insert(option_typed_non_terminal);
         }
 
         Ok(())
@@ -453,8 +486,7 @@ impl GrammarTypeInfo {
                 match a {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
-                    SymbolAttribute::OptionalSome(_) => todo!(),
-                    SymbolAttribute::OptionalNone(_) => todo!(),
+                    SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),
@@ -527,6 +559,14 @@ impl GrammarTypeInfo {
                             TypeEntrails::Vec(*nt.1),
                         )
                         .unwrap()
+                } else if self.option_typed_non_terminals.contains(nt.0) {
+                    self.symbol_table
+                        .get_or_create_type(
+                            SymbolTable::UNNAMED_TYPE,
+                            SymbolTable::GLOBAL_SCOPE,
+                            TypeEntrails::Option(*nt.1),
+                        )
+                        .unwrap()
                 } else {
                     *nt.1
                 };
@@ -585,6 +625,14 @@ impl Display for GrammarTypeInfo {
                 i,
                 self.symbol_table.symbol(*i).name(&self.symbol_table)
             )?;
+        }
+        writeln!(f, "// Vector non-terminals:")?;
+        for nt in &self.vector_typed_non_terminals {
+            writeln!(f, "{}", nt)?;
+        }
+        writeln!(f, "// Option non-terminals:")?;
+        for nt in &self.option_typed_non_terminals {
+            writeln!(f, "{}", nt)?;
         }
         Ok(())
     }

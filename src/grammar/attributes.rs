@@ -28,6 +28,10 @@ pub enum ProductionAttribute {
     CollectionStart,
     /// Add to a collection
     AddToCollection,
+    /// Some case of an optional
+    OptionalSome,
+    /// None case of an optional
+    OptionalNone,
 }
 
 impl Display for ProductionAttribute {
@@ -36,6 +40,8 @@ impl Display for ProductionAttribute {
             Self::None => write!(f, "-"),
             Self::CollectionStart => write!(f, "Vec<T>::New"),
             Self::AddToCollection => write!(f, "Vec<T>::Push"),
+            Self::OptionalSome => write!(f, "Option<T>::Some"),
+            Self::OptionalNone => write!(f, "Option<T>::None"),
         }
     }
 }
@@ -56,6 +62,8 @@ where
             Self::None => out.write_fmt(format_args!("{}", decoratee)),
             Self::CollectionStart => out.write_fmt(format_args!("{} // Vec<T>::New", decoratee)),
             Self::AddToCollection => out.write_fmt(format_args!("{} // Vec<T>::Push", decoratee)),
+            Self::OptionalSome => out.write_fmt(format_args!("{} // Option<T>::Some", decoratee)),
+            Self::OptionalNone => out.write_fmt(format_args!("{} // Option<T>::None", decoratee)),
         }
     }
 }
@@ -74,11 +82,8 @@ pub enum SymbolAttribute {
     /// this collection should be reversed.
     RepetitionAnchor,
 
-    /// 'Some case' of an Optional symbol
-    OptionalSome(OptionalId),
-
-    /// 'None case' of an Optional symbol
-    OptionalNone(OptionalId),
+    /// The symbol is an option with the inner type that is determined by the non-terminal
+    Option,
 }
 
 impl Display for SymbolAttribute {
@@ -86,8 +91,7 @@ impl Display for SymbolAttribute {
         match self {
             Self::None => Ok(()),
             Self::RepetitionAnchor => write!(f, "Vec<T>"),
-            Self::OptionalSome(id) => write!(f, "Opt({})", id.0),
-            Self::OptionalNone(id) => write!(f, "Opt({})", id.0),
+            Self::Option => write!(f, "Option<T>"),
         }
     }
 }
@@ -107,8 +111,7 @@ where
         match self {
             Self::None => out.write_fmt(format_args!("{}", decoratee)),
             Self::RepetitionAnchor => out.write_fmt(format_args!("{} /* Vec */", decoratee)),
-            Self::OptionalSome(_) => todo!(),
-            Self::OptionalNone(_) => todo!(),
+            Self::Option => out.write_fmt(format_args!("{} /* Option */", decoratee)),
         }
     }
 }

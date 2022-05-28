@@ -117,6 +117,8 @@ pub(crate) enum TypeEntrails {
     Trait,
     /// A trait function
     Function(Function),
+    /// An Option type
+    Option(SymbolId),
 }
 
 impl TypeEntrails {
@@ -158,12 +160,17 @@ impl TypeEntrails {
             ),
             TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
             TypeEntrails::Function(f) => f.format(my_type_name),
+            TypeEntrails::Option(o) => format!(
+                "Option<Box<{}{}>>",
+                symbol_table.symbol(*o).name(symbol_table),
+                symbol_table.lifetime(*o)
+            ),
         }
     }
 
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> Result<String> {
         match self {
-            TypeEntrails::Box(t) | TypeEntrails::Vec(t) => {
+            TypeEntrails::Box(t) | TypeEntrails::Vec(t) | TypeEntrails::Option(t) => {
                 Ok(symbol_table.symbol(*t).name(symbol_table))
             }
             _ => bail!("No inner name available!"),
@@ -246,8 +253,12 @@ impl Type {
         }
     }
 
+    // Used to suppress lifetime on the container types
     pub(crate) fn is_container(&self) -> bool {
-        matches!(self.entrails, TypeEntrails::Box(_) | TypeEntrails::Vec(_))
+        matches!(
+            self.entrails,
+            TypeEntrails::Box(_) | TypeEntrails::Vec(_) | TypeEntrails::Option(_)
+        )
     }
 
     pub(crate) fn sem(&self) -> SymbolAttribute {
@@ -352,9 +363,10 @@ impl Symbol {
                     .symbols
                     .iter()
                     .any(|e| symbol_table.has_lifetime(*e)),
-                TypeEntrails::Vec(t) | TypeEntrails::EnumVariant(t) | TypeEntrails::Box(t) => {
-                    symbol_table.has_lifetime(t)
-                }
+                TypeEntrails::Vec(t)
+                | TypeEntrails::EnumVariant(t)
+                | TypeEntrails::Box(t)
+                | TypeEntrails::Option(t) => symbol_table.has_lifetime(t),
             },
             Self::Instance(i) => symbol_table.has_lifetime(i.type_id),
         }

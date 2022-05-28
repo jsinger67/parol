@@ -39,47 +39,6 @@ pub trait ListGrammarTrait<'t> {
 // Output Types of productions deduced from the structure of the transformed grammar
 //
 
-///
-/// Type derived for production 1
-///
-/// ListOpt: Num ListOptList /* Vec */;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ListOpt0<'t> {
-    pub num: Box<Num<'t>>,
-    pub list_opt_list: Vec<ListOptList<'t>>,
-}
-
-///
-/// Type derived for production 4
-///
-/// ListOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ListOpt1 {}
-
-///
-/// Type derived for production 7
-///
-/// TrailingCommaOpt: ",";
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct TrailingCommaOpt0<'t> {
-    pub comma: Token<'t>, /* , */
-}
-
-///
-/// Type derived for production 8
-///
-/// TrailingCommaOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct TrailingCommaOpt1 {}
-
 // -------------------------------------------------------------------------------------------------
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
@@ -91,7 +50,7 @@ pub struct TrailingCommaOpt1 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct List<'t> {
-    pub list_opt: Box<ListOpt<'t>>,
+    pub list_opt: Option<Box<ListOpt<'t>>>,
     pub trailing_comma: Box<TrailingComma<'t>>,
 }
 
@@ -99,10 +58,10 @@ pub struct List<'t> {
 /// Type derived for non-terminal ListOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum ListOpt<'t> {
-    ListOpt0(ListOpt0<'t>),
-    ListOpt1(ListOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct ListOpt<'t> {
+    pub num: Box<Num<'t>>,
+    pub list_opt_list: Vec<ListOptList<'t>>,
 }
 
 ///
@@ -130,17 +89,16 @@ pub struct Num<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TrailingComma<'t> {
-    pub trailing_comma_opt: Box<TrailingCommaOpt<'t>>,
+    pub trailing_comma_opt: Option<Box<TrailingCommaOpt<'t>>>,
 }
 
 ///
 /// Type derived for non-terminal TrailingCommaOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum TrailingCommaOpt<'t> {
-    TrailingCommaOpt0(TrailingCommaOpt0<'t>),
-    TrailingCommaOpt1(TrailingCommaOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct TrailingCommaOpt<'t> {
+    pub comma: Token<'t>, /* , */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -152,11 +110,11 @@ pub enum TrailingCommaOpt<'t> {
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
     List(List<'t>),
-    ListOpt(ListOpt<'t>),
+    ListOpt(Option<Box<ListOpt<'t>>>),
     ListOptList(Vec<ListOptList<'t>>),
     Num(Num<'t>),
     TrailingComma(TrailingComma<'t>),
-    TrailingCommaOpt(TrailingCommaOpt<'t>),
+    TrailingCommaOpt(Option<Box<TrailingCommaOpt<'t>>>),
 }
 
 /// Auto-implemented adapter grammar
@@ -227,7 +185,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// List: ListOpt TrailingComma;
+    /// List: ListOpt /* Option */ TrailingComma;
     ///
     #[named]
     fn list(
@@ -250,7 +208,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
             return Err(miette!("{}: Expecting ASTType::ListOpt", context));
         };
         let list_built = ListBuilder::default()
-            .list_opt(Box::new(list_opt))
+            .list_opt(list_opt)
             .trailing_comma(Box::new(trailing_comma))
             .build()
             .into_diagnostic()?;
@@ -262,7 +220,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt: Num ListOptList /* Vec */;
+    /// ListOpt: Num ListOptList /* Vec */; // Option<T>::Some
     ///
     #[named]
     fn list_opt_0(
@@ -285,13 +243,12 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         } else {
             return Err(miette!("{}: Expecting ASTType::Num", context));
         };
-        let list_opt_0_built = ListOpt0Builder::default()
+        let list_opt_0_built = ListOptBuilder::default()
             .num(Box::new(num))
             .list_opt_list(list_opt_list)
             .build()
             .into_diagnostic()?;
-        let list_opt_0_built = ListOpt::ListOpt0(list_opt_0_built);
-        self.push(ASTType::ListOpt(list_opt_0_built), context);
+        self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
         Ok(())
     }
 
@@ -347,15 +304,13 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ListOpt: ;
+    /// ListOpt: ; // Option<T>::None
     ///
     #[named]
     fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let list_opt_1_built = ListOpt1Builder::default().build().into_diagnostic()?;
-        let list_opt_1_built = ListOpt::ListOpt1(list_opt_1_built);
-        self.push(ASTType::ListOpt(list_opt_1_built), context);
+        self.push(ASTType::ListOpt(None), context);
         Ok(())
     }
 
@@ -381,7 +336,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// TrailingComma: TrailingCommaOpt;
+    /// TrailingComma: TrailingCommaOpt /* Option */;
     ///
     #[named]
     fn trailing_comma(
@@ -398,7 +353,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
                 return Err(miette!("{}: Expecting ASTType::TrailingCommaOpt", context));
             };
         let trailing_comma_built = TrailingCommaBuilder::default()
-            .trailing_comma_opt(Box::new(trailing_comma_opt))
+            .trailing_comma_opt(trailing_comma_opt)
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -409,7 +364,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// TrailingCommaOpt: ",";
+    /// TrailingCommaOpt: ","; // Option<T>::Some
     ///
     #[named]
     fn trailing_comma_opt_0(
@@ -420,14 +375,12 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comma = *comma.token(parse_tree)?;
-        let trailing_comma_opt_0_built = TrailingCommaOpt0Builder::default()
+        let trailing_comma_opt_0_built = TrailingCommaOptBuilder::default()
             .comma(comma)
             .build()
             .into_diagnostic()?;
-        let trailing_comma_opt_0_built =
-            TrailingCommaOpt::TrailingCommaOpt0(trailing_comma_opt_0_built);
         self.push(
-            ASTType::TrailingCommaOpt(trailing_comma_opt_0_built),
+            ASTType::TrailingCommaOpt(Some(Box::new(trailing_comma_opt_0_built))),
             context,
         );
         Ok(())
@@ -435,21 +388,13 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// TrailingCommaOpt: ;
+    /// TrailingCommaOpt: ; // Option<T>::None
     ///
     #[named]
     fn trailing_comma_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma_opt_1_built = TrailingCommaOpt1Builder::default()
-            .build()
-            .into_diagnostic()?;
-        let trailing_comma_opt_1_built =
-            TrailingCommaOpt::TrailingCommaOpt1(trailing_comma_opt_1_built);
-        self.push(
-            ASTType::TrailingCommaOpt(trailing_comma_opt_1_built),
-            context,
-        );
+        self.push(ASTType::TrailingCommaOpt(None), context);
         Ok(())
     }
 }

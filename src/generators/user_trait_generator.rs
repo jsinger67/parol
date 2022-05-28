@@ -199,6 +199,28 @@ impl<'a> UserTraitGenerator<'a> {
             }
             code.push("    .build()".to_string());
             code.push("    .into_diagnostic()?;".to_string());
+        } else if function.sem == ProductionAttribute::OptionalSome {
+            code.push(format!(
+                "let {}_built = {}Builder::default()",
+                fn_name,
+                nt_type.name(symbol_table)
+            ));
+            for member_id in symbol_table.members(action_id)? {
+                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                let setter_name = &arg_name;
+                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) {
+                    format!("Box::new({})", arg_name)
+                } else {
+                    arg_name.to_string()
+                };
+                code.push(format!("    .{}({})", setter_name, arg_name));
+            }
+            code.push("    .build()".to_string());
+            code.push("    .into_diagnostic()?;".to_string());
+        } else if function.sem == ProductionAttribute::OptionalNone {
+            // Don't generate a builder!
         } else {
             let builder_prefix = if function.alts == 1 {
                 nt_type.name(symbol_table)
@@ -311,6 +333,17 @@ impl<'a> UserTraitGenerator<'a> {
                     "self.push(ASTType::{}({}), context);",
                     NmHlp::to_upper_camel_case(&function.non_terminal),
                     arg_name
+                ));
+            } else if function.sem == ProductionAttribute::OptionalNone {
+                code.push(format!(
+                    "self.push(ASTType::{}(None), context);",
+                    NmHlp::to_upper_camel_case(&function.non_terminal),
+                ));
+            } else if function.sem == ProductionAttribute::OptionalSome {
+                code.push(format!(
+                    "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
+                    NmHlp::to_upper_camel_case(&function.non_terminal),
+                    fn_name
                 ));
             } else {
                 // The output type of the action is the type generated for the action's non-terminal

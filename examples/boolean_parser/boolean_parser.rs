@@ -356,7 +356,7 @@ pub const PRODUCTIONS: &[Production; 36] = &[
         lhs: 18,
         production: &[],
     },
-    // 9 - Term: TermOpt Factor;
+    // 9 - Term: TermOpt /* Option */ Factor;
     Production {
         lhs: 19,
         production: &[ParseType::N(7), ParseType::N(20)],

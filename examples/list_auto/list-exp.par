@@ -4,12 +4,12 @@
 
 %%
 
-/* 0 */ List: ListOpt TrailingComma;
-/* 1 */ ListOpt: Num ListOptList /* Vec */;
+/* 0 */ List: ListOpt /* Option */ TrailingComma;
+/* 1 */ ListOpt: Num ListOptList /* Vec */; // Option<T>::Some
 /* 2 */ ListOptList: "," Num ListOptList; // Vec<T>::Push
 /* 3 */ ListOptList: ; // Vec<T>::New
-/* 4 */ ListOpt: ;
+/* 4 */ ListOpt: ; // Option<T>::None
 /* 5 */ Num: "0|[1-9][0-9]*";
-/* 6 */ TrailingComma: TrailingCommaOpt;
-/* 7 */ TrailingCommaOpt: ",";
-/* 8 */ TrailingCommaOpt: ;
+/* 6 */ TrailingComma: TrailingCommaOpt /* Option */;
+/* 7 */ TrailingCommaOpt: ","; // Option<T>::Some
+/* 8 */ TrailingCommaOpt: ; // Option<T>::None

@@ -17,6 +17,11 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.9.1-pre - Not released yet
+
+* The auto-generation is now able to generate true option types. This improves this feature a lot
+and only now one can say it is quite complete.
+
 ## v0.9.0 - 2022-05-27
 
 * Worked on tutorial
@@ -37,7 +42,7 @@ But we try to mark incompatible changes with a new minor version.
 * Took over some improvements from branch `optionals`
 * Function `left_factor` now correctly transfers ProductionAttributes. This is a small part of the
 fix of the bug described next.
-* New known bug in auto-generation detected and fixed:
+* New bug in auto-generation detected and fixed:
   * Using an optional expression within a repetition confused the type generation.
   So constructs like ```{ [A] B }``` didn't work correctly.
   * The fix includes major changes in grammar transformation, especially the way optional

@@ -128,7 +128,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// Term: TermOpt Factor;
+    /// Term: TermOpt /* Option */ Factor;
     ///
     fn term(
         &mut self,
@@ -141,7 +141,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// TermOpt: UnaryOperator;
+    /// TermOpt: UnaryOperator; // Option<T>::Some
     ///
     fn term_opt_0(
         &mut self,
@@ -153,7 +153,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// TermOpt: ;
+    /// TermOpt: ; // Option<T>::None
     ///
     fn term_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
