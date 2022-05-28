@@ -2,5 +2,5 @@
             {{#vec_anchor?}}{{arg_name}}.reverse();
             {{/vec_anchor}}{{arg_name}}
         } else {
-            return Err(miette!("{}: Expecting ASTType::{{{arg_type}}}", context));
+            bail!("{}: Expecting ASTType::{{{arg_type}}}", context);
         };
