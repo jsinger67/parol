@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.9.1-pre - Not released yet
+## v0.9.1 - 2022-05-28
 
 * The auto-generation is now able to generate true option types. This improves this feature a lot
 and only now one can say it is quite complete.
