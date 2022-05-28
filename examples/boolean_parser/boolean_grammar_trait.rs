@@ -25,39 +25,19 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 0:
     ///
-    /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
+    /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
     ///
     fn expressions(
         &mut self,
         _expression: &ParseTreeStackEntry,
         _expressions_list: &ParseTreeStackEntry,
-        _expressions_suffix: &ParseTreeStackEntry,
+        _expressions_opt: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 1:
-    ///
-    /// ExpressionsSuffix: Semicolon;
-    ///
-    fn expressions_suffix_0(
-        &mut self,
-        _semicolon: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 2:
-    ///
-    /// ExpressionsSuffix: ;
-    ///
-    fn expressions_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for production 3:
     ///
     /// ExpressionsList: Semicolon Expression ExpressionsList; // Vec<T>::Push
     ///
@@ -71,11 +51,31 @@ pub trait BooleanGrammarTrait {
         Ok(())
     }
 
-    /// Semantic action for production 4:
+    /// Semantic action for production 2:
     ///
     /// ExpressionsList: ; // Vec<T>::New
     ///
     fn expressions_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 3:
+    ///
+    /// ExpressionsOpt: Semicolon; // Option<T>::Some
+    ///
+    fn expressions_opt_0(
+        &mut self,
+        _semicolon: &ParseTreeStackEntry,
+        _parse_tree: &Tree<ParseTreeType>,
+    ) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for production 4:
+    ///
+    /// ExpressionsOpt: ; // Option<T>::None
+    ///
+    fn expressions_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -465,10 +465,10 @@ impl UserActionsTrait<'_> for BooleanGrammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.expressions(&children[0], &children[1], &children[2], parse_tree),
-            1 => self.expressions_suffix_0(&children[0], parse_tree),
-            2 => self.expressions_suffix_1(parse_tree),
-            3 => self.expressions_list_0(&children[0], &children[1], &children[2], parse_tree),
-            4 => self.expressions_list_1(parse_tree),
+            1 => self.expressions_list_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.expressions_list_1(parse_tree),
+            3 => self.expressions_opt_0(&children[0], parse_tree),
+            4 => self.expressions_opt_1(parse_tree),
             5 => self.expression(&children[0], &children[1], parse_tree),
             6 => self.tail_expression(&children[0], parse_tree),
             7 => self.tail_expression_list_0(&children[0], &children[1], &children[2], parse_tree),

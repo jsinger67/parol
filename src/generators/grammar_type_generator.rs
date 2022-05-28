@@ -239,11 +239,7 @@ impl GrammarTypeInfo {
             )?;
             if semantics[0] == ProductionAttribute::AddToCollection
                 || semantics[0] == ProductionAttribute::CollectionStart
-            {
-                return self
-                    .symbol_table
-                    .insert_global_type(non_terminal, TypeEntrails::Struct);
-            } else if semantics[0] == ProductionAttribute::OptionalNone
+                || semantics[0] == ProductionAttribute::OptionalNone
                 || semantics[0] == ProductionAttribute::OptionalSome
             {
                 return self

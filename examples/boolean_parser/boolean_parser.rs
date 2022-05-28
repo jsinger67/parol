@@ -94,7 +94,7 @@ pub const NON_TERMINALS: &[&str; 25] = &[
     /*  3 */ "Expression",
     /*  4 */ "Expressions",
     /*  5 */ "ExpressionsList",
-    /*  6 */ "ExpressionsSuffix",
+    /*  6 */ "ExpressionsOpt",
     /*  7 */ "Factor",
     /*  8 */ "False",
     /*  9 */ "LeftParenthesis",
@@ -163,7 +163,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
     },
     /* 5 - "ExpressionsList" */
     LookaheadDFA {
-        states: &[None, None, Some(3), Some(4)],
+        states: &[None, None, Some(1), Some(2)],
         transitions: &[
             DFATransition(0, 0, 3),
             DFATransition(0, 14, 1),
@@ -175,9 +175,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
         ],
         k: 2,
     },
-    /* 6 - "ExpressionsSuffix" */
+    /* 6 - "ExpressionsOpt" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
+        states: &[None, Some(3), Some(4)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 14, 1)],
         k: 1,
     },
@@ -311,29 +311,29 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 36] = &[
-    // 0 - Expressions: Expression ExpressionsList /* Vec */ ExpressionsSuffix;
+    // 0 - Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
     Production {
         lhs: 4,
         production: &[ParseType::N(6), ParseType::N(5), ParseType::N(3)],
     },
-    // 1 - ExpressionsSuffix: Semicolon;
-    Production {
-        lhs: 6,
-        production: &[ParseType::N(16)],
-    },
-    // 2 - ExpressionsSuffix: ;
-    Production {
-        lhs: 6,
-        production: &[],
-    },
-    // 3 - ExpressionsList: Semicolon Expression ExpressionsList;
+    // 1 - ExpressionsList: Semicolon Expression ExpressionsList;
     Production {
         lhs: 5,
         production: &[ParseType::N(5), ParseType::N(3), ParseType::N(16)],
     },
-    // 4 - ExpressionsList: ;
+    // 2 - ExpressionsList: ;
     Production {
         lhs: 5,
+        production: &[],
+    },
+    // 3 - ExpressionsOpt: Semicolon;
+    Production {
+        lhs: 6,
+        production: &[ParseType::N(16)],
+    },
+    // 4 - ExpressionsOpt: ;
+    Production {
+        lhs: 6,
         production: &[],
     },
     // 5 - Expression: Term TailExpression;
