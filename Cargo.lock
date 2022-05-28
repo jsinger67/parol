@@ -81,7 +81,7 @@ dependencies = [
 
 [[package]]
 name = "basic"
-version = "0.2.0"
+version = "0.4.0"
 dependencies = [
  "derive_builder",
  "env_logger",
@@ -514,9 +514,9 @@ checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
 
 [[package]]
 name = "parol"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47a98718414bf87dada08ed9d65e9cb4bc39e073d2e445e9c0cd669062483e30"
+checksum = "f63f0f5b36071b0ee61bfb626c11b7ac4a98114944418c854993716f8d20b694"
 dependencies = [
  "bart",
  "bart_derive",

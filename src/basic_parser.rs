@@ -167,7 +167,7 @@ pub const NON_TERMINALS: &[&str; 58] = &[
     /*  3 */ "Basic",
     /*  4 */ "BasicList",
     /*  5 */ "BasicOpt",
-    /*  6 */ "BasicSuffix",
+    /*  6 */ "BasicOpt0",
     /*  7 */ "Comment",
     /*  8 */ "End",
     /*  9 */ "EndOfLine",
@@ -248,7 +248,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 58] = &[
     },
     /* 4 - "BasicList" */
     LookaheadDFA {
-        states: &[None, None, Some(3), Some(4)],
+        states: &[None, None, Some(1), Some(2)],
         transitions: &[
             DFATransition(0, 0, 3),
             DFATransition(0, 9, 1),
@@ -263,9 +263,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 58] = &[
         transitions: &[DFATransition(0, 6, 2), DFATransition(0, 9, 1)],
         k: 1,
     },
-    /* 6 - "BasicSuffix" */
+    /* 6 - "BasicOpt0" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
+        states: &[None, Some(3), Some(4)],
         transitions: &[DFATransition(0, 0, 2), DFATransition(0, 9, 1)],
         k: 1,
     },
@@ -684,7 +684,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 58] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 83] = &[
-    // 0 - Basic: BasicOpt Line BasicList /* Vec */ BasicSuffix;
+    // 0 - Basic: BasicOpt /* Option */ Line BasicList /* Vec */ BasicOpt0 /* Option */;
     Production {
         lhs: 3,
         production: &[
@@ -694,24 +694,24 @@ pub const PRODUCTIONS: &[Production; 83] = &[
             ParseType::N(5),
         ],
     },
-    // 1 - BasicSuffix: EndOfLine;
-    Production {
-        lhs: 6,
-        production: &[ParseType::N(9)],
-    },
-    // 2 - BasicSuffix: ;
-    Production {
-        lhs: 6,
-        production: &[],
-    },
-    // 3 - BasicList: EndOfLine Line BasicList;
+    // 1 - BasicList: EndOfLine Line BasicList;
     Production {
         lhs: 4,
         production: &[ParseType::N(4), ParseType::N(24), ParseType::N(9)],
     },
-    // 4 - BasicList: ;
+    // 2 - BasicList: ;
     Production {
         lhs: 4,
+        production: &[],
+    },
+    // 3 - BasicOpt0: EndOfLine;
+    Production {
+        lhs: 6,
+        production: &[ParseType::N(9)],
+    },
+    // 4 - BasicOpt0: ;
+    Production {
+        lhs: 6,
         production: &[],
     },
     // 5 - BasicOpt: EndOfLine;
@@ -774,7 +774,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 52,
         production: &[ParseType::N(10)],
     },
-    // 17 - Remark: "REM" Push(1) RemarkOpt Pop;
+    // 17 - Remark: "REM" Push(1) RemarkOpt /* Option */ Pop;
     Production {
         lhs: 50,
         production: &[
@@ -810,7 +810,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
             ParseType::N(18),
         ],
     },
-    // 22 - Assignment: AssignmentOpt Variable AssignOp Push(2) Expression Pop;
+    // 22 - Assignment: AssignmentOpt /* Option */ Variable AssignOp Push(2) Expression Pop;
     Production {
         lhs: 1,
         production: &[
@@ -1038,7 +1038,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 29,
         production: &[],
     },
-    // 65 - LogicalNot: LogicalNotOpt Relational;
+    // 65 - LogicalNot: LogicalNotOpt /* Option */ Relational;
     Production {
         lhs: 31,
         production: &[ParseType::N(47), ParseType::N(33)],

@@ -331,13 +331,12 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_logical_not(&mut self, logical_not: &LogicalNot) -> Result<DefinitionRange> {
         let context = "process_logical_not";
-        match &*logical_not.logical_not_opt {
-            LogicalNotOpt::LogicalNotOpt0(not) => {
-                let result = self.process_relational(&*logical_not.relational)?;
-                let op: UnaryOperator = not.logical_not_op.logical_not_op.symbol.try_into()?;
-                UnaryOperator::apply_unary_operation(&op, result, context)
-            }
-            LogicalNotOpt::LogicalNotOpt1(_) => self.process_relational(&*logical_not.relational),
+        if let Some(not) = &logical_not.logical_not_opt {
+            let result = self.process_relational(&*logical_not.relational)?;
+            let op: UnaryOperator = not.logical_not_op.logical_not_op.symbol.try_into()?;
+            UnaryOperator::apply_unary_operation(&op, result, context)
+        } else {
+            self.process_relational(&*logical_not.relational)
         }
     }
 

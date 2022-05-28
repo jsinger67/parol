@@ -8,7 +8,7 @@
 use crate::basic_grammar::BasicGrammar;
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result};
+use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::path::{Path, PathBuf};
@@ -245,46 +245,6 @@ pub trait BasicGrammarTrait<'t> {
 //
 
 ///
-/// Type derived for production 1
-///
-/// BasicSuffix: EndOfLine;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix0<'t> {
-    pub end_of_line: Box<EndOfLine<'t>>,
-}
-
-///
-/// Type derived for production 2
-///
-/// BasicSuffix: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicSuffix1 {}
-
-///
-/// Type derived for production 5
-///
-/// BasicOpt: EndOfLine;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicOpt0<'t> {
-    pub end_of_line: Box<EndOfLine<'t>>,
-}
-
-///
-/// Type derived for production 6
-///
-/// BasicOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BasicOpt1 {}
-
-///
 /// Type derived for production 11
 ///
 /// Statement: Remark;
@@ -349,46 +309,6 @@ pub struct Statement4<'t> {
 pub struct Statement5<'t> {
     pub end_statement: Box<EndStatement<'t>>,
 }
-
-///
-/// Type derived for production 18
-///
-/// RemarkOpt: Comment;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct RemarkOpt0<'t> {
-    pub comment: Box<Comment<'t>>,
-}
-
-///
-/// Type derived for production 19
-///
-/// RemarkOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct RemarkOpt1 {}
-
-///
-/// Type derived for production 23
-///
-/// AssignmentOpt: Let;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct AssignmentOpt0<'t> {
-    pub r#let: Box<Let<'t>>,
-}
-
-///
-/// Type derived for production 24
-///
-/// AssignmentOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct AssignmentOpt1 {}
 
 ///
 /// Type derived for production 25
@@ -457,26 +377,6 @@ pub struct Float0<'t> {
 pub struct Float3<'t> {
     pub float2: Box<Float2<'t>>,
 }
-
-///
-/// Type derived for production 66
-///
-/// LogicalNotOpt: LogicalNotOp;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct LogicalNotOpt0<'t> {
-    pub logical_not_op: Box<LogicalNotOp<'t>>,
-}
-
-///
-/// Type derived for production 67
-///
-/// LogicalNotOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct LogicalNotOpt1 {}
 
 ///
 /// Type derived for production 73
@@ -567,7 +467,7 @@ pub struct AssignOp<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Assignment<'t> {
-    pub assignment_opt: Box<AssignmentOpt<'t>>,
+    pub assignment_opt: Option<Box<AssignmentOpt<'t>>>,
     pub variable: Box<Variable<'t>>,
     pub assign_op: Box<AssignOp<'t>>,
     pub expression: Box<Expression<'t>>,
@@ -577,10 +477,9 @@ pub struct Assignment<'t> {
 /// Type derived for non-terminal AssignmentOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum AssignmentOpt<'t> {
-    AssignmentOpt0(AssignmentOpt0<'t>),
-    AssignmentOpt1(AssignmentOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct AssignmentOpt<'t> {
+    pub r#let: Box<Let<'t>>,
 }
 
 ///
@@ -589,10 +488,10 @@ pub enum AssignmentOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Basic<'t> {
-    pub basic_opt: Box<BasicOpt<'t>>,
+    pub basic_opt: Option<Box<BasicOpt<'t>>>,
     pub line: Box<Line<'t>>,
     pub basic_list: Vec<BasicList<'t>>,
-    pub basic_suffix: Box<BasicSuffix<'t>>,
+    pub basic_opt0: Option<Box<BasicOpt0<'t>>>,
 }
 
 ///
@@ -609,20 +508,18 @@ pub struct BasicList<'t> {
 /// Type derived for non-terminal BasicOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum BasicOpt<'t> {
-    BasicOpt0(BasicOpt0<'t>),
-    BasicOpt1(BasicOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct BasicOpt<'t> {
+    pub end_of_line: Box<EndOfLine<'t>>,
 }
 
 ///
-/// Type derived for non-terminal BasicSuffix
+/// Type derived for non-terminal BasicOpt0
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum BasicSuffix<'t> {
-    BasicSuffix0(BasicSuffix0<'t>),
-    BasicSuffix1(BasicSuffix1),
+#[derive(Builder, Debug, Clone)]
+pub struct BasicOpt0<'t> {
+    pub end_of_line: Box<EndOfLine<'t>>,
 }
 
 ///
@@ -860,7 +757,7 @@ pub struct LogicalAndOp<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct LogicalNot<'t> {
-    pub logical_not_opt: Box<LogicalNotOpt<'t>>,
+    pub logical_not_opt: Option<Box<LogicalNotOpt<'t>>>,
     pub relational: Box<Relational<'t>>,
 }
 
@@ -877,10 +774,9 @@ pub struct LogicalNotOp<'t> {
 /// Type derived for non-terminal LogicalNotOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum LogicalNotOpt<'t> {
-    LogicalNotOpt0(LogicalNotOpt0<'t>),
-    LogicalNotOpt1(LogicalNotOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct LogicalNotOpt<'t> {
+    pub logical_not_op: Box<LogicalNotOp<'t>>,
 }
 
 ///
@@ -1044,17 +940,16 @@ pub struct RelationalOp<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Remark<'t> {
     pub r_e_m: Token<'t>, /* REM */
-    pub remark_opt: Box<RemarkOpt<'t>>,
+    pub remark_opt: Option<Box<RemarkOpt<'t>>>,
 }
 
 ///
 /// Type derived for non-terminal RemarkOpt
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum RemarkOpt<'t> {
-    RemarkOpt0(RemarkOpt0<'t>),
-    RemarkOpt1(RemarkOpt1),
+#[derive(Builder, Debug, Clone)]
+pub struct RemarkOpt<'t> {
+    pub comment: Box<Comment<'t>>,
 }
 
 ///
@@ -1129,11 +1024,11 @@ pub struct Variable<'t> {
 pub enum ASTType<'t> {
     AssignOp(AssignOp<'t>),
     Assignment(Assignment<'t>),
-    AssignmentOpt(AssignmentOpt<'t>),
+    AssignmentOpt(Option<Box<AssignmentOpt<'t>>>),
     Basic(Basic<'t>),
     BasicList(Vec<BasicList<'t>>),
-    BasicOpt(BasicOpt<'t>),
-    BasicSuffix(BasicSuffix<'t>),
+    BasicOpt(Option<Box<BasicOpt<'t>>>),
+    BasicOpt0(Option<Box<BasicOpt0<'t>>>),
     Comment(Comment<'t>),
     End(End<'t>),
     EndOfLine(EndOfLine<'t>),
@@ -1160,7 +1055,7 @@ pub enum ASTType<'t> {
     LogicalAndOp(LogicalAndOp<'t>),
     LogicalNot(LogicalNot<'t>),
     LogicalNotOp(LogicalNotOp<'t>),
-    LogicalNotOpt(LogicalNotOpt<'t>),
+    LogicalNotOpt(Option<Box<LogicalNotOpt<'t>>>),
     LogicalOr(LogicalOr<'t>),
     LogicalOrList(Vec<LogicalOrList<'t>>),
     LogicalOrOp(LogicalOrOp<'t>),
@@ -1178,7 +1073,7 @@ pub enum ASTType<'t> {
     RelationalList(Vec<RelationalList<'t>>),
     RelationalOp(RelationalOp<'t>),
     Remark(Remark<'t>),
-    RemarkOpt(RemarkOpt<'t>),
+    RemarkOpt(Option<Box<RemarkOpt<'t>>>),
     Statement(Statement<'t>),
     Summation(Summation<'t>),
     SummationList(Vec<SummationList<'t>>),
@@ -1255,7 +1150,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// Basic: BasicOpt Line BasicList /* Vec */ BasicSuffix;
+    /// Basic: BasicOpt /* Option */ Line BasicList /* Vec */ BasicOpt0 /* Option */;
     ///
     #[named]
     fn basic(
@@ -1263,37 +1158,37 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _basic_opt: &ParseTreeStackEntry<'t>,
         _line: &ParseTreeStackEntry<'t>,
         _basic_list: &ParseTreeStackEntry<'t>,
-        _basic_suffix: &ParseTreeStackEntry<'t>,
+        _basic_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_suffix = if let Some(ASTType::BasicSuffix(basic_suffix)) = self.pop(context) {
-            basic_suffix
+        let basic_opt0 = if let Some(ASTType::BasicOpt0(basic_opt0)) = self.pop(context) {
+            basic_opt0
         } else {
-            return Err(miette!("{}: Expecting ASTType::BasicSuffix", context));
+            bail!("{}: Expecting ASTType::BasicOpt0", context);
         };
         let basic_list = if let Some(ASTType::BasicList(mut basic_list)) = self.pop(context) {
             basic_list.reverse();
             basic_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::BasicList", context));
+            bail!("{}: Expecting ASTType::BasicList", context);
         };
         let line = if let Some(ASTType::Line(line)) = self.pop(context) {
             line
         } else {
-            return Err(miette!("{}: Expecting ASTType::Line", context));
+            bail!("{}: Expecting ASTType::Line", context);
         };
         let basic_opt = if let Some(ASTType::BasicOpt(basic_opt)) = self.pop(context) {
             basic_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::BasicOpt", context));
+            bail!("{}: Expecting ASTType::BasicOpt", context);
         };
         let basic_built = BasicBuilder::default()
-            .basic_opt(Box::new(basic_opt))
+            .basic_opt(basic_opt)
             .line(Box::new(line))
             .basic_list(basic_list)
-            .basic_suffix(Box::new(basic_suffix))
+            .basic_opt0(basic_opt0)
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1303,46 +1198,6 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 1:
-    ///
-    /// BasicSuffix: EndOfLine;
-    ///
-    #[named]
-    fn basic_suffix_0(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
-        } else {
-            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
-        };
-        let basic_suffix_0_built = BasicSuffix0Builder::default()
-            .end_of_line(Box::new(end_of_line))
-            .build()
-            .into_diagnostic()?;
-        let basic_suffix_0_built = BasicSuffix::BasicSuffix0(basic_suffix_0_built);
-        self.push(ASTType::BasicSuffix(basic_suffix_0_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 2:
-    ///
-    /// BasicSuffix: ;
-    ///
-    #[named]
-    fn basic_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let basic_suffix_1_built = BasicSuffix1Builder::default().build().into_diagnostic()?;
-        let basic_suffix_1_built = BasicSuffix::BasicSuffix1(basic_suffix_1_built);
-        self.push(ASTType::BasicSuffix(basic_suffix_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 3:
     ///
     /// BasicList: EndOfLine Line BasicList; // Vec<T>::Push
     ///
@@ -1359,17 +1214,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut basic_list = if let Some(ASTType::BasicList(basic_list)) = self.pop(context) {
             basic_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::BasicList", context));
+            bail!("{}: Expecting ASTType::BasicList", context);
         };
         let line = if let Some(ASTType::Line(line)) = self.pop(context) {
             line
         } else {
-            return Err(miette!("{}: Expecting ASTType::Line", context));
+            bail!("{}: Expecting ASTType::Line", context);
         };
         let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
             end_of_line
         } else {
-            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+            bail!("{}: Expecting ASTType::EndOfLine", context);
         };
         let basic_list_0_built = BasicListBuilder::default()
             .line(Box::new(line))
@@ -1382,7 +1237,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 4:
+    /// Semantic action for production 2:
     ///
     /// BasicList: ; // Vec<T>::New
     ///
@@ -1395,9 +1250,49 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         Ok(())
     }
 
+    /// Semantic action for production 3:
+    ///
+    /// BasicOpt0: EndOfLine; // Option<T>::Some
+    ///
+    #[named]
+    fn basic_opt0_0(
+        &mut self,
+        _end_of_line: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
+            end_of_line
+        } else {
+            bail!("{}: Expecting ASTType::EndOfLine", context);
+        };
+        let basic_opt0_0_built = BasicOpt0Builder::default()
+            .end_of_line(Box::new(end_of_line))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::BasicOpt0(Some(Box::new(basic_opt0_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 4:
+    ///
+    /// BasicOpt0: ; // Option<T>::None
+    ///
+    #[named]
+    fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::BasicOpt0(None), context);
+        Ok(())
+    }
+
     /// Semantic action for production 5:
     ///
-    /// BasicOpt: EndOfLine;
+    /// BasicOpt: EndOfLine; // Option<T>::Some
     ///
     #[named]
     fn basic_opt_0(
@@ -1410,28 +1305,28 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
             end_of_line
         } else {
-            return Err(miette!("{}: Expecting ASTType::EndOfLine", context));
+            bail!("{}: Expecting ASTType::EndOfLine", context);
         };
-        let basic_opt_0_built = BasicOpt0Builder::default()
+        let basic_opt_0_built = BasicOptBuilder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
             .into_diagnostic()?;
-        let basic_opt_0_built = BasicOpt::BasicOpt0(basic_opt_0_built);
-        self.push(ASTType::BasicOpt(basic_opt_0_built), context);
+        self.push(
+            ASTType::BasicOpt(Some(Box::new(basic_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// BasicOpt: ;
+    /// BasicOpt: ; // Option<T>::None
     ///
     #[named]
     fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_opt_1_built = BasicOpt1Builder::default().build().into_diagnostic()?;
-        let basic_opt_1_built = BasicOpt::BasicOpt1(basic_opt_1_built);
-        self.push(ASTType::BasicOpt(basic_opt_1_built), context);
+        self.push(ASTType::BasicOpt(None), context);
         Ok(())
     }
 
@@ -1453,17 +1348,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             line_list.reverse();
             line_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::LineList", context));
+            bail!("{}: Expecting ASTType::LineList", context);
         };
         let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
             statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::Statement", context));
+            bail!("{}: Expecting ASTType::Statement", context);
         };
         let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
             line_number
         } else {
-            return Err(miette!("{}: Expecting ASTType::LineNumber", context));
+            bail!("{}: Expecting ASTType::LineNumber", context);
         };
         let line_built = LineBuilder::default()
             .line_number(Box::new(line_number))
@@ -1495,12 +1390,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut line_list = if let Some(ASTType::LineList(line_list)) = self.pop(context) {
             line_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::LineList", context));
+            bail!("{}: Expecting ASTType::LineList", context);
         };
         let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
             statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::Statement", context));
+            bail!("{}: Expecting ASTType::Statement", context);
         };
         let line_list_0_built = LineListBuilder::default()
             .statement(Box::new(statement))
@@ -1564,7 +1459,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let remark = if let Some(ASTType::Remark(remark)) = self.pop(context) {
             remark
         } else {
-            return Err(miette!("{}: Expecting ASTType::Remark", context));
+            bail!("{}: Expecting ASTType::Remark", context);
         };
         let statement_0_built = Statement0Builder::default()
             .remark(Box::new(remark))
@@ -1593,7 +1488,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         {
             goto_statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::GotoStatement", context));
+            bail!("{}: Expecting ASTType::GotoStatement", context);
         };
         let statement_1_built = Statement1Builder::default()
             .goto_statement(Box::new(goto_statement))
@@ -1621,7 +1516,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let if_statement = if let Some(ASTType::IfStatement(if_statement)) = self.pop(context) {
             if_statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::IfStatement", context));
+            bail!("{}: Expecting ASTType::IfStatement", context);
         };
         let statement_2_built = Statement2Builder::default()
             .if_statement(Box::new(if_statement))
@@ -1649,7 +1544,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let assignment = if let Some(ASTType::Assignment(assignment)) = self.pop(context) {
             assignment
         } else {
-            return Err(miette!("{}: Expecting ASTType::Assignment", context));
+            bail!("{}: Expecting ASTType::Assignment", context);
         };
         let statement_3_built = Statement3Builder::default()
             .assignment(Box::new(assignment))
@@ -1678,7 +1573,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::PrintStatement(print_statement)) = self.pop(context) {
                 print_statement
             } else {
-                return Err(miette!("{}: Expecting ASTType::PrintStatement", context));
+                bail!("{}: Expecting ASTType::PrintStatement", context);
             };
         let statement_4_built = Statement4Builder::default()
             .print_statement(Box::new(print_statement))
@@ -1706,7 +1601,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end_statement = if let Some(ASTType::EndStatement(end_statement)) = self.pop(context) {
             end_statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::EndStatement", context));
+            bail!("{}: Expecting ASTType::EndStatement", context);
         };
         let statement_5_built = Statement5Builder::default()
             .end_statement(Box::new(end_statement))
@@ -1721,7 +1616,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Remark: "REM" %push(Cmnt) RemarkOpt %pop();
+    /// Remark: "REM" %push(Cmnt) RemarkOpt /* Option */ %pop();
     ///
     #[named]
     fn remark(
@@ -1736,11 +1631,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let remark_opt = if let Some(ASTType::RemarkOpt(remark_opt)) = self.pop(context) {
             remark_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::RemarkOpt", context));
+            bail!("{}: Expecting ASTType::RemarkOpt", context);
         };
         let remark_built = RemarkBuilder::default()
             .r_e_m(r_e_m)
-            .remark_opt(Box::new(remark_opt))
+            .remark_opt(remark_opt)
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1751,7 +1646,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// RemarkOpt: Comment;
+    /// RemarkOpt: Comment; // Option<T>::Some
     ///
     #[named]
     fn remark_opt_0(
@@ -1764,28 +1659,28 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let comment = if let Some(ASTType::Comment(comment)) = self.pop(context) {
             comment
         } else {
-            return Err(miette!("{}: Expecting ASTType::Comment", context));
+            bail!("{}: Expecting ASTType::Comment", context);
         };
-        let remark_opt_0_built = RemarkOpt0Builder::default()
+        let remark_opt_0_built = RemarkOptBuilder::default()
             .comment(Box::new(comment))
             .build()
             .into_diagnostic()?;
-        let remark_opt_0_built = RemarkOpt::RemarkOpt0(remark_opt_0_built);
-        self.push(ASTType::RemarkOpt(remark_opt_0_built), context);
+        self.push(
+            ASTType::RemarkOpt(Some(Box::new(remark_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 19:
     ///
-    /// RemarkOpt: ;
+    /// RemarkOpt: ; // Option<T>::None
     ///
     #[named]
     fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let remark_opt_1_built = RemarkOpt1Builder::default().build().into_diagnostic()?;
-        let remark_opt_1_built = RemarkOpt::RemarkOpt1(remark_opt_1_built);
-        self.push(ASTType::RemarkOpt(remark_opt_1_built), context);
+        self.push(ASTType::RemarkOpt(None), context);
         Ok(())
     }
 
@@ -1805,12 +1700,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
             line_number
         } else {
-            return Err(miette!("{}: Expecting ASTType::LineNumber", context));
+            bail!("{}: Expecting ASTType::LineNumber", context);
         };
         let goto = if let Some(ASTType::Goto(goto)) = self.pop(context) {
             goto
         } else {
-            return Err(miette!("{}: Expecting ASTType::Goto", context));
+            bail!("{}: Expecting ASTType::Goto", context);
         };
         let goto_statement_built = GotoStatementBuilder::default()
             .goto(Box::new(goto))
@@ -1840,17 +1735,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let if_body = if let Some(ASTType::IfBody(if_body)) = self.pop(context) {
             if_body
         } else {
-            return Err(miette!("{}: Expecting ASTType::IfBody", context));
+            bail!("{}: Expecting ASTType::IfBody", context);
         };
         let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
             expression
         } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
+            bail!("{}: Expecting ASTType::Expression", context);
         };
         let r#if = if let Some(ASTType::If(r#if)) = self.pop(context) {
             r#if
         } else {
-            return Err(miette!("{}: Expecting ASTType::If", context));
+            bail!("{}: Expecting ASTType::If", context);
         };
         let if_statement_built = IfStatementBuilder::default()
             .r#if(Box::new(r#if))
@@ -1866,7 +1761,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// Assignment: AssignmentOpt Variable AssignOp %push(Expr) Expression %pop();
+    /// Assignment: AssignmentOpt /* Option */ Variable AssignOp %push(Expr) Expression %pop();
     ///
     #[named]
     fn assignment(
@@ -1882,26 +1777,26 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
             expression
         } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
+            bail!("{}: Expecting ASTType::Expression", context);
         };
         let assign_op = if let Some(ASTType::AssignOp(assign_op)) = self.pop(context) {
             assign_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::AssignOp", context));
+            bail!("{}: Expecting ASTType::AssignOp", context);
         };
         let variable = if let Some(ASTType::Variable(variable)) = self.pop(context) {
             variable
         } else {
-            return Err(miette!("{}: Expecting ASTType::Variable", context));
+            bail!("{}: Expecting ASTType::Variable", context);
         };
         let assignment_opt = if let Some(ASTType::AssignmentOpt(assignment_opt)) = self.pop(context)
         {
             assignment_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::AssignmentOpt", context));
+            bail!("{}: Expecting ASTType::AssignmentOpt", context);
         };
         let assignment_built = AssignmentBuilder::default()
-            .assignment_opt(Box::new(assignment_opt))
+            .assignment_opt(assignment_opt)
             .variable(Box::new(variable))
             .assign_op(Box::new(assign_op))
             .expression(Box::new(expression))
@@ -1915,7 +1810,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// AssignmentOpt: Let;
+    /// AssignmentOpt: Let; // Option<T>::Some
     ///
     #[named]
     fn assignment_opt_0(
@@ -1928,28 +1823,28 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r#let = if let Some(ASTType::Let(r#let)) = self.pop(context) {
             r#let
         } else {
-            return Err(miette!("{}: Expecting ASTType::Let", context));
+            bail!("{}: Expecting ASTType::Let", context);
         };
-        let assignment_opt_0_built = AssignmentOpt0Builder::default()
+        let assignment_opt_0_built = AssignmentOptBuilder::default()
             .r#let(Box::new(r#let))
             .build()
             .into_diagnostic()?;
-        let assignment_opt_0_built = AssignmentOpt::AssignmentOpt0(assignment_opt_0_built);
-        self.push(ASTType::AssignmentOpt(assignment_opt_0_built), context);
+        self.push(
+            ASTType::AssignmentOpt(Some(Box::new(assignment_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 24:
     ///
-    /// AssignmentOpt: ;
+    /// AssignmentOpt: ; // Option<T>::None
     ///
     #[named]
     fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assignment_opt_1_built = AssignmentOpt1Builder::default().build().into_diagnostic()?;
-        let assignment_opt_1_built = AssignmentOpt::AssignmentOpt1(assignment_opt_1_built);
-        self.push(ASTType::AssignmentOpt(assignment_opt_1_built), context);
+        self.push(ASTType::AssignmentOpt(None), context);
         Ok(())
     }
 
@@ -1969,12 +1864,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
             statement
         } else {
-            return Err(miette!("{}: Expecting ASTType::Statement", context));
+            bail!("{}: Expecting ASTType::Statement", context);
         };
         let then = if let Some(ASTType::Then(then)) = self.pop(context) {
             then
         } else {
-            return Err(miette!("{}: Expecting ASTType::Then", context));
+            bail!("{}: Expecting ASTType::Then", context);
         };
         let if_body_0_built = IfBody0Builder::default()
             .then(Box::new(then))
@@ -2004,12 +1899,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
             line_number
         } else {
-            return Err(miette!("{}: Expecting ASTType::LineNumber", context));
+            bail!("{}: Expecting ASTType::LineNumber", context);
         };
         let goto = if let Some(ASTType::Goto(goto)) = self.pop(context) {
             goto
         } else {
-            return Err(miette!("{}: Expecting ASTType::Goto", context));
+            bail!("{}: Expecting ASTType::Goto", context);
         };
         let if_body_1_built = IfBody1Builder::default()
             .goto(Box::new(goto))
@@ -2044,20 +1939,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             print_statement_list.reverse();
             print_statement_list
         } else {
-            return Err(miette!(
-                "{}: Expecting ASTType::PrintStatementList",
-                context
-            ));
+            bail!("{}: Expecting ASTType::PrintStatementList", context);
         };
         let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
             expression
         } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
+            bail!("{}: Expecting ASTType::Expression", context);
         };
         let print = if let Some(ASTType::Print(print)) = self.pop(context) {
             print
         } else {
-            return Err(miette!("{}: Expecting ASTType::Print", context));
+            bail!("{}: Expecting ASTType::Print", context);
         };
         let print_statement_built = PrintStatementBuilder::default()
             .print(Box::new(print))
@@ -2090,15 +1982,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::PrintStatementList(print_statement_list)) = self.pop(context) {
                 print_statement_list
             } else {
-                return Err(miette!(
-                    "{}: Expecting ASTType::PrintStatementList",
-                    context
-                ));
+                bail!("{}: Expecting ASTType::PrintStatementList", context);
             };
         let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
             expression
         } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
+            bail!("{}: Expecting ASTType::Expression", context);
         };
         let print_statement_list_0_built = PrintStatementListBuilder::default()
             .expression(Box::new(expression))
@@ -2142,7 +2031,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end = if let Some(ASTType::End(end)) = self.pop(context) {
             end
         } else {
-            return Err(miette!("{}: Expecting ASTType::End", context));
+            bail!("{}: Expecting ASTType::End", context);
         };
         let end_statement_built = EndStatementBuilder::default()
             .end(Box::new(end))
@@ -2192,7 +2081,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let number = if let Some(ASTType::Number(number)) = self.pop(context) {
             number
         } else {
-            return Err(miette!("{}: Expecting ASTType::Number", context));
+            bail!("{}: Expecting ASTType::Number", context);
         };
         let literal_built = LiteralBuilder::default()
             .number(Box::new(number))
@@ -2219,7 +2108,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let float = if let Some(ASTType::Float(float)) = self.pop(context) {
             float
         } else {
-            return Err(miette!("{}: Expecting ASTType::Float", context));
+            bail!("{}: Expecting ASTType::Float", context);
         };
         let number_0_built = Number0Builder::default()
             .float(Box::new(float))
@@ -2247,7 +2136,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let integer = if let Some(ASTType::Integer(integer)) = self.pop(context) {
             integer
         } else {
-            return Err(miette!("{}: Expecting ASTType::Integer", context));
+            bail!("{}: Expecting ASTType::Integer", context);
         };
         let number_1_built = Number1Builder::default()
             .integer(Box::new(integer))
@@ -2275,7 +2164,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let float1 = if let Some(ASTType::Float1(float1)) = self.pop(context) {
             float1
         } else {
-            return Err(miette!("{}: Expecting ASTType::Float1", context));
+            bail!("{}: Expecting ASTType::Float1", context);
         };
         let float_0_built = Float0Builder::default()
             .float1(Box::new(float1))
@@ -2303,7 +2192,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let float2 = if let Some(ASTType::Float2(float2)) = self.pop(context) {
             float2
         } else {
-            return Err(miette!("{}: Expecting ASTType::Float2", context));
+            bail!("{}: Expecting ASTType::Float2", context);
         };
         let float_1_built = Float3Builder::default()
             .float2(Box::new(float2))
@@ -2808,7 +2697,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
             logical_or
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalOr", context));
+            bail!("{}: Expecting ASTType::LogicalOr", context);
         };
         let expression_built = ExpressionBuilder::default()
             .logical_or(Box::new(logical_or))
@@ -2838,12 +2727,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
                 logical_or_list.reverse();
                 logical_or_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::LogicalOrList", context));
+                bail!("{}: Expecting ASTType::LogicalOrList", context);
             };
         let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
             logical_and
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalAnd", context));
+            bail!("{}: Expecting ASTType::LogicalAnd", context);
         };
         let logical_or_built = LogicalOrBuilder::default()
             .logical_and(Box::new(logical_and))
@@ -2874,17 +2763,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::LogicalOrList(logical_or_list)) = self.pop(context) {
                 logical_or_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::LogicalOrList", context));
+                bail!("{}: Expecting ASTType::LogicalOrList", context);
             };
         let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
             logical_and
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalAnd", context));
+            bail!("{}: Expecting ASTType::LogicalAnd", context);
         };
         let logical_or_op = if let Some(ASTType::LogicalOrOp(logical_or_op)) = self.pop(context) {
             logical_or_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalOrOp", context));
+            bail!("{}: Expecting ASTType::LogicalOrOp", context);
         };
         let logical_or_list_0_built = LogicalOrListBuilder::default()
             .logical_and(Box::new(logical_and))
@@ -2928,12 +2817,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
                 logical_and_list.reverse();
                 logical_and_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::LogicalAndList", context));
+                bail!("{}: Expecting ASTType::LogicalAndList", context);
             };
         let logical_not = if let Some(ASTType::LogicalNot(logical_not)) = self.pop(context) {
             logical_not
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalNot", context));
+            bail!("{}: Expecting ASTType::LogicalNot", context);
         };
         let logical_and_built = LogicalAndBuilder::default()
             .logical_not(Box::new(logical_not))
@@ -2964,18 +2853,18 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::LogicalAndList(logical_and_list)) = self.pop(context) {
                 logical_and_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::LogicalAndList", context));
+                bail!("{}: Expecting ASTType::LogicalAndList", context);
             };
         let logical_not = if let Some(ASTType::LogicalNot(logical_not)) = self.pop(context) {
             logical_not
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalNot", context));
+            bail!("{}: Expecting ASTType::LogicalNot", context);
         };
         let logical_and_op = if let Some(ASTType::LogicalAndOp(logical_and_op)) = self.pop(context)
         {
             logical_and_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalAndOp", context));
+            bail!("{}: Expecting ASTType::LogicalAndOp", context);
         };
         let logical_and_list_0_built = LogicalAndListBuilder::default()
             .logical_not(Box::new(logical_not))
@@ -3003,7 +2892,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// LogicalNot: LogicalNotOpt Relational;
+    /// LogicalNot: LogicalNotOpt /* Option */ Relational;
     ///
     #[named]
     fn logical_not(
@@ -3017,16 +2906,16 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let relational = if let Some(ASTType::Relational(relational)) = self.pop(context) {
             relational
         } else {
-            return Err(miette!("{}: Expecting ASTType::Relational", context));
+            bail!("{}: Expecting ASTType::Relational", context);
         };
         let logical_not_opt =
             if let Some(ASTType::LogicalNotOpt(logical_not_opt)) = self.pop(context) {
                 logical_not_opt
             } else {
-                return Err(miette!("{}: Expecting ASTType::LogicalNotOpt", context));
+                bail!("{}: Expecting ASTType::LogicalNotOpt", context);
             };
         let logical_not_built = LogicalNotBuilder::default()
-            .logical_not_opt(Box::new(logical_not_opt))
+            .logical_not_opt(logical_not_opt)
             .relational(Box::new(relational))
             .build()
             .into_diagnostic()?;
@@ -3038,7 +2927,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// LogicalNotOpt: LogicalNotOp;
+    /// LogicalNotOpt: LogicalNotOp; // Option<T>::Some
     ///
     #[named]
     fn logical_not_opt_0(
@@ -3052,28 +2941,28 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         {
             logical_not_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::LogicalNotOp", context));
+            bail!("{}: Expecting ASTType::LogicalNotOp", context);
         };
-        let logical_not_opt_0_built = LogicalNotOpt0Builder::default()
+        let logical_not_opt_0_built = LogicalNotOptBuilder::default()
             .logical_not_op(Box::new(logical_not_op))
             .build()
             .into_diagnostic()?;
-        let logical_not_opt_0_built = LogicalNotOpt::LogicalNotOpt0(logical_not_opt_0_built);
-        self.push(ASTType::LogicalNotOpt(logical_not_opt_0_built), context);
+        self.push(
+            ASTType::LogicalNotOpt(Some(Box::new(logical_not_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 67:
     ///
-    /// LogicalNotOpt: ;
+    /// LogicalNotOpt: ; // Option<T>::None
     ///
     #[named]
     fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_not_opt_1_built = LogicalNotOpt1Builder::default().build().into_diagnostic()?;
-        let logical_not_opt_1_built = LogicalNotOpt::LogicalNotOpt1(logical_not_opt_1_built);
-        self.push(ASTType::LogicalNotOpt(logical_not_opt_1_built), context);
+        self.push(ASTType::LogicalNotOpt(None), context);
         Ok(())
     }
 
@@ -3095,12 +2984,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
                 relational_list.reverse();
                 relational_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::RelationalList", context));
+                bail!("{}: Expecting ASTType::RelationalList", context);
             };
         let summation = if let Some(ASTType::Summation(summation)) = self.pop(context) {
             summation
         } else {
-            return Err(miette!("{}: Expecting ASTType::Summation", context));
+            bail!("{}: Expecting ASTType::Summation", context);
         };
         let relational_built = RelationalBuilder::default()
             .summation(Box::new(summation))
@@ -3131,17 +3020,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::RelationalList(relational_list)) = self.pop(context) {
                 relational_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::RelationalList", context));
+                bail!("{}: Expecting ASTType::RelationalList", context);
             };
         let summation = if let Some(ASTType::Summation(summation)) = self.pop(context) {
             summation
         } else {
-            return Err(miette!("{}: Expecting ASTType::Summation", context));
+            bail!("{}: Expecting ASTType::Summation", context);
         };
         let relational_op = if let Some(ASTType::RelationalOp(relational_op)) = self.pop(context) {
             relational_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::RelationalOp", context));
+            bail!("{}: Expecting ASTType::RelationalOp", context);
         };
         let relational_list_0_built = RelationalListBuilder::default()
             .summation(Box::new(summation))
@@ -3185,13 +3074,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
                 summation_list.reverse();
                 summation_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::SummationList", context));
+                bail!("{}: Expecting ASTType::SummationList", context);
             };
         let multiplication =
             if let Some(ASTType::Multiplication(multiplication)) = self.pop(context) {
                 multiplication
             } else {
-                return Err(miette!("{}: Expecting ASTType::Multiplication", context));
+                bail!("{}: Expecting ASTType::Multiplication", context);
             };
         let summation_built = SummationBuilder::default()
             .multiplication(Box::new(multiplication))
@@ -3222,22 +3111,19 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::SummationList(summation_list)) = self.pop(context) {
                 summation_list
             } else {
-                return Err(miette!("{}: Expecting ASTType::SummationList", context));
+                bail!("{}: Expecting ASTType::SummationList", context);
             };
         let multiplication =
             if let Some(ASTType::Multiplication(multiplication)) = self.pop(context) {
                 multiplication
             } else {
-                return Err(miette!("{}: Expecting ASTType::Multiplication", context));
+                bail!("{}: Expecting ASTType::Multiplication", context);
             };
         let summation_list_group =
             if let Some(ASTType::SummationListGroup(summation_list_group)) = self.pop(context) {
                 summation_list_group
             } else {
-                return Err(miette!(
-                    "{}: Expecting ASTType::SummationListGroup",
-                    context
-                ));
+                bail!("{}: Expecting ASTType::SummationListGroup", context);
             };
         let summation_list_0_built = SummationListBuilder::default()
             .multiplication(Box::new(multiplication))
@@ -3265,7 +3151,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let plus = if let Some(ASTType::Plus(plus)) = self.pop(context) {
             plus
         } else {
-            return Err(miette!("{}: Expecting ASTType::Plus", context));
+            bail!("{}: Expecting ASTType::Plus", context);
         };
         let summation_list_group_0_built = SummationListGroup0Builder::default()
             .plus(Box::new(plus))
@@ -3295,7 +3181,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
             minus
         } else {
-            return Err(miette!("{}: Expecting ASTType::Minus", context));
+            bail!("{}: Expecting ASTType::Minus", context);
         };
         let summation_list_group_1_built = SummationListGroup1Builder::default()
             .minus(Box::new(minus))
@@ -3341,15 +3227,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
                 multiplication_list.reverse();
                 multiplication_list
             } else {
-                return Err(miette!(
-                    "{}: Expecting ASTType::MultiplicationList",
-                    context
-                ));
+                bail!("{}: Expecting ASTType::MultiplicationList", context);
             };
         let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
             factor
         } else {
-            return Err(miette!("{}: Expecting ASTType::Factor", context));
+            bail!("{}: Expecting ASTType::Factor", context);
         };
         let multiplication_built = MultiplicationBuilder::default()
             .factor(Box::new(factor))
@@ -3380,20 +3263,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             if let Some(ASTType::MultiplicationList(multiplication_list)) = self.pop(context) {
                 multiplication_list
             } else {
-                return Err(miette!(
-                    "{}: Expecting ASTType::MultiplicationList",
-                    context
-                ));
+                bail!("{}: Expecting ASTType::MultiplicationList", context);
             };
         let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
             factor
         } else {
-            return Err(miette!("{}: Expecting ASTType::Factor", context));
+            bail!("{}: Expecting ASTType::Factor", context);
         };
         let mul_op = if let Some(ASTType::MulOp(mul_op)) = self.pop(context) {
             mul_op
         } else {
-            return Err(miette!("{}: Expecting ASTType::MulOp", context));
+            bail!("{}: Expecting ASTType::MulOp", context);
         };
         let multiplication_list_0_built = MultiplicationListBuilder::default()
             .factor(Box::new(factor))
@@ -3437,7 +3317,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let literal = if let Some(ASTType::Literal(literal)) = self.pop(context) {
             literal
         } else {
-            return Err(miette!("{}: Expecting ASTType::Literal", context));
+            bail!("{}: Expecting ASTType::Literal", context);
         };
         let factor_0_built = Factor0Builder::default()
             .literal(Box::new(literal))
@@ -3465,7 +3345,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let variable = if let Some(ASTType::Variable(variable)) = self.pop(context) {
             variable
         } else {
-            return Err(miette!("{}: Expecting ASTType::Variable", context));
+            bail!("{}: Expecting ASTType::Variable", context);
         };
         let factor_1_built = Factor1Builder::default()
             .variable(Box::new(variable))
@@ -3494,12 +3374,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
             factor
         } else {
-            return Err(miette!("{}: Expecting ASTType::Factor", context));
+            bail!("{}: Expecting ASTType::Factor", context);
         };
         let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
             minus
         } else {
-            return Err(miette!("{}: Expecting ASTType::Minus", context));
+            bail!("{}: Expecting ASTType::Minus", context);
         };
         let factor_2_built = Factor2Builder::default()
             .minus(Box::new(minus))
@@ -3530,17 +3410,17 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r_paren = if let Some(ASTType::RParen(r_paren)) = self.pop(context) {
             r_paren
         } else {
-            return Err(miette!("{}: Expecting ASTType::RParen", context));
+            bail!("{}: Expecting ASTType::RParen", context);
         };
         let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
             expression
         } else {
-            return Err(miette!("{}: Expecting ASTType::Expression", context));
+            bail!("{}: Expecting ASTType::Expression", context);
         };
         let l_paren = if let Some(ASTType::LParen(l_paren)) = self.pop(context) {
             l_paren
         } else {
-            return Err(miette!("{}: Expecting ASTType::LParen", context));
+            bail!("{}: Expecting ASTType::LParen", context);
         };
         let factor_3_built = Factor3Builder::default()
             .l_paren(Box::new(l_paren))
@@ -3584,10 +3464,10 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
                 &children[3],
                 parse_tree,
             ),
-            1 => self.basic_suffix_0(&children[0], parse_tree),
-            2 => self.basic_suffix_1(parse_tree),
-            3 => self.basic_list_0(&children[0], &children[1], &children[2], parse_tree),
-            4 => self.basic_list_1(parse_tree),
+            1 => self.basic_list_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.basic_list_1(parse_tree),
+            3 => self.basic_opt0_0(&children[0], parse_tree),
+            4 => self.basic_opt0_1(parse_tree),
             5 => self.basic_opt_0(&children[0], parse_tree),
             6 => self.basic_opt_1(parse_tree),
             7 => self.line(&children[0], &children[1], &children[2], parse_tree),

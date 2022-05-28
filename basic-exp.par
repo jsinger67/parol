@@ -8,13 +8,13 @@
 
 %%
 
-/*  0 */ Basic: BasicOpt Line BasicList /* Vec */ BasicSuffix;
-/*  1 */ BasicSuffix: EndOfLine;
-/*  2 */ BasicSuffix: ;
-/*  3 */ BasicList: EndOfLine Line BasicList; // Vec<T>::Push
-/*  4 */ BasicList: ; // Vec<T>::New
-/*  5 */ BasicOpt: EndOfLine;
-/*  6 */ BasicOpt: ;
+/*  0 */ Basic: BasicOpt /* Option */ Line BasicList /* Vec */ BasicOpt0 /* Option */;
+/*  1 */ BasicList: EndOfLine Line BasicList; // Vec<T>::Push
+/*  2 */ BasicList: ; // Vec<T>::New
+/*  3 */ BasicOpt0: EndOfLine; // Option<T>::Some
+/*  4 */ BasicOpt0: ; // Option<T>::None
+/*  5 */ BasicOpt: EndOfLine; // Option<T>::Some
+/*  6 */ BasicOpt: ; // Option<T>::None
 /*  7 */ Line: LineNumber Statement LineList /* Vec */;
 /*  8 */ LineList: <Expr, INITIAL>":" Statement LineList; // Vec<T>::Push
 /*  9 */ LineList: ; // Vec<T>::New
@@ -25,14 +25,14 @@
 /* 14 */ Statement: Assignment;
 /* 15 */ Statement: PrintStatement;
 /* 16 */ Statement: EndStatement;
-/* 17 */ Remark: "REM" %push(Cmnt) RemarkOpt %pop();
-/* 18 */ RemarkOpt: Comment;
-/* 19 */ RemarkOpt: ;
+/* 17 */ Remark: "REM" %push(Cmnt) RemarkOpt /* Option */ %pop();
+/* 18 */ RemarkOpt: Comment; // Option<T>::Some
+/* 19 */ RemarkOpt: ; // Option<T>::None
 /* 20 */ GotoStatement: Goto LineNumber;
 /* 21 */ IfStatement: If %push(Expr) Expression %pop() IfBody;
-/* 22 */ Assignment: AssignmentOpt Variable AssignOp %push(Expr) Expression %pop();
-/* 23 */ AssignmentOpt: Let;
-/* 24 */ AssignmentOpt: ;
+/* 22 */ Assignment: AssignmentOpt /* Option */ Variable AssignOp %push(Expr) Expression %pop();
+/* 23 */ AssignmentOpt: Let; // Option<T>::Some
+/* 24 */ AssignmentOpt: ; // Option<T>::None
 /* 25 */ IfBody: Then Statement;
 /* 26 */ IfBody: Goto LineNumber;
 /* 27 */ PrintStatement: Print %push(Expr) Expression PrintStatementList /* Vec */ %pop();
@@ -73,9 +73,9 @@
 /* 62 */ LogicalAnd: LogicalNot LogicalAndList /* Vec */;
 /* 63 */ LogicalAndList: LogicalAndOp LogicalNot LogicalAndList; // Vec<T>::Push
 /* 64 */ LogicalAndList: ; // Vec<T>::New
-/* 65 */ LogicalNot: LogicalNotOpt Relational;
-/* 66 */ LogicalNotOpt: LogicalNotOp;
-/* 67 */ LogicalNotOpt: ;
+/* 65 */ LogicalNot: LogicalNotOpt /* Option */ Relational;
+/* 66 */ LogicalNotOpt: LogicalNotOp; // Option<T>::Some
+/* 67 */ LogicalNotOpt: ; // Option<T>::None
 /* 68 */ Relational: Summation RelationalList /* Vec */;
 /* 69 */ RelationalList: RelationalOp Summation RelationalList; // Vec<T>::Push
 /* 70 */ RelationalList: ; // Vec<T>::New
