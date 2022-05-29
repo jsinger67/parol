@@ -5,50 +5,50 @@
 
 %%
 
-BEGIN           : "BEGIN";
-CASE            : "CASE";
-DO              : "DO";
-ELSE            : "ELSE";
-ELSIF           : "ELSIF";
-END             : "END";
-IF              : "IF";
-OF              : "OF";
-PROCEDURE       : "PROCEDURE";
-THEN            : "THEN";
-TO              : "TO";
-VAR             : "VAR";
+KwBegin         : "BEGIN";
+KwCase          : "CASE";
+KwDo            : "DO";
+KwElse          : "ELSE";
+KwElsif         : "ELSIF";
+KwEnd           : "END";
+KwIf            : "IF";
+KwOf            : "OF";
+KwProcedure     : "PROCEDURE";
+KwThen          : "THEN";
+KwTo            : "TO";
+KwVar           : "VAR";
 
 
-Oberon2         : "MODULE" Ident ";" [ImportList] DeclSeq [BEGIN StatementSeq] END Ident "\.";
+Oberon2         : "MODULE" Ident ";" [ImportList] DeclSeq [KwBegin StatementSeq] KwEnd Ident "\.";
 ImportList      : "IMPORT" [Ident ":="] Ident {"," [Ident ":="] Ident} ";";
-DeclSeq         : { "CONST" {ConstDecl ";" } | "TYPE" {TypeDecl ";"} | VAR {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";" };
+DeclSeq         : { "CONST" {ConstDecl ";" } | "TYPE" {TypeDecl ";"} | KwVar {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";" };
 ConstDecl       : IdentDef "=" ConstExpr;
 TypeDecl        : IdentDef "=" TypeDef;
 VarDecl         : IdentList ":" TypeDef;
-ProcDecl        : PROCEDURE [Receiver] IdentDef [FormalPars] ";" DeclSeq [BEGIN StatementSeq] END Ident;
-ForwardDecl     : PROCEDURE "\^" [Receiver] IdentDef [FormalPars];
+ProcDecl        : KwProcedure [Receiver] IdentDef [FormalPars] ";" DeclSeq [KwBegin StatementSeq] KwEnd Ident;
+ForwardDecl     : KwProcedure "\^" [Receiver] IdentDef [FormalPars];
 FormalPars      : "\(" [FPSection {";" FPSection}] "\)" [":" QualIdent];
-FPSection       : [VAR] Ident {"," Ident} ":" TypeDef;
-Receiver        : "\(" [VAR] Ident ":" Ident "\)";
+FPSection       : [KwVar] Ident {"," Ident} ":" TypeDef;
+Receiver        : "\(" [KwVar] Ident ":" Ident "\)";
 TypeDef         : QualIdent
-                | "ARRAY" [ConstExpr {"," ConstExpr}] OF TypeDef
-                | "RECORD" ["\("QualIdent"\)"] FieldList {";" FieldList} END
-                | "POINTER" TO TypeDef
-                | PROCEDURE [FormalPars];
+                | "ARRAY" [ConstExpr {"," ConstExpr}] KwOf TypeDef
+                | "RECORD" ["\("QualIdent"\)"] FieldList {";" FieldList} KwEnd
+                | "POINTER" KwTo TypeDef
+                | KwProcedure [FormalPars];
 FieldList       : [IdentList ":" TypeDef];
 StatementSeq    : Statement {";" Statement};
-Statement       : Designator ":=" Expr 
+Statement       : [ Designator ":=" Expr 
                 | Designator ["\(" [ExprList] "\)"] 
-                | IF Expr THEN StatementSeq {ELSIF Expr THEN StatementSeq} [ELSE StatementSeq] END 
-                | CASE Expr OF Case {"\|" Case} [ELSE StatementSeq] END 
-                | "WHILE" Expr DO StatementSeq END 
+                | KwIf Expr KwThen StatementSeq {KwElsif Expr KwThen StatementSeq} [KwElse StatementSeq] KwEnd 
+                | KwCase Expr KwOf Case {"\|" Case} [KwElse StatementSeq] KwEnd 
+                | "WHILE" Expr KwDo StatementSeq KwEnd 
                 | "REPEAT" StatementSeq "UNTIL" Expr 
-                | "FOR" Ident ":=" Expr TO Expr ["BY" ConstExpr] DO StatementSeq END 
-                | "LOOP" StatementSeq END
-                | "WITH" Guard DO StatementSeq {"\|" Guard DO StatementSeq} [ELSE StatementSeq] END
+                | "FOR" Ident ":=" Expr KwTo Expr ["BY" ConstExpr] KwDo StatementSeq KwEnd 
+                | "LOOP" StatementSeq KwEnd
+                | "WITH" Guard KwDo StatementSeq {"\|" Guard KwDo StatementSeq} [KwElse StatementSeq] KwEnd
                 | "EXIT" 
                 | "RETURN" [Expr]
-                | ";";
+                ];
 Case            : [CaseLabels {"," CaseLabels} ":" StatementSeq];
 CaseLabels      : ConstExpr ["\.\." ConstExpr];
 Guard           : QualIdent ":" QualIdent;
@@ -66,7 +66,7 @@ Factor          : Designator ["\(" [ExprList] "\)"]
                 | "~" Factor;
 Set             : "\{" [Element {"," Element}] "\}";
 Element         : Expr ["\.\." Expr];
-Relation        : "=" | "#" | "<" | "<=" | ">" | ">=" | "IN" | "IS";
+Relation        : "=" | "#" | "<" | "<=" | ">" | ">=" | InOp | "IS";
 AddOp           : "\+" | "-" | "OR";
 MulOp           : "\*" | "/" | "DIV" | "MOD" | "&";
 Designator      : QualIdent { DesignatorSuffix };
@@ -86,3 +86,4 @@ Integer         : "[0-9][0-9]*|[0-9][0-9A-F]*H";
 QIdent          : "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
 Ident           : "[a-zA-Z_]\w*";
 String          : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
+InOp            : "IN";

@@ -18,63 +18,63 @@ use std::path::{Path, PathBuf};
 pub trait Oberon2GrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
-    /// Semantic action for non-terminal 'BEGIN'
-    fn b_e_g_i_n(&mut self, _arg: &BEGIN<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwBegin'
+    fn kw_begin(&mut self, _arg: &KwBegin<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'CASE'
-    fn c_a_s_e(&mut self, _arg: &CASE<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwCase'
+    fn kw_case(&mut self, _arg: &KwCase<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'DO'
-    fn d_o(&mut self, _arg: &DO<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwDo'
+    fn kw_do(&mut self, _arg: &KwDo<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'ELSE'
-    fn e_l_s_e(&mut self, _arg: &ELSE<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwElse'
+    fn kw_else(&mut self, _arg: &KwElse<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'ELSIF'
-    fn e_l_s_i_f(&mut self, _arg: &ELSIF<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwElsif'
+    fn kw_elsif(&mut self, _arg: &KwElsif<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'END'
-    fn e_n_d(&mut self, _arg: &END<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwEnd'
+    fn kw_end(&mut self, _arg: &KwEnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'IF'
-    fn i_f(&mut self, _arg: &IF<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwIf'
+    fn kw_if(&mut self, _arg: &KwIf<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'OF'
-    fn o_f(&mut self, _arg: &OF<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwOf'
+    fn kw_of(&mut self, _arg: &KwOf<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'PROCEDURE'
-    fn p_r_o_c_e_d_u_r_e(&mut self, _arg: &PROCEDURE<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwProcedure'
+    fn kw_procedure(&mut self, _arg: &KwProcedure<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'THEN'
-    fn t_h_e_n(&mut self, _arg: &THEN<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwThen'
+    fn kw_then(&mut self, _arg: &KwThen<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'TO'
-    fn t_o(&mut self, _arg: &TO<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwTo'
+    fn kw_to(&mut self, _arg: &KwTo<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'VAR'
-    fn v_a_r(&mut self, _arg: &VAR<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'KwVar'
+    fn kw_var(&mut self, _arg: &KwVar<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -282,6 +282,11 @@ pub trait Oberon2GrammarTrait<'t> {
     fn string(&mut self, _arg: &String<'t>) -> Result<()> {
         Ok(())
     }
+
+    /// Semantic action for non-terminal 'InOp'
+    fn in_op(&mut self, _arg: &InOp<'t>) -> Result<()> {
+        Ok(())
+    }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -340,12 +345,12 @@ pub struct DeclSeqListGroup1<'t> {
 ///
 /// Type derived for production 36
 ///
-/// DeclSeqListGroup: VAR DeclSeqListGroupList1 /* Vec */;
+/// DeclSeqListGroup: KwVar DeclSeqListGroupList1 /* Vec */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DeclSeqListGroup2<'t> {
-    pub v_a_r: Box<VAR<'t>>,
+    pub kw_var: Box<KwVar<'t>>,
     pub decl_seq_list_group_list1: Vec<DeclSeqListGroupList1<'t>>,
 }
 
@@ -363,21 +368,21 @@ pub struct TypeDef0<'t> {
 ///
 /// Type derived for production 71
 ///
-/// TypeDef: "ARRAY" TypeDefOpt /* Option */ OF TypeDef;
+/// TypeDef: "ARRAY" TypeDefOpt /* Option */ KwOf TypeDef;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef1<'t> {
     pub a_r_r_a_y: Token<'t>, /* ARRAY */
     pub type_def_opt: Option<Box<TypeDefOpt<'t>>>,
-    pub o_f: Box<OF<'t>>,
+    pub kw_of: Box<KwOf<'t>>,
     pub type_def: Box<TypeDef<'t>>,
 }
 
 ///
 /// Type derived for production 72
 ///
-/// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ END;
+/// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -386,126 +391,126 @@ pub struct TypeDef2<'t> {
     pub type_def_opt0: Option<Box<TypeDefOpt0<'t>>>,
     pub field_list: Box<FieldList<'t>>,
     pub type_def_list: Vec<TypeDefList<'t>>,
-    pub e_n_d: Box<END<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 75
 ///
-/// TypeDef: "POINTER" TO TypeDef;
+/// TypeDef: "POINTER" KwTo TypeDef;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef3<'t> {
     pub p_o_i_n_t_e_r: Token<'t>, /* POINTER */
-    pub t_o: Box<TO<'t>>,
+    pub kw_to: Box<KwTo<'t>>,
     pub type_def: Box<TypeDef<'t>>,
 }
 
 ///
 /// Type derived for production 76
 ///
-/// TypeDef: PROCEDURE TypeDefOpt1 /* Option */;
+/// TypeDef: KwProcedure TypeDefOpt1 /* Option */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef4<'t> {
-    pub p_r_o_c_e_d_u_r_e: Box<PROCEDURE<'t>>,
+    pub kw_procedure: Box<KwProcedure<'t>>,
     pub type_def_opt1: Option<Box<TypeDefOpt1<'t>>>,
-}
-
-///
-/// Type derived for production 91
-///
-/// Statement: Designator StatementSuffix;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Statement0<'t> {
-    pub designator: Box<Designator<'t>>,
-    pub statement_suffix: Box<StatementSuffix<'t>>,
-}
-
-///
-/// Type derived for production 92
-///
-/// StatementSuffix: ":=" Expr;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct StatementSuffix0<'t> {
-    pub colon_equ: Token<'t>, /* := */
-    pub expr: Box<Expr<'t>>,
 }
 
 ///
 /// Type derived for production 93
 ///
-/// StatementSuffix: StatementOpt /* Option */;
+/// StatementOptGroup: Designator StatementOptGroupSuffix;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementSuffix1<'t> {
-    pub statement_opt: Option<Box<StatementOpt<'t>>>,
+pub struct StatementOptGroup0<'t> {
+    pub designator: Box<Designator<'t>>,
+    pub statement_opt_group_suffix: Box<StatementOptGroupSuffix<'t>>,
 }
 
 ///
 /// Type derived for production 94
 ///
-/// Statement: IF Expr THEN StatementSeq StatementList /* Vec */ StatementOpt0 /* Option */ END;
+/// StatementOptGroupSuffix: ":=" Expr;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement1<'t> {
-    pub i_f: Box<IF<'t>>,
+pub struct StatementOptGroupSuffix0<'t> {
+    pub colon_equ: Token<'t>, /* := */
     pub expr: Box<Expr<'t>>,
-    pub t_h_e_n: Box<THEN<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
-    pub statement_list: Vec<StatementList<'t>>,
-    pub statement_opt0: Option<Box<StatementOpt0<'t>>>,
-    pub e_n_d: Box<END<'t>>,
 }
 
 ///
 /// Type derived for production 95
 ///
-/// Statement: CASE Expr OF Case StatementList0 /* Vec */ StatementOpt1 /* Option */ END;
+/// StatementOptGroupSuffix: StatementOpt0 /* Option */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement2<'t> {
-    pub c_a_s_e: Box<CASE<'t>>,
-    pub expr: Box<Expr<'t>>,
-    pub o_f: Box<OF<'t>>,
-    pub case: Box<Case<'t>>,
-    pub statement_list0: Vec<StatementList0<'t>>,
-    pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
-    pub e_n_d: Box<END<'t>>,
+pub struct StatementOptGroupSuffix1<'t> {
+    pub statement_opt0: Option<Box<StatementOpt0<'t>>>,
 }
 
 ///
 /// Type derived for production 96
 ///
-/// Statement: "WHILE" Expr DO StatementSeq END;
+/// StatementOptGroup: KwIf Expr KwThen StatementSeq StatementOptGroupList /* Vec */ StatementOpt1 /* Option */ KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement3<'t> {
-    pub w_h_i_l_e: Token<'t>, /* WHILE */
+pub struct StatementOptGroup1<'t> {
+    pub kw_if: Box<KwIf<'t>>,
     pub expr: Box<Expr<'t>>,
-    pub d_o: Box<DO<'t>>,
+    pub kw_then: Box<KwThen<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
-    pub e_n_d: Box<END<'t>>,
+    pub statement_opt_group_list: Vec<StatementOptGroupList<'t>>,
+    pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
+    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 97
 ///
-/// Statement: "REPEAT" StatementSeq "UNTIL" Expr;
+/// StatementOptGroup: KwCase Expr KwOf Case StatementOptGroupList0 /* Vec */ StatementOpt2 /* Option */ KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement4<'t> {
+pub struct StatementOptGroup2<'t> {
+    pub kw_case: Box<KwCase<'t>>,
+    pub expr: Box<Expr<'t>>,
+    pub kw_of: Box<KwOf<'t>>,
+    pub case: Box<Case<'t>>,
+    pub statement_opt_group_list0: Vec<StatementOptGroupList0<'t>>,
+    pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
+    pub kw_end: Box<KwEnd<'t>>,
+}
+
+///
+/// Type derived for production 98
+///
+/// StatementOptGroup: "WHILE" Expr KwDo StatementSeq KwEnd;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroup3<'t> {
+    pub w_h_i_l_e: Token<'t>, /* WHILE */
+    pub expr: Box<Expr<'t>>,
+    pub kw_do: Box<KwDo<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
+}
+
+///
+/// Type derived for production 99
+///
+/// StatementOptGroup: "REPEAT" StatementSeq "UNTIL" Expr;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroup4<'t> {
     pub r_e_p_e_a_t: Token<'t>, /* REPEAT */
     pub statement_seq: Box<StatementSeq<'t>>,
     pub u_n_t_i_l: Token<'t>, /* UNTIL */
@@ -513,91 +518,80 @@ pub struct Statement4<'t> {
 }
 
 ///
-/// Type derived for production 98
+/// Type derived for production 100
 ///
-/// Statement: "FOR" Ident ":=" Expr TO Expr StatementOpt2 /* Option */ DO StatementSeq END;
+/// StatementOptGroup: "FOR" Ident ":=" Expr KwTo Expr StatementOpt3 /* Option */ KwDo StatementSeq KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement5<'t> {
+pub struct StatementOptGroup5<'t> {
     pub f_o_r: Token<'t>, /* FOR */
     pub ident: Box<Ident<'t>>,
     pub colon_equ: Token<'t>, /* := */
     pub expr: Box<Expr<'t>>,
-    pub t_o: Box<TO<'t>>,
+    pub kw_to: Box<KwTo<'t>>,
     pub expr0: Box<Expr<'t>>,
-    pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
-    pub d_o: Box<DO<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
-    pub e_n_d: Box<END<'t>>,
-}
-
-///
-/// Type derived for production 99
-///
-/// Statement: "LOOP" StatementSeq END;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Statement6<'t> {
-    pub l_o_o_p: Token<'t>, /* LOOP */
-    pub statement_seq: Box<StatementSeq<'t>>,
-    pub e_n_d: Box<END<'t>>,
-}
-
-///
-/// Type derived for production 100
-///
-/// Statement: "WITH" Guard DO StatementSeq StatementList1 /* Vec */ StatementOpt3 /* Option */ END;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct Statement7<'t> {
-    pub w_i_t_h: Token<'t>, /* WITH */
-    pub guard: Box<Guard<'t>>,
-    pub d_o: Box<DO<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
-    pub statement_list1: Vec<StatementList1<'t>>,
     pub statement_opt3: Option<Box<StatementOpt3<'t>>>,
-    pub e_n_d: Box<END<'t>>,
+    pub kw_do: Box<KwDo<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 101
 ///
-/// Statement: "EXIT";
+/// StatementOptGroup: "LOOP" StatementSeq KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement8<'t> {
-    pub e_x_i_t: Token<'t>, /* EXIT */
+pub struct StatementOptGroup6<'t> {
+    pub l_o_o_p: Token<'t>, /* LOOP */
+    pub statement_seq: Box<StatementSeq<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 102
 ///
-/// Statement: "RETURN" StatementOpt4 /* Option */;
+/// StatementOptGroup: "WITH" Guard KwDo StatementSeq StatementOptGroupList1 /* Vec */ StatementOpt4 /* Option */ KwEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement9<'t> {
-    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+pub struct StatementOptGroup7<'t> {
+    pub w_i_t_h: Token<'t>, /* WITH */
+    pub guard: Box<Guard<'t>>,
+    pub kw_do: Box<KwDo<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_opt_group_list1: Vec<StatementOptGroupList1<'t>>,
     pub statement_opt4: Option<Box<StatementOpt4<'t>>>,
+    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 103
 ///
-/// Statement: ";";
+/// StatementOptGroup: "EXIT";
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement10<'t> {
-    pub semicolon: Token<'t>, /* ; */
+pub struct StatementOptGroup8<'t> {
+    pub e_x_i_t: Token<'t>, /* EXIT */
 }
 
 ///
-/// Type derived for production 141
+/// Type derived for production 104
+///
+/// StatementOptGroup: "RETURN" StatementOpt5 /* Option */;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroup9<'t> {
+    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
+    pub statement_opt5: Option<Box<StatementOpt5<'t>>>,
+}
+
+///
+/// Type derived for production 143
 ///
 /// SimpleExprOptGroup: "\+";
 ///
@@ -608,7 +602,7 @@ pub struct SimpleExprOptGroup0<'t> {
 }
 
 ///
-/// Type derived for production 142
+/// Type derived for production 144
 ///
 /// SimpleExprOptGroup: "-";
 ///
@@ -619,7 +613,7 @@ pub struct SimpleExprOptGroup1<'t> {
 }
 
 ///
-/// Type derived for production 147
+/// Type derived for production 149
 ///
 /// Factor: Designator FactorOpt /* Option */;
 ///
@@ -631,7 +625,7 @@ pub struct Factor0<'t> {
 }
 
 ///
-/// Type derived for production 148
+/// Type derived for production 150
 ///
 /// Factor: Number;
 ///
@@ -642,7 +636,7 @@ pub struct Factor1<'t> {
 }
 
 ///
-/// Type derived for production 149
+/// Type derived for production 151
 ///
 /// Factor: Character;
 ///
@@ -653,7 +647,7 @@ pub struct Factor2<'t> {
 }
 
 ///
-/// Type derived for production 150
+/// Type derived for production 152
 ///
 /// Factor: String;
 ///
@@ -664,7 +658,7 @@ pub struct Factor3<'t> {
 }
 
 ///
-/// Type derived for production 151
+/// Type derived for production 153
 ///
 /// Factor: "NIL";
 ///
@@ -675,7 +669,7 @@ pub struct Factor4<'t> {
 }
 
 ///
-/// Type derived for production 152
+/// Type derived for production 154
 ///
 /// Factor: Set;
 ///
@@ -686,7 +680,7 @@ pub struct Factor5<'t> {
 }
 
 ///
-/// Type derived for production 153
+/// Type derived for production 155
 ///
 /// Factor: "\(" Expr "\)";
 ///
@@ -699,7 +693,7 @@ pub struct Factor6<'t> {
 }
 
 ///
-/// Type derived for production 154
+/// Type derived for production 156
 ///
 /// Factor: "~" Factor;
 ///
@@ -711,7 +705,7 @@ pub struct Factor7<'t> {
 }
 
 ///
-/// Type derived for production 167
+/// Type derived for production 169
 ///
 /// Relation: "=";
 ///
@@ -722,7 +716,7 @@ pub struct Relation0<'t> {
 }
 
 ///
-/// Type derived for production 168
+/// Type derived for production 170
 ///
 /// Relation: "#";
 ///
@@ -733,7 +727,7 @@ pub struct Relation1<'t> {
 }
 
 ///
-/// Type derived for production 169
+/// Type derived for production 171
 ///
 /// Relation: "<";
 ///
@@ -744,7 +738,7 @@ pub struct Relation2<'t> {
 }
 
 ///
-/// Type derived for production 170
+/// Type derived for production 172
 ///
 /// Relation: "<=";
 ///
@@ -755,7 +749,7 @@ pub struct Relation3<'t> {
 }
 
 ///
-/// Type derived for production 171
+/// Type derived for production 173
 ///
 /// Relation: ">";
 ///
@@ -766,7 +760,7 @@ pub struct Relation4<'t> {
 }
 
 ///
-/// Type derived for production 172
+/// Type derived for production 174
 ///
 /// Relation: ">=";
 ///
@@ -777,18 +771,18 @@ pub struct Relation5<'t> {
 }
 
 ///
-/// Type derived for production 173
+/// Type derived for production 175
 ///
-/// Relation: "IN";
+/// Relation: InOp;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Relation6<'t> {
-    pub i_n: Token<'t>, /* IN */
+    pub in_op: Box<InOp<'t>>,
 }
 
 ///
-/// Type derived for production 174
+/// Type derived for production 176
 ///
 /// Relation: "IS";
 ///
@@ -799,7 +793,7 @@ pub struct Relation7<'t> {
 }
 
 ///
-/// Type derived for production 175
+/// Type derived for production 177
 ///
 /// AddOp: "\+";
 ///
@@ -810,7 +804,7 @@ pub struct AddOp0<'t> {
 }
 
 ///
-/// Type derived for production 176
+/// Type derived for production 178
 ///
 /// AddOp: "-";
 ///
@@ -821,7 +815,7 @@ pub struct AddOp1<'t> {
 }
 
 ///
-/// Type derived for production 177
+/// Type derived for production 179
 ///
 /// AddOp: "OR";
 ///
@@ -832,7 +826,7 @@ pub struct AddOp2<'t> {
 }
 
 ///
-/// Type derived for production 178
+/// Type derived for production 180
 ///
 /// MulOp: "\*";
 ///
@@ -843,7 +837,7 @@ pub struct MulOp0<'t> {
 }
 
 ///
-/// Type derived for production 179
+/// Type derived for production 181
 ///
 /// MulOp: "/";
 ///
@@ -854,7 +848,7 @@ pub struct MulOp1<'t> {
 }
 
 ///
-/// Type derived for production 180
+/// Type derived for production 182
 ///
 /// MulOp: "DIV";
 ///
@@ -865,7 +859,7 @@ pub struct MulOp2<'t> {
 }
 
 ///
-/// Type derived for production 181
+/// Type derived for production 183
 ///
 /// MulOp: "MOD";
 ///
@@ -876,7 +870,7 @@ pub struct MulOp3<'t> {
 }
 
 ///
-/// Type derived for production 182
+/// Type derived for production 184
 ///
 /// MulOp: "&";
 ///
@@ -887,7 +881,7 @@ pub struct MulOp4<'t> {
 }
 
 ///
-/// Type derived for production 186
+/// Type derived for production 188
 ///
 /// DesignatorSuffix: "\." Ident;
 ///
@@ -899,7 +893,7 @@ pub struct DesignatorSuffix0<'t> {
 }
 
 ///
-/// Type derived for production 187
+/// Type derived for production 189
 ///
 /// DesignatorSuffix: "\[" ExprList "\]";
 ///
@@ -912,7 +906,7 @@ pub struct DesignatorSuffix1<'t> {
 }
 
 ///
-/// Type derived for production 188
+/// Type derived for production 190
 ///
 /// DesignatorSuffix: "\^";
 ///
@@ -923,7 +917,7 @@ pub struct DesignatorSuffix2<'t> {
 }
 
 ///
-/// Type derived for production 195
+/// Type derived for production 197
 ///
 /// QualIdent: Ident;
 ///
@@ -934,7 +928,7 @@ pub struct QualIdent0<'t> {
 }
 
 ///
-/// Type derived for production 196
+/// Type derived for production 198
 ///
 /// QualIdent: QIdent;
 ///
@@ -945,7 +939,7 @@ pub struct QualIdent1<'t> {
 }
 
 ///
-/// Type derived for production 199
+/// Type derived for production 201
 ///
 /// IdentDefOptGroup: "\*";
 ///
@@ -956,7 +950,7 @@ pub struct IdentDefOptGroup0<'t> {
 }
 
 ///
-/// Type derived for production 200
+/// Type derived for production 202
 ///
 /// IdentDefOptGroup: "-";
 ///
@@ -967,7 +961,7 @@ pub struct IdentDefOptGroup1<'t> {
 }
 
 ///
-/// Type derived for production 202
+/// Type derived for production 204
 ///
 /// Number: Integer;
 ///
@@ -978,7 +972,7 @@ pub struct Number0<'t> {
 }
 
 ///
-/// Type derived for production 203
+/// Type derived for production 205
 ///
 /// Number: Real;
 ///
@@ -1002,24 +996,6 @@ pub enum AddOp<'t> {
     AddOp0(AddOp0<'t>),
     AddOp1(AddOp1<'t>),
     AddOp2(AddOp2<'t>),
-}
-
-///
-/// Type derived for non-terminal BEGIN
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct BEGIN<'t> {
-    pub b_e_g_i_n: Token<'t>, /* BEGIN */
-}
-
-///
-/// Type derived for non-terminal CASE
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct CASE<'t> {
-    pub c_a_s_e: Token<'t>, /* CASE */
 }
 
 ///
@@ -1100,15 +1076,6 @@ pub struct ConstDecl<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ConstExpr<'t> {
     pub expr: Box<Expr<'t>>,
-}
-
-///
-/// Type derived for non-terminal DO
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct DO<'t> {
-    pub d_o: Token<'t>, /* DO */
 }
 
 ///
@@ -1221,33 +1188,6 @@ pub enum DesignatorSuffix<'t> {
 }
 
 ///
-/// Type derived for non-terminal ELSE
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ELSE<'t> {
-    pub e_l_s_e: Token<'t>, /* ELSE */
-}
-
-///
-/// Type derived for non-terminal ELSIF
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ELSIF<'t> {
-    pub e_l_s_i_f: Token<'t>, /* ELSIF */
-}
-
-///
-/// Type derived for non-terminal END
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct END<'t> {
-    pub e_n_d: Token<'t>, /* END */
-}
-
-///
 /// Type derived for non-terminal Element
 ///
 #[allow(dead_code)]
@@ -1336,7 +1276,7 @@ pub struct FPSectionList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FPSectionOpt<'t> {
-    pub v_a_r: Box<VAR<'t>>,
+    pub kw_var: Box<KwVar<'t>>,
 }
 
 ///
@@ -1443,7 +1383,7 @@ pub struct FormalParsOptList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ForwardDecl<'t> {
-    pub p_r_o_c_e_d_u_r_e: Box<PROCEDURE<'t>>,
+    pub kw_procedure: Box<KwProcedure<'t>>,
     pub circumflex: Token<'t>, /* \^ */
     pub forward_decl_opt: Option<Box<ForwardDeclOpt<'t>>>,
     pub ident_def: Box<IdentDef<'t>>,
@@ -1477,15 +1417,6 @@ pub struct Guard<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
     pub colon: Token<'t>, /* : */
     pub qual_ident0: Box<QualIdent<'t>>,
-}
-
-///
-/// Type derived for non-terminal IF
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct IF<'t> {
-    pub i_f: Token<'t>, /* IF */
 }
 
 ///
@@ -1591,12 +1522,129 @@ pub struct ImportListOpt0<'t> {
 }
 
 ///
+/// Type derived for non-terminal InOp
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct InOp<'t> {
+    pub in_op: Token<'t>, /* IN */
+}
+
+///
 /// Type derived for non-terminal Integer
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Integer<'t> {
     pub integer: Token<'t>, /* [0-9][0-9]*|[0-9][0-9A-F]*H */
+}
+
+///
+/// Type derived for non-terminal KwBegin
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwBegin<'t> {
+    pub kw_begin: Token<'t>, /* BEGIN */
+}
+
+///
+/// Type derived for non-terminal KwCase
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwCase<'t> {
+    pub kw_case: Token<'t>, /* CASE */
+}
+
+///
+/// Type derived for non-terminal KwDo
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwDo<'t> {
+    pub kw_do: Token<'t>, /* DO */
+}
+
+///
+/// Type derived for non-terminal KwElse
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwElse<'t> {
+    pub kw_else: Token<'t>, /* ELSE */
+}
+
+///
+/// Type derived for non-terminal KwElsif
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwElsif<'t> {
+    pub kw_elsif: Token<'t>, /* ELSIF */
+}
+
+///
+/// Type derived for non-terminal KwEnd
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwEnd<'t> {
+    pub kw_end: Token<'t>, /* END */
+}
+
+///
+/// Type derived for non-terminal KwIf
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwIf<'t> {
+    pub kw_if: Token<'t>, /* IF */
+}
+
+///
+/// Type derived for non-terminal KwOf
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwOf<'t> {
+    pub kw_of: Token<'t>, /* OF */
+}
+
+///
+/// Type derived for non-terminal KwProcedure
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwProcedure<'t> {
+    pub kw_procedure: Token<'t>, /* PROCEDURE */
+}
+
+///
+/// Type derived for non-terminal KwThen
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwThen<'t> {
+    pub kw_then: Token<'t>, /* THEN */
+}
+
+///
+/// Type derived for non-terminal KwTo
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwTo<'t> {
+    pub kw_to: Token<'t>, /* TO */
+}
+
+///
+/// Type derived for non-terminal KwVar
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct KwVar<'t> {
+    pub kw_var: Token<'t>, /* VAR */
 }
 
 ///
@@ -1623,15 +1671,6 @@ pub enum Number<'t> {
 }
 
 ///
-/// Type derived for non-terminal OF
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct OF<'t> {
-    pub o_f: Token<'t>, /* OF */
-}
-
-///
 /// Type derived for non-terminal Oberon2
 ///
 #[allow(dead_code)]
@@ -1643,7 +1682,7 @@ pub struct Oberon2<'t> {
     pub oberon2_opt: Option<Box<Oberon2Opt<'t>>>,
     pub decl_seq: Box<DeclSeq<'t>>,
     pub oberon2_opt0: Option<Box<Oberon2Opt0<'t>>>,
-    pub e_n_d: Box<END<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
     pub ident0: Box<Ident<'t>>,
     pub dot: Token<'t>, /* \. */
 }
@@ -1663,17 +1702,8 @@ pub struct Oberon2Opt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Oberon2Opt0<'t> {
-    pub b_e_g_i_n: Box<BEGIN<'t>>,
+    pub kw_begin: Box<KwBegin<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
-}
-
-///
-/// Type derived for non-terminal PROCEDURE
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct PROCEDURE<'t> {
-    pub p_r_o_c_e_d_u_r_e: Token<'t>, /* PROCEDURE */
 }
 
 ///
@@ -1682,14 +1712,14 @@ pub struct PROCEDURE<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ProcDecl<'t> {
-    pub p_r_o_c_e_d_u_r_e: Box<PROCEDURE<'t>>,
+    pub kw_procedure: Box<KwProcedure<'t>>,
     pub proc_decl_opt: Option<Box<ProcDeclOpt<'t>>>,
     pub ident_def: Box<IdentDef<'t>>,
     pub proc_decl_opt0: Option<Box<ProcDeclOpt0<'t>>>,
     pub semicolon: Token<'t>, /* ; */
     pub decl_seq: Box<DeclSeq<'t>>,
     pub proc_decl_opt1: Option<Box<ProcDeclOpt1<'t>>>,
-    pub e_n_d: Box<END<'t>>,
+    pub kw_end: Box<KwEnd<'t>>,
     pub ident: Box<Ident<'t>>,
 }
 
@@ -1717,7 +1747,7 @@ pub struct ProcDeclOpt0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ProcDeclOpt1<'t> {
-    pub b_e_g_i_n: Box<BEGIN<'t>>,
+    pub kw_begin: Box<KwBegin<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -1769,7 +1799,7 @@ pub struct Receiver<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ReceiverOpt<'t> {
-    pub v_a_r: Box<VAR<'t>>,
+    pub kw_var: Box<KwVar<'t>>,
 }
 
 ///
@@ -1863,53 +1893,9 @@ pub enum SimpleExprOptGroup<'t> {
 /// Type derived for non-terminal Statement
 ///
 #[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum Statement<'t> {
-    Statement0(Statement0<'t>),
-    Statement1(Statement1<'t>),
-    Statement2(Statement2<'t>),
-    Statement3(Statement3<'t>),
-    Statement4(Statement4<'t>),
-    Statement5(Statement5<'t>),
-    Statement6(Statement6<'t>),
-    Statement7(Statement7<'t>),
-    Statement8(Statement8<'t>),
-    Statement9(Statement9<'t>),
-    Statement10(Statement10<'t>),
-}
-
-///
-/// Type derived for non-terminal StatementList
-///
-#[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementList<'t> {
-    pub e_l_s_i_f: Box<ELSIF<'t>>,
-    pub expr: Box<Expr<'t>>,
-    pub t_h_e_n: Box<THEN<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
-}
-
-///
-/// Type derived for non-terminal StatementList0
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct StatementList0<'t> {
-    pub or: Token<'t>, /* \| */
-    pub case: Box<Case<'t>>,
-}
-
-///
-/// Type derived for non-terminal StatementList1
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct StatementList1<'t> {
-    pub or: Token<'t>, /* \| */
-    pub guard: Box<Guard<'t>>,
-    pub d_o: Box<DO<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
+pub struct Statement<'t> {
+    pub statement_opt: Option<Box<StatementOpt<'t>>>,
 }
 
 ///
@@ -1918,9 +1904,7 @@ pub struct StatementList1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt<'t> {
-    pub l_paren: Token<'t>, /* \( */
-    pub statement_opt5: Option<Box<StatementOpt5<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
+    pub statement_opt_group: Box<StatementOptGroup<'t>>,
 }
 
 ///
@@ -1929,8 +1913,9 @@ pub struct StatementOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt0<'t> {
-    pub e_l_s_e: Box<ELSE<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub l_paren: Token<'t>, /* \( */
+    pub statement_opt6: Option<Box<StatementOpt6<'t>>>,
+    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -1939,7 +1924,7 @@ pub struct StatementOpt0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt1<'t> {
-    pub e_l_s_e: Box<ELSE<'t>>,
+    pub kw_else: Box<KwElse<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -1949,8 +1934,8 @@ pub struct StatementOpt1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt2<'t> {
-    pub b_y: Token<'t>, /* BY */
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub kw_else: Box<KwElse<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
 }
 
 ///
@@ -1959,8 +1944,8 @@ pub struct StatementOpt2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt3<'t> {
-    pub e_l_s_e: Box<ELSE<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub b_y: Token<'t>, /* BY */
+    pub const_expr: Box<ConstExpr<'t>>,
 }
 
 ///
@@ -1969,7 +1954,8 @@ pub struct StatementOpt3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt4<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub kw_else: Box<KwElse<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
 }
 
 ///
@@ -1978,7 +1964,78 @@ pub struct StatementOpt4<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt5<'t> {
+    pub expr: Box<Expr<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementOpt6
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOpt6<'t> {
     pub expr_list: Box<ExprList<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementOptGroup
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum StatementOptGroup<'t> {
+    StatementOptGroup0(StatementOptGroup0<'t>),
+    StatementOptGroup1(StatementOptGroup1<'t>),
+    StatementOptGroup2(StatementOptGroup2<'t>),
+    StatementOptGroup3(StatementOptGroup3<'t>),
+    StatementOptGroup4(StatementOptGroup4<'t>),
+    StatementOptGroup5(StatementOptGroup5<'t>),
+    StatementOptGroup6(StatementOptGroup6<'t>),
+    StatementOptGroup7(StatementOptGroup7<'t>),
+    StatementOptGroup8(StatementOptGroup8<'t>),
+    StatementOptGroup9(StatementOptGroup9<'t>),
+}
+
+///
+/// Type derived for non-terminal StatementOptGroupList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroupList<'t> {
+    pub kw_elsif: Box<KwElsif<'t>>,
+    pub expr: Box<Expr<'t>>,
+    pub kw_then: Box<KwThen<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementOptGroupList0
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroupList0<'t> {
+    pub or: Token<'t>, /* \| */
+    pub case: Box<Case<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementOptGroupList1
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StatementOptGroupList1<'t> {
+    pub or: Token<'t>, /* \| */
+    pub guard: Box<Guard<'t>>,
+    pub kw_do: Box<KwDo<'t>>,
+    pub statement_seq: Box<StatementSeq<'t>>,
+}
+
+///
+/// Type derived for non-terminal StatementOptGroupSuffix
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum StatementOptGroupSuffix<'t> {
+    StatementOptGroupSuffix0(StatementOptGroupSuffix0<'t>),
+    StatementOptGroupSuffix1(StatementOptGroupSuffix1<'t>),
 }
 
 ///
@@ -2002,40 +2059,12 @@ pub struct StatementSeqList<'t> {
 }
 
 ///
-/// Type derived for non-terminal StatementSuffix
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum StatementSuffix<'t> {
-    StatementSuffix0(StatementSuffix0<'t>),
-    StatementSuffix1(StatementSuffix1<'t>),
-}
-
-///
 /// Type derived for non-terminal String
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String<'t> {
     pub string: Token<'t>, /* \u{0022}[^\u{0022}]*\u{0022}|'[^']*' */
-}
-
-///
-/// Type derived for non-terminal THEN
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct THEN<'t> {
-    pub t_h_e_n: Token<'t>, /* THEN */
-}
-
-///
-/// Type derived for non-terminal TO
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct TO<'t> {
-    pub t_o: Token<'t>, /* TO */
 }
 
 ///
@@ -2133,15 +2162,6 @@ pub struct TypeDefOptList<'t> {
 }
 
 ///
-/// Type derived for non-terminal VAR
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct VAR<'t> {
-    pub v_a_r: Token<'t>, /* VAR */
-}
-
-///
 /// Type derived for non-terminal VarDecl
 ///
 #[allow(dead_code)]
@@ -2161,8 +2181,6 @@ pub struct VarDecl<'t> {
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
     AddOp(AddOp<'t>),
-    BEGIN(BEGIN<'t>),
-    CASE(CASE<'t>),
     Case(Case<'t>),
     CaseLabels(CaseLabels<'t>),
     CaseLabelsOpt(Option<Box<CaseLabelsOpt<'t>>>),
@@ -2171,7 +2189,6 @@ pub enum ASTType<'t> {
     Character(Character<'t>),
     ConstDecl(ConstDecl<'t>),
     ConstExpr(ConstExpr<'t>),
-    DO(DO<'t>),
     DeclSeq(DeclSeq<'t>),
     DeclSeqList(Vec<DeclSeqList<'t>>),
     DeclSeqList0(Vec<DeclSeqList0<'t>>),
@@ -2183,9 +2200,6 @@ pub enum ASTType<'t> {
     Designator(Designator<'t>),
     DesignatorList(Vec<DesignatorList<'t>>),
     DesignatorSuffix(DesignatorSuffix<'t>),
-    ELSE(ELSE<'t>),
-    ELSIF(ELSIF<'t>),
-    END(END<'t>),
     Element(Element<'t>),
     ElementOpt(Option<Box<ElementOpt<'t>>>),
     Expr(Expr<'t>),
@@ -2208,7 +2222,6 @@ pub enum ASTType<'t> {
     ForwardDeclOpt(Option<Box<ForwardDeclOpt<'t>>>),
     ForwardDeclOpt0(Option<Box<ForwardDeclOpt0<'t>>>),
     Guard(Guard<'t>),
-    IF(IF<'t>),
     Ident(Ident<'t>),
     IdentDef(IdentDef<'t>),
     IdentDefOpt(Option<Box<IdentDefOpt<'t>>>),
@@ -2219,14 +2232,25 @@ pub enum ASTType<'t> {
     ImportListList(Vec<ImportListList<'t>>),
     ImportListOpt(Option<Box<ImportListOpt<'t>>>),
     ImportListOpt0(Option<Box<ImportListOpt0<'t>>>),
+    InOp(InOp<'t>),
     Integer(Integer<'t>),
+    KwBegin(KwBegin<'t>),
+    KwCase(KwCase<'t>),
+    KwDo(KwDo<'t>),
+    KwElse(KwElse<'t>),
+    KwElsif(KwElsif<'t>),
+    KwEnd(KwEnd<'t>),
+    KwIf(KwIf<'t>),
+    KwOf(KwOf<'t>),
+    KwProcedure(KwProcedure<'t>),
+    KwThen(KwThen<'t>),
+    KwTo(KwTo<'t>),
+    KwVar(KwVar<'t>),
     MulOp(MulOp<'t>),
     Number(Number<'t>),
-    OF(OF<'t>),
     Oberon2(Oberon2<'t>),
     Oberon2Opt(Option<Box<Oberon2Opt<'t>>>),
     Oberon2Opt0(Option<Box<Oberon2Opt0<'t>>>),
-    PROCEDURE(PROCEDURE<'t>),
     ProcDecl(ProcDecl<'t>),
     ProcDeclOpt(Option<Box<ProcDeclOpt<'t>>>),
     ProcDeclOpt0(Option<Box<ProcDeclOpt0<'t>>>),
@@ -2245,9 +2269,6 @@ pub enum ASTType<'t> {
     SimpleExprOpt(Option<Box<SimpleExprOpt<'t>>>),
     SimpleExprOptGroup(SimpleExprOptGroup<'t>),
     Statement(Statement<'t>),
-    StatementList(Vec<StatementList<'t>>),
-    StatementList0(Vec<StatementList0<'t>>),
-    StatementList1(Vec<StatementList1<'t>>),
     StatementOpt(Option<Box<StatementOpt<'t>>>),
     StatementOpt0(Option<Box<StatementOpt0<'t>>>),
     StatementOpt1(Option<Box<StatementOpt1<'t>>>),
@@ -2255,12 +2276,15 @@ pub enum ASTType<'t> {
     StatementOpt3(Option<Box<StatementOpt3<'t>>>),
     StatementOpt4(Option<Box<StatementOpt4<'t>>>),
     StatementOpt5(Option<Box<StatementOpt5<'t>>>),
+    StatementOpt6(Option<Box<StatementOpt6<'t>>>),
+    StatementOptGroup(StatementOptGroup<'t>),
+    StatementOptGroupList(Vec<StatementOptGroupList<'t>>),
+    StatementOptGroupList0(Vec<StatementOptGroupList0<'t>>),
+    StatementOptGroupList1(Vec<StatementOptGroupList1<'t>>),
+    StatementOptGroupSuffix(StatementOptGroupSuffix<'t>),
     StatementSeq(StatementSeq<'t>),
     StatementSeqList(Vec<StatementSeqList<'t>>),
-    StatementSuffix(StatementSuffix<'t>),
     String(String<'t>),
-    THEN(THEN<'t>),
-    TO(TO<'t>),
     Term(Term<'t>),
     TermList(Vec<TermList<'t>>),
     TypeDecl(TypeDecl<'t>),
@@ -2270,7 +2294,6 @@ pub enum ASTType<'t> {
     TypeDefOpt0(Option<Box<TypeDefOpt0<'t>>>),
     TypeDefOpt1(Option<Box<TypeDefOpt1<'t>>>),
     TypeDefOptList(Vec<TypeDefOptList<'t>>),
-    VAR(VAR<'t>),
     VarDecl(VarDecl<'t>),
 }
 
@@ -2342,272 +2365,283 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// BEGIN: "BEGIN";
+    /// KwBegin: "BEGIN";
     ///
     #[named]
-    fn b_e_g_i_n(
+    fn kw_begin(
         &mut self,
-        b_e_g_i_n: &ParseTreeStackEntry<'t>,
+        kw_begin: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let b_e_g_i_n = *b_e_g_i_n.token(parse_tree)?;
-        let b_e_g_i_n_built = BEGINBuilder::default()
-            .b_e_g_i_n(b_e_g_i_n)
+        let kw_begin = *kw_begin.token(parse_tree)?;
+        let kw_begin_built = KwBeginBuilder::default()
+            .kw_begin(kw_begin)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.b_e_g_i_n(&b_e_g_i_n_built)?;
-        self.push(ASTType::BEGIN(b_e_g_i_n_built), context);
+        self.user_grammar.kw_begin(&kw_begin_built)?;
+        self.push(ASTType::KwBegin(kw_begin_built), context);
         Ok(())
     }
 
     /// Semantic action for production 1:
     ///
-    /// CASE: "CASE";
+    /// KwCase: "CASE";
     ///
     #[named]
-    fn c_a_s_e(
+    fn kw_case(
         &mut self,
-        c_a_s_e: &ParseTreeStackEntry<'t>,
+        kw_case: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let c_a_s_e = *c_a_s_e.token(parse_tree)?;
-        let c_a_s_e_built = CASEBuilder::default()
-            .c_a_s_e(c_a_s_e)
+        let kw_case = *kw_case.token(parse_tree)?;
+        let kw_case_built = KwCaseBuilder::default()
+            .kw_case(kw_case)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.c_a_s_e(&c_a_s_e_built)?;
-        self.push(ASTType::CASE(c_a_s_e_built), context);
+        self.user_grammar.kw_case(&kw_case_built)?;
+        self.push(ASTType::KwCase(kw_case_built), context);
         Ok(())
     }
 
     /// Semantic action for production 2:
     ///
-    /// DO: "DO";
+    /// KwDo: "DO";
     ///
     #[named]
-    fn d_o(
+    fn kw_do(
         &mut self,
-        d_o: &ParseTreeStackEntry<'t>,
+        kw_do: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let d_o = *d_o.token(parse_tree)?;
-        let d_o_built = DOBuilder::default().d_o(d_o).build().into_diagnostic()?;
+        let kw_do = *kw_do.token(parse_tree)?;
+        let kw_do_built = KwDoBuilder::default()
+            .kw_do(kw_do)
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.d_o(&d_o_built)?;
-        self.push(ASTType::DO(d_o_built), context);
+        self.user_grammar.kw_do(&kw_do_built)?;
+        self.push(ASTType::KwDo(kw_do_built), context);
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// ELSE: "ELSE";
+    /// KwElse: "ELSE";
     ///
     #[named]
-    fn e_l_s_e(
+    fn kw_else(
         &mut self,
-        e_l_s_e: &ParseTreeStackEntry<'t>,
+        kw_else: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_l_s_e = *e_l_s_e.token(parse_tree)?;
-        let e_l_s_e_built = ELSEBuilder::default()
-            .e_l_s_e(e_l_s_e)
+        let kw_else = *kw_else.token(parse_tree)?;
+        let kw_else_built = KwElseBuilder::default()
+            .kw_else(kw_else)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.e_l_s_e(&e_l_s_e_built)?;
-        self.push(ASTType::ELSE(e_l_s_e_built), context);
+        self.user_grammar.kw_else(&kw_else_built)?;
+        self.push(ASTType::KwElse(kw_else_built), context);
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// ELSIF: "ELSIF";
+    /// KwElsif: "ELSIF";
     ///
     #[named]
-    fn e_l_s_i_f(
+    fn kw_elsif(
         &mut self,
-        e_l_s_i_f: &ParseTreeStackEntry<'t>,
+        kw_elsif: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_l_s_i_f = *e_l_s_i_f.token(parse_tree)?;
-        let e_l_s_i_f_built = ELSIFBuilder::default()
-            .e_l_s_i_f(e_l_s_i_f)
+        let kw_elsif = *kw_elsif.token(parse_tree)?;
+        let kw_elsif_built = KwElsifBuilder::default()
+            .kw_elsif(kw_elsif)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.e_l_s_i_f(&e_l_s_i_f_built)?;
-        self.push(ASTType::ELSIF(e_l_s_i_f_built), context);
+        self.user_grammar.kw_elsif(&kw_elsif_built)?;
+        self.push(ASTType::KwElsif(kw_elsif_built), context);
         Ok(())
     }
 
     /// Semantic action for production 5:
     ///
-    /// END: "END";
+    /// KwEnd: "END";
     ///
     #[named]
-    fn e_n_d(
+    fn kw_end(
         &mut self,
-        e_n_d: &ParseTreeStackEntry<'t>,
+        kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_n_d = *e_n_d.token(parse_tree)?;
-        let e_n_d_built = ENDBuilder::default()
-            .e_n_d(e_n_d)
+        let kw_end = *kw_end.token(parse_tree)?;
+        let kw_end_built = KwEndBuilder::default()
+            .kw_end(kw_end)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.e_n_d(&e_n_d_built)?;
-        self.push(ASTType::END(e_n_d_built), context);
+        self.user_grammar.kw_end(&kw_end_built)?;
+        self.push(ASTType::KwEnd(kw_end_built), context);
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// IF: "IF";
+    /// KwIf: "IF";
     ///
     #[named]
-    fn i_f(
+    fn kw_if(
         &mut self,
-        i_f: &ParseTreeStackEntry<'t>,
+        kw_if: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let i_f = *i_f.token(parse_tree)?;
-        let i_f_built = IFBuilder::default().i_f(i_f).build().into_diagnostic()?;
+        let kw_if = *kw_if.token(parse_tree)?;
+        let kw_if_built = KwIfBuilder::default()
+            .kw_if(kw_if)
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.i_f(&i_f_built)?;
-        self.push(ASTType::IF(i_f_built), context);
+        self.user_grammar.kw_if(&kw_if_built)?;
+        self.push(ASTType::KwIf(kw_if_built), context);
         Ok(())
     }
 
     /// Semantic action for production 7:
     ///
-    /// OF: "OF";
+    /// KwOf: "OF";
     ///
     #[named]
-    fn o_f(
+    fn kw_of(
         &mut self,
-        o_f: &ParseTreeStackEntry<'t>,
+        kw_of: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let o_f = *o_f.token(parse_tree)?;
-        let o_f_built = OFBuilder::default().o_f(o_f).build().into_diagnostic()?;
+        let kw_of = *kw_of.token(parse_tree)?;
+        let kw_of_built = KwOfBuilder::default()
+            .kw_of(kw_of)
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.o_f(&o_f_built)?;
-        self.push(ASTType::OF(o_f_built), context);
+        self.user_grammar.kw_of(&kw_of_built)?;
+        self.push(ASTType::KwOf(kw_of_built), context);
         Ok(())
     }
 
     /// Semantic action for production 8:
     ///
-    /// PROCEDURE: "PROCEDURE";
+    /// KwProcedure: "PROCEDURE";
     ///
     #[named]
-    fn p_r_o_c_e_d_u_r_e(
+    fn kw_procedure(
         &mut self,
-        p_r_o_c_e_d_u_r_e: &ParseTreeStackEntry<'t>,
+        kw_procedure: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let p_r_o_c_e_d_u_r_e = *p_r_o_c_e_d_u_r_e.token(parse_tree)?;
-        let p_r_o_c_e_d_u_r_e_built = PROCEDUREBuilder::default()
-            .p_r_o_c_e_d_u_r_e(p_r_o_c_e_d_u_r_e)
+        let kw_procedure = *kw_procedure.token(parse_tree)?;
+        let kw_procedure_built = KwProcedureBuilder::default()
+            .kw_procedure(kw_procedure)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar
-            .p_r_o_c_e_d_u_r_e(&p_r_o_c_e_d_u_r_e_built)?;
-        self.push(ASTType::PROCEDURE(p_r_o_c_e_d_u_r_e_built), context);
+        self.user_grammar.kw_procedure(&kw_procedure_built)?;
+        self.push(ASTType::KwProcedure(kw_procedure_built), context);
         Ok(())
     }
 
     /// Semantic action for production 9:
     ///
-    /// THEN: "THEN";
+    /// KwThen: "THEN";
     ///
     #[named]
-    fn t_h_e_n(
+    fn kw_then(
         &mut self,
-        t_h_e_n: &ParseTreeStackEntry<'t>,
+        kw_then: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let t_h_e_n = *t_h_e_n.token(parse_tree)?;
-        let t_h_e_n_built = THENBuilder::default()
-            .t_h_e_n(t_h_e_n)
+        let kw_then = *kw_then.token(parse_tree)?;
+        let kw_then_built = KwThenBuilder::default()
+            .kw_then(kw_then)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.t_h_e_n(&t_h_e_n_built)?;
-        self.push(ASTType::THEN(t_h_e_n_built), context);
+        self.user_grammar.kw_then(&kw_then_built)?;
+        self.push(ASTType::KwThen(kw_then_built), context);
         Ok(())
     }
 
     /// Semantic action for production 10:
     ///
-    /// TO: "TO";
+    /// KwTo: "TO";
     ///
     #[named]
-    fn t_o(
+    fn kw_to(
         &mut self,
-        t_o: &ParseTreeStackEntry<'t>,
+        kw_to: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let t_o = *t_o.token(parse_tree)?;
-        let t_o_built = TOBuilder::default().t_o(t_o).build().into_diagnostic()?;
+        let kw_to = *kw_to.token(parse_tree)?;
+        let kw_to_built = KwToBuilder::default()
+            .kw_to(kw_to)
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.t_o(&t_o_built)?;
-        self.push(ASTType::TO(t_o_built), context);
+        self.user_grammar.kw_to(&kw_to_built)?;
+        self.push(ASTType::KwTo(kw_to_built), context);
         Ok(())
     }
 
     /// Semantic action for production 11:
     ///
-    /// VAR: "VAR";
+    /// KwVar: "VAR";
     ///
     #[named]
-    fn v_a_r(
+    fn kw_var(
         &mut self,
-        v_a_r: &ParseTreeStackEntry<'t>,
+        kw_var: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let v_a_r = *v_a_r.token(parse_tree)?;
-        let v_a_r_built = VARBuilder::default()
-            .v_a_r(v_a_r)
+        let kw_var = *kw_var.token(parse_tree)?;
+        let kw_var_built = KwVarBuilder::default()
+            .kw_var(kw_var)
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.v_a_r(&v_a_r_built)?;
-        self.push(ASTType::VAR(v_a_r_built), context);
+        self.user_grammar.kw_var(&kw_var_built)?;
+        self.push(ASTType::KwVar(kw_var_built), context);
         Ok(())
     }
 
     /// Semantic action for production 12:
     ///
-    /// Oberon2: "MODULE" Ident ";" Oberon2Opt /* Option */ DeclSeq Oberon2Opt0 /* Option */ END Ident "\.";
+    /// Oberon2: "MODULE" Ident ";" Oberon2Opt /* Option */ DeclSeq Oberon2Opt0 /* Option */ KwEnd Ident "\.";
     ///
     #[named]
     fn oberon2(
@@ -2618,7 +2652,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _oberon2_opt: &ParseTreeStackEntry<'t>,
         _decl_seq: &ParseTreeStackEntry<'t>,
         _oberon2_opt0: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         _ident0: &ParseTreeStackEntry<'t>,
         dot: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
@@ -2633,10 +2667,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let oberon2_opt0 = if let Some(ASTType::Oberon2Opt0(oberon2_opt0)) = self.pop(context) {
             oberon2_opt0
@@ -2665,7 +2699,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .oberon2_opt(oberon2_opt)
             .decl_seq(Box::new(decl_seq))
             .oberon2_opt0(oberon2_opt0)
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .ident0(Box::new(ident0))
             .dot(dot)
             .build()
@@ -2678,12 +2712,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// Oberon2Opt0: BEGIN StatementSeq; // Option<T>::Some
+    /// Oberon2Opt0: KwBegin StatementSeq; // Option<T>::Some
     ///
     #[named]
     fn oberon2_opt0_0(
         &mut self,
-        _b_e_g_i_n: &ParseTreeStackEntry<'t>,
+        _kw_begin: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -2694,13 +2728,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let b_e_g_i_n = if let Some(ASTType::BEGIN(b_e_g_i_n)) = self.pop(context) {
-            b_e_g_i_n
+        let kw_begin = if let Some(ASTType::KwBegin(kw_begin)) = self.pop(context) {
+            kw_begin
         } else {
-            bail!("{}: Expecting ASTType::BEGIN", context);
+            bail!("{}: Expecting ASTType::KwBegin", context);
         };
         let oberon2_opt0_0_built = Oberon2Opt0Builder::default()
-            .b_e_g_i_n(Box::new(b_e_g_i_n))
+            .kw_begin(Box::new(kw_begin))
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -3336,12 +3370,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// DeclSeqListGroup: VAR DeclSeqListGroupList1 /* Vec */;
+    /// DeclSeqListGroup: KwVar DeclSeqListGroupList1 /* Vec */;
     ///
     #[named]
     fn decl_seq_list_group_2(
         &mut self,
-        _v_a_r: &ParseTreeStackEntry<'t>,
+        _kw_var: &ParseTreeStackEntry<'t>,
         _decl_seq_list_group_list1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -3356,13 +3390,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::DeclSeqListGroupList1", context);
             };
-        let v_a_r = if let Some(ASTType::VAR(v_a_r)) = self.pop(context) {
-            v_a_r
+        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
+            kw_var
         } else {
-            bail!("{}: Expecting ASTType::VAR", context);
+            bail!("{}: Expecting ASTType::KwVar", context);
         };
         let decl_seq_list_group_2_built = DeclSeqListGroup2Builder::default()
-            .v_a_r(Box::new(v_a_r))
+            .kw_var(Box::new(kw_var))
             .decl_seq_list_group_list1(decl_seq_list_group_list1)
             .build()
             .into_diagnostic()?;
@@ -3559,19 +3593,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// ProcDecl: PROCEDURE ProcDeclOpt /* Option */ IdentDef ProcDeclOpt0 /* Option */ ";" DeclSeq ProcDeclOpt1 /* Option */ END Ident;
+    /// ProcDecl: KwProcedure ProcDeclOpt /* Option */ IdentDef ProcDeclOpt0 /* Option */ ";" DeclSeq ProcDeclOpt1 /* Option */ KwEnd Ident;
     ///
     #[named]
     fn proc_decl(
         &mut self,
-        _p_r_o_c_e_d_u_r_e: &ParseTreeStackEntry<'t>,
+        _kw_procedure: &ParseTreeStackEntry<'t>,
         _proc_decl_opt: &ParseTreeStackEntry<'t>,
         _ident_def: &ParseTreeStackEntry<'t>,
         _proc_decl_opt0: &ParseTreeStackEntry<'t>,
         semicolon: &ParseTreeStackEntry<'t>,
         _decl_seq: &ParseTreeStackEntry<'t>,
         _proc_decl_opt1: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -3583,10 +3617,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let proc_decl_opt1 = if let Some(ASTType::ProcDeclOpt1(proc_decl_opt1)) = self.pop(context)
         {
@@ -3615,21 +3649,20 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::ProcDeclOpt", context);
         };
-        let p_r_o_c_e_d_u_r_e =
-            if let Some(ASTType::PROCEDURE(p_r_o_c_e_d_u_r_e)) = self.pop(context) {
-                p_r_o_c_e_d_u_r_e
-            } else {
-                bail!("{}: Expecting ASTType::PROCEDURE", context);
-            };
+        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
+            kw_procedure
+        } else {
+            bail!("{}: Expecting ASTType::KwProcedure", context);
+        };
         let proc_decl_built = ProcDeclBuilder::default()
-            .p_r_o_c_e_d_u_r_e(Box::new(p_r_o_c_e_d_u_r_e))
+            .kw_procedure(Box::new(kw_procedure))
             .proc_decl_opt(proc_decl_opt)
             .ident_def(Box::new(ident_def))
             .proc_decl_opt0(proc_decl_opt0)
             .semicolon(semicolon)
             .decl_seq(Box::new(decl_seq))
             .proc_decl_opt1(proc_decl_opt1)
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .ident(Box::new(ident))
             .build()
             .into_diagnostic()?;
@@ -3641,12 +3674,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// ProcDeclOpt1: BEGIN StatementSeq; // Option<T>::Some
+    /// ProcDeclOpt1: KwBegin StatementSeq; // Option<T>::Some
     ///
     #[named]
     fn proc_decl_opt1_0(
         &mut self,
-        _b_e_g_i_n: &ParseTreeStackEntry<'t>,
+        _kw_begin: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -3657,13 +3690,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let b_e_g_i_n = if let Some(ASTType::BEGIN(b_e_g_i_n)) = self.pop(context) {
-            b_e_g_i_n
+        let kw_begin = if let Some(ASTType::KwBegin(kw_begin)) = self.pop(context) {
+            kw_begin
         } else {
-            bail!("{}: Expecting ASTType::BEGIN", context);
+            bail!("{}: Expecting ASTType::KwBegin", context);
         };
         let proc_decl_opt1_0_built = ProcDeclOpt1Builder::default()
-            .b_e_g_i_n(Box::new(b_e_g_i_n))
+            .kw_begin(Box::new(kw_begin))
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -3768,12 +3801,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// ForwardDecl: PROCEDURE "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
+    /// ForwardDecl: KwProcedure "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
     ///
     #[named]
     fn forward_decl(
         &mut self,
-        _p_r_o_c_e_d_u_r_e: &ParseTreeStackEntry<'t>,
+        _kw_procedure: &ParseTreeStackEntry<'t>,
         circumflex: &ParseTreeStackEntry<'t>,
         _forward_decl_opt: &ParseTreeStackEntry<'t>,
         _ident_def: &ParseTreeStackEntry<'t>,
@@ -3800,14 +3833,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::ForwardDeclOpt", context);
             };
-        let p_r_o_c_e_d_u_r_e =
-            if let Some(ASTType::PROCEDURE(p_r_o_c_e_d_u_r_e)) = self.pop(context) {
-                p_r_o_c_e_d_u_r_e
-            } else {
-                bail!("{}: Expecting ASTType::PROCEDURE", context);
-            };
+        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
+            kw_procedure
+        } else {
+            bail!("{}: Expecting ASTType::KwProcedure", context);
+        };
         let forward_decl_built = ForwardDeclBuilder::default()
-            .p_r_o_c_e_d_u_r_e(Box::new(p_r_o_c_e_d_u_r_e))
+            .kw_procedure(Box::new(kw_procedure))
             .circumflex(circumflex)
             .forward_decl_opt(forward_decl_opt)
             .ident_def(Box::new(ident_def))
@@ -4193,23 +4225,23 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// FPSectionOpt: VAR; // Option<T>::Some
+    /// FPSectionOpt: KwVar; // Option<T>::Some
     ///
     #[named]
     fn f_p_section_opt_0(
         &mut self,
-        _v_a_r: &ParseTreeStackEntry<'t>,
+        _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let v_a_r = if let Some(ASTType::VAR(v_a_r)) = self.pop(context) {
-            v_a_r
+        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
+            kw_var
         } else {
-            bail!("{}: Expecting ASTType::VAR", context);
+            bail!("{}: Expecting ASTType::KwVar", context);
         };
         let f_p_section_opt_0_built = FPSectionOptBuilder::default()
-            .v_a_r(Box::new(v_a_r))
+            .kw_var(Box::new(kw_var))
             .build()
             .into_diagnostic()?;
         self.push(
@@ -4283,23 +4315,23 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// ReceiverOpt: VAR; // Option<T>::Some
+    /// ReceiverOpt: KwVar; // Option<T>::Some
     ///
     #[named]
     fn receiver_opt_0(
         &mut self,
-        _v_a_r: &ParseTreeStackEntry<'t>,
+        _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let v_a_r = if let Some(ASTType::VAR(v_a_r)) = self.pop(context) {
-            v_a_r
+        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
+            kw_var
         } else {
-            bail!("{}: Expecting ASTType::VAR", context);
+            bail!("{}: Expecting ASTType::KwVar", context);
         };
         let receiver_opt_0_built = ReceiverOptBuilder::default()
-            .v_a_r(Box::new(v_a_r))
+            .kw_var(Box::new(kw_var))
             .build()
             .into_diagnostic()?;
         self.push(
@@ -4351,14 +4383,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 71:
     ///
-    /// TypeDef: "ARRAY" TypeDefOpt /* Option */ OF TypeDef;
+    /// TypeDef: "ARRAY" TypeDefOpt /* Option */ KwOf TypeDef;
     ///
     #[named]
     fn type_def_1(
         &mut self,
         a_r_r_a_y: &ParseTreeStackEntry<'t>,
         _type_def_opt: &ParseTreeStackEntry<'t>,
-        _o_f: &ParseTreeStackEntry<'t>,
+        _kw_of: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -4370,10 +4402,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::TypeDef", context);
         };
-        let o_f = if let Some(ASTType::OF(o_f)) = self.pop(context) {
-            o_f
+        let kw_of = if let Some(ASTType::KwOf(kw_of)) = self.pop(context) {
+            kw_of
         } else {
-            bail!("{}: Expecting ASTType::OF", context);
+            bail!("{}: Expecting ASTType::KwOf", context);
         };
         let type_def_opt = if let Some(ASTType::TypeDefOpt(type_def_opt)) = self.pop(context) {
             type_def_opt
@@ -4383,7 +4415,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_1_built = TypeDef1Builder::default()
             .a_r_r_a_y(a_r_r_a_y)
             .type_def_opt(type_def_opt)
-            .o_f(Box::new(o_f))
+            .kw_of(Box::new(kw_of))
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -4396,7 +4428,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ END;
+    /// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd;
     ///
     #[named]
     fn type_def_2(
@@ -4405,16 +4437,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _type_def_opt0: &ParseTreeStackEntry<'t>,
         _field_list: &ParseTreeStackEntry<'t>,
         _type_def_list: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r_e_c_o_r_d = *r_e_c_o_r_d.token(parse_tree)?;
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let type_def_list = if let Some(ASTType::TypeDefList(mut type_def_list)) = self.pop(context)
         {
@@ -4438,7 +4470,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .type_def_opt0(type_def_opt0)
             .field_list(Box::new(field_list))
             .type_def_list(type_def_list)
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
         let type_def_2_built = TypeDef::TypeDef2(type_def_2_built);
@@ -4500,13 +4532,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// TypeDef: "POINTER" TO TypeDef;
+    /// TypeDef: "POINTER" KwTo TypeDef;
     ///
     #[named]
     fn type_def_3(
         &mut self,
         p_o_i_n_t_e_r: &ParseTreeStackEntry<'t>,
-        _t_o: &ParseTreeStackEntry<'t>,
+        _kw_to: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -4518,14 +4550,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::TypeDef", context);
         };
-        let t_o = if let Some(ASTType::TO(t_o)) = self.pop(context) {
-            t_o
+        let kw_to = if let Some(ASTType::KwTo(kw_to)) = self.pop(context) {
+            kw_to
         } else {
-            bail!("{}: Expecting ASTType::TO", context);
+            bail!("{}: Expecting ASTType::KwTo", context);
         };
         let type_def_3_built = TypeDef3Builder::default()
             .p_o_i_n_t_e_r(p_o_i_n_t_e_r)
-            .t_o(Box::new(t_o))
+            .kw_to(Box::new(kw_to))
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -4538,12 +4570,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 76:
     ///
-    /// TypeDef: PROCEDURE TypeDefOpt1 /* Option */;
+    /// TypeDef: KwProcedure TypeDefOpt1 /* Option */;
     ///
     #[named]
     fn type_def_4(
         &mut self,
-        _p_r_o_c_e_d_u_r_e: &ParseTreeStackEntry<'t>,
+        _kw_procedure: &ParseTreeStackEntry<'t>,
         _type_def_opt1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -4554,14 +4586,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::TypeDefOpt1", context);
         };
-        let p_r_o_c_e_d_u_r_e =
-            if let Some(ASTType::PROCEDURE(p_r_o_c_e_d_u_r_e)) = self.pop(context) {
-                p_r_o_c_e_d_u_r_e
-            } else {
-                bail!("{}: Expecting ASTType::PROCEDURE", context);
-            };
+        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
+            kw_procedure
+        } else {
+            bail!("{}: Expecting ASTType::KwProcedure", context);
+        };
         let type_def_4_built = TypeDef4Builder::default()
-            .p_r_o_c_e_d_u_r_e(Box::new(p_r_o_c_e_d_u_r_e))
+            .kw_procedure(Box::new(kw_procedure))
             .type_def_opt1(type_def_opt1)
             .build()
             .into_diagnostic()?;
@@ -4926,46 +4957,106 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 91:
     ///
-    /// Statement: Designator StatementSuffix;
+    /// Statement: StatementOpt /* Option */;
     ///
     #[named]
-    fn statement_0(
+    fn statement(
         &mut self,
-        _designator: &ParseTreeStackEntry<'t>,
-        _statement_suffix: &ParseTreeStackEntry<'t>,
+        _statement_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_suffix =
-            if let Some(ASTType::StatementSuffix(statement_suffix)) = self.pop(context) {
-                statement_suffix
+        let statement_opt = if let Some(ASTType::StatementOpt(statement_opt)) = self.pop(context) {
+            statement_opt
+        } else {
+            bail!("{}: Expecting ASTType::StatementOpt", context);
+        };
+        let statement_built = StatementBuilder::default()
+            .statement_opt(statement_opt)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.statement(&statement_built)?;
+        self.push(ASTType::Statement(statement_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 92:
+    ///
+    /// StatementOpt: StatementOptGroup; // Option<T>::Some
+    ///
+    #[named]
+    fn statement_opt_0(
+        &mut self,
+        _statement_opt_group: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_opt_group =
+            if let Some(ASTType::StatementOptGroup(statement_opt_group)) = self.pop(context) {
+                statement_opt_group
             } else {
-                bail!("{}: Expecting ASTType::StatementSuffix", context);
+                bail!("{}: Expecting ASTType::StatementOptGroup", context);
+            };
+        let statement_opt_0_built = StatementOptBuilder::default()
+            .statement_opt_group(Box::new(statement_opt_group))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::StatementOpt(Some(Box::new(statement_opt_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 93:
+    ///
+    /// StatementOptGroup: Designator StatementOptGroupSuffix;
+    ///
+    #[named]
+    fn statement_opt_group_0(
+        &mut self,
+        _designator: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_suffix: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_opt_group_suffix =
+            if let Some(ASTType::StatementOptGroupSuffix(statement_opt_group_suffix)) =
+                self.pop(context)
+            {
+                statement_opt_group_suffix
+            } else {
+                bail!("{}: Expecting ASTType::StatementOptGroupSuffix", context);
             };
         let designator = if let Some(ASTType::Designator(designator)) = self.pop(context) {
             designator
         } else {
             bail!("{}: Expecting ASTType::Designator", context);
         };
-        let statement_0_built = Statement0Builder::default()
+        let statement_opt_group_0_built = StatementOptGroup0Builder::default()
             .designator(Box::new(designator))
-            .statement_suffix(Box::new(statement_suffix))
+            .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
             .build()
             .into_diagnostic()?;
-        let statement_0_built = Statement::Statement0(statement_0_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_0_built)?;
-        self.push(ASTType::Statement(statement_0_built), context);
+        let statement_opt_group_0_built =
+            StatementOptGroup::StatementOptGroup0(statement_opt_group_0_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_0_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 92:
+    /// Semantic action for production 94:
     ///
-    /// StatementSuffix: ":=" Expr;
+    /// StatementOptGroupSuffix: ":=" Expr;
     ///
     #[named]
-    fn statement_suffix_0(
+    fn statement_opt_group_suffix_0(
         &mut self,
         colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
@@ -4979,137 +5070,73 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let statement_suffix_0_built = StatementSuffix0Builder::default()
+        let statement_opt_group_suffix_0_built = StatementOptGroupSuffix0Builder::default()
             .colon_equ(colon_equ)
             .expr(Box::new(expr))
             .build()
             .into_diagnostic()?;
-        let statement_suffix_0_built = StatementSuffix::StatementSuffix0(statement_suffix_0_built);
-        self.push(ASTType::StatementSuffix(statement_suffix_0_built), context);
+        let statement_opt_group_suffix_0_built =
+            StatementOptGroupSuffix::StatementOptGroupSuffix0(statement_opt_group_suffix_0_built);
+        self.push(
+            ASTType::StatementOptGroupSuffix(statement_opt_group_suffix_0_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 93:
+    /// Semantic action for production 95:
     ///
-    /// StatementSuffix: StatementOpt /* Option */;
-    ///
-    #[named]
-    fn statement_suffix_1(
-        &mut self,
-        _statement_opt: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_opt = if let Some(ASTType::StatementOpt(statement_opt)) = self.pop(context) {
-            statement_opt
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt", context);
-        };
-        let statement_suffix_1_built = StatementSuffix1Builder::default()
-            .statement_opt(statement_opt)
-            .build()
-            .into_diagnostic()?;
-        let statement_suffix_1_built = StatementSuffix::StatementSuffix1(statement_suffix_1_built);
-        self.push(ASTType::StatementSuffix(statement_suffix_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 94:
-    ///
-    /// Statement: IF Expr THEN StatementSeq StatementList /* Vec */ StatementOpt0 /* Option */ END;
+    /// StatementOptGroupSuffix: StatementOpt0 /* Option */;
     ///
     #[named]
-    fn statement_1(
+    fn statement_opt_group_suffix_1(
         &mut self,
-        _i_f: &ParseTreeStackEntry<'t>,
-        _expr: &ParseTreeStackEntry<'t>,
-        _t_h_e_n: &ParseTreeStackEntry<'t>,
-        _statement_seq: &ParseTreeStackEntry<'t>,
-        _statement_list: &ParseTreeStackEntry<'t>,
         _statement_opt0: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
-        } else {
-            bail!("{}: Expecting ASTType::END", context);
-        };
         let statement_opt0 = if let Some(ASTType::StatementOpt0(statement_opt0)) = self.pop(context)
         {
             statement_opt0
         } else {
             bail!("{}: Expecting ASTType::StatementOpt0", context);
         };
-        let statement_list =
-            if let Some(ASTType::StatementList(mut statement_list)) = self.pop(context) {
-                statement_list.reverse();
-                statement_list
-            } else {
-                bail!("{}: Expecting ASTType::StatementList", context);
-            };
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
-        let t_h_e_n = if let Some(ASTType::THEN(t_h_e_n)) = self.pop(context) {
-            t_h_e_n
-        } else {
-            bail!("{}: Expecting ASTType::THEN", context);
-        };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
-        let i_f = if let Some(ASTType::IF(i_f)) = self.pop(context) {
-            i_f
-        } else {
-            bail!("{}: Expecting ASTType::IF", context);
-        };
-        let statement_1_built = Statement1Builder::default()
-            .i_f(Box::new(i_f))
-            .expr(Box::new(expr))
-            .t_h_e_n(Box::new(t_h_e_n))
-            .statement_seq(Box::new(statement_seq))
-            .statement_list(statement_list)
+        let statement_opt_group_suffix_1_built = StatementOptGroupSuffix1Builder::default()
             .statement_opt0(statement_opt0)
-            .e_n_d(Box::new(e_n_d))
             .build()
             .into_diagnostic()?;
-        let statement_1_built = Statement::Statement1(statement_1_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_1_built)?;
-        self.push(ASTType::Statement(statement_1_built), context);
+        let statement_opt_group_suffix_1_built =
+            StatementOptGroupSuffix::StatementOptGroupSuffix1(statement_opt_group_suffix_1_built);
+        self.push(
+            ASTType::StatementOptGroupSuffix(statement_opt_group_suffix_1_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 95:
+    /// Semantic action for production 96:
     ///
-    /// Statement: CASE Expr OF Case StatementList0 /* Vec */ StatementOpt1 /* Option */ END;
+    /// StatementOptGroup: KwIf Expr KwThen StatementSeq StatementOptGroupList /* Vec */ StatementOpt1 /* Option */ KwEnd;
     ///
     #[named]
-    fn statement_2(
+    fn statement_opt_group_1(
         &mut self,
-        _c_a_s_e: &ParseTreeStackEntry<'t>,
+        _kw_if: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        _o_f: &ParseTreeStackEntry<'t>,
-        _case: &ParseTreeStackEntry<'t>,
-        _statement_list0: &ParseTreeStackEntry<'t>,
+        _kw_then: &ParseTreeStackEntry<'t>,
+        _statement_seq: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _statement_opt1: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let statement_opt1 = if let Some(ASTType::StatementOpt1(statement_opt1)) = self.pop(context)
         {
@@ -5117,108 +5144,191 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementOpt1", context);
         };
-        let statement_list0 =
-            if let Some(ASTType::StatementList0(mut statement_list0)) = self.pop(context) {
-                statement_list0.reverse();
-                statement_list0
+        let statement_opt_group_list =
+            if let Some(ASTType::StatementOptGroupList(mut statement_opt_group_list)) =
+                self.pop(context)
+            {
+                statement_opt_group_list.reverse();
+                statement_opt_group_list
             } else {
-                bail!("{}: Expecting ASTType::StatementList0", context);
+                bail!("{}: Expecting ASTType::StatementOptGroupList", context);
+            };
+        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
+            statement_seq
+        } else {
+            bail!("{}: Expecting ASTType::StatementSeq", context);
+        };
+        let kw_then = if let Some(ASTType::KwThen(kw_then)) = self.pop(context) {
+            kw_then
+        } else {
+            bail!("{}: Expecting ASTType::KwThen", context);
+        };
+        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
+            expr
+        } else {
+            bail!("{}: Expecting ASTType::Expr", context);
+        };
+        let kw_if = if let Some(ASTType::KwIf(kw_if)) = self.pop(context) {
+            kw_if
+        } else {
+            bail!("{}: Expecting ASTType::KwIf", context);
+        };
+        let statement_opt_group_1_built = StatementOptGroup1Builder::default()
+            .kw_if(Box::new(kw_if))
+            .expr(Box::new(expr))
+            .kw_then(Box::new(kw_then))
+            .statement_seq(Box::new(statement_seq))
+            .statement_opt_group_list(statement_opt_group_list)
+            .statement_opt1(statement_opt1)
+            .kw_end(Box::new(kw_end))
+            .build()
+            .into_diagnostic()?;
+        let statement_opt_group_1_built =
+            StatementOptGroup::StatementOptGroup1(statement_opt_group_1_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 97:
+    ///
+    /// StatementOptGroup: KwCase Expr KwOf Case StatementOptGroupList0 /* Vec */ StatementOpt2 /* Option */ KwEnd;
+    ///
+    #[named]
+    fn statement_opt_group_2(
+        &mut self,
+        _kw_case: &ParseTreeStackEntry<'t>,
+        _expr: &ParseTreeStackEntry<'t>,
+        _kw_of: &ParseTreeStackEntry<'t>,
+        _case: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
+        _statement_opt2: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
+        } else {
+            bail!("{}: Expecting ASTType::KwEnd", context);
+        };
+        let statement_opt2 = if let Some(ASTType::StatementOpt2(statement_opt2)) = self.pop(context)
+        {
+            statement_opt2
+        } else {
+            bail!("{}: Expecting ASTType::StatementOpt2", context);
+        };
+        let statement_opt_group_list0 =
+            if let Some(ASTType::StatementOptGroupList0(mut statement_opt_group_list0)) =
+                self.pop(context)
+            {
+                statement_opt_group_list0.reverse();
+                statement_opt_group_list0
+            } else {
+                bail!("{}: Expecting ASTType::StatementOptGroupList0", context);
             };
         let case = if let Some(ASTType::Case(case)) = self.pop(context) {
             case
         } else {
             bail!("{}: Expecting ASTType::Case", context);
         };
-        let o_f = if let Some(ASTType::OF(o_f)) = self.pop(context) {
-            o_f
+        let kw_of = if let Some(ASTType::KwOf(kw_of)) = self.pop(context) {
+            kw_of
         } else {
-            bail!("{}: Expecting ASTType::OF", context);
+            bail!("{}: Expecting ASTType::KwOf", context);
         };
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let c_a_s_e = if let Some(ASTType::CASE(c_a_s_e)) = self.pop(context) {
-            c_a_s_e
+        let kw_case = if let Some(ASTType::KwCase(kw_case)) = self.pop(context) {
+            kw_case
         } else {
-            bail!("{}: Expecting ASTType::CASE", context);
+            bail!("{}: Expecting ASTType::KwCase", context);
         };
-        let statement_2_built = Statement2Builder::default()
-            .c_a_s_e(Box::new(c_a_s_e))
+        let statement_opt_group_2_built = StatementOptGroup2Builder::default()
+            .kw_case(Box::new(kw_case))
             .expr(Box::new(expr))
-            .o_f(Box::new(o_f))
+            .kw_of(Box::new(kw_of))
             .case(Box::new(case))
-            .statement_list0(statement_list0)
-            .statement_opt1(statement_opt1)
-            .e_n_d(Box::new(e_n_d))
+            .statement_opt_group_list0(statement_opt_group_list0)
+            .statement_opt2(statement_opt2)
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
-        let statement_2_built = Statement::Statement2(statement_2_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_2_built)?;
-        self.push(ASTType::Statement(statement_2_built), context);
+        let statement_opt_group_2_built =
+            StatementOptGroup::StatementOptGroup2(statement_opt_group_2_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_2_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 96:
+    /// Semantic action for production 98:
     ///
-    /// Statement: "WHILE" Expr DO StatementSeq END;
+    /// StatementOptGroup: "WHILE" Expr KwDo StatementSeq KwEnd;
     ///
     #[named]
-    fn statement_3(
+    fn statement_opt_group_3(
         &mut self,
         w_h_i_l_e: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        _d_o: &ParseTreeStackEntry<'t>,
+        _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let w_h_i_l_e = *w_h_i_l_e.token(parse_tree)?;
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let d_o = if let Some(ASTType::DO(d_o)) = self.pop(context) {
-            d_o
+        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
+            kw_do
         } else {
-            bail!("{}: Expecting ASTType::DO", context);
+            bail!("{}: Expecting ASTType::KwDo", context);
         };
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let statement_3_built = Statement3Builder::default()
+        let statement_opt_group_3_built = StatementOptGroup3Builder::default()
             .w_h_i_l_e(w_h_i_l_e)
             .expr(Box::new(expr))
-            .d_o(Box::new(d_o))
+            .kw_do(Box::new(kw_do))
             .statement_seq(Box::new(statement_seq))
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
-        let statement_3_built = Statement::Statement3(statement_3_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_3_built)?;
-        self.push(ASTType::Statement(statement_3_built), context);
+        let statement_opt_group_3_built =
+            StatementOptGroup::StatementOptGroup3(statement_opt_group_3_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_3_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 97:
+    /// Semantic action for production 99:
     ///
-    /// Statement: "REPEAT" StatementSeq "UNTIL" Expr;
+    /// StatementOptGroup: "REPEAT" StatementSeq "UNTIL" Expr;
     ///
     #[named]
-    fn statement_4(
+    fn statement_opt_group_4(
         &mut self,
         r_e_p_e_a_t: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
@@ -5240,73 +5350,75 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let statement_4_built = Statement4Builder::default()
+        let statement_opt_group_4_built = StatementOptGroup4Builder::default()
             .r_e_p_e_a_t(r_e_p_e_a_t)
             .statement_seq(Box::new(statement_seq))
             .u_n_t_i_l(u_n_t_i_l)
             .expr(Box::new(expr))
             .build()
             .into_diagnostic()?;
-        let statement_4_built = Statement::Statement4(statement_4_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_4_built)?;
-        self.push(ASTType::Statement(statement_4_built), context);
+        let statement_opt_group_4_built =
+            StatementOptGroup::StatementOptGroup4(statement_opt_group_4_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_4_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 98:
+    /// Semantic action for production 100:
     ///
-    /// Statement: "FOR" Ident ":=" Expr TO Expr StatementOpt2 /* Option */ DO StatementSeq END;
+    /// StatementOptGroup: "FOR" Ident ":=" Expr KwTo Expr StatementOpt3 /* Option */ KwDo StatementSeq KwEnd;
     ///
     #[named]
-    fn statement_5(
+    fn statement_opt_group_5(
         &mut self,
         f_o_r: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        _t_o: &ParseTreeStackEntry<'t>,
+        _kw_to: &ParseTreeStackEntry<'t>,
         _expr0: &ParseTreeStackEntry<'t>,
-        _statement_opt2: &ParseTreeStackEntry<'t>,
-        _d_o: &ParseTreeStackEntry<'t>,
+        _statement_opt3: &ParseTreeStackEntry<'t>,
+        _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f_o_r = *f_o_r.token(parse_tree)?;
         let colon_equ = *colon_equ.token(parse_tree)?;
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let d_o = if let Some(ASTType::DO(d_o)) = self.pop(context) {
-            d_o
+        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
+            kw_do
         } else {
-            bail!("{}: Expecting ASTType::DO", context);
+            bail!("{}: Expecting ASTType::KwDo", context);
         };
-        let statement_opt2 = if let Some(ASTType::StatementOpt2(statement_opt2)) = self.pop(context)
+        let statement_opt3 = if let Some(ASTType::StatementOpt3(statement_opt3)) = self.pop(context)
         {
-            statement_opt2
+            statement_opt3
         } else {
-            bail!("{}: Expecting ASTType::StatementOpt2", context);
+            bail!("{}: Expecting ASTType::StatementOpt3", context);
         };
         let expr0 = if let Some(ASTType::Expr(expr0)) = self.pop(context) {
             expr0
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let t_o = if let Some(ASTType::TO(t_o)) = self.pop(context) {
-            t_o
+        let kw_to = if let Some(ASTType::KwTo(kw_to)) = self.pop(context) {
+            kw_to
         } else {
-            bail!("{}: Expecting ASTType::TO", context);
+            bail!("{}: Expecting ASTType::KwTo", context);
         };
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
@@ -5318,139 +5430,147 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
-        let statement_5_built = Statement5Builder::default()
+        let statement_opt_group_5_built = StatementOptGroup5Builder::default()
             .f_o_r(f_o_r)
             .ident(Box::new(ident))
             .colon_equ(colon_equ)
             .expr(Box::new(expr))
-            .t_o(Box::new(t_o))
+            .kw_to(Box::new(kw_to))
             .expr0(Box::new(expr0))
-            .statement_opt2(statement_opt2)
-            .d_o(Box::new(d_o))
+            .statement_opt3(statement_opt3)
+            .kw_do(Box::new(kw_do))
             .statement_seq(Box::new(statement_seq))
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
-        let statement_5_built = Statement::Statement5(statement_5_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_5_built)?;
-        self.push(ASTType::Statement(statement_5_built), context);
+        let statement_opt_group_5_built =
+            StatementOptGroup::StatementOptGroup5(statement_opt_group_5_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_5_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 99:
+    /// Semantic action for production 101:
     ///
-    /// Statement: "LOOP" StatementSeq END;
+    /// StatementOptGroup: "LOOP" StatementSeq KwEnd;
     ///
     #[named]
-    fn statement_6(
+    fn statement_opt_group_6(
         &mut self,
         l_o_o_p: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_o_o_p = *l_o_o_p.token(parse_tree)?;
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let statement_6_built = Statement6Builder::default()
+        let statement_opt_group_6_built = StatementOptGroup6Builder::default()
             .l_o_o_p(l_o_o_p)
             .statement_seq(Box::new(statement_seq))
-            .e_n_d(Box::new(e_n_d))
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
-        let statement_6_built = Statement::Statement6(statement_6_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_6_built)?;
-        self.push(ASTType::Statement(statement_6_built), context);
+        let statement_opt_group_6_built =
+            StatementOptGroup::StatementOptGroup6(statement_opt_group_6_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_6_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 100:
+    /// Semantic action for production 102:
     ///
-    /// Statement: "WITH" Guard DO StatementSeq StatementList1 /* Vec */ StatementOpt3 /* Option */ END;
+    /// StatementOptGroup: "WITH" Guard KwDo StatementSeq StatementOptGroupList1 /* Vec */ StatementOpt4 /* Option */ KwEnd;
     ///
     #[named]
-    fn statement_7(
+    fn statement_opt_group_7(
         &mut self,
         w_i_t_h: &ParseTreeStackEntry<'t>,
         _guard: &ParseTreeStackEntry<'t>,
-        _d_o: &ParseTreeStackEntry<'t>,
+        _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _statement_list1: &ParseTreeStackEntry<'t>,
-        _statement_opt3: &ParseTreeStackEntry<'t>,
-        _e_n_d: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list1: &ParseTreeStackEntry<'t>,
+        _statement_opt4: &ParseTreeStackEntry<'t>,
+        _kw_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let w_i_t_h = *w_i_t_h.token(parse_tree)?;
-        let e_n_d = if let Some(ASTType::END(e_n_d)) = self.pop(context) {
-            e_n_d
+        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
+            kw_end
         } else {
-            bail!("{}: Expecting ASTType::END", context);
+            bail!("{}: Expecting ASTType::KwEnd", context);
         };
-        let statement_opt3 = if let Some(ASTType::StatementOpt3(statement_opt3)) = self.pop(context)
+        let statement_opt4 = if let Some(ASTType::StatementOpt4(statement_opt4)) = self.pop(context)
         {
-            statement_opt3
+            statement_opt4
         } else {
-            bail!("{}: Expecting ASTType::StatementOpt3", context);
+            bail!("{}: Expecting ASTType::StatementOpt4", context);
         };
-        let statement_list1 =
-            if let Some(ASTType::StatementList1(mut statement_list1)) = self.pop(context) {
-                statement_list1.reverse();
-                statement_list1
+        let statement_opt_group_list1 =
+            if let Some(ASTType::StatementOptGroupList1(mut statement_opt_group_list1)) =
+                self.pop(context)
+            {
+                statement_opt_group_list1.reverse();
+                statement_opt_group_list1
             } else {
-                bail!("{}: Expecting ASTType::StatementList1", context);
+                bail!("{}: Expecting ASTType::StatementOptGroupList1", context);
             };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let d_o = if let Some(ASTType::DO(d_o)) = self.pop(context) {
-            d_o
+        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
+            kw_do
         } else {
-            bail!("{}: Expecting ASTType::DO", context);
+            bail!("{}: Expecting ASTType::KwDo", context);
         };
         let guard = if let Some(ASTType::Guard(guard)) = self.pop(context) {
             guard
         } else {
             bail!("{}: Expecting ASTType::Guard", context);
         };
-        let statement_7_built = Statement7Builder::default()
+        let statement_opt_group_7_built = StatementOptGroup7Builder::default()
             .w_i_t_h(w_i_t_h)
             .guard(Box::new(guard))
-            .d_o(Box::new(d_o))
+            .kw_do(Box::new(kw_do))
             .statement_seq(Box::new(statement_seq))
-            .statement_list1(statement_list1)
-            .statement_opt3(statement_opt3)
-            .e_n_d(Box::new(e_n_d))
+            .statement_opt_group_list1(statement_opt_group_list1)
+            .statement_opt4(statement_opt4)
+            .kw_end(Box::new(kw_end))
             .build()
             .into_diagnostic()?;
-        let statement_7_built = Statement::Statement7(statement_7_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_7_built)?;
-        self.push(ASTType::Statement(statement_7_built), context);
+        let statement_opt_group_7_built =
+            StatementOptGroup::StatementOptGroup7(statement_opt_group_7_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_7_built),
+            context,
+        );
         Ok(())
     }
 
-    /// Semantic action for production 101:
+    /// Semantic action for production 103:
     ///
-    /// Statement: "EXIT";
+    /// StatementOptGroup: "EXIT";
     ///
     #[named]
-    fn statement_8(
+    fn statement_opt_group_8(
         &mut self,
         e_x_i_t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
@@ -5458,261 +5578,265 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let e_x_i_t = *e_x_i_t.token(parse_tree)?;
-        let statement_8_built = Statement8Builder::default()
+        let statement_opt_group_8_built = StatementOptGroup8Builder::default()
             .e_x_i_t(e_x_i_t)
             .build()
             .into_diagnostic()?;
-        let statement_8_built = Statement::Statement8(statement_8_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_8_built)?;
-        self.push(ASTType::Statement(statement_8_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 102:
-    ///
-    /// Statement: "RETURN" StatementOpt4 /* Option */;
-    ///
-    #[named]
-    fn statement_9(
-        &mut self,
-        r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
-        _statement_opt4: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let r_e_t_u_r_n = *r_e_t_u_r_n.token(parse_tree)?;
-        let statement_opt4 = if let Some(ASTType::StatementOpt4(statement_opt4)) = self.pop(context)
-        {
-            statement_opt4
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt4", context);
-        };
-        let statement_9_built = Statement9Builder::default()
-            .r_e_t_u_r_n(r_e_t_u_r_n)
-            .statement_opt4(statement_opt4)
-            .build()
-            .into_diagnostic()?;
-        let statement_9_built = Statement::Statement9(statement_9_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_9_built)?;
-        self.push(ASTType::Statement(statement_9_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 103:
-    ///
-    /// Statement: ";";
-    ///
-    #[named]
-    fn statement_10(
-        &mut self,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
-        let statement_10_built = Statement10Builder::default()
-            .semicolon(semicolon)
-            .build()
-            .into_diagnostic()?;
-        let statement_10_built = Statement::Statement10(statement_10_built);
-        // Calling user action here
-        self.user_grammar.statement(&statement_10_built)?;
-        self.push(ASTType::Statement(statement_10_built), context);
+        let statement_opt_group_8_built =
+            StatementOptGroup::StatementOptGroup8(statement_opt_group_8_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_8_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 104:
     ///
-    /// StatementList: ELSIF Expr THEN StatementSeq StatementList; // Vec<T>::Push
+    /// StatementOptGroup: "RETURN" StatementOpt5 /* Option */;
     ///
     #[named]
-    fn statement_list_0(
+    fn statement_opt_group_9(
         &mut self,
-        _e_l_s_i_f: &ParseTreeStackEntry<'t>,
+        r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
+        _statement_opt5: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let r_e_t_u_r_n = *r_e_t_u_r_n.token(parse_tree)?;
+        let statement_opt5 = if let Some(ASTType::StatementOpt5(statement_opt5)) = self.pop(context)
+        {
+            statement_opt5
+        } else {
+            bail!("{}: Expecting ASTType::StatementOpt5", context);
+        };
+        let statement_opt_group_9_built = StatementOptGroup9Builder::default()
+            .r_e_t_u_r_n(r_e_t_u_r_n)
+            .statement_opt5(statement_opt5)
+            .build()
+            .into_diagnostic()?;
+        let statement_opt_group_9_built =
+            StatementOptGroup::StatementOptGroup9(statement_opt_group_9_built);
+        self.push(
+            ASTType::StatementOptGroup(statement_opt_group_9_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 105:
+    ///
+    /// StatementOptGroupList: KwElsif Expr KwThen StatementSeq StatementOptGroupList; // Vec<T>::Push
+    ///
+    #[named]
+    fn statement_opt_group_list_0(
+        &mut self,
+        _kw_elsif: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        _t_h_e_n: &ParseTreeStackEntry<'t>,
+        _kw_then: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _statement_list: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut statement_list =
-            if let Some(ASTType::StatementList(statement_list)) = self.pop(context) {
-                statement_list
+        let mut statement_opt_group_list =
+            if let Some(ASTType::StatementOptGroupList(statement_opt_group_list)) =
+                self.pop(context)
+            {
+                statement_opt_group_list
             } else {
-                bail!("{}: Expecting ASTType::StatementList", context);
+                bail!("{}: Expecting ASTType::StatementOptGroupList", context);
             };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let t_h_e_n = if let Some(ASTType::THEN(t_h_e_n)) = self.pop(context) {
-            t_h_e_n
+        let kw_then = if let Some(ASTType::KwThen(kw_then)) = self.pop(context) {
+            kw_then
         } else {
-            bail!("{}: Expecting ASTType::THEN", context);
+            bail!("{}: Expecting ASTType::KwThen", context);
         };
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let e_l_s_i_f = if let Some(ASTType::ELSIF(e_l_s_i_f)) = self.pop(context) {
-            e_l_s_i_f
+        let kw_elsif = if let Some(ASTType::KwElsif(kw_elsif)) = self.pop(context) {
+            kw_elsif
         } else {
-            bail!("{}: Expecting ASTType::ELSIF", context);
+            bail!("{}: Expecting ASTType::KwElsif", context);
         };
-        let statement_list_0_built = StatementListBuilder::default()
+        let statement_opt_group_list_0_built = StatementOptGroupListBuilder::default()
             .statement_seq(Box::new(statement_seq))
-            .t_h_e_n(Box::new(t_h_e_n))
+            .kw_then(Box::new(kw_then))
             .expr(Box::new(expr))
-            .e_l_s_i_f(Box::new(e_l_s_i_f))
+            .kw_elsif(Box::new(kw_elsif))
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        statement_list.push(statement_list_0_built);
-        self.push(ASTType::StatementList(statement_list), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 105:
-    ///
-    /// StatementList: ; // Vec<T>::New
-    ///
-    #[named]
-    fn statement_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_list_1_built = Vec::new();
-        self.push(ASTType::StatementList(statement_list_1_built), context);
+        statement_opt_group_list.push(statement_opt_group_list_0_built);
+        self.push(
+            ASTType::StatementOptGroupList(statement_opt_group_list),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 106:
     ///
-    /// StatementList0: "\|" Case StatementList0; // Vec<T>::Push
+    /// StatementOptGroupList: ; // Vec<T>::New
     ///
     #[named]
-    fn statement_list0_0(
+    fn statement_opt_group_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_opt_group_list_1_built = Vec::new();
+        self.push(
+            ASTType::StatementOptGroupList(statement_opt_group_list_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 107:
+    ///
+    /// StatementOptGroupList0: "\|" Case StatementOptGroupList0; // Vec<T>::Push
+    ///
+    #[named]
+    fn statement_opt_group_list0_0(
         &mut self,
         or: &ParseTreeStackEntry<'t>,
         _case: &ParseTreeStackEntry<'t>,
-        _statement_list0: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let or = *or.token(parse_tree)?;
-        let mut statement_list0 =
-            if let Some(ASTType::StatementList0(statement_list0)) = self.pop(context) {
-                statement_list0
+        let mut statement_opt_group_list0 =
+            if let Some(ASTType::StatementOptGroupList0(statement_opt_group_list0)) =
+                self.pop(context)
+            {
+                statement_opt_group_list0
             } else {
-                bail!("{}: Expecting ASTType::StatementList0", context);
+                bail!("{}: Expecting ASTType::StatementOptGroupList0", context);
             };
         let case = if let Some(ASTType::Case(case)) = self.pop(context) {
             case
         } else {
             bail!("{}: Expecting ASTType::Case", context);
         };
-        let statement_list0_0_built = StatementList0Builder::default()
+        let statement_opt_group_list0_0_built = StatementOptGroupList0Builder::default()
             .case(Box::new(case))
             .or(or)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        statement_list0.push(statement_list0_0_built);
-        self.push(ASTType::StatementList0(statement_list0), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 107:
-    ///
-    /// StatementList0: ; // Vec<T>::New
-    ///
-    #[named]
-    fn statement_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_list0_1_built = Vec::new();
-        self.push(ASTType::StatementList0(statement_list0_1_built), context);
+        statement_opt_group_list0.push(statement_opt_group_list0_0_built);
+        self.push(
+            ASTType::StatementOptGroupList0(statement_opt_group_list0),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 108:
     ///
-    /// StatementList1: "\|" Guard DO StatementSeq StatementList1; // Vec<T>::Push
+    /// StatementOptGroupList0: ; // Vec<T>::New
     ///
     #[named]
-    fn statement_list1_0(
+    fn statement_opt_group_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_opt_group_list0_1_built = Vec::new();
+        self.push(
+            ASTType::StatementOptGroupList0(statement_opt_group_list0_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 109:
+    ///
+    /// StatementOptGroupList1: "\|" Guard KwDo StatementSeq StatementOptGroupList1; // Vec<T>::Push
+    ///
+    #[named]
+    fn statement_opt_group_list1_0(
         &mut self,
         or: &ParseTreeStackEntry<'t>,
         _guard: &ParseTreeStackEntry<'t>,
-        _d_o: &ParseTreeStackEntry<'t>,
+        _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        _statement_list1: &ParseTreeStackEntry<'t>,
+        _statement_opt_group_list1: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let or = *or.token(parse_tree)?;
-        let mut statement_list1 =
-            if let Some(ASTType::StatementList1(statement_list1)) = self.pop(context) {
-                statement_list1
+        let mut statement_opt_group_list1 =
+            if let Some(ASTType::StatementOptGroupList1(statement_opt_group_list1)) =
+                self.pop(context)
+            {
+                statement_opt_group_list1
             } else {
-                bail!("{}: Expecting ASTType::StatementList1", context);
+                bail!("{}: Expecting ASTType::StatementOptGroupList1", context);
             };
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let d_o = if let Some(ASTType::DO(d_o)) = self.pop(context) {
-            d_o
+        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
+            kw_do
         } else {
-            bail!("{}: Expecting ASTType::DO", context);
+            bail!("{}: Expecting ASTType::KwDo", context);
         };
         let guard = if let Some(ASTType::Guard(guard)) = self.pop(context) {
             guard
         } else {
             bail!("{}: Expecting ASTType::Guard", context);
         };
-        let statement_list1_0_built = StatementList1Builder::default()
+        let statement_opt_group_list1_0_built = StatementOptGroupList1Builder::default()
             .statement_seq(Box::new(statement_seq))
-            .d_o(Box::new(d_o))
+            .kw_do(Box::new(kw_do))
             .guard(Box::new(guard))
             .or(or)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
-        statement_list1.push(statement_list1_0_built);
-        self.push(ASTType::StatementList1(statement_list1), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 109:
-    ///
-    /// StatementList1: ; // Vec<T>::New
-    ///
-    #[named]
-    fn statement_list1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_list1_1_built = Vec::new();
-        self.push(ASTType::StatementList1(statement_list1_1_built), context);
+        statement_opt_group_list1.push(statement_opt_group_list1_0_built);
+        self.push(
+            ASTType::StatementOptGroupList1(statement_opt_group_list1),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 110:
     ///
-    /// StatementOpt4: Expr; // Option<T>::Some
+    /// StatementOptGroupList1: ; // Vec<T>::New
     ///
     #[named]
-    fn statement_opt4_0(
+    fn statement_opt_group_list1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_opt_group_list1_1_built = Vec::new();
+        self.push(
+            ASTType::StatementOptGroupList1(statement_opt_group_list1_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 111:
+    ///
+    /// StatementOpt5: Expr; // Option<T>::Some
+    ///
+    #[named]
+    fn statement_opt5_0(
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -5724,8 +5848,55 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let statement_opt4_0_built = StatementOpt4Builder::default()
+        let statement_opt5_0_built = StatementOpt5Builder::default()
             .expr(Box::new(expr))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::StatementOpt5(Some(Box::new(statement_opt5_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 112:
+    ///
+    /// StatementOpt5: ; // Option<T>::None
+    ///
+    #[named]
+    fn statement_opt5_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::StatementOpt5(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 113:
+    ///
+    /// StatementOpt4: KwElse StatementSeq; // Option<T>::Some
+    ///
+    #[named]
+    fn statement_opt4_0(
+        &mut self,
+        _kw_else: &ParseTreeStackEntry<'t>,
+        _statement_seq: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
+            statement_seq
+        } else {
+            bail!("{}: Expecting ASTType::StatementSeq", context);
+        };
+        let kw_else = if let Some(ASTType::KwElse(kw_else)) = self.pop(context) {
+            kw_else
+        } else {
+            bail!("{}: Expecting ASTType::KwElse", context);
+        };
+        let statement_opt4_0_built = StatementOpt4Builder::default()
+            .kw_else(Box::new(kw_else))
+            .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
         self.push(
@@ -5735,7 +5906,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 111:
+    /// Semantic action for production 114:
     ///
     /// StatementOpt4: ; // Option<T>::None
     ///
@@ -5747,59 +5918,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 112:
+    /// Semantic action for production 115:
     ///
-    /// StatementOpt3: ELSE StatementSeq; // Option<T>::Some
+    /// StatementOpt3: "BY" ConstExpr; // Option<T>::Some
     ///
     #[named]
     fn statement_opt3_0(
-        &mut self,
-        _e_l_s_e: &ParseTreeStackEntry<'t>,
-        _statement_seq: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
-        let e_l_s_e = if let Some(ASTType::ELSE(e_l_s_e)) = self.pop(context) {
-            e_l_s_e
-        } else {
-            bail!("{}: Expecting ASTType::ELSE", context);
-        };
-        let statement_opt3_0_built = StatementOpt3Builder::default()
-            .e_l_s_e(Box::new(e_l_s_e))
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .into_diagnostic()?;
-        self.push(
-            ASTType::StatementOpt3(Some(Box::new(statement_opt3_0_built))),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 113:
-    ///
-    /// StatementOpt3: ; // Option<T>::None
-    ///
-    #[named]
-    fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        self.push(ASTType::StatementOpt3(None), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 114:
-    ///
-    /// StatementOpt2: "BY" ConstExpr; // Option<T>::Some
-    ///
-    #[named]
-    fn statement_opt2_0(
         &mut self,
         b_y: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
@@ -5813,9 +5937,56 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::ConstExpr", context);
         };
-        let statement_opt2_0_built = StatementOpt2Builder::default()
+        let statement_opt3_0_built = StatementOpt3Builder::default()
             .b_y(b_y)
             .const_expr(Box::new(const_expr))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::StatementOpt3(Some(Box::new(statement_opt3_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 116:
+    ///
+    /// StatementOpt3: ; // Option<T>::None
+    ///
+    #[named]
+    fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::StatementOpt3(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 117:
+    ///
+    /// StatementOpt2: KwElse StatementSeq; // Option<T>::Some
+    ///
+    #[named]
+    fn statement_opt2_0(
+        &mut self,
+        _kw_else: &ParseTreeStackEntry<'t>,
+        _statement_seq: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
+            statement_seq
+        } else {
+            bail!("{}: Expecting ASTType::StatementSeq", context);
+        };
+        let kw_else = if let Some(ASTType::KwElse(kw_else)) = self.pop(context) {
+            kw_else
+        } else {
+            bail!("{}: Expecting ASTType::KwElse", context);
+        };
+        let statement_opt2_0_built = StatementOpt2Builder::default()
+            .kw_else(Box::new(kw_else))
+            .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
         self.push(
@@ -5825,7 +5996,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 115:
+    /// Semantic action for production 118:
     ///
     /// StatementOpt2: ; // Option<T>::None
     ///
@@ -5837,14 +6008,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 116:
+    /// Semantic action for production 119:
     ///
-    /// StatementOpt1: ELSE StatementSeq; // Option<T>::Some
+    /// StatementOpt1: KwElse StatementSeq; // Option<T>::Some
     ///
     #[named]
     fn statement_opt1_0(
         &mut self,
-        _e_l_s_e: &ParseTreeStackEntry<'t>,
+        _kw_else: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -5855,13 +6026,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let e_l_s_e = if let Some(ASTType::ELSE(e_l_s_e)) = self.pop(context) {
-            e_l_s_e
+        let kw_else = if let Some(ASTType::KwElse(kw_else)) = self.pop(context) {
+            kw_else
         } else {
-            bail!("{}: Expecting ASTType::ELSE", context);
+            bail!("{}: Expecting ASTType::KwElse", context);
         };
         let statement_opt1_0_built = StatementOpt1Builder::default()
-            .e_l_s_e(Box::new(e_l_s_e))
+            .kw_else(Box::new(kw_else))
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -5872,7 +6043,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 117:
+    /// Semantic action for production 120:
     ///
     /// StatementOpt1: ; // Option<T>::None
     ///
@@ -5884,32 +6055,32 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 118:
+    /// Semantic action for production 121:
     ///
-    /// StatementOpt0: ELSE StatementSeq; // Option<T>::Some
+    /// StatementOpt0: "\(" StatementOpt6 /* Option */ "\)"; // Option<T>::Some
     ///
     #[named]
     fn statement_opt0_0(
         &mut self,
-        _e_l_s_e: &ParseTreeStackEntry<'t>,
-        _statement_seq: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        l_paren: &ParseTreeStackEntry<'t>,
+        _statement_opt6: &ParseTreeStackEntry<'t>,
+        r_paren: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
+        let l_paren = *l_paren.token(parse_tree)?;
+        let r_paren = *r_paren.token(parse_tree)?;
+        let statement_opt6 = if let Some(ASTType::StatementOpt6(statement_opt6)) = self.pop(context)
+        {
+            statement_opt6
         } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
-        let e_l_s_e = if let Some(ASTType::ELSE(e_l_s_e)) = self.pop(context) {
-            e_l_s_e
-        } else {
-            bail!("{}: Expecting ASTType::ELSE", context);
+            bail!("{}: Expecting ASTType::StatementOpt6", context);
         };
         let statement_opt0_0_built = StatementOpt0Builder::default()
-            .e_l_s_e(Box::new(e_l_s_e))
-            .statement_seq(Box::new(statement_seq))
+            .l_paren(l_paren)
+            .statement_opt6(statement_opt6)
+            .r_paren(r_paren)
             .build()
             .into_diagnostic()?;
         self.push(
@@ -5919,59 +6090,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 119:
+    /// Semantic action for production 122:
     ///
-    /// StatementOpt0: ; // Option<T>::None
-    ///
-    #[named]
-    fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        self.push(ASTType::StatementOpt0(None), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 120:
-    ///
-    /// StatementOpt: "\(" StatementOpt5 /* Option */ "\)"; // Option<T>::Some
+    /// StatementOpt6: ExprList; // Option<T>::Some
     ///
     #[named]
-    fn statement_opt_0(
-        &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
-        _statement_opt5: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
-        let statement_opt5 = if let Some(ASTType::StatementOpt5(statement_opt5)) = self.pop(context)
-        {
-            statement_opt5
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt5", context);
-        };
-        let statement_opt_0_built = StatementOptBuilder::default()
-            .l_paren(l_paren)
-            .statement_opt5(statement_opt5)
-            .r_paren(r_paren)
-            .build()
-            .into_diagnostic()?;
-        self.push(
-            ASTType::StatementOpt(Some(Box::new(statement_opt_0_built))),
-            context,
-        );
-        Ok(())
-    }
-
-    /// Semantic action for production 121:
-    ///
-    /// StatementOpt5: ExprList; // Option<T>::Some
-    ///
-    #[named]
-    fn statement_opt5_0(
+    fn statement_opt6_0(
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -5983,30 +6107,42 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::ExprList", context);
         };
-        let statement_opt5_0_built = StatementOpt5Builder::default()
+        let statement_opt6_0_built = StatementOpt6Builder::default()
             .expr_list(Box::new(expr_list))
             .build()
             .into_diagnostic()?;
         self.push(
-            ASTType::StatementOpt5(Some(Box::new(statement_opt5_0_built))),
+            ASTType::StatementOpt6(Some(Box::new(statement_opt6_0_built))),
             context,
         );
         Ok(())
     }
 
-    /// Semantic action for production 122:
+    /// Semantic action for production 123:
     ///
-    /// StatementOpt5: ; // Option<T>::None
+    /// StatementOpt6: ; // Option<T>::None
     ///
     #[named]
-    fn statement_opt5_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt6_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        self.push(ASTType::StatementOpt5(None), context);
+        self.push(ASTType::StatementOpt6(None), context);
         Ok(())
     }
 
-    /// Semantic action for production 123:
+    /// Semantic action for production 124:
+    ///
+    /// StatementOpt0: ; // Option<T>::None
+    ///
+    #[named]
+    fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::StatementOpt0(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 125:
     ///
     /// StatementOpt: ; // Option<T>::None
     ///
@@ -6018,7 +6154,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 124:
+    /// Semantic action for production 126:
     ///
     /// Case: CaseOpt /* Option */;
     ///
@@ -6045,7 +6181,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 125:
+    /// Semantic action for production 127:
     ///
     /// CaseOpt: CaseLabels CaseOptList /* Vec */ ":" StatementSeq; // Option<T>::Some
     ///
@@ -6089,7 +6225,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 126:
+    /// Semantic action for production 128:
     ///
     /// CaseOptList: "," CaseLabels CaseOptList; // Vec<T>::Push
     ///
@@ -6126,7 +6262,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 127:
+    /// Semantic action for production 129:
     ///
     /// CaseOptList: ; // Vec<T>::New
     ///
@@ -6139,7 +6275,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 128:
+    /// Semantic action for production 130:
     ///
     /// CaseOpt: ; // Option<T>::None
     ///
@@ -6151,7 +6287,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 129:
+    /// Semantic action for production 131:
     ///
     /// CaseLabels: ConstExpr CaseLabelsOpt /* Option */;
     ///
@@ -6186,7 +6322,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 130:
+    /// Semantic action for production 132:
     ///
     /// CaseLabelsOpt: "\.\." ConstExpr; // Option<T>::Some
     ///
@@ -6217,7 +6353,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 131:
+    /// Semantic action for production 133:
     ///
     /// CaseLabelsOpt: ; // Option<T>::None
     ///
@@ -6229,7 +6365,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 132:
+    /// Semantic action for production 134:
     ///
     /// Guard: QualIdent ":" QualIdent;
     ///
@@ -6266,7 +6402,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 133:
+    /// Semantic action for production 135:
     ///
     /// ConstExpr: Expr;
     ///
@@ -6293,7 +6429,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 134:
+    /// Semantic action for production 136:
     ///
     /// Expr: SimpleExpr ExprOpt /* Option */;
     ///
@@ -6327,7 +6463,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 135:
+    /// Semantic action for production 137:
     ///
     /// ExprOpt: Relation SimpleExpr; // Option<T>::Some
     ///
@@ -6359,7 +6495,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 136:
+    /// Semantic action for production 138:
     ///
     /// ExprOpt: ; // Option<T>::None
     ///
@@ -6371,7 +6507,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 137:
+    /// Semantic action for production 139:
     ///
     /// SimpleExpr: SimpleExprOpt /* Option */ Term SimpleExprList /* Vec */;
     ///
@@ -6415,7 +6551,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 138:
+    /// Semantic action for production 140:
     ///
     /// SimpleExprList: AddOp Term SimpleExprList; // Vec<T>::Push
     ///
@@ -6456,7 +6592,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 139:
+    /// Semantic action for production 141:
     ///
     /// SimpleExprList: ; // Vec<T>::New
     ///
@@ -6469,7 +6605,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 140:
+    /// Semantic action for production 142:
     ///
     /// SimpleExprOpt: SimpleExprOptGroup; // Option<T>::Some
     ///
@@ -6498,7 +6634,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 141:
+    /// Semantic action for production 143:
     ///
     /// SimpleExprOptGroup: "\+";
     ///
@@ -6524,7 +6660,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 142:
+    /// Semantic action for production 144:
     ///
     /// SimpleExprOptGroup: "-";
     ///
@@ -6550,7 +6686,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 143:
+    /// Semantic action for production 145:
     ///
     /// SimpleExprOpt: ; // Option<T>::None
     ///
@@ -6562,7 +6698,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 144:
+    /// Semantic action for production 146:
     ///
     /// Term: Factor TermList /* Vec */;
     ///
@@ -6597,7 +6733,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 145:
+    /// Semantic action for production 147:
     ///
     /// TermList: MulOp Factor TermList; // Vec<T>::Push
     ///
@@ -6637,7 +6773,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 146:
+    /// Semantic action for production 148:
     ///
     /// TermList: ; // Vec<T>::New
     ///
@@ -6650,7 +6786,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 147:
+    /// Semantic action for production 149:
     ///
     /// Factor: Designator FactorOpt /* Option */;
     ///
@@ -6685,7 +6821,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 148:
+    /// Semantic action for production 150:
     ///
     /// Factor: Number;
     ///
@@ -6713,7 +6849,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 149:
+    /// Semantic action for production 151:
     ///
     /// Factor: Character;
     ///
@@ -6741,7 +6877,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 150:
+    /// Semantic action for production 152:
     ///
     /// Factor: String;
     ///
@@ -6769,7 +6905,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 151:
+    /// Semantic action for production 153:
     ///
     /// Factor: "NIL";
     ///
@@ -6793,7 +6929,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 152:
+    /// Semantic action for production 154:
     ///
     /// Factor: Set;
     ///
@@ -6821,7 +6957,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 153:
+    /// Semantic action for production 155:
     ///
     /// Factor: "\(" Expr "\)";
     ///
@@ -6855,7 +6991,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 154:
+    /// Semantic action for production 156:
     ///
     /// Factor: "~" Factor;
     ///
@@ -6886,7 +7022,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 155:
+    /// Semantic action for production 157:
     ///
     /// FactorOpt: "\(" FactorOpt0 /* Option */ "\)"; // Option<T>::Some
     ///
@@ -6920,7 +7056,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 156:
+    /// Semantic action for production 158:
     ///
     /// FactorOpt0: ExprList; // Option<T>::Some
     ///
@@ -6948,7 +7084,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 157:
+    /// Semantic action for production 159:
     ///
     /// FactorOpt0: ; // Option<T>::None
     ///
@@ -6960,7 +7096,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 158:
+    /// Semantic action for production 160:
     ///
     /// FactorOpt: ; // Option<T>::None
     ///
@@ -6972,7 +7108,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 159:
+    /// Semantic action for production 161:
     ///
     /// Set: "\{" SetOpt /* Option */ "\}";
     ///
@@ -7005,7 +7141,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 160:
+    /// Semantic action for production 162:
     ///
     /// SetOpt: Element SetOptList /* Vec */; // Option<T>::Some
     ///
@@ -7038,7 +7174,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 161:
+    /// Semantic action for production 163:
     ///
     /// SetOptList: "," Element SetOptList; // Vec<T>::Push
     ///
@@ -7074,7 +7210,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 162:
+    /// Semantic action for production 164:
     ///
     /// SetOptList: ; // Vec<T>::New
     ///
@@ -7087,7 +7223,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 163:
+    /// Semantic action for production 165:
     ///
     /// SetOpt: ; // Option<T>::None
     ///
@@ -7099,7 +7235,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 164:
+    /// Semantic action for production 166:
     ///
     /// Element: Expr ElementOpt /* Option */;
     ///
@@ -7133,7 +7269,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 165:
+    /// Semantic action for production 167:
     ///
     /// ElementOpt: "\.\." Expr; // Option<T>::Some
     ///
@@ -7164,7 +7300,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 166:
+    /// Semantic action for production 168:
     ///
     /// ElementOpt: ; // Option<T>::None
     ///
@@ -7176,7 +7312,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 167:
+    /// Semantic action for production 169:
     ///
     /// Relation: "=";
     ///
@@ -7200,7 +7336,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 168:
+    /// Semantic action for production 170:
     ///
     /// Relation: "#";
     ///
@@ -7224,7 +7360,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 169:
+    /// Semantic action for production 171:
     ///
     /// Relation: "<";
     ///
@@ -7248,7 +7384,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 170:
+    /// Semantic action for production 172:
     ///
     /// Relation: "<=";
     ///
@@ -7272,7 +7408,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 171:
+    /// Semantic action for production 173:
     ///
     /// Relation: ">";
     ///
@@ -7296,7 +7432,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 172:
+    /// Semantic action for production 174:
     ///
     /// Relation: ">=";
     ///
@@ -7320,21 +7456,25 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 173:
+    /// Semantic action for production 175:
     ///
-    /// Relation: "IN";
+    /// Relation: InOp;
     ///
     #[named]
     fn relation_6(
         &mut self,
-        i_n: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _in_op: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let i_n = *i_n.token(parse_tree)?;
+        let in_op = if let Some(ASTType::InOp(in_op)) = self.pop(context) {
+            in_op
+        } else {
+            bail!("{}: Expecting ASTType::InOp", context);
+        };
         let relation_6_built = Relation6Builder::default()
-            .i_n(i_n)
+            .in_op(Box::new(in_op))
             .build()
             .into_diagnostic()?;
         let relation_6_built = Relation::Relation6(relation_6_built);
@@ -7344,7 +7484,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 174:
+    /// Semantic action for production 176:
     ///
     /// Relation: "IS";
     ///
@@ -7368,7 +7508,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 175:
+    /// Semantic action for production 177:
     ///
     /// AddOp: "\+";
     ///
@@ -7392,7 +7532,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 176:
+    /// Semantic action for production 178:
     ///
     /// AddOp: "-";
     ///
@@ -7416,7 +7556,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 177:
+    /// Semantic action for production 179:
     ///
     /// AddOp: "OR";
     ///
@@ -7440,7 +7580,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 178:
+    /// Semantic action for production 180:
     ///
     /// MulOp: "\*";
     ///
@@ -7464,7 +7604,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 179:
+    /// Semantic action for production 181:
     ///
     /// MulOp: "/";
     ///
@@ -7488,7 +7628,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 180:
+    /// Semantic action for production 182:
     ///
     /// MulOp: "DIV";
     ///
@@ -7512,7 +7652,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 181:
+    /// Semantic action for production 183:
     ///
     /// MulOp: "MOD";
     ///
@@ -7536,7 +7676,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 182:
+    /// Semantic action for production 184:
     ///
     /// MulOp: "&";
     ///
@@ -7560,7 +7700,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 183:
+    /// Semantic action for production 185:
     ///
     /// Designator: QualIdent DesignatorList /* Vec */;
     ///
@@ -7596,7 +7736,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 184:
+    /// Semantic action for production 186:
     ///
     /// DesignatorList: DesignatorSuffix DesignatorList; // Vec<T>::Push
     ///
@@ -7631,7 +7771,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 185:
+    /// Semantic action for production 187:
     ///
     /// DesignatorList: ; // Vec<T>::New
     ///
@@ -7644,7 +7784,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 186:
+    /// Semantic action for production 188:
     ///
     /// DesignatorSuffix: "\." Ident;
     ///
@@ -7680,7 +7820,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 187:
+    /// Semantic action for production 189:
     ///
     /// DesignatorSuffix: "\[" ExprList "\]";
     ///
@@ -7719,7 +7859,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 188:
+    /// Semantic action for production 190:
     ///
     /// DesignatorSuffix: "\^";
     ///
@@ -7748,7 +7888,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 189:
+    /// Semantic action for production 191:
     ///
     /// ExprList: Expr ExprListList /* Vec */;
     ///
@@ -7784,7 +7924,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 190:
+    /// Semantic action for production 192:
     ///
     /// ExprListList: "," Expr ExprListList; // Vec<T>::Push
     ///
@@ -7821,7 +7961,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 191:
+    /// Semantic action for production 193:
     ///
     /// ExprListList: ; // Vec<T>::New
     ///
@@ -7834,7 +7974,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 192:
+    /// Semantic action for production 194:
     ///
     /// IdentList: IdentDef IdentListList /* Vec */;
     ///
@@ -7870,7 +8010,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 193:
+    /// Semantic action for production 195:
     ///
     /// IdentListList: "," IdentDef IdentListList; // Vec<T>::Push
     ///
@@ -7907,7 +8047,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 194:
+    /// Semantic action for production 196:
     ///
     /// IdentListList: ; // Vec<T>::New
     ///
@@ -7920,7 +8060,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 195:
+    /// Semantic action for production 197:
     ///
     /// QualIdent: Ident;
     ///
@@ -7948,7 +8088,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 196:
+    /// Semantic action for production 198:
     ///
     /// QualIdent: QIdent;
     ///
@@ -7976,7 +8116,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 197:
+    /// Semantic action for production 199:
     ///
     /// IdentDef: Ident IdentDefOpt /* Option */;
     ///
@@ -8010,7 +8150,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 198:
+    /// Semantic action for production 200:
     ///
     /// IdentDefOpt: IdentDefOptGroup; // Option<T>::Some
     ///
@@ -8039,7 +8179,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 199:
+    /// Semantic action for production 201:
     ///
     /// IdentDefOptGroup: "\*";
     ///
@@ -8065,7 +8205,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 200:
+    /// Semantic action for production 202:
     ///
     /// IdentDefOptGroup: "-";
     ///
@@ -8091,7 +8231,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 201:
+    /// Semantic action for production 203:
     ///
     /// IdentDefOpt: ; // Option<T>::None
     ///
@@ -8103,7 +8243,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 202:
+    /// Semantic action for production 204:
     ///
     /// Number: Integer;
     ///
@@ -8131,7 +8271,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 203:
+    /// Semantic action for production 205:
     ///
     /// Number: Real;
     ///
@@ -8159,7 +8299,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 204:
+    /// Semantic action for production 206:
     ///
     /// Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
     ///
@@ -8182,7 +8322,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 205:
+    /// Semantic action for production 207:
     ///
     /// Character: "[0-9][0-9A-F]*X";
     ///
@@ -8205,7 +8345,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 206:
+    /// Semantic action for production 208:
     ///
     /// Integer: "[0-9][0-9]*|[0-9][0-9A-F]*H";
     ///
@@ -8228,7 +8368,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 207:
+    /// Semantic action for production 209:
     ///
     /// QIdent: "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
     ///
@@ -8251,7 +8391,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 208:
+    /// Semantic action for production 210:
     ///
     /// Ident: "[a-zA-Z_]\w*";
     ///
@@ -8274,7 +8414,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 209:
+    /// Semantic action for production 211:
     ///
     /// String: "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
     ///
@@ -8294,6 +8434,29 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 212:
+    ///
+    /// InOp: "IN";
+    ///
+    #[named]
+    fn in_op(
+        &mut self,
+        in_op: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let in_op = *in_op.token(parse_tree)?;
+        let in_op_built = InOpBuilder::default()
+            .in_op(in_op)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.in_op(&in_op_built)?;
+        self.push(ASTType::InOp(in_op_built), context);
         Ok(())
     }
 }
@@ -8319,18 +8482,18 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.b_e_g_i_n(&children[0], parse_tree),
-            1 => self.c_a_s_e(&children[0], parse_tree),
-            2 => self.d_o(&children[0], parse_tree),
-            3 => self.e_l_s_e(&children[0], parse_tree),
-            4 => self.e_l_s_i_f(&children[0], parse_tree),
-            5 => self.e_n_d(&children[0], parse_tree),
-            6 => self.i_f(&children[0], parse_tree),
-            7 => self.o_f(&children[0], parse_tree),
-            8 => self.p_r_o_c_e_d_u_r_e(&children[0], parse_tree),
-            9 => self.t_h_e_n(&children[0], parse_tree),
-            10 => self.t_o(&children[0], parse_tree),
-            11 => self.v_a_r(&children[0], parse_tree),
+            0 => self.kw_begin(&children[0], parse_tree),
+            1 => self.kw_case(&children[0], parse_tree),
+            2 => self.kw_do(&children[0], parse_tree),
+            3 => self.kw_else(&children[0], parse_tree),
+            4 => self.kw_elsif(&children[0], parse_tree),
+            5 => self.kw_end(&children[0], parse_tree),
+            6 => self.kw_if(&children[0], parse_tree),
+            7 => self.kw_of(&children[0], parse_tree),
+            8 => self.kw_procedure(&children[0], parse_tree),
+            9 => self.kw_then(&children[0], parse_tree),
+            10 => self.kw_to(&children[0], parse_tree),
+            11 => self.kw_var(&children[0], parse_tree),
             12 => self.oberon2(
                 &children[0],
                 &children[1],
@@ -8501,10 +8664,12 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
             88 => self.statement_seq(&children[0], &children[1], parse_tree),
             89 => self.statement_seq_list_0(&children[0], &children[1], &children[2], parse_tree),
             90 => self.statement_seq_list_1(parse_tree),
-            91 => self.statement_0(&children[0], &children[1], parse_tree),
-            92 => self.statement_suffix_0(&children[0], &children[1], parse_tree),
-            93 => self.statement_suffix_1(&children[0], parse_tree),
-            94 => self.statement_1(
+            91 => self.statement(&children[0], parse_tree),
+            92 => self.statement_opt_0(&children[0], parse_tree),
+            93 => self.statement_opt_group_0(&children[0], &children[1], parse_tree),
+            94 => self.statement_opt_group_suffix_0(&children[0], &children[1], parse_tree),
+            95 => self.statement_opt_group_suffix_1(&children[0], parse_tree),
+            96 => self.statement_opt_group_1(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8514,7 +8679,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[6],
                 parse_tree,
             ),
-            95 => self.statement_2(
+            97 => self.statement_opt_group_2(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8524,7 +8689,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[6],
                 parse_tree,
             ),
-            96 => self.statement_3(
+            98 => self.statement_opt_group_3(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8532,14 +8697,14 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            97 => self.statement_4(
+            99 => self.statement_opt_group_4(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            98 => self.statement_5(
+            100 => self.statement_opt_group_5(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8552,8 +8717,8 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[9],
                 parse_tree,
             ),
-            99 => self.statement_6(&children[0], &children[1], &children[2], parse_tree),
-            100 => self.statement_7(
+            101 => self.statement_opt_group_6(&children[0], &children[1], &children[2], parse_tree),
+            102 => self.statement_opt_group_7(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8563,10 +8728,9 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[6],
                 parse_tree,
             ),
-            101 => self.statement_8(&children[0], parse_tree),
-            102 => self.statement_9(&children[0], &children[1], parse_tree),
-            103 => self.statement_10(&children[0], parse_tree),
-            104 => self.statement_list_0(
+            103 => self.statement_opt_group_8(&children[0], parse_tree),
+            104 => self.statement_opt_group_9(&children[0], &children[1], parse_tree),
+            105 => self.statement_opt_group_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8574,10 +8738,15 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            105 => self.statement_list_1(parse_tree),
-            106 => self.statement_list0_0(&children[0], &children[1], &children[2], parse_tree),
-            107 => self.statement_list0_1(parse_tree),
-            108 => self.statement_list1_0(
+            106 => self.statement_opt_group_list_1(parse_tree),
+            107 => self.statement_opt_group_list0_0(
+                &children[0],
+                &children[1],
+                &children[2],
+                parse_tree,
+            ),
+            108 => self.statement_opt_group_list0_1(parse_tree),
+            109 => self.statement_opt_group_list1_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -8585,113 +8754,115 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            109 => self.statement_list1_1(parse_tree),
-            110 => self.statement_opt4_0(&children[0], parse_tree),
-            111 => self.statement_opt4_1(parse_tree),
-            112 => self.statement_opt3_0(&children[0], &children[1], parse_tree),
-            113 => self.statement_opt3_1(parse_tree),
-            114 => self.statement_opt2_0(&children[0], &children[1], parse_tree),
-            115 => self.statement_opt2_1(parse_tree),
-            116 => self.statement_opt1_0(&children[0], &children[1], parse_tree),
-            117 => self.statement_opt1_1(parse_tree),
-            118 => self.statement_opt0_0(&children[0], &children[1], parse_tree),
-            119 => self.statement_opt0_1(parse_tree),
-            120 => self.statement_opt_0(&children[0], &children[1], &children[2], parse_tree),
-            121 => self.statement_opt5_0(&children[0], parse_tree),
-            122 => self.statement_opt5_1(parse_tree),
-            123 => self.statement_opt_1(parse_tree),
-            124 => self.case(&children[0], parse_tree),
-            125 => self.case_opt_0(
+            110 => self.statement_opt_group_list1_1(parse_tree),
+            111 => self.statement_opt5_0(&children[0], parse_tree),
+            112 => self.statement_opt5_1(parse_tree),
+            113 => self.statement_opt4_0(&children[0], &children[1], parse_tree),
+            114 => self.statement_opt4_1(parse_tree),
+            115 => self.statement_opt3_0(&children[0], &children[1], parse_tree),
+            116 => self.statement_opt3_1(parse_tree),
+            117 => self.statement_opt2_0(&children[0], &children[1], parse_tree),
+            118 => self.statement_opt2_1(parse_tree),
+            119 => self.statement_opt1_0(&children[0], &children[1], parse_tree),
+            120 => self.statement_opt1_1(parse_tree),
+            121 => self.statement_opt0_0(&children[0], &children[1], &children[2], parse_tree),
+            122 => self.statement_opt6_0(&children[0], parse_tree),
+            123 => self.statement_opt6_1(parse_tree),
+            124 => self.statement_opt0_1(parse_tree),
+            125 => self.statement_opt_1(parse_tree),
+            126 => self.case(&children[0], parse_tree),
+            127 => self.case_opt_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            126 => self.case_opt_list_0(&children[0], &children[1], &children[2], parse_tree),
-            127 => self.case_opt_list_1(parse_tree),
-            128 => self.case_opt_1(parse_tree),
-            129 => self.case_labels(&children[0], &children[1], parse_tree),
-            130 => self.case_labels_opt_0(&children[0], &children[1], parse_tree),
-            131 => self.case_labels_opt_1(parse_tree),
-            132 => self.guard(&children[0], &children[1], &children[2], parse_tree),
-            133 => self.const_expr(&children[0], parse_tree),
-            134 => self.expr(&children[0], &children[1], parse_tree),
-            135 => self.expr_opt_0(&children[0], &children[1], parse_tree),
-            136 => self.expr_opt_1(parse_tree),
-            137 => self.simple_expr(&children[0], &children[1], &children[2], parse_tree),
-            138 => self.simple_expr_list_0(&children[0], &children[1], &children[2], parse_tree),
-            139 => self.simple_expr_list_1(parse_tree),
-            140 => self.simple_expr_opt_0(&children[0], parse_tree),
-            141 => self.simple_expr_opt_group_0(&children[0], parse_tree),
-            142 => self.simple_expr_opt_group_1(&children[0], parse_tree),
-            143 => self.simple_expr_opt_1(parse_tree),
-            144 => self.term(&children[0], &children[1], parse_tree),
-            145 => self.term_list_0(&children[0], &children[1], &children[2], parse_tree),
-            146 => self.term_list_1(parse_tree),
-            147 => self.factor_0(&children[0], &children[1], parse_tree),
-            148 => self.factor_1(&children[0], parse_tree),
-            149 => self.factor_2(&children[0], parse_tree),
-            150 => self.factor_3(&children[0], parse_tree),
-            151 => self.factor_4(&children[0], parse_tree),
-            152 => self.factor_5(&children[0], parse_tree),
-            153 => self.factor_6(&children[0], &children[1], &children[2], parse_tree),
-            154 => self.factor_7(&children[0], &children[1], parse_tree),
-            155 => self.factor_opt_0(&children[0], &children[1], &children[2], parse_tree),
-            156 => self.factor_opt0_0(&children[0], parse_tree),
-            157 => self.factor_opt0_1(parse_tree),
-            158 => self.factor_opt_1(parse_tree),
-            159 => self.set(&children[0], &children[1], &children[2], parse_tree),
-            160 => self.set_opt_0(&children[0], &children[1], parse_tree),
-            161 => self.set_opt_list_0(&children[0], &children[1], &children[2], parse_tree),
-            162 => self.set_opt_list_1(parse_tree),
-            163 => self.set_opt_1(parse_tree),
-            164 => self.element(&children[0], &children[1], parse_tree),
-            165 => self.element_opt_0(&children[0], &children[1], parse_tree),
-            166 => self.element_opt_1(parse_tree),
-            167 => self.relation_0(&children[0], parse_tree),
-            168 => self.relation_1(&children[0], parse_tree),
-            169 => self.relation_2(&children[0], parse_tree),
-            170 => self.relation_3(&children[0], parse_tree),
-            171 => self.relation_4(&children[0], parse_tree),
-            172 => self.relation_5(&children[0], parse_tree),
-            173 => self.relation_6(&children[0], parse_tree),
-            174 => self.relation_7(&children[0], parse_tree),
-            175 => self.add_op_0(&children[0], parse_tree),
-            176 => self.add_op_1(&children[0], parse_tree),
-            177 => self.add_op_2(&children[0], parse_tree),
-            178 => self.mul_op_0(&children[0], parse_tree),
-            179 => self.mul_op_1(&children[0], parse_tree),
-            180 => self.mul_op_2(&children[0], parse_tree),
-            181 => self.mul_op_3(&children[0], parse_tree),
-            182 => self.mul_op_4(&children[0], parse_tree),
-            183 => self.designator(&children[0], &children[1], parse_tree),
-            184 => self.designator_list_0(&children[0], &children[1], parse_tree),
-            185 => self.designator_list_1(parse_tree),
-            186 => self.designator_suffix_0(&children[0], &children[1], parse_tree),
-            187 => self.designator_suffix_1(&children[0], &children[1], &children[2], parse_tree),
-            188 => self.designator_suffix_2(&children[0], parse_tree),
-            189 => self.expr_list(&children[0], &children[1], parse_tree),
-            190 => self.expr_list_list_0(&children[0], &children[1], &children[2], parse_tree),
-            191 => self.expr_list_list_1(parse_tree),
-            192 => self.ident_list(&children[0], &children[1], parse_tree),
-            193 => self.ident_list_list_0(&children[0], &children[1], &children[2], parse_tree),
-            194 => self.ident_list_list_1(parse_tree),
-            195 => self.qual_ident_0(&children[0], parse_tree),
-            196 => self.qual_ident_1(&children[0], parse_tree),
-            197 => self.ident_def(&children[0], &children[1], parse_tree),
-            198 => self.ident_def_opt_0(&children[0], parse_tree),
-            199 => self.ident_def_opt_group_0(&children[0], parse_tree),
-            200 => self.ident_def_opt_group_1(&children[0], parse_tree),
-            201 => self.ident_def_opt_1(parse_tree),
-            202 => self.number_0(&children[0], parse_tree),
-            203 => self.number_1(&children[0], parse_tree),
-            204 => self.real(&children[0], parse_tree),
-            205 => self.character(&children[0], parse_tree),
-            206 => self.integer(&children[0], parse_tree),
-            207 => self.q_ident(&children[0], parse_tree),
-            208 => self.ident(&children[0], parse_tree),
-            209 => self.string(&children[0], parse_tree),
+            128 => self.case_opt_list_0(&children[0], &children[1], &children[2], parse_tree),
+            129 => self.case_opt_list_1(parse_tree),
+            130 => self.case_opt_1(parse_tree),
+            131 => self.case_labels(&children[0], &children[1], parse_tree),
+            132 => self.case_labels_opt_0(&children[0], &children[1], parse_tree),
+            133 => self.case_labels_opt_1(parse_tree),
+            134 => self.guard(&children[0], &children[1], &children[2], parse_tree),
+            135 => self.const_expr(&children[0], parse_tree),
+            136 => self.expr(&children[0], &children[1], parse_tree),
+            137 => self.expr_opt_0(&children[0], &children[1], parse_tree),
+            138 => self.expr_opt_1(parse_tree),
+            139 => self.simple_expr(&children[0], &children[1], &children[2], parse_tree),
+            140 => self.simple_expr_list_0(&children[0], &children[1], &children[2], parse_tree),
+            141 => self.simple_expr_list_1(parse_tree),
+            142 => self.simple_expr_opt_0(&children[0], parse_tree),
+            143 => self.simple_expr_opt_group_0(&children[0], parse_tree),
+            144 => self.simple_expr_opt_group_1(&children[0], parse_tree),
+            145 => self.simple_expr_opt_1(parse_tree),
+            146 => self.term(&children[0], &children[1], parse_tree),
+            147 => self.term_list_0(&children[0], &children[1], &children[2], parse_tree),
+            148 => self.term_list_1(parse_tree),
+            149 => self.factor_0(&children[0], &children[1], parse_tree),
+            150 => self.factor_1(&children[0], parse_tree),
+            151 => self.factor_2(&children[0], parse_tree),
+            152 => self.factor_3(&children[0], parse_tree),
+            153 => self.factor_4(&children[0], parse_tree),
+            154 => self.factor_5(&children[0], parse_tree),
+            155 => self.factor_6(&children[0], &children[1], &children[2], parse_tree),
+            156 => self.factor_7(&children[0], &children[1], parse_tree),
+            157 => self.factor_opt_0(&children[0], &children[1], &children[2], parse_tree),
+            158 => self.factor_opt0_0(&children[0], parse_tree),
+            159 => self.factor_opt0_1(parse_tree),
+            160 => self.factor_opt_1(parse_tree),
+            161 => self.set(&children[0], &children[1], &children[2], parse_tree),
+            162 => self.set_opt_0(&children[0], &children[1], parse_tree),
+            163 => self.set_opt_list_0(&children[0], &children[1], &children[2], parse_tree),
+            164 => self.set_opt_list_1(parse_tree),
+            165 => self.set_opt_1(parse_tree),
+            166 => self.element(&children[0], &children[1], parse_tree),
+            167 => self.element_opt_0(&children[0], &children[1], parse_tree),
+            168 => self.element_opt_1(parse_tree),
+            169 => self.relation_0(&children[0], parse_tree),
+            170 => self.relation_1(&children[0], parse_tree),
+            171 => self.relation_2(&children[0], parse_tree),
+            172 => self.relation_3(&children[0], parse_tree),
+            173 => self.relation_4(&children[0], parse_tree),
+            174 => self.relation_5(&children[0], parse_tree),
+            175 => self.relation_6(&children[0], parse_tree),
+            176 => self.relation_7(&children[0], parse_tree),
+            177 => self.add_op_0(&children[0], parse_tree),
+            178 => self.add_op_1(&children[0], parse_tree),
+            179 => self.add_op_2(&children[0], parse_tree),
+            180 => self.mul_op_0(&children[0], parse_tree),
+            181 => self.mul_op_1(&children[0], parse_tree),
+            182 => self.mul_op_2(&children[0], parse_tree),
+            183 => self.mul_op_3(&children[0], parse_tree),
+            184 => self.mul_op_4(&children[0], parse_tree),
+            185 => self.designator(&children[0], &children[1], parse_tree),
+            186 => self.designator_list_0(&children[0], &children[1], parse_tree),
+            187 => self.designator_list_1(parse_tree),
+            188 => self.designator_suffix_0(&children[0], &children[1], parse_tree),
+            189 => self.designator_suffix_1(&children[0], &children[1], &children[2], parse_tree),
+            190 => self.designator_suffix_2(&children[0], parse_tree),
+            191 => self.expr_list(&children[0], &children[1], parse_tree),
+            192 => self.expr_list_list_0(&children[0], &children[1], &children[2], parse_tree),
+            193 => self.expr_list_list_1(parse_tree),
+            194 => self.ident_list(&children[0], &children[1], parse_tree),
+            195 => self.ident_list_list_0(&children[0], &children[1], &children[2], parse_tree),
+            196 => self.ident_list_list_1(parse_tree),
+            197 => self.qual_ident_0(&children[0], parse_tree),
+            198 => self.qual_ident_1(&children[0], parse_tree),
+            199 => self.ident_def(&children[0], &children[1], parse_tree),
+            200 => self.ident_def_opt_0(&children[0], parse_tree),
+            201 => self.ident_def_opt_group_0(&children[0], parse_tree),
+            202 => self.ident_def_opt_group_1(&children[0], parse_tree),
+            203 => self.ident_def_opt_1(parse_tree),
+            204 => self.number_0(&children[0], parse_tree),
+            205 => self.number_1(&children[0], parse_tree),
+            206 => self.real(&children[0], parse_tree),
+            207 => self.character(&children[0], parse_tree),
+            208 => self.integer(&children[0], parse_tree),
+            209 => self.q_ident(&children[0], parse_tree),
+            210 => self.ident(&children[0], parse_tree),
+            211 => self.string(&children[0], parse_tree),
+            212 => self.in_op(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }
