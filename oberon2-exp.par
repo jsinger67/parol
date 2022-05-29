@@ -1,0 +1,216 @@
+%start Oberon2
+%title "Oberon2 grammar"
+%comment "Adapted from https://cseweb.ucsd.edu/~wgg/CSE131B/oberon2.htm for `parol`"
+%block_comment "\(\*" "\*\)"
+
+%%
+
+/*   0 */ BEGIN: "BEGIN";
+/*   1 */ CASE: "CASE";
+/*   2 */ DO: "DO";
+/*   3 */ ELSE: "ELSE";
+/*   4 */ ELSIF: "ELSIF";
+/*   5 */ END: "END";
+/*   6 */ IF: "IF";
+/*   7 */ OF: "OF";
+/*   8 */ PROCEDURE: "PROCEDURE";
+/*   9 */ THEN: "THEN";
+/*  10 */ TO: "TO";
+/*  11 */ VAR: "VAR";
+/*  12 */ Oberon2: "MODULE" Ident ";" Oberon2Opt /* Option */ DeclSeq Oberon2Opt0 /* Option */ END Ident "\.";
+/*  13 */ Oberon2Opt0: BEGIN StatementSeq; // Option<T>::Some
+/*  14 */ Oberon2Opt0: ; // Option<T>::None
+/*  15 */ Oberon2Opt: ImportList; // Option<T>::Some
+/*  16 */ Oberon2Opt: ; // Option<T>::None
+/*  17 */ ImportList: "IMPORT" ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";";
+/*  18 */ ImportListList: "," ImportListOpt0 /* Option */ Ident ImportListList; // Vec<T>::Push
+/*  19 */ ImportListList: ; // Vec<T>::New
+/*  20 */ ImportListOpt0: Ident ":="; // Option<T>::Some
+/*  21 */ ImportListOpt0: ; // Option<T>::None
+/*  22 */ ImportListOpt: Ident ":="; // Option<T>::Some
+/*  23 */ ImportListOpt: ; // Option<T>::None
+/*  24 */ DeclSeq: DeclSeqList /* Vec */ DeclSeqList0 /* Vec */;
+/*  25 */ DeclSeqList0: DeclSeqList0Group DeclSeqList0; // Vec<T>::Push
+/*  26 */ DeclSeqList0Group: ProcDecl ";";
+/*  27 */ DeclSeqList0Group: ForwardDecl ";";
+/*  28 */ DeclSeqList0: ; // Vec<T>::New
+/*  29 */ DeclSeqList: DeclSeqListGroup DeclSeqList; // Vec<T>::Push
+/*  30 */ DeclSeqListGroup: "CONST" DeclSeqListGroupList /* Vec */;
+/*  31 */ DeclSeqListGroupList: ConstDecl ";" DeclSeqListGroupList; // Vec<T>::Push
+/*  32 */ DeclSeqListGroupList: ; // Vec<T>::New
+/*  33 */ DeclSeqListGroup: "TYPE" DeclSeqListGroupList0 /* Vec */;
+/*  34 */ DeclSeqListGroupList0: TypeDecl ";" DeclSeqListGroupList0; // Vec<T>::Push
+/*  35 */ DeclSeqListGroupList0: ; // Vec<T>::New
+/*  36 */ DeclSeqListGroup: VAR DeclSeqListGroupList1 /* Vec */;
+/*  37 */ DeclSeqListGroupList1: VarDecl ";" DeclSeqListGroupList1; // Vec<T>::Push
+/*  38 */ DeclSeqListGroupList1: ; // Vec<T>::New
+/*  39 */ DeclSeqList: ; // Vec<T>::New
+/*  40 */ ConstDecl: IdentDef "=" ConstExpr;
+/*  41 */ TypeDecl: IdentDef "=" TypeDef;
+/*  42 */ VarDecl: IdentList ":" TypeDef;
+/*  43 */ ProcDecl: PROCEDURE ProcDeclOpt /* Option */ IdentDef ProcDeclOpt0 /* Option */ ";" DeclSeq ProcDeclOpt1 /* Option */ END Ident;
+/*  44 */ ProcDeclOpt1: BEGIN StatementSeq; // Option<T>::Some
+/*  45 */ ProcDeclOpt1: ; // Option<T>::None
+/*  46 */ ProcDeclOpt0: FormalPars; // Option<T>::Some
+/*  47 */ ProcDeclOpt0: ; // Option<T>::None
+/*  48 */ ProcDeclOpt: Receiver; // Option<T>::Some
+/*  49 */ ProcDeclOpt: ; // Option<T>::None
+/*  50 */ ForwardDecl: PROCEDURE "^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
+/*  51 */ ForwardDeclOpt0: FormalPars; // Option<T>::Some
+/*  52 */ ForwardDeclOpt0: ; // Option<T>::None
+/*  53 */ ForwardDeclOpt: Receiver; // Option<T>::Some
+/*  54 */ ForwardDeclOpt: ; // Option<T>::None
+/*  55 */ FormalPars: "\(" FormalParsOpt /* Option */ "\)" FormalParsOpt0 /* Option */;
+/*  56 */ FormalParsOpt0: ":" QualIdent; // Option<T>::Some
+/*  57 */ FormalParsOpt0: ; // Option<T>::None
+/*  58 */ FormalParsOpt: FPSection FormalParsOptList /* Vec */; // Option<T>::Some
+/*  59 */ FormalParsOptList: ";" FPSection FormalParsOptList; // Vec<T>::Push
+/*  60 */ FormalParsOptList: ; // Vec<T>::New
+/*  61 */ FormalParsOpt: ; // Option<T>::None
+/*  62 */ FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":" TypeDef;
+/*  63 */ FPSectionList: "," Ident FPSectionList; // Vec<T>::Push
+/*  64 */ FPSectionList: ; // Vec<T>::New
+/*  65 */ FPSectionOpt: VAR; // Option<T>::Some
+/*  66 */ FPSectionOpt: ; // Option<T>::None
+/*  67 */ Receiver: "\(" ReceiverOpt /* Option */ Ident ":" Ident "\)";
+/*  68 */ ReceiverOpt: VAR; // Option<T>::Some
+/*  69 */ ReceiverOpt: ; // Option<T>::None
+/*  70 */ TypeDef: QualIdent;
+/*  71 */ TypeDef: "ARRAY" TypeDefOpt /* Option */ OF TypeDef;
+/*  72 */ TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ END;
+/*  73 */ TypeDefList: ";" FieldList TypeDefList; // Vec<T>::Push
+/*  74 */ TypeDefList: ; // Vec<T>::New
+/*  75 */ TypeDef: "POINTER" TO TypeDef;
+/*  76 */ TypeDef: PROCEDURE TypeDefOpt1 /* Option */;
+/*  77 */ TypeDefOpt1: FormalPars; // Option<T>::Some
+/*  78 */ TypeDefOpt1: ; // Option<T>::None
+/*  79 */ TypeDefOpt0: "\(" QualIdent "\)"; // Option<T>::Some
+/*  80 */ TypeDefOpt0: ; // Option<T>::None
+/*  81 */ TypeDefOpt: ConstExpr TypeDefOptList /* Vec */; // Option<T>::Some
+/*  82 */ TypeDefOptList: "," ConstExpr TypeDefOptList; // Vec<T>::Push
+/*  83 */ TypeDefOptList: ; // Vec<T>::New
+/*  84 */ TypeDefOpt: ; // Option<T>::None
+/*  85 */ FieldList: FieldListOpt /* Option */;
+/*  86 */ FieldListOpt: IdentList ":" TypeDef; // Option<T>::Some
+/*  87 */ FieldListOpt: ; // Option<T>::None
+/*  88 */ StatementSeq: Statement StatementSeqList /* Vec */;
+/*  89 */ StatementSeqList: ";" Statement StatementSeqList; // Vec<T>::Push
+/*  90 */ StatementSeqList: ; // Vec<T>::New
+/*  91 */ Statement: Designator StatementSuffix;
+/*  92 */ StatementSuffix: ":=" Expr;
+/*  93 */ StatementSuffix: StatementOpt /* Option */;
+/*  94 */ Statement: IF Expr THEN StatementSeq StatementList /* Vec */ StatementOpt0 /* Option */ END;
+/*  95 */ Statement: CASE Expr OF Case StatementList0 /* Vec */ StatementOpt1 /* Option */ END;
+/*  96 */ Statement: "WHILE" Expr DO StatementSeq END;
+/*  97 */ Statement: "REPEAT" StatementSeq "UNTIL" Expr;
+/*  98 */ Statement: "FOR" Ident ":=" Expr TO Expr StatementOpt2 /* Option */ DO StatementSeq END;
+/*  99 */ Statement: "LOOP" StatementSeq END;
+/* 100 */ Statement: "WITH" Guard DO StatementSeq StatementList1 /* Vec */ StatementOpt3 /* Option */ END;
+/* 101 */ Statement: "EXIT";
+/* 102 */ Statement: "RETURN" StatementOpt4 /* Option */;
+/* 103 */ Statement: ";";
+/* 104 */ StatementList: ELSIF Expr THEN StatementSeq StatementList; // Vec<T>::Push
+/* 105 */ StatementList: ; // Vec<T>::New
+/* 106 */ StatementList0: "\|" Case StatementList0; // Vec<T>::Push
+/* 107 */ StatementList0: ; // Vec<T>::New
+/* 108 */ StatementList1: "\|" Guard DO StatementSeq StatementList1; // Vec<T>::Push
+/* 109 */ StatementList1: ; // Vec<T>::New
+/* 110 */ StatementOpt4: Expr; // Option<T>::Some
+/* 111 */ StatementOpt4: ; // Option<T>::None
+/* 112 */ StatementOpt3: ELSE StatementSeq; // Option<T>::Some
+/* 113 */ StatementOpt3: ; // Option<T>::None
+/* 114 */ StatementOpt2: "BY" ConstExpr; // Option<T>::Some
+/* 115 */ StatementOpt2: ; // Option<T>::None
+/* 116 */ StatementOpt1: ELSE StatementSeq; // Option<T>::Some
+/* 117 */ StatementOpt1: ; // Option<T>::None
+/* 118 */ StatementOpt0: ELSE StatementSeq; // Option<T>::Some
+/* 119 */ StatementOpt0: ; // Option<T>::None
+/* 120 */ StatementOpt: "\(" StatementOpt5 /* Option */ "\)"; // Option<T>::Some
+/* 121 */ StatementOpt5: ExprList; // Option<T>::Some
+/* 122 */ StatementOpt5: ; // Option<T>::None
+/* 123 */ StatementOpt: ; // Option<T>::None
+/* 124 */ Case: CaseOpt /* Option */;
+/* 125 */ CaseOpt: CaseLabels CaseOptList /* Vec */ ":" StatementSeq; // Option<T>::Some
+/* 126 */ CaseOptList: "," CaseLabels CaseOptList; // Vec<T>::Push
+/* 127 */ CaseOptList: ; // Vec<T>::New
+/* 128 */ CaseOpt: ; // Option<T>::None
+/* 129 */ CaseLabels: ConstExpr CaseLabelsOpt /* Option */;
+/* 130 */ CaseLabelsOpt: "\.\." ConstExpr; // Option<T>::Some
+/* 131 */ CaseLabelsOpt: ; // Option<T>::None
+/* 132 */ Guard: QualIdent ":" QualIdent;
+/* 133 */ ConstExpr: Expr;
+/* 134 */ Expr: SimpleExpr ExprOpt /* Option */;
+/* 135 */ ExprOpt: Relation SimpleExpr; // Option<T>::Some
+/* 136 */ ExprOpt: ; // Option<T>::None
+/* 137 */ SimpleExpr: SimpleExprOpt /* Option */ Term SimpleExprList /* Vec */;
+/* 138 */ SimpleExprList: AddOp Term SimpleExprList; // Vec<T>::Push
+/* 139 */ SimpleExprList: ; // Vec<T>::New
+/* 140 */ SimpleExprOpt: SimpleExprOptGroup; // Option<T>::Some
+/* 141 */ SimpleExprOptGroup: "\+";
+/* 142 */ SimpleExprOptGroup: "-";
+/* 143 */ SimpleExprOpt: ; // Option<T>::None
+/* 144 */ Term: Factor TermList /* Vec */;
+/* 145 */ TermList: MulOp Factor TermList; // Vec<T>::Push
+/* 146 */ TermList: ; // Vec<T>::New
+/* 147 */ Factor: Designator FactorOpt /* Option */;
+/* 148 */ Factor: Number;
+/* 149 */ Factor: Character;
+/* 150 */ Factor: String;
+/* 151 */ Factor: "NIL";
+/* 152 */ Factor: Set;
+/* 153 */ Factor: "\(" Expr "\)";
+/* 154 */ Factor: "~" Factor;
+/* 155 */ FactorOpt: "\(" FactorOpt0 /* Option */ "\)"; // Option<T>::Some
+/* 156 */ FactorOpt0: ExprList; // Option<T>::Some
+/* 157 */ FactorOpt0: ; // Option<T>::None
+/* 158 */ FactorOpt: ; // Option<T>::None
+/* 159 */ Set: "\{" SetOpt /* Option */ "\}";
+/* 160 */ SetOpt: Element SetOptList /* Vec */; // Option<T>::Some
+/* 161 */ SetOptList: "," Element SetOptList; // Vec<T>::Push
+/* 162 */ SetOptList: ; // Vec<T>::New
+/* 163 */ SetOpt: ; // Option<T>::None
+/* 164 */ Element: Expr ElementOpt /* Option */;
+/* 165 */ ElementOpt: "\.\." Expr; // Option<T>::Some
+/* 166 */ ElementOpt: ; // Option<T>::None
+/* 167 */ Relation: "=";
+/* 168 */ Relation: "#";
+/* 169 */ Relation: "<";
+/* 170 */ Relation: "<=";
+/* 171 */ Relation: ">";
+/* 172 */ Relation: ">=";
+/* 173 */ Relation: "IN";
+/* 174 */ Relation: "IS";
+/* 175 */ AddOp: "\+";
+/* 176 */ AddOp: "-";
+/* 177 */ AddOp: "OR";
+/* 178 */ MulOp: "\*";
+/* 179 */ MulOp: "/";
+/* 180 */ MulOp: "DIV";
+/* 181 */ MulOp: "MOD";
+/* 182 */ MulOp: "&";
+/* 183 */ Designator: QualIdent DesignatorList /* Vec */;
+/* 184 */ DesignatorList: DesignatorSuffix DesignatorList; // Vec<T>::Push
+/* 185 */ DesignatorList: ; // Vec<T>::New
+/* 186 */ DesignatorSuffix: "\." Ident;
+/* 187 */ DesignatorSuffix: "\[" ExprList "\]";
+/* 188 */ DesignatorSuffix: "^";
+/* 189 */ DesignatorSuffix: "\(" QualIdent "\)";
+/* 190 */ ExprList: Expr ExprListList /* Vec */;
+/* 191 */ ExprListList: "," Expr ExprListList; // Vec<T>::Push
+/* 192 */ ExprListList: ; // Vec<T>::New
+/* 193 */ IdentList: IdentDef IdentListList /* Vec */;
+/* 194 */ IdentListList: "," IdentDef IdentListList; // Vec<T>::Push
+/* 195 */ IdentListList: ; // Vec<T>::New
+/* 196 */ QualIdent: "[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)?";
+/* 197 */ IdentDef: Ident IdentDefOpt /* Option */;
+/* 198 */ IdentDefOpt: IdentDefOptGroup; // Option<T>::Some
+/* 199 */ IdentDefOptGroup: "\*";
+/* 200 */ IdentDefOptGroup: "-";
+/* 201 */ IdentDefOpt: ; // Option<T>::None
+/* 202 */ Ident: "[a-zA-Z_]\w*";
+/* 203 */ Number: Integer;
+/* 204 */ Number: Real;
+/* 205 */ Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
+/* 206 */ Character: "[0-9][0-9A-F]X";
+/* 207 */ Integer: "[0-9][0-9]*|[0-9][0-9A-F]H";
+/* 208 */ String: "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";

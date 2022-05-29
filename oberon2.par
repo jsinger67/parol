@@ -1,0 +1,88 @@
+%start Oberon2
+%title "Oberon2 grammar"
+%comment "Adapted from https://cseweb.ucsd.edu/~wgg/CSE131B/oberon2.htm for `parol`"
+%block_comment "\(\*" "\*\)"
+
+%%
+
+BEGIN           : "BEGIN";
+CASE            : "CASE";
+DO              : "DO";
+ELSE            : "ELSE";
+ELSIF           : "ELSIF";
+END             : "END";
+IF              : "IF";
+OF              : "OF";
+PROCEDURE       : "PROCEDURE";
+THEN            : "THEN";
+TO              : "TO";
+VAR             : "VAR";
+
+
+Oberon2         : "MODULE" Ident ";" [ImportList] DeclSeq [BEGIN StatementSeq] END Ident "\.";
+ImportList      : "IMPORT" [Ident ":="] Ident {"," [Ident ":="] Ident} ";";
+DeclSeq         : { "CONST" {ConstDecl ";" }
+                | "TYPE" {TypeDecl ";"}
+                | VAR {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";"};
+ConstDecl       : IdentDef "=" ConstExpr;
+TypeDecl        : IdentDef "=" TypeDef;
+VarDecl         : IdentList ":" TypeDef;
+ProcDecl        : PROCEDURE [Receiver] IdentDef [FormalPars] ";" DeclSeq [BEGIN StatementSeq] END Ident;
+ForwardDecl     : PROCEDURE "^" [Receiver] IdentDef [FormalPars];
+FormalPars      : "\(" [FPSection {";" FPSection}] "\)" [":" QualIdent];
+FPSection       : [VAR] Ident {"," Ident} ":" TypeDef;
+Receiver        : "\(" [VAR] Ident ":" Ident "\)";
+TypeDef         : QualIdent
+                | "ARRAY" [ConstExpr {"," ConstExpr}] OF TypeDef
+                | "RECORD" ["\("QualIdent"\)"] FieldList {";" FieldList} END
+                | "POINTER" TO TypeDef
+                | PROCEDURE [FormalPars];
+FieldList       : [IdentList ":" TypeDef];
+StatementSeq    : Statement {";" Statement};
+Statement       : Designator ":=" Expr 
+                | Designator ["\(" [ExprList] "\)"] 
+                | IF Expr THEN StatementSeq {ELSIF Expr THEN StatementSeq} [ELSE StatementSeq] END 
+                | CASE Expr OF Case {"\|" Case} [ELSE StatementSeq] END 
+                | "WHILE" Expr DO StatementSeq END 
+                | "REPEAT" StatementSeq "UNTIL" Expr 
+                | "FOR" Ident ":=" Expr TO Expr ["BY" ConstExpr] DO StatementSeq END 
+                | "LOOP" StatementSeq END
+                | "WITH" Guard DO StatementSeq {"\|" Guard DO StatementSeq} [ELSE StatementSeq] END
+                | "EXIT" 
+                | "RETURN" [Expr]
+                | ";";
+Case            : [CaseLabels {"," CaseLabels} ":" StatementSeq];
+CaseLabels      : ConstExpr ["\.\." ConstExpr];
+Guard           : QualIdent ":" QualIdent;
+ConstExpr       : Expr;
+Expr            : SimpleExpr [Relation SimpleExpr];
+SimpleExpr      : ["\+" | "-"] Term {AddOp Term};
+Term            : Factor {MulOp Factor};
+Factor          : Designator ["\(" [ExprList] "\)"]
+                | Number
+                | Character
+                | String
+                | "NIL"
+                | Set
+                | "\(" Expr "\)"
+                | "~" Factor;
+Set             : "\{" [Element {"," Element}] "\}";
+Element         : Expr ["\.\." Expr];
+Relation        : "=" | "#" | "<" | "<=" | ">" | ">=" | "IN" | "IS";
+AddOp           : "\+" | "-" | "OR";
+MulOp           : "\*" | "/" | "DIV" | "MOD" | "&";
+Designator      : QualIdent { DesignatorSuffix };
+DesignatorSuffix: "\." Ident
+                | "\[" ExprList "\]"
+                | "^"
+                | "\(" QualIdent "\)";
+ExprList        : Expr {"," Expr};
+IdentList       : IdentDef {"," IdentDef};
+QualIdent       : "[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)?";
+IdentDef        : Ident ["\*" | "-"];
+Ident           : "[a-zA-Z_]\w*";
+Number          : Integer | Real;
+Real            : "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
+Character       : "[0-9][0-9A-F]X";
+Integer         : "[0-9][0-9]*|[0-9][0-9A-F]H";
+String          : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
