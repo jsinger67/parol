@@ -20,6 +20,7 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.9.2-pre - Not released yet
 
 * Worked on tutorial
+* Fixed case in crate name generation in subcommand `parol new`
 
 ## v0.9.1 - 2022-05-28
 
