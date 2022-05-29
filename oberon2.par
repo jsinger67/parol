@@ -19,17 +19,29 @@ KwTo            : "TO";
 KwVar           : "VAR";
 
 
-Oberon2         : "MODULE" Ident ";" [ImportList] DeclSeq [KwBegin StatementSeq] KwEnd Ident "\.";
+Oberon2         : ModuleHead [ImportList] DeclSeq ModuleBody;
+ModuleHead      : "MODULE" Ident ";" ;
+ModuleBody      : StatementBlock "\.";
 ImportList      : "IMPORT" [Ident ":="] Ident {"," [Ident ":="] Ident} ";";
-DeclSeq         : { "CONST" {ConstDecl ";" } | "TYPE" {TypeDecl ";"} | KwVar {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";" };
+DeclSeq         : { DeclBlock } {ProcDecl ";" | ForwardDecl ";" };
+DeclBlock       : ConstDeclBlock
+                | TypeDeclBlock
+                | VarDeclBlock;
+ConstDeclBlock  : "CONST" {ConstDecl ";" };
+TypeDeclBlock   : "TYPE" {TypeDecl ";"};
+VarDeclBlock    : KwVar {VarDecl ";"};
 ConstDecl       : IdentDef "=" ConstExpr;
 TypeDecl        : IdentDef "=" TypeDef;
 VarDecl         : IdentList ":" TypeDef;
-ProcDecl        : KwProcedure [Receiver] IdentDef [FormalPars] ";" DeclSeq [KwBegin StatementSeq] KwEnd Ident;
+ProcDecl        : ProcedureHeading ";" ProcedureBody;
+ProcedureHeading: KwProcedure [Receiver] IdentDef [FormalPars];
+ProcedureBody   : DeclSeq StatementBlock;
+StatementBlock  : [KwBegin StatementSeq] KwEnd Ident;
 ForwardDecl     : KwProcedure "\^" [Receiver] IdentDef [FormalPars];
 FormalPars      : "\(" [FPSection {";" FPSection}] "\)" [":" QualIdent];
 FPSection       : [KwVar] Ident {"," Ident} ":" TypeDef;
-Receiver        : "\(" [KwVar] Ident ":" Ident "\)";
+Receiver        : "\(" [KwVar] ReceiverVarDecl "\)";
+ReceiverVarDecl : Ident ":" Ident;
 TypeDef         : QualIdent
                 | "ARRAY" [ConstExpr {"," ConstExpr}] KwOf TypeDef
                 | "RECORD" ["\("QualIdent"\)"] FieldList {";" FieldList} KwEnd
@@ -39,16 +51,25 @@ FieldList       : [IdentList ":" TypeDef];
 StatementSeq    : Statement {";" Statement};
 Statement       : [ Designator ":=" Expr 
                 | Designator ["\(" [ExprList] "\)"] 
-                | KwIf Expr KwThen StatementSeq {KwElsif Expr KwThen StatementSeq} [KwElse StatementSeq] KwEnd 
-                | KwCase Expr KwOf Case {"\|" Case} [KwElse StatementSeq] KwEnd 
-                | "WHILE" Expr KwDo StatementSeq KwEnd 
+                | KwIf Expr ThenBlock { ElsifPart } OptElsePartEnd 
+                | KwCase Expr KwOf Cases OptElsePartEnd 
+                | "WHILE" Expr DoBlock 
                 | "REPEAT" StatementSeq "UNTIL" Expr 
-                | "FOR" Ident ":=" Expr KwTo Expr ["BY" ConstExpr] KwDo StatementSeq KwEnd 
+                | "FOR" ForInit [ForStep] DoBlock 
                 | "LOOP" StatementSeq KwEnd
-                | "WITH" Guard KwDo StatementSeq {"\|" Guard KwDo StatementSeq} [KwElse StatementSeq] KwEnd
+                | "WITH" GuardedDoBlock {"\|" GuardedDoBlock} OptElsePartEnd
                 | "EXIT" 
                 | "RETURN" [Expr]
                 ];
+ThenBlock       : KwThen StatementSeq;
+Cases           : Case {"\|" Case};
+ElsifPart       : KwElsif Expr ThenBlock;
+ElsePart        : KwElse StatementSeq;
+OptElsePartEnd  : [ElsePart] KwEnd;
+DoBlock         : KwDo StatementSeq KwEnd;
+GuardedDoBlock  : Guard KwDo StatementSeq;
+ForInit         : Ident ":=" Expr KwTo Expr;
+ForStep         : "BY" ConstExpr;
 Case            : [CaseLabels {"," CaseLabels} ":" StatementSeq];
 CaseLabels      : ConstExpr ["\.\." ConstExpr];
 Guard           : QualIdent ":" QualIdent;
