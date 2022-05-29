@@ -55,7 +55,7 @@
 /*  47 */ ProcDeclOpt0: ; // Option<T>::None
 /*  48 */ ProcDeclOpt: Receiver; // Option<T>::Some
 /*  49 */ ProcDeclOpt: ; // Option<T>::None
-/*  50 */ ForwardDecl: PROCEDURE "^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
+/*  50 */ ForwardDecl: PROCEDURE "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
 /*  51 */ ForwardDeclOpt0: FormalPars; // Option<T>::Some
 /*  52 */ ForwardDeclOpt0: ; // Option<T>::None
 /*  53 */ ForwardDeclOpt: Receiver; // Option<T>::Some
@@ -193,24 +193,25 @@
 /* 185 */ DesignatorList: ; // Vec<T>::New
 /* 186 */ DesignatorSuffix: "\." Ident;
 /* 187 */ DesignatorSuffix: "\[" ExprList "\]";
-/* 188 */ DesignatorSuffix: "^";
-/* 189 */ DesignatorSuffix: "\(" QualIdent "\)";
-/* 190 */ ExprList: Expr ExprListList /* Vec */;
-/* 191 */ ExprListList: "," Expr ExprListList; // Vec<T>::Push
-/* 192 */ ExprListList: ; // Vec<T>::New
-/* 193 */ IdentList: IdentDef IdentListList /* Vec */;
-/* 194 */ IdentListList: "," IdentDef IdentListList; // Vec<T>::Push
-/* 195 */ IdentListList: ; // Vec<T>::New
-/* 196 */ QualIdent: "[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)?";
+/* 188 */ DesignatorSuffix: "\^";
+/* 189 */ ExprList: Expr ExprListList /* Vec */;
+/* 190 */ ExprListList: "," Expr ExprListList; // Vec<T>::Push
+/* 191 */ ExprListList: ; // Vec<T>::New
+/* 192 */ IdentList: IdentDef IdentListList /* Vec */;
+/* 193 */ IdentListList: "," IdentDef IdentListList; // Vec<T>::Push
+/* 194 */ IdentListList: ; // Vec<T>::New
+/* 195 */ QualIdent: Ident;
+/* 196 */ QualIdent: QIdent;
 /* 197 */ IdentDef: Ident IdentDefOpt /* Option */;
 /* 198 */ IdentDefOpt: IdentDefOptGroup; // Option<T>::Some
 /* 199 */ IdentDefOptGroup: "\*";
 /* 200 */ IdentDefOptGroup: "-";
 /* 201 */ IdentDefOpt: ; // Option<T>::None
-/* 202 */ Ident: "[a-zA-Z_]\w*";
-/* 203 */ Number: Integer;
-/* 204 */ Number: Real;
-/* 205 */ Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
-/* 206 */ Character: "[0-9][0-9A-F]X";
-/* 207 */ Integer: "[0-9][0-9]*|[0-9][0-9A-F]H";
-/* 208 */ String: "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
+/* 202 */ Number: Integer;
+/* 203 */ Number: Real;
+/* 204 */ Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
+/* 205 */ Character: "[0-9][0-9A-F]*X";
+/* 206 */ Integer: "[0-9][0-9]*|[0-9][0-9A-F]*H";
+/* 207 */ QIdent: "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
+/* 208 */ Ident: "[a-zA-Z_]\w*";
+/* 209 */ String: "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";

@@ -21,14 +21,12 @@ VAR             : "VAR";
 
 Oberon2         : "MODULE" Ident ";" [ImportList] DeclSeq [BEGIN StatementSeq] END Ident "\.";
 ImportList      : "IMPORT" [Ident ":="] Ident {"," [Ident ":="] Ident} ";";
-DeclSeq         : { "CONST" {ConstDecl ";" }
-                | "TYPE" {TypeDecl ";"}
-                | VAR {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";"};
+DeclSeq         : { "CONST" {ConstDecl ";" } | "TYPE" {TypeDecl ";"} | VAR {VarDecl ";"}} {ProcDecl ";" | ForwardDecl ";" };
 ConstDecl       : IdentDef "=" ConstExpr;
 TypeDecl        : IdentDef "=" TypeDef;
 VarDecl         : IdentList ":" TypeDef;
 ProcDecl        : PROCEDURE [Receiver] IdentDef [FormalPars] ";" DeclSeq [BEGIN StatementSeq] END Ident;
-ForwardDecl     : PROCEDURE "^" [Receiver] IdentDef [FormalPars];
+ForwardDecl     : PROCEDURE "\^" [Receiver] IdentDef [FormalPars];
 FormalPars      : "\(" [FPSection {";" FPSection}] "\)" [":" QualIdent];
 FPSection       : [VAR] Ident {"," Ident} ":" TypeDef;
 Receiver        : "\(" [VAR] Ident ":" Ident "\)";
@@ -74,15 +72,17 @@ MulOp           : "\*" | "/" | "DIV" | "MOD" | "&";
 Designator      : QualIdent { DesignatorSuffix };
 DesignatorSuffix: "\." Ident
                 | "\[" ExprList "\]"
-                | "^"
-                | "\(" QualIdent "\)";
+                | "\^";
+                //| "\(" QualIdent "\)";
 ExprList        : Expr {"," Expr};
 IdentList       : IdentDef {"," IdentDef};
-QualIdent       : "[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)?";
+QualIdent       : Ident
+                | QIdent;
 IdentDef        : Ident ["\*" | "-"];
-Ident           : "[a-zA-Z_]\w*";
 Number          : Integer | Real;
 Real            : "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
-Character       : "[0-9][0-9A-F]X";
-Integer         : "[0-9][0-9]*|[0-9][0-9A-F]H";
+Character       : "[0-9][0-9A-F]*X";
+Integer         : "[0-9][0-9]*|[0-9][0-9A-F]*H";
+QIdent          : "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
+Ident           : "[a-zA-Z_]\w*";
 String          : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
