@@ -38,18 +38,17 @@ struct CreationData<'a> {
 }
 
 pub fn main(args: &Args) -> Result<()> {
-    apply_cargo(args)?;
-
-    let crate_name = NmHlp::purge_name(if let Some(name) = args.name.as_ref() {
-        name
-    } else {
-        args.path
-            .as_path()
-            .file_name()
-            .ok_or_else(|| miette!("Trouble to handle path"))?
-            .to_str()
-            .ok_or_else(|| miette!("Trouble to handle path"))?
-    });
+    let crate_name =
+        NmHlp::to_lower_snake_case(&NmHlp::purge_name(if let Some(name) = args.name.as_ref() {
+            name
+        } else {
+            args.path
+                .as_path()
+                .file_name()
+                .ok_or_else(|| miette!("Trouble to handle path"))?
+                .to_str()
+                .ok_or_else(|| miette!("Trouble to handle path"))?
+        }));
 
     let creation_data = CreationDataBuilder::default()
         .crate_name(&crate_name)
@@ -59,13 +58,15 @@ pub fn main(args: &Args) -> Result<()> {
         .build()
         .into_diagnostic()?;
 
+    apply_cargo(&creation_data)?;
+
     print!(
         "Generating crate {} for grammar {}...",
         creation_data.crate_name.green(),
         creation_data.grammar_name.green()
     );
 
-    generate_bin_crate(creation_data)?;
+    generate_crate(creation_data)?;
 
     Ok(())
 }
@@ -80,23 +81,29 @@ const DEPENDENCIES: &[&[&str]] = &[
     &["add", "miette", "--vers=^4.0", "--features", "fancy"],
     &["add", "parol_runtime", "--vers=0.5.9"],
     &["add", "thiserror", "--vers=^1.0"],
-    &["add", "parol", "--build", concat!("--vers=^", env!("CARGO_PKG_VERSION"))],
+    &[
+        "add",
+        "parol",
+        "--build",
+        concat!("--vers=^", env!("CARGO_PKG_VERSION")),
+    ],
 ];
 
-fn apply_cargo(args: &Args) -> Result<()> {
+fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     // Prepare arguments for the `cargo new` command
     let mut cargo_args = vec!["new"];
-    if args.bin {
+    if creation_data.is_bin {
         cargo_args.push("--bin");
-    }
-    if args.lib {
+    } else {
         cargo_args.push("--lib");
     }
-    if let Some(name) = args.name.as_ref() {
-        cargo_args.push("--name");
-        cargo_args.push(name);
-    }
-    cargo_args.push(args.path.to_str().ok_or_else(|| miette!("Please provide a path"))?);
+    cargo_args.push("--name");
+    cargo_args.push(creation_data.crate_name);
+    cargo_args.push(
+        creation_data.path
+            .to_str()
+            .ok_or_else(|| miette!("Please provide a path"))?,
+    );
 
     // Call the `cargo new` command
     Command::new("cargo")
@@ -111,7 +118,7 @@ fn apply_cargo(args: &Args) -> Result<()> {
         .fold(Ok(()), |res: Result<()>, cargo_args| {
             res?;
             Command::new("cargo")
-                .current_dir(&args.path)
+                .current_dir(&creation_data.path)
                 .args(*cargo_args)
                 .status()
                 .map(|_| ())
@@ -122,7 +129,7 @@ fn apply_cargo(args: &Args) -> Result<()> {
     Ok(())
 }
 
-fn generate_bin_crate(creation_data: CreationData) -> Result<()> {
+fn generate_crate(creation_data: CreationData) -> Result<()> {
     generate_build_rs(&creation_data)?;
     generate_grammar_par(&creation_data)?;
     if creation_data.is_bin {
@@ -272,4 +279,3 @@ fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
 
     Ok(())
 }
-
