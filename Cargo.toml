@@ -13,7 +13,7 @@ id_tree = "^1.8"
 lazy_static = "^1.4"
 log = "^0.4"
 miette = { version = "^4.0", features = ["fancy"] }
-parol_runtime = "0.5.9"
+parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
 thiserror = "^1.0"
 
 [build-dependencies]
