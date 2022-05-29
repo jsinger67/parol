@@ -4,6 +4,7 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+#![allow(unused_imports)]
 use id_tree::Tree;
 {{#auto_generate?}}use parol_runtime::lexer::Token;{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
