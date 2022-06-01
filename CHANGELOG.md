@@ -17,10 +17,11 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.9.2-pre - Not released yet
+## v0.9.2 - 2022-06-01
 
 * Worked on tutorial
 * Fixed case in crate name generation in subcommand `parol new`
+* Merged fix for #16 - Thanks a lot to [mobotsar](https://github.com/mobotsar)
 
 ## v0.9.1 - 2022-05-28
 
