@@ -4,13 +4,12 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
+{{#auto_generate?}}#![allow(unused_imports)]{{/auto_generate}}
 use id_tree::Tree;
 {{#auto_generate?}}use parol_runtime::lexer::Token;{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 {{#auto_generate?}}use log::trace;
 {{/auto_generate}}use miette::{miette, {{#auto_generate?}}bail, IntoDiagnostic, {{/auto_generate}}Result};
-{{#auto_generate?}}#[allow(unused_imports)]{{/auto_generate}}
 use crate::{{module_name}}::{{user_type_name}};
 {{#auto_generate?}}use std::path::{Path, PathBuf};{{/auto_generate}}{{^auto_generate?}}use std::path::Path;{{/auto_generate}}
 

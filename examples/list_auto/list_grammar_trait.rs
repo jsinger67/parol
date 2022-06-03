@@ -4,11 +4,11 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#[allow(unused_imports)]
+#![allow(unused_imports)]
 use crate::list_grammar::ListGrammar;
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result};
+use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::path::{Path, PathBuf};
@@ -200,12 +200,12 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         {
             trailing_comma
         } else {
-            return Err(miette!("{}: Expecting ASTType::TrailingComma", context));
+            bail!("{}: Expecting ASTType::TrailingComma", context);
         };
         let list_opt = if let Some(ASTType::ListOpt(list_opt)) = self.pop(context) {
             list_opt
         } else {
-            return Err(miette!("{}: Expecting ASTType::ListOpt", context));
+            bail!("{}: Expecting ASTType::ListOpt", context);
         };
         let list_built = ListBuilder::default()
             .list_opt(list_opt)
@@ -236,12 +236,12 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
             list_opt_list.reverse();
             list_opt_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ListOptList", context));
+            bail!("{}: Expecting ASTType::ListOptList", context);
         };
         let num = if let Some(ASTType::Num(num)) = self.pop(context) {
             num
         } else {
-            return Err(miette!("{}: Expecting ASTType::Num", context));
+            bail!("{}: Expecting ASTType::Num", context);
         };
         let list_opt_0_built = ListOptBuilder::default()
             .num(Box::new(num))
@@ -271,12 +271,12 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         {
             list_opt_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ListOptList", context));
+            bail!("{}: Expecting ASTType::ListOptList", context);
         };
         let num = if let Some(ASTType::Num(num)) = self.pop(context) {
             num
         } else {
-            return Err(miette!("{}: Expecting ASTType::Num", context));
+            bail!("{}: Expecting ASTType::Num", context);
         };
         let list_opt_list_0_built = ListOptListBuilder::default()
             .num(Box::new(num))
@@ -350,7 +350,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
             if let Some(ASTType::TrailingCommaOpt(trailing_comma_opt)) = self.pop(context) {
                 trailing_comma_opt
             } else {
-                return Err(miette!("{}: Expecting ASTType::TrailingCommaOpt", context));
+                bail!("{}: Expecting ASTType::TrailingCommaOpt", context);
             };
         let trailing_comma_built = TrailingCommaBuilder::default()
             .trailing_comma_opt(trailing_comma_opt)

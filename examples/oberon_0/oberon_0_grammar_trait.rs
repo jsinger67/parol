@@ -6,10 +6,9 @@
 
 use id_tree::Tree;
 
+use crate::oberon_0_grammar::Oberon0Grammar;
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-
-use crate::oberon_0_grammar::Oberon0Grammar;
 use std::path::Path;
 
 ///
