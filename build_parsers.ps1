@@ -11,7 +11,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building parol..." -ForegroundColor Cyan
-&"./target/$Config/parol" -f ./src/parser/parol-grammar.par -e ./src/parser/parol-grammar-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar
+&"./target/$Config/parol" -f ./src/parser/parol-grammar.par -e ./src/parser/parol-grammar-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }
