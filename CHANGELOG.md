@@ -17,6 +17,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.9.3-pre
+
+* Fixed allow(unused_imports) directive
+
 ## v0.9.2 - 2022-06-01
 
 * Worked on tutorial

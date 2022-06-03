@@ -6,10 +6,9 @@
 
 use id_tree::Tree;
 
+use crate::scanner_states_grammar::ScannerStatesGrammar;
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-
-use crate::scanner_states_grammar::ScannerStatesGrammar;
 use std::path::Path;
 
 ///

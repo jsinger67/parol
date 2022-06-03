@@ -6,10 +6,9 @@
 
 use id_tree::Tree;
 
+use crate::boolean_grammar::BooleanGrammar;
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-
-use crate::boolean_grammar::BooleanGrammar;
 use std::path::Path;
 
 ///
