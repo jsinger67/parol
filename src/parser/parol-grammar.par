@@ -64,14 +64,14 @@ Factor
     ;
 
 Symbol
-    : Identifier
+    : NonTerminal
     | SimpleToken
     | TokenWithStates
     | ScannerSwitch
     ;
 
 SimpleToken
-    : String
+    : String [CutOperator]
     ;
 
 TokenWithStates
@@ -88,6 +88,10 @@ Optional
 
 Repeat
     : "\{" Alternations "\}"
+    ;
+
+NonTerminal
+    : Identifier [CutOperator]
     ;
 
 Identifier
@@ -120,4 +124,8 @@ ScannerSwitch
 ScannerNameOpt
     : Identifier
     |
+    ;
+
+CutOperator
+    : "^"
     ;
