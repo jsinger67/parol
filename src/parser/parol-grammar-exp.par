@@ -7,19 +7,19 @@
 %%
 
 /*  0 */ Parol: Prolog GrammarDefinition;
-/*  1 */ Prolog: StartDeclaration Declarations ScannerStates;
-/*  2 */ StartDeclaration: "%start" Identifier;
-/*  3 */ Declarations: Declaration Declarations;
-/*  4 */ Declarations: ;
-/*  5 */ Declaration: "%title" String;
-/*  6 */ Declaration: "%comment" String;
-/*  7 */ Declaration: ScannerDirectives;
-/*  8 */ ScannerDirectives: "%line_comment" String;
-/*  9 */ ScannerDirectives: "%block_comment" String String;
-/* 10 */ ScannerDirectives: "%auto_newline_off";
-/* 11 */ ScannerDirectives: "%auto_ws_off";
-/* 12 */ ScannerStates: ScannerState ScannerStates;
-/* 13 */ ScannerStates: ;
+/*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
+/*  2 */ PrologList0: ScannerState PrologList0; // Vec<T>::Push
+/*  3 */ PrologList0: ; // Vec<T>::New
+/*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
+/*  5 */ PrologList: ; // Vec<T>::New
+/*  6 */ StartDeclaration: "%start" Identifier;
+/*  7 */ Declaration: "%title" String;
+/*  8 */ Declaration: "%comment" String;
+/*  9 */ Declaration: ScannerDirectives;
+/* 10 */ ScannerDirectives: "%line_comment" String;
+/* 11 */ ScannerDirectives: "%block_comment" String String;
+/* 12 */ ScannerDirectives: "%auto_newline_off";
+/* 13 */ ScannerDirectives: "%auto_ws_off";
 /* 14 */ GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
 /* 15 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 16 */ GrammarDefinitionList: ; // Vec<T>::New
@@ -48,9 +48,9 @@
 /* 39 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
 /* 40 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
 /* 41 */ ScannerStateList: ; // Vec<T>::New
-/* 42 */ StateList: Identifier StateListRest;
-/* 43 */ StateListRest: "," Identifier StateListRest;
-/* 44 */ StateListRest: ;
+/* 42 */ StateList: Identifier StateListList /* Vec */;
+/* 43 */ StateListList: "," Identifier StateListList; // Vec<T>::Push
+/* 44 */ StateListList: ; // Vec<T>::New
 /* 45 */ ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
 /* 46 */ ScannerSwitch: "%push" "\(" Identifier "\)";
 /* 47 */ ScannerSwitch: "%pop" "\(" "\)";

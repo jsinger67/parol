@@ -15,26 +15,6 @@ lazy_static! {
         Regex::new(r"Opt[0-9]*$").expect("error parsing regex");
 }
 
-pub(crate) fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
-    if !item_stack
-        .iter()
-        .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
-    {
-        trace_item_stack(&item_stack);
-        bail!("Expecting only productions on user stack");
-    }
-
-    let productions = item_stack
-        .into_iter()
-        .map(|i| match i {
-            ParolGrammarItem::Prod(p) => p,
-            _ => panic!("Can't happen"),
-        })
-        .collect::<Vec<Production>>();
-
-    transform(productions)
-}
-
 struct TransformationOperand {
     modified: bool,
     productions: Vec<Production>,
@@ -727,7 +707,7 @@ fn eliminate_duplicates(opd: TransformationOperand) -> TransformationOperand {
 // The grammar's structure should be 'linear' then (i.e no loops like in {}).
 // The input order should be preserved as much as possible.
 // -------------------------------------------------------------------------
-fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
+pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<Pr>> {
     trace!(
         "\nStarting transformation\n{}",
         format_productions(&productions)
