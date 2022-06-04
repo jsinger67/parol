@@ -580,8 +580,9 @@ impl ParolGrammar<'_> {
                 vec![0],
             )),
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
-                let scanner_states = self
+                let mut scanner_states = self
                     .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
+                scanner_states.sort();
                 Ok(Factor::Terminal(
                     token_with_states
                         .token_with_states
