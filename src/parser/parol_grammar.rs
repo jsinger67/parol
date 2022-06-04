@@ -399,10 +399,24 @@ impl ParolGrammar<'_> {
     fn process_declaration(&mut self, declaration: &PrologList) -> Result<()> {
         match &*declaration.declaration {
             Declaration::Declaration0(title_decl) => {
-                self.title = Some(title_decl.string.string.symbol.to_string())
+                self.title = Some(
+                    title_decl
+                        .string
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
+                )
             }
             Declaration::Declaration1(comment_decl) => {
-                self.comment = Some(comment_decl.string.string.symbol.to_string())
+                self.comment = Some(
+                    comment_decl
+                        .string
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
+                )
             }
             Declaration::Declaration2(scanner_decl) => {
                 self.process_scanner_directive(&*scanner_decl.scanner_directives)?
@@ -413,14 +427,30 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_directive(&mut self, scanner_directives: &ScannerDirectives) -> Result<()> {
         match scanner_directives {
-            ScannerDirectives::ScannerDirectives0(line_comment) => self
-                .current_scanner
-                .line_comments
-                .push(line_comment.string.string.symbol.to_string()),
+            ScannerDirectives::ScannerDirectives0(line_comment) => {
+                self.current_scanner.line_comments.push(
+                    line_comment
+                        .string
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
+                )
+            }
             ScannerDirectives::ScannerDirectives1(block_comment) => {
                 self.current_scanner.block_comments.push((
-                    block_comment.string.string.symbol.to_string(),
-                    block_comment.string0.string.symbol.to_string(),
+                    block_comment
+                        .string
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
+                    block_comment
+                        .string0
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
                 ))
             }
             ScannerDirectives::ScannerDirectives2(_) => {
@@ -478,10 +508,12 @@ impl ParolGrammar<'_> {
     fn to_alternation_vec<'t>(
         alts: &'t super::parol_grammar_trait::Alternations<'t>,
     ) -> Vec<&'t super::parol_grammar_trait::Alternation<'t>> {
-        alts.alternations_list.iter().fold(vec![&*alts.alternation], |mut acc, a| {
-            acc.push(&*a.alternation);
-            acc
-        })
+        alts.alternations_list
+            .iter()
+            .fold(vec![&*alts.alternation], |mut acc, a| {
+                acc.push(&*a.alternation);
+                acc
+            })
     }
 
     fn process_production(&mut self, prod: &super::parol_grammar_trait::Production) -> Result<()> {
@@ -533,11 +565,18 @@ impl ParolGrammar<'_> {
 
     fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
         match symbol {
-            super::parol_grammar_trait::Symbol::Symbol0(identifier) => Ok(Factor::Identifier(
+            super::parol_grammar_trait::Symbol::Symbol0(identifier) => Ok(Factor::NonTerminal(
                 identifier.identifier.identifier.symbol.to_string(),
+                SymbolAttribute::None,
             )),
             super::parol_grammar_trait::Symbol::Symbol1(simple_token) => Ok(Factor::Terminal(
-                simple_token.simple_token.string.string.symbol.trim_matches('"').to_string(),
+                simple_token
+                    .simple_token
+                    .string
+                    .string
+                    .symbol
+                    .trim_matches('"')
+                    .to_string(),
                 vec![0],
             )),
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {

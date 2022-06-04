@@ -5,7 +5,6 @@
 // ---------------------------------------------------------
 
 #![allow(unused_imports)]
-#[allow(unused_imports)]
 use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
 use log::trace;
