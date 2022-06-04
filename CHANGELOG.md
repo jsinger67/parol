@@ -20,6 +20,7 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.9.3-pre
 
 * Fixed allow(unused_imports) directive
+* Parol is now implemented using the auto-generation approach
 
 ## v0.9.2 - 2022-06-01
 

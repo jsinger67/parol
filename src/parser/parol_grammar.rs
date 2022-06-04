@@ -396,27 +396,17 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
+    fn trim_quotes(string: &super::parol_grammar_trait::String) -> String {
+        string.string.symbol.trim_matches('"').to_string()
+    }
+
     fn process_declaration(&mut self, declaration: &PrologList) -> Result<()> {
         match &*declaration.declaration {
             Declaration::Declaration0(title_decl) => {
-                self.title = Some(
-                    title_decl
-                        .string
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
-                )
+                self.title = Some(Self::trim_quotes(&title_decl.string))
             }
             Declaration::Declaration1(comment_decl) => {
-                self.comment = Some(
-                    comment_decl
-                        .string
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
-                )
+                self.comment = Some(Self::trim_quotes(&comment_decl.string))
             }
             Declaration::Declaration2(scanner_decl) => {
                 self.process_scanner_directive(&*scanner_decl.scanner_directives)?
@@ -427,30 +417,14 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_directive(&mut self, scanner_directives: &ScannerDirectives) -> Result<()> {
         match scanner_directives {
-            ScannerDirectives::ScannerDirectives0(line_comment) => {
-                self.current_scanner.line_comments.push(
-                    line_comment
-                        .string
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
-                )
-            }
+            ScannerDirectives::ScannerDirectives0(line_comment) => self
+                .current_scanner
+                .line_comments
+                .push(Self::trim_quotes(&line_comment.string)),
             ScannerDirectives::ScannerDirectives1(block_comment) => {
                 self.current_scanner.block_comments.push((
-                    block_comment
-                        .string
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
-                    block_comment
-                        .string0
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
+                    Self::trim_quotes(&block_comment.string),
+                    Self::trim_quotes(&block_comment.string0),
                 ))
             }
             ScannerDirectives::ScannerDirectives2(_) => {
@@ -570,13 +544,7 @@ impl ParolGrammar<'_> {
                 SymbolAttribute::None,
             )),
             super::parol_grammar_trait::Symbol::Symbol1(simple_token) => Ok(Factor::Terminal(
-                simple_token
-                    .simple_token
-                    .string
-                    .string
-                    .symbol
-                    .trim_matches('"')
-                    .to_string(),
+                Self::trim_quotes(&simple_token.simple_token.string),
                 vec![0],
             )),
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
@@ -584,13 +552,7 @@ impl ParolGrammar<'_> {
                     .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
                 scanner_states.sort();
                 Ok(Factor::Terminal(
-                    token_with_states
-                        .token_with_states
-                        .string
-                        .string
-                        .symbol
-                        .trim_matches('"')
-                        .to_string(),
+                    Self::trim_quotes(&token_with_states.token_with_states.string),
                     scanner_states,
                 ))
             }
