@@ -123,11 +123,6 @@ pub trait ParolGrammarTrait<'t> {
     fn scanner_switch(&mut self, _arg: &ScannerSwitch<'t>) -> Result<()> {
         Ok(())
     }
-
-    /// Semantic action for non-terminal 'ScannerNameOpt'
-    fn scanner_name_opt(&mut self, _arg: &ScannerNameOpt<'t>) -> Result<()> {
-        Ok(())
-    }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -308,14 +303,14 @@ pub struct Symbol3<'t> {
 ///
 /// Type derived for production 45
 ///
-/// ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
+/// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch0<'t> {
     pub percent_sc: Token<'t>, /* %sc */
     pub l_paren: Token<'t>,    /* \( */
-    pub scanner_name_opt: Box<ScannerNameOpt<'t>>,
+    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
     pub r_paren: Token<'t>, /* \) */
 }
 
@@ -345,26 +340,6 @@ pub struct ScannerSwitch2<'t> {
     pub l_paren: Token<'t>,     /* \( */
     pub r_paren: Token<'t>,     /* \) */
 }
-
-///
-/// Type derived for production 48
-///
-/// ScannerNameOpt: Identifier;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ScannerNameOpt0<'t> {
-    pub identifier: Box<Identifier<'t>>,
-}
-
-///
-/// Type derived for production 49
-///
-/// ScannerNameOpt: ;
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ScannerNameOpt1 {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -558,16 +533,6 @@ pub enum ScannerDirectives<'t> {
 }
 
 ///
-/// Type derived for non-terminal ScannerNameOpt
-///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub enum ScannerNameOpt<'t> {
-    ScannerNameOpt0(ScannerNameOpt0<'t>),
-    ScannerNameOpt1(ScannerNameOpt1),
-}
-
-///
 /// Type derived for non-terminal ScannerState
 ///
 #[allow(dead_code)]
@@ -598,6 +563,15 @@ pub enum ScannerSwitch<'t> {
     ScannerSwitch0(ScannerSwitch0<'t>),
     ScannerSwitch1(ScannerSwitch1<'t>),
     ScannerSwitch2(ScannerSwitch2<'t>),
+}
+
+///
+/// Type derived for non-terminal ScannerSwitchOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerSwitchOpt<'t> {
+    pub identifier: Box<Identifier<'t>>,
 }
 
 ///
@@ -698,10 +672,10 @@ pub enum ASTType<'t> {
     PrologList0(Vec<PrologList0<'t>>),
     Repeat(Repeat<'t>),
     ScannerDirectives(ScannerDirectives<'t>),
-    ScannerNameOpt(ScannerNameOpt<'t>),
     ScannerState(ScannerState<'t>),
     ScannerStateList(Vec<ScannerStateList<'t>>),
     ScannerSwitch(ScannerSwitch<'t>),
+    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
     SimpleToken(SimpleToken<'t>),
     StartDeclaration(StartDeclaration<'t>),
     StateList(StateList<'t>),
@@ -2140,14 +2114,14 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
+    /// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
     ///
     #[named]
     fn scanner_switch_0(
         &mut self,
         percent_sc: &ParseTreeStackEntry<'t>,
         l_paren: &ParseTreeStackEntry<'t>,
-        _scanner_name_opt: &ParseTreeStackEntry<'t>,
+        _scanner_switch_opt: &ParseTreeStackEntry<'t>,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -2156,16 +2130,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let percent_sc = *percent_sc.token(parse_tree)?;
         let l_paren = *l_paren.token(parse_tree)?;
         let r_paren = *r_paren.token(parse_tree)?;
-        let scanner_name_opt =
-            if let Some(ASTType::ScannerNameOpt(scanner_name_opt)) = self.pop(context) {
-                scanner_name_opt
+        let scanner_switch_opt =
+            if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
+                scanner_switch_opt
             } else {
-                bail!("{}: Expecting ASTType::ScannerNameOpt", context);
+                bail!("{}: Expecting ASTType::ScannerSwitchOpt", context);
             };
         let scanner_switch_0_built = ScannerSwitch0Builder::default()
             .percent_sc(percent_sc)
             .l_paren(l_paren)
-            .scanner_name_opt(Box::new(scanner_name_opt))
+            .scanner_switch_opt(scanner_switch_opt)
             .r_paren(r_paren)
             .build()
             .into_diagnostic()?;
@@ -2245,10 +2219,10 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// ScannerNameOpt: Identifier;
+    /// ScannerSwitchOpt: Identifier; // Option<T>::Some
     ///
     #[named]
-    fn scanner_name_opt_0(
+    fn scanner_switch_opt_0(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -2260,34 +2234,26 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
-        let scanner_name_opt_0_built = ScannerNameOpt0Builder::default()
+        let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
             .identifier(Box::new(identifier))
             .build()
             .into_diagnostic()?;
-        let scanner_name_opt_0_built = ScannerNameOpt::ScannerNameOpt0(scanner_name_opt_0_built);
-        // Calling user action here
-        self.user_grammar
-            .scanner_name_opt(&scanner_name_opt_0_built)?;
-        self.push(ASTType::ScannerNameOpt(scanner_name_opt_0_built), context);
+        self.push(
+            ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 49:
     ///
-    /// ScannerNameOpt: ;
+    /// ScannerSwitchOpt: ; // Option<T>::None
     ///
     #[named]
-    fn scanner_name_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_name_opt_1_built = ScannerNameOpt1Builder::default()
-            .build()
-            .into_diagnostic()?;
-        let scanner_name_opt_1_built = ScannerNameOpt::ScannerNameOpt1(scanner_name_opt_1_built);
-        // Calling user action here
-        self.user_grammar
-            .scanner_name_opt(&scanner_name_opt_1_built)?;
-        self.push(ASTType::ScannerNameOpt(scanner_name_opt_1_built), context);
+        self.push(ASTType::ScannerSwitchOpt(None), context);
         Ok(())
     }
 }
@@ -2392,8 +2358,8 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
                 parse_tree,
             ),
             47 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
-            48 => self.scanner_name_opt_0(&children[0], parse_tree),
-            49 => self.scanner_name_opt_1(parse_tree),
+            48 => self.scanner_switch_opt_0(&children[0], parse_tree),
+            49 => self.scanner_switch_opt_1(parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

@@ -151,10 +151,10 @@ pub const NON_TERMINALS: &[&str; 29] = &[
     /* 15 */ "PrologList0",
     /* 16 */ "Repeat",
     /* 17 */ "ScannerDirectives",
-    /* 18 */ "ScannerNameOpt",
-    /* 19 */ "ScannerState",
-    /* 20 */ "ScannerStateList",
-    /* 21 */ "ScannerSwitch",
+    /* 18 */ "ScannerState",
+    /* 19 */ "ScannerStateList",
+    /* 20 */ "ScannerSwitch",
+    /* 21 */ "ScannerSwitchOpt",
     /* 22 */ "SimpleToken",
     /* 23 */ "StartDeclaration",
     /* 24 */ "StateList",
@@ -325,19 +325,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 29] = &[
         ],
         k: 1,
     },
-    /* 18 - "ScannerNameOpt" */
-    LookaheadDFA {
-        states: &[None, Some(48), Some(49)],
-        transitions: &[DFATransition(0, 19, 2), DFATransition(0, 24, 1)],
-        k: 1,
-    },
-    /* 19 - "ScannerState" */
+    /* 18 - "ScannerState" */
     LookaheadDFA {
         states: &[Some(39)],
         transitions: &[],
         k: 0,
     },
-    /* 20 - "ScannerStateList" */
+    /* 19 - "ScannerStateList" */
     LookaheadDFA {
         states: &[None, Some(40), Some(41)],
         transitions: &[
@@ -349,7 +343,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 29] = &[
         ],
         k: 1,
     },
-    /* 21 - "ScannerSwitch" */
+    /* 20 - "ScannerSwitch" */
     LookaheadDFA {
         states: &[None, Some(45), Some(46), Some(47)],
         transitions: &[
@@ -357,6 +351,12 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 29] = &[
             DFATransition(0, 29, 2),
             DFATransition(0, 30, 3),
         ],
+        k: 1,
+    },
+    /* 21 - "ScannerSwitchOpt" */
+    LookaheadDFA {
+        states: &[None, Some(48), Some(49)],
+        transitions: &[DFATransition(0, 19, 2), DFATransition(0, 24, 1)],
         k: 1,
     },
     /* 22 - "SimpleToken" */
@@ -424,7 +424,7 @@ pub const PRODUCTIONS: &[Production; 50] = &[
     // 2 - PrologList0: ScannerState PrologList0;
     Production {
         lhs: 15,
-        production: &[ParseType::N(15), ParseType::N(19)],
+        production: &[ParseType::N(15), ParseType::N(18)],
     },
     // 3 - PrologList0: ;
     Production {
@@ -574,7 +574,7 @@ pub const PRODUCTIONS: &[Production; 50] = &[
     // 31 - Symbol: ScannerSwitch;
     Production {
         lhs: 27,
-        production: &[ParseType::N(21)],
+        production: &[ParseType::N(20)],
     },
     // 32 - SimpleToken: String;
     Production {
@@ -618,10 +618,10 @@ pub const PRODUCTIONS: &[Production; 50] = &[
     },
     // 39 - ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
     Production {
-        lhs: 19,
+        lhs: 18,
         production: &[
             ParseType::T(23),
-            ParseType::N(20),
+            ParseType::N(19),
             ParseType::T(22),
             ParseType::N(9),
             ParseType::T(26),
@@ -629,12 +629,12 @@ pub const PRODUCTIONS: &[Production; 50] = &[
     },
     // 40 - ScannerStateList: ScannerDirectives ScannerStateList;
     Production {
-        lhs: 20,
-        production: &[ParseType::N(20), ParseType::N(17)],
+        lhs: 19,
+        production: &[ParseType::N(19), ParseType::N(17)],
     },
     // 41 - ScannerStateList: ;
     Production {
-        lhs: 20,
+        lhs: 19,
         production: &[],
     },
     // 42 - StateList: Identifier StateListList /* Vec */;
@@ -652,19 +652,19 @@ pub const PRODUCTIONS: &[Production; 50] = &[
         lhs: 25,
         production: &[],
     },
-    // 45 - ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
+    // 45 - ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
     Production {
-        lhs: 21,
+        lhs: 20,
         production: &[
             ParseType::T(19),
-            ParseType::N(18),
+            ParseType::N(21),
             ParseType::T(18),
             ParseType::T(28),
         ],
     },
     // 46 - ScannerSwitch: "%push" "\(" Identifier "\)";
     Production {
-        lhs: 21,
+        lhs: 20,
         production: &[
             ParseType::T(19),
             ParseType::N(9),
@@ -674,17 +674,17 @@ pub const PRODUCTIONS: &[Production; 50] = &[
     },
     // 47 - ScannerSwitch: "%pop" "\(" "\)";
     Production {
-        lhs: 21,
+        lhs: 20,
         production: &[ParseType::T(19), ParseType::T(18), ParseType::T(30)],
     },
-    // 48 - ScannerNameOpt: Identifier;
+    // 48 - ScannerSwitchOpt: Identifier;
     Production {
-        lhs: 18,
+        lhs: 21,
         production: &[ParseType::N(9)],
     },
-    // 49 - ScannerNameOpt: ;
+    // 49 - ScannerSwitchOpt: ;
     Production {
-        lhs: 18,
+        lhs: 21,
         production: &[],
     },
 ];

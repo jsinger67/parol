@@ -97,12 +97,7 @@ StateList
     ;
 
 ScannerSwitch
-    : "%sc" "\(" ScannerNameOpt "\)"
+    : "%sc" "\(" [Identifier] "\)"
     | "%push" "\(" Identifier "\)"
     | "%pop" "\(" "\)"
-    ;
-
-ScannerNameOpt
-    : Identifier
-    |
     ;

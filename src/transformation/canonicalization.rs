@@ -1,7 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generate_name;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::{Alternation, Alternations, Factor, ParolGrammarItem, Production};
+use crate::parser::{Alternation, Alternations, Factor, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
 // $env:RUST_LOG="parol::transformation::canonicalization=trace"
@@ -746,17 +746,6 @@ pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<
     finalize(operand.productions)
 }
 
-fn trace_item_stack(item_stack: &[ParolGrammarItem]) {
-    trace!(
-        "Item stack:\n{}",
-        item_stack
-            .iter()
-            .rev()
-            .map(|s| format!("  {}", s))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
-}
 #[cfg(test)]
 mod test {
     use super::{

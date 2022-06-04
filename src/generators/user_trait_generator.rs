@@ -9,7 +9,7 @@ use super::template_data::{
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::{ParolGrammarItem, Production};
+use crate::parser::Production;
 use crate::{Pr, StrVec};
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};

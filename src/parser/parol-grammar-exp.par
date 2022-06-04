@@ -51,8 +51,8 @@
 /* 42 */ StateList: Identifier StateListList /* Vec */;
 /* 43 */ StateListList: "," Identifier StateListList; // Vec<T>::Push
 /* 44 */ StateListList: ; // Vec<T>::New
-/* 45 */ ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
+/* 45 */ ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
 /* 46 */ ScannerSwitch: "%push" "\(" Identifier "\)";
 /* 47 */ ScannerSwitch: "%pop" "\(" "\)";
-/* 48 */ ScannerNameOpt: Identifier;
-/* 49 */ ScannerNameOpt: ;
+/* 48 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
+/* 49 */ ScannerSwitchOpt: ; // Option<T>::None

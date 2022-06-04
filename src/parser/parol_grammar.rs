@@ -1,15 +1,15 @@
 use super::parol_grammar_trait::{
-    Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog, PrologList, PrologList0,
-    ScannerDirectives, ScannerState, StartDeclaration,
+    AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog, PrologList,
+    PrologList0, ScannerDirectives, ScannerState, StartDeclaration,
 };
 use super::ParolParserError;
 use crate::grammar::ProductionAttribute;
 use crate::grammar::{Decorate, SymbolAttribute};
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
+
+use miette::{bail, miette, Result};
 use parol_runtime::errors::FileSource;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::lexer::Token;
+
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::marker::PhantomData;
 use std::path::PathBuf;
@@ -19,6 +19,8 @@ lazy_static! {
     static ref DEFAULT_PAROL_GRAMMAR: ParolGrammar<'static> =
         ParolGrammar::default();
 }
+
+const INITIAL_STATE: usize = 0;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -162,7 +164,7 @@ impl Alternation {
     }
 
     pub(crate) fn insert(&mut self, fac: Factor) {
-        self.0.insert(0, fac)
+        self.0.push(fac)
     }
 
     pub(crate) fn push(&mut self, fac: Factor) {
@@ -191,7 +193,7 @@ impl Alternations {
     }
 
     pub(crate) fn insert(&mut self, alt: Alternation) {
-        self.0.insert(0, alt)
+        self.0.push(alt)
     }
 
     /// Generate parol's syntax
@@ -369,25 +371,9 @@ impl ParolGrammar<'_> {
     /// Constructs a new item
     ///
     pub fn new() -> Self {
-        ParolGrammar::default()
-    }
-
-    #[allow(dead_code)]
-    // Use this function for debugging purposes:
-    // $env:RUST_LOG="parol::parser=trace"
-    //
-    // trace!("{}", self.trace_item_stack(context));
-    fn trace_item_stack(&self, context: &str) -> String {
-        format!(
-            "Item stack at {}:\n{}",
-            context,
-            self.productions
-                .iter()
-                .rev()
-                .map(|s| format!("  {}", s))
-                .collect::<Vec<String>>()
-                .join("\n")
-        )
+        let mut parol = ParolGrammar::default();
+        parol.scanner_configurations = vec![ScannerConfig::default()];
+        parol
     }
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
@@ -489,25 +475,136 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
+    fn to_alternation_vec<'t>(
+        alts: &'t super::parol_grammar_trait::Alternations<'t>,
+    ) -> Vec<&'t super::parol_grammar_trait::Alternation<'t>> {
+        alts.alternations_list.iter().fold(vec![&*alts.alternation], |mut acc, a| {
+            acc.push(&*a.alternation);
+            acc
+        })
+    }
+
     fn process_production(&mut self, prod: &super::parol_grammar_trait::Production) -> Result<()> {
         let lhs = prod.identifier.identifier.symbol.to_string();
-        let alternations = prod.alternations.alternations_list.iter().fold(
-            vec![&*prod.alternations.alternation],
-            |mut acc, a| {
-                acc.push(&*a.alternation);
-                acc
-            },
-        );
+        let alternations = Self::to_alternation_vec(&prod.alternations);
         let rhs = self.process_alternations(&alternations)?;
         self.productions.push(Production { lhs, rhs });
         Ok(())
     }
 
     fn process_alternations(
-        &self,
+        &mut self,
         alternations: &[&super::parol_grammar_trait::Alternation],
     ) -> Result<Alternations> {
-        todo!()
+        let mut result = Alternations::new();
+        for a in alternations {
+            result.insert(self.process_alternation(&a.alternation_list)?);
+        }
+        Ok(result)
+    }
+
+    fn process_alternation(&mut self, alternation_list: &[AlternationList]) -> Result<Alternation> {
+        let mut result = Alternation::new();
+        for a in alternation_list {
+            result.insert(self.process_factor(&*a.factor)?)
+        }
+        Ok(result)
+    }
+
+    fn process_factor(&mut self, factor: &super::parol_grammar_trait::Factor) -> Result<Factor> {
+        match factor {
+            super::parol_grammar_trait::Factor::Factor0(group) => {
+                let alternations = Self::to_alternation_vec(&group.group.alternations);
+                Ok(Factor::Group(self.process_alternations(&alternations)?))
+            }
+            super::parol_grammar_trait::Factor::Factor1(repeat) => {
+                let alternations = Self::to_alternation_vec(&repeat.repeat.alternations);
+                Ok(Factor::Repeat(self.process_alternations(&alternations)?))
+            }
+            super::parol_grammar_trait::Factor::Factor2(optional) => {
+                let alternations = Self::to_alternation_vec(&optional.optional.alternations);
+                Ok(Factor::Optional(self.process_alternations(&alternations)?))
+            }
+            super::parol_grammar_trait::Factor::Factor3(symbol) => {
+                self.process_symbol(&*symbol.symbol)
+            }
+        }
+    }
+
+    fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
+        match symbol {
+            super::parol_grammar_trait::Symbol::Symbol0(identifier) => Ok(Factor::Identifier(
+                identifier.identifier.identifier.symbol.to_string(),
+            )),
+            super::parol_grammar_trait::Symbol::Symbol1(simple_token) => Ok(Factor::Terminal(
+                simple_token.simple_token.string.string.symbol.trim_matches('"').to_string(),
+                vec![0],
+            )),
+            super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
+                let scanner_states = self
+                    .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
+                Ok(Factor::Terminal(
+                    token_with_states
+                        .token_with_states
+                        .string
+                        .string
+                        .symbol
+                        .trim_matches('"')
+                        .to_string(),
+                    scanner_states,
+                ))
+            }
+            super::parol_grammar_trait::Symbol::Symbol3(scanner_switch) => {
+                self.process_scanner_switch(&*scanner_switch)
+            }
+        }
+    }
+
+    fn process_scanner_state_list(
+        &mut self,
+        state_list: &super::parol_grammar_trait::StateList,
+    ) -> Result<Vec<usize>> {
+        let mut result = vec![self.resolve_scanner(&state_list.identifier.identifier)?];
+        for s in &state_list.state_list_list {
+            result.push(self.resolve_scanner(&s.identifier.identifier)?);
+        }
+        Ok(result)
+    }
+
+    #[named]
+    fn resolve_scanner<'t>(&self, scanner_name: &Token<'t>) -> Result<usize> {
+        let context = function_name!();
+        self.scanner_configurations
+            .iter()
+            .position(|s| s.name == scanner_name.symbol)
+            .ok_or(miette!(ParolParserError::UnknownScanner {
+                context: context.to_owned(),
+                name: scanner_name.symbol.to_string(),
+                input: FileSource::try_new(self.file_name.clone())?.into(),
+                token: scanner_name.into()
+            }))
+    }
+
+    fn process_scanner_switch(
+        &self,
+        scanner_switch: &super::parol_grammar_trait::Symbol3,
+    ) -> Result<Factor> {
+        match &*scanner_switch.scanner_switch {
+            super::parol_grammar_trait::ScannerSwitch::ScannerSwitch0(sw) => {
+                match &sw.scanner_switch_opt {
+                    Some(st) => Ok(Factor::ScannerSwitch(
+                        self.resolve_scanner(&st.identifier.identifier)?,
+                    )),
+                    None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
+                }
+            }
+            super::parol_grammar_trait::ScannerSwitch::ScannerSwitch1(sw) => Ok(
+                Factor::ScannerSwitchPush(self.resolve_scanner(&sw.identifier.identifier)?),
+            ),
+            super::parol_grammar_trait::ScannerSwitch::ScannerSwitch2(_) => {
+                Ok(Factor::ScannerSwitchPop)
+            }
+        }
     }
 }
 
