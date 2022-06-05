@@ -1,7 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generate_name;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::{Alternation, Alternations, Factor, ParolGrammarItem, Production};
+use crate::parser::{Alternation, Alternations, Factor, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
 // $env:RUST_LOG="parol::transformation::canonicalization=trace"
@@ -13,26 +13,6 @@ use std::convert::TryFrom;
 lazy_static! {
     pub(crate) static ref RX_OPT_WITH_NUM_SUFFIX: Regex =
         Regex::new(r"Opt[0-9]*$").expect("error parsing regex");
-}
-
-pub(crate) fn transform_productions(item_stack: Vec<ParolGrammarItem>) -> Result<Vec<Pr>> {
-    if !item_stack
-        .iter()
-        .all(|i| matches!(i, ParolGrammarItem::Prod(_)))
-    {
-        trace_item_stack(&item_stack);
-        bail!("Expecting only productions on user stack");
-    }
-
-    let productions = item_stack
-        .into_iter()
-        .map(|i| match i {
-            ParolGrammarItem::Prod(p) => p,
-            _ => panic!("Can't happen"),
-        })
-        .collect::<Vec<Production>>();
-
-    transform(productions)
 }
 
 struct TransformationOperand {
@@ -727,7 +707,7 @@ fn eliminate_duplicates(opd: TransformationOperand) -> TransformationOperand {
 // The grammar's structure should be 'linear' then (i.e no loops like in {}).
 // The input order should be preserved as much as possible.
 // -------------------------------------------------------------------------
-fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
+pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<Pr>> {
     trace!(
         "\nStarting transformation\n{}",
         format_productions(&productions)
@@ -766,17 +746,6 @@ fn transform(productions: Vec<Production>) -> Result<Vec<Pr>> {
     finalize(operand.productions)
 }
 
-fn trace_item_stack(item_stack: &[ParolGrammarItem]) {
-    trace!(
-        "Item stack:\n{}",
-        item_stack
-            .iter()
-            .rev()
-            .map(|s| format!("  {}", s))
-            .collect::<Vec<String>>()
-            .join("\n")
-    );
-}
 #[cfg(test)]
 mod test {
     use super::{

@@ -4,193 +4,1236 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use id_tree::Tree;
-
-use miette::{miette, Result};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-
+#![allow(unused_imports)]
 use crate::parser::parol_grammar::ParolGrammar;
-use std::path::Path;
+use id_tree::Tree;
+use log::trace;
+use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_runtime::lexer::Token;
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use std::path::{Path, PathBuf};
+
+/// Semantic actions trait generated for the user grammar
+/// All functions have default implementations.
+pub trait ParolGrammarTrait<'t> {
+    fn init(&mut self, _file_name: &Path) {}
+
+    /// Semantic action for non-terminal 'Parol'
+    fn parol(&mut self, _arg: &Parol<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Prolog'
+    fn prolog(&mut self, _arg: &Prolog<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'StartDeclaration'
+    fn start_declaration(&mut self, _arg: &StartDeclaration<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Declaration'
+    fn declaration(&mut self, _arg: &Declaration<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ScannerDirectives'
+    fn scanner_directives(&mut self, _arg: &ScannerDirectives<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'GrammarDefinition'
+    fn grammar_definition(&mut self, _arg: &GrammarDefinition<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Production'
+    fn production(&mut self, _arg: &Production<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Alternations'
+    fn alternations(&mut self, _arg: &Alternations<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Alternation'
+    fn alternation(&mut self, _arg: &Alternation<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Factor'
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Symbol'
+    fn symbol(&mut self, _arg: &Symbol<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'SimpleToken'
+    fn simple_token(&mut self, _arg: &SimpleToken<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'TokenWithStates'
+    fn token_with_states(&mut self, _arg: &TokenWithStates<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Group'
+    fn group(&mut self, _arg: &Group<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Optional'
+    fn optional(&mut self, _arg: &Optional<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Repeat'
+    fn repeat(&mut self, _arg: &Repeat<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'NonTerminal'
+    fn non_terminal(&mut self, _arg: &NonTerminal<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Identifier'
+    fn identifier(&mut self, _arg: &Identifier<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'String'
+    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ScannerState'
+    fn scanner_state(&mut self, _arg: &ScannerState<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'StateList'
+    fn state_list(&mut self, _arg: &StateList<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ScannerSwitch'
+    fn scanner_switch(&mut self, _arg: &ScannerSwitch<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'CutOperator'
+    fn cut_operator(&mut self, _arg: &CutOperator<'t>) -> Result<()> {
+        Ok(())
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Output Types of productions deduced from the structure of the transformed grammar
+//
 
 ///
-/// The `ParolGrammarTrait` trait is automatically generated for the
-/// given grammar.
-/// All functions have default implementations.
+/// Type derived for production 7
 ///
-pub trait ParolGrammarTrait {
-    ///
-    /// Implement this method if you need the provided information
-    ///
-    fn init(&mut self, _file_name: &Path) {}
+/// Declaration: "%title" String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Declaration0<'t> {
+    pub percent_title: Token<'t>, /* %title */
+    pub string: Box<String<'t>>,
+}
+
+///
+/// Type derived for production 8
+///
+/// Declaration: "%comment" String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Declaration1<'t> {
+    pub percent_comment: Token<'t>, /* %comment */
+    pub string: Box<String<'t>>,
+}
+
+///
+/// Type derived for production 9
+///
+/// Declaration: ScannerDirectives;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Declaration2<'t> {
+    pub scanner_directives: Box<ScannerDirectives<'t>>,
+}
+
+///
+/// Type derived for production 10
+///
+/// ScannerDirectives: "%line_comment" String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerDirectives0<'t> {
+    pub percent_line_underscore_comment: Token<'t>, /* %line_comment */
+    pub string: Box<String<'t>>,
+}
+
+///
+/// Type derived for production 11
+///
+/// ScannerDirectives: "%block_comment" String String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerDirectives1<'t> {
+    pub percent_block_underscore_comment: Token<'t>, /* %block_comment */
+    pub string: Box<String<'t>>,
+    pub string0: Box<String<'t>>,
+}
+
+///
+/// Type derived for production 12
+///
+/// ScannerDirectives: "%auto_newline_off";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerDirectives2<'t> {
+    pub percent_auto_underscore_newline_underscore_off: Token<'t>, /* %auto_newline_off */
+}
+
+///
+/// Type derived for production 13
+///
+/// ScannerDirectives: "%auto_ws_off";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerDirectives3<'t> {
+    pub percent_auto_underscore_ws_underscore_off: Token<'t>, /* %auto_ws_off */
+}
+
+///
+/// Type derived for production 24
+///
+/// Factor: Group;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Factor0<'t> {
+    pub group: Box<Group<'t>>,
+}
+
+///
+/// Type derived for production 25
+///
+/// Factor: Repeat;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Factor1<'t> {
+    pub repeat: Box<Repeat<'t>>,
+}
+
+///
+/// Type derived for production 26
+///
+/// Factor: Optional;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Factor2<'t> {
+    pub optional: Box<Optional<'t>>,
+}
+
+///
+/// Type derived for production 27
+///
+/// Factor: Symbol;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Factor3<'t> {
+    pub symbol: Box<Symbol<'t>>,
+}
+
+///
+/// Type derived for production 28
+///
+/// Symbol: NonTerminal;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Symbol0<'t> {
+    pub non_terminal: Box<NonTerminal<'t>>,
+}
+
+///
+/// Type derived for production 29
+///
+/// Symbol: SimpleToken;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Symbol1<'t> {
+    pub simple_token: Box<SimpleToken<'t>>,
+}
+
+///
+/// Type derived for production 30
+///
+/// Symbol: TokenWithStates;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Symbol2<'t> {
+    pub token_with_states: Box<TokenWithStates<'t>>,
+}
+
+///
+/// Type derived for production 31
+///
+/// Symbol: ScannerSwitch;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Symbol3<'t> {
+    pub scanner_switch: Box<ScannerSwitch<'t>>,
+}
+
+///
+/// Type derived for production 50
+///
+/// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerSwitch0<'t> {
+    pub percent_sc: Token<'t>, /* %sc */
+    pub l_paren: Token<'t>,    /* \( */
+    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 51
+///
+/// ScannerSwitch: "%push" "\(" Identifier "\)";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerSwitch1<'t> {
+    pub percent_push: Token<'t>, /* %push */
+    pub l_paren: Token<'t>,      /* \( */
+    pub identifier: Box<Identifier<'t>>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for production 52
+///
+/// ScannerSwitch: "%pop" "\(" "\)";
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerSwitch2<'t> {
+    pub percent_pop: Token<'t>, /* %pop */
+    pub l_paren: Token<'t>,     /* \( */
+    pub r_paren: Token<'t>,     /* \) */
+}
+
+// -------------------------------------------------------------------------------------------------
+//
+// Types of non-terminals deduced from the structure of the transformed grammar
+//
+
+///
+/// Type derived for non-terminal Alternation
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Alternation<'t> {
+    pub alternation_list: Vec<AlternationList<'t>>,
+}
+
+///
+/// Type derived for non-terminal AlternationList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct AlternationList<'t> {
+    pub factor: Box<Factor<'t>>,
+}
+
+///
+/// Type derived for non-terminal Alternations
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Alternations<'t> {
+    pub alternation: Box<Alternation<'t>>,
+    pub alternations_list: Vec<AlternationsList<'t>>,
+}
+
+///
+/// Type derived for non-terminal AlternationsList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct AlternationsList<'t> {
+    pub or: Token<'t>, /* \| */
+    pub alternation: Box<Alternation<'t>>,
+}
+
+///
+/// Type derived for non-terminal CutOperator
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct CutOperator<'t> {
+    pub cut_operator: Token<'t>, /* ^ */
+}
+
+///
+/// Type derived for non-terminal Declaration
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Declaration<'t> {
+    Declaration0(Declaration0<'t>),
+    Declaration1(Declaration1<'t>),
+    Declaration2(Declaration2<'t>),
+}
+
+///
+/// Type derived for non-terminal Factor
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Factor<'t> {
+    Factor0(Factor0<'t>),
+    Factor1(Factor1<'t>),
+    Factor2(Factor2<'t>),
+    Factor3(Factor3<'t>),
+}
+
+///
+/// Type derived for non-terminal GrammarDefinition
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct GrammarDefinition<'t> {
+    pub percent_percent: Token<'t>, /* %% */
+    pub production: Box<Production<'t>>,
+    pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>,
+}
+
+///
+/// Type derived for non-terminal GrammarDefinitionList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct GrammarDefinitionList<'t> {
+    pub production: Box<Production<'t>>,
+}
+
+///
+/// Type derived for non-terminal Group
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Group<'t> {
+    pub l_paren: Token<'t>, /* \( */
+    pub alternations: Box<Alternations<'t>>,
+    pub r_paren: Token<'t>, /* \) */
+}
+
+///
+/// Type derived for non-terminal Identifier
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Identifier<'t> {
+    pub identifier: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
+}
+
+///
+/// Type derived for non-terminal NonTerminal
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct NonTerminal<'t> {
+    pub identifier: Box<Identifier<'t>>,
+    pub non_terminal_opt: Option<Box<NonTerminalOpt<'t>>>,
+}
+
+///
+/// Type derived for non-terminal NonTerminalOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct NonTerminalOpt<'t> {
+    pub cut_operator: Box<CutOperator<'t>>,
+}
+
+///
+/// Type derived for non-terminal Optional
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Optional<'t> {
+    pub l_bracket: Token<'t>, /* \[ */
+    pub alternations: Box<Alternations<'t>>,
+    pub r_bracket: Token<'t>, /* \] */
+}
+
+///
+/// Type derived for non-terminal Parol
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Parol<'t> {
+    pub prolog: Box<Prolog<'t>>,
+    pub grammar_definition: Box<GrammarDefinition<'t>>,
+}
+
+///
+/// Type derived for non-terminal Production
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Production<'t> {
+    pub identifier: Box<Identifier<'t>>,
+    pub colon: Token<'t>, /* : */
+    pub alternations: Box<Alternations<'t>>,
+    pub semicolon: Token<'t>, /* ; */
+}
+
+///
+/// Type derived for non-terminal Prolog
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Prolog<'t> {
+    pub start_declaration: Box<StartDeclaration<'t>>,
+    pub prolog_list: Vec<PrologList<'t>>,
+    pub prolog_list0: Vec<PrologList0<'t>>,
+}
+
+///
+/// Type derived for non-terminal PrologList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct PrologList<'t> {
+    pub declaration: Box<Declaration<'t>>,
+}
+
+///
+/// Type derived for non-terminal PrologList0
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct PrologList0<'t> {
+    pub scanner_state: Box<ScannerState<'t>>,
+}
+
+///
+/// Type derived for non-terminal Repeat
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Repeat<'t> {
+    pub l_brace: Token<'t>, /* \{ */
+    pub alternations: Box<Alternations<'t>>,
+    pub r_brace: Token<'t>, /* \} */
+}
+
+///
+/// Type derived for non-terminal ScannerDirectives
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ScannerDirectives<'t> {
+    ScannerDirectives0(ScannerDirectives0<'t>),
+    ScannerDirectives1(ScannerDirectives1<'t>),
+    ScannerDirectives2(ScannerDirectives2<'t>),
+    ScannerDirectives3(ScannerDirectives3<'t>),
+}
+
+///
+/// Type derived for non-terminal ScannerState
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerState<'t> {
+    pub percent_scanner: Token<'t>, /* %scanner */
+    pub identifier: Box<Identifier<'t>>,
+    pub l_brace: Token<'t>, /* \{ */
+    pub scanner_state_list: Vec<ScannerStateList<'t>>,
+    pub r_brace: Token<'t>, /* \} */
+}
+
+///
+/// Type derived for non-terminal ScannerStateList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerStateList<'t> {
+    pub scanner_directives: Box<ScannerDirectives<'t>>,
+}
+
+///
+/// Type derived for non-terminal ScannerSwitch
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ScannerSwitch<'t> {
+    ScannerSwitch0(ScannerSwitch0<'t>),
+    ScannerSwitch1(ScannerSwitch1<'t>),
+    ScannerSwitch2(ScannerSwitch2<'t>),
+}
+
+///
+/// Type derived for non-terminal ScannerSwitchOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ScannerSwitchOpt<'t> {
+    pub identifier: Box<Identifier<'t>>,
+}
+
+///
+/// Type derived for non-terminal SimpleToken
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct SimpleToken<'t> {
+    pub string: Box<String<'t>>,
+    pub simple_token_opt: Option<Box<SimpleTokenOpt<'t>>>,
+}
+
+///
+/// Type derived for non-terminal SimpleTokenOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct SimpleTokenOpt<'t> {
+    pub cut_operator: Box<CutOperator<'t>>,
+}
+
+///
+/// Type derived for non-terminal StartDeclaration
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StartDeclaration<'t> {
+    pub percent_start: Token<'t>, /* %start */
+    pub identifier: Box<Identifier<'t>>,
+}
+
+///
+/// Type derived for non-terminal StateList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StateList<'t> {
+    pub identifier: Box<Identifier<'t>>,
+    pub state_list_list: Vec<StateListList<'t>>,
+}
+
+///
+/// Type derived for non-terminal StateListList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct StateListList<'t> {
+    pub comma: Token<'t>, /* , */
+    pub identifier: Box<Identifier<'t>>,
+}
+
+///
+/// Type derived for non-terminal String
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct String<'t> {
+    pub string: Token<'t>, /* \u{0022}([^\\]|\\.)*?\u{0022} */
+}
+
+///
+/// Type derived for non-terminal Symbol
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum Symbol<'t> {
+    Symbol0(Symbol0<'t>),
+    Symbol1(Symbol1<'t>),
+    Symbol2(Symbol2<'t>),
+    Symbol3(Symbol3<'t>),
+}
+
+///
+/// Type derived for non-terminal TokenWithStates
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenWithStates<'t> {
+    pub l_t: Token<'t>, /* < */
+    pub state_list: Box<StateList<'t>>,
+    pub g_t: Token<'t>, /* > */
+    pub string: Box<String<'t>>,
+}
+
+// -------------------------------------------------------------------------------------------------
+
+///
+/// Deduced ASTType of expanded grammar
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum ASTType<'t> {
+    Alternation(Alternation<'t>),
+    AlternationList(Vec<AlternationList<'t>>),
+    Alternations(Alternations<'t>),
+    AlternationsList(Vec<AlternationsList<'t>>),
+    CutOperator(CutOperator<'t>),
+    Declaration(Declaration<'t>),
+    Factor(Factor<'t>),
+    GrammarDefinition(GrammarDefinition<'t>),
+    GrammarDefinitionList(Vec<GrammarDefinitionList<'t>>),
+    Group(Group<'t>),
+    Identifier(Identifier<'t>),
+    NonTerminal(NonTerminal<'t>),
+    NonTerminalOpt(Option<Box<NonTerminalOpt<'t>>>),
+    Optional(Optional<'t>),
+    Parol(Parol<'t>),
+    Production(Production<'t>),
+    Prolog(Prolog<'t>),
+    PrologList(Vec<PrologList<'t>>),
+    PrologList0(Vec<PrologList0<'t>>),
+    Repeat(Repeat<'t>),
+    ScannerDirectives(ScannerDirectives<'t>),
+    ScannerState(ScannerState<'t>),
+    ScannerStateList(Vec<ScannerStateList<'t>>),
+    ScannerSwitch(ScannerSwitch<'t>),
+    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
+    SimpleToken(SimpleToken<'t>),
+    SimpleTokenOpt(Option<Box<SimpleTokenOpt<'t>>>),
+    StartDeclaration(StartDeclaration<'t>),
+    StateList(StateList<'t>),
+    StateListList(Vec<StateListList<'t>>),
+    String(String<'t>),
+    Symbol(Symbol<'t>),
+    TokenWithStates(TokenWithStates<'t>),
+}
+
+/// Auto-implemented adapter grammar
+///
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+/// The lifetime parameter `'u` refers to the lifetime of user grammar object.
+///
+#[allow(dead_code)]
+pub struct ParolGrammarAuto<'t, 'u>
+where
+    't: 'u,
+{
+    // Mutable reference of the actual user grammar to be able to call the semantic actions on it
+    user_grammar: &'u mut dyn ParolGrammarTrait<'t>,
+    // Stack to construct the AST on it
+    item_stack: Vec<ASTType<'t>>,
+    // Path of the input file. Used for diagnostics.
+    file_name: PathBuf,
+}
+
+///
+/// The `ParolGrammarAuto` impl is automatically generated for the
+/// given grammar.
+///
+impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
+    pub fn new(user_grammar: &'u mut dyn ParolGrammarTrait<'t>) -> Self {
+        Self {
+            user_grammar,
+            item_stack: Vec::new(),
+            file_name: PathBuf::default(),
+        }
+    }
+
+    #[allow(dead_code)]
+    fn push(&mut self, item: ASTType<'t>, context: &str) {
+        trace!("push    {}: {:?}", context, item);
+        self.item_stack.push(item)
+    }
+
+    #[allow(dead_code)]
+    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
+        if !self.item_stack.is_empty() {
+            let item = self.item_stack.pop();
+            if let Some(ref item) = item {
+                trace!("pop     {}: {:?}", context, item);
+            }
+            item
+        } else {
+            None
+        }
+    }
+
+    #[allow(dead_code)]
+    // Use this function for debugging purposes:
+    // trace!("{}", self.trace_item_stack(context));
+    fn trace_item_stack(&self, context: &str) -> std::string::String {
+        format!(
+            "Item stack at {}:\n{}",
+            context,
+            self.item_stack
+                .iter()
+                .rev()
+                .map(|s| format!("  {:?}", s))
+                .collect::<Vec<std::string::String>>()
+                .join("\n")
+        )
+    }
 
     /// Semantic action for production 0:
     ///
     /// Parol: Prolog GrammarDefinition;
     ///
+    #[named]
     fn parol(
         &mut self,
-        _prolog: &ParseTreeStackEntry,
-        _grammar_definition: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _prolog: &ParseTreeStackEntry<'t>,
+        _grammar_definition: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let grammar_definition =
+            if let Some(ASTType::GrammarDefinition(grammar_definition)) = self.pop(context) {
+                grammar_definition
+            } else {
+                bail!("{}: Expecting ASTType::GrammarDefinition", context);
+            };
+        let prolog = if let Some(ASTType::Prolog(prolog)) = self.pop(context) {
+            prolog
+        } else {
+            bail!("{}: Expecting ASTType::Prolog", context);
+        };
+        let parol_built = ParolBuilder::default()
+            .prolog(Box::new(prolog))
+            .grammar_definition(Box::new(grammar_definition))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.parol(&parol_built)?;
+        self.push(ASTType::Parol(parol_built), context);
         Ok(())
     }
 
     /// Semantic action for production 1:
     ///
-    /// Prolog: StartDeclaration Declarations ScannerStates;
+    /// Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
     ///
+    #[named]
     fn prolog(
         &mut self,
-        _start_declaration: &ParseTreeStackEntry,
-        _declarations: &ParseTreeStackEntry,
-        _scanner_states: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _start_declaration: &ParseTreeStackEntry<'t>,
+        _prolog_list: &ParseTreeStackEntry<'t>,
+        _prolog_list0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let prolog_list0 = if let Some(ASTType::PrologList0(mut prolog_list0)) = self.pop(context) {
+            prolog_list0.reverse();
+            prolog_list0
+        } else {
+            bail!("{}: Expecting ASTType::PrologList0", context);
+        };
+        let prolog_list = if let Some(ASTType::PrologList(mut prolog_list)) = self.pop(context) {
+            prolog_list.reverse();
+            prolog_list
+        } else {
+            bail!("{}: Expecting ASTType::PrologList", context);
+        };
+        let start_declaration =
+            if let Some(ASTType::StartDeclaration(start_declaration)) = self.pop(context) {
+                start_declaration
+            } else {
+                bail!("{}: Expecting ASTType::StartDeclaration", context);
+            };
+        let prolog_built = PrologBuilder::default()
+            .start_declaration(Box::new(start_declaration))
+            .prolog_list(prolog_list)
+            .prolog_list0(prolog_list0)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.prolog(&prolog_built)?;
+        self.push(ASTType::Prolog(prolog_built), context);
         Ok(())
     }
 
     /// Semantic action for production 2:
     ///
-    /// StartDeclaration: "%start" Identifier;
+    /// PrologList0: ScannerState PrologList0; // Vec<T>::Push
     ///
-    fn start_declaration(
+    #[named]
+    fn prolog_list0_0(
         &mut self,
-        _percent_start: &ParseTreeStackEntry,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_state: &ParseTreeStackEntry<'t>,
+        _prolog_list0: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut prolog_list0 = if let Some(ASTType::PrologList0(prolog_list0)) = self.pop(context) {
+            prolog_list0
+        } else {
+            bail!("{}: Expecting ASTType::PrologList0", context);
+        };
+        let scanner_state = if let Some(ASTType::ScannerState(scanner_state)) = self.pop(context) {
+            scanner_state
+        } else {
+            bail!("{}: Expecting ASTType::ScannerState", context);
+        };
+        let prolog_list0_0_built = PrologList0Builder::default()
+            .scanner_state(Box::new(scanner_state))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        prolog_list0.push(prolog_list0_0_built);
+        self.push(ASTType::PrologList0(prolog_list0), context);
         Ok(())
     }
 
     /// Semantic action for production 3:
     ///
-    /// Declarations: Declaration Declarations;
+    /// PrologList0: ; // Vec<T>::New
     ///
-    fn declarations_0(
-        &mut self,
-        _declaration: &ParseTreeStackEntry,
-        _declarations: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    #[named]
+    fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let prolog_list0_1_built = Vec::new();
+        self.push(ASTType::PrologList0(prolog_list0_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// Declarations: ;
+    /// PrologList: Declaration PrologList; // Vec<T>::Push
     ///
-    fn declarations_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn prolog_list_0(
+        &mut self,
+        _declaration: &ParseTreeStackEntry<'t>,
+        _prolog_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut prolog_list = if let Some(ASTType::PrologList(prolog_list)) = self.pop(context) {
+            prolog_list
+        } else {
+            bail!("{}: Expecting ASTType::PrologList", context);
+        };
+        let declaration = if let Some(ASTType::Declaration(declaration)) = self.pop(context) {
+            declaration
+        } else {
+            bail!("{}: Expecting ASTType::Declaration", context);
+        };
+        let prolog_list_0_built = PrologListBuilder::default()
+            .declaration(Box::new(declaration))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        prolog_list.push(prolog_list_0_built);
+        self.push(ASTType::PrologList(prolog_list), context);
         Ok(())
     }
 
     /// Semantic action for production 5:
     ///
-    /// Declaration: "%title" String;
+    /// PrologList: ; // Vec<T>::New
     ///
-    fn declaration_0(
-        &mut self,
-        _percent_title: &ParseTreeStackEntry,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    #[named]
+    fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let prolog_list_1_built = Vec::new();
+        self.push(ASTType::PrologList(prolog_list_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 6:
     ///
-    /// Declaration: "%comment" String;
+    /// StartDeclaration: "%start" Identifier;
     ///
-    fn declaration_1(
+    #[named]
+    fn start_declaration(
         &mut self,
-        _percent_comment: &ParseTreeStackEntry,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_start: &ParseTreeStackEntry<'t>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_start = *percent_start.token(parse_tree)?;
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let start_declaration_built = StartDeclarationBuilder::default()
+            .percent_start(percent_start)
+            .identifier(Box::new(identifier))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar
+            .start_declaration(&start_declaration_built)?;
+        self.push(ASTType::StartDeclaration(start_declaration_built), context);
         Ok(())
     }
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: ScannerDirectives;
+    /// Declaration: "%title" String;
     ///
-    fn declaration_2(
+    #[named]
+    fn declaration_0(
         &mut self,
-        _scanner_directives: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_title: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_title = *percent_title.token(parse_tree)?;
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let declaration_0_built = Declaration0Builder::default()
+            .percent_title(percent_title)
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        let declaration_0_built = Declaration::Declaration0(declaration_0_built);
+        // Calling user action here
+        self.user_grammar.declaration(&declaration_0_built)?;
+        self.push(ASTType::Declaration(declaration_0_built), context);
         Ok(())
     }
 
     /// Semantic action for production 8:
     ///
-    /// ScannerDirectives: "%line_comment" String;
+    /// Declaration: "%comment" String;
     ///
-    fn scanner_directives_0(
+    #[named]
+    fn declaration_1(
         &mut self,
-        _percent_line_underscore_comment: &ParseTreeStackEntry,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_comment: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_comment = *percent_comment.token(parse_tree)?;
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let declaration_1_built = Declaration1Builder::default()
+            .percent_comment(percent_comment)
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        let declaration_1_built = Declaration::Declaration1(declaration_1_built);
+        // Calling user action here
+        self.user_grammar.declaration(&declaration_1_built)?;
+        self.push(ASTType::Declaration(declaration_1_built), context);
         Ok(())
     }
 
     /// Semantic action for production 9:
     ///
-    /// ScannerDirectives: "%block_comment" String String;
+    /// Declaration: ScannerDirectives;
     ///
-    fn scanner_directives_1(
+    #[named]
+    fn declaration_2(
         &mut self,
-        _percent_block_underscore_comment: &ParseTreeStackEntry,
-        _string: &ParseTreeStackEntry,
-        _string0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_directives: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let scanner_directives =
+            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
+                scanner_directives
+            } else {
+                bail!("{}: Expecting ASTType::ScannerDirectives", context);
+            };
+        let declaration_2_built = Declaration2Builder::default()
+            .scanner_directives(Box::new(scanner_directives))
+            .build()
+            .into_diagnostic()?;
+        let declaration_2_built = Declaration::Declaration2(declaration_2_built);
+        // Calling user action here
+        self.user_grammar.declaration(&declaration_2_built)?;
+        self.push(ASTType::Declaration(declaration_2_built), context);
         Ok(())
     }
 
     /// Semantic action for production 10:
     ///
-    /// ScannerDirectives: "%auto_newline_off";
+    /// ScannerDirectives: "%line_comment" String;
     ///
-    fn scanner_directives_2(
+    #[named]
+    fn scanner_directives_0(
         &mut self,
-        _percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_line_underscore_comment = *percent_line_underscore_comment.token(parse_tree)?;
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let scanner_directives_0_built = ScannerDirectives0Builder::default()
+            .percent_line_underscore_comment(percent_line_underscore_comment)
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        let scanner_directives_0_built =
+            ScannerDirectives::ScannerDirectives0(scanner_directives_0_built);
+        // Calling user action here
+        self.user_grammar
+            .scanner_directives(&scanner_directives_0_built)?;
+        self.push(
+            ASTType::ScannerDirectives(scanner_directives_0_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%auto_ws_off";
+    /// ScannerDirectives: "%block_comment" String String;
     ///
-    fn scanner_directives_3(
+    #[named]
+    fn scanner_directives_1(
         &mut self,
-        _percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        _string0: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_block_underscore_comment =
+            *percent_block_underscore_comment.token(parse_tree)?;
+        let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
+            string0
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let scanner_directives_1_built = ScannerDirectives1Builder::default()
+            .percent_block_underscore_comment(percent_block_underscore_comment)
+            .string(Box::new(string))
+            .string0(Box::new(string0))
+            .build()
+            .into_diagnostic()?;
+        let scanner_directives_1_built =
+            ScannerDirectives::ScannerDirectives1(scanner_directives_1_built);
+        // Calling user action here
+        self.user_grammar
+            .scanner_directives(&scanner_directives_1_built)?;
+        self.push(
+            ASTType::ScannerDirectives(scanner_directives_1_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 12:
     ///
-    /// ScannerStates: ScannerState ScannerStates;
+    /// ScannerDirectives: "%auto_newline_off";
     ///
-    fn scanner_states_0(
+    #[named]
+    fn scanner_directives_2(
         &mut self,
-        _scanner_state: &ParseTreeStackEntry,
-        _scanner_states: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_auto_underscore_newline_underscore_off =
+            *percent_auto_underscore_newline_underscore_off.token(parse_tree)?;
+        let scanner_directives_2_built = ScannerDirectives2Builder::default()
+            .percent_auto_underscore_newline_underscore_off(
+                percent_auto_underscore_newline_underscore_off,
+            )
+            .build()
+            .into_diagnostic()?;
+        let scanner_directives_2_built =
+            ScannerDirectives::ScannerDirectives2(scanner_directives_2_built);
+        // Calling user action here
+        self.user_grammar
+            .scanner_directives(&scanner_directives_2_built)?;
+        self.push(
+            ASTType::ScannerDirectives(scanner_directives_2_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 13:
     ///
-    /// ScannerStates: ;
+    /// ScannerDirectives: "%auto_ws_off";
     ///
-    fn scanner_states_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn scanner_directives_3(
+        &mut self,
+        percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_auto_underscore_ws_underscore_off =
+            *percent_auto_underscore_ws_underscore_off.token(parse_tree)?;
+        let scanner_directives_3_built = ScannerDirectives3Builder::default()
+            .percent_auto_underscore_ws_underscore_off(percent_auto_underscore_ws_underscore_off)
+            .build()
+            .into_diagnostic()?;
+        let scanner_directives_3_built =
+            ScannerDirectives::ScannerDirectives3(scanner_directives_3_built);
+        // Calling user action here
+        self.user_grammar
+            .scanner_directives(&scanner_directives_3_built)?;
+        self.push(
+            ASTType::ScannerDirectives(scanner_directives_3_built),
+            context,
+        );
         Ok(())
     }
 
@@ -198,13 +1241,44 @@ pub trait ParolGrammarTrait {
     ///
     /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
     ///
+    #[named]
     fn grammar_definition(
         &mut self,
-        _percent_percent: &ParseTreeStackEntry,
-        _production: &ParseTreeStackEntry,
-        _grammar_definition_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        percent_percent: &ParseTreeStackEntry<'t>,
+        _production: &ParseTreeStackEntry<'t>,
+        _grammar_definition_list: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_percent = *percent_percent.token(parse_tree)?;
+        let grammar_definition_list =
+            if let Some(ASTType::GrammarDefinitionList(mut grammar_definition_list)) =
+                self.pop(context)
+            {
+                grammar_definition_list.reverse();
+                grammar_definition_list
+            } else {
+                bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
+            };
+        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
+            production
+        } else {
+            bail!("{}: Expecting ASTType::Production", context);
+        };
+        let grammar_definition_built = GrammarDefinitionBuilder::default()
+            .percent_percent(percent_percent)
+            .production(Box::new(production))
+            .grammar_definition_list(grammar_definition_list)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar
+            .grammar_definition(&grammar_definition_built)?;
+        self.push(
+            ASTType::GrammarDefinition(grammar_definition_built),
+            context,
+        );
         Ok(())
     }
 
@@ -212,12 +1286,38 @@ pub trait ParolGrammarTrait {
     ///
     /// GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
     ///
+    #[named]
     fn grammar_definition_list_0(
         &mut self,
-        _production: &ParseTreeStackEntry,
-        _grammar_definition_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _production: &ParseTreeStackEntry<'t>,
+        _grammar_definition_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut grammar_definition_list = if let Some(ASTType::GrammarDefinitionList(
+            grammar_definition_list,
+        )) = self.pop(context)
+        {
+            grammar_definition_list
+        } else {
+            bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
+        };
+        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
+            production
+        } else {
+            bail!("{}: Expecting ASTType::Production", context);
+        };
+        let grammar_definition_list_0_built = GrammarDefinitionListBuilder::default()
+            .production(Box::new(production))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        grammar_definition_list.push(grammar_definition_list_0_built);
+        self.push(
+            ASTType::GrammarDefinitionList(grammar_definition_list),
+            context,
+        );
         Ok(())
     }
 
@@ -225,7 +1325,15 @@ pub trait ParolGrammarTrait {
     ///
     /// GrammarDefinitionList: ; // Vec<T>::New
     ///
-    fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let grammar_definition_list_1_built = Vec::new();
+        self.push(
+            ASTType::GrammarDefinitionList(grammar_definition_list_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -233,14 +1341,39 @@ pub trait ParolGrammarTrait {
     ///
     /// Production: Identifier ":" Alternations ";";
     ///
+    #[named]
     fn production(
         &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _colon: &ParseTreeStackEntry,
-        _alternations: &ParseTreeStackEntry,
-        _semicolon: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        colon: &ParseTreeStackEntry<'t>,
+        _alternations: &ParseTreeStackEntry<'t>,
+        semicolon: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let colon = *colon.token(parse_tree)?;
+        let semicolon = *semicolon.token(parse_tree)?;
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let production_built = ProductionBuilder::default()
+            .identifier(Box::new(identifier))
+            .colon(colon)
+            .alternations(Box::new(alternations))
+            .semicolon(semicolon)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.production(&production_built)?;
+        self.push(ASTType::Production(production_built), context);
         Ok(())
     }
 
@@ -248,12 +1381,35 @@ pub trait ParolGrammarTrait {
     ///
     /// Alternations: Alternation AlternationsList /* Vec */;
     ///
+    #[named]
     fn alternations(
         &mut self,
-        _alternation: &ParseTreeStackEntry,
-        _alternations_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _alternation: &ParseTreeStackEntry<'t>,
+        _alternations_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let alternations_list =
+            if let Some(ASTType::AlternationsList(mut alternations_list)) = self.pop(context) {
+                alternations_list.reverse();
+                alternations_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationsList", context);
+            };
+        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
+            alternation
+        } else {
+            bail!("{}: Expecting ASTType::Alternation", context);
+        };
+        let alternations_built = AlternationsBuilder::default()
+            .alternation(Box::new(alternation))
+            .alternations_list(alternations_list)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.alternations(&alternations_built)?;
+        self.push(ASTType::Alternations(alternations_built), context);
         Ok(())
     }
 
@@ -261,13 +1417,36 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
     ///
+    #[named]
     fn alternations_list_0(
         &mut self,
-        _or: &ParseTreeStackEntry,
-        _alternation: &ParseTreeStackEntry,
-        _alternations_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        or: &ParseTreeStackEntry<'t>,
+        _alternation: &ParseTreeStackEntry<'t>,
+        _alternations_list: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let or = *or.token(parse_tree)?;
+        let mut alternations_list =
+            if let Some(ASTType::AlternationsList(alternations_list)) = self.pop(context) {
+                alternations_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationsList", context);
+            };
+        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
+            alternation
+        } else {
+            bail!("{}: Expecting ASTType::Alternation", context);
+        };
+        let alternations_list_0_built = AlternationsListBuilder::default()
+            .alternation(Box::new(alternation))
+            .or(or)
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        alternations_list.push(alternations_list_0_built);
+        self.push(ASTType::AlternationsList(alternations_list), context);
         Ok(())
     }
 
@@ -275,7 +1454,15 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationsList: ; // Vec<T>::New
     ///
-    fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let alternations_list_1_built = Vec::new();
+        self.push(
+            ASTType::AlternationsList(alternations_list_1_built),
+            context,
+        );
         Ok(())
     }
 
@@ -283,11 +1470,28 @@ pub trait ParolGrammarTrait {
     ///
     /// Alternation: AlternationList /* Vec */;
     ///
+    #[named]
     fn alternation(
         &mut self,
-        _alternation_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _alternation_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let alternation_list =
+            if let Some(ASTType::AlternationList(mut alternation_list)) = self.pop(context) {
+                alternation_list.reverse();
+                alternation_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationList", context);
+            };
+        let alternation_built = AlternationBuilder::default()
+            .alternation_list(alternation_list)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.alternation(&alternation_built)?;
+        self.push(ASTType::Alternation(alternation_built), context);
         Ok(())
     }
 
@@ -295,12 +1499,33 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationList: Factor AlternationList; // Vec<T>::Push
     ///
+    #[named]
     fn alternation_list_0(
         &mut self,
-        _factor: &ParseTreeStackEntry,
-        _alternation_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _factor: &ParseTreeStackEntry<'t>,
+        _alternation_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut alternation_list =
+            if let Some(ASTType::AlternationList(alternation_list)) = self.pop(context) {
+                alternation_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationList", context);
+            };
+        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
+            factor
+        } else {
+            bail!("{}: Expecting ASTType::Factor", context);
+        };
+        let alternation_list_0_built = AlternationListBuilder::default()
+            .factor(Box::new(factor))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        alternation_list.push(alternation_list_0_built);
+        self.push(ASTType::AlternationList(alternation_list), context);
         Ok(())
     }
 
@@ -308,7 +1533,12 @@ pub trait ParolGrammarTrait {
     ///
     /// AlternationList: ; // Vec<T>::New
     ///
-    fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let alternation_list_1_built = Vec::new();
+        self.push(ASTType::AlternationList(alternation_list_1_built), context);
         Ok(())
     }
 
@@ -316,11 +1546,27 @@ pub trait ParolGrammarTrait {
     ///
     /// Factor: Group;
     ///
+    #[named]
     fn factor_0(
         &mut self,
-        _group: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _group: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let group = if let Some(ASTType::Group(group)) = self.pop(context) {
+            group
+        } else {
+            bail!("{}: Expecting ASTType::Group", context);
+        };
+        let factor_0_built = Factor0Builder::default()
+            .group(Box::new(group))
+            .build()
+            .into_diagnostic()?;
+        let factor_0_built = Factor::Factor0(factor_0_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_0_built)?;
+        self.push(ASTType::Factor(factor_0_built), context);
         Ok(())
     }
 
@@ -328,11 +1574,27 @@ pub trait ParolGrammarTrait {
     ///
     /// Factor: Repeat;
     ///
+    #[named]
     fn factor_1(
         &mut self,
-        _repeat: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _repeat: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let repeat = if let Some(ASTType::Repeat(repeat)) = self.pop(context) {
+            repeat
+        } else {
+            bail!("{}: Expecting ASTType::Repeat", context);
+        };
+        let factor_1_built = Factor1Builder::default()
+            .repeat(Box::new(repeat))
+            .build()
+            .into_diagnostic()?;
+        let factor_1_built = Factor::Factor1(factor_1_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_1_built)?;
+        self.push(ASTType::Factor(factor_1_built), context);
         Ok(())
     }
 
@@ -340,11 +1602,27 @@ pub trait ParolGrammarTrait {
     ///
     /// Factor: Optional;
     ///
+    #[named]
     fn factor_2(
         &mut self,
-        _optional: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _optional: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let optional = if let Some(ASTType::Optional(optional)) = self.pop(context) {
+            optional
+        } else {
+            bail!("{}: Expecting ASTType::Optional", context);
+        };
+        let factor_2_built = Factor2Builder::default()
+            .optional(Box::new(optional))
+            .build()
+            .into_diagnostic()?;
+        let factor_2_built = Factor::Factor2(factor_2_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_2_built)?;
+        self.push(ASTType::Factor(factor_2_built), context);
         Ok(())
     }
 
@@ -352,23 +1630,55 @@ pub trait ParolGrammarTrait {
     ///
     /// Factor: Symbol;
     ///
+    #[named]
     fn factor_3(
         &mut self,
-        _symbol: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _symbol: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let symbol = if let Some(ASTType::Symbol(symbol)) = self.pop(context) {
+            symbol
+        } else {
+            bail!("{}: Expecting ASTType::Symbol", context);
+        };
+        let factor_3_built = Factor3Builder::default()
+            .symbol(Box::new(symbol))
+            .build()
+            .into_diagnostic()?;
+        let factor_3_built = Factor::Factor3(factor_3_built);
+        // Calling user action here
+        self.user_grammar.factor(&factor_3_built)?;
+        self.push(ASTType::Factor(factor_3_built), context);
         Ok(())
     }
 
     /// Semantic action for production 28:
     ///
-    /// Symbol: Identifier;
+    /// Symbol: NonTerminal;
     ///
+    #[named]
     fn symbol_0(
         &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _non_terminal: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let non_terminal = if let Some(ASTType::NonTerminal(non_terminal)) = self.pop(context) {
+            non_terminal
+        } else {
+            bail!("{}: Expecting ASTType::NonTerminal", context);
+        };
+        let symbol_0_built = Symbol0Builder::default()
+            .non_terminal(Box::new(non_terminal))
+            .build()
+            .into_diagnostic()?;
+        let symbol_0_built = Symbol::Symbol0(symbol_0_built);
+        // Calling user action here
+        self.user_grammar.symbol(&symbol_0_built)?;
+        self.push(ASTType::Symbol(symbol_0_built), context);
         Ok(())
     }
 
@@ -376,11 +1686,27 @@ pub trait ParolGrammarTrait {
     ///
     /// Symbol: SimpleToken;
     ///
+    #[named]
     fn symbol_1(
         &mut self,
-        _simple_token: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _simple_token: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let simple_token = if let Some(ASTType::SimpleToken(simple_token)) = self.pop(context) {
+            simple_token
+        } else {
+            bail!("{}: Expecting ASTType::SimpleToken", context);
+        };
+        let symbol_1_built = Symbol1Builder::default()
+            .simple_token(Box::new(simple_token))
+            .build()
+            .into_diagnostic()?;
+        let symbol_1_built = Symbol::Symbol1(symbol_1_built);
+        // Calling user action here
+        self.user_grammar.symbol(&symbol_1_built)?;
+        self.push(ASTType::Symbol(symbol_1_built), context);
         Ok(())
     }
 
@@ -388,11 +1714,28 @@ pub trait ParolGrammarTrait {
     ///
     /// Symbol: TokenWithStates;
     ///
+    #[named]
     fn symbol_2(
         &mut self,
-        _token_with_states: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _token_with_states: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let token_with_states =
+            if let Some(ASTType::TokenWithStates(token_with_states)) = self.pop(context) {
+                token_with_states
+            } else {
+                bail!("{}: Expecting ASTType::TokenWithStates", context);
+            };
+        let symbol_2_built = Symbol2Builder::default()
+            .token_with_states(Box::new(token_with_states))
+            .build()
+            .into_diagnostic()?;
+        let symbol_2_built = Symbol::Symbol2(symbol_2_built);
+        // Calling user action here
+        self.user_grammar.symbol(&symbol_2_built)?;
+        self.push(ASTType::Symbol(symbol_2_built), context);
         Ok(())
     }
 
@@ -400,251 +1743,728 @@ pub trait ParolGrammarTrait {
     ///
     /// Symbol: ScannerSwitch;
     ///
+    #[named]
     fn symbol_3(
         &mut self,
-        _scanner_switch: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_switch: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let scanner_switch = if let Some(ASTType::ScannerSwitch(scanner_switch)) = self.pop(context)
+        {
+            scanner_switch
+        } else {
+            bail!("{}: Expecting ASTType::ScannerSwitch", context);
+        };
+        let symbol_3_built = Symbol3Builder::default()
+            .scanner_switch(Box::new(scanner_switch))
+            .build()
+            .into_diagnostic()?;
+        let symbol_3_built = Symbol::Symbol3(symbol_3_built);
+        // Calling user action here
+        self.user_grammar.symbol(&symbol_3_built)?;
+        self.push(ASTType::Symbol(symbol_3_built), context);
         Ok(())
     }
 
     /// Semantic action for production 32:
     ///
-    /// SimpleToken: String;
+    /// SimpleToken: String SimpleTokenOpt /* Option */;
     ///
+    #[named]
     fn simple_token(
         &mut self,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _string: &ParseTreeStackEntry<'t>,
+        _simple_token_opt: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let simple_token_opt =
+            if let Some(ASTType::SimpleTokenOpt(simple_token_opt)) = self.pop(context) {
+                simple_token_opt
+            } else {
+                bail!("{}: Expecting ASTType::SimpleTokenOpt", context);
+            };
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let simple_token_built = SimpleTokenBuilder::default()
+            .string(Box::new(string))
+            .simple_token_opt(simple_token_opt)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.simple_token(&simple_token_built)?;
+        self.push(ASTType::SimpleToken(simple_token_built), context);
         Ok(())
     }
 
     /// Semantic action for production 33:
     ///
-    /// TokenWithStates: "<" StateList ">" String;
+    /// SimpleTokenOpt: CutOperator; // Option<T>::Some
     ///
-    fn token_with_states(
+    #[named]
+    fn simple_token_opt_0(
         &mut self,
-        _l_t: &ParseTreeStackEntry,
-        _state_list: &ParseTreeStackEntry,
-        _g_t: &ParseTreeStackEntry,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _cut_operator: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let cut_operator = if let Some(ASTType::CutOperator(cut_operator)) = self.pop(context) {
+            cut_operator
+        } else {
+            bail!("{}: Expecting ASTType::CutOperator", context);
+        };
+        let simple_token_opt_0_built = SimpleTokenOptBuilder::default()
+            .cut_operator(Box::new(cut_operator))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 34:
     ///
-    /// Group: "\(" Alternations "\)";
+    /// SimpleTokenOpt: ; // Option<T>::None
     ///
-    fn group(
-        &mut self,
-        _l_paren: &ParseTreeStackEntry,
-        _alternations: &ParseTreeStackEntry,
-        _r_paren: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    #[named]
+    fn simple_token_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::SimpleTokenOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 35:
     ///
-    /// Optional: "\[" Alternations "\]";
+    /// TokenWithStates: "<" StateList ">" String;
     ///
-    fn optional(
+    #[named]
+    fn token_with_states(
         &mut self,
-        _l_bracket: &ParseTreeStackEntry,
-        _alternations: &ParseTreeStackEntry,
-        _r_bracket: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        l_t: &ParseTreeStackEntry<'t>,
+        _state_list: &ParseTreeStackEntry<'t>,
+        g_t: &ParseTreeStackEntry<'t>,
+        _string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_t = *l_t.token(parse_tree)?;
+        let g_t = *g_t.token(parse_tree)?;
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let state_list = if let Some(ASTType::StateList(state_list)) = self.pop(context) {
+            state_list
+        } else {
+            bail!("{}: Expecting ASTType::StateList", context);
+        };
+        let token_with_states_built = TokenWithStatesBuilder::default()
+            .l_t(l_t)
+            .state_list(Box::new(state_list))
+            .g_t(g_t)
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar
+            .token_with_states(&token_with_states_built)?;
+        self.push(ASTType::TokenWithStates(token_with_states_built), context);
         Ok(())
     }
 
     /// Semantic action for production 36:
     ///
-    /// Repeat: "\{" Alternations "\}";
+    /// Group: "\(" Alternations "\)";
     ///
-    fn repeat(
+    #[named]
+    fn group(
         &mut self,
-        _l_brace: &ParseTreeStackEntry,
-        _alternations: &ParseTreeStackEntry,
-        _r_brace: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        l_paren: &ParseTreeStackEntry<'t>,
+        _alternations: &ParseTreeStackEntry<'t>,
+        r_paren: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_paren = *l_paren.token(parse_tree)?;
+        let r_paren = *r_paren.token(parse_tree)?;
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
+        let group_built = GroupBuilder::default()
+            .l_paren(l_paren)
+            .alternations(Box::new(alternations))
+            .r_paren(r_paren)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.group(&group_built)?;
+        self.push(ASTType::Group(group_built), context);
         Ok(())
     }
 
     /// Semantic action for production 37:
     ///
-    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    /// Optional: "\[" Alternations "\]";
     ///
-    fn identifier(
+    #[named]
+    fn optional(
         &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        l_bracket: &ParseTreeStackEntry<'t>,
+        _alternations: &ParseTreeStackEntry<'t>,
+        r_bracket: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_bracket = *l_bracket.token(parse_tree)?;
+        let r_bracket = *r_bracket.token(parse_tree)?;
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
+        let optional_built = OptionalBuilder::default()
+            .l_bracket(l_bracket)
+            .alternations(Box::new(alternations))
+            .r_bracket(r_bracket)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.optional(&optional_built)?;
+        self.push(ASTType::Optional(optional_built), context);
         Ok(())
     }
 
     /// Semantic action for production 38:
     ///
-    /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
+    /// Repeat: "\{" Alternations "\}";
     ///
-    fn string(
+    #[named]
+    fn repeat(
         &mut self,
-        _string: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        l_brace: &ParseTreeStackEntry<'t>,
+        _alternations: &ParseTreeStackEntry<'t>,
+        r_brace: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let l_brace = *l_brace.token(parse_tree)?;
+        let r_brace = *r_brace.token(parse_tree)?;
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
+        let repeat_built = RepeatBuilder::default()
+            .l_brace(l_brace)
+            .alternations(Box::new(alternations))
+            .r_brace(r_brace)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.repeat(&repeat_built)?;
+        self.push(ASTType::Repeat(repeat_built), context);
         Ok(())
     }
 
     /// Semantic action for production 39:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+    /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
-    fn scanner_state(
+    #[named]
+    fn non_terminal(
         &mut self,
-        _percent_scanner: &ParseTreeStackEntry,
-        _identifier: &ParseTreeStackEntry,
-        _l_brace: &ParseTreeStackEntry,
-        _scanner_state_list: &ParseTreeStackEntry,
-        _r_brace: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        _non_terminal_opt: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let non_terminal_opt =
+            if let Some(ASTType::NonTerminalOpt(non_terminal_opt)) = self.pop(context) {
+                non_terminal_opt
+            } else {
+                bail!("{}: Expecting ASTType::NonTerminalOpt", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let non_terminal_built = NonTerminalBuilder::default()
+            .identifier(Box::new(identifier))
+            .non_terminal_opt(non_terminal_opt)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.non_terminal(&non_terminal_built)?;
+        self.push(ASTType::NonTerminal(non_terminal_built), context);
         Ok(())
     }
 
     /// Semantic action for production 40:
     ///
-    /// ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
+    /// NonTerminalOpt: CutOperator; // Option<T>::Some
     ///
-    fn scanner_state_list_0(
+    #[named]
+    fn non_terminal_opt_0(
         &mut self,
-        _scanner_directives: &ParseTreeStackEntry,
-        _scanner_state_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _cut_operator: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let cut_operator = if let Some(ASTType::CutOperator(cut_operator)) = self.pop(context) {
+            cut_operator
+        } else {
+            bail!("{}: Expecting ASTType::CutOperator", context);
+        };
+        let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
+            .cut_operator(Box::new(cut_operator))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 41:
     ///
-    /// ScannerStateList: ; // Vec<T>::New
+    /// NonTerminalOpt: ; // Option<T>::None
     ///
-    fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn non_terminal_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::NonTerminalOpt(None), context);
         Ok(())
     }
 
     /// Semantic action for production 42:
     ///
-    /// StateList: Identifier StateListRest;
+    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    fn state_list(
+    #[named]
+    fn identifier(
         &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _state_list_rest: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        identifier: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier = *identifier.token(parse_tree)?;
+        let identifier_built = IdentifierBuilder::default()
+            .identifier(identifier)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.identifier(&identifier_built)?;
+        self.push(ASTType::Identifier(identifier_built), context);
         Ok(())
     }
 
     /// Semantic action for production 43:
     ///
-    /// StateListRest: "," Identifier StateListRest;
+    /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
     ///
-    fn state_list_rest_0(
+    #[named]
+    fn string(
         &mut self,
-        _comma: &ParseTreeStackEntry,
-        _identifier: &ParseTreeStackEntry,
-        _state_list_rest: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string = *string.token(parse_tree)?;
+        let string_built = StringBuilder::default()
+            .string(string)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.string(&string_built)?;
+        self.push(ASTType::String(string_built), context);
         Ok(())
     }
 
     /// Semantic action for production 44:
     ///
-    /// StateListRest: ;
+    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
     ///
-    fn state_list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn scanner_state(
+        &mut self,
+        percent_scanner: &ParseTreeStackEntry<'t>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        l_brace: &ParseTreeStackEntry<'t>,
+        _scanner_state_list: &ParseTreeStackEntry<'t>,
+        r_brace: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_scanner = *percent_scanner.token(parse_tree)?;
+        let l_brace = *l_brace.token(parse_tree)?;
+        let r_brace = *r_brace.token(parse_tree)?;
+        let scanner_state_list =
+            if let Some(ASTType::ScannerStateList(mut scanner_state_list)) = self.pop(context) {
+                scanner_state_list.reverse();
+                scanner_state_list
+            } else {
+                bail!("{}: Expecting ASTType::ScannerStateList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let scanner_state_built = ScannerStateBuilder::default()
+            .percent_scanner(percent_scanner)
+            .identifier(Box::new(identifier))
+            .l_brace(l_brace)
+            .scanner_state_list(scanner_state_list)
+            .r_brace(r_brace)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.scanner_state(&scanner_state_built)?;
+        self.push(ASTType::ScannerState(scanner_state_built), context);
         Ok(())
     }
 
     /// Semantic action for production 45:
     ///
-    /// ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
+    /// ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
     ///
-    fn scanner_switch_0(
+    #[named]
+    fn scanner_state_list_0(
         &mut self,
-        _percent_sc: &ParseTreeStackEntry,
-        _l_paren: &ParseTreeStackEntry,
-        _scanner_name_opt: &ParseTreeStackEntry,
-        _r_paren: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _scanner_directives: &ParseTreeStackEntry<'t>,
+        _scanner_state_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut scanner_state_list =
+            if let Some(ASTType::ScannerStateList(scanner_state_list)) = self.pop(context) {
+                scanner_state_list
+            } else {
+                bail!("{}: Expecting ASTType::ScannerStateList", context);
+            };
+        let scanner_directives =
+            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
+                scanner_directives
+            } else {
+                bail!("{}: Expecting ASTType::ScannerDirectives", context);
+            };
+        let scanner_state_list_0_built = ScannerStateListBuilder::default()
+            .scanner_directives(Box::new(scanner_directives))
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        scanner_state_list.push(scanner_state_list_0_built);
+        self.push(ASTType::ScannerStateList(scanner_state_list), context);
         Ok(())
     }
 
     /// Semantic action for production 46:
     ///
-    /// ScannerSwitch: "%push" "\(" Identifier "\)";
+    /// ScannerStateList: ; // Vec<T>::New
     ///
-    fn scanner_switch_1(
-        &mut self,
-        _percent_push: &ParseTreeStackEntry,
-        _l_paren: &ParseTreeStackEntry,
-        _identifier: &ParseTreeStackEntry,
-        _r_paren: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    #[named]
+    fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let scanner_state_list_1_built = Vec::new();
+        self.push(
+            ASTType::ScannerStateList(scanner_state_list_1_built),
+            context,
+        );
         Ok(())
     }
 
     /// Semantic action for production 47:
     ///
-    /// ScannerSwitch: "%pop" "\(" "\)";
+    /// StateList: Identifier StateListList /* Vec */;
     ///
-    fn scanner_switch_2(
+    #[named]
+    fn state_list(
         &mut self,
-        _percent_pop: &ParseTreeStackEntry,
-        _l_paren: &ParseTreeStackEntry,
-        _r_paren: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        _state_list_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let state_list_list =
+            if let Some(ASTType::StateListList(mut state_list_list)) = self.pop(context) {
+                state_list_list.reverse();
+                state_list_list
+            } else {
+                bail!("{}: Expecting ASTType::StateListList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let state_list_built = StateListBuilder::default()
+            .identifier(Box::new(identifier))
+            .state_list_list(state_list_list)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.state_list(&state_list_built)?;
+        self.push(ASTType::StateList(state_list_built), context);
         Ok(())
     }
 
     /// Semantic action for production 48:
     ///
-    /// ScannerNameOpt: Identifier;
+    /// StateListList: "," Identifier StateListList; // Vec<T>::Push
     ///
-    fn scanner_name_opt_0(
+    #[named]
+    fn state_list_list_0(
         &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        comma: &ParseTreeStackEntry<'t>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        _state_list_list: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let comma = *comma.token(parse_tree)?;
+        let mut state_list_list =
+            if let Some(ASTType::StateListList(state_list_list)) = self.pop(context) {
+                state_list_list
+            } else {
+                bail!("{}: Expecting ASTType::StateListList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let state_list_list_0_built = StateListListBuilder::default()
+            .identifier(Box::new(identifier))
+            .comma(comma)
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        state_list_list.push(state_list_list_0_built);
+        self.push(ASTType::StateListList(state_list_list), context);
         Ok(())
     }
 
     /// Semantic action for production 49:
     ///
-    /// ScannerNameOpt: ;
+    /// StateListList: ; // Vec<T>::New
     ///
-    fn scanner_name_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    #[named]
+    fn state_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let state_list_list_1_built = Vec::new();
+        self.push(ASTType::StateListList(state_list_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 50:
+    ///
+    /// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+    ///
+    #[named]
+    fn scanner_switch_0(
+        &mut self,
+        percent_sc: &ParseTreeStackEntry<'t>,
+        l_paren: &ParseTreeStackEntry<'t>,
+        _scanner_switch_opt: &ParseTreeStackEntry<'t>,
+        r_paren: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_sc = *percent_sc.token(parse_tree)?;
+        let l_paren = *l_paren.token(parse_tree)?;
+        let r_paren = *r_paren.token(parse_tree)?;
+        let scanner_switch_opt =
+            if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
+                scanner_switch_opt
+            } else {
+                bail!("{}: Expecting ASTType::ScannerSwitchOpt", context);
+            };
+        let scanner_switch_0_built = ScannerSwitch0Builder::default()
+            .percent_sc(percent_sc)
+            .l_paren(l_paren)
+            .scanner_switch_opt(scanner_switch_opt)
+            .r_paren(r_paren)
+            .build()
+            .into_diagnostic()?;
+        let scanner_switch_0_built = ScannerSwitch::ScannerSwitch0(scanner_switch_0_built);
+        // Calling user action here
+        self.user_grammar.scanner_switch(&scanner_switch_0_built)?;
+        self.push(ASTType::ScannerSwitch(scanner_switch_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 51:
+    ///
+    /// ScannerSwitch: "%push" "\(" Identifier "\)";
+    ///
+    #[named]
+    fn scanner_switch_1(
+        &mut self,
+        percent_push: &ParseTreeStackEntry<'t>,
+        l_paren: &ParseTreeStackEntry<'t>,
+        _identifier: &ParseTreeStackEntry<'t>,
+        r_paren: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_push = *percent_push.token(parse_tree)?;
+        let l_paren = *l_paren.token(parse_tree)?;
+        let r_paren = *r_paren.token(parse_tree)?;
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let scanner_switch_1_built = ScannerSwitch1Builder::default()
+            .percent_push(percent_push)
+            .l_paren(l_paren)
+            .identifier(Box::new(identifier))
+            .r_paren(r_paren)
+            .build()
+            .into_diagnostic()?;
+        let scanner_switch_1_built = ScannerSwitch::ScannerSwitch1(scanner_switch_1_built);
+        // Calling user action here
+        self.user_grammar.scanner_switch(&scanner_switch_1_built)?;
+        self.push(ASTType::ScannerSwitch(scanner_switch_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 52:
+    ///
+    /// ScannerSwitch: "%pop" "\(" "\)";
+    ///
+    #[named]
+    fn scanner_switch_2(
+        &mut self,
+        percent_pop: &ParseTreeStackEntry<'t>,
+        l_paren: &ParseTreeStackEntry<'t>,
+        r_paren: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let percent_pop = *percent_pop.token(parse_tree)?;
+        let l_paren = *l_paren.token(parse_tree)?;
+        let r_paren = *r_paren.token(parse_tree)?;
+        let scanner_switch_2_built = ScannerSwitch2Builder::default()
+            .percent_pop(percent_pop)
+            .l_paren(l_paren)
+            .r_paren(r_paren)
+            .build()
+            .into_diagnostic()?;
+        let scanner_switch_2_built = ScannerSwitch::ScannerSwitch2(scanner_switch_2_built);
+        // Calling user action here
+        self.user_grammar.scanner_switch(&scanner_switch_2_built)?;
+        self.push(ASTType::ScannerSwitch(scanner_switch_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 53:
+    ///
+    /// ScannerSwitchOpt: Identifier; // Option<T>::Some
+    ///
+    #[named]
+    fn scanner_switch_opt_0(
+        &mut self,
+        _identifier: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
+        let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
+            .identifier(Box::new(identifier))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 54:
+    ///
+    /// ScannerSwitchOpt: ; // Option<T>::None
+    ///
+    #[named]
+    fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::ScannerSwitchOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 55:
+    ///
+    /// CutOperator: "^";
+    ///
+    #[named]
+    fn cut_operator(
+        &mut self,
+        cut_operator: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let cut_operator = *cut_operator.token(parse_tree)?;
+        let cut_operator_built = CutOperatorBuilder::default()
+            .cut_operator(cut_operator)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.cut_operator(&cut_operator_built)?;
+        self.push(ASTType::CutOperator(cut_operator_built), context);
         Ok(())
     }
 }
 
-impl UserActionsTrait<'_> for ParolGrammar {
+impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
     ///
     /// Initialize the user with additional information.
     /// This function is called by the parser before parsing starts.
     /// It is used to transport necessary data from parser to user.
     ///
-    fn init(&mut self, _file_name: &Path) {}
+    fn init(&mut self, file_name: &Path) {
+        self.file_name = file_name.to_owned();
+        self.user_grammar.init(file_name);
+    }
 
     ///
     /// This function is implemented automatically for the user's item ParolGrammar.
@@ -652,24 +2472,24 @@ impl UserActionsTrait<'_> for ParolGrammar {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeStackEntry<'t>],
+        parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         match prod_num {
             0 => self.parol(&children[0], &children[1], parse_tree),
             1 => self.prolog(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.start_declaration(&children[0], &children[1], parse_tree),
-            3 => self.declarations_0(&children[0], &children[1], parse_tree),
-            4 => self.declarations_1(parse_tree),
-            5 => self.declaration_0(&children[0], &children[1], parse_tree),
-            6 => self.declaration_1(&children[0], &children[1], parse_tree),
-            7 => self.declaration_2(&children[0], parse_tree),
-            8 => self.scanner_directives_0(&children[0], &children[1], parse_tree),
-            9 => self.scanner_directives_1(&children[0], &children[1], &children[2], parse_tree),
-            10 => self.scanner_directives_2(&children[0], parse_tree),
-            11 => self.scanner_directives_3(&children[0], parse_tree),
-            12 => self.scanner_states_0(&children[0], &children[1], parse_tree),
-            13 => self.scanner_states_1(parse_tree),
+            2 => self.prolog_list0_0(&children[0], &children[1], parse_tree),
+            3 => self.prolog_list0_1(parse_tree),
+            4 => self.prolog_list_0(&children[0], &children[1], parse_tree),
+            5 => self.prolog_list_1(parse_tree),
+            6 => self.start_declaration(&children[0], &children[1], parse_tree),
+            7 => self.declaration_0(&children[0], &children[1], parse_tree),
+            8 => self.declaration_1(&children[0], &children[1], parse_tree),
+            9 => self.declaration_2(&children[0], parse_tree),
+            10 => self.scanner_directives_0(&children[0], &children[1], parse_tree),
+            11 => self.scanner_directives_1(&children[0], &children[1], &children[2], parse_tree),
+            12 => self.scanner_directives_2(&children[0], parse_tree),
+            13 => self.scanner_directives_3(&children[0], parse_tree),
             14 => self.grammar_definition(&children[0], &children[1], &children[2], parse_tree),
             15 => self.grammar_definition_list_0(&children[0], &children[1], parse_tree),
             16 => self.grammar_definition_list_1(parse_tree),
@@ -694,20 +2514,25 @@ impl UserActionsTrait<'_> for ParolGrammar {
             29 => self.symbol_1(&children[0], parse_tree),
             30 => self.symbol_2(&children[0], parse_tree),
             31 => self.symbol_3(&children[0], parse_tree),
-            32 => self.simple_token(&children[0], parse_tree),
-            33 => self.token_with_states(
+            32 => self.simple_token(&children[0], &children[1], parse_tree),
+            33 => self.simple_token_opt_0(&children[0], parse_tree),
+            34 => self.simple_token_opt_1(parse_tree),
+            35 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            34 => self.group(&children[0], &children[1], &children[2], parse_tree),
-            35 => self.optional(&children[0], &children[1], &children[2], parse_tree),
-            36 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
-            37 => self.identifier(&children[0], parse_tree),
-            38 => self.string(&children[0], parse_tree),
-            39 => self.scanner_state(
+            36 => self.group(&children[0], &children[1], &children[2], parse_tree),
+            37 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            38 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            39 => self.non_terminal(&children[0], &children[1], parse_tree),
+            40 => self.non_terminal_opt_0(&children[0], parse_tree),
+            41 => self.non_terminal_opt_1(parse_tree),
+            42 => self.identifier(&children[0], parse_tree),
+            43 => self.string(&children[0], parse_tree),
+            44 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -715,28 +2540,29 @@ impl UserActionsTrait<'_> for ParolGrammar {
                 &children[4],
                 parse_tree,
             ),
-            40 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
-            41 => self.scanner_state_list_1(parse_tree),
-            42 => self.state_list(&children[0], &children[1], parse_tree),
-            43 => self.state_list_rest_0(&children[0], &children[1], &children[2], parse_tree),
-            44 => self.state_list_rest_1(parse_tree),
-            45 => self.scanner_switch_0(
+            45 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
+            46 => self.scanner_state_list_1(parse_tree),
+            47 => self.state_list(&children[0], &children[1], parse_tree),
+            48 => self.state_list_list_0(&children[0], &children[1], &children[2], parse_tree),
+            49 => self.state_list_list_1(parse_tree),
+            50 => self.scanner_switch_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            46 => self.scanner_switch_1(
+            51 => self.scanner_switch_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            47 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
-            48 => self.scanner_name_opt_0(&children[0], parse_tree),
-            49 => self.scanner_name_opt_1(parse_tree),
+            52 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
+            53 => self.scanner_switch_opt_0(&children[0], parse_tree),
+            54 => self.scanner_switch_opt_1(parse_tree),
+            55 => self.cut_operator(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

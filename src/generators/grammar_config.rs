@@ -181,7 +181,7 @@ impl Display for GrammarConfig {
     }
 }
 
-impl TryFrom<ParolGrammar> for GrammarConfig {
+impl TryFrom<ParolGrammar<'_>> for GrammarConfig {
     type Error = miette::Error;
     fn try_from(grammar: ParolGrammar) -> miette::Result<Self> {
         try_to_convert(grammar)

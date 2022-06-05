@@ -11,15 +11,10 @@ Parol
     ;
 
 Prolog
-    : StartDeclaration Declarations ScannerStates;
+    : StartDeclaration { Declaration } { ScannerState };
 
 StartDeclaration
     : "%start" Identifier
-    ;
-
-Declarations
-    : Declaration Declarations
-    |
     ;
 
 Declaration
@@ -33,11 +28,6 @@ ScannerDirectives
     | "%block_comment" String String
     | "%auto_newline_off"
     | "%auto_ws_off"
-    ;
-
-ScannerStates
-    : ScannerState ScannerStates
-    |
     ;
 
 GrammarDefinition
@@ -107,23 +97,13 @@ ScannerState
     ;
 
 StateList
-    : Identifier StateListRest
-    ;
-
-StateListRest
-    : "," Identifier StateListRest
-    |
+    : Identifier { "," Identifier }
     ;
 
 ScannerSwitch
-    : "%sc" "\(" ScannerNameOpt "\)"
+    : "%sc" "\(" [Identifier] "\)"
     | "%push" "\(" Identifier "\)"
     | "%pop" "\(" "\)"
-    ;
-
-ScannerNameOpt
-    : Identifier
-    |
     ;
 
 CutOperator

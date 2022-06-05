@@ -1,0 +1,10 @@
+Var a;
+Var b;
+Begin
+    Var c;
+    Begin
+        Var d;
+    End
+End
+Var e;
+Begin Begin End End

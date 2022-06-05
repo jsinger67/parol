@@ -120,6 +120,7 @@ use miette::{Context, IntoDiagnostic};
 use parol_runtime::parser::ParseTreeType;
 
 use crate::analysis::LookaheadDFA;
+use crate::parser::parol_grammar::Production;
 use crate::{GrammarConfig, ParolGrammar, UserTraitGenerator, MAX_K};
 
 /// The default maximum lookahead
@@ -168,8 +169,9 @@ pub struct Builder {
     /// Internal debugging for CLI.
     debug_verbose: bool,
     /// Used for auto generation of user's grammar semantic action trait
-    parol_grammar: ParolGrammar,
+    productions: Vec<Production>,
 }
+
 impl Builder {
     /// Create a new builder fr use in a Cargo build script (`build.rs`).
     ///
@@ -240,7 +242,7 @@ impl Builder {
             auto_generate: false,
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
-            parol_grammar: ParolGrammar::new(),
+            productions: Vec::new(),
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -391,6 +393,8 @@ impl Builder {
 /// Most of the time you will want to use [Builder::generate_parser] to bypass this completely.
 ///
 /// This is an advanced API, and unless stated otherwise, all its methods are unstable (see module docs).
+///
+/// The lifetime parameter `'l` refers to the lifetime of the optional listener.
 pub struct GrammarGenerator<'l> {
     /// The build listener
     ///
@@ -434,7 +438,7 @@ impl GrammarGenerator<'_> {
                 "Failed parsing grammar file {}",
                 self.grammar_file.display()
             ))?;
-        self.builder.parol_grammar = parol_grammar.clone();
+        self.builder.productions = parol_grammar.productions.clone();
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
@@ -543,7 +547,7 @@ impl GrammarGenerator<'_> {
             &self.builder.user_type_name,
             &self.builder.module_name,
             self.builder.auto_generate,
-            &self.builder.parol_grammar,
+            self.builder.productions.clone(),
             grammar_config,
         )?;
         let user_trait_source = user_trait_generator

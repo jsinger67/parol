@@ -9,12 +9,14 @@ use super::template_data::{
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::{ParolGrammarItem, Production};
-use crate::{ParolGrammar, Pr, StrVec};
+use crate::parser::Production;
+use crate::{Pr, StrVec};
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 
 /// Generator for user trait code
+/// The lifetime parameter `'a` refers to the lifetime of the contained references.
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 #[derive(Builder, Debug, Default)]
 pub struct UserTraitGenerator<'a> {
     /// User type that implements the language processing
@@ -24,7 +26,7 @@ pub struct UserTraitGenerator<'a> {
     /// Enable feature auto-generation for expanded grammar's semantic actions
     auto_generate: bool,
     /// Parsed original user grammar
-    parol_grammar: &'a ParolGrammar,
+    productions: Vec<Production>,
     /// Compiled grammar configuration
     grammar_config: &'a GrammarConfig,
 }
@@ -360,19 +362,14 @@ impl<'a> UserTraitGenerator<'a> {
 
     pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
         let mut processed_non_terminals: HashSet<String> = HashSet::new();
-        self.parol_grammar
-            .item_stack
-            .iter()
-            .fold(Ok(()), |acc: Result<()>, p| {
-                acc?;
-                if let ParolGrammarItem::Prod(Production { lhs, .. }) = p {
-                    if !processed_non_terminals.contains(lhs) {
-                        type_info.add_user_action(lhs)?;
-                        processed_non_terminals.insert(lhs.to_string());
-                    }
-                }
-                Ok(())
-            })
+        self.productions.iter().fold(Ok(()), |acc: Result<()>, p| {
+            acc?;
+            if !processed_non_terminals.contains(&p.lhs) {
+                type_info.add_user_action(&p.lhs)?;
+                processed_non_terminals.insert(p.lhs.to_string());
+            }
+            Ok(())
+        })
     }
 
     fn generate_user_action_args(non_terminal: &str) -> String {
@@ -561,10 +558,7 @@ impl<'a> UserTraitGenerator<'a> {
         )?;
 
         let user_trait_functions = if self.auto_generate {
-            trace!(
-                "parol_grammar.item_stack:\n{:?}",
-                self.parol_grammar.item_stack
-            );
+            trace!("parol_grammar.item_stack:\n{:?}", self.productions);
 
             type_info.user_actions.iter().fold(
                 Ok(StrVec::new(0).first_line_no_indent()),
@@ -641,7 +635,7 @@ impl<'a> UserTraitGenerator<'a> {
         user_type_name: &'a str,
         module_name: &'a str,
         auto_generate: bool,
-        parol_grammar: &'a ParolGrammar,
+        productions: Vec<Production>,
         grammar_config: &'a GrammarConfig,
     ) -> Result<Self> {
         let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
@@ -650,7 +644,7 @@ impl<'a> UserTraitGenerator<'a> {
             .module_name(module_name)
             .auto_generate(auto_generate)
             .grammar_config(grammar_config)
-            .parol_grammar(parol_grammar)
+            .productions(productions)
             .build()
             .into_diagnostic()
     }

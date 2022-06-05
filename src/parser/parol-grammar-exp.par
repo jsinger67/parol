@@ -7,19 +7,19 @@
 %%
 
 /*  0 */ Parol: Prolog GrammarDefinition;
-/*  1 */ Prolog: StartDeclaration Declarations ScannerStates;
-/*  2 */ StartDeclaration: "%start" Identifier;
-/*  3 */ Declarations: Declaration Declarations;
-/*  4 */ Declarations: ;
-/*  5 */ Declaration: "%title" String;
-/*  6 */ Declaration: "%comment" String;
-/*  7 */ Declaration: ScannerDirectives;
-/*  8 */ ScannerDirectives: "%line_comment" String;
-/*  9 */ ScannerDirectives: "%block_comment" String String;
-/* 10 */ ScannerDirectives: "%auto_newline_off";
-/* 11 */ ScannerDirectives: "%auto_ws_off";
-/* 12 */ ScannerStates: ScannerState ScannerStates;
-/* 13 */ ScannerStates: ;
+/*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
+/*  2 */ PrologList0: ScannerState PrologList0; // Vec<T>::Push
+/*  3 */ PrologList0: ; // Vec<T>::New
+/*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
+/*  5 */ PrologList: ; // Vec<T>::New
+/*  6 */ StartDeclaration: "%start" Identifier;
+/*  7 */ Declaration: "%title" String;
+/*  8 */ Declaration: "%comment" String;
+/*  9 */ Declaration: ScannerDirectives;
+/* 10 */ ScannerDirectives: "%line_comment" String;
+/* 11 */ ScannerDirectives: "%block_comment" String String;
+/* 12 */ ScannerDirectives: "%auto_newline_off";
+/* 13 */ ScannerDirectives: "%auto_ws_off";
 /* 14 */ GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
 /* 15 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 16 */ GrammarDefinitionList: ; // Vec<T>::New
@@ -34,25 +34,31 @@
 /* 25 */ Factor: Repeat;
 /* 26 */ Factor: Optional;
 /* 27 */ Factor: Symbol;
-/* 28 */ Symbol: Identifier;
+/* 28 */ Symbol: NonTerminal;
 /* 29 */ Symbol: SimpleToken;
 /* 30 */ Symbol: TokenWithStates;
 /* 31 */ Symbol: ScannerSwitch;
-/* 32 */ SimpleToken: String;
-/* 33 */ TokenWithStates: "<" StateList ">" String;
-/* 34 */ Group: "\(" Alternations "\)";
-/* 35 */ Optional: "\[" Alternations "\]";
-/* 36 */ Repeat: "\{" Alternations "\}";
-/* 37 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
-/* 38 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
-/* 39 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
-/* 40 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
-/* 41 */ ScannerStateList: ; // Vec<T>::New
-/* 42 */ StateList: Identifier StateListRest;
-/* 43 */ StateListRest: "," Identifier StateListRest;
-/* 44 */ StateListRest: ;
-/* 45 */ ScannerSwitch: "%sc" "\(" ScannerNameOpt "\)";
-/* 46 */ ScannerSwitch: "%push" "\(" Identifier "\)";
-/* 47 */ ScannerSwitch: "%pop" "\(" "\)";
-/* 48 */ ScannerNameOpt: Identifier;
-/* 49 */ ScannerNameOpt: ;
+/* 32 */ SimpleToken: String SimpleTokenOpt /* Option */;
+/* 33 */ SimpleTokenOpt: CutOperator; // Option<T>::Some
+/* 34 */ SimpleTokenOpt: ; // Option<T>::None
+/* 35 */ TokenWithStates: "<" StateList ">" String;
+/* 36 */ Group: "\(" Alternations "\)";
+/* 37 */ Optional: "\[" Alternations "\]";
+/* 38 */ Repeat: "\{" Alternations "\}";
+/* 39 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
+/* 40 */ NonTerminalOpt: CutOperator; // Option<T>::Some
+/* 41 */ NonTerminalOpt: ; // Option<T>::None
+/* 42 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+/* 43 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
+/* 44 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+/* 45 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
+/* 46 */ ScannerStateList: ; // Vec<T>::New
+/* 47 */ StateList: Identifier StateListList /* Vec */;
+/* 48 */ StateListList: "," Identifier StateListList; // Vec<T>::Push
+/* 49 */ StateListList: ; // Vec<T>::New
+/* 50 */ ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+/* 51 */ ScannerSwitch: "%push" "\(" Identifier "\)";
+/* 52 */ ScannerSwitch: "%pop" "\(" "\)";
+/* 53 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
+/* 54 */ ScannerSwitchOpt: ; // Option<T>::None
+/* 55 */ CutOperator: "^";

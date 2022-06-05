@@ -5,7 +5,7 @@ use miette::{miette, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
-    let pr = transform_productions(parol_grammar.item_stack)?;
+    let pr = transform_productions(parol_grammar.productions)?;
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;

@@ -17,6 +17,15 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.9.3 - 2022-06-05
+
+* Fixed allow(unused_imports) directive
+* Added some test files to git which are missing yet which causes `run_parsers.ps1` to fail
+* Parol is now implemented using the auto-generation approach
+  * This is the basis for further improvements like user defined symbol types or clipping of AST
+  content because grammar changes are likely. Then such changes won't have much influence on the
+  grammar processing code.
+
 ## v0.9.2 - 2022-06-01
 
 * Worked on tutorial
