@@ -371,9 +371,10 @@ impl ParolGrammar<'_> {
     /// Constructs a new item
     ///
     pub fn new() -> Self {
-        let mut parol = ParolGrammar::default();
-        parol.scanner_configurations = vec![ScannerConfig::default()];
-        parol
+        ParolGrammar::<'_> {
+            scanner_configurations: vec![ScannerConfig::default()],
+            ..Default::default()
+        }
     }
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
@@ -550,7 +551,7 @@ impl ParolGrammar<'_> {
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
                 let mut scanner_states = self
                     .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
-                scanner_states.sort();
+                scanner_states.sort_unstable();
                 Ok(Factor::Terminal(
                     Self::trim_quotes(&token_with_states.token_with_states.string),
                     scanner_states,
