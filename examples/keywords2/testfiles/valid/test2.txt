@@ -1,0 +1,12 @@
+Var vara;
+Var varb;
+Begin
+    Var Beginning;
+    Begin
+        Var vario;
+    End
+End
+Var ending;
+Begin Begin End End
+Var Indend;
+Var A_Begin_B;
