@@ -13,7 +13,7 @@ pub fn generate_terminal_name(terminal: &str, i: Option<TerminalIndex>, cfg: &Cf
             .iter()
             .find(|r| {
                 if r.len() == 1 {
-                    if let Symbol::T(Terminal::Trm(n, _)) = &r.1[0] {
+                    if let Symbol::T(Terminal::Trm(n, _, _)) = &r.1[0] {
                         n == terminal && cfg.matching_productions(&r.get_n()).len() == 1
                     } else {
                         false

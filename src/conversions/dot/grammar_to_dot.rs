@@ -90,7 +90,7 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
                 instances_to_types_edges.push(format!("\"{}\"->\"{}\";", to_node, n));
                 from_node = to_node;
             }
-            Symbol::T(Terminal::Trm(_, _)) | Symbol::T(Terminal::End) => {
+            Symbol::T(Terminal::Trm(..)) | Symbol::T(Terminal::End) => {
                 let to_node = format!("t{}_{}", pi, si + 1);
                 inside_production_edges.push(format!("\"{}\"->\"{}\";", from_node, to_node));
                 from_node = to_node;
@@ -123,25 +123,25 @@ mod test {
     fn check_dot_format() {
         let rx_newline: Regex = Regex::new(r"\r?\n").unwrap();
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t_n("a", vec![0]), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t_n("b", vec![0]), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a", vec![0]),
+                    Symbol::t_n("a", vec![0]),
                     Symbol::n("Y"),
-                    Symbol::t("b", vec![0]),
+                    Symbol::t_n("b", vec![0]),
                     Symbol::n("Y"),
                 ],
             ))
             .add_pr(Pr::new(
                 "Y",
-                vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])],
+                vec![Symbol::t_n("b", vec![0]), Symbol::t_n("a", vec![0])],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let title = Some("Test grammar".to_owned());

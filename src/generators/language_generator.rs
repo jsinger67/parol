@@ -57,7 +57,7 @@ impl<'a> LanguageGenerator<'a> {
                 Symbol::N(n, _) => {
                     self.process_non_terminal(&n, result.len() > termination_threshold)
                 }
-                Symbol::T(Terminal::Trm(t, _)) => {
+                Symbol::T(Terminal::Trm(t, _, _)) => {
                     self.process_terminal(t.clone(), &mut result, max_result_length)
                 }
                 _ => Ok(()),

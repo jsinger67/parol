@@ -65,7 +65,7 @@ SimpleToken
     ;
 
 TokenWithStates
-    :  "<" StateList ">" String
+    :  "<" StateList ">" String [CutOperator]
     ;
 
 Group

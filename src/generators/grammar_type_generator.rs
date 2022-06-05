@@ -406,7 +406,7 @@ impl GrammarTypeInfo {
         let get_terminal_index = |tr: &str| self.terminals.iter().position(|t| *t == tr).unwrap();
         match s {
             Symbol::N(n, _) => (NmHlp::to_lower_snake_case(n), String::default()),
-            Symbol::T(Terminal::Trm(t, _)) => {
+            Symbol::T(Terminal::Trm(t, _, _)) => {
                 let terminal_name = &self.terminal_names[get_terminal_index(t)];
                 (NmHlp::to_lower_snake_case(terminal_name), t.to_string())
             }
@@ -476,13 +476,14 @@ impl GrammarTypeInfo {
 
     fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
-            Symbol::T(Terminal::Trm(_, _)) => Ok(TypeEntrails::Token),
+            Symbol::T(Terminal::Trm(_, _, _)) => Ok(TypeEntrails::Token),
             Symbol::N(n, a) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
                 match a {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                     SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
+                    SymbolAttribute::Clipped => todo!(),
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),

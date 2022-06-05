@@ -84,6 +84,9 @@ pub enum SymbolAttribute {
 
     /// The symbol is an option with the inner type that is determined by the non-terminal
     Option,
+
+    /// The symbol is not relevant for the AST and should not be propagated.
+    Clipped,
 }
 
 impl Display for SymbolAttribute {
@@ -92,6 +95,7 @@ impl Display for SymbolAttribute {
             Self::None => Ok(()),
             Self::RepetitionAnchor => write!(f, "Vec<T>"),
             Self::Option => write!(f, "Option<T>"),
+            Self::Clipped => write!(f, "Clipped"),
         }
     }
 }
@@ -112,6 +116,7 @@ where
             Self::None => out.write_fmt(format_args!("{}", decoratee)),
             Self::RepetitionAnchor => out.write_fmt(format_args!("{} /* Vec */", decoratee)),
             Self::Option => out.write_fmt(format_args!("{} /* Option */", decoratee)),
+            Self::Clipped => out.write_fmt(format_args!("{} /* Clipped */", decoratee)),
         }
     }
 }

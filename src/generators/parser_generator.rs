@@ -88,7 +88,7 @@ impl Production {
                         Symbol::N(n, _) => {
                             acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
                         }
-                        Symbol::T(Terminal::Trm(t, _)) => {
+                        Symbol::T(Terminal::Trm(t, _, _)) => {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
                         Symbol::S(s) => acc.push(format!("ParseType::S({}),", s)),

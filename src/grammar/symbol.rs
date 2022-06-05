@@ -20,7 +20,7 @@ pub enum Terminal {
     /// A physical terminal symbol with the scanner states it belongs to
     /// Entities that are provided by the lexer.
     ///
-    Trm(String, Vec<usize>),
+    Trm(String, Vec<usize>, SymbolAttribute),
 
     ///
     /// Epsilon symbol, the empty word
@@ -38,12 +38,12 @@ pub enum Terminal {
 
 impl Terminal {
     /// Creates a terminal
-    pub fn t(t: &str, s: Vec<usize>) -> Self {
-        Self::Trm(t.to_owned(), s)
+    pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
+        Self::Trm(t.to_owned(), s, a)
     }
     /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
-        matches!(self, Self::Trm(_, _))
+        matches!(self, Self::Trm(..))
     }
     /// Checks if self is an epsilon
     pub fn is_eps(&self) -> bool {
@@ -57,7 +57,7 @@ impl Terminal {
     /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, s)) => Terminal::Trm(t.to_string(), s.to_vec()),
+            Symbol::T(Terminal::Trm(t, s, a)) => Terminal::Trm(t.to_string(), s.to_vec(), *a),
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
         }
@@ -66,7 +66,7 @@ impl Terminal {
     /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
-            Terminal::Trm(_, s) => {
+            Terminal::Trm(_, s, _) => {
                 if !s.contains(&sc) {
                     s.push(sc);
                     s.sort_unstable();
@@ -84,12 +84,15 @@ impl Terminal {
         R: Fn(&[usize]) -> String,
     {
         match self {
-            Self::Trm(t, s) => {
+            Self::Trm(t, s, a) => {
+                let mut d = String::new();
+                a.decorate(&mut d, &format!("\"{}\"", t))
+                    .into_diagnostic()?;
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
-                    Ok(format!("\"{}\"", t))
+                    Ok(d)
                 } else {
-                    Ok(format!("<{}>\"{}\"", scanner_state_resolver(s), t))
+                    Ok(format!("<{}>{}", scanner_state_resolver(s), d))
                 }
             }
             Self::Eps => Ok("\u{03B5}".to_string()), // Lower creek letter Epsilon (ε)
@@ -101,7 +104,7 @@ impl Terminal {
 impl Display for Terminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Trm(t, _) => write!(f, "\"{}\"", t),
+            Self::Trm(t, _, _) => write!(f, "\"{}\"", t),
             Self::Eps => write!(f, "\u{03B5}"), // Lower creek letter Epsilon (ε)
             Self::End => write!(f, "$"),
         }
@@ -165,8 +168,12 @@ pub enum Symbol {
 
 impl Symbol {
     /// Creates a terminal symbol
-    pub fn t(t: &str, s: Vec<usize>) -> Self {
-        Self::T(Terminal::Trm(t.to_owned(), s))
+    pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
+        Self::T(Terminal::Trm(t.to_owned(), s, a))
+    }
+    /// Creates a terminal symbol with default symbol attribute
+    pub fn t_n(t: &str, s: Vec<usize>) -> Self {
+        Self::T(Terminal::Trm(t.to_owned(), s, SymbolAttribute::default()))
     }
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
@@ -232,7 +239,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a) => *a,
+            Symbol::N(_, a) | Symbol::T(Terminal::Trm(_, _, a)) => *a,
             _ => SymbolAttribute::None,
         }
     }
@@ -270,7 +277,11 @@ impl Display for Symbol {
                 a.decorate(&mut s, n)?;
                 write!(f, "{}", s)
             }
-            Self::T(t) => write!(f, "{}", t),
+            Self::T(t) => {
+                let mut d = String::new();
+                self.attribute().decorate(&mut d, &format!("{}", t))?;
+                write!(f, "{}", d)
+            }
             Self::S(s) => write!(f, "S({})", s),
             Self::Push(s) => write!(f, "Push({})", s),
             Self::Pop => write!(f, "Pop"),

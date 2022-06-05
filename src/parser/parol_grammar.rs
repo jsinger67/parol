@@ -39,7 +39,7 @@ pub enum Factor {
     /// An Optional
     Optional(Alternations),
     /// A terminal string with associated scanner states
-    Terminal(String, Vec<usize>),
+    Terminal(String, Vec<usize>, SymbolAttribute),
     /// A non-terminal
     NonTerminal(String, SymbolAttribute),
     /// An identifier, scanner state name
@@ -71,15 +71,19 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "G({})", g),
             Self::Repeat(r) => write!(f, "R{{{}}}", r),
             Self::Optional(o) => write!(f, "O[{}]", o),
-            Self::Terminal(t, s) => write!(
-                f,
-                "<{}>T({})",
-                s.iter()
-                    .map(|s| format!("{}", s))
-                    .collect::<Vec<String>>()
-                    .join(", "),
-                t
-            ),
+            Self::Terminal(t, s, a) => {
+                let mut d = String::new();
+                a.decorate(&mut d, &format!("T({})", t))?;
+                write!(
+                    f,
+                    "<{}>{}",
+                    s.iter()
+                        .map(|s| format!("{}", s))
+                        .collect::<Vec<String>>()
+                        .join(", "),
+                    d
+                )
+            }
             Self::NonTerminal(n, a) => {
                 let mut s = String::new();
                 a.decorate(&mut s, &format!("N({})", n))?;
@@ -100,14 +104,19 @@ impl Factor {
             Self::Group(g) => format!("({})", g.to_par()),
             Self::Repeat(r) => format!("{{{}}}", r.to_par()),
             Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, s) => format!(
-                "<{}>\"{}\"",
-                s.iter()
-                    .map(|s| format!("{}", s))
-                    .collect::<Vec<String>>()
-                    .join(", "),
-                t
-            ),
+            Self::Terminal(t, s, a) => {
+                let mut d = String::new();
+                a.decorate(&mut d, &format!("T({})", t))
+                    .expect("Failed to decorate terminal!");
+                format!(
+                    "<{}>\"{}\"",
+                    s.iter()
+                        .map(|s| format!("{}", s))
+                        .collect::<Vec<String>>()
+                        .join(", "),
+                    d
+                )
+            }
             Self::NonTerminal(n, a) => {
                 let mut buf = String::new();
                 a.decorate(&mut buf, n)
@@ -547,11 +556,20 @@ impl ParolGrammar<'_> {
                     .identifier
                     .symbol
                     .to_string(),
-                SymbolAttribute::None,
+                if non_terminal.non_terminal.non_terminal_opt.is_some() {
+                    SymbolAttribute::Clipped
+                } else {
+                    SymbolAttribute::None
+                },
             )),
             super::parol_grammar_trait::Symbol::Symbol1(simple_token) => Ok(Factor::Terminal(
                 Self::trim_quotes(&simple_token.simple_token.string),
                 vec![0],
+                if simple_token.simple_token.simple_token_opt.is_some() {
+                    SymbolAttribute::Clipped
+                } else {
+                    SymbolAttribute::None
+                },
             )),
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
                 let mut scanner_states = self
@@ -560,6 +578,12 @@ impl ParolGrammar<'_> {
                 Ok(Factor::Terminal(
                     Self::trim_quotes(&token_with_states.token_with_states.string),
                     scanner_states,
+                    SymbolAttribute::None,
+                    // if token_with_states.token_with_states..is_some() {
+                    //     SymbolAttribute::Clipped
+                    // } else {
+                    //     SymbolAttribute::None
+                    // },
                 ))
             }
             super::parol_grammar_trait::Symbol::Symbol3(scanner_switch) => {

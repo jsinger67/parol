@@ -185,25 +185,25 @@ mod test {
     #[test]
     fn check_par_format() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t("a", vec![0]), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t("b", vec![0]), Symbol::n("S")]))
+            .add_pr(Pr::new("S", vec![Symbol::t_n("a", vec![0]), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![Symbol::t_n("b", vec![0]), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t("a", vec![0]),
+                    Symbol::t_n("a", vec![0]),
                     Symbol::n("Y"),
-                    Symbol::t("b", vec![0]),
+                    Symbol::t_n("b", vec![0]),
                     Symbol::n("Y"),
                 ],
             ))
             .add_pr(Pr::new(
                 "Y",
-                vec![Symbol::t("b", vec![0]), Symbol::t("a", vec![0])],
+                vec![Symbol::t_n("b", vec![0]), Symbol::t_n("a", vec![0])],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t("a", vec![0]), Symbol::n("Z")]))
+            .add_pr(Pr::new("Y", vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
+                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
             ));
 
         let title = Some("Test grammar".to_owned());
