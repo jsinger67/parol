@@ -63,4 +63,4 @@
 /* 54 */ ScannerSwitch: "%pop" "\(" "\)";
 /* 55 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
 /* 56 */ ScannerSwitchOpt: ; // Option<T>::None
-/* 57 */ CutOperator: "^";
+/* 57 */ CutOperator: "\^";

@@ -1,0 +1,4 @@
+%start Start
+%scanner B {}
+%%
+Start: "a" <B>"b"^;

@@ -1,0 +1,6 @@
+%start Start
+
+%%
+
+Start: "a" B /* Clipped */;
+B: "b";

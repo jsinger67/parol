@@ -196,8 +196,14 @@ mod test {
     #[test]
     fn check_generate_augmented_terminals() {
         let g = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new("S", vec![Symbol::t_n("a", vec![0]), Symbol::n("X")]))
-            .add_pr(Pr::new("X", vec![Symbol::t_n("b", vec![0]), Symbol::n("S")]))
+            .add_pr(Pr::new(
+                "S",
+                vec![Symbol::t_n("a", vec![0]), Symbol::n("X")],
+            ))
+            .add_pr(Pr::new(
+                "X",
+                vec![Symbol::t_n("b", vec![0]), Symbol::n("S")],
+            ))
             .add_pr(Pr::new(
                 "X",
                 vec![
@@ -211,7 +217,10 @@ mod test {
                 "Y",
                 vec![Symbol::t_n("b", vec![0]), Symbol::t_n("a", vec![0])],
             ))
-            .add_pr(Pr::new("Y", vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")]))
+            .add_pr(Pr::new(
+                "Y",
+                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")],
+            ))
             .add_pr(Pr::new(
                 "Z",
                 vec![Symbol::t_n("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],

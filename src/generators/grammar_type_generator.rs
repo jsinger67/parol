@@ -483,7 +483,7 @@ impl GrammarTypeInfo {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                     SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
-                    SymbolAttribute::Clipped => todo!(),
+                    SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped),
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),

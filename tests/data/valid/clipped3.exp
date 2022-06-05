@@ -1,0 +1,7 @@
+%start Start
+
+%scanner B {  }
+
+%%
+
+/* 0 */ Start: "a" <B>"b";

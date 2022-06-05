@@ -119,6 +119,8 @@ pub(crate) enum TypeEntrails {
     Function(Function),
     /// An Option type
     Option(SymbolId),
+    /// An invisible type
+    Clipped,
 }
 
 impl TypeEntrails {
@@ -165,6 +167,7 @@ impl TypeEntrails {
                 symbol_table.symbol(*o).name(symbol_table),
                 symbol_table.lifetime(*o)
             ),
+            TypeEntrails::Clipped => "Clipped".to_string(),
         }
     }
 
@@ -356,7 +359,7 @@ impl Symbol {
     fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Self::Type(t) => match t.entrails {
-                TypeEntrails::None | TypeEntrails::Function(_) => false,
+                TypeEntrails::None | TypeEntrails::Function(_) | TypeEntrails::Clipped => false,
                 TypeEntrails::Token | TypeEntrails::Trait => true,
                 TypeEntrails::Struct | TypeEntrails::Enum => symbol_table
                     .scope(t.member_scope)

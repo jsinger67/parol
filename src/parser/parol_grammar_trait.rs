@@ -399,7 +399,7 @@ pub struct AlternationsList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct CutOperator<'t> {
-    pub cut_operator: Token<'t>, /* ^ */
+    pub cut_operator: Token<'t>, /* \^ */
 }
 
 ///
@@ -2492,7 +2492,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// CutOperator: "^";
+    /// CutOperator: "\^";
     ///
     #[named]
     fn cut_operator(

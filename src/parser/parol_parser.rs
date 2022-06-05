@@ -53,7 +53,7 @@ pub const TERMINALS: &[&str; 33] = &[
     /* 28 */ r###"%sc"###,
     /* 29 */ r###"%push"###,
     /* 30 */ r###"%pop"###,
-    /* 31 */ r###"^"###,
+    /* 31 */ r###"\^"###,
     /* 32 */ ERROR_TOKEN,
 ];
 
@@ -809,7 +809,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 24,
         production: &[],
     },
-    // 57 - CutOperator: "^";
+    // 57 - CutOperator: "\^";
     Production {
         lhs: 4,
         production: &[ParseType::T(31)],
