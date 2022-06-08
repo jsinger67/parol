@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use super::grammar_type_generator::GrammarTypeInfo;
-use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails};
+use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails, SymbolKind};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, UserTraitCallerFunctionDataBuilder,
     UserTraitDataBuilder, UserTraitFunctionDataBuilder, UserTraitFunctionStackPopDataBuilder,
@@ -45,7 +45,9 @@ impl<'a> UserTraitGenerator<'a> {
         for member_id in symbol_table.members(action_id)? {
             let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-            if matches!(arg_type.entrails, TypeEntrails::Token) {
+            if matches!(arg_type.entrails, TypeEntrails::Token)
+                && arg_inst.sem(symbol_table) != SymbolAttribute::Clipped
+            {
                 parse_tree_argument_used = true;
             }
             arguments.push(format!(
@@ -109,7 +111,11 @@ impl<'a> UserTraitGenerator<'a> {
         for (i, member_id) in symbol_table.members(action_id)?.iter().rev().enumerate() {
             let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-            if !matches!(arg_type.entrails, TypeEntrails::Token) {
+            if matches!(arg_type.entrails, TypeEntrails::Clipped(SymbolKind::NonTerminal)) {
+                let arg_name = symbol_table.name(arg_inst.name_id);
+                code.push(format!("// Ignore clipped member '{}'", arg_name));
+                code.push("self.pop(context);".to_string());
+            } else if !matches!(arg_type.entrails, TypeEntrails::Token) && arg_inst.sem != SymbolAttribute::Clipped {
                 let arg_name = symbol_table.name(arg_inst.name_id);
                 let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
                     .arg_name(arg_name.to_string())
@@ -150,6 +156,37 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
+    fn format_builder_call(
+        symbol_table: &SymbolTable,
+        member_id: &SymbolId,
+        sem: ProductionAttribute,
+        code: &mut StrVec,
+    ) -> Result<()> {
+        let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
+        if arg_inst.sem(symbol_table) == SymbolAttribute::Clipped {
+            // Clipped element is ignored here
+            code.push(format!(
+                "// Ignore clipped member '{}'",
+                symbol_table.name(arg_inst.name_id)
+            ));
+            return Ok(());
+        }
+        let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
+        Ok(if !matches!(arg_type.entrails, TypeEntrails::Clipped(_)) {
+            let arg_name = symbol_table.name(arg_inst.name_id);
+            let setter_name = &arg_name;
+            let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) &&
+                // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
+                (sem != ProductionAttribute::AddToCollection || arg_inst.sem != SymbolAttribute::RepetitionAnchor)
+            {
+                format!("Box::new({})", arg_name)
+            } else {
+                arg_name.to_string()
+            };
+            code.push(format!("    .{}({})", setter_name, arg_name));
+        })
+    }
+
     fn generate_result_builder(
         &self,
         code: &mut StrVec,
@@ -186,18 +223,7 @@ impl<'a> UserTraitGenerator<'a> {
                 nt_type.name(symbol_table)
             ));
             for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
-                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
-                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-                let arg_name = symbol_table.name(arg_inst.name_id);
-                let setter_name = &arg_name;
-                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_))
-                    && arg_inst.sem == SymbolAttribute::None
-                {
-                    format!("Box::new({})", &arg_name)
-                } else {
-                    arg_name.to_string()
-                };
-                code.push(format!("    .{}({})", setter_name, arg_name));
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
             code.push("    .into_diagnostic()?;".to_string());
@@ -208,16 +234,7 @@ impl<'a> UserTraitGenerator<'a> {
                 nt_type.name(symbol_table)
             ));
             for member_id in symbol_table.members(action_id)? {
-                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
-                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-                let arg_name = symbol_table.name(arg_inst.name_id);
-                let setter_name = &arg_name;
-                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) {
-                    format!("Box::new({})", arg_name)
-                } else {
-                    arg_name.to_string()
-                };
-                code.push(format!("    .{}({})", setter_name, arg_name));
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
             code.push("    .into_diagnostic()?;".to_string());
@@ -234,16 +251,7 @@ impl<'a> UserTraitGenerator<'a> {
                 fn_name, builder_prefix
             ));
             for member_id in symbol_table.members(action_id)? {
-                let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
-                let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-                let arg_name = symbol_table.name(arg_inst.name_id);
-                let setter_name = &arg_name;
-                let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) {
-                    format!("Box::new({})", arg_name)
-                } else {
-                    arg_name.to_string()
-                };
-                code.push(format!("    .{}({})", setter_name, arg_name));
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
             code.push("    .into_diagnostic()?;".to_string());
@@ -395,7 +403,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<Option<String>> {
         let type_symbol = symbol_table.symbol_as_type(type_id)?;
         let type_name = symbol_table.name(type_symbol.name_id).to_string();
-        let lifetime = symbol_table.lifetime(type_symbol.my_id);
+        let lifetime = symbol_table.imposes_lifetime(type_symbol.my_id);
         let default_members = Vec::default();
         let members = symbol_table
             .members(type_symbol.my_id)
@@ -408,7 +416,14 @@ impl<'a> UserTraitGenerator<'a> {
                     type_name,
                     lifetime,
                     members: members.iter().fold(StrVec::new(4), |mut acc, m| {
-                        acc.push(symbol_table.symbol(*m).to_rust(symbol_table));
+                        if symbol_table
+                            .symbol_as_instance(*m)
+                            .expect("Should be an instance!")
+                            .sem(symbol_table)
+                            != SymbolAttribute::Clipped
+                        {
+                            acc.push(symbol_table.symbol(*m).to_rust(symbol_table));
+                        }
                         acc
                     }),
                 };
@@ -606,7 +621,7 @@ impl<'a> UserTraitGenerator<'a> {
                 }
             },
         )?;
-        // $env:RUST_LOG="parol::generators::user_trait_generator=trace
+        // $env:RUST_LOG="parol::generators::user_trait_generator=trace"
         trace!("// Type information:");
         trace!("{}", type_info);
 

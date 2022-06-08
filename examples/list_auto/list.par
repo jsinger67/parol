@@ -4,6 +4,6 @@
 
 %%
 
-List: [Num {"," Num}] TrailingComma;
+List: [Num {","^ Num}] TrailingComma^;
 Num: "0|[1-9][0-9]*";
 TrailingComma: [","];

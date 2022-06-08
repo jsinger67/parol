@@ -10,7 +10,7 @@ use std::fmt::{Debug, Display, Error, Formatter};
 use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
-use super::symbol_table::{Function, FunctionBuilder, SymbolId, SymbolTable, TypeEntrails};
+use super::symbol_table::{Function, FunctionBuilder, SymbolId, SymbolTable, TypeEntrails, SymbolKind};
 
 ///
 /// Type information for a given grammar
@@ -190,7 +190,8 @@ impl GrammarTypeInfo {
         self.create_initial_non_terminal_types(&grammar_config.cfg)?;
         self.deduce_actions(grammar_config)?;
         self.finish_non_terminal_types(&grammar_config.cfg)?;
-        self.generate_ast_enum_type()
+        self.generate_ast_enum_type()?;
+        Ok(())
     }
 
     ///
@@ -456,7 +457,8 @@ impl GrammarTypeInfo {
                     .fold(Ok(()), |acc, ((n, r), (t, a))| {
                         acc?;
                         // Tokens are taken from the parameter list per definition.
-                        let used = matches!(t, TypeEntrails::Token);
+                        let used =
+                            matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
                         let type_id = self.symbol_table.get_or_create_type(
                             SymbolTable::UNNAMED_TYPE,
                             SymbolTable::GLOBAL_SCOPE,
@@ -476,14 +478,20 @@ impl GrammarTypeInfo {
 
     fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
-            Symbol::T(Terminal::Trm(_, _, _)) => Ok(TypeEntrails::Token),
+            Symbol::T(Terminal::Trm(_, _, a)) => {
+                if *a == SymbolAttribute::Clipped {
+                    Ok(TypeEntrails::Clipped(SymbolKind::Token))
+                } else {
+                    Ok(TypeEntrails::Token)
+                }
+            }
             Symbol::N(n, a) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
                 match a {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                     SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
-                    SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped),
+                    SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(SymbolKind::NonTerminal)),
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),
@@ -582,6 +590,7 @@ impl GrammarTypeInfo {
 
 impl Display for GrammarTypeInfo {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        writeln!(f, "// Symbol table:")?;
         writeln!(f, "{}", self.symbol_table)?;
         writeln!(f, "// Production types:")?;
         for (p, i) in &self.production_types {

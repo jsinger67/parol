@@ -12,20 +12,20 @@
 /*  3 */ PrologList0: ; // Vec<T>::New
 /*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
 /*  5 */ PrologList: ; // Vec<T>::New
-/*  6 */ StartDeclaration: "%start" Identifier;
-/*  7 */ Declaration: "%title" String;
-/*  8 */ Declaration: "%comment" String;
+/*  6 */ StartDeclaration: "%start" /* Clipped */ Identifier;
+/*  7 */ Declaration: "%title" /* Clipped */ String;
+/*  8 */ Declaration: "%comment" /* Clipped */ String;
 /*  9 */ Declaration: ScannerDirectives;
-/* 10 */ ScannerDirectives: "%line_comment" String;
-/* 11 */ ScannerDirectives: "%block_comment" String String;
-/* 12 */ ScannerDirectives: "%auto_newline_off";
-/* 13 */ ScannerDirectives: "%auto_ws_off";
-/* 14 */ GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
+/* 10 */ ScannerDirectives: "%line_comment" /* Clipped */ String;
+/* 11 */ ScannerDirectives: "%block_comment" /* Clipped */ String String;
+/* 12 */ ScannerDirectives: "%auto_newline_off" /* Clipped */;
+/* 13 */ ScannerDirectives: "%auto_ws_off" /* Clipped */;
+/* 14 */ GrammarDefinition: "%%" /* Clipped */ Production GrammarDefinitionList /* Vec */;
 /* 15 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 16 */ GrammarDefinitionList: ; // Vec<T>::New
-/* 17 */ Production: Identifier ":" Alternations ";";
+/* 17 */ Production: Identifier ":" /* Clipped */ Alternations ";" /* Clipped */;
 /* 18 */ Alternations: Alternation AlternationsList /* Vec */;
-/* 19 */ AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
+/* 19 */ AlternationsList: "\|" /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
 /* 20 */ AlternationsList: ; // Vec<T>::New
 /* 21 */ Alternation: AlternationList /* Vec */;
 /* 22 */ AlternationList: Factor AlternationList; // Vec<T>::Push
@@ -41,26 +41,26 @@
 /* 32 */ SimpleToken: String SimpleTokenOpt /* Option */;
 /* 33 */ SimpleTokenOpt: CutOperator; // Option<T>::Some
 /* 34 */ SimpleTokenOpt: ; // Option<T>::None
-/* 35 */ TokenWithStates: "<" StateList ">" String TokenWithStatesOpt /* Option */;
+/* 35 */ TokenWithStates: "<" /* Clipped */ StateList ">" /* Clipped */ String TokenWithStatesOpt /* Option */;
 /* 36 */ TokenWithStatesOpt: CutOperator; // Option<T>::Some
 /* 37 */ TokenWithStatesOpt: ; // Option<T>::None
-/* 38 */ Group: "\(" Alternations "\)";
-/* 39 */ Optional: "\[" Alternations "\]";
-/* 40 */ Repeat: "\{" Alternations "\}";
+/* 38 */ Group: "\(" /* Clipped */ Alternations "\)" /* Clipped */;
+/* 39 */ Optional: "\[" /* Clipped */ Alternations "\]" /* Clipped */;
+/* 40 */ Repeat: "\{" /* Clipped */ Alternations "\}" /* Clipped */;
 /* 41 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
 /* 42 */ NonTerminalOpt: CutOperator; // Option<T>::Some
 /* 43 */ NonTerminalOpt: ; // Option<T>::None
 /* 44 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
 /* 45 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
-/* 46 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+/* 46 */ ScannerState: "%scanner" /* Clipped */ Identifier "\{" /* Clipped */ ScannerStateList /* Vec */ "\}" /* Clipped */;
 /* 47 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
 /* 48 */ ScannerStateList: ; // Vec<T>::New
 /* 49 */ StateList: Identifier StateListList /* Vec */;
-/* 50 */ StateListList: "," Identifier StateListList; // Vec<T>::Push
+/* 50 */ StateListList: "," /* Clipped */ Identifier StateListList; // Vec<T>::Push
 /* 51 */ StateListList: ; // Vec<T>::New
-/* 52 */ ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
-/* 53 */ ScannerSwitch: "%push" "\(" Identifier "\)";
-/* 54 */ ScannerSwitch: "%pop" "\(" "\)";
+/* 52 */ ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
+/* 53 */ ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
+/* 54 */ ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
 /* 55 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
 /* 56 */ ScannerSwitchOpt: ; // Option<T>::None
-/* 57 */ CutOperator: "\^";
+/* 57 */ CutOperator: "\^" /* Clipped */;

@@ -51,7 +51,6 @@ pub trait ListGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct List<'t> {
     pub list_opt: Option<Box<ListOpt<'t>>>,
-    pub trailing_comma: Box<TrailingComma<'t>>,
 }
 
 ///
@@ -70,7 +69,6 @@ pub struct ListOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ListOptList<'t> {
-    pub comma: Token<'t>, /* , */
     pub num: Box<Num<'t>>,
 }
 
@@ -185,7 +183,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// List: ListOpt /* Option */ TrailingComma;
+    /// List: ListOpt /* Option */ TrailingComma /* Clipped */;
     ///
     #[named]
     fn list(
@@ -196,12 +194,8 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma = if let Some(ASTType::TrailingComma(trailing_comma)) = self.pop(context)
-        {
-            trailing_comma
-        } else {
-            bail!("{}: Expecting ASTType::TrailingComma", context);
-        };
+        // Ignore clipped member 'trailing_comma'
+        self.pop(context);
         let list_opt = if let Some(ASTType::ListOpt(list_opt)) = self.pop(context) {
             list_opt
         } else {
@@ -209,7 +203,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         };
         let list_built = ListBuilder::default()
             .list_opt(list_opt)
-            .trailing_comma(Box::new(trailing_comma))
+            // Ignore clipped member 'trailing_comma'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -254,19 +248,18 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ListOptList: "," Num ListOptList; // Vec<T>::Push
+    /// ListOptList: "," /* Clipped */ Num ListOptList; // Vec<T>::Push
     ///
     #[named]
     fn list_opt_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _num: &ParseTreeStackEntry<'t>,
         _list_opt_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut list_opt_list = if let Some(ASTType::ListOptList(list_opt_list)) = self.pop(context)
         {
             list_opt_list
@@ -280,7 +273,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         };
         let list_opt_list_0_built = ListOptListBuilder::default()
             .num(Box::new(num))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector

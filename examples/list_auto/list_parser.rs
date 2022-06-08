@@ -115,7 +115,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 9] = &[
-    // 0 - List: ListOpt /* Option */ TrailingComma;
+    // 0 - List: ListOpt /* Option */ TrailingComma /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::N(4), ParseType::N(1)],
@@ -125,7 +125,7 @@ pub const PRODUCTIONS: &[Production; 9] = &[
         lhs: 1,
         production: &[ParseType::N(2), ParseType::N(3)],
     },
-    // 2 - ListOptList: "," Num ListOptList;
+    // 2 - ListOptList: "," /* Clipped */ Num ListOptList;
     Production {
         lhs: 2,
         production: &[ParseType::N(2), ParseType::N(3), ParseType::T(5)],

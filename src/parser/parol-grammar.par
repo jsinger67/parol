@@ -14,32 +14,32 @@ Prolog
     : StartDeclaration { Declaration } { ScannerState };
 
 StartDeclaration
-    : "%start" Identifier
+    : "%start"^ Identifier
     ;
 
 Declaration
-    : "%title" String
-    | "%comment" String
+    : "%title"^ String
+    | "%comment"^ String
     | ScannerDirectives
     ;
 
 ScannerDirectives
-    : "%line_comment" String
-    | "%block_comment" String String
-    | "%auto_newline_off"
-    | "%auto_ws_off"
+    : "%line_comment"^ String
+    | "%block_comment"^ String String
+    | "%auto_newline_off"^
+    | "%auto_ws_off"^
     ;
 
 GrammarDefinition
-    : "%%" Production { Production }
+    : "%%"^ Production { Production }
     ;
 
 Production
-    : Identifier ":" Alternations ";"
+    : Identifier ":"^ Alternations ";"^
     ;
 
 Alternations
-    : Alternation { "\|" Alternation }
+    : Alternation { "\|"^ Alternation }
     ;
 
 Alternation
@@ -65,19 +65,19 @@ SimpleToken
     ;
 
 TokenWithStates
-    :  "<" StateList ">" String [CutOperator]
+    :  "<"^ StateList ">"^ String [CutOperator]
     ;
 
 Group
-    : "\(" Alternations "\)"
+    : "\("^ Alternations "\)"^
     ;
 
 Optional
-    : "\[" Alternations "\]"
+    : "\["^ Alternations "\]"^
     ;
 
 Repeat
-    : "\{" Alternations "\}"
+    : "\{"^ Alternations "\}"^
     ;
 
 NonTerminal
@@ -93,19 +93,19 @@ String
     ;
 
 ScannerState
-    : "%scanner" Identifier "\{" { ScannerDirectives } "\}"
+    : "%scanner"^ Identifier "\{"^ { ScannerDirectives } "\}"^
     ;
 
 StateList
-    : Identifier { "," Identifier }
+    : Identifier { ","^ Identifier }
     ;
 
 ScannerSwitch
-    : "%sc" "\(" [Identifier] "\)"
-    | "%push" "\(" Identifier "\)"
-    | "%pop" "\(" "\)"
+    : "%sc"^ "\("^ [Identifier] "\)"^
+    | "%push"^ "\("^ Identifier "\)"^
+    | "%pop"^ "\("^ "\)"^
     ;
 
 CutOperator
-    : "\^"
+    : "\^"^
     ;

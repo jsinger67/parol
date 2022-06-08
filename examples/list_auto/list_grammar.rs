@@ -19,9 +19,9 @@ impl ListGrammar<'_> {
 impl Display for List<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         if let Some(list) = &self.list_opt {
-            write!(f, "[{}{}]", list, self.trailing_comma)
+            write!(f, "[{}]", list)
         } else {
-            write!(f, "[{}]", self.trailing_comma)
+            write!(f, "[]")
         }
     }
 }
@@ -43,7 +43,7 @@ impl Display for ListOpt<'_> {
 
 impl Display for ListOptList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{} {}", self.comma.symbol, self.num.num.symbol)
+        write!(f, ", {}", self.num.num.symbol)
     }
 }
 

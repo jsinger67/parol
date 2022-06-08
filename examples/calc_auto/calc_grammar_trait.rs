@@ -265,14 +265,12 @@ pub struct Factor2<'t> {
 ///
 /// Type derived for production 57
 ///
-/// factor: "\(" logical_or "\)";
+/// factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Factor3<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub logical_or: Box<LogicalOr<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -432,7 +430,6 @@ pub struct Calc<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct CalcList<'t> {
     pub instruction: Box<Instruction<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -855,19 +852,18 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// calcList: instruction ";" calcList; // Vec<T>::Push
+    /// calcList: instruction ";" /* Clipped */ calcList; // Vec<T>::Push
     ///
     #[named]
     fn calc_list_0(
         &mut self,
         _instruction: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _calc_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut calc_list = if let Some(ASTType::CalcList(calc_list)) = self.pop(context) {
             calc_list
         } else {
@@ -879,7 +875,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::Instruction", context);
         };
         let calc_list_0_built = CalcListBuilder::default()
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .instruction(Box::new(instruction))
             .build()
             .into_diagnostic()?;
@@ -2435,29 +2431,27 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// factor: "\(" logical_or "\)";
+    /// factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
     ///
     #[named]
     fn factor_3(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _logical_or: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
             logical_or
         } else {
             bail!("{}: Expecting ASTType::LogicalOr", context);
         };
         let factor_3_built = Factor3Builder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .logical_or(Box::new(logical_or))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         let factor_3_built = Factor::Factor3(factor_3_built);
