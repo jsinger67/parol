@@ -10,7 +10,9 @@ use std::fmt::{Debug, Display, Error, Formatter};
 use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
-use super::symbol_table::{Function, FunctionBuilder, SymbolId, SymbolTable, TypeEntrails, SymbolKind};
+use super::symbol_table::{
+    Function, FunctionBuilder, SymbolId, SymbolKind, SymbolTable, TypeEntrails,
+};
 
 ///
 /// Type information for a given grammar
@@ -191,6 +193,7 @@ impl GrammarTypeInfo {
         self.deduce_actions(grammar_config)?;
         self.finish_non_terminal_types(&grammar_config.cfg)?;
         self.generate_ast_enum_type()?;
+        self.symbol_table.propagate_lifetimes();
         Ok(())
     }
 

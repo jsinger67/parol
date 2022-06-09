@@ -129,7 +129,7 @@ pub trait ParolGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'CutOperator'
-    fn cut_operator(&mut self, _arg: &CutOperator<'t>) -> Result<()> {
+    fn cut_operator(&mut self, _arg: &CutOperator) -> Result<()> {
         Ok(())
     }
 }
@@ -142,24 +142,22 @@ pub trait ParolGrammarTrait<'t> {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title" String;
+/// Declaration: "%title" /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration0<'t> {
-    pub percent_title: Token<'t>, /* %title */
     pub string: Box<String<'t>>,
 }
 
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment" String;
+/// Declaration: "%comment" /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration1<'t> {
-    pub percent_comment: Token<'t>, /* %comment */
     pub string: Box<String<'t>>,
 }
 
@@ -177,24 +175,22 @@ pub struct Declaration2<'t> {
 ///
 /// Type derived for production 10
 ///
-/// ScannerDirectives: "%line_comment" String;
+/// ScannerDirectives: "%line_comment" /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives0<'t> {
-    pub percent_line_underscore_comment: Token<'t>, /* %line_comment */
     pub string: Box<String<'t>>,
 }
 
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%block_comment" String String;
+/// ScannerDirectives: "%block_comment" /* Clipped */ String String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives1<'t> {
-    pub percent_block_underscore_comment: Token<'t>, /* %block_comment */
     pub string: Box<String<'t>>,
     pub string0: Box<String<'t>>,
 }
@@ -202,24 +198,20 @@ pub struct ScannerDirectives1<'t> {
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%auto_newline_off";
+/// ScannerDirectives: "%auto_newline_off" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives2<'t> {
-    pub percent_auto_underscore_newline_underscore_off: Token<'t>, /* %auto_newline_off */
-}
+pub struct ScannerDirectives2 {}
 
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_ws_off";
+/// ScannerDirectives: "%auto_ws_off" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives3<'t> {
-    pub percent_auto_underscore_ws_underscore_off: Token<'t>, /* %auto_ws_off */
-}
+pub struct ScannerDirectives3 {}
 
 ///
 /// Type derived for production 24
@@ -312,43 +304,33 @@ pub struct Symbol3<'t> {
 ///
 /// Type derived for production 52
 ///
-/// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+/// ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch0<'t> {
-    pub percent_sc: Token<'t>, /* %sc */
-    pub l_paren: Token<'t>,    /* \( */
     pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
 /// Type derived for production 53
 ///
-/// ScannerSwitch: "%push" "\(" Identifier "\)";
+/// ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch1<'t> {
-    pub percent_push: Token<'t>, /* %push */
-    pub l_paren: Token<'t>,      /* \( */
     pub identifier: Box<Identifier<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
 /// Type derived for production 54
 ///
-/// ScannerSwitch: "%pop" "\(" "\)";
+/// ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch2<'t> {
-    pub percent_pop: Token<'t>, /* %pop */
-    pub l_paren: Token<'t>,     /* \( */
-    pub r_paren: Token<'t>,     /* \) */
-}
+pub struct ScannerSwitch2 {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -389,7 +371,6 @@ pub struct Alternations<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct AlternationsList<'t> {
-    pub or: Token<'t>, /* \| */
     pub alternation: Box<Alternation<'t>>,
 }
 
@@ -398,9 +379,7 @@ pub struct AlternationsList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CutOperator<'t> {
-    pub cut_operator: Token<'t>, /* \^ */
-}
+pub struct CutOperator {}
 
 ///
 /// Type derived for non-terminal Declaration
@@ -431,7 +410,6 @@ pub enum Factor<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct GrammarDefinition<'t> {
-    pub percent_percent: Token<'t>, /* %% */
     pub production: Box<Production<'t>>,
     pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>,
 }
@@ -451,9 +429,7 @@ pub struct GrammarDefinitionList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Group<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub alternations: Box<Alternations<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -472,7 +448,7 @@ pub struct Identifier<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct NonTerminal<'t> {
     pub identifier: Box<Identifier<'t>>,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt<'t>>>,
+    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
 }
 
 ///
@@ -480,8 +456,8 @@ pub struct NonTerminal<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct NonTerminalOpt<'t> {
-    pub cut_operator: Box<CutOperator<'t>>,
+pub struct NonTerminalOpt {
+    pub cut_operator: Box<CutOperator>,
 }
 
 ///
@@ -490,9 +466,7 @@ pub struct NonTerminalOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Optional<'t> {
-    pub l_bracket: Token<'t>, /* \[ */
     pub alternations: Box<Alternations<'t>>,
-    pub r_bracket: Token<'t>, /* \] */
 }
 
 ///
@@ -512,9 +486,7 @@ pub struct Parol<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Production<'t> {
     pub identifier: Box<Identifier<'t>>,
-    pub colon: Token<'t>, /* : */
     pub alternations: Box<Alternations<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -552,9 +524,7 @@ pub struct PrologList0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Repeat<'t> {
-    pub l_brace: Token<'t>, /* \{ */
     pub alternations: Box<Alternations<'t>>,
-    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
@@ -565,8 +535,8 @@ pub struct Repeat<'t> {
 pub enum ScannerDirectives<'t> {
     ScannerDirectives0(ScannerDirectives0<'t>),
     ScannerDirectives1(ScannerDirectives1<'t>),
-    ScannerDirectives2(ScannerDirectives2<'t>),
-    ScannerDirectives3(ScannerDirectives3<'t>),
+    ScannerDirectives2(ScannerDirectives2),
+    ScannerDirectives3(ScannerDirectives3),
 }
 
 ///
@@ -575,11 +545,8 @@ pub enum ScannerDirectives<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerState<'t> {
-    pub percent_scanner: Token<'t>, /* %scanner */
     pub identifier: Box<Identifier<'t>>,
-    pub l_brace: Token<'t>, /* \{ */
     pub scanner_state_list: Vec<ScannerStateList<'t>>,
-    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
@@ -599,7 +566,7 @@ pub struct ScannerStateList<'t> {
 pub enum ScannerSwitch<'t> {
     ScannerSwitch0(ScannerSwitch0<'t>),
     ScannerSwitch1(ScannerSwitch1<'t>),
-    ScannerSwitch2(ScannerSwitch2<'t>),
+    ScannerSwitch2(ScannerSwitch2),
 }
 
 ///
@@ -618,7 +585,7 @@ pub struct ScannerSwitchOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct SimpleToken<'t> {
     pub string: Box<String<'t>>,
-    pub simple_token_opt: Option<Box<SimpleTokenOpt<'t>>>,
+    pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
 ///
@@ -626,8 +593,8 @@ pub struct SimpleToken<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleTokenOpt<'t> {
-    pub cut_operator: Box<CutOperator<'t>>,
+pub struct SimpleTokenOpt {
+    pub cut_operator: Box<CutOperator>,
 }
 
 ///
@@ -636,7 +603,6 @@ pub struct SimpleTokenOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StartDeclaration<'t> {
-    pub percent_start: Token<'t>, /* %start */
     pub identifier: Box<Identifier<'t>>,
 }
 
@@ -656,7 +622,6 @@ pub struct StateList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StateListList<'t> {
-    pub comma: Token<'t>, /* , */
     pub identifier: Box<Identifier<'t>>,
 }
 
@@ -687,11 +652,9 @@ pub enum Symbol<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TokenWithStates<'t> {
-    pub l_t: Token<'t>, /* < */
     pub state_list: Box<StateList<'t>>,
-    pub g_t: Token<'t>, /* > */
     pub string: Box<String<'t>>,
-    pub token_with_states_opt: Option<Box<TokenWithStatesOpt<'t>>>,
+    pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
 ///
@@ -699,8 +662,8 @@ pub struct TokenWithStates<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenWithStatesOpt<'t> {
-    pub cut_operator: Box<CutOperator<'t>>,
+pub struct TokenWithStatesOpt {
+    pub cut_operator: Box<CutOperator>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -715,7 +678,7 @@ pub enum ASTType<'t> {
     AlternationList(Vec<AlternationList<'t>>),
     Alternations(Alternations<'t>),
     AlternationsList(Vec<AlternationsList<'t>>),
-    CutOperator(CutOperator<'t>),
+    CutOperator(CutOperator),
     Declaration(Declaration<'t>),
     Factor(Factor<'t>),
     GrammarDefinition(GrammarDefinition<'t>),
@@ -723,7 +686,7 @@ pub enum ASTType<'t> {
     Group(Group<'t>),
     Identifier(Identifier<'t>),
     NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<Box<NonTerminalOpt<'t>>>),
+    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
     Optional(Optional<'t>),
     Parol(Parol<'t>),
     Production(Production<'t>),
@@ -737,14 +700,14 @@ pub enum ASTType<'t> {
     ScannerSwitch(ScannerSwitch<'t>),
     ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
     SimpleToken(SimpleToken<'t>),
-    SimpleTokenOpt(Option<Box<SimpleTokenOpt<'t>>>),
+    SimpleTokenOpt(Option<Box<SimpleTokenOpt>>),
     StartDeclaration(StartDeclaration<'t>),
     StateList(StateList<'t>),
     StateListList(Vec<StateListList<'t>>),
     String(String<'t>),
     Symbol(Symbol<'t>),
     TokenWithStates(TokenWithStates<'t>),
-    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt<'t>>>),
+    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
 }
 
 /// Auto-implemented adapter grammar
@@ -986,25 +949,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start" Identifier;
+    /// StartDeclaration: "%start" /* Clipped */ Identifier;
     ///
     #[named]
     fn start_declaration(
         &mut self,
-        percent_start: &ParseTreeStackEntry<'t>,
+        _percent_start: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_start = *percent_start.token(parse_tree)?;
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
         let start_declaration_built = StartDeclarationBuilder::default()
-            .percent_start(percent_start)
+            // Ignore clipped member 'percent_start'
             .identifier(Box::new(identifier))
             .build()
             .into_diagnostic()?;
@@ -1017,25 +979,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title" String;
+    /// Declaration: "%title" /* Clipped */ String;
     ///
     #[named]
     fn declaration_0(
         &mut self,
-        percent_title: &ParseTreeStackEntry<'t>,
+        _percent_title: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_title = *percent_title.token(parse_tree)?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
             bail!("{}: Expecting ASTType::String", context);
         };
         let declaration_0_built = Declaration0Builder::default()
-            .percent_title(percent_title)
+            // Ignore clipped member 'percent_title'
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
@@ -1048,25 +1009,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment" String;
+    /// Declaration: "%comment" /* Clipped */ String;
     ///
     #[named]
     fn declaration_1(
         &mut self,
-        percent_comment: &ParseTreeStackEntry<'t>,
+        _percent_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_comment = *percent_comment.token(parse_tree)?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
             bail!("{}: Expecting ASTType::String", context);
         };
         let declaration_1_built = Declaration1Builder::default()
-            .percent_comment(percent_comment)
+            // Ignore clipped member 'percent_comment'
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
@@ -1108,25 +1068,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ScannerDirectives: "%line_comment" String;
+    /// ScannerDirectives: "%line_comment" /* Clipped */ String;
     ///
     #[named]
     fn scanner_directives_0(
         &mut self,
-        percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
+        _percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_line_underscore_comment = *percent_line_underscore_comment.token(parse_tree)?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
             bail!("{}: Expecting ASTType::String", context);
         };
         let scanner_directives_0_built = ScannerDirectives0Builder::default()
-            .percent_line_underscore_comment(percent_line_underscore_comment)
+            // Ignore clipped member 'percent_line_underscore_comment'
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
@@ -1144,20 +1103,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%block_comment" String String;
+    /// ScannerDirectives: "%block_comment" /* Clipped */ String String;
     ///
     #[named]
     fn scanner_directives_1(
         &mut self,
-        percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
+        _percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
         _string0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_block_underscore_comment =
-            *percent_block_underscore_comment.token(parse_tree)?;
         let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
             string0
         } else {
@@ -1169,7 +1126,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::String", context);
         };
         let scanner_directives_1_built = ScannerDirectives1Builder::default()
-            .percent_block_underscore_comment(percent_block_underscore_comment)
+            // Ignore clipped member 'percent_block_underscore_comment'
             .string(Box::new(string))
             .string0(Box::new(string0))
             .build()
@@ -1188,22 +1145,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%auto_newline_off";
+    /// ScannerDirectives: "%auto_newline_off" /* Clipped */;
     ///
     #[named]
     fn scanner_directives_2(
         &mut self,
-        percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_auto_underscore_newline_underscore_off =
-            *percent_auto_underscore_newline_underscore_off.token(parse_tree)?;
         let scanner_directives_2_built = ScannerDirectives2Builder::default()
-            .percent_auto_underscore_newline_underscore_off(
-                percent_auto_underscore_newline_underscore_off,
-            )
+            // Ignore clipped member 'percent_auto_underscore_newline_underscore_off'
             .build()
             .into_diagnostic()?;
         let scanner_directives_2_built =
@@ -1220,20 +1173,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_ws_off";
+    /// ScannerDirectives: "%auto_ws_off" /* Clipped */;
     ///
     #[named]
     fn scanner_directives_3(
         &mut self,
-        percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_auto_underscore_ws_underscore_off =
-            *percent_auto_underscore_ws_underscore_off.token(parse_tree)?;
         let scanner_directives_3_built = ScannerDirectives3Builder::default()
-            .percent_auto_underscore_ws_underscore_off(percent_auto_underscore_ws_underscore_off)
+            // Ignore clipped member 'percent_auto_underscore_ws_underscore_off'
             .build()
             .into_diagnostic()?;
         let scanner_directives_3_built =
@@ -1250,19 +1201,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
+    /// GrammarDefinition: "%%" /* Clipped */ Production GrammarDefinitionList /* Vec */;
     ///
     #[named]
     fn grammar_definition(
         &mut self,
-        percent_percent: &ParseTreeStackEntry<'t>,
+        _percent_percent: &ParseTreeStackEntry<'t>,
         _production: &ParseTreeStackEntry<'t>,
         _grammar_definition_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_percent = *percent_percent.token(parse_tree)?;
         let grammar_definition_list =
             if let Some(ASTType::GrammarDefinitionList(mut grammar_definition_list)) =
                 self.pop(context)
@@ -1278,7 +1228,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::Production", context);
         };
         let grammar_definition_built = GrammarDefinitionBuilder::default()
-            .percent_percent(percent_percent)
+            // Ignore clipped member 'percent_percent'
             .production(Box::new(production))
             .grammar_definition_list(grammar_definition_list)
             .build()
@@ -1350,21 +1300,19 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Production: Identifier ":" Alternations ";";
+    /// Production: Identifier ":" /* Clipped */ Alternations ";" /* Clipped */;
     ///
     #[named]
     fn production(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _semicolon: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
-        let semicolon = *semicolon.token(parse_tree)?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
@@ -1377,9 +1325,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         };
         let production_built = ProductionBuilder::default()
             .identifier(Box::new(identifier))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .alternations(Box::new(alternations))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1426,19 +1374,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
+    /// AlternationsList: "\|" /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
     ///
     #[named]
     fn alternations_list_0(
         &mut self,
-        or: &ParseTreeStackEntry<'t>,
+        _or: &ParseTreeStackEntry<'t>,
         _alternation: &ParseTreeStackEntry<'t>,
         _alternations_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let or = *or.token(parse_tree)?;
         let mut alternations_list =
             if let Some(ASTType::AlternationsList(alternations_list)) = self.pop(context) {
                 alternations_list
@@ -1452,7 +1399,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         };
         let alternations_list_0_built = AlternationsListBuilder::default()
             .alternation(Box::new(alternation))
-            .or(or)
+            // Ignore clipped member 'or'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -1856,22 +1803,20 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// TokenWithStates: "<" StateList ">" String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<" /* Clipped */ StateList ">" /* Clipped */ String TokenWithStatesOpt /* Option */;
     ///
     #[named]
     fn token_with_states(
         &mut self,
-        l_t: &ParseTreeStackEntry<'t>,
+        _l_t: &ParseTreeStackEntry<'t>,
         _state_list: &ParseTreeStackEntry<'t>,
-        g_t: &ParseTreeStackEntry<'t>,
+        _g_t: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
         _token_with_states_opt: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_t = *l_t.token(parse_tree)?;
-        let g_t = *g_t.token(parse_tree)?;
         let token_with_states_opt =
             if let Some(ASTType::TokenWithStatesOpt(token_with_states_opt)) = self.pop(context) {
                 token_with_states_opt
@@ -1889,9 +1834,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::StateList", context);
         };
         let token_with_states_built = TokenWithStatesBuilder::default()
-            .l_t(l_t)
+            // Ignore clipped member 'l_t'
             .state_list(Box::new(state_list))
-            .g_t(g_t)
+            // Ignore clipped member 'g_t'
             .string(Box::new(string))
             .token_with_states_opt(token_with_states_opt)
             .build()
@@ -1945,29 +1890,27 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Group: "\(" Alternations "\)";
+    /// Group: "\(" /* Clipped */ Alternations "\)" /* Clipped */;
     ///
     #[named]
     fn group(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
             bail!("{}: Expecting ASTType::Alternations", context);
         };
         let group_built = GroupBuilder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .alternations(Box::new(alternations))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1978,29 +1921,27 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// Optional: "\[" Alternations "\]";
+    /// Optional: "\[" /* Clipped */ Alternations "\]" /* Clipped */;
     ///
     #[named]
     fn optional(
         &mut self,
-        l_bracket: &ParseTreeStackEntry<'t>,
+        _l_bracket: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
-        r_bracket: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_bracket: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = *l_bracket.token(parse_tree)?;
-        let r_bracket = *r_bracket.token(parse_tree)?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
             bail!("{}: Expecting ASTType::Alternations", context);
         };
         let optional_built = OptionalBuilder::default()
-            .l_bracket(l_bracket)
+            // Ignore clipped member 'l_bracket'
             .alternations(Box::new(alternations))
-            .r_bracket(r_bracket)
+            // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2011,29 +1952,27 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// Repeat: "\{" Alternations "\}";
+    /// Repeat: "\{" /* Clipped */ Alternations "\}" /* Clipped */;
     ///
     #[named]
     fn repeat(
         &mut self,
-        l_brace: &ParseTreeStackEntry<'t>,
+        _l_brace: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
-        r_brace: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_brace: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace = *l_brace.token(parse_tree)?;
-        let r_brace = *r_brace.token(parse_tree)?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
             bail!("{}: Expecting ASTType::Alternations", context);
         };
         let repeat_built = RepeatBuilder::default()
-            .l_brace(l_brace)
+            // Ignore clipped member 'l_brace'
             .alternations(Box::new(alternations))
-            .r_brace(r_brace)
+            // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2165,23 +2104,20 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+    /// ScannerState: "%scanner" /* Clipped */ Identifier "\{" /* Clipped */ ScannerStateList /* Vec */ "\}" /* Clipped */;
     ///
     #[named]
     fn scanner_state(
         &mut self,
-        percent_scanner: &ParseTreeStackEntry<'t>,
+        _percent_scanner: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
-        l_brace: &ParseTreeStackEntry<'t>,
+        _l_brace: &ParseTreeStackEntry<'t>,
         _scanner_state_list: &ParseTreeStackEntry<'t>,
-        r_brace: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_brace: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_scanner = *percent_scanner.token(parse_tree)?;
-        let l_brace = *l_brace.token(parse_tree)?;
-        let r_brace = *r_brace.token(parse_tree)?;
         let scanner_state_list =
             if let Some(ASTType::ScannerStateList(mut scanner_state_list)) = self.pop(context) {
                 scanner_state_list.reverse();
@@ -2195,11 +2131,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
         let scanner_state_built = ScannerStateBuilder::default()
-            .percent_scanner(percent_scanner)
+            // Ignore clipped member 'percent_scanner'
             .identifier(Box::new(identifier))
-            .l_brace(l_brace)
+            // Ignore clipped member 'l_brace'
             .scanner_state_list(scanner_state_list)
-            .r_brace(r_brace)
+            // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2297,19 +2233,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// StateListList: "," Identifier StateListList; // Vec<T>::Push
+    /// StateListList: "," /* Clipped */ Identifier StateListList; // Vec<T>::Push
     ///
     #[named]
     fn state_list_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
         _state_list_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut state_list_list =
             if let Some(ASTType::StateListList(state_list_list)) = self.pop(context) {
                 state_list_list
@@ -2323,7 +2258,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         };
         let state_list_list_0_built = StateListListBuilder::default()
             .identifier(Box::new(identifier))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -2347,22 +2282,19 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+    /// ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
     ///
     #[named]
     fn scanner_switch_0(
         &mut self,
-        percent_sc: &ParseTreeStackEntry<'t>,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _percent_sc: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _scanner_switch_opt: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_sc = *percent_sc.token(parse_tree)?;
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let scanner_switch_opt =
             if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
                 scanner_switch_opt
@@ -2370,10 +2302,10 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::ScannerSwitchOpt", context);
             };
         let scanner_switch_0_built = ScannerSwitch0Builder::default()
-            .percent_sc(percent_sc)
-            .l_paren(l_paren)
+            // Ignore clipped member 'percent_sc'
+            // Ignore clipped member 'l_paren'
             .scanner_switch_opt(scanner_switch_opt)
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         let scanner_switch_0_built = ScannerSwitch::ScannerSwitch0(scanner_switch_0_built);
@@ -2385,32 +2317,29 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// ScannerSwitch: "%push" "\(" Identifier "\)";
+    /// ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
     ///
     #[named]
     fn scanner_switch_1(
         &mut self,
-        percent_push: &ParseTreeStackEntry<'t>,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _percent_push: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_push = *percent_push.token(parse_tree)?;
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
         let scanner_switch_1_built = ScannerSwitch1Builder::default()
-            .percent_push(percent_push)
-            .l_paren(l_paren)
+            // Ignore clipped member 'percent_push'
+            // Ignore clipped member 'l_paren'
             .identifier(Box::new(identifier))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         let scanner_switch_1_built = ScannerSwitch::ScannerSwitch1(scanner_switch_1_built);
@@ -2422,25 +2351,22 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerSwitch: "%pop" "\(" "\)";
+    /// ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
     ///
     #[named]
     fn scanner_switch_2(
         &mut self,
-        percent_pop: &ParseTreeStackEntry<'t>,
-        l_paren: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _percent_pop: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_pop = *percent_pop.token(parse_tree)?;
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let scanner_switch_2_built = ScannerSwitch2Builder::default()
-            .percent_pop(percent_pop)
-            .l_paren(l_paren)
-            .r_paren(r_paren)
+            // Ignore clipped member 'percent_pop'
+            // Ignore clipped member 'l_paren'
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         let scanner_switch_2_built = ScannerSwitch::ScannerSwitch2(scanner_switch_2_built);
@@ -2492,19 +2418,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// CutOperator: "\^";
+    /// CutOperator: "\^" /* Clipped */;
     ///
     #[named]
     fn cut_operator(
         &mut self,
-        cut_operator: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _cut_operator: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator = *cut_operator.token(parse_tree)?;
         let cut_operator_built = CutOperatorBuilder::default()
-            .cut_operator(cut_operator)
+            // Ignore clipped member 'cut_operator'
             .build()
             .into_diagnostic()?;
         // Calling user action here

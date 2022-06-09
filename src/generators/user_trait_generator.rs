@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use super::grammar_type_generator::GrammarTypeInfo;
-use super::symbol_table::{SymbolId, SymbolTable, TypeEntrails, SymbolKind};
+use super::symbol_table::{SymbolId, SymbolKind, SymbolTable, TypeEntrails};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, UserTraitCallerFunctionDataBuilder,
     UserTraitDataBuilder, UserTraitFunctionDataBuilder, UserTraitFunctionStackPopDataBuilder,
@@ -111,11 +111,16 @@ impl<'a> UserTraitGenerator<'a> {
         for (i, member_id) in symbol_table.members(action_id)?.iter().rev().enumerate() {
             let arg_inst = symbol_table.symbol_as_instance(*member_id)?;
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-            if matches!(arg_type.entrails, TypeEntrails::Clipped(SymbolKind::NonTerminal)) {
+            if matches!(
+                arg_type.entrails,
+                TypeEntrails::Clipped(SymbolKind::NonTerminal)
+            ) {
                 let arg_name = symbol_table.name(arg_inst.name_id);
                 code.push(format!("// Ignore clipped member '{}'", arg_name));
                 code.push("self.pop(context);".to_string());
-            } else if !matches!(arg_type.entrails, TypeEntrails::Token) && arg_inst.sem != SymbolAttribute::Clipped {
+            } else if !matches!(arg_type.entrails, TypeEntrails::Token)
+                && arg_inst.sem != SymbolAttribute::Clipped
+            {
                 let arg_name = symbol_table.name(arg_inst.name_id);
                 let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
                     .arg_name(arg_name.to_string())
@@ -172,7 +177,7 @@ impl<'a> UserTraitGenerator<'a> {
             return Ok(());
         }
         let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
-        Ok(if !matches!(arg_type.entrails, TypeEntrails::Clipped(_)) {
+        if !matches!(arg_type.entrails, TypeEntrails::Clipped(_)) {
             let arg_name = symbol_table.name(arg_inst.name_id);
             let setter_name = &arg_name;
             let arg_name = if matches!(arg_type.entrails, TypeEntrails::Box(_)) &&
@@ -184,7 +189,8 @@ impl<'a> UserTraitGenerator<'a> {
                 arg_name.to_string()
             };
             code.push(format!("    .{}({})", setter_name, arg_name));
-        })
+        }
+        Ok(())
     }
 
     fn generate_result_builder(
@@ -380,8 +386,17 @@ impl<'a> UserTraitGenerator<'a> {
         })
     }
 
-    fn generate_user_action_args(non_terminal: &str) -> String {
-        format!("_arg: &{}<'t>", NmHlp::to_upper_camel_case(non_terminal))
+    fn generate_user_action_args(non_terminal: &str, type_info: &GrammarTypeInfo) -> Result<String> {
+        let type_name = NmHlp::to_upper_camel_case(non_terminal);
+        if let Some(symbol_id) = type_info.symbol_table.get_global_type(&type_name) {
+            Ok(format!(
+                "_arg: &{}{}",
+                type_name,
+                type_info.symbol_table.lifetime(symbol_id)
+            ))
+        } else {
+            Err(miette!("Can't find type of argument {}", non_terminal))
+        }
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
@@ -403,7 +418,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<Option<String>> {
         let type_symbol = symbol_table.symbol_as_type(type_id)?;
         let type_name = symbol_table.name(type_symbol.name_id).to_string();
-        let lifetime = symbol_table.imposes_lifetime(type_symbol.my_id);
+        let lifetime = symbol_table.lifetime(type_symbol.my_id);
         let default_members = Vec::default();
         let members = symbol_table
             .members(type_symbol.my_id)
@@ -458,6 +473,7 @@ impl<'a> UserTraitGenerator<'a> {
         type_info.set_auto_generate(self.auto_generate)?;
 
         self.add_user_actions(&mut type_info)?;
+        type_info.symbol_table.propagate_lifetimes();
 
         let production_output_types = if self.auto_generate {
             type_info
@@ -580,7 +596,7 @@ impl<'a> UserTraitGenerator<'a> {
                 |acc: Result<StrVec>, (nt, fn_id)| {
                     if let Ok(mut acc) = acc {
                         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-                        let fn_arguments = Self::generate_user_action_args(nt);
+                        let fn_arguments = Self::generate_user_action_args(nt, &type_info)?;
                         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                             .fn_name(fn_name)
                             .non_terminal(nt.to_string())

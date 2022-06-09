@@ -3,7 +3,6 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
-use log::trace;
 use miette::{bail, miette, Result};
 
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -165,12 +164,19 @@ impl TypeEntrails {
             ),
             TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
             TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
-            TypeEntrails::EnumVariant(t) => format!(
-                "{}({}{}),",
-                my_type_name,
-                symbol_table.symbol(*t).name(symbol_table),
-                symbol_table.lifetime(*t)
-            ),
+            TypeEntrails::EnumVariant(t) => {
+                let lifetime = if symbol_table.symbol_as_type(*t).unwrap().is_container() {
+                    "".to_string()
+                } else {
+                    lifetime
+                };
+                format!(
+                    "{}({}{}),",
+                    my_type_name,
+                    symbol_table.symbol(*t).name(symbol_table),
+                    lifetime
+                )
+            }
             TypeEntrails::Vec(r) => format!(
                 "Vec<{}{}>",
                 symbol_table.symbol(*r).name(symbol_table),
@@ -280,6 +286,16 @@ impl Type {
         )
     }
 
+    fn inner_type(&self) -> Option<SymbolId> {
+        match self.entrails {
+            TypeEntrails::Box(t)
+            | TypeEntrails::EnumVariant(t)
+            | TypeEntrails::Vec(t)
+            | TypeEntrails::Option(t) => Some(t),
+            _ => None,
+        }
+    }
+
     pub(crate) fn sem(&self) -> SymbolAttribute {
         self.entrails.sem()
     }
@@ -351,6 +367,10 @@ impl Instance {
         symbol_table.name(self.name_id).to_string()
     }
 
+    fn inner_type(&self) -> Option<SymbolId> {
+        Some(self.type_id)
+    }
+
     pub(crate) fn sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
         if self.sem != SymbolAttribute::None {
             self.sem
@@ -372,37 +392,6 @@ pub(crate) enum Symbol {
 }
 
 impl Symbol {
-    #[named]
-    fn has_lifetime(&self, symbol_table: &SymbolTable) -> bool {
-        match self {
-            Self::Type(t) => {
-                trace!("{}: {}", function_name!(), self.my_id());
-                match t.entrails {
-                    TypeEntrails::None | TypeEntrails::Function(_) | TypeEntrails::Clipped(_) => {
-                        trace!("{}: => false", function_name!());
-                        false
-                    }
-                    TypeEntrails::Token => {
-                        trace!("{}: => true", function_name!());
-                        true
-                    }
-                    TypeEntrails::Struct | TypeEntrails::Enum | TypeEntrails::Trait => symbol_table
-                        .scope(t.member_scope)
-                        .symbols
-                        .iter()
-                        .any(|e| symbol_table.has_lifetime(*e)),
-                    TypeEntrails::Vec(t)
-                    | TypeEntrails::EnumVariant(t)
-                    | TypeEntrails::Box(t)
-                    | TypeEntrails::Option(t) => symbol_table.has_lifetime(t),
-                }
-            }
-            Self::Instance(i) => {
-                i.sem != SymbolAttribute::Clipped && symbol_table.has_lifetime(i.type_id)
-            }
-        }
-    }
-
     pub(crate) fn my_id(&self) -> SymbolId {
         match self {
             Symbol::Type(t) => t.my_id,
@@ -410,7 +399,14 @@ impl Symbol {
         }
     }
 
-    pub(crate) fn is_container(&self, symbol_table: &SymbolTable) -> bool {
+    fn inner_type(&self) -> Option<SymbolId> {
+        match self {
+            Symbol::Type(t) => t.inner_type(),
+            Symbol::Instance(i) => i.inner_type(),
+        }
+    }
+
+    pub(crate) fn _is_container(&self, symbol_table: &SymbolTable) -> bool {
         match self {
             Symbol::Type(me) => {
                 if let Ok(me) = symbol_table.symbol_as_type(me.my_id) {
@@ -423,21 +419,21 @@ impl Symbol {
         }
     }
 
-    pub(crate) fn lifetime(&self, symbol_table: &SymbolTable) -> String {
-        if self.has_lifetime(symbol_table) && !self.is_container(symbol_table) {
+    pub(crate) fn _lifetime(&self, symbol_table: &SymbolTable) -> String {
+        if symbol_table._has_lifetime(self.my_id()) && !self._is_container(symbol_table) {
             "<'t>".to_string()
         } else {
             "".to_string()
         }
     }
 
-    pub(crate) fn imposes_lifetime(&self, symbol_table: &SymbolTable) -> String {
-        if self.has_lifetime(symbol_table) {
-            "<'t>".to_string()
-        } else {
-            "".to_string()
-        }
-    }
+    // pub(crate) fn imposed_lifetime(&self, symbol_table: &SymbolTable) -> String {
+    //     if self.symbol_has_lifetime(symbol_table) {
+    //         "<'t>".to_string()
+    //     } else {
+    //         "".to_string()
+    //     }
+    // }
 
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
         match self {
@@ -469,7 +465,7 @@ impl Symbol {
         }
     }
 
-    pub(crate) fn _sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
+    pub(crate) fn sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
         match self {
             Symbol::Type(t) => t.sem(),
             Symbol::Instance(i) => i.sem(symbol_table),
@@ -561,6 +557,10 @@ impl Scope {
         })
     }
 
+    fn has_symbol(&self, symbol_id: SymbolId) -> bool {
+        self.symbols.contains(&symbol_id)
+    }
+
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
         format!(
             "{}// Scope: my_id: {}, parent: {}\n{}",
@@ -614,6 +614,8 @@ pub(crate) struct SymbolTable {
     // All symbols, ever created
     pub(crate) symbols: Vec<Symbol>,
 
+    lifetimes: Vec<bool>,
+
     // All scopes
     // The one and only global scope has always index 0
     pub(crate) scopes: Vec<Scope>,
@@ -626,6 +628,7 @@ impl SymbolTable {
     pub(crate) fn new() -> Self {
         Self {
             symbols: Vec::new(),
+            lifetimes: Vec::new(),
             scopes: vec![Scope::new(None, Self::GLOBAL_SCOPE)],
         }
     }
@@ -638,18 +641,16 @@ impl SymbolTable {
         ScopeId(self.scopes.len())
     }
 
-    #[named]
-    pub(crate) fn has_lifetime(&self, symbol_id: SymbolId) -> bool {
-        trace!("{}: {}", function_name!(), symbol_id);
-        self.symbols[symbol_id.0].has_lifetime(self)
+    pub(crate) fn _has_lifetime(&self, symbol_id: SymbolId) -> bool {
+        self.lifetimes[symbol_id.0]
     }
 
     pub(crate) fn lifetime(&self, symbol_id: SymbolId) -> String {
-        self.symbols[symbol_id.0].lifetime(self)
-    }
-
-    pub(crate) fn imposes_lifetime(&self, symbol_id: SymbolId) -> String {
-        self.symbols[symbol_id.0].imposes_lifetime(self)
+        if self.lifetimes[symbol_id.0] {
+            "<'t>".to_string()
+        } else {
+            "".to_string()
+        }
     }
 
     pub(crate) fn name(&self, name_id: ScopedNameId) -> &str {
@@ -731,8 +732,95 @@ impl SymbolTable {
 
     fn insert_symbol(&mut self, symbol: Symbol) -> SymbolId {
         let symbol_id = self.next_symbol_id();
+        let is_clipped = symbol.sem(self) == SymbolAttribute::Clipped;
+        self.lifetimes.push(
+            !is_clipped
+                && matches!(
+                    symbol,
+                    Symbol::Type(Type {
+                        entrails: TypeEntrails::Token,
+                        ..
+                    })
+                ),
+        );
         self.symbols.push(symbol);
         symbol_id
+    }
+
+    fn find_containing_scopes(&self, symbol_id: SymbolId) -> Vec<ScopeId> {
+        self.scopes
+            .iter()
+            .filter(|scope| scope.has_symbol(symbol_id))
+            .map(|scope| scope.my_id)
+            .collect::<Vec<ScopeId>>()
+    }
+
+    fn find_symbols_with_member_scopes(&self, scope_ids: &[ScopeId]) -> Vec<SymbolId> {
+        self.symbols
+            .iter()
+            .filter(|symbol| {
+                if let Ok(scope) = symbol.member_scope() {
+                    symbol.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
+                } else {
+                    false
+                }
+            })
+            .map(|symbol| symbol.my_id())
+            .collect::<Vec<SymbolId>>()
+    }
+
+    fn symbols_with_lifetime(&self) -> Vec<SymbolId> {
+        debug_assert_eq!(self.lifetimes.len(), self.symbols.len());
+        self.lifetimes
+            .iter()
+            .zip(self.symbols.iter().enumerate())
+            .filter_map(|(lifetime, (i, symbol))| {
+                if *lifetime {
+                    debug_assert_eq!(i, symbol.my_id().0);
+                    Some(symbol.my_id())
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<SymbolId>>()
+    }
+
+    fn propagate_lifetime(&mut self, symbol_id: SymbolId) {
+        let parent_scope_ids = self.find_containing_scopes(symbol_id);
+        let parent_symbols = self.find_symbols_with_member_scopes(&parent_scope_ids);
+        for parent_symbol in &parent_symbols {
+            self.lifetimes[parent_symbol.0] = true;
+        }
+        let containing_symbols = self
+            .symbols
+            .iter()
+            .filter(|symbol| {
+                if let Some(inner_type) = symbol.inner_type() {
+                    inner_type == symbol_id
+                } else {
+                    false
+                }
+            })
+            .map(|symbol| symbol.my_id())
+            .collect::<Vec<SymbolId>>();
+
+        for containing_symbol in &containing_symbols {
+            self.lifetimes[containing_symbol.0] = true;
+        }
+    }
+
+    pub(crate) fn propagate_lifetimes(&mut self) {
+        let mut symbols_with_lifetime = self.symbols_with_lifetime();
+        let mut count = symbols_with_lifetime.len();
+        let mut old_count = 0;
+        while count != old_count {
+            old_count = count;
+            for symbol_id in symbols_with_lifetime {
+                self.propagate_lifetime(symbol_id);
+            }
+            symbols_with_lifetime = self.symbols_with_lifetime();
+            count = symbols_with_lifetime.len();
+        }
     }
 
     pub(crate) fn insert_type(
@@ -810,13 +898,20 @@ impl SymbolTable {
 
         self.insert_global_type(type_name, entrails)
     }
+
+    pub(crate) fn get_global_type(&self, non_terminal: &str) -> Option<SymbolId> {
+        self.scope(Self::GLOBAL_SCOPE).symbols.iter().find(|symbol_id| {
+            self.symbols[symbol_id.0].name(self) == non_terminal
+        })
+        .map(|symbol_id| *symbol_id)
+    }
 }
 
 impl Display for SymbolTable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "// Symbols:")?;
         for (i, sym) in self.symbols.iter().enumerate() {
-            writeln!(f, "Sym({}): {}", i, sym.format(&self, 0))?;
+            writeln!(f, "Sym({}): {}", i, sym.format(self, 0))?;
         }
         writeln!(f, "// Scopes:")?;
         for scope in &self.scopes {
