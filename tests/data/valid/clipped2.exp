@@ -2,5 +2,5 @@
 
 %%
 
-/* 0 */ Start: "a" B /* Clipped */;
+/* 0 */ Start: "a" B^ /* Clipped */;
 /* 1 */ B: "b";

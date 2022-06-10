@@ -2,5 +2,5 @@
 
 %%
 
-Start: "a" B /* Clipped */;
+Start: "a" B^ /* Clipped */;
 B: "b";
