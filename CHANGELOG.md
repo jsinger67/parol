@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.9.4-pre - Not released yet
+## v0.9.4 - 2022-06-10
 
 * Added possibility to clip grammar symbols in the grammar description by suffixing them with an
 optional cut operator (`^`). This instructs `parol` in auto-generation mode to not propagate this
