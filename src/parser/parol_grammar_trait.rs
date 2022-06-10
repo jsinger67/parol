@@ -142,7 +142,7 @@ pub trait ParolGrammarTrait<'t> {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title" /* Clipped */ String;
+/// Declaration: "%title"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -153,7 +153,7 @@ pub struct Declaration0<'t> {
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment" /* Clipped */ String;
+/// Declaration: "%comment"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -175,7 +175,7 @@ pub struct Declaration2<'t> {
 ///
 /// Type derived for production 10
 ///
-/// ScannerDirectives: "%line_comment" /* Clipped */ String;
+/// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -186,7 +186,7 @@ pub struct ScannerDirectives0<'t> {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%block_comment" /* Clipped */ String String;
+/// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -198,7 +198,7 @@ pub struct ScannerDirectives1<'t> {
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%auto_newline_off" /* Clipped */;
+/// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -207,7 +207,7 @@ pub struct ScannerDirectives2 {}
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_ws_off" /* Clipped */;
+/// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -304,7 +304,7 @@ pub struct Symbol3<'t> {
 ///
 /// Type derived for production 52
 ///
-/// ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
+/// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -315,7 +315,7 @@ pub struct ScannerSwitch0<'t> {
 ///
 /// Type derived for production 53
 ///
-/// ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
+/// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -326,7 +326,7 @@ pub struct ScannerSwitch1<'t> {
 ///
 /// Type derived for production 54
 ///
-/// ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
+/// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -949,7 +949,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start" /* Clipped */ Identifier;
+    /// StartDeclaration: "%start"^ /* Clipped */ Identifier;
     ///
     #[named]
     fn start_declaration(
@@ -979,7 +979,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title" /* Clipped */ String;
+    /// Declaration: "%title"^ /* Clipped */ String;
     ///
     #[named]
     fn declaration_0(
@@ -1009,7 +1009,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment" /* Clipped */ String;
+    /// Declaration: "%comment"^ /* Clipped */ String;
     ///
     #[named]
     fn declaration_1(
@@ -1068,7 +1068,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ScannerDirectives: "%line_comment" /* Clipped */ String;
+    /// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
     ///
     #[named]
     fn scanner_directives_0(
@@ -1103,7 +1103,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%block_comment" /* Clipped */ String String;
+    /// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
     ///
     #[named]
     fn scanner_directives_1(
@@ -1145,7 +1145,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%auto_newline_off" /* Clipped */;
+    /// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
     ///
     #[named]
     fn scanner_directives_2(
@@ -1173,7 +1173,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_ws_off" /* Clipped */;
+    /// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
     ///
     #[named]
     fn scanner_directives_3(
@@ -1201,7 +1201,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// GrammarDefinition: "%%" /* Clipped */ Production GrammarDefinitionList /* Vec */;
+    /// GrammarDefinition: "%%"^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
     ///
     #[named]
     fn grammar_definition(
@@ -1300,7 +1300,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Production: Identifier ":" /* Clipped */ Alternations ";" /* Clipped */;
+    /// Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
     ///
     #[named]
     fn production(
@@ -1374,7 +1374,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// AlternationsList: "\|" /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
+    /// AlternationsList: "\|"^ /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
     ///
     #[named]
     fn alternations_list_0(
@@ -1803,7 +1803,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// TokenWithStates: "<" /* Clipped */ StateList ">" /* Clipped */ String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ String TokenWithStatesOpt /* Option */;
     ///
     #[named]
     fn token_with_states(
@@ -1890,7 +1890,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Group: "\(" /* Clipped */ Alternations "\)" /* Clipped */;
+    /// Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
     ///
     #[named]
     fn group(
@@ -1921,7 +1921,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// Optional: "\[" /* Clipped */ Alternations "\]" /* Clipped */;
+    /// Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
     ///
     #[named]
     fn optional(
@@ -1952,7 +1952,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// Repeat: "\{" /* Clipped */ Alternations "\}" /* Clipped */;
+    /// Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
     ///
     #[named]
     fn repeat(
@@ -2104,7 +2104,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// ScannerState: "%scanner" /* Clipped */ Identifier "\{" /* Clipped */ ScannerStateList /* Vec */ "\}" /* Clipped */;
+    /// ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
     ///
     #[named]
     fn scanner_state(
@@ -2233,7 +2233,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// StateListList: "," /* Clipped */ Identifier StateListList; // Vec<T>::Push
+    /// StateListList: ","^ /* Clipped */ Identifier StateListList; // Vec<T>::Push
     ///
     #[named]
     fn state_list_list_0(
@@ -2282,7 +2282,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
+    /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
     ///
     #[named]
     fn scanner_switch_0(
@@ -2317,7 +2317,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
+    /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
     ///
     #[named]
     fn scanner_switch_1(
@@ -2351,7 +2351,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
+    /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
     ///
     #[named]
     fn scanner_switch_2(
@@ -2418,7 +2418,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// CutOperator: "\^" /* Clipped */;
+    /// CutOperator: "\^"^ /* Clipped */;
     ///
     #[named]
     fn cut_operator(

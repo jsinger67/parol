@@ -265,7 +265,7 @@ pub struct Factor2<'t> {
 ///
 /// Type derived for production 57
 ///
-/// factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
+/// factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -852,7 +852,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// calcList: instruction ";" /* Clipped */ calcList; // Vec<T>::Push
+    /// calcList: instruction ";"^ /* Clipped */ calcList; // Vec<T>::Push
     ///
     #[named]
     fn calc_list_0(
@@ -2431,7 +2431,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
+    /// factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
     ///
     #[named]
     fn factor_3(

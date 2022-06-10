@@ -183,7 +183,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// List: ListOpt /* Option */ TrailingComma /* Clipped */;
+    /// List: ListOpt /* Option */ TrailingComma^ /* Clipped */;
     ///
     #[named]
     fn list(
@@ -248,7 +248,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ListOptList: "," /* Clipped */ Num ListOptList; // Vec<T>::Push
+    /// ListOptList: ","^ /* Clipped */ Num ListOptList; // Vec<T>::Push
     ///
     #[named]
     fn list_opt_list_0(

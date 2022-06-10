@@ -527,17 +527,17 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 17,
         production: &[],
     },
-    // 6 - StartDeclaration: "%start" /* Clipped */ Identifier;
+    // 6 - StartDeclaration: "%start"^ /* Clipped */ Identifier;
     Production {
         lhs: 27,
         production: &[ParseType::N(10), ParseType::T(5)],
     },
-    // 7 - Declaration: "%title" /* Clipped */ String;
+    // 7 - Declaration: "%title"^ /* Clipped */ String;
     Production {
         lhs: 5,
         production: &[ParseType::N(30), ParseType::T(6)],
     },
-    // 8 - Declaration: "%comment" /* Clipped */ String;
+    // 8 - Declaration: "%comment"^ /* Clipped */ String;
     Production {
         lhs: 5,
         production: &[ParseType::N(30), ParseType::T(7)],
@@ -547,27 +547,27 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 5,
         production: &[ParseType::N(20)],
     },
-    // 10 - ScannerDirectives: "%line_comment" /* Clipped */ String;
+    // 10 - ScannerDirectives: "%line_comment"^ /* Clipped */ String;
     Production {
         lhs: 20,
         production: &[ParseType::N(30), ParseType::T(8)],
     },
-    // 11 - ScannerDirectives: "%block_comment" /* Clipped */ String String;
+    // 11 - ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
     Production {
         lhs: 20,
         production: &[ParseType::N(30), ParseType::N(30), ParseType::T(9)],
     },
-    // 12 - ScannerDirectives: "%auto_newline_off" /* Clipped */;
+    // 12 - ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
     Production {
         lhs: 20,
         production: &[ParseType::T(10)],
     },
-    // 13 - ScannerDirectives: "%auto_ws_off" /* Clipped */;
+    // 13 - ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
     Production {
         lhs: 20,
         production: &[ParseType::T(11)],
     },
-    // 14 - GrammarDefinition: "%%" /* Clipped */ Production GrammarDefinitionList /* Vec */;
+    // 14 - GrammarDefinition: "%%"^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
     Production {
         lhs: 7,
         production: &[ParseType::N(8), ParseType::N(15), ParseType::T(12)],
@@ -582,7 +582,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 8,
         production: &[],
     },
-    // 17 - Production: Identifier ":" /* Clipped */ Alternations ";" /* Clipped */;
+    // 17 - Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
     Production {
         lhs: 15,
         production: &[
@@ -597,7 +597,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 2,
         production: &[ParseType::N(3), ParseType::N(0)],
     },
-    // 19 - AlternationsList: "\|" /* Clipped */ Alternation AlternationsList;
+    // 19 - AlternationsList: "\|"^ /* Clipped */ Alternation AlternationsList;
     Production {
         lhs: 3,
         production: &[ParseType::N(3), ParseType::N(0), ParseType::T(15)],
@@ -677,7 +677,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 26,
         production: &[],
     },
-    // 35 - TokenWithStates: "<" /* Clipped */ StateList ">" /* Clipped */ String TokenWithStatesOpt /* Option */;
+    // 35 - TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ String TokenWithStatesOpt /* Option */;
     Production {
         lhs: 32,
         production: &[
@@ -698,17 +698,17 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 33,
         production: &[],
     },
-    // 38 - Group: "\(" /* Clipped */ Alternations "\)" /* Clipped */;
+    // 38 - Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
     Production {
         lhs: 9,
         production: &[ParseType::T(19), ParseType::N(2), ParseType::T(18)],
     },
-    // 39 - Optional: "\[" /* Clipped */ Alternations "\]" /* Clipped */;
+    // 39 - Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
     Production {
         lhs: 13,
         production: &[ParseType::T(21), ParseType::N(2), ParseType::T(20)],
     },
-    // 40 - Repeat: "\{" /* Clipped */ Alternations "\}" /* Clipped */;
+    // 40 - Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
     Production {
         lhs: 19,
         production: &[ParseType::T(23), ParseType::N(2), ParseType::T(22)],
@@ -738,7 +738,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 30,
         production: &[ParseType::T(25)],
     },
-    // 46 - ScannerState: "%scanner" /* Clipped */ Identifier "\{" /* Clipped */ ScannerStateList /* Vec */ "\}" /* Clipped */;
+    // 46 - ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
     Production {
         lhs: 21,
         production: &[
@@ -764,7 +764,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 28,
         production: &[ParseType::N(29), ParseType::N(10)],
     },
-    // 50 - StateListList: "," /* Clipped */ Identifier StateListList;
+    // 50 - StateListList: ","^ /* Clipped */ Identifier StateListList;
     Production {
         lhs: 29,
         production: &[ParseType::N(29), ParseType::N(10), ParseType::T(27)],
@@ -774,7 +774,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 29,
         production: &[],
     },
-    // 52 - ScannerSwitch: "%sc" /* Clipped */ "\(" /* Clipped */ ScannerSwitchOpt /* Option */ "\)" /* Clipped */;
+    // 52 - ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[
@@ -784,7 +784,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
             ParseType::T(28),
         ],
     },
-    // 53 - ScannerSwitch: "%push" /* Clipped */ "\(" /* Clipped */ Identifier "\)" /* Clipped */;
+    // 53 - ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[
@@ -794,7 +794,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
             ParseType::T(29),
         ],
     },
-    // 54 - ScannerSwitch: "%pop" /* Clipped */ "\(" /* Clipped */ "\)" /* Clipped */;
+    // 54 - ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(19), ParseType::T(18), ParseType::T(30)],
@@ -809,7 +809,7 @@ pub const PRODUCTIONS: &[Production; 58] = &[
         lhs: 24,
         production: &[],
     },
-    // 57 - CutOperator: "\^" /* Clipped */;
+    // 57 - CutOperator: "\^"^ /* Clipped */;
     Production {
         lhs: 4,
         production: &[ParseType::T(31)],

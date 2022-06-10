@@ -600,7 +600,7 @@ pub const PRODUCTIONS: &[Production; 61] = &[
         lhs: 14,
         production: &[ParseType::N(15)],
     },
-    // 1 - calcList: instruction ";" /* Clipped */ calcList;
+    // 1 - calcList: instruction ";"^ /* Clipped */ calcList;
     Production {
         lhs: 15,
         production: &[ParseType::N(15), ParseType::T(5), ParseType::N(22)],
@@ -880,7 +880,7 @@ pub const PRODUCTIONS: &[Production; 61] = &[
         lhs: 19,
         production: &[ParseType::N(19), ParseType::N(33)],
     },
-    // 57 - factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
+    // 57 - factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
     Production {
         lhs: 19,
         production: &[ParseType::T(19), ParseType::N(26), ParseType::T(18)],

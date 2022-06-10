@@ -7,7 +7,7 @@
 %%
 
 /*  0 */ calc: calcList /* Vec */;
-/*  1 */ calcList: instruction ";" /* Clipped */ calcList; // Vec<T>::Push
+/*  1 */ calcList: instruction ";"^ /* Clipped */ calcList; // Vec<T>::Push
 /*  2 */ calcList: ; // Vec<T>::New
 /*  3 */ equality_op: "==|!=";
 /*  4 */ assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
@@ -63,7 +63,7 @@
 /* 54 */ factor: number;
 /* 55 */ factor: idref;
 /* 56 */ factor: negate factor;
-/* 57 */ factor: "\(" /* Clipped */ logical_or "\)" /* Clipped */;
+/* 57 */ factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
 /* 58 */ number: "0|[1-9][0-9]*";
 /* 59 */ idref: id;
 /* 60 */ id: "[a-zA-Z_][a-zA-Z0-9_]*";

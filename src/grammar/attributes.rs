@@ -116,7 +116,7 @@ where
             Self::None => out.write_fmt(format_args!("{}", decoratee)),
             Self::RepetitionAnchor => out.write_fmt(format_args!("{} /* Vec */", decoratee)),
             Self::Option => out.write_fmt(format_args!("{} /* Option */", decoratee)),
-            Self::Clipped => out.write_fmt(format_args!("{} /* Clipped */", decoratee)),
+            Self::Clipped => out.write_fmt(format_args!("{}^ /* Clipped */", decoratee)),
         }
     }
 }
