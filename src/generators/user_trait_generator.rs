@@ -386,7 +386,10 @@ impl<'a> UserTraitGenerator<'a> {
         })
     }
 
-    fn generate_user_action_args(non_terminal: &str, type_info: &GrammarTypeInfo) -> Result<String> {
+    fn generate_user_action_args(
+        non_terminal: &str,
+        type_info: &GrammarTypeInfo,
+    ) -> Result<String> {
         let type_name = NmHlp::to_upper_camel_case(non_terminal);
         if let Some(symbol_id) = type_info.symbol_table.get_global_type(&type_name) {
             Ok(format!(
