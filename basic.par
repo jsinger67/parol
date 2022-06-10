@@ -10,7 +10,7 @@
 
 Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
         ;
-Line    : LineNumber Statement { <INITIAL, Expr>":" Statement }
+Line    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
         ;
 LineNumber
         : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+"
@@ -23,7 +23,7 @@ Statement
         | PrintStatement
         | EndStatement
         ;
-Remark  : "REM" %push(Cmnt) [Comment] %pop()
+Remark  : "REM"^ %push(Cmnt) [Comment] %pop()
         ;
 GotoStatement
         : Goto LineNumber
@@ -38,13 +38,13 @@ IfBody  : Then Statement
         | Goto LineNumber
         ;
 PrintStatement
-        : Print %push(Expr) Expression  {<INITIAL, Expr>"," Expression } %pop()
+        : Print %push(Expr) Expression  {<INITIAL, Expr>","^ Expression } %pop()
         ;
 EndStatement
         : End
         ;
 EndOfLine
-        : <INITIAL, Expr>"(?:\r?\n|\r)+"
+        : <INITIAL, Expr>"(?:\r?\n|\r)+"^
         ;
 Literal : Number
         ;
@@ -65,23 +65,23 @@ Integer : <Expr>"(?:[0-9] *)+"
 
 // -------------------------------------------------------------------------------------------------
 // KEYWORDS
-If      : "IF"
+If      : "IF"^
         ;
-Then    : <INITIAL, Expr>"THEN"
+Then    : <INITIAL, Expr>"THEN"^
         ;
-Goto    : <INITIAL, Expr>"GOTO"
+Goto    : <INITIAL, Expr>"GOTO"^
         ;
-Let     : "LET"
+Let     : "LET"^
         ;
-Print   : "PRINT|\?"
+Print   : "PRINT|\?"^
         ;
-End     : "END"
+End     : "END"^
         ;
 
 // -------------------------------------------------------------------------------------------------
 // OPERATOR SYMBOLS
 AssignOp
-        : "="
+        : "="^
         ;
 LogicalOrOp
         : <Expr>"N?OR"

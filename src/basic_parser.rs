@@ -774,7 +774,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 52,
         production: &[ParseType::N(10)],
     },
-    // 17 - Remark: "REM" Push(1) RemarkOpt /* Option */ Pop;
+    // 17 - Remark: "REM"^ /* Clipped */ Push(1) RemarkOpt /* Option */ Pop;
     Production {
         lhs: 50,
         production: &[
@@ -913,7 +913,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 21,
         production: &[ParseType::T(12)],
     },
-    // 40 - If: "IF";
+    // 40 - If: "IF"^ /* Clipped */;
     Production {
         lhs: 18,
         production: &[ParseType::T(13)],
@@ -928,22 +928,22 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 16,
         production: &[ParseType::T(15)],
     },
-    // 43 - Let: "LET";
+    // 43 - Let: "LET"^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(16)],
     },
-    // 44 - Print: "PRINT|\?";
+    // 44 - Print: "PRINT|\?"^ /* Clipped */;
     Production {
         lhs: 43,
         production: &[ParseType::T(17)],
     },
-    // 45 - End: "END";
+    // 45 - End: "END"^ /* Clipped */;
     Production {
         lhs: 8,
         production: &[ParseType::T(18)],
     },
-    // 46 - AssignOp: "=";
+    // 46 - AssignOp: "="^ /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::T(19)],

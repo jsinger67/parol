@@ -4,7 +4,7 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#[allow(unused_imports)]
+#![allow(unused_imports)]
 use crate::basic_grammar::BasicGrammar;
 use id_tree::Tree;
 use log::trace;
@@ -69,7 +69,7 @@ pub trait BasicGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'EndStatement'
-    fn end_statement(&mut self, _arg: &EndStatement<'t>) -> Result<()> {
+    fn end_statement(&mut self, _arg: &EndStatement) -> Result<()> {
         Ok(())
     }
 
@@ -109,7 +109,7 @@ pub trait BasicGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'If'
-    fn r#if(&mut self, _arg: &If<'t>) -> Result<()> {
+    fn r#if(&mut self, _arg: &If) -> Result<()> {
         Ok(())
     }
 
@@ -124,22 +124,22 @@ pub trait BasicGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'Let'
-    fn r#let(&mut self, _arg: &Let<'t>) -> Result<()> {
+    fn r#let(&mut self, _arg: &Let) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Print'
-    fn print(&mut self, _arg: &Print<'t>) -> Result<()> {
+    fn print(&mut self, _arg: &Print) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'End'
-    fn end(&mut self, _arg: &End<'t>) -> Result<()> {
+    fn end(&mut self, _arg: &End) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AssignOp'
-    fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
+    fn assign_op(&mut self, _arg: &AssignOp) -> Result<()> {
         Ok(())
     }
 
@@ -306,8 +306,8 @@ pub struct Statement4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement5<'t> {
-    pub end_statement: Box<EndStatement<'t>>,
+pub struct Statement5 {
+    pub end_statement: Box<EndStatement>,
 }
 
 ///
@@ -457,9 +457,7 @@ pub struct Factor3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AssignOp<'t> {
-    pub assign_op: Token<'t>, /* = */
-}
+pub struct AssignOp {}
 
 ///
 /// Type derived for non-terminal Assignment
@@ -467,9 +465,9 @@ pub struct AssignOp<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Assignment<'t> {
-    pub assignment_opt: Option<Box<AssignmentOpt<'t>>>,
+    pub assignment_opt: Option<Box<AssignmentOpt>>,
     pub variable: Box<Variable<'t>>,
-    pub assign_op: Box<AssignOp<'t>>,
+    pub assign_op: Box<AssignOp>,
     pub expression: Box<Expression<'t>>,
 }
 
@@ -478,8 +476,8 @@ pub struct Assignment<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AssignmentOpt<'t> {
-    pub r#let: Box<Let<'t>>,
+pub struct AssignmentOpt {
+    pub r#let: Box<Let>,
 }
 
 ///
@@ -536,9 +534,7 @@ pub struct Comment<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct End<'t> {
-    pub end: Token<'t>, /* END */
-}
+pub struct End {}
 
 ///
 /// Type derived for non-terminal EndOfLine
@@ -554,8 +550,8 @@ pub struct EndOfLine<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct EndStatement<'t> {
-    pub end: Box<End<'t>>,
+pub struct EndStatement {
+    pub end: Box<End>,
 }
 
 ///
@@ -631,9 +627,7 @@ pub struct GotoStatement<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct If<'t> {
-    pub r#if: Token<'t>, /* IF */
-}
+pub struct If {}
 
 ///
 /// Type derived for non-terminal IfBody
@@ -651,7 +645,7 @@ pub enum IfBody<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct IfStatement<'t> {
-    pub r#if: Box<If<'t>>,
+    pub r#if: Box<If>,
     pub expression: Box<Expression<'t>>,
     pub if_body: Box<IfBody<'t>>,
 }
@@ -679,9 +673,7 @@ pub struct LParen<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Let<'t> {
-    pub r#let: Token<'t>, /* LET */
-}
+pub struct Let {}
 
 ///
 /// Type derived for non-terminal Line
@@ -870,9 +862,7 @@ pub struct Plus<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Print<'t> {
-    pub print: Token<'t>, /* PRINT|\? */
-}
+pub struct Print {}
 
 ///
 /// Type derived for non-terminal PrintStatement
@@ -880,7 +870,7 @@ pub struct Print<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct PrintStatement<'t> {
-    pub print: Box<Print<'t>>,
+    pub print: Box<Print>,
     pub expression: Box<Expression<'t>>,
     pub print_statement_list: Vec<PrintStatementList<'t>>,
 }
@@ -939,7 +929,6 @@ pub struct RelationalOp<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Remark<'t> {
-    pub r_e_m: Token<'t>, /* REM */
     pub remark_opt: Option<Box<RemarkOpt<'t>>>,
 }
 
@@ -963,7 +952,7 @@ pub enum Statement<'t> {
     Statement2(Statement2<'t>),
     Statement3(Statement3<'t>),
     Statement4(Statement4<'t>),
-    Statement5(Statement5<'t>),
+    Statement5(Statement5),
 }
 
 ///
@@ -1022,17 +1011,17 @@ pub struct Variable<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
-    AssignOp(AssignOp<'t>),
+    AssignOp(AssignOp),
     Assignment(Assignment<'t>),
-    AssignmentOpt(Option<Box<AssignmentOpt<'t>>>),
+    AssignmentOpt(Option<Box<AssignmentOpt>>),
     Basic(Basic<'t>),
     BasicList(Vec<BasicList<'t>>),
     BasicOpt(Option<Box<BasicOpt<'t>>>),
     BasicOpt0(Option<Box<BasicOpt0<'t>>>),
     Comment(Comment<'t>),
-    End(End<'t>),
+    End(End),
     EndOfLine(EndOfLine<'t>),
-    EndStatement(EndStatement<'t>),
+    EndStatement(EndStatement),
     Expression(Expression<'t>),
     Factor(Factor<'t>),
     Float(Float<'t>),
@@ -1040,12 +1029,12 @@ pub enum ASTType<'t> {
     Float2(Float2<'t>),
     Goto(Goto<'t>),
     GotoStatement(GotoStatement<'t>),
-    If(If<'t>),
+    If(If),
     IfBody(IfBody<'t>),
     IfStatement(IfStatement<'t>),
     Integer(Integer<'t>),
     LParen(LParen<'t>),
-    Let(Let<'t>),
+    Let(Let),
     Line(Line<'t>),
     LineList(Vec<LineList<'t>>),
     LineNumber(LineNumber<'t>),
@@ -1065,7 +1054,7 @@ pub enum ASTType<'t> {
     MultiplicationList(Vec<MultiplicationList<'t>>),
     Number(Number<'t>),
     Plus(Plus<'t>),
-    Print(Print<'t>),
+    Print(Print),
     PrintStatement(PrintStatement<'t>),
     PrintStatementList(Vec<PrintStatementList<'t>>),
     RParen(RParen<'t>),
@@ -1374,7 +1363,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// LineList: <Expr, INITIAL>":" Statement LineList; // Vec<T>::Push
+    /// LineList: <INITIAL, Expr>":" Statement LineList; // Vec<T>::Push
     ///
     #[named]
     fn line_list_0(
@@ -1616,25 +1605,24 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Remark: "REM" %push(Cmnt) RemarkOpt /* Option */ %pop();
+    /// Remark: "REM"^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();
     ///
     #[named]
     fn remark(
         &mut self,
-        r_e_m: &ParseTreeStackEntry<'t>,
+        _r_e_m: &ParseTreeStackEntry<'t>,
         _remark_opt: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_e_m = *r_e_m.token(parse_tree)?;
         let remark_opt = if let Some(ASTType::RemarkOpt(remark_opt)) = self.pop(context) {
             remark_opt
         } else {
             bail!("{}: Expecting ASTType::RemarkOpt", context);
         };
         let remark_built = RemarkBuilder::default()
-            .r_e_m(r_e_m)
+            // Ignore clipped member 'r_e_m'
             .remark_opt(remark_opt)
             .build()
             .into_diagnostic()?;
@@ -1965,7 +1953,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// PrintStatementList: <Expr, INITIAL>"," Expression PrintStatementList; // Vec<T>::Push
+    /// PrintStatementList: <INITIAL, Expr>"," Expression PrintStatementList; // Vec<T>::Push
     ///
     #[named]
     fn print_statement_list_0(
@@ -2045,7 +2033,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// EndOfLine: <Expr, INITIAL>"(?:\r?\n|\r)+";
+    /// EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+";
     ///
     #[named]
     fn end_of_line(
@@ -2276,18 +2264,20 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// If: "IF";
+    /// If: "IF"^ /* Clipped */;
     ///
     #[named]
     fn r#if(
         &mut self,
-        r#if: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _if: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#if = *r#if.token(parse_tree)?;
-        let r#if_built = IfBuilder::default().r#if(r#if).build().into_diagnostic()?;
+        let r#if_built = IfBuilder::default()
+            // Ignore clipped member 'r#if'
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
         self.user_grammar.r#if(&r#if_built)?;
         self.push(ASTType::If(r#if_built), context);
@@ -2296,7 +2286,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// Then: <Expr, INITIAL>"THEN";
+    /// Then: <INITIAL, Expr>"THEN";
     ///
     #[named]
     fn then(
@@ -2319,7 +2309,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// Goto: <Expr, INITIAL>"GOTO";
+    /// Goto: <INITIAL, Expr>"GOTO";
     ///
     #[named]
     fn goto(
@@ -2342,19 +2332,18 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// Let: "LET";
+    /// Let: "LET"^ /* Clipped */;
     ///
     #[named]
     fn r#let(
         &mut self,
-        r#let: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _let: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#let = *r#let.token(parse_tree)?;
         let r#let_built = LetBuilder::default()
-            .r#let(r#let)
+            // Ignore clipped member 'r#let'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2365,19 +2354,18 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// Print: "PRINT|\?";
+    /// Print: "PRINT|\?"^ /* Clipped */;
     ///
     #[named]
     fn print(
         &mut self,
-        print: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _print: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let print = *print.token(parse_tree)?;
         let print_built = PrintBuilder::default()
-            .print(print)
+            // Ignore clipped member 'print'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2388,18 +2376,20 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// End: "END";
+    /// End: "END"^ /* Clipped */;
     ///
     #[named]
     fn end(
         &mut self,
-        end: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _end: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end = *end.token(parse_tree)?;
-        let end_built = EndBuilder::default().end(end).build().into_diagnostic()?;
+        let end_built = EndBuilder::default()
+            // Ignore clipped member 'end'
+            .build()
+            .into_diagnostic()?;
         // Calling user action here
         self.user_grammar.end(&end_built)?;
         self.push(ASTType::End(end_built), context);
@@ -2408,19 +2398,18 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// AssignOp: "=";
+    /// AssignOp: "="^ /* Clipped */;
     ///
     #[named]
     fn assign_op(
         &mut self,
-        assign_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _assign_op: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op = *assign_op.token(parse_tree)?;
         let assign_op_built = AssignOpBuilder::default()
-            .assign_op(assign_op)
+            // Ignore clipped member 'assign_op'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2661,7 +2650,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// Variable: <Expr, INITIAL>"[A-Z][0-9A-Z]*";
+    /// Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*";
     ///
     #[named]
     fn variable(

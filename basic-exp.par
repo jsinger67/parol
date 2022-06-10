@@ -16,7 +16,7 @@
 /*  5 */ BasicOpt: EndOfLine; // Option<T>::Some
 /*  6 */ BasicOpt: ; // Option<T>::None
 /*  7 */ Line: LineNumber Statement LineList /* Vec */;
-/*  8 */ LineList: <Expr, INITIAL>":" Statement LineList; // Vec<T>::Push
+/*  8 */ LineList: <INITIAL, Expr>":" Statement LineList; // Vec<T>::Push
 /*  9 */ LineList: ; // Vec<T>::New
 /* 10 */ LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
 /* 11 */ Statement: Remark;
@@ -25,7 +25,7 @@
 /* 14 */ Statement: Assignment;
 /* 15 */ Statement: PrintStatement;
 /* 16 */ Statement: EndStatement;
-/* 17 */ Remark: "REM" %push(Cmnt) RemarkOpt /* Option */ %pop();
+/* 17 */ Remark: "REM"^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();
 /* 18 */ RemarkOpt: Comment; // Option<T>::Some
 /* 19 */ RemarkOpt: ; // Option<T>::None
 /* 20 */ GotoStatement: Goto LineNumber;
@@ -36,10 +36,10 @@
 /* 25 */ IfBody: Then Statement;
 /* 26 */ IfBody: Goto LineNumber;
 /* 27 */ PrintStatement: Print %push(Expr) Expression PrintStatementList /* Vec */ %pop();
-/* 28 */ PrintStatementList: <Expr, INITIAL>"," Expression PrintStatementList; // Vec<T>::Push
+/* 28 */ PrintStatementList: <INITIAL, Expr>"," Expression PrintStatementList; // Vec<T>::Push
 /* 29 */ PrintStatementList: ; // Vec<T>::New
 /* 30 */ EndStatement: End;
-/* 31 */ EndOfLine: <Expr, INITIAL>"(?:\r?\n|\r)+";
+/* 31 */ EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+";
 /* 32 */ Literal: Number;
 /* 33 */ Number: Float;
 /* 34 */ Number: Integer;
@@ -48,13 +48,13 @@
 /* 37 */ Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
 /* 38 */ Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
 /* 39 */ Integer: <Expr>"(?:[0-9] *)+";
-/* 40 */ If: "IF";
-/* 41 */ Then: <Expr, INITIAL>"THEN";
-/* 42 */ Goto: <Expr, INITIAL>"GOTO";
-/* 43 */ Let: "LET";
-/* 44 */ Print: "PRINT|\?";
-/* 45 */ End: "END";
-/* 46 */ AssignOp: "=";
+/* 40 */ If: "IF"^ /* Clipped */;
+/* 41 */ Then: <INITIAL, Expr>"THEN";
+/* 42 */ Goto: <INITIAL, Expr>"GOTO";
+/* 43 */ Let: "LET"^ /* Clipped */;
+/* 44 */ Print: "PRINT|\?"^ /* Clipped */;
+/* 45 */ End: "END"^ /* Clipped */;
+/* 46 */ AssignOp: "="^ /* Clipped */;
 /* 47 */ LogicalOrOp: <Expr>"N?OR";
 /* 48 */ LogicalAndOp: <Expr>"AND";
 /* 49 */ LogicalNotOp: <Expr>"NOT";
@@ -65,7 +65,7 @@
 /* 54 */ LParen: <Expr>"\(";
 /* 55 */ RParen: <Expr>"\)";
 /* 56 */ Comment: <Cmnt>"[^\r\n]+";
-/* 57 */ Variable: <Expr, INITIAL>"[A-Z][0-9A-Z]*";
+/* 57 */ Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*";
 /* 58 */ Expression: LogicalOr;
 /* 59 */ LogicalOr: LogicalAnd LogicalOrList /* Vec */;
 /* 60 */ LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList; // Vec<T>::Push
