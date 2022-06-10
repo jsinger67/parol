@@ -42,7 +42,7 @@ impl Display for ObjectSuffix<'_> {
 
 impl Display for ObjectList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{} {}", self.comma.symbol, self.pair)
+        write!(f, ", {}", self.pair)
     }
 }
 
@@ -66,7 +66,7 @@ impl Display for ArraySuffix<'_> {
 
 impl Display for ArrayList<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{} {}", self.comma.symbol, self.value)
+        write!(f, ", {}", self.value)
     }
 }
 

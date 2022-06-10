@@ -4,11 +4,11 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#[allow(unused_imports)]
+#![allow(unused_imports)]
 use crate::json_grammar::JsonGrammar;
 use id_tree::Tree;
 use log::trace;
-use miette::{miette, IntoDiagnostic, Result};
+use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::path::{Path, PathBuf};
@@ -62,50 +62,44 @@ pub trait JsonGrammarTrait<'t> {
 ///
 /// Type derived for production 2
 ///
-/// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
+/// ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectSuffix0<'t> {
     pub pair: Box<Pair<'t>>,
     pub object_list: Vec<ObjectList<'t>>,
-    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
 /// Type derived for production 3
 ///
-/// ObjectSuffix: "\}";
+/// ObjectSuffix: "\}"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ObjectSuffix1<'t> {
-    pub r_brace: Token<'t>, /* \} */
-}
+pub struct ObjectSuffix1 {}
 
 ///
 /// Type derived for production 8
 ///
-/// ArraySuffix: Value ArrayList /* Vec */ "\]";
+/// ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArraySuffix0<'t> {
     pub value: Box<Value<'t>>,
     pub array_list: Vec<ArrayList<'t>>,
-    pub r_bracket: Token<'t>, /* \] */
 }
 
 ///
 /// Type derived for production 9
 ///
-/// ArraySuffix: "\]";
+/// ArraySuffix: "\]"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ArraySuffix1<'t> {
-    pub r_bracket: Token<'t>, /* \] */
-}
+pub struct ArraySuffix1 {}
 
 ///
 /// Type derived for production 12
@@ -154,35 +148,29 @@ pub struct Value3<'t> {
 ///
 /// Type derived for production 16
 ///
-/// Value: "true";
+/// Value: "true"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value4<'t> {
-    pub r#true: Token<'t>, /* true */
-}
+pub struct Value4 {}
 
 ///
 /// Type derived for production 17
 ///
-/// Value: "false";
+/// Value: "false"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value5<'t> {
-    pub r#false: Token<'t>, /* false */
-}
+pub struct Value5 {}
 
 ///
 /// Type derived for production 18
 ///
-/// Value: "null";
+/// Value: "null"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value6<'t> {
-    pub null: Token<'t>, /* null */
-}
+pub struct Value6 {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -195,7 +183,6 @@ pub struct Value6<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Array<'t> {
-    pub l_bracket: Token<'t>, /* \[ */
     pub array_suffix: Box<ArraySuffix<'t>>,
 }
 
@@ -205,7 +192,6 @@ pub struct Array<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ArrayList<'t> {
-    pub comma: Token<'t>, /* , */
     pub value: Box<Value<'t>>,
 }
 
@@ -216,7 +202,7 @@ pub struct ArrayList<'t> {
 #[derive(Debug, Clone)]
 pub enum ArraySuffix<'t> {
     ArraySuffix0(ArraySuffix0<'t>),
-    ArraySuffix1(ArraySuffix1<'t>),
+    ArraySuffix1(ArraySuffix1),
 }
 
 ///
@@ -243,7 +229,6 @@ pub struct Number<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Object<'t> {
-    pub l_brace: Token<'t>, /* \{ */
     pub object_suffix: Box<ObjectSuffix<'t>>,
 }
 
@@ -253,7 +238,6 @@ pub struct Object<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ObjectList<'t> {
-    pub comma: Token<'t>, /* , */
     pub pair: Box<Pair<'t>>,
 }
 
@@ -264,7 +248,7 @@ pub struct ObjectList<'t> {
 #[derive(Debug, Clone)]
 pub enum ObjectSuffix<'t> {
     ObjectSuffix0(ObjectSuffix0<'t>),
-    ObjectSuffix1(ObjectSuffix1<'t>),
+    ObjectSuffix1(ObjectSuffix1),
 }
 
 ///
@@ -274,7 +258,6 @@ pub enum ObjectSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Pair<'t> {
     pub string: Box<String<'t>>,
-    pub colon: Token<'t>, /* : */
     pub value: Box<Value<'t>>,
 }
 
@@ -297,9 +280,9 @@ pub enum Value<'t> {
     Value1(Value1<'t>),
     Value2(Value2<'t>),
     Value3(Value3<'t>),
-    Value4(Value4<'t>),
-    Value5(Value5<'t>),
-    Value6(Value6<'t>),
+    Value4(Value4),
+    Value5(Value5),
+    Value6(Value6),
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -404,7 +387,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value = if let Some(ASTType::Value(value)) = self.pop(context) {
             value
         } else {
-            return Err(miette!("{}: Expecting ASTType::Value", context));
+            bail!("{}: Expecting ASTType::Value", context);
         };
         let json_built = JsonBuilder::default()
             .value(Box::new(value))
@@ -418,25 +401,24 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// Object: "\{" ObjectSuffix;
+    /// Object: "\{"^ /* Clipped */ ObjectSuffix;
     ///
     #[named]
     fn object(
         &mut self,
-        l_brace: &ParseTreeStackEntry<'t>,
+        _l_brace: &ParseTreeStackEntry<'t>,
         _object_suffix: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace = *l_brace.token(parse_tree)?;
         let object_suffix = if let Some(ASTType::ObjectSuffix(object_suffix)) = self.pop(context) {
             object_suffix
         } else {
-            return Err(miette!("{}: Expecting ASTType::ObjectSuffix", context));
+            bail!("{}: Expecting ASTType::ObjectSuffix", context);
         };
         let object_built = ObjectBuilder::default()
-            .l_brace(l_brace)
+            // Ignore clipped member 'l_brace'
             .object_suffix(Box::new(object_suffix))
             .build()
             .into_diagnostic()?;
@@ -448,34 +430,33 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
+    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
     ///
     #[named]
     fn object_suffix_0(
         &mut self,
         _pair: &ParseTreeStackEntry<'t>,
         _object_list: &ParseTreeStackEntry<'t>,
-        r_brace: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_brace: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_brace = *r_brace.token(parse_tree)?;
         let object_list = if let Some(ASTType::ObjectList(mut object_list)) = self.pop(context) {
             object_list.reverse();
             object_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ObjectList", context));
+            bail!("{}: Expecting ASTType::ObjectList", context);
         };
         let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
             pair
         } else {
-            return Err(miette!("{}: Expecting ASTType::Pair", context));
+            bail!("{}: Expecting ASTType::Pair", context);
         };
         let object_suffix_0_built = ObjectSuffix0Builder::default()
             .pair(Box::new(pair))
             .object_list(object_list)
-            .r_brace(r_brace)
+            // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
         let object_suffix_0_built = ObjectSuffix::ObjectSuffix0(object_suffix_0_built);
@@ -485,19 +466,18 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// ObjectSuffix: "\}";
+    /// ObjectSuffix: "\}"^ /* Clipped */;
     ///
     #[named]
     fn object_suffix_1(
         &mut self,
-        r_brace: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_brace: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_brace = *r_brace.token(parse_tree)?;
         let object_suffix_1_built = ObjectSuffix1Builder::default()
-            .r_brace(r_brace)
+            // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
         let object_suffix_1_built = ObjectSuffix::ObjectSuffix1(object_suffix_1_built);
@@ -507,32 +487,31 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList: "," Pair ObjectList; // Vec<T>::Push
+    /// ObjectList: ","^ /* Clipped */ Pair ObjectList; // Vec<T>::Push
     ///
     #[named]
     fn object_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _pair: &ParseTreeStackEntry<'t>,
         _object_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut object_list = if let Some(ASTType::ObjectList(object_list)) = self.pop(context) {
             object_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ObjectList", context));
+            bail!("{}: Expecting ASTType::ObjectList", context);
         };
         let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
             pair
         } else {
-            return Err(miette!("{}: Expecting ASTType::Pair", context));
+            bail!("{}: Expecting ASTType::Pair", context);
         };
         let object_list_0_built = ObjectListBuilder::default()
             .pair(Box::new(pair))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -556,32 +535,31 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// Pair: String ":" Value;
+    /// Pair: String ":"^ /* Clipped */ Value;
     ///
     #[named]
     fn pair(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _value: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let value = if let Some(ASTType::Value(value)) = self.pop(context) {
             value
         } else {
-            return Err(miette!("{}: Expecting ASTType::Value", context));
+            bail!("{}: Expecting ASTType::Value", context);
         };
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
-            return Err(miette!("{}: Expecting ASTType::String", context));
+            bail!("{}: Expecting ASTType::String", context);
         };
         let pair_built = PairBuilder::default()
             .string(Box::new(string))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .value(Box::new(value))
             .build()
             .into_diagnostic()?;
@@ -593,25 +571,24 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Array: "\[" ArraySuffix;
+    /// Array: "\["^ /* Clipped */ ArraySuffix;
     ///
     #[named]
     fn array(
         &mut self,
-        l_bracket: &ParseTreeStackEntry<'t>,
+        _l_bracket: &ParseTreeStackEntry<'t>,
         _array_suffix: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = *l_bracket.token(parse_tree)?;
         let array_suffix = if let Some(ASTType::ArraySuffix(array_suffix)) = self.pop(context) {
             array_suffix
         } else {
-            return Err(miette!("{}: Expecting ASTType::ArraySuffix", context));
+            bail!("{}: Expecting ASTType::ArraySuffix", context);
         };
         let array_built = ArrayBuilder::default()
-            .l_bracket(l_bracket)
+            // Ignore clipped member 'l_bracket'
             .array_suffix(Box::new(array_suffix))
             .build()
             .into_diagnostic()?;
@@ -623,34 +600,33 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// ArraySuffix: Value ArrayList /* Vec */ "\]";
+    /// ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
     ///
     #[named]
     fn array_suffix_0(
         &mut self,
         _value: &ParseTreeStackEntry<'t>,
         _array_list: &ParseTreeStackEntry<'t>,
-        r_bracket: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_bracket: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_bracket = *r_bracket.token(parse_tree)?;
         let array_list = if let Some(ASTType::ArrayList(mut array_list)) = self.pop(context) {
             array_list.reverse();
             array_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ArrayList", context));
+            bail!("{}: Expecting ASTType::ArrayList", context);
         };
         let value = if let Some(ASTType::Value(value)) = self.pop(context) {
             value
         } else {
-            return Err(miette!("{}: Expecting ASTType::Value", context));
+            bail!("{}: Expecting ASTType::Value", context);
         };
         let array_suffix_0_built = ArraySuffix0Builder::default()
             .value(Box::new(value))
             .array_list(array_list)
-            .r_bracket(r_bracket)
+            // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
         let array_suffix_0_built = ArraySuffix::ArraySuffix0(array_suffix_0_built);
@@ -660,19 +636,18 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// ArraySuffix: "\]";
+    /// ArraySuffix: "\]"^ /* Clipped */;
     ///
     #[named]
     fn array_suffix_1(
         &mut self,
-        r_bracket: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_bracket: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_bracket = *r_bracket.token(parse_tree)?;
         let array_suffix_1_built = ArraySuffix1Builder::default()
-            .r_bracket(r_bracket)
+            // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
         let array_suffix_1_built = ArraySuffix::ArraySuffix1(array_suffix_1_built);
@@ -682,32 +657,31 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList: "," Value ArrayList; // Vec<T>::Push
+    /// ArrayList: ","^ /* Clipped */ Value ArrayList; // Vec<T>::Push
     ///
     #[named]
     fn array_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _value: &ParseTreeStackEntry<'t>,
         _array_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut array_list = if let Some(ASTType::ArrayList(array_list)) = self.pop(context) {
             array_list
         } else {
-            return Err(miette!("{}: Expecting ASTType::ArrayList", context));
+            bail!("{}: Expecting ASTType::ArrayList", context);
         };
         let value = if let Some(ASTType::Value(value)) = self.pop(context) {
             value
         } else {
-            return Err(miette!("{}: Expecting ASTType::Value", context));
+            bail!("{}: Expecting ASTType::Value", context);
         };
         let array_list_0_built = ArrayListBuilder::default()
             .value(Box::new(value))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -744,7 +718,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
-            return Err(miette!("{}: Expecting ASTType::String", context));
+            bail!("{}: Expecting ASTType::String", context);
         };
         let value_0_built = Value0Builder::default()
             .string(Box::new(string))
@@ -772,7 +746,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let number = if let Some(ASTType::Number(number)) = self.pop(context) {
             number
         } else {
-            return Err(miette!("{}: Expecting ASTType::Number", context));
+            bail!("{}: Expecting ASTType::Number", context);
         };
         let value_1_built = Value1Builder::default()
             .number(Box::new(number))
@@ -800,7 +774,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let object = if let Some(ASTType::Object(object)) = self.pop(context) {
             object
         } else {
-            return Err(miette!("{}: Expecting ASTType::Object", context));
+            bail!("{}: Expecting ASTType::Object", context);
         };
         let value_2_built = Value2Builder::default()
             .object(Box::new(object))
@@ -828,7 +802,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let array = if let Some(ASTType::Array(array)) = self.pop(context) {
             array
         } else {
-            return Err(miette!("{}: Expecting ASTType::Array", context));
+            bail!("{}: Expecting ASTType::Array", context);
         };
         let value_3_built = Value3Builder::default()
             .array(Box::new(array))
@@ -843,19 +817,18 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// Value: "true";
+    /// Value: "true"^ /* Clipped */;
     ///
     #[named]
     fn value_4(
         &mut self,
-        r#true: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _true: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#true = *r#true.token(parse_tree)?;
         let value_4_built = Value4Builder::default()
-            .r#true(r#true)
+            // Ignore clipped member 'r#true'
             .build()
             .into_diagnostic()?;
         let value_4_built = Value::Value4(value_4_built);
@@ -867,19 +840,18 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Value: "false";
+    /// Value: "false"^ /* Clipped */;
     ///
     #[named]
     fn value_5(
         &mut self,
-        r#false: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _false: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#false = *r#false.token(parse_tree)?;
         let value_5_built = Value5Builder::default()
-            .r#false(r#false)
+            // Ignore clipped member 'r#false'
             .build()
             .into_diagnostic()?;
         let value_5_built = Value::Value5(value_5_built);
@@ -891,19 +863,18 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// Value: "null";
+    /// Value: "null"^ /* Clipped */;
     ///
     #[named]
     fn value_6(
         &mut self,
-        null: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _null: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let null = *null.token(parse_tree)?;
         let value_6_built = Value6Builder::default()
-            .null(null)
+            // Ignore clipped member 'null'
             .build()
             .into_diagnostic()?;
         let value_6_built = Value::Value6(value_6_built);

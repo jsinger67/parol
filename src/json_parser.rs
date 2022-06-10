@@ -203,22 +203,22 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 3,
         production: &[ParseType::N(10)],
     },
-    // 1 - Object: "\{" ObjectSuffix;
+    // 1 - Object: "\{"^ /* Clipped */ ObjectSuffix;
     Production {
         lhs: 5,
         production: &[ParseType::N(7), ParseType::T(5)],
     },
-    // 2 - ObjectSuffix: Pair ObjectList /* Vec */ "\}";
+    // 2 - ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
     Production {
         lhs: 7,
         production: &[ParseType::T(6), ParseType::N(6), ParseType::N(8)],
     },
-    // 3 - ObjectSuffix: "\}";
+    // 3 - ObjectSuffix: "\}"^ /* Clipped */;
     Production {
         lhs: 7,
         production: &[ParseType::T(6)],
     },
-    // 4 - ObjectList: "," Pair ObjectList;
+    // 4 - ObjectList: ","^ /* Clipped */ Pair ObjectList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(8), ParseType::T(7)],
@@ -228,27 +228,27 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 6,
         production: &[],
     },
-    // 6 - Pair: String ":" Value;
+    // 6 - Pair: String ":"^ /* Clipped */ Value;
     Production {
         lhs: 8,
         production: &[ParseType::N(10), ParseType::T(8), ParseType::N(9)],
     },
-    // 7 - Array: "\[" ArraySuffix;
+    // 7 - Array: "\["^ /* Clipped */ ArraySuffix;
     Production {
         lhs: 0,
         production: &[ParseType::N(2), ParseType::T(9)],
     },
-    // 8 - ArraySuffix: Value ArrayList /* Vec */ "\]";
+    // 8 - ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
     Production {
         lhs: 2,
         production: &[ParseType::T(10), ParseType::N(1), ParseType::N(10)],
     },
-    // 9 - ArraySuffix: "\]";
+    // 9 - ArraySuffix: "\]"^ /* Clipped */;
     Production {
         lhs: 2,
         production: &[ParseType::T(10)],
     },
-    // 10 - ArrayList: "," Value ArrayList;
+    // 10 - ArrayList: ","^ /* Clipped */ Value ArrayList;
     Production {
         lhs: 1,
         production: &[ParseType::N(1), ParseType::N(10), ParseType::T(7)],
@@ -278,17 +278,17 @@ pub const PRODUCTIONS: &[Production; 21] = &[
         lhs: 10,
         production: &[ParseType::N(0)],
     },
-    // 16 - Value: "true";
+    // 16 - Value: "true"^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(11)],
     },
-    // 17 - Value: "false";
+    // 17 - Value: "false"^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(12)],
     },
-    // 18 - Value: "null";
+    // 18 - Value: "null"^ /* Clipped */;
     Production {
         lhs: 10,
         production: &[ParseType::T(13)],

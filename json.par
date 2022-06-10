@@ -7,21 +7,21 @@
 
 Json     : Value;
 
-Object   : "\{" Pair { "," Pair } "\}"
-         | "\{" "\}";
+Object   : "\{"^ Pair { ","^ Pair } "\}"^
+         | "\{"^ "\}"^;
 
-Pair     : String ":" Value;
+Pair     : String ":"^ Value;
 
-Array    : "\[" Value { "," Value } "\]"
-         | "\[" "\]";
+Array    : "\["^ Value { ","^ Value } "\]"^
+         | "\["^ "\]"^;
 
 Value    : String
          | Number
          | Object
          | Array
-         | "true"
-         | "false"
-         | "null";
+         | "true"^
+         | "false"^
+         | "null"^;
 
 String   : "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
 
