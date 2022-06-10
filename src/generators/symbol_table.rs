@@ -449,12 +449,10 @@ impl Symbol {
         }
     }
 
-    pub(crate) fn member_scope(&self) -> Result<ScopeId> {
+    pub(crate) fn member_scope(&self) -> Option<ScopeId> {
         match self {
-            Symbol::Type(t) => Ok(t.member_scope),
-            Symbol::Instance(_) => Err(miette!(
-                "Instance has no member scope. Use instance's type!"
-            )),
+            Symbol::Type(t) => Some(t.member_scope),
+            Symbol::Instance(_) => None,
         }
     }
 
@@ -759,7 +757,7 @@ impl SymbolTable {
         self.symbols
             .iter()
             .filter(|symbol| {
-                if let Ok(scope) = symbol.member_scope() {
+                if let Some(scope) = symbol.member_scope() {
                     symbol.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
                 } else {
                     false
@@ -831,7 +829,13 @@ impl SymbolTable {
     ) -> Result<SymbolId> {
         debug_assert!(parent_symbol.0 < self.symbols.len());
         let symbol_id = self.next_symbol_id();
-        let parent_scope = self.scope(self.symbol(parent_symbol).member_scope()?).my_id;
+        let parent_scope = self
+            .scope(
+                self.symbol(parent_symbol)
+                    .member_scope()
+                    .ok_or(miette!("Invalid parent symbol"))?,
+            )
+            .my_id;
         let member_scope = self.insert_scope(Some(parent_scope));
         let symbol =
             self.scope_mut(parent_scope)
@@ -866,7 +870,10 @@ impl SymbolTable {
     ) -> Result<SymbolId> {
         debug_assert!(parent_symbol.0 < self.symbols.len());
         let symbol_id = self.next_symbol_id();
-        let member_scope = self.symbol(parent_symbol).member_scope()?;
+        let member_scope = self
+            .symbol(parent_symbol)
+            .member_scope()
+            .ok_or(miette!("Invalid parent symbol"))?;
         let symbol = self.scope_mut(member_scope).insert_instance(
             instance_name,
             symbol_id,
@@ -900,10 +907,11 @@ impl SymbolTable {
     }
 
     pub(crate) fn get_global_type(&self, non_terminal: &str) -> Option<SymbolId> {
-        self.scope(Self::GLOBAL_SCOPE).symbols.iter().find(|symbol_id| {
-            self.symbols[symbol_id.0].name(self) == non_terminal
-        })
-        .map(|symbol_id| *symbol_id)
+        self.scope(Self::GLOBAL_SCOPE)
+            .symbols
+            .iter()
+            .find(|symbol_id| self.symbols[symbol_id.0].name(self) == non_terminal)
+            .map(|symbol_id| *symbol_id)
     }
 }
 
