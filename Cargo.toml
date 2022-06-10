@@ -1,6 +1,6 @@
 [package]
 name = "oberon2"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -17,4 +17,4 @@ parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
 thiserror = "^1.0"
 
 [build-dependencies]
-parol = "^0.9.1"
+parol ="0.9.4"

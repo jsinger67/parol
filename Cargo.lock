@@ -469,7 +469,7 @@ dependencies = [
 
 [[package]]
 name = "oberon2"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "derive_builder",
  "env_logger",
@@ -512,9 +512,9 @@ checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
 
 [[package]]
 name = "parol"
-version = "0.9.1"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f63f0f5b36071b0ee61bfb626c11b7ac4a98114944418c854993716f8d20b694"
+checksum = "80585c869d9248d46eed719ecf808ae823f928677fdc4c7105fc3bca58ceedd1"
 dependencies = [
  "bart",
  "bart_derive",

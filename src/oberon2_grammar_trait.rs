@@ -4,7 +4,7 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#[allow(unused_imports)]
+#![allow(unused_imports)]
 use crate::oberon2_grammar::Oberon2Grammar;
 use id_tree::Tree;
 use log::trace;
@@ -19,62 +19,62 @@ pub trait Oberon2GrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for non-terminal 'KwBegin'
-    fn kw_begin(&mut self, _arg: &KwBegin<'t>) -> Result<()> {
+    fn kw_begin(&mut self, _arg: &KwBegin) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwCase'
-    fn kw_case(&mut self, _arg: &KwCase<'t>) -> Result<()> {
+    fn kw_case(&mut self, _arg: &KwCase) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwDo'
-    fn kw_do(&mut self, _arg: &KwDo<'t>) -> Result<()> {
+    fn kw_do(&mut self, _arg: &KwDo) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElse'
-    fn kw_else(&mut self, _arg: &KwElse<'t>) -> Result<()> {
+    fn kw_else(&mut self, _arg: &KwElse) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElsif'
-    fn kw_elsif(&mut self, _arg: &KwElsif<'t>) -> Result<()> {
+    fn kw_elsif(&mut self, _arg: &KwElsif) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwEnd'
-    fn kw_end(&mut self, _arg: &KwEnd<'t>) -> Result<()> {
+    fn kw_end(&mut self, _arg: &KwEnd) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwIf'
-    fn kw_if(&mut self, _arg: &KwIf<'t>) -> Result<()> {
+    fn kw_if(&mut self, _arg: &KwIf) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwOf'
-    fn kw_of(&mut self, _arg: &KwOf<'t>) -> Result<()> {
+    fn kw_of(&mut self, _arg: &KwOf) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwProcedure'
-    fn kw_procedure(&mut self, _arg: &KwProcedure<'t>) -> Result<()> {
+    fn kw_procedure(&mut self, _arg: &KwProcedure) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwThen'
-    fn kw_then(&mut self, _arg: &KwThen<'t>) -> Result<()> {
+    fn kw_then(&mut self, _arg: &KwThen) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwTo'
-    fn kw_to(&mut self, _arg: &KwTo<'t>) -> Result<()> {
+    fn kw_to(&mut self, _arg: &KwTo) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwVar'
-    fn kw_var(&mut self, _arg: &KwVar<'t>) -> Result<()> {
+    fn kw_var(&mut self, _arg: &KwVar) -> Result<()> {
         Ok(())
     }
 
@@ -379,7 +379,7 @@ pub trait Oberon2GrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'InOp'
-    fn in_op(&mut self, _arg: &InOp<'t>) -> Result<()> {
+    fn in_op(&mut self, _arg: &InOp) -> Result<()> {
         Ok(())
     }
 }
@@ -392,25 +392,23 @@ pub trait Oberon2GrammarTrait<'t> {
 ///
 /// Type derived for production 26
 ///
-/// DeclSeqList0Group: ProcDecl ";";
+/// DeclSeqList0Group: ProcDecl ";"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DeclSeqList0Group0<'t> {
     pub proc_decl: Box<ProcDecl<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
 /// Type derived for production 27
 ///
-/// DeclSeqList0Group: ForwardDecl ";";
+/// DeclSeqList0Group: ForwardDecl ";"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DeclSeqList0Group1<'t> {
     pub forward_decl: Box<ForwardDecl<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -460,54 +458,47 @@ pub struct TypeDef0<'t> {
 ///
 /// Type derived for production 78
 ///
-/// TypeDef: "ARRAY" TypeDefOpt /* Option */ KwOf TypeDef;
+/// TypeDef: "ARRAY"^ /* Clipped */ TypeDefOpt /* Option */ KwOf^ /* Clipped */ TypeDef;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef1<'t> {
-    pub a_r_r_a_y: Token<'t>, /* ARRAY */
     pub type_def_opt: Option<Box<TypeDefOpt<'t>>>,
-    pub kw_of: Box<KwOf<'t>>,
     pub type_def: Box<TypeDef<'t>>,
 }
 
 ///
 /// Type derived for production 79
 ///
-/// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd;
+/// TypeDef: "RECORD"^ /* Clipped */ TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef2<'t> {
-    pub r_e_c_o_r_d: Token<'t>, /* RECORD */
     pub type_def_opt0: Option<Box<TypeDefOpt0<'t>>>,
     pub field_list: Box<FieldList<'t>>,
     pub type_def_list: Vec<TypeDefList<'t>>,
-    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 82
 ///
-/// TypeDef: "POINTER" KwTo TypeDef;
+/// TypeDef: "POINTER"^ /* Clipped */ KwTo^ /* Clipped */ TypeDef;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef3<'t> {
-    pub p_o_i_n_t_e_r: Token<'t>, /* POINTER */
-    pub kw_to: Box<KwTo<'t>>,
     pub type_def: Box<TypeDef<'t>>,
 }
 
 ///
 /// Type derived for production 83
 ///
-/// TypeDef: KwProcedure TypeDefOpt1 /* Option */;
+/// TypeDef: KwProcedure^ /* Clipped */ TypeDefOpt1 /* Option */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDef4<'t> {
-    pub kw_procedure: Box<KwProcedure<'t>>,
     pub type_def_opt1: Option<Box<TypeDefOpt1<'t>>>,
 }
 
@@ -526,12 +517,11 @@ pub struct StatementOptGroup0<'t> {
 ///
 /// Type derived for production 101
 ///
-/// StatementOptGroupSuffix: ":=" Expr;
+/// StatementOptGroupSuffix: ":="^ /* Clipped */ Expr;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroupSuffix0<'t> {
-    pub colon_equ: Token<'t>, /* := */
     pub expr: Box<Expr<'t>>,
 }
 
@@ -549,12 +539,11 @@ pub struct StatementOptGroupSuffix1<'t> {
 ///
 /// Type derived for production 103
 ///
-/// StatementOptGroup: KwIf Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
+/// StatementOptGroup: KwIf^ /* Clipped */ Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup1<'t> {
-    pub kw_if: Box<KwIf<'t>>,
     pub expr: Box<Expr<'t>>,
     pub then_block: Box<ThenBlock<'t>>,
     pub statement_opt_group_list: Vec<StatementOptGroupList<'t>>,
@@ -564,14 +553,12 @@ pub struct StatementOptGroup1<'t> {
 ///
 /// Type derived for production 104
 ///
-/// StatementOptGroup: KwCase Expr KwOf Cases OptElsePartEnd;
+/// StatementOptGroup: KwCase^ /* Clipped */ Expr KwOf^ /* Clipped */ Cases OptElsePartEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup2<'t> {
-    pub kw_case: Box<KwCase<'t>>,
     pub expr: Box<Expr<'t>>,
-    pub kw_of: Box<KwOf<'t>>,
     pub cases: Box<Cases<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
 }
@@ -579,12 +566,11 @@ pub struct StatementOptGroup2<'t> {
 ///
 /// Type derived for production 105
 ///
-/// StatementOptGroup: "WHILE" Expr DoBlock;
+/// StatementOptGroup: "WHILE"^ /* Clipped */ Expr DoBlock;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup3<'t> {
-    pub w_h_i_l_e: Token<'t>, /* WHILE */
     pub expr: Box<Expr<'t>>,
     pub do_block: Box<DoBlock<'t>>,
 }
@@ -592,26 +578,23 @@ pub struct StatementOptGroup3<'t> {
 ///
 /// Type derived for production 106
 ///
-/// StatementOptGroup: "REPEAT" StatementSeq "UNTIL" Expr;
+/// StatementOptGroup: "REPEAT"^ /* Clipped */ StatementSeq "UNTIL"^ /* Clipped */ Expr;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup4<'t> {
-    pub r_e_p_e_a_t: Token<'t>, /* REPEAT */
     pub statement_seq: Box<StatementSeq<'t>>,
-    pub u_n_t_i_l: Token<'t>, /* UNTIL */
     pub expr: Box<Expr<'t>>,
 }
 
 ///
 /// Type derived for production 107
 ///
-/// StatementOptGroup: "FOR" ForInit StatementOpt1 /* Option */ DoBlock;
+/// StatementOptGroup: "FOR"^ /* Clipped */ ForInit StatementOpt1 /* Option */ DoBlock;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup5<'t> {
-    pub f_o_r: Token<'t>, /* FOR */
     pub for_init: Box<ForInit<'t>>,
     pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
     pub do_block: Box<DoBlock<'t>>,
@@ -620,25 +603,22 @@ pub struct StatementOptGroup5<'t> {
 ///
 /// Type derived for production 108
 ///
-/// StatementOptGroup: "LOOP" StatementSeq KwEnd;
+/// StatementOptGroup: "LOOP"^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup6<'t> {
-    pub l_o_o_p: Token<'t>, /* LOOP */
     pub statement_seq: Box<StatementSeq<'t>>,
-    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
 /// Type derived for production 109
 ///
-/// StatementOptGroup: "WITH" GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
+/// StatementOptGroup: "WITH"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup7<'t> {
-    pub w_i_t_h: Token<'t>, /* WITH */
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
     pub statement_opt_group_list0: Vec<StatementOptGroupList0<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
@@ -647,23 +627,20 @@ pub struct StatementOptGroup7<'t> {
 ///
 /// Type derived for production 110
 ///
-/// StatementOptGroup: "EXIT";
+/// StatementOptGroup: "EXIT"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup8<'t> {
-    pub e_x_i_t: Token<'t>, /* EXIT */
-}
+pub struct StatementOptGroup8 {}
 
 ///
 /// Type derived for production 111
 ///
-/// StatementOptGroup: "RETURN" StatementOpt2 /* Option */;
+/// StatementOptGroup: "RETURN"^ /* Clipped */ StatementOpt2 /* Option */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroup9<'t> {
-    pub r_e_t_u_r_n: Token<'t>, /* RETURN */
     pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
 }
 
@@ -737,13 +714,11 @@ pub struct Factor3<'t> {
 ///
 /// Type derived for production 165
 ///
-/// Factor: "NIL";
+/// Factor: "NIL"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor4<'t> {
-    pub n_i_l: Token<'t>, /* NIL */
-}
+pub struct Factor4 {}
 
 ///
 /// Type derived for production 166
@@ -759,38 +734,33 @@ pub struct Factor5<'t> {
 ///
 /// Type derived for production 167
 ///
-/// Factor: "\(" Expr "\)";
+/// Factor: "\("^ /* Clipped */ Expr "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Factor6<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub expr: Box<Expr<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
 /// Type derived for production 168
 ///
-/// Factor: "~" Factor;
+/// Factor: "~"^ /* Clipped */ Factor;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Factor7<'t> {
-    pub tilde: Token<'t>, /* ~ */
     pub factor: Box<Factor<'t>>,
 }
 
 ///
 /// Type derived for production 181
 ///
-/// Relation: "=";
+/// Relation: "="^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation0<'t> {
-    pub equ: Token<'t>, /* = */
-}
+pub struct Relation0 {}
 
 ///
 /// Type derived for production 182
@@ -854,8 +824,8 @@ pub struct Relation5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation6<'t> {
-    pub in_op: Box<InOp<'t>>,
+pub struct Relation6 {
+    pub in_op: Box<InOp>,
 }
 
 ///
@@ -960,38 +930,33 @@ pub struct MulOp4<'t> {
 ///
 /// Type derived for production 200
 ///
-/// DesignatorSuffix: "\." Ident;
+/// DesignatorSuffix: "\."^ /* Clipped */ Ident;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DesignatorSuffix0<'t> {
-    pub dot: Token<'t>, /* \. */
     pub ident: Box<Ident<'t>>,
 }
 
 ///
 /// Type derived for production 201
 ///
-/// DesignatorSuffix: "\[" ExprList "\]";
+/// DesignatorSuffix: "\["^ /* Clipped */ ExprList "\]"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DesignatorSuffix1<'t> {
-    pub l_bracket: Token<'t>, /* \[ */
     pub expr_list: Box<ExprList<'t>>,
-    pub r_bracket: Token<'t>, /* \] */
 }
 
 ///
 /// Type derived for production 202
 ///
-/// DesignatorSuffix: "\^";
+/// DesignatorSuffix: "\^"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DesignatorSuffix2<'t> {
-    pub circumflex: Token<'t>, /* \^ */
-}
+pub struct DesignatorSuffix2 {}
 
 ///
 /// Type derived for production 209
@@ -1112,7 +1077,6 @@ pub struct CaseLabelsOpt<'t> {
 pub struct CaseOpt<'t> {
     pub case_labels: Box<CaseLabels<'t>>,
     pub case_opt_list: Vec<CaseOptList<'t>>,
-    pub colon: Token<'t>, /* : */
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -1122,7 +1086,6 @@ pub struct CaseOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct CaseOptList<'t> {
-    pub comma: Token<'t>, /* , */
     pub case_labels: Box<CaseLabels<'t>>,
 }
 
@@ -1142,7 +1105,6 @@ pub struct Cases<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct CasesList<'t> {
-    pub or: Token<'t>, /* \| */
     pub case: Box<Case<'t>>,
 }
 
@@ -1162,7 +1124,6 @@ pub struct Character<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ConstDecl<'t> {
     pub ident_def: Box<IdentDef<'t>>,
-    pub equ: Token<'t>, /* = */
     pub const_expr: Box<ConstExpr<'t>>,
 }
 
@@ -1172,7 +1133,6 @@ pub struct ConstDecl<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ConstDeclBlock<'t> {
-    pub c_o_n_s_t: Token<'t>, /* CONST */
     pub const_decl_block_list: Vec<ConstDeclBlockList<'t>>,
 }
 
@@ -1183,7 +1143,6 @@ pub struct ConstDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ConstDeclBlockList<'t> {
     pub const_decl: Box<ConstDecl<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -1271,7 +1230,7 @@ pub struct DesignatorList<'t> {
 pub enum DesignatorSuffix<'t> {
     DesignatorSuffix0(DesignatorSuffix0<'t>),
     DesignatorSuffix1(DesignatorSuffix1<'t>),
-    DesignatorSuffix2(DesignatorSuffix2<'t>),
+    DesignatorSuffix2(DesignatorSuffix2),
 }
 
 ///
@@ -1280,9 +1239,7 @@ pub enum DesignatorSuffix<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DoBlock<'t> {
-    pub kw_do: Box<KwDo<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
-    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
@@ -1301,7 +1258,6 @@ pub struct Element<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ElementOpt<'t> {
-    pub dot_dot: Token<'t>, /* \.\. */
     pub expr: Box<Expr<'t>>,
 }
 
@@ -1311,7 +1267,6 @@ pub struct ElementOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ElsePart<'t> {
-    pub kw_else: Box<KwElse<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -1321,7 +1276,6 @@ pub struct ElsePart<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ElsifPart<'t> {
-    pub kw_elsif: Box<KwElsif<'t>>,
     pub expr: Box<Expr<'t>>,
     pub then_block: Box<ThenBlock<'t>>,
 }
@@ -1352,7 +1306,6 @@ pub struct ExprList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ExprListList<'t> {
-    pub comma: Token<'t>, /* , */
     pub expr: Box<Expr<'t>>,
 }
 
@@ -1372,10 +1325,9 @@ pub struct ExprOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FPSection<'t> {
-    pub f_p_section_opt: Option<Box<FPSectionOpt<'t>>>,
+    pub f_p_section_opt: Option<Box<FPSectionOpt>>,
     pub ident: Box<Ident<'t>>,
     pub f_p_section_list: Vec<FPSectionList<'t>>,
-    pub colon: Token<'t>, /* : */
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -1385,7 +1337,6 @@ pub struct FPSection<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FPSectionList<'t> {
-    pub comma: Token<'t>, /* , */
     pub ident: Box<Ident<'t>>,
 }
 
@@ -1394,9 +1345,7 @@ pub struct FPSectionList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct FPSectionOpt<'t> {
-    pub kw_var: Box<KwVar<'t>>,
-}
+pub struct FPSectionOpt {}
 
 ///
 /// Type derived for non-terminal Factor
@@ -1408,7 +1357,7 @@ pub enum Factor<'t> {
     Factor1(Factor1<'t>),
     Factor2(Factor2<'t>),
     Factor3(Factor3<'t>),
-    Factor4(Factor4<'t>),
+    Factor4(Factor4),
     Factor5(Factor5<'t>),
     Factor6(Factor6<'t>),
     Factor7(Factor7<'t>),
@@ -1420,9 +1369,7 @@ pub enum Factor<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FactorOpt<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub factor_opt0: Option<Box<FactorOpt0<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -1450,7 +1397,6 @@ pub struct FieldList<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct FieldListOpt<'t> {
     pub ident_list: Box<IdentList<'t>>,
-    pub colon: Token<'t>, /* : */
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -1461,9 +1407,7 @@ pub struct FieldListOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ForInit<'t> {
     pub ident: Box<Ident<'t>>,
-    pub colon_equ: Token<'t>, /* := */
     pub expr: Box<Expr<'t>>,
-    pub kw_to: Box<KwTo<'t>>,
     pub expr0: Box<Expr<'t>>,
 }
 
@@ -1473,7 +1417,6 @@ pub struct ForInit<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ForStep<'t> {
-    pub b_y: Token<'t>, /* BY */
     pub const_expr: Box<ConstExpr<'t>>,
 }
 
@@ -1483,9 +1426,7 @@ pub struct ForStep<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FormalPars<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub formal_pars_opt: Option<Box<FormalParsOpt<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
     pub formal_pars_opt0: Option<Box<FormalParsOpt0<'t>>>,
 }
 
@@ -1505,7 +1446,6 @@ pub struct FormalParsOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FormalParsOpt0<'t> {
-    pub colon: Token<'t>, /* : */
     pub qual_ident: Box<QualIdent<'t>>,
 }
 
@@ -1515,7 +1455,6 @@ pub struct FormalParsOpt0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct FormalParsOptList<'t> {
-    pub semicolon: Token<'t>, /* ; */
     pub f_p_section: Box<FPSection<'t>>,
 }
 
@@ -1525,7 +1464,6 @@ pub struct FormalParsOptList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ForwardDecl<'t> {
-    pub kw_procedure: Box<KwProcedure<'t>>,
     pub circumflex: Token<'t>, /* \^ */
     pub forward_decl_opt: Option<Box<ForwardDeclOpt<'t>>>,
     pub ident_def: Box<IdentDef<'t>>,
@@ -1557,7 +1495,6 @@ pub struct ForwardDeclOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct Guard<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
-    pub colon: Token<'t>, /* : */
     pub qual_ident0: Box<QualIdent<'t>>,
 }
 
@@ -1568,7 +1505,6 @@ pub struct Guard<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct GuardedDoBlock<'t> {
     pub guard: Box<Guard<'t>>,
-    pub kw_do: Box<KwDo<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -1626,7 +1562,6 @@ pub struct IdentList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct IdentListList<'t> {
-    pub comma: Token<'t>, /* , */
     pub ident_def: Box<IdentDef<'t>>,
 }
 
@@ -1636,11 +1571,9 @@ pub struct IdentListList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ImportList<'t> {
-    pub i_m_p_o_r_t: Token<'t>, /* IMPORT */
     pub import_list_opt: Option<Box<ImportListOpt<'t>>>,
     pub ident: Box<Ident<'t>>,
     pub import_list_list: Vec<ImportListList<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -1649,7 +1582,6 @@ pub struct ImportList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ImportListList<'t> {
-    pub comma: Token<'t>, /* , */
     pub import_list_opt0: Option<Box<ImportListOpt0<'t>>>,
     pub ident: Box<Ident<'t>>,
 }
@@ -1661,7 +1593,6 @@ pub struct ImportListList<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ImportListOpt<'t> {
     pub ident: Box<Ident<'t>>,
-    pub colon_equ: Token<'t>, /* := */
 }
 
 ///
@@ -1671,7 +1602,6 @@ pub struct ImportListOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ImportListOpt0<'t> {
     pub ident: Box<Ident<'t>>,
-    pub colon_equ: Token<'t>, /* := */
 }
 
 ///
@@ -1679,9 +1609,7 @@ pub struct ImportListOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct InOp<'t> {
-    pub in_op: Token<'t>, /* IN */
-}
+pub struct InOp {}
 
 ///
 /// Type derived for non-terminal Integer
@@ -1697,108 +1625,84 @@ pub struct Integer<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwBegin<'t> {
-    pub kw_begin: Token<'t>, /* BEGIN */
-}
+pub struct KwBegin {}
 
 ///
 /// Type derived for non-terminal KwCase
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwCase<'t> {
-    pub kw_case: Token<'t>, /* CASE */
-}
+pub struct KwCase {}
 
 ///
 /// Type derived for non-terminal KwDo
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwDo<'t> {
-    pub kw_do: Token<'t>, /* DO */
-}
+pub struct KwDo {}
 
 ///
 /// Type derived for non-terminal KwElse
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwElse<'t> {
-    pub kw_else: Token<'t>, /* ELSE */
-}
+pub struct KwElse {}
 
 ///
 /// Type derived for non-terminal KwElsif
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwElsif<'t> {
-    pub kw_elsif: Token<'t>, /* ELSIF */
-}
+pub struct KwElsif {}
 
 ///
 /// Type derived for non-terminal KwEnd
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwEnd<'t> {
-    pub kw_end: Token<'t>, /* END */
-}
+pub struct KwEnd {}
 
 ///
 /// Type derived for non-terminal KwIf
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwIf<'t> {
-    pub kw_if: Token<'t>, /* IF */
-}
+pub struct KwIf {}
 
 ///
 /// Type derived for non-terminal KwOf
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwOf<'t> {
-    pub kw_of: Token<'t>, /* OF */
-}
+pub struct KwOf {}
 
 ///
 /// Type derived for non-terminal KwProcedure
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwProcedure<'t> {
-    pub kw_procedure: Token<'t>, /* PROCEDURE */
-}
+pub struct KwProcedure {}
 
 ///
 /// Type derived for non-terminal KwThen
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwThen<'t> {
-    pub kw_then: Token<'t>, /* THEN */
-}
+pub struct KwThen {}
 
 ///
 /// Type derived for non-terminal KwTo
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwTo<'t> {
-    pub kw_to: Token<'t>, /* TO */
-}
+pub struct KwTo {}
 
 ///
 /// Type derived for non-terminal KwVar
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct KwVar<'t> {
-    pub kw_var: Token<'t>, /* VAR */
-}
+pub struct KwVar {}
 
 ///
 /// Type derived for non-terminal ModuleBody
@@ -1807,7 +1711,6 @@ pub struct KwVar<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ModuleBody<'t> {
     pub statement_block: Box<StatementBlock<'t>>,
-    pub dot: Token<'t>, /* \. */
 }
 
 ///
@@ -1816,9 +1719,7 @@ pub struct ModuleBody<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ModuleHead<'t> {
-    pub m_o_d_u_l_e: Token<'t>, /* MODULE */
     pub ident: Box<Ident<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -1872,7 +1773,6 @@ pub struct Oberon2Opt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct OptElsePartEnd<'t> {
     pub opt_else_part_end_opt: Option<Box<OptElsePartEndOpt<'t>>>,
-    pub kw_end: Box<KwEnd<'t>>,
 }
 
 ///
@@ -1891,7 +1791,6 @@ pub struct OptElsePartEndOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ProcDecl<'t> {
     pub procedure_heading: Box<ProcedureHeading<'t>>,
-    pub semicolon: Token<'t>, /* ; */
     pub procedure_body: Box<ProcedureBody<'t>>,
 }
 
@@ -1911,7 +1810,6 @@ pub struct ProcedureBody<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ProcedureHeading<'t> {
-    pub kw_procedure: Box<KwProcedure<'t>>,
     pub procedure_heading_opt: Option<Box<ProcedureHeadingOpt<'t>>>,
     pub ident_def: Box<IdentDef<'t>>,
     pub procedure_heading_opt0: Option<Box<ProcedureHeadingOpt0<'t>>>,
@@ -1969,10 +1867,8 @@ pub struct Real<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Receiver<'t> {
-    pub l_paren: Token<'t>, /* \( */
-    pub receiver_opt: Option<Box<ReceiverOpt<'t>>>,
+    pub receiver_opt: Option<Box<ReceiverOpt>>,
     pub receiver_var_decl: Box<ReceiverVarDecl<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -1980,9 +1876,7 @@ pub struct Receiver<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ReceiverOpt<'t> {
-    pub kw_var: Box<KwVar<'t>>,
-}
+pub struct ReceiverOpt {}
 
 ///
 /// Type derived for non-terminal ReceiverVarDecl
@@ -1991,7 +1885,6 @@ pub struct ReceiverOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct ReceiverVarDecl<'t> {
     pub ident: Box<Ident<'t>>,
-    pub colon: Token<'t>, /* : */
     pub ident0: Box<Ident<'t>>,
 }
 
@@ -2001,13 +1894,13 @@ pub struct ReceiverVarDecl<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Relation<'t> {
-    Relation0(Relation0<'t>),
+    Relation0(Relation0),
     Relation1(Relation1<'t>),
     Relation2(Relation2<'t>),
     Relation3(Relation3<'t>),
     Relation4(Relation4<'t>),
     Relation5(Relation5<'t>),
-    Relation6(Relation6<'t>),
+    Relation6(Relation6),
     Relation7(Relation7<'t>),
 }
 
@@ -2017,9 +1910,7 @@ pub enum Relation<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Set<'t> {
-    pub l_brace: Token<'t>, /* \{ */
     pub set_opt: Option<Box<SetOpt<'t>>>,
-    pub r_brace: Token<'t>, /* \} */
 }
 
 ///
@@ -2038,7 +1929,6 @@ pub struct SetOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct SetOptList<'t> {
-    pub comma: Token<'t>, /* , */
     pub element: Box<Element<'t>>,
 }
 
@@ -2098,7 +1988,6 @@ pub struct Statement<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct StatementBlock<'t> {
     pub statement_block_opt: Option<Box<StatementBlockOpt<'t>>>,
-    pub kw_end: Box<KwEnd<'t>>,
     pub ident: Box<Ident<'t>>,
 }
 
@@ -2108,7 +1997,6 @@ pub struct StatementBlock<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementBlockOpt<'t> {
-    pub kw_begin: Box<KwBegin<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -2127,9 +2015,7 @@ pub struct StatementOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOpt0<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub statement_opt3: Option<Box<StatementOpt3<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -2173,7 +2059,7 @@ pub enum StatementOptGroup<'t> {
     StatementOptGroup5(StatementOptGroup5<'t>),
     StatementOptGroup6(StatementOptGroup6<'t>),
     StatementOptGroup7(StatementOptGroup7<'t>),
-    StatementOptGroup8(StatementOptGroup8<'t>),
+    StatementOptGroup8(StatementOptGroup8),
     StatementOptGroup9(StatementOptGroup9<'t>),
 }
 
@@ -2192,7 +2078,6 @@ pub struct StatementOptGroupList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementOptGroupList0<'t> {
-    pub or: Token<'t>, /* \| */
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
 }
 
@@ -2222,7 +2107,6 @@ pub struct StatementSeq<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StatementSeqList<'t> {
-    pub semicolon: Token<'t>, /* ; */
     pub statement: Box<Statement<'t>>,
 }
 
@@ -2261,7 +2145,6 @@ pub struct TermList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ThenBlock<'t> {
-    pub kw_then: Box<KwThen<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -2272,7 +2155,6 @@ pub struct ThenBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDecl<'t> {
     pub ident_def: Box<IdentDef<'t>>,
-    pub equ: Token<'t>, /* = */
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -2282,7 +2164,6 @@ pub struct TypeDecl<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDeclBlock<'t> {
-    pub t_y_p_e: Token<'t>, /* TYPE */
     pub type_decl_block_list: Vec<TypeDeclBlockList<'t>>,
 }
 
@@ -2293,7 +2174,6 @@ pub struct TypeDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDeclBlockList<'t> {
     pub type_decl: Box<TypeDecl<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 ///
@@ -2315,7 +2195,6 @@ pub enum TypeDef<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDefList<'t> {
-    pub semicolon: Token<'t>, /* ; */
     pub field_list: Box<FieldList<'t>>,
 }
 
@@ -2335,9 +2214,7 @@ pub struct TypeDefOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDefOpt0<'t> {
-    pub l_paren: Token<'t>, /* \( */
     pub qual_ident: Box<QualIdent<'t>>,
-    pub r_paren: Token<'t>, /* \) */
 }
 
 ///
@@ -2355,7 +2232,6 @@ pub struct TypeDefOpt1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TypeDefOptList<'t> {
-    pub comma: Token<'t>, /* , */
     pub const_expr: Box<ConstExpr<'t>>,
 }
 
@@ -2366,7 +2242,6 @@ pub struct TypeDefOptList<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct VarDecl<'t> {
     pub ident_list: Box<IdentList<'t>>,
-    pub colon: Token<'t>, /* : */
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -2376,7 +2251,6 @@ pub struct VarDecl<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct VarDeclBlock<'t> {
-    pub kw_var: Box<KwVar<'t>>,
     pub var_decl_block_list: Vec<VarDeclBlockList<'t>>,
 }
 
@@ -2387,7 +2261,6 @@ pub struct VarDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct VarDeclBlockList<'t> {
     pub var_decl: Box<VarDecl<'t>>,
-    pub semicolon: Token<'t>, /* ; */
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2430,7 +2303,7 @@ pub enum ASTType<'t> {
     ExprOpt(Option<Box<ExprOpt<'t>>>),
     FPSection(FPSection<'t>),
     FPSectionList(Vec<FPSectionList<'t>>),
-    FPSectionOpt(Option<Box<FPSectionOpt<'t>>>),
+    FPSectionOpt(Option<Box<FPSectionOpt>>),
     Factor(Factor<'t>),
     FactorOpt(Option<Box<FactorOpt<'t>>>),
     FactorOpt0(Option<Box<FactorOpt0<'t>>>),
@@ -2457,20 +2330,20 @@ pub enum ASTType<'t> {
     ImportListList(Vec<ImportListList<'t>>),
     ImportListOpt(Option<Box<ImportListOpt<'t>>>),
     ImportListOpt0(Option<Box<ImportListOpt0<'t>>>),
-    InOp(InOp<'t>),
+    InOp(InOp),
     Integer(Integer<'t>),
-    KwBegin(KwBegin<'t>),
-    KwCase(KwCase<'t>),
-    KwDo(KwDo<'t>),
-    KwElse(KwElse<'t>),
-    KwElsif(KwElsif<'t>),
-    KwEnd(KwEnd<'t>),
-    KwIf(KwIf<'t>),
-    KwOf(KwOf<'t>),
-    KwProcedure(KwProcedure<'t>),
-    KwThen(KwThen<'t>),
-    KwTo(KwTo<'t>),
-    KwVar(KwVar<'t>),
+    KwBegin(KwBegin),
+    KwCase(KwCase),
+    KwDo(KwDo),
+    KwElse(KwElse),
+    KwElsif(KwElsif),
+    KwEnd(KwEnd),
+    KwIf(KwIf),
+    KwOf(KwOf),
+    KwProcedure(KwProcedure),
+    KwThen(KwThen),
+    KwTo(KwTo),
+    KwVar(KwVar),
     ModuleBody(ModuleBody<'t>),
     ModuleHead(ModuleHead<'t>),
     MulOp(MulOp<'t>),
@@ -2488,7 +2361,7 @@ pub enum ASTType<'t> {
     QualIdent(QualIdent<'t>),
     Real(Real<'t>),
     Receiver(Receiver<'t>),
-    ReceiverOpt(Option<Box<ReceiverOpt<'t>>>),
+    ReceiverOpt(Option<Box<ReceiverOpt>>),
     ReceiverVarDecl(ReceiverVarDecl<'t>),
     Relation(Relation<'t>),
     Set(Set<'t>),
@@ -2598,19 +2471,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// KwBegin: "BEGIN";
+    /// KwBegin: "BEGIN"^ /* Clipped */;
     ///
     #[named]
     fn kw_begin(
         &mut self,
-        kw_begin: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_begin: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_begin = *kw_begin.token(parse_tree)?;
         let kw_begin_built = KwBeginBuilder::default()
-            .kw_begin(kw_begin)
+            // Ignore clipped member 'kw_begin'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2621,19 +2493,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// KwCase: "CASE";
+    /// KwCase: "CASE"^ /* Clipped */;
     ///
     #[named]
     fn kw_case(
         &mut self,
-        kw_case: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_case: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_case = *kw_case.token(parse_tree)?;
         let kw_case_built = KwCaseBuilder::default()
-            .kw_case(kw_case)
+            // Ignore clipped member 'kw_case'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2644,19 +2515,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// KwDo: "DO";
+    /// KwDo: "DO"^ /* Clipped */;
     ///
     #[named]
     fn kw_do(
         &mut self,
-        kw_do: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_do: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_do = *kw_do.token(parse_tree)?;
         let kw_do_built = KwDoBuilder::default()
-            .kw_do(kw_do)
+            // Ignore clipped member 'kw_do'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2667,19 +2537,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// KwElse: "ELSE";
+    /// KwElse: "ELSE"^ /* Clipped */;
     ///
     #[named]
     fn kw_else(
         &mut self,
-        kw_else: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_else: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_else = *kw_else.token(parse_tree)?;
         let kw_else_built = KwElseBuilder::default()
-            .kw_else(kw_else)
+            // Ignore clipped member 'kw_else'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2690,19 +2559,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// KwElsif: "ELSIF";
+    /// KwElsif: "ELSIF"^ /* Clipped */;
     ///
     #[named]
     fn kw_elsif(
         &mut self,
-        kw_elsif: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_elsif: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_elsif = *kw_elsif.token(parse_tree)?;
         let kw_elsif_built = KwElsifBuilder::default()
-            .kw_elsif(kw_elsif)
+            // Ignore clipped member 'kw_elsif'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2713,19 +2581,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// KwEnd: "END";
+    /// KwEnd: "END"^ /* Clipped */;
     ///
     #[named]
     fn kw_end(
         &mut self,
-        kw_end: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_end: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_end = *kw_end.token(parse_tree)?;
         let kw_end_built = KwEndBuilder::default()
-            .kw_end(kw_end)
+            // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2736,19 +2603,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// KwIf: "IF";
+    /// KwIf: "IF"^ /* Clipped */;
     ///
     #[named]
     fn kw_if(
         &mut self,
-        kw_if: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_if: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_if = *kw_if.token(parse_tree)?;
         let kw_if_built = KwIfBuilder::default()
-            .kw_if(kw_if)
+            // Ignore clipped member 'kw_if'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2759,19 +2625,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// KwOf: "OF";
+    /// KwOf: "OF"^ /* Clipped */;
     ///
     #[named]
     fn kw_of(
         &mut self,
-        kw_of: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_of: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_of = *kw_of.token(parse_tree)?;
         let kw_of_built = KwOfBuilder::default()
-            .kw_of(kw_of)
+            // Ignore clipped member 'kw_of'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2782,19 +2647,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// KwProcedure: "PROCEDURE";
+    /// KwProcedure: "PROCEDURE"^ /* Clipped */;
     ///
     #[named]
     fn kw_procedure(
         &mut self,
-        kw_procedure: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_procedure: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_procedure = *kw_procedure.token(parse_tree)?;
         let kw_procedure_built = KwProcedureBuilder::default()
-            .kw_procedure(kw_procedure)
+            // Ignore clipped member 'kw_procedure'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2805,19 +2669,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// KwThen: "THEN";
+    /// KwThen: "THEN"^ /* Clipped */;
     ///
     #[named]
     fn kw_then(
         &mut self,
-        kw_then: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_then: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_then = *kw_then.token(parse_tree)?;
         let kw_then_built = KwThenBuilder::default()
-            .kw_then(kw_then)
+            // Ignore clipped member 'kw_then'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2828,19 +2691,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// KwTo: "TO";
+    /// KwTo: "TO"^ /* Clipped */;
     ///
     #[named]
     fn kw_to(
         &mut self,
-        kw_to: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_to: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_to = *kw_to.token(parse_tree)?;
         let kw_to_built = KwToBuilder::default()
-            .kw_to(kw_to)
+            // Ignore clipped member 'kw_to'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2851,19 +2713,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// KwVar: "VAR";
+    /// KwVar: "VAR"^ /* Clipped */;
     ///
     #[named]
     fn kw_var(
         &mut self,
-        kw_var: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _kw_var: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_var = *kw_var.token(parse_tree)?;
         let kw_var_built = KwVarBuilder::default()
-            .kw_var(kw_var)
+            // Ignore clipped member 'kw_var'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2962,29 +2823,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// ModuleHead: "MODULE" Ident ";";
+    /// ModuleHead: "MODULE"^ /* Clipped */ Ident ";"^ /* Clipped */;
     ///
     #[named]
     fn module_head(
         &mut self,
-        m_o_d_u_l_e: &ParseTreeStackEntry<'t>,
+        _m_o_d_u_l_e: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _semicolon: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_o_d_u_l_e = *m_o_d_u_l_e.token(parse_tree)?;
-        let semicolon = *semicolon.token(parse_tree)?;
         let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
             ident
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
         let module_head_built = ModuleHeadBuilder::default()
-            .m_o_d_u_l_e(m_o_d_u_l_e)
+            // Ignore clipped member 'm_o_d_u_l_e'
             .ident(Box::new(ident))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -2995,18 +2854,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// ModuleBody: StatementBlock "\.";
+    /// ModuleBody: StatementBlock "\."^ /* Clipped */;
     ///
     #[named]
     fn module_body(
         &mut self,
         _statement_block: &ParseTreeStackEntry<'t>,
-        dot: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _dot: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot = *dot.token(parse_tree)?;
         let statement_block =
             if let Some(ASTType::StatementBlock(statement_block)) = self.pop(context) {
                 statement_block
@@ -3015,7 +2873,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             };
         let module_body_built = ModuleBodyBuilder::default()
             .statement_block(Box::new(statement_block))
-            .dot(dot)
+            // Ignore clipped member 'dot'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -3026,22 +2884,20 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// ImportList: "IMPORT" ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";";
+    /// ImportList: "IMPORT"^ /* Clipped */ ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";"^ /* Clipped */;
     ///
     #[named]
     fn import_list(
         &mut self,
-        i_m_p_o_r_t: &ParseTreeStackEntry<'t>,
+        _i_m_p_o_r_t: &ParseTreeStackEntry<'t>,
         _import_list_opt: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _import_list_list: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _semicolon: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let i_m_p_o_r_t = *i_m_p_o_r_t.token(parse_tree)?;
-        let semicolon = *semicolon.token(parse_tree)?;
         let import_list_list =
             if let Some(ASTType::ImportListList(mut import_list_list)) = self.pop(context) {
                 import_list_list.reverse();
@@ -3061,11 +2917,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::ImportListOpt", context);
             };
         let import_list_built = ImportListBuilder::default()
-            .i_m_p_o_r_t(i_m_p_o_r_t)
+            // Ignore clipped member 'i_m_p_o_r_t'
             .import_list_opt(import_list_opt)
             .ident(Box::new(ident))
             .import_list_list(import_list_list)
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -3076,20 +2932,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// ImportListList: "," ImportListOpt0 /* Option */ Ident ImportListList; // Vec<T>::Push
+    /// ImportListList: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList; // Vec<T>::Push
     ///
     #[named]
     fn import_list_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _import_list_opt0: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _import_list_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut import_list_list =
             if let Some(ASTType::ImportListList(import_list_list)) = self.pop(context) {
                 import_list_list
@@ -3110,7 +2965,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let import_list_list_0_built = ImportListListBuilder::default()
             .ident(Box::new(ident))
             .import_list_opt0(import_list_opt0)
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -3134,18 +2989,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// ImportListOpt0: Ident ":="; // Option<T>::Some
+    /// ImportListOpt0: Ident ":="^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn import_list_opt0_0(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
-        colon_equ: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _colon_equ: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_equ = *colon_equ.token(parse_tree)?;
         let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
             ident
         } else {
@@ -3153,7 +3007,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let import_list_opt0_0_built = ImportListOpt0Builder::default()
             .ident(Box::new(ident))
-            .colon_equ(colon_equ)
+            // Ignore clipped member 'colon_equ'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -3177,18 +3031,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// ImportListOpt: Ident ":="; // Option<T>::Some
+    /// ImportListOpt: Ident ":="^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn import_list_opt_0(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
-        colon_equ: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _colon_equ: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_equ = *colon_equ.token(parse_tree)?;
         let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
             ident
         } else {
@@ -3196,7 +3049,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let import_list_opt_0_built = ImportListOptBuilder::default()
             .ident(Box::new(ident))
-            .colon_equ(colon_equ)
+            // Ignore clipped member 'colon_equ'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -3293,18 +3146,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// DeclSeqList0Group: ProcDecl ";";
+    /// DeclSeqList0Group: ProcDecl ";"^ /* Clipped */;
     ///
     #[named]
     fn decl_seq_list0_group_0(
         &mut self,
         _proc_decl: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _semicolon: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let proc_decl = if let Some(ASTType::ProcDecl(proc_decl)) = self.pop(context) {
             proc_decl
         } else {
@@ -3312,7 +3164,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let decl_seq_list0_group_0_built = DeclSeqList0Group0Builder::default()
             .proc_decl(Box::new(proc_decl))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         let decl_seq_list0_group_0_built =
@@ -3326,18 +3178,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// DeclSeqList0Group: ForwardDecl ";";
+    /// DeclSeqList0Group: ForwardDecl ";"^ /* Clipped */;
     ///
     #[named]
     fn decl_seq_list0_group_1(
         &mut self,
         _forward_decl: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _semicolon: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let forward_decl = if let Some(ASTType::ForwardDecl(forward_decl)) = self.pop(context) {
             forward_decl
         } else {
@@ -3345,7 +3196,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let decl_seq_list0_group_1_built = DeclSeqList0Group1Builder::default()
             .forward_decl(Box::new(forward_decl))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         let decl_seq_list0_group_1_built =
@@ -3506,18 +3357,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// ConstDeclBlock: "CONST" ConstDeclBlockList /* Vec */;
+    /// ConstDeclBlock: "CONST"^ /* Clipped */ ConstDeclBlockList /* Vec */;
     ///
     #[named]
     fn const_decl_block(
         &mut self,
-        c_o_n_s_t: &ParseTreeStackEntry<'t>,
+        _c_o_n_s_t: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let c_o_n_s_t = *c_o_n_s_t.token(parse_tree)?;
         let const_decl_block_list =
             if let Some(ASTType::ConstDeclBlockList(mut const_decl_block_list)) = self.pop(context)
             {
@@ -3527,7 +3377,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::ConstDeclBlockList", context);
             };
         let const_decl_block_built = ConstDeclBlockBuilder::default()
-            .c_o_n_s_t(c_o_n_s_t)
+            // Ignore clipped member 'c_o_n_s_t'
             .const_decl_block_list(const_decl_block_list)
             .build()
             .into_diagnostic()?;
@@ -3540,19 +3390,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// ConstDeclBlockList: ConstDecl ";" ConstDeclBlockList; // Vec<T>::Push
+    /// ConstDeclBlockList: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList; // Vec<T>::Push
     ///
     #[named]
     fn const_decl_block_list_0(
         &mut self,
         _const_decl: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut const_decl_block_list =
             if let Some(ASTType::ConstDeclBlockList(const_decl_block_list)) = self.pop(context) {
                 const_decl_block_list
@@ -3565,7 +3414,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::ConstDecl", context);
         };
         let const_decl_block_list_0_built = ConstDeclBlockListBuilder::default()
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .const_decl(Box::new(const_decl))
             .build()
             .into_diagnostic()?;
@@ -3593,18 +3442,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// TypeDeclBlock: "TYPE" TypeDeclBlockList /* Vec */;
+    /// TypeDeclBlock: "TYPE"^ /* Clipped */ TypeDeclBlockList /* Vec */;
     ///
     #[named]
     fn type_decl_block(
         &mut self,
-        t_y_p_e: &ParseTreeStackEntry<'t>,
+        _t_y_p_e: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let t_y_p_e = *t_y_p_e.token(parse_tree)?;
         let type_decl_block_list =
             if let Some(ASTType::TypeDeclBlockList(mut type_decl_block_list)) = self.pop(context) {
                 type_decl_block_list.reverse();
@@ -3613,7 +3461,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::TypeDeclBlockList", context);
             };
         let type_decl_block_built = TypeDeclBlockBuilder::default()
-            .t_y_p_e(t_y_p_e)
+            // Ignore clipped member 't_y_p_e'
             .type_decl_block_list(type_decl_block_list)
             .build()
             .into_diagnostic()?;
@@ -3625,19 +3473,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// TypeDeclBlockList: TypeDecl ";" TypeDeclBlockList; // Vec<T>::Push
+    /// TypeDeclBlockList: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList; // Vec<T>::Push
     ///
     #[named]
     fn type_decl_block_list_0(
         &mut self,
         _type_decl: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut type_decl_block_list =
             if let Some(ASTType::TypeDeclBlockList(type_decl_block_list)) = self.pop(context) {
                 type_decl_block_list
@@ -3650,7 +3497,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::TypeDecl", context);
         };
         let type_decl_block_list_0_built = TypeDeclBlockListBuilder::default()
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .type_decl(Box::new(type_decl))
             .build()
             .into_diagnostic()?;
@@ -3678,7 +3525,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// VarDeclBlock: KwVar VarDeclBlockList /* Vec */;
+    /// VarDeclBlock: KwVar^ /* Clipped */ VarDeclBlockList /* Vec */;
     ///
     #[named]
     fn var_decl_block(
@@ -3696,13 +3543,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::VarDeclBlockList", context);
             };
-        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
-            kw_var
-        } else {
-            bail!("{}: Expecting ASTType::KwVar", context);
-        };
+        // Ignore clipped member 'kw_var'
+        self.pop(context);
         let var_decl_block_built = VarDeclBlockBuilder::default()
-            .kw_var(Box::new(kw_var))
+            // Ignore clipped member 'kw_var'
             .var_decl_block_list(var_decl_block_list)
             .build()
             .into_diagnostic()?;
@@ -3714,19 +3558,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// VarDeclBlockList: VarDecl ";" VarDeclBlockList; // Vec<T>::Push
+    /// VarDeclBlockList: VarDecl ";"^ /* Clipped */ VarDeclBlockList; // Vec<T>::Push
     ///
     #[named]
     fn var_decl_block_list_0(
         &mut self,
         _var_decl: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _var_decl_block_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut var_decl_block_list =
             if let Some(ASTType::VarDeclBlockList(var_decl_block_list)) = self.pop(context) {
                 var_decl_block_list
@@ -3739,7 +3582,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::VarDecl", context);
         };
         let var_decl_block_list_0_built = VarDeclBlockListBuilder::default()
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .var_decl(Box::new(var_decl))
             .build()
             .into_diagnostic()?;
@@ -3767,19 +3610,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// ConstDecl: IdentDef "=" ConstExpr;
+    /// ConstDecl: IdentDef "="^ /* Clipped */ ConstExpr;
     ///
     #[named]
     fn const_decl(
         &mut self,
         _ident_def: &ParseTreeStackEntry<'t>,
-        equ: &ParseTreeStackEntry<'t>,
+        _equ: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equ = *equ.token(parse_tree)?;
         let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
             const_expr
         } else {
@@ -3792,7 +3634,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let const_decl_built = ConstDeclBuilder::default()
             .ident_def(Box::new(ident_def))
-            .equ(equ)
+            // Ignore clipped member 'equ'
             .const_expr(Box::new(const_expr))
             .build()
             .into_diagnostic()?;
@@ -3804,19 +3646,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// TypeDecl: IdentDef "=" TypeDef;
+    /// TypeDecl: IdentDef "="^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn type_decl(
         &mut self,
         _ident_def: &ParseTreeStackEntry<'t>,
-        equ: &ParseTreeStackEntry<'t>,
+        _equ: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equ = *equ.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
@@ -3829,7 +3670,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let type_decl_built = TypeDeclBuilder::default()
             .ident_def(Box::new(ident_def))
-            .equ(equ)
+            // Ignore clipped member 'equ'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -3841,19 +3682,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// VarDecl: IdentList ":" TypeDef;
+    /// VarDecl: IdentList ":"^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn var_decl(
         &mut self,
         _ident_list: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
@@ -3866,7 +3706,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let var_decl_built = VarDeclBuilder::default()
             .ident_list(Box::new(ident_list))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -3878,19 +3718,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// ProcDecl: ProcedureHeading ";" ProcedureBody;
+    /// ProcDecl: ProcedureHeading ";"^ /* Clipped */ ProcedureBody;
     ///
     #[named]
     fn proc_decl(
         &mut self,
         _procedure_heading: &ParseTreeStackEntry<'t>,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _procedure_body: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let procedure_body = if let Some(ASTType::ProcedureBody(procedure_body)) = self.pop(context)
         {
             procedure_body
@@ -3905,7 +3744,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             };
         let proc_decl_built = ProcDeclBuilder::default()
             .procedure_heading(Box::new(procedure_heading))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .procedure_body(Box::new(procedure_body))
             .build()
             .into_diagnostic()?;
@@ -3917,7 +3756,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// ProcedureHeading: KwProcedure ProcedureHeadingOpt /* Option */ IdentDef ProcedureHeadingOpt0 /* Option */;
+    /// ProcedureHeading: KwProcedure^ /* Clipped */ ProcedureHeadingOpt /* Option */ IdentDef ProcedureHeadingOpt0 /* Option */;
     ///
     #[named]
     fn procedure_heading(
@@ -3949,13 +3788,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::ProcedureHeadingOpt", context);
             };
-        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
-            kw_procedure
-        } else {
-            bail!("{}: Expecting ASTType::KwProcedure", context);
-        };
+        // Ignore clipped member 'kw_procedure'
+        self.pop(context);
         let procedure_heading_built = ProcedureHeadingBuilder::default()
-            .kw_procedure(Box::new(kw_procedure))
+            // Ignore clipped member 'kw_procedure'
             .procedure_heading_opt(procedure_heading_opt)
             .ident_def(Box::new(ident_def))
             .procedure_heading_opt0(procedure_heading_opt0)
@@ -4085,7 +3921,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// StatementBlock: StatementBlockOpt /* Option */ KwEnd Ident;
+    /// StatementBlock: StatementBlockOpt /* Option */ KwEnd^ /* Clipped */ Ident;
     ///
     #[named]
     fn statement_block(
@@ -4102,11 +3938,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
-        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
-            kw_end
-        } else {
-            bail!("{}: Expecting ASTType::KwEnd", context);
-        };
+        // Ignore clipped member 'kw_end'
+        self.pop(context);
         let statement_block_opt =
             if let Some(ASTType::StatementBlockOpt(statement_block_opt)) = self.pop(context) {
                 statement_block_opt
@@ -4115,7 +3948,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             };
         let statement_block_built = StatementBlockBuilder::default()
             .statement_block_opt(statement_block_opt)
-            .kw_end(Box::new(kw_end))
+            // Ignore clipped member 'kw_end'
             .ident(Box::new(ident))
             .build()
             .into_diagnostic()?;
@@ -4127,7 +3960,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// StatementBlockOpt: KwBegin StatementSeq; // Option<T>::Some
+    /// StatementBlockOpt: KwBegin^ /* Clipped */ StatementSeq; // Option<T>::Some
     ///
     #[named]
     fn statement_block_opt_0(
@@ -4143,13 +3976,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let kw_begin = if let Some(ASTType::KwBegin(kw_begin)) = self.pop(context) {
-            kw_begin
-        } else {
-            bail!("{}: Expecting ASTType::KwBegin", context);
-        };
+        // Ignore clipped member 'kw_begin'
+        self.pop(context);
         let statement_block_opt_0_built = StatementBlockOptBuilder::default()
-            .kw_begin(Box::new(kw_begin))
+            // Ignore clipped member 'kw_begin'
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -4174,7 +4004,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// ForwardDecl: KwProcedure "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
+    /// ForwardDecl: KwProcedure^ /* Clipped */ "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
     ///
     #[named]
     fn forward_decl(
@@ -4206,13 +4036,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::ForwardDeclOpt", context);
             };
-        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
-            kw_procedure
-        } else {
-            bail!("{}: Expecting ASTType::KwProcedure", context);
-        };
+        // Ignore clipped member 'kw_procedure'
+        self.pop(context);
         let forward_decl_built = ForwardDeclBuilder::default()
-            .kw_procedure(Box::new(kw_procedure))
+            // Ignore clipped member 'kw_procedure'
             .circumflex(circumflex)
             .forward_decl_opt(forward_decl_opt)
             .ident_def(Box::new(ident_def))
@@ -4307,21 +4134,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// FormalPars: "\(" FormalParsOpt /* Option */ "\)" FormalParsOpt0 /* Option */;
+    /// FormalPars: "\("^ /* Clipped */ FormalParsOpt /* Option */ "\)"^ /* Clipped */ FormalParsOpt0 /* Option */;
     ///
     #[named]
     fn formal_pars(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _formal_pars_opt: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
+        _r_paren: &ParseTreeStackEntry<'t>,
         _formal_pars_opt0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let formal_pars_opt0 =
             if let Some(ASTType::FormalParsOpt0(formal_pars_opt0)) = self.pop(context) {
                 formal_pars_opt0
@@ -4335,9 +4160,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::FormalParsOpt", context);
             };
         let formal_pars_built = FormalParsBuilder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .formal_pars_opt(formal_pars_opt)
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .formal_pars_opt0(formal_pars_opt0)
             .build()
             .into_diagnostic()?;
@@ -4349,25 +4174,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// FormalParsOpt0: ":" QualIdent; // Option<T>::Some
+    /// FormalParsOpt0: ":"^ /* Clipped */ QualIdent; // Option<T>::Some
     ///
     #[named]
     fn formal_pars_opt0_0(
         &mut self,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _qual_ident: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
             qual_ident
         } else {
             bail!("{}: Expecting ASTType::QualIdent", context);
         };
         let formal_pars_opt0_0_built = FormalParsOpt0Builder::default()
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .qual_ident(Box::new(qual_ident))
             .build()
             .into_diagnostic()?;
@@ -4429,19 +4253,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// FormalParsOptList: ";" FPSection FormalParsOptList; // Vec<T>::Push
+    /// FormalParsOptList: ";"^ /* Clipped */ FPSection FormalParsOptList; // Vec<T>::Push
     ///
     #[named]
     fn formal_pars_opt_list_0(
         &mut self,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _f_p_section: &ParseTreeStackEntry<'t>,
         _formal_pars_opt_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut formal_pars_opt_list =
             if let Some(ASTType::FormalParsOptList(formal_pars_opt_list)) = self.pop(context) {
                 formal_pars_opt_list
@@ -4455,7 +4278,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let formal_pars_opt_list_0_built = FormalParsOptListBuilder::default()
             .f_p_section(Box::new(f_p_section))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -4494,7 +4317,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":" TypeDef;
+    /// FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":"^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn f_p_section(
@@ -4502,13 +4325,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _f_p_section_opt: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _f_p_section_list: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
@@ -4536,7 +4358,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .f_p_section_opt(f_p_section_opt)
             .ident(Box::new(ident))
             .f_p_section_list(f_p_section_list)
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -4548,19 +4370,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// FPSectionList: "," Ident FPSectionList; // Vec<T>::Push
+    /// FPSectionList: ","^ /* Clipped */ Ident FPSectionList; // Vec<T>::Push
     ///
     #[named]
     fn f_p_section_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _f_p_section_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut f_p_section_list =
             if let Some(ASTType::FPSectionList(f_p_section_list)) = self.pop(context) {
                 f_p_section_list
@@ -4574,7 +4395,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let f_p_section_list_0_built = FPSectionListBuilder::default()
             .ident(Box::new(ident))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -4598,7 +4419,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 71:
     ///
-    /// FPSectionOpt: KwVar; // Option<T>::Some
+    /// FPSectionOpt: KwVar^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn f_p_section_opt_0(
@@ -4608,13 +4429,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
-            kw_var
-        } else {
-            bail!("{}: Expecting ASTType::KwVar", context);
-        };
+        // Ignore clipped member 'kw_var'
+        self.pop(context);
         let f_p_section_opt_0_built = FPSectionOptBuilder::default()
-            .kw_var(Box::new(kw_var))
+            // Ignore clipped member 'kw_var'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -4638,21 +4456,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 73:
     ///
-    /// Receiver: "\(" ReceiverOpt /* Option */ ReceiverVarDecl "\)";
+    /// Receiver: "\("^ /* Clipped */ ReceiverOpt /* Option */ ReceiverVarDecl "\)"^ /* Clipped */;
     ///
     #[named]
     fn receiver(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _receiver_opt: &ParseTreeStackEntry<'t>,
         _receiver_var_decl: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let receiver_var_decl =
             if let Some(ASTType::ReceiverVarDecl(receiver_var_decl)) = self.pop(context) {
                 receiver_var_decl
@@ -4665,10 +4481,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::ReceiverOpt", context);
         };
         let receiver_built = ReceiverBuilder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .receiver_opt(receiver_opt)
             .receiver_var_decl(Box::new(receiver_var_decl))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -4679,7 +4495,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 74:
     ///
-    /// ReceiverOpt: KwVar; // Option<T>::Some
+    /// ReceiverOpt: KwVar^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn receiver_opt_0(
@@ -4689,13 +4505,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_var = if let Some(ASTType::KwVar(kw_var)) = self.pop(context) {
-            kw_var
-        } else {
-            bail!("{}: Expecting ASTType::KwVar", context);
-        };
+        // Ignore clipped member 'kw_var'
+        self.pop(context);
         let receiver_opt_0_built = ReceiverOptBuilder::default()
-            .kw_var(Box::new(kw_var))
+            // Ignore clipped member 'kw_var'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -4719,19 +4532,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 76:
     ///
-    /// ReceiverVarDecl: Ident ":" Ident;
+    /// ReceiverVarDecl: Ident ":"^ /* Clipped */ Ident;
     ///
     #[named]
     fn receiver_var_decl(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _ident0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let ident0 = if let Some(ASTType::Ident(ident0)) = self.pop(context) {
             ident0
         } else {
@@ -4744,7 +4556,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let receiver_var_decl_built = ReceiverVarDeclBuilder::default()
             .ident(Box::new(ident))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .ident0(Box::new(ident0))
             .build()
             .into_diagnostic()?;
@@ -4785,39 +4597,35 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// TypeDef: "ARRAY" TypeDefOpt /* Option */ KwOf TypeDef;
+    /// TypeDef: "ARRAY"^ /* Clipped */ TypeDefOpt /* Option */ KwOf^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn type_def_1(
         &mut self,
-        a_r_r_a_y: &ParseTreeStackEntry<'t>,
+        _a_r_r_a_y: &ParseTreeStackEntry<'t>,
         _type_def_opt: &ParseTreeStackEntry<'t>,
         _kw_of: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_r_r_a_y = *a_r_r_a_y.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
             bail!("{}: Expecting ASTType::TypeDef", context);
         };
-        let kw_of = if let Some(ASTType::KwOf(kw_of)) = self.pop(context) {
-            kw_of
-        } else {
-            bail!("{}: Expecting ASTType::KwOf", context);
-        };
+        // Ignore clipped member 'kw_of'
+        self.pop(context);
         let type_def_opt = if let Some(ASTType::TypeDefOpt(type_def_opt)) = self.pop(context) {
             type_def_opt
         } else {
             bail!("{}: Expecting ASTType::TypeDefOpt", context);
         };
         let type_def_1_built = TypeDef1Builder::default()
-            .a_r_r_a_y(a_r_r_a_y)
+            // Ignore clipped member 'a_r_r_a_y'
             .type_def_opt(type_def_opt)
-            .kw_of(Box::new(kw_of))
+            // Ignore clipped member 'kw_of'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -4830,26 +4638,22 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 79:
     ///
-    /// TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd;
+    /// TypeDef: "RECORD"^ /* Clipped */ TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd^ /* Clipped */;
     ///
     #[named]
     fn type_def_2(
         &mut self,
-        r_e_c_o_r_d: &ParseTreeStackEntry<'t>,
+        _r_e_c_o_r_d: &ParseTreeStackEntry<'t>,
         _type_def_opt0: &ParseTreeStackEntry<'t>,
         _field_list: &ParseTreeStackEntry<'t>,
         _type_def_list: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_e_c_o_r_d = *r_e_c_o_r_d.token(parse_tree)?;
-        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
-            kw_end
-        } else {
-            bail!("{}: Expecting ASTType::KwEnd", context);
-        };
+        // Ignore clipped member 'kw_end'
+        self.pop(context);
         let type_def_list = if let Some(ASTType::TypeDefList(mut type_def_list)) = self.pop(context)
         {
             type_def_list.reverse();
@@ -4868,11 +4672,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::TypeDefOpt0", context);
         };
         let type_def_2_built = TypeDef2Builder::default()
-            .r_e_c_o_r_d(r_e_c_o_r_d)
+            // Ignore clipped member 'r_e_c_o_r_d'
             .type_def_opt0(type_def_opt0)
             .field_list(Box::new(field_list))
             .type_def_list(type_def_list)
-            .kw_end(Box::new(kw_end))
+            // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         let type_def_2_built = TypeDef::TypeDef2(type_def_2_built);
@@ -4884,19 +4688,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 80:
     ///
-    /// TypeDefList: ";" FieldList TypeDefList; // Vec<T>::Push
+    /// TypeDefList: ";"^ /* Clipped */ FieldList TypeDefList; // Vec<T>::Push
     ///
     #[named]
     fn type_def_list_0(
         &mut self,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _field_list: &ParseTreeStackEntry<'t>,
         _type_def_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut type_def_list = if let Some(ASTType::TypeDefList(type_def_list)) = self.pop(context)
         {
             type_def_list
@@ -4910,7 +4713,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let type_def_list_0_built = TypeDefListBuilder::default()
             .field_list(Box::new(field_list))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -4934,32 +4737,28 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 82:
     ///
-    /// TypeDef: "POINTER" KwTo TypeDef;
+    /// TypeDef: "POINTER"^ /* Clipped */ KwTo^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn type_def_3(
         &mut self,
-        p_o_i_n_t_e_r: &ParseTreeStackEntry<'t>,
+        _p_o_i_n_t_e_r: &ParseTreeStackEntry<'t>,
         _kw_to: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let p_o_i_n_t_e_r = *p_o_i_n_t_e_r.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
             bail!("{}: Expecting ASTType::TypeDef", context);
         };
-        let kw_to = if let Some(ASTType::KwTo(kw_to)) = self.pop(context) {
-            kw_to
-        } else {
-            bail!("{}: Expecting ASTType::KwTo", context);
-        };
+        // Ignore clipped member 'kw_to'
+        self.pop(context);
         let type_def_3_built = TypeDef3Builder::default()
-            .p_o_i_n_t_e_r(p_o_i_n_t_e_r)
-            .kw_to(Box::new(kw_to))
+            // Ignore clipped member 'p_o_i_n_t_e_r'
+            // Ignore clipped member 'kw_to'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -4972,7 +4771,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 83:
     ///
-    /// TypeDef: KwProcedure TypeDefOpt1 /* Option */;
+    /// TypeDef: KwProcedure^ /* Clipped */ TypeDefOpt1 /* Option */;
     ///
     #[named]
     fn type_def_4(
@@ -4988,13 +4787,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::TypeDefOpt1", context);
         };
-        let kw_procedure = if let Some(ASTType::KwProcedure(kw_procedure)) = self.pop(context) {
-            kw_procedure
-        } else {
-            bail!("{}: Expecting ASTType::KwProcedure", context);
-        };
+        // Ignore clipped member 'kw_procedure'
+        self.pop(context);
         let type_def_4_built = TypeDef4Builder::default()
-            .kw_procedure(Box::new(kw_procedure))
+            // Ignore clipped member 'kw_procedure'
             .type_def_opt1(type_def_opt1)
             .build()
             .into_diagnostic()?;
@@ -5047,29 +4843,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 86:
     ///
-    /// TypeDefOpt0: "\(" QualIdent "\)"; // Option<T>::Some
+    /// TypeDefOpt0: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn type_def_opt0_0(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _qual_ident: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
             qual_ident
         } else {
             bail!("{}: Expecting ASTType::QualIdent", context);
         };
         let type_def_opt0_0_built = TypeDefOpt0Builder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .qual_ident(Box::new(qual_ident))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -5130,19 +4924,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 89:
     ///
-    /// TypeDefOptList: "," ConstExpr TypeDefOptList; // Vec<T>::Push
+    /// TypeDefOptList: ","^ /* Clipped */ ConstExpr TypeDefOptList; // Vec<T>::Push
     ///
     #[named]
     fn type_def_opt_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         _type_def_opt_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut type_def_opt_list =
             if let Some(ASTType::TypeDefOptList(type_def_opt_list)) = self.pop(context) {
                 type_def_opt_list
@@ -5156,7 +4949,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let type_def_opt_list_0_built = TypeDefOptListBuilder::default()
             .const_expr(Box::new(const_expr))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -5220,19 +5013,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 93:
     ///
-    /// FieldListOpt: IdentList ":" TypeDef; // Option<T>::Some
+    /// FieldListOpt: IdentList ":"^ /* Clipped */ TypeDef; // Option<T>::Some
     ///
     #[named]
     fn field_list_opt_0(
         &mut self,
         _ident_list: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
             type_def
         } else {
@@ -5245,7 +5037,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let field_list_opt_0_built = FieldListOptBuilder::default()
             .ident_list(Box::new(ident_list))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
@@ -5306,19 +5098,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 96:
     ///
-    /// StatementSeqList: ";" Statement StatementSeqList; // Vec<T>::Push
+    /// StatementSeqList: ";"^ /* Clipped */ Statement StatementSeqList; // Vec<T>::Push
     ///
     #[named]
     fn statement_seq_list_0(
         &mut self,
-        semicolon: &ParseTreeStackEntry<'t>,
+        _semicolon: &ParseTreeStackEntry<'t>,
         _statement: &ParseTreeStackEntry<'t>,
         _statement_seq_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = *semicolon.token(parse_tree)?;
         let mut statement_seq_list =
             if let Some(ASTType::StatementSeqList(statement_seq_list)) = self.pop(context) {
                 statement_seq_list
@@ -5332,7 +5123,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let statement_seq_list_0_built = StatementSeqListBuilder::default()
             .statement(Box::new(statement))
-            .semicolon(semicolon)
+            // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -5455,25 +5246,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 101:
     ///
-    /// StatementOptGroupSuffix: ":=" Expr;
+    /// StatementOptGroupSuffix: ":="^ /* Clipped */ Expr;
     ///
     #[named]
     fn statement_opt_group_suffix_0(
         &mut self,
-        colon_equ: &ParseTreeStackEntry<'t>,
+        _colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_equ = *colon_equ.token(parse_tree)?;
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
         let statement_opt_group_suffix_0_built = StatementOptGroupSuffix0Builder::default()
-            .colon_equ(colon_equ)
+            // Ignore clipped member 'colon_equ'
             .expr(Box::new(expr))
             .build()
             .into_diagnostic()?;
@@ -5519,7 +5309,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 103:
     ///
-    /// StatementOptGroup: KwIf Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
+    /// StatementOptGroup: KwIf^ /* Clipped */ Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
     ///
     #[named]
     fn statement_opt_group_1(
@@ -5558,13 +5348,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let kw_if = if let Some(ASTType::KwIf(kw_if)) = self.pop(context) {
-            kw_if
-        } else {
-            bail!("{}: Expecting ASTType::KwIf", context);
-        };
+        // Ignore clipped member 'kw_if'
+        self.pop(context);
         let statement_opt_group_1_built = StatementOptGroup1Builder::default()
-            .kw_if(Box::new(kw_if))
+            // Ignore clipped member 'kw_if'
             .expr(Box::new(expr))
             .then_block(Box::new(then_block))
             .statement_opt_group_list(statement_opt_group_list)
@@ -5582,7 +5369,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 104:
     ///
-    /// StatementOptGroup: KwCase Expr KwOf Cases OptElsePartEnd;
+    /// StatementOptGroup: KwCase^ /* Clipped */ Expr KwOf^ /* Clipped */ Cases OptElsePartEnd;
     ///
     #[named]
     fn statement_opt_group_2(
@@ -5607,25 +5394,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Cases", context);
         };
-        let kw_of = if let Some(ASTType::KwOf(kw_of)) = self.pop(context) {
-            kw_of
-        } else {
-            bail!("{}: Expecting ASTType::KwOf", context);
-        };
+        // Ignore clipped member 'kw_of'
+        self.pop(context);
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let kw_case = if let Some(ASTType::KwCase(kw_case)) = self.pop(context) {
-            kw_case
-        } else {
-            bail!("{}: Expecting ASTType::KwCase", context);
-        };
+        // Ignore clipped member 'kw_case'
+        self.pop(context);
         let statement_opt_group_2_built = StatementOptGroup2Builder::default()
-            .kw_case(Box::new(kw_case))
+            // Ignore clipped member 'kw_case'
             .expr(Box::new(expr))
-            .kw_of(Box::new(kw_of))
+            // Ignore clipped member 'kw_of'
             .cases(Box::new(cases))
             .opt_else_part_end(Box::new(opt_else_part_end))
             .build()
@@ -5641,19 +5422,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 105:
     ///
-    /// StatementOptGroup: "WHILE" Expr DoBlock;
+    /// StatementOptGroup: "WHILE"^ /* Clipped */ Expr DoBlock;
     ///
     #[named]
     fn statement_opt_group_3(
         &mut self,
-        w_h_i_l_e: &ParseTreeStackEntry<'t>,
+        _w_h_i_l_e: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let w_h_i_l_e = *w_h_i_l_e.token(parse_tree)?;
         let do_block = if let Some(ASTType::DoBlock(do_block)) = self.pop(context) {
             do_block
         } else {
@@ -5665,7 +5445,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::Expr", context);
         };
         let statement_opt_group_3_built = StatementOptGroup3Builder::default()
-            .w_h_i_l_e(w_h_i_l_e)
+            // Ignore clipped member 'w_h_i_l_e'
             .expr(Box::new(expr))
             .do_block(Box::new(do_block))
             .build()
@@ -5681,21 +5461,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 106:
     ///
-    /// StatementOptGroup: "REPEAT" StatementSeq "UNTIL" Expr;
+    /// StatementOptGroup: "REPEAT"^ /* Clipped */ StatementSeq "UNTIL"^ /* Clipped */ Expr;
     ///
     #[named]
     fn statement_opt_group_4(
         &mut self,
-        r_e_p_e_a_t: &ParseTreeStackEntry<'t>,
+        _r_e_p_e_a_t: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        u_n_t_i_l: &ParseTreeStackEntry<'t>,
+        _u_n_t_i_l: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_e_p_e_a_t = *r_e_p_e_a_t.token(parse_tree)?;
-        let u_n_t_i_l = *u_n_t_i_l.token(parse_tree)?;
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
@@ -5707,9 +5485,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
         let statement_opt_group_4_built = StatementOptGroup4Builder::default()
-            .r_e_p_e_a_t(r_e_p_e_a_t)
+            // Ignore clipped member 'r_e_p_e_a_t'
             .statement_seq(Box::new(statement_seq))
-            .u_n_t_i_l(u_n_t_i_l)
+            // Ignore clipped member 'u_n_t_i_l'
             .expr(Box::new(expr))
             .build()
             .into_diagnostic()?;
@@ -5724,20 +5502,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 107:
     ///
-    /// StatementOptGroup: "FOR" ForInit StatementOpt1 /* Option */ DoBlock;
+    /// StatementOptGroup: "FOR"^ /* Clipped */ ForInit StatementOpt1 /* Option */ DoBlock;
     ///
     #[named]
     fn statement_opt_group_5(
         &mut self,
-        f_o_r: &ParseTreeStackEntry<'t>,
+        _f_o_r: &ParseTreeStackEntry<'t>,
         _for_init: &ParseTreeStackEntry<'t>,
         _statement_opt1: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let f_o_r = *f_o_r.token(parse_tree)?;
         let do_block = if let Some(ASTType::DoBlock(do_block)) = self.pop(context) {
             do_block
         } else {
@@ -5755,7 +5532,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::ForInit", context);
         };
         let statement_opt_group_5_built = StatementOptGroup5Builder::default()
-            .f_o_r(f_o_r)
+            // Ignore clipped member 'f_o_r'
             .for_init(Box::new(for_init))
             .statement_opt1(statement_opt1)
             .do_block(Box::new(do_block))
@@ -5772,33 +5549,29 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 108:
     ///
-    /// StatementOptGroup: "LOOP" StatementSeq KwEnd;
+    /// StatementOptGroup: "LOOP"^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     ///
     #[named]
     fn statement_opt_group_6(
         &mut self,
-        l_o_o_p: &ParseTreeStackEntry<'t>,
+        _l_o_o_p: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_o_o_p = *l_o_o_p.token(parse_tree)?;
-        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
-            kw_end
-        } else {
-            bail!("{}: Expecting ASTType::KwEnd", context);
-        };
+        // Ignore clipped member 'kw_end'
+        self.pop(context);
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
         let statement_opt_group_6_built = StatementOptGroup6Builder::default()
-            .l_o_o_p(l_o_o_p)
+            // Ignore clipped member 'l_o_o_p'
             .statement_seq(Box::new(statement_seq))
-            .kw_end(Box::new(kw_end))
+            // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         let statement_opt_group_6_built =
@@ -5812,20 +5585,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 109:
     ///
-    /// StatementOptGroup: "WITH" GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
+    /// StatementOptGroup: "WITH"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
     ///
     #[named]
     fn statement_opt_group_7(
         &mut self,
-        w_i_t_h: &ParseTreeStackEntry<'t>,
+        _w_i_t_h: &ParseTreeStackEntry<'t>,
         _guarded_do_block: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let w_i_t_h = *w_i_t_h.token(parse_tree)?;
         let opt_else_part_end =
             if let Some(ASTType::OptElsePartEnd(opt_else_part_end)) = self.pop(context) {
                 opt_else_part_end
@@ -5848,7 +5620,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 bail!("{}: Expecting ASTType::GuardedDoBlock", context);
             };
         let statement_opt_group_7_built = StatementOptGroup7Builder::default()
-            .w_i_t_h(w_i_t_h)
+            // Ignore clipped member 'w_i_t_h'
             .guarded_do_block(Box::new(guarded_do_block))
             .statement_opt_group_list0(statement_opt_group_list0)
             .opt_else_part_end(Box::new(opt_else_part_end))
@@ -5865,19 +5637,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 110:
     ///
-    /// StatementOptGroup: "EXIT";
+    /// StatementOptGroup: "EXIT"^ /* Clipped */;
     ///
     #[named]
     fn statement_opt_group_8(
         &mut self,
-        e_x_i_t: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _e_x_i_t: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let e_x_i_t = *e_x_i_t.token(parse_tree)?;
         let statement_opt_group_8_built = StatementOptGroup8Builder::default()
-            .e_x_i_t(e_x_i_t)
+            // Ignore clipped member 'e_x_i_t'
             .build()
             .into_diagnostic()?;
         let statement_opt_group_8_built =
@@ -5891,18 +5662,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 111:
     ///
-    /// StatementOptGroup: "RETURN" StatementOpt2 /* Option */;
+    /// StatementOptGroup: "RETURN"^ /* Clipped */ StatementOpt2 /* Option */;
     ///
     #[named]
     fn statement_opt_group_9(
         &mut self,
-        r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
+        _r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
         _statement_opt2: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_e_t_u_r_n = *r_e_t_u_r_n.token(parse_tree)?;
         let statement_opt2 = if let Some(ASTType::StatementOpt2(statement_opt2)) = self.pop(context)
         {
             statement_opt2
@@ -5910,7 +5680,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::StatementOpt2", context);
         };
         let statement_opt_group_9_built = StatementOptGroup9Builder::default()
-            .r_e_t_u_r_n(r_e_t_u_r_n)
+            // Ignore clipped member 'r_e_t_u_r_n'
             .statement_opt2(statement_opt2)
             .build()
             .into_diagnostic()?;
@@ -5980,19 +5750,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 114:
     ///
-    /// StatementOptGroupList0: "\|" GuardedDoBlock StatementOptGroupList0; // Vec<T>::Push
+    /// StatementOptGroupList0: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0; // Vec<T>::Push
     ///
     #[named]
     fn statement_opt_group_list0_0(
         &mut self,
-        or: &ParseTreeStackEntry<'t>,
+        _or: &ParseTreeStackEntry<'t>,
         _guarded_do_block: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let or = *or.token(parse_tree)?;
         let mut statement_opt_group_list0 =
             if let Some(ASTType::StatementOptGroupList0(statement_opt_group_list0)) =
                 self.pop(context)
@@ -6009,7 +5778,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             };
         let statement_opt_group_list0_0_built = StatementOptGroupList0Builder::default()
             .guarded_do_block(Box::new(guarded_do_block))
-            .or(or)
+            // Ignore clipped member 'or'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -6119,20 +5888,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 120:
     ///
-    /// StatementOpt0: "\(" StatementOpt3 /* Option */ "\)"; // Option<T>::Some
+    /// StatementOpt0: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn statement_opt0_0(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _statement_opt3: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let statement_opt3 = if let Some(ASTType::StatementOpt3(statement_opt3)) = self.pop(context)
         {
             statement_opt3
@@ -6140,9 +5907,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::StatementOpt3", context);
         };
         let statement_opt0_0_built = StatementOpt0Builder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .statement_opt3(statement_opt3)
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -6218,7 +5985,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 125:
     ///
-    /// ThenBlock: KwThen StatementSeq;
+    /// ThenBlock: KwThen^ /* Clipped */ StatementSeq;
     ///
     #[named]
     fn then_block(
@@ -6234,13 +6001,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let kw_then = if let Some(ASTType::KwThen(kw_then)) = self.pop(context) {
-            kw_then
-        } else {
-            bail!("{}: Expecting ASTType::KwThen", context);
-        };
+        // Ignore clipped member 'kw_then'
+        self.pop(context);
         let then_block_built = ThenBlockBuilder::default()
-            .kw_then(Box::new(kw_then))
+            // Ignore clipped member 'kw_then'
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -6287,19 +6051,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 127:
     ///
-    /// CasesList: "\|" Case CasesList; // Vec<T>::Push
+    /// CasesList: "\|"^ /* Clipped */ Case CasesList; // Vec<T>::Push
     ///
     #[named]
     fn cases_list_0(
         &mut self,
-        or: &ParseTreeStackEntry<'t>,
+        _or: &ParseTreeStackEntry<'t>,
         _case: &ParseTreeStackEntry<'t>,
         _cases_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let or = *or.token(parse_tree)?;
         let mut cases_list = if let Some(ASTType::CasesList(cases_list)) = self.pop(context) {
             cases_list
         } else {
@@ -6312,7 +6075,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let cases_list_0_built = CasesListBuilder::default()
             .case(Box::new(case))
-            .or(or)
+            // Ignore clipped member 'or'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -6336,7 +6099,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 129:
     ///
-    /// ElsifPart: KwElsif Expr ThenBlock;
+    /// ElsifPart: KwElsif^ /* Clipped */ Expr ThenBlock;
     ///
     #[named]
     fn elsif_part(
@@ -6358,13 +6121,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let kw_elsif = if let Some(ASTType::KwElsif(kw_elsif)) = self.pop(context) {
-            kw_elsif
-        } else {
-            bail!("{}: Expecting ASTType::KwElsif", context);
-        };
+        // Ignore clipped member 'kw_elsif'
+        self.pop(context);
         let elsif_part_built = ElsifPartBuilder::default()
-            .kw_elsif(Box::new(kw_elsif))
+            // Ignore clipped member 'kw_elsif'
             .expr(Box::new(expr))
             .then_block(Box::new(then_block))
             .build()
@@ -6377,7 +6137,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 130:
     ///
-    /// ElsePart: KwElse StatementSeq;
+    /// ElsePart: KwElse^ /* Clipped */ StatementSeq;
     ///
     #[named]
     fn else_part(
@@ -6393,13 +6153,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let kw_else = if let Some(ASTType::KwElse(kw_else)) = self.pop(context) {
-            kw_else
-        } else {
-            bail!("{}: Expecting ASTType::KwElse", context);
-        };
+        // Ignore clipped member 'kw_else'
+        self.pop(context);
         let else_part_built = ElsePartBuilder::default()
-            .kw_else(Box::new(kw_else))
+            // Ignore clipped member 'kw_else'
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -6411,7 +6168,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 131:
     ///
-    /// OptElsePartEnd: OptElsePartEndOpt /* Option */ KwEnd;
+    /// OptElsePartEnd: OptElsePartEndOpt /* Option */ KwEnd^ /* Clipped */;
     ///
     #[named]
     fn opt_else_part_end(
@@ -6422,11 +6179,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
-            kw_end
-        } else {
-            bail!("{}: Expecting ASTType::KwEnd", context);
-        };
+        // Ignore clipped member 'kw_end'
+        self.pop(context);
         let opt_else_part_end_opt =
             if let Some(ASTType::OptElsePartEndOpt(opt_else_part_end_opt)) = self.pop(context) {
                 opt_else_part_end_opt
@@ -6435,7 +6189,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             };
         let opt_else_part_end_built = OptElsePartEndBuilder::default()
             .opt_else_part_end_opt(opt_else_part_end_opt)
-            .kw_end(Box::new(kw_end))
+            // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -6487,7 +6241,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 134:
     ///
-    /// DoBlock: KwDo StatementSeq KwEnd;
+    /// DoBlock: KwDo^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     ///
     #[named]
     fn do_block(
@@ -6499,25 +6253,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_end = if let Some(ASTType::KwEnd(kw_end)) = self.pop(context) {
-            kw_end
-        } else {
-            bail!("{}: Expecting ASTType::KwEnd", context);
-        };
+        // Ignore clipped member 'kw_end'
+        self.pop(context);
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
-            kw_do
-        } else {
-            bail!("{}: Expecting ASTType::KwDo", context);
-        };
+        // Ignore clipped member 'kw_do'
+        self.pop(context);
         let do_block_built = DoBlockBuilder::default()
-            .kw_do(Box::new(kw_do))
+            // Ignore clipped member 'kw_do'
             .statement_seq(Box::new(statement_seq))
-            .kw_end(Box::new(kw_end))
+            // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -6528,7 +6276,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 135:
     ///
-    /// GuardedDoBlock: Guard KwDo StatementSeq;
+    /// GuardedDoBlock: Guard KwDo^ /* Clipped */ StatementSeq;
     ///
     #[named]
     fn guarded_do_block(
@@ -6545,11 +6293,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::StatementSeq", context);
         };
-        let kw_do = if let Some(ASTType::KwDo(kw_do)) = self.pop(context) {
-            kw_do
-        } else {
-            bail!("{}: Expecting ASTType::KwDo", context);
-        };
+        // Ignore clipped member 'kw_do'
+        self.pop(context);
         let guard = if let Some(ASTType::Guard(guard)) = self.pop(context) {
             guard
         } else {
@@ -6557,7 +6302,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let guarded_do_block_built = GuardedDoBlockBuilder::default()
             .guard(Box::new(guard))
-            .kw_do(Box::new(kw_do))
+            // Ignore clipped member 'kw_do'
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -6570,31 +6315,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 136:
     ///
-    /// ForInit: Ident ":=" Expr KwTo Expr;
+    /// ForInit: Ident ":="^ /* Clipped */ Expr KwTo^ /* Clipped */ Expr;
     ///
     #[named]
     fn for_init(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
-        colon_equ: &ParseTreeStackEntry<'t>,
+        _colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _kw_to: &ParseTreeStackEntry<'t>,
         _expr0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon_equ = *colon_equ.token(parse_tree)?;
         let expr0 = if let Some(ASTType::Expr(expr0)) = self.pop(context) {
             expr0
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
-        let kw_to = if let Some(ASTType::KwTo(kw_to)) = self.pop(context) {
-            kw_to
-        } else {
-            bail!("{}: Expecting ASTType::KwTo", context);
-        };
+        // Ignore clipped member 'kw_to'
+        self.pop(context);
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
@@ -6607,9 +6348,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let for_init_built = ForInitBuilder::default()
             .ident(Box::new(ident))
-            .colon_equ(colon_equ)
+            // Ignore clipped member 'colon_equ'
             .expr(Box::new(expr))
-            .kw_to(Box::new(kw_to))
+            // Ignore clipped member 'kw_to'
             .expr0(Box::new(expr0))
             .build()
             .into_diagnostic()?;
@@ -6621,25 +6362,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 137:
     ///
-    /// ForStep: "BY" ConstExpr;
+    /// ForStep: "BY"^ /* Clipped */ ConstExpr;
     ///
     #[named]
     fn for_step(
         &mut self,
-        b_y: &ParseTreeStackEntry<'t>,
+        _b_y: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let b_y = *b_y.token(parse_tree)?;
         let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
             const_expr
         } else {
             bail!("{}: Expecting ASTType::ConstExpr", context);
         };
         let for_step_built = ForStepBuilder::default()
-            .b_y(b_y)
+            // Ignore clipped member 'b_y'
             .const_expr(Box::new(const_expr))
             .build()
             .into_diagnostic()?;
@@ -6678,20 +6418,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 139:
     ///
-    /// CaseOpt: CaseLabels CaseOptList /* Vec */ ":" StatementSeq; // Option<T>::Some
+    /// CaseOpt: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq; // Option<T>::Some
     ///
     #[named]
     fn case_opt_0(
         &mut self,
         _case_labels: &ParseTreeStackEntry<'t>,
         _case_opt_list: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
             statement_seq
         } else {
@@ -6712,7 +6451,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case_opt_0_built = CaseOptBuilder::default()
             .case_labels(Box::new(case_labels))
             .case_opt_list(case_opt_list)
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .statement_seq(Box::new(statement_seq))
             .build()
             .into_diagnostic()?;
@@ -6722,19 +6461,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 140:
     ///
-    /// CaseOptList: "," CaseLabels CaseOptList; // Vec<T>::Push
+    /// CaseOptList: ","^ /* Clipped */ CaseLabels CaseOptList; // Vec<T>::Push
     ///
     #[named]
     fn case_opt_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _case_labels: &ParseTreeStackEntry<'t>,
         _case_opt_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut case_opt_list = if let Some(ASTType::CaseOptList(case_opt_list)) = self.pop(context)
         {
             case_opt_list
@@ -6748,7 +6486,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let case_opt_list_0_built = CaseOptListBuilder::default()
             .case_labels(Box::new(case_labels))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -6862,19 +6600,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 146:
     ///
-    /// Guard: QualIdent ":" QualIdent;
+    /// Guard: QualIdent ":"^ /* Clipped */ QualIdent;
     ///
     #[named]
     fn guard(
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
-        colon: &ParseTreeStackEntry<'t>,
+        _colon: &ParseTreeStackEntry<'t>,
         _qual_ident0: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = *colon.token(parse_tree)?;
         let qual_ident0 = if let Some(ASTType::QualIdent(qual_ident0)) = self.pop(context) {
             qual_ident0
         } else {
@@ -6887,7 +6624,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let guard_built = GuardBuilder::default()
             .qual_ident(Box::new(qual_ident))
-            .colon(colon)
+            // Ignore clipped member 'colon'
             .qual_ident0(Box::new(qual_ident0))
             .build()
             .into_diagnostic()?;
@@ -7402,19 +7139,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 165:
     ///
-    /// Factor: "NIL";
+    /// Factor: "NIL"^ /* Clipped */;
     ///
     #[named]
     fn factor_4(
         &mut self,
-        n_i_l: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _n_i_l: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let n_i_l = *n_i_l.token(parse_tree)?;
         let factor_4_built = Factor4Builder::default()
-            .n_i_l(n_i_l)
+            // Ignore clipped member 'n_i_l'
             .build()
             .into_diagnostic()?;
         let factor_4_built = Factor::Factor4(factor_4_built);
@@ -7454,29 +7190,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 167:
     ///
-    /// Factor: "\(" Expr "\)";
+    /// Factor: "\("^ /* Clipped */ Expr "\)"^ /* Clipped */;
     ///
     #[named]
     fn factor_6(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
         let factor_6_built = Factor6Builder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .expr(Box::new(expr))
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         let factor_6_built = Factor::Factor6(factor_6_built);
@@ -7488,25 +7222,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 168:
     ///
-    /// Factor: "~" Factor;
+    /// Factor: "~"^ /* Clipped */ Factor;
     ///
     #[named]
     fn factor_7(
         &mut self,
-        tilde: &ParseTreeStackEntry<'t>,
+        _tilde: &ParseTreeStackEntry<'t>,
         _factor: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let tilde = *tilde.token(parse_tree)?;
         let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
             factor
         } else {
             bail!("{}: Expecting ASTType::Factor", context);
         };
         let factor_7_built = Factor7Builder::default()
-            .tilde(tilde)
+            // Ignore clipped member 'tilde'
             .factor(Box::new(factor))
             .build()
             .into_diagnostic()?;
@@ -7519,29 +7252,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 169:
     ///
-    /// FactorOpt: "\(" FactorOpt0 /* Option */ "\)"; // Option<T>::Some
+    /// FactorOpt: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */; // Option<T>::Some
     ///
     #[named]
     fn factor_opt_0(
         &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
+        _l_paren: &ParseTreeStackEntry<'t>,
         _factor_opt0: &ParseTreeStackEntry<'t>,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_paren: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = *l_paren.token(parse_tree)?;
-        let r_paren = *r_paren.token(parse_tree)?;
         let factor_opt0 = if let Some(ASTType::FactorOpt0(factor_opt0)) = self.pop(context) {
             factor_opt0
         } else {
             bail!("{}: Expecting ASTType::FactorOpt0", context);
         };
         let factor_opt_0_built = FactorOptBuilder::default()
-            .l_paren(l_paren)
+            // Ignore clipped member 'l_paren'
             .factor_opt0(factor_opt0)
-            .r_paren(r_paren)
+            // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
         self.push(
@@ -7605,29 +7336,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 173:
     ///
-    /// Set: "\{" SetOpt /* Option */ "\}";
+    /// Set: "\{"^ /* Clipped */ SetOpt /* Option */ "\}"^ /* Clipped */;
     ///
     #[named]
     fn set(
         &mut self,
-        l_brace: &ParseTreeStackEntry<'t>,
+        _l_brace: &ParseTreeStackEntry<'t>,
         _set_opt: &ParseTreeStackEntry<'t>,
-        r_brace: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_brace: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace = *l_brace.token(parse_tree)?;
-        let r_brace = *r_brace.token(parse_tree)?;
         let set_opt = if let Some(ASTType::SetOpt(set_opt)) = self.pop(context) {
             set_opt
         } else {
             bail!("{}: Expecting ASTType::SetOpt", context);
         };
         let set_built = SetBuilder::default()
-            .l_brace(l_brace)
+            // Ignore clipped member 'l_brace'
             .set_opt(set_opt)
-            .r_brace(r_brace)
+            // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -7671,19 +7400,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 175:
     ///
-    /// SetOptList: "," Element SetOptList; // Vec<T>::Push
+    /// SetOptList: ","^ /* Clipped */ Element SetOptList; // Vec<T>::Push
     ///
     #[named]
     fn set_opt_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _element: &ParseTreeStackEntry<'t>,
         _set_opt_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut set_opt_list = if let Some(ASTType::SetOptList(set_opt_list)) = self.pop(context) {
             set_opt_list
         } else {
@@ -7696,7 +7424,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let set_opt_list_0_built = SetOptListBuilder::default()
             .element(Box::new(element))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -7766,25 +7494,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 179:
     ///
-    /// ElementOpt: "\.\." Expr; // Option<T>::Some
+    /// ElementOpt: "\.\."^ /* Clipped */ Expr; // Option<T>::Some
     ///
     #[named]
     fn element_opt_0(
         &mut self,
-        dot_dot: &ParseTreeStackEntry<'t>,
+        _dot_dot: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot_dot = *dot_dot.token(parse_tree)?;
         let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
             expr
         } else {
             bail!("{}: Expecting ASTType::Expr", context);
         };
         let element_opt_0_built = ElementOptBuilder::default()
-            .dot_dot(dot_dot)
+            // Ignore clipped member 'dot_dot'
             .expr(Box::new(expr))
             .build()
             .into_diagnostic()?;
@@ -7809,19 +7536,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 181:
     ///
-    /// Relation: "=";
+    /// Relation: "="^ /* Clipped */;
     ///
     #[named]
     fn relation_0(
         &mut self,
-        equ: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _equ: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equ = *equ.token(parse_tree)?;
         let relation_0_built = Relation0Builder::default()
-            .equ(equ)
+            // Ignore clipped member 'equ'
             .build()
             .into_diagnostic()?;
         let relation_0_built = Relation::Relation0(relation_0_built);
@@ -8281,25 +8007,24 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 200:
     ///
-    /// DesignatorSuffix: "\." Ident;
+    /// DesignatorSuffix: "\."^ /* Clipped */ Ident;
     ///
     #[named]
     fn designator_suffix_0(
         &mut self,
-        dot: &ParseTreeStackEntry<'t>,
+        _dot: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot = *dot.token(parse_tree)?;
         let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
             ident
         } else {
             bail!("{}: Expecting ASTType::Ident", context);
         };
         let designator_suffix_0_built = DesignatorSuffix0Builder::default()
-            .dot(dot)
+            // Ignore clipped member 'dot'
             .ident(Box::new(ident))
             .build()
             .into_diagnostic()?;
@@ -8317,29 +8042,27 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 201:
     ///
-    /// DesignatorSuffix: "\[" ExprList "\]";
+    /// DesignatorSuffix: "\["^ /* Clipped */ ExprList "\]"^ /* Clipped */;
     ///
     #[named]
     fn designator_suffix_1(
         &mut self,
-        l_bracket: &ParseTreeStackEntry<'t>,
+        _l_bracket: &ParseTreeStackEntry<'t>,
         _expr_list: &ParseTreeStackEntry<'t>,
-        r_bracket: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_bracket: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = *l_bracket.token(parse_tree)?;
-        let r_bracket = *r_bracket.token(parse_tree)?;
         let expr_list = if let Some(ASTType::ExprList(expr_list)) = self.pop(context) {
             expr_list
         } else {
             bail!("{}: Expecting ASTType::ExprList", context);
         };
         let designator_suffix_1_built = DesignatorSuffix1Builder::default()
-            .l_bracket(l_bracket)
+            // Ignore clipped member 'l_bracket'
             .expr_list(Box::new(expr_list))
-            .r_bracket(r_bracket)
+            // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
         let designator_suffix_1_built =
@@ -8356,19 +8079,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 202:
     ///
-    /// DesignatorSuffix: "\^";
+    /// DesignatorSuffix: "\^"^ /* Clipped */;
     ///
     #[named]
     fn designator_suffix_2(
         &mut self,
-        circumflex: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _circumflex: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let circumflex = *circumflex.token(parse_tree)?;
         let designator_suffix_2_built = DesignatorSuffix2Builder::default()
-            .circumflex(circumflex)
+            // Ignore clipped member 'circumflex'
             .build()
             .into_diagnostic()?;
         let designator_suffix_2_built =
@@ -8421,19 +8143,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 204:
     ///
-    /// ExprListList: "," Expr ExprListList; // Vec<T>::Push
+    /// ExprListList: ","^ /* Clipped */ Expr ExprListList; // Vec<T>::Push
     ///
     #[named]
     fn expr_list_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _expr_list_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut expr_list_list =
             if let Some(ASTType::ExprListList(expr_list_list)) = self.pop(context) {
                 expr_list_list
@@ -8447,7 +8168,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let expr_list_list_0_built = ExprListListBuilder::default()
             .expr(Box::new(expr))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -8507,19 +8228,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 207:
     ///
-    /// IdentListList: "," IdentDef IdentListList; // Vec<T>::Push
+    /// IdentListList: ","^ /* Clipped */ IdentDef IdentListList; // Vec<T>::Push
     ///
     #[named]
     fn ident_list_list_0(
         &mut self,
-        comma: &ParseTreeStackEntry<'t>,
+        _comma: &ParseTreeStackEntry<'t>,
         _ident_def: &ParseTreeStackEntry<'t>,
         _ident_list_list: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
         let mut ident_list_list =
             if let Some(ASTType::IdentListList(ident_list_list)) = self.pop(context) {
                 ident_list_list
@@ -8533,7 +8253,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         };
         let ident_list_list_0_built = IdentListListBuilder::default()
             .ident_def(Box::new(ident_def))
-            .comma(comma)
+            // Ignore clipped member 'comma'
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
@@ -8934,19 +8654,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 224:
     ///
-    /// InOp: "IN";
+    /// InOp: "IN"^ /* Clipped */;
     ///
     #[named]
     fn in_op(
         &mut self,
-        in_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        _in_op: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let in_op = *in_op.token(parse_tree)?;
         let in_op_built = InOpBuilder::default()
-            .in_op(in_op)
+            // Ignore clipped member 'in_op'
             .build()
             .into_diagnostic()?;
         // Calling user action here

@@ -1680,62 +1680,62 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 130] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 225] = &[
-    // 0 - KwBegin: "BEGIN";
+    // 0 - KwBegin: "BEGIN"^ /* Clipped */;
     Production {
         lhs: 61,
         production: &[ParseType::T(5)],
     },
-    // 1 - KwCase: "CASE";
+    // 1 - KwCase: "CASE"^ /* Clipped */;
     Production {
         lhs: 62,
         production: &[ParseType::T(6)],
     },
-    // 2 - KwDo: "DO";
+    // 2 - KwDo: "DO"^ /* Clipped */;
     Production {
         lhs: 63,
         production: &[ParseType::T(7)],
     },
-    // 3 - KwElse: "ELSE";
+    // 3 - KwElse: "ELSE"^ /* Clipped */;
     Production {
         lhs: 64,
         production: &[ParseType::T(8)],
     },
-    // 4 - KwElsif: "ELSIF";
+    // 4 - KwElsif: "ELSIF"^ /* Clipped */;
     Production {
         lhs: 65,
         production: &[ParseType::T(9)],
     },
-    // 5 - KwEnd: "END";
+    // 5 - KwEnd: "END"^ /* Clipped */;
     Production {
         lhs: 66,
         production: &[ParseType::T(10)],
     },
-    // 6 - KwIf: "IF";
+    // 6 - KwIf: "IF"^ /* Clipped */;
     Production {
         lhs: 67,
         production: &[ParseType::T(11)],
     },
-    // 7 - KwOf: "OF";
+    // 7 - KwOf: "OF"^ /* Clipped */;
     Production {
         lhs: 68,
         production: &[ParseType::T(12)],
     },
-    // 8 - KwProcedure: "PROCEDURE";
+    // 8 - KwProcedure: "PROCEDURE"^ /* Clipped */;
     Production {
         lhs: 69,
         production: &[ParseType::T(13)],
     },
-    // 9 - KwThen: "THEN";
+    // 9 - KwThen: "THEN"^ /* Clipped */;
     Production {
         lhs: 70,
         production: &[ParseType::T(14)],
     },
-    // 10 - KwTo: "TO";
+    // 10 - KwTo: "TO"^ /* Clipped */;
     Production {
         lhs: 71,
         production: &[ParseType::T(15)],
     },
-    // 11 - KwVar: "VAR";
+    // 11 - KwVar: "VAR"^ /* Clipped */;
     Production {
         lhs: 72,
         production: &[ParseType::T(16)],
@@ -1760,17 +1760,17 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 78,
         production: &[],
     },
-    // 15 - ModuleHead: "MODULE" Ident ";";
+    // 15 - ModuleHead: "MODULE"^ /* Clipped */ Ident ";"^ /* Clipped */;
     Production {
         lhs: 74,
         production: &[ParseType::T(18), ParseType::N(49), ParseType::T(17)],
     },
-    // 16 - ModuleBody: StatementBlock "\.";
+    // 16 - ModuleBody: StatementBlock "\."^ /* Clipped */;
     Production {
         lhs: 73,
         production: &[ParseType::T(19), ParseType::N(101)],
     },
-    // 17 - ImportList: "IMPORT" ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";";
+    // 17 - ImportList: "IMPORT"^ /* Clipped */ ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";"^ /* Clipped */;
     Production {
         lhs: 55,
         production: &[
@@ -1781,7 +1781,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(20),
         ],
     },
-    // 18 - ImportListList: "," ImportListOpt0 /* Option */ Ident ImportListList;
+    // 18 - ImportListList: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList;
     Production {
         lhs: 56,
         production: &[
@@ -1796,7 +1796,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 56,
         production: &[],
     },
-    // 20 - ImportListOpt0: Ident ":=";
+    // 20 - ImportListOpt0: Ident ":="^ /* Clipped */;
     Production {
         lhs: 58,
         production: &[ParseType::T(22), ParseType::N(49)],
@@ -1806,7 +1806,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 58,
         production: &[],
     },
-    // 22 - ImportListOpt: Ident ":=";
+    // 22 - ImportListOpt: Ident ":="^ /* Clipped */;
     Production {
         lhs: 57,
         production: &[ParseType::T(22), ParseType::N(49)],
@@ -1826,12 +1826,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 16,
         production: &[ParseType::N(16), ParseType::N(17)],
     },
-    // 26 - DeclSeqList0Group: ProcDecl ";";
+    // 26 - DeclSeqList0Group: ProcDecl ";"^ /* Clipped */;
     Production {
         lhs: 17,
         production: &[ParseType::T(18), ParseType::N(81)],
     },
-    // 27 - DeclSeqList0Group: ForwardDecl ";";
+    // 27 - DeclSeqList0Group: ForwardDecl ";"^ /* Clipped */;
     Production {
         lhs: 17,
         production: &[ParseType::T(18), ParseType::N(44)],
@@ -1866,12 +1866,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 13,
         production: &[ParseType::N(128)],
     },
-    // 34 - ConstDeclBlock: "CONST" ConstDeclBlockList /* Vec */;
+    // 34 - ConstDeclBlock: "CONST"^ /* Clipped */ ConstDeclBlockList /* Vec */;
     Production {
         lhs: 10,
         production: &[ParseType::N(11), ParseType::T(23)],
     },
-    // 35 - ConstDeclBlockList: ConstDecl ";" ConstDeclBlockList;
+    // 35 - ConstDeclBlockList: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList;
     Production {
         lhs: 11,
         production: &[ParseType::N(11), ParseType::T(18), ParseType::N(9)],
@@ -1881,12 +1881,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 11,
         production: &[],
     },
-    // 37 - TypeDeclBlock: "TYPE" TypeDeclBlockList /* Vec */;
+    // 37 - TypeDeclBlock: "TYPE"^ /* Clipped */ TypeDeclBlockList /* Vec */;
     Production {
         lhs: 119,
         production: &[ParseType::N(120), ParseType::T(24)],
     },
-    // 38 - TypeDeclBlockList: TypeDecl ";" TypeDeclBlockList;
+    // 38 - TypeDeclBlockList: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList;
     Production {
         lhs: 120,
         production: &[ParseType::N(120), ParseType::T(18), ParseType::N(118)],
@@ -1896,12 +1896,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 120,
         production: &[],
     },
-    // 40 - VarDeclBlock: KwVar VarDeclBlockList /* Vec */;
+    // 40 - VarDeclBlock: KwVar^ /* Clipped */ VarDeclBlockList /* Vec */;
     Production {
         lhs: 128,
         production: &[ParseType::N(129), ParseType::N(72)],
     },
-    // 41 - VarDeclBlockList: VarDecl ";" VarDeclBlockList;
+    // 41 - VarDeclBlockList: VarDecl ";"^ /* Clipped */ VarDeclBlockList;
     Production {
         lhs: 129,
         production: &[ParseType::N(129), ParseType::T(18), ParseType::N(127)],
@@ -1911,27 +1911,27 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 129,
         production: &[],
     },
-    // 43 - ConstDecl: IdentDef "=" ConstExpr;
+    // 43 - ConstDecl: IdentDef "="^ /* Clipped */ ConstExpr;
     Production {
         lhs: 9,
         production: &[ParseType::N(12), ParseType::T(25), ParseType::N(50)],
     },
-    // 44 - TypeDecl: IdentDef "=" TypeDef;
+    // 44 - TypeDecl: IdentDef "="^ /* Clipped */ TypeDef;
     Production {
         lhs: 118,
         production: &[ParseType::N(121), ParseType::T(25), ParseType::N(50)],
     },
-    // 45 - VarDecl: IdentList ":" TypeDef;
+    // 45 - VarDecl: IdentList ":"^ /* Clipped */ TypeDef;
     Production {
         lhs: 127,
         production: &[ParseType::N(121), ParseType::T(26), ParseType::N(53)],
     },
-    // 46 - ProcDecl: ProcedureHeading ";" ProcedureBody;
+    // 46 - ProcDecl: ProcedureHeading ";"^ /* Clipped */ ProcedureBody;
     Production {
         lhs: 81,
         production: &[ParseType::N(82), ParseType::T(18), ParseType::N(83)],
     },
-    // 47 - ProcedureHeading: KwProcedure ProcedureHeadingOpt /* Option */ IdentDef ProcedureHeadingOpt0 /* Option */;
+    // 47 - ProcedureHeading: KwProcedure^ /* Clipped */ ProcedureHeadingOpt /* Option */ IdentDef ProcedureHeadingOpt0 /* Option */;
     Production {
         lhs: 83,
         production: &[
@@ -1966,12 +1966,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 82,
         production: &[ParseType::N(101), ParseType::N(14)],
     },
-    // 53 - StatementBlock: StatementBlockOpt /* Option */ KwEnd Ident;
+    // 53 - StatementBlock: StatementBlockOpt /* Option */ KwEnd^ /* Clipped */ Ident;
     Production {
         lhs: 101,
         production: &[ParseType::N(49), ParseType::N(66), ParseType::N(102)],
     },
-    // 54 - StatementBlockOpt: KwBegin StatementSeq;
+    // 54 - StatementBlockOpt: KwBegin^ /* Clipped */ StatementSeq;
     Production {
         lhs: 102,
         production: &[ParseType::N(112), ParseType::N(61)],
@@ -1981,7 +1981,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 102,
         production: &[],
     },
-    // 56 - ForwardDecl: KwProcedure "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
+    // 56 - ForwardDecl: KwProcedure^ /* Clipped */ "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
     Production {
         lhs: 44,
         production: &[
@@ -2012,7 +2012,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 45,
         production: &[],
     },
-    // 61 - FormalPars: "\(" FormalParsOpt /* Option */ "\)" FormalParsOpt0 /* Option */;
+    // 61 - FormalPars: "\("^ /* Clipped */ FormalParsOpt /* Option */ "\)"^ /* Clipped */ FormalParsOpt0 /* Option */;
     Production {
         lhs: 40,
         production: &[
@@ -2022,7 +2022,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(28),
         ],
     },
-    // 62 - FormalParsOpt0: ":" QualIdent;
+    // 62 - FormalParsOpt0: ":"^ /* Clipped */ QualIdent;
     Production {
         lhs: 42,
         production: &[ParseType::N(87), ParseType::T(26)],
@@ -2037,7 +2037,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 41,
         production: &[ParseType::N(43), ParseType::N(30)],
     },
-    // 65 - FormalParsOptList: ";" FPSection FormalParsOptList;
+    // 65 - FormalParsOptList: ";"^ /* Clipped */ FPSection FormalParsOptList;
     Production {
         lhs: 43,
         production: &[ParseType::N(43), ParseType::N(30), ParseType::T(18)],
@@ -2052,7 +2052,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 41,
         production: &[],
     },
-    // 68 - FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":" TypeDef;
+    // 68 - FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":"^ /* Clipped */ TypeDef;
     Production {
         lhs: 30,
         production: &[
@@ -2063,7 +2063,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::N(32),
         ],
     },
-    // 69 - FPSectionList: "," Ident FPSectionList;
+    // 69 - FPSectionList: ","^ /* Clipped */ Ident FPSectionList;
     Production {
         lhs: 31,
         production: &[ParseType::N(31), ParseType::N(49), ParseType::T(21)],
@@ -2073,7 +2073,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 31,
         production: &[],
     },
-    // 71 - FPSectionOpt: KwVar;
+    // 71 - FPSectionOpt: KwVar^ /* Clipped */;
     Production {
         lhs: 32,
         production: &[ParseType::N(72)],
@@ -2083,7 +2083,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 32,
         production: &[],
     },
-    // 73 - Receiver: "\(" ReceiverOpt /* Option */ ReceiverVarDecl "\)";
+    // 73 - Receiver: "\("^ /* Clipped */ ReceiverOpt /* Option */ ReceiverVarDecl "\)"^ /* Clipped */;
     Production {
         lhs: 89,
         production: &[
@@ -2093,7 +2093,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(28),
         ],
     },
-    // 74 - ReceiverOpt: KwVar;
+    // 74 - ReceiverOpt: KwVar^ /* Clipped */;
     Production {
         lhs: 90,
         production: &[ParseType::N(72)],
@@ -2103,7 +2103,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 90,
         production: &[],
     },
-    // 76 - ReceiverVarDecl: Ident ":" Ident;
+    // 76 - ReceiverVarDecl: Ident ":"^ /* Clipped */ Ident;
     Production {
         lhs: 91,
         production: &[ParseType::N(49), ParseType::T(26), ParseType::N(49)],
@@ -2113,7 +2113,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 121,
         production: &[ParseType::N(87)],
     },
-    // 78 - TypeDef: "ARRAY" TypeDefOpt /* Option */ KwOf TypeDef;
+    // 78 - TypeDef: "ARRAY"^ /* Clipped */ TypeDefOpt /* Option */ KwOf^ /* Clipped */ TypeDef;
     Production {
         lhs: 121,
         production: &[
@@ -2123,7 +2123,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(30),
         ],
     },
-    // 79 - TypeDef: "RECORD" TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd;
+    // 79 - TypeDef: "RECORD"^ /* Clipped */ TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd^ /* Clipped */;
     Production {
         lhs: 121,
         production: &[
@@ -2134,7 +2134,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(31),
         ],
     },
-    // 80 - TypeDefList: ";" FieldList TypeDefList;
+    // 80 - TypeDefList: ";"^ /* Clipped */ FieldList TypeDefList;
     Production {
         lhs: 122,
         production: &[ParseType::N(122), ParseType::N(36), ParseType::T(18)],
@@ -2144,12 +2144,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 122,
         production: &[],
     },
-    // 82 - TypeDef: "POINTER" KwTo TypeDef;
+    // 82 - TypeDef: "POINTER"^ /* Clipped */ KwTo^ /* Clipped */ TypeDef;
     Production {
         lhs: 121,
         production: &[ParseType::N(121), ParseType::N(71), ParseType::T(32)],
     },
-    // 83 - TypeDef: KwProcedure TypeDefOpt1 /* Option */;
+    // 83 - TypeDef: KwProcedure^ /* Clipped */ TypeDefOpt1 /* Option */;
     Production {
         lhs: 121,
         production: &[ParseType::N(125), ParseType::N(69)],
@@ -2164,7 +2164,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 125,
         production: &[],
     },
-    // 86 - TypeDefOpt0: "\(" QualIdent "\)";
+    // 86 - TypeDefOpt0: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */;
     Production {
         lhs: 124,
         production: &[ParseType::T(29), ParseType::N(87), ParseType::T(28)],
@@ -2179,7 +2179,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 123,
         production: &[ParseType::N(126), ParseType::N(12)],
     },
-    // 89 - TypeDefOptList: "," ConstExpr TypeDefOptList;
+    // 89 - TypeDefOptList: ","^ /* Clipped */ ConstExpr TypeDefOptList;
     Production {
         lhs: 126,
         production: &[ParseType::N(126), ParseType::N(12), ParseType::T(21)],
@@ -2199,7 +2199,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 36,
         production: &[ParseType::N(37)],
     },
-    // 93 - FieldListOpt: IdentList ":" TypeDef;
+    // 93 - FieldListOpt: IdentList ":"^ /* Clipped */ TypeDef;
     Production {
         lhs: 37,
         production: &[ParseType::N(121), ParseType::T(26), ParseType::N(53)],
@@ -2214,7 +2214,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 112,
         production: &[ParseType::N(113), ParseType::N(100)],
     },
-    // 96 - StatementSeqList: ";" Statement StatementSeqList;
+    // 96 - StatementSeqList: ";"^ /* Clipped */ Statement StatementSeqList;
     Production {
         lhs: 113,
         production: &[ParseType::N(113), ParseType::N(100), ParseType::T(18)],
@@ -2239,7 +2239,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 108,
         production: &[ParseType::N(111), ParseType::N(18)],
     },
-    // 101 - StatementOptGroupSuffix: ":=" Expr;
+    // 101 - StatementOptGroupSuffix: ":="^ /* Clipped */ Expr;
     Production {
         lhs: 111,
         production: &[ParseType::N(26), ParseType::T(22)],
@@ -2249,7 +2249,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 111,
         production: &[ParseType::N(104)],
     },
-    // 103 - StatementOptGroup: KwIf Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
+    // 103 - StatementOptGroup: KwIf^ /* Clipped */ Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
     Production {
         lhs: 108,
         production: &[
@@ -2260,7 +2260,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::N(67),
         ],
     },
-    // 104 - StatementOptGroup: KwCase Expr KwOf Cases OptElsePartEnd;
+    // 104 - StatementOptGroup: KwCase^ /* Clipped */ Expr KwOf^ /* Clipped */ Cases OptElsePartEnd;
     Production {
         lhs: 108,
         production: &[
@@ -2271,12 +2271,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::N(62),
         ],
     },
-    // 105 - StatementOptGroup: "WHILE" Expr DoBlock;
+    // 105 - StatementOptGroup: "WHILE"^ /* Clipped */ Expr DoBlock;
     Production {
         lhs: 108,
         production: &[ParseType::N(21), ParseType::N(26), ParseType::T(33)],
     },
-    // 106 - StatementOptGroup: "REPEAT" StatementSeq "UNTIL" Expr;
+    // 106 - StatementOptGroup: "REPEAT"^ /* Clipped */ StatementSeq "UNTIL"^ /* Clipped */ Expr;
     Production {
         lhs: 108,
         production: &[
@@ -2286,7 +2286,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(34),
         ],
     },
-    // 107 - StatementOptGroup: "FOR" ForInit StatementOpt1 /* Option */ DoBlock;
+    // 107 - StatementOptGroup: "FOR"^ /* Clipped */ ForInit StatementOpt1 /* Option */ DoBlock;
     Production {
         lhs: 108,
         production: &[
@@ -2296,12 +2296,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(36),
         ],
     },
-    // 108 - StatementOptGroup: "LOOP" StatementSeq KwEnd;
+    // 108 - StatementOptGroup: "LOOP"^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     Production {
         lhs: 108,
         production: &[ParseType::N(66), ParseType::N(112), ParseType::T(37)],
     },
-    // 109 - StatementOptGroup: "WITH" GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
+    // 109 - StatementOptGroup: "WITH"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
     Production {
         lhs: 108,
         production: &[
@@ -2311,12 +2311,12 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::T(38),
         ],
     },
-    // 110 - StatementOptGroup: "EXIT";
+    // 110 - StatementOptGroup: "EXIT"^ /* Clipped */;
     Production {
         lhs: 108,
         production: &[ParseType::T(39)],
     },
-    // 111 - StatementOptGroup: "RETURN" StatementOpt2 /* Option */;
+    // 111 - StatementOptGroup: "RETURN"^ /* Clipped */ StatementOpt2 /* Option */;
     Production {
         lhs: 108,
         production: &[ParseType::N(106), ParseType::T(40)],
@@ -2331,7 +2331,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 109,
         production: &[],
     },
-    // 114 - StatementOptGroupList0: "\|" GuardedDoBlock StatementOptGroupList0;
+    // 114 - StatementOptGroupList0: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0;
     Production {
         lhs: 110,
         production: &[ParseType::N(110), ParseType::N(48), ParseType::T(41)],
@@ -2361,7 +2361,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 105,
         production: &[],
     },
-    // 120 - StatementOpt0: "\(" StatementOpt3 /* Option */ "\)";
+    // 120 - StatementOpt0: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */;
     Production {
         lhs: 104,
         production: &[ParseType::T(29), ParseType::N(107), ParseType::T(28)],
@@ -2386,7 +2386,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 103,
         production: &[],
     },
-    // 125 - ThenBlock: KwThen StatementSeq;
+    // 125 - ThenBlock: KwThen^ /* Clipped */ StatementSeq;
     Production {
         lhs: 117,
         production: &[ParseType::N(112), ParseType::N(70)],
@@ -2396,7 +2396,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 6,
         production: &[ParseType::N(7), ParseType::N(1)],
     },
-    // 127 - CasesList: "\|" Case CasesList;
+    // 127 - CasesList: "\|"^ /* Clipped */ Case CasesList;
     Production {
         lhs: 7,
         production: &[ParseType::N(7), ParseType::N(1), ParseType::T(41)],
@@ -2406,17 +2406,17 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 7,
         production: &[],
     },
-    // 129 - ElsifPart: KwElsif Expr ThenBlock;
+    // 129 - ElsifPart: KwElsif^ /* Clipped */ Expr ThenBlock;
     Production {
         lhs: 25,
         production: &[ParseType::N(117), ParseType::N(26), ParseType::N(65)],
     },
-    // 130 - ElsePart: KwElse StatementSeq;
+    // 130 - ElsePart: KwElse^ /* Clipped */ StatementSeq;
     Production {
         lhs: 24,
         production: &[ParseType::N(112), ParseType::N(64)],
     },
-    // 131 - OptElsePartEnd: OptElsePartEndOpt /* Option */ KwEnd;
+    // 131 - OptElsePartEnd: OptElsePartEndOpt /* Option */ KwEnd^ /* Clipped */;
     Production {
         lhs: 79,
         production: &[ParseType::N(66), ParseType::N(80)],
@@ -2431,17 +2431,17 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 80,
         production: &[],
     },
-    // 134 - DoBlock: KwDo StatementSeq KwEnd;
+    // 134 - DoBlock: KwDo^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     Production {
         lhs: 21,
         production: &[ParseType::N(66), ParseType::N(112), ParseType::N(63)],
     },
-    // 135 - GuardedDoBlock: Guard KwDo StatementSeq;
+    // 135 - GuardedDoBlock: Guard KwDo^ /* Clipped */ StatementSeq;
     Production {
         lhs: 48,
         production: &[ParseType::N(112), ParseType::N(63), ParseType::N(47)],
     },
-    // 136 - ForInit: Ident ":=" Expr KwTo Expr;
+    // 136 - ForInit: Ident ":="^ /* Clipped */ Expr KwTo^ /* Clipped */ Expr;
     Production {
         lhs: 38,
         production: &[
@@ -2452,7 +2452,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::N(49),
         ],
     },
-    // 137 - ForStep: "BY" ConstExpr;
+    // 137 - ForStep: "BY"^ /* Clipped */ ConstExpr;
     Production {
         lhs: 39,
         production: &[ParseType::N(12), ParseType::T(42)],
@@ -2462,7 +2462,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 1,
         production: &[ParseType::N(4)],
     },
-    // 139 - CaseOpt: CaseLabels CaseOptList /* Vec */ ":" StatementSeq;
+    // 139 - CaseOpt: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq;
     Production {
         lhs: 4,
         production: &[
@@ -2472,7 +2472,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
             ParseType::N(2),
         ],
     },
-    // 140 - CaseOptList: "," CaseLabels CaseOptList;
+    // 140 - CaseOptList: ","^ /* Clipped */ CaseLabels CaseOptList;
     Production {
         lhs: 5,
         production: &[ParseType::N(5), ParseType::N(2), ParseType::T(21)],
@@ -2502,7 +2502,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 3,
         production: &[],
     },
-    // 146 - Guard: QualIdent ":" QualIdent;
+    // 146 - Guard: QualIdent ":"^ /* Clipped */ QualIdent;
     Production {
         lhs: 47,
         production: &[ParseType::N(87), ParseType::T(26), ParseType::N(87)],
@@ -2597,7 +2597,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 33,
         production: &[ParseType::N(114)],
     },
-    // 165 - Factor: "NIL";
+    // 165 - Factor: "NIL"^ /* Clipped */;
     Production {
         lhs: 33,
         production: &[ParseType::T(46)],
@@ -2607,17 +2607,17 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 33,
         production: &[ParseType::N(93)],
     },
-    // 167 - Factor: "\(" Expr "\)";
+    // 167 - Factor: "\("^ /* Clipped */ Expr "\)"^ /* Clipped */;
     Production {
         lhs: 33,
         production: &[ParseType::T(29), ParseType::N(26), ParseType::T(28)],
     },
-    // 168 - Factor: "~" Factor;
+    // 168 - Factor: "~"^ /* Clipped */ Factor;
     Production {
         lhs: 33,
         production: &[ParseType::N(33), ParseType::T(47)],
     },
-    // 169 - FactorOpt: "\(" FactorOpt0 /* Option */ "\)";
+    // 169 - FactorOpt: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */;
     Production {
         lhs: 34,
         production: &[ParseType::T(29), ParseType::N(35), ParseType::T(28)],
@@ -2637,7 +2637,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 34,
         production: &[],
     },
-    // 173 - Set: "\{" SetOpt /* Option */ "\}";
+    // 173 - Set: "\{"^ /* Clipped */ SetOpt /* Option */ "\}"^ /* Clipped */;
     Production {
         lhs: 93,
         production: &[ParseType::T(49), ParseType::N(94), ParseType::T(48)],
@@ -2647,7 +2647,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 94,
         production: &[ParseType::N(95), ParseType::N(22)],
     },
-    // 175 - SetOptList: "," Element SetOptList;
+    // 175 - SetOptList: ","^ /* Clipped */ Element SetOptList;
     Production {
         lhs: 95,
         production: &[ParseType::N(95), ParseType::N(22), ParseType::T(21)],
@@ -2667,7 +2667,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 22,
         production: &[ParseType::N(23), ParseType::N(26)],
     },
-    // 179 - ElementOpt: "\.\." Expr;
+    // 179 - ElementOpt: "\.\."^ /* Clipped */ Expr;
     Production {
         lhs: 23,
         production: &[ParseType::N(26), ParseType::T(43)],
@@ -2677,7 +2677,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 23,
         production: &[],
     },
-    // 181 - Relation: "=";
+    // 181 - Relation: "="^ /* Clipped */;
     Production {
         lhs: 92,
         production: &[ParseType::T(25)],
@@ -2772,17 +2772,17 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 19,
         production: &[],
     },
-    // 200 - DesignatorSuffix: "\." Ident;
+    // 200 - DesignatorSuffix: "\."^ /* Clipped */ Ident;
     Production {
         lhs: 20,
         production: &[ParseType::N(49), ParseType::T(19)],
     },
-    // 201 - DesignatorSuffix: "\[" ExprList "\]";
+    // 201 - DesignatorSuffix: "\["^ /* Clipped */ ExprList "\]"^ /* Clipped */;
     Production {
         lhs: 20,
         production: &[ParseType::T(63), ParseType::N(27), ParseType::T(62)],
     },
-    // 202 - DesignatorSuffix: "\^";
+    // 202 - DesignatorSuffix: "\^"^ /* Clipped */;
     Production {
         lhs: 20,
         production: &[ParseType::T(27)],
@@ -2792,7 +2792,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 27,
         production: &[ParseType::N(28), ParseType::N(26)],
     },
-    // 204 - ExprListList: "," Expr ExprListList;
+    // 204 - ExprListList: ","^ /* Clipped */ Expr ExprListList;
     Production {
         lhs: 28,
         production: &[ParseType::N(28), ParseType::N(26), ParseType::T(21)],
@@ -2807,7 +2807,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 53,
         production: &[ParseType::N(54), ParseType::N(50)],
     },
-    // 207 - IdentListList: "," IdentDef IdentListList;
+    // 207 - IdentListList: ","^ /* Clipped */ IdentDef IdentListList;
     Production {
         lhs: 54,
         production: &[ParseType::N(54), ParseType::N(50), ParseType::T(21)],
@@ -2892,7 +2892,7 @@ pub const PRODUCTIONS: &[Production; 225] = &[
         lhs: 114,
         production: &[ParseType::T(69)],
     },
-    // 224 - InOp: "IN";
+    // 224 - InOp: "IN"^ /* Clipped */;
     Production {
         lhs: 59,
         production: &[ParseType::T(70)],
