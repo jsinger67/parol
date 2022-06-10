@@ -833,7 +833,7 @@ impl SymbolTable {
             .scope(
                 self.symbol(parent_symbol)
                     .member_scope()
-                    .ok_or(miette!("Invalid parent symbol"))?,
+                    .ok_or_else(|| miette!("Invalid parent symbol"))?,
             )
             .my_id;
         let member_scope = self.insert_scope(Some(parent_scope));
@@ -873,7 +873,7 @@ impl SymbolTable {
         let member_scope = self
             .symbol(parent_symbol)
             .member_scope()
-            .ok_or(miette!("Invalid parent symbol"))?;
+            .ok_or_else(|| miette!("Invalid parent symbol"))?;
         let symbol = self.scope_mut(member_scope).insert_instance(
             instance_name,
             symbol_id,
@@ -911,7 +911,7 @@ impl SymbolTable {
             .symbols
             .iter()
             .find(|symbol_id| self.symbols[symbol_id.0].name(self) == non_terminal)
-            .map(|symbol_id| *symbol_id)
+            .copied()
     }
 }
 
