@@ -54,6 +54,47 @@ For full generation of all files you can use `parol` analogously as shown in the
 
 The `parol` crate also offers a powerful Builder that can be used in build scripts. Please see the [JSON parser auto](https://github.com/jsinger67/json_parser_auto.git) project on how to use this builder in your projects.
 
+## Let `parol` generate a crate for you
+
+We can use the `parol new` subcommand and let `parol` create our new project for us.
+
+```shell
+parol new --bin --path ./my_grammar
+```
+
+Then change into the new project's folder and start the initial build. Here `parol` is generating
+two files from the initial grammar definition.
+
+```shell
+cd ./my_grammar
+cargo build
+```
+
+And run the test with the generated parser:
+
+```shell
+cargo run --bin my_grammar -- ./test.txt
+    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
+     Running `target\debug\my_grammar.exe ./test.txt`
+Parsing took 4 milliseconds.
+Success!
+MyGrammar { my_grammar: Token { symbol: "Hello world!", token_type: 5, line: 4, column: 5, length: 12, start_pos: 0, pos: 97 } }
+```
+
+`parol` has generated a full fledged parser with AST types suitable for your grammar description!
+
+Please check out the [Tutorial](./Tutorial.md) for further information.
+
+## VS Code extension
+
+I provide a VS Code extension [parol-vscode](https://github.com/jsinger67/parol-vscode.git).
+Please download the vsix package from the latest release and install it with
+
+> ```code --install-extension ./parol-vscode-0.1.2.vsix```
+
+This extension provides syntax highlighting, folding and language icons and will surely be useful
+for you.
+
 ## Tools
 
 `parol` itself provides several tools with special tasks (see [Supplementary tools](./Tools.md)) as subcommands. As an example let's have a look at the `decidable` subcommand:
@@ -76,7 +117,7 @@ Lets have a look at the used grammar description file `list.par`.
 
 %%
 
-List: [Num {"," Num}] TrailingComma;
+List: [Num {","^ Num}] TrailingComma^;
 Num: "0|[1-9][0-9]*";
 TrailingComma: [","];
 ```

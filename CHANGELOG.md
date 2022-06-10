@@ -20,13 +20,14 @@ But we try to mark incompatible changes with a new minor version.
 ## v0.9.4-pre - Not released yet
 
 * Added possibility to clip grammar symbols in the grammar description by suffixing them with an
-optional cut operator (`^`). This instructs `parol` in auto-generation mode not to propagate this
+optional cut operator (`^`). This instructs `parol` in auto-generation mode to not propagate this
 symbol to the AST types. This can simplify and shorten the generated code dramatically.
 
   > The symbol `^` for the cut operator is chosen in the style of [oak](https://github.com/ptal/oak)'s
   [invisible type](http://hyc.io/oak/typing-expression.html).
 
-* I applied this ability in the example grammars and even in `parol`'s grammar itself.
+* I applied this ability in the example grammars that uses auto-gen and in `parol`'s grammar itself.
+* Adapt documentation
 
 ## v0.9.3 - 2022-06-05
 
