@@ -56,7 +56,7 @@ code .
 install my VS Code extension [parol-vscode](https://github.com/jsinger67/parol-vscode.git).
 Download the vsix package from the latest release and install it with
 >
->> ```code --install-extension ./parol-vscode-0.1.2.vsix```
+>> ```code --install-extension ./parol-vscode-x.y.z.vsix```
 >
 >This extension provides syntax highlighting, folding and language icons and will surely be useful
 for you.
@@ -610,7 +610,7 @@ line will activate the logging for the scanner/lexer module of `parol_runtime`.
 >];
 >```
 >
->Use logging in any case you get stuck. It has proven to be very useful in different scenarios. 
+>Use logging in any case you get stuck. It has proven to be very useful in different scenarios.
 
 ### Terminal conflicts
 

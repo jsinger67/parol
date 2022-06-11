@@ -90,7 +90,7 @@ Please check out the [Tutorial](./Tutorial.md) for further information.
 I provide a VS Code extension [parol-vscode](https://github.com/jsinger67/parol-vscode.git).
 Please download the vsix package from the latest release and install it with
 
-> ```code --install-extension ./parol-vscode-0.1.2.vsix```
+> ```code --install-extension ./parol-vscode-x.y.z.vsix```
 
 This extension provides syntax highlighting, folding and language icons and will surely be useful
 for you.
