@@ -386,36 +386,49 @@ impl Instance {
 /// A more general symbol
 ///
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) enum Symbol {
+pub(crate) enum SymbolKind {
     Type(Type),
     Instance(Instance),
 }
 
+///
+/// A more general symbol
+///
+#[derive(Clone, Debug, PartialEq)]
+pub struct Symbol {
+    pub(crate) kind: SymbolKind,
+    pub(crate) lifetime: bool,
+}
+
 impl Symbol {
+    pub(crate) fn new(kind: SymbolKind, lifetime: bool) -> Self {
+        Self { kind, lifetime }
+    }
+
     pub(crate) fn my_id(&self) -> SymbolId {
-        match self {
-            Symbol::Type(t) => t.my_id,
-            Symbol::Instance(i) => i.my_id,
+        match &self.kind {
+            SymbolKind::Type(t) => t.my_id,
+            SymbolKind::Instance(i) => i.my_id,
         }
     }
 
     fn inner_type(&self) -> Option<SymbolId> {
-        match self {
-            Symbol::Type(t) => t.inner_type(),
-            Symbol::Instance(i) => i.inner_type(),
+        match &self.kind {
+            SymbolKind::Type(t) => t.inner_type(),
+            SymbolKind::Instance(i) => i.inner_type(),
         }
     }
 
     pub(crate) fn _is_container(&self, symbol_table: &SymbolTable) -> bool {
-        match self {
-            Symbol::Type(me) => {
+        match &self.kind {
+            SymbolKind::Type(me) => {
                 if let Ok(me) = symbol_table.symbol_as_type(me.my_id) {
                     me.is_container()
                 } else {
                     false
                 }
             }
-            Symbol::Instance(_) => false,
+            SymbolKind::Instance(_) => false,
         }
     }
 
@@ -436,37 +449,37 @@ impl Symbol {
     // }
 
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
-        match self {
-            Symbol::Type(t) => t.format(symbol_table, scope_depth),
-            Symbol::Instance(i) => i.format(symbol_table, scope_depth),
+        match &self.kind {
+            SymbolKind::Type(t) => t.format(symbol_table, scope_depth),
+            SymbolKind::Instance(i) => i.format(symbol_table, scope_depth),
         }
     }
 
     pub(crate) fn to_rust(&self, symbol_table: &SymbolTable) -> String {
-        match self {
-            Symbol::Type(t) => t.to_rust(symbol_table),
-            Symbol::Instance(i) => i.to_rust(symbol_table),
+        match &self.kind {
+            SymbolKind::Type(t) => t.to_rust(symbol_table),
+            SymbolKind::Instance(i) => i.to_rust(symbol_table),
         }
     }
 
     pub(crate) fn member_scope(&self) -> Option<ScopeId> {
-        match self {
-            Symbol::Type(t) => Some(t.member_scope),
-            Symbol::Instance(_) => None,
+        match &self.kind {
+            SymbolKind::Type(t) => Some(t.member_scope),
+            SymbolKind::Instance(_) => None,
         }
     }
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
-        match self {
-            Symbol::Type(t) => t.name(symbol_table),
-            Symbol::Instance(i) => i.name(symbol_table),
+        match &self.kind {
+            SymbolKind::Type(t) => t.name(symbol_table),
+            SymbolKind::Instance(i) => i.name(symbol_table),
         }
     }
 
     pub(crate) fn sem(&self, symbol_table: &SymbolTable) -> SymbolAttribute {
-        match self {
-            Symbol::Type(t) => t.sem(),
-            Symbol::Instance(i) => i.sem(symbol_table),
+        match &self.kind {
+            SymbolKind::Type(t) => t.sem(),
+            SymbolKind::Instance(i) => i.sem(symbol_table),
         }
     }
 }
@@ -524,12 +537,15 @@ impl Scope {
         };
         let name_id = self.add_name(type_name);
         self.symbols.push(symbol_id);
-        Symbol::Type(Type {
-            my_id: symbol_id,
-            name_id,
-            entrails,
-            member_scope,
-        })
+        Symbol::new(
+            SymbolKind::Type(Type {
+                my_id: symbol_id,
+                name_id,
+                entrails,
+                member_scope,
+            }),
+            false,
+        )
     }
 
     fn insert_instance(
@@ -544,15 +560,18 @@ impl Scope {
         let instance_name = self.make_unique_name(NmHlp::to_lower_snake_case(name));
         let name_id = self.add_name(instance_name);
         self.symbols.push(symbol_id);
-        Symbol::Instance(Instance {
-            my_id: symbol_id,
-            name_id,
-            scope: self.my_id,
-            type_id,
-            used,
-            sem,
-            description,
-        })
+        Symbol::new(
+            SymbolKind::Instance(Instance {
+                my_id: symbol_id,
+                name_id,
+                scope: self.my_id,
+                type_id,
+                used,
+                sem,
+                description,
+            }),
+            false,
+        )
     }
 
     fn has_symbol(&self, symbol_id: SymbolId) -> bool {
@@ -609,8 +628,8 @@ impl Display for Scope {
 ///
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct SymbolTable {
-    // All symbols, ever created with a bool indication the presence of a lifetime
-    pub(crate) symbols: Vec<(bool, Symbol)>,
+    // All symbols, ever created
+    pub(crate) symbols: Vec<Symbol>,
 
     // All scopes
     // The one and only global scope has always index 0
@@ -637,11 +656,11 @@ impl SymbolTable {
     }
 
     pub(crate) fn _has_lifetime(&self, symbol_id: SymbolId) -> bool {
-        self.symbols[symbol_id.0].0
+        self.symbols[symbol_id.0].lifetime
     }
 
     pub(crate) fn lifetime(&self, symbol_id: SymbolId) -> String {
-        if self.symbols[symbol_id.0].0 {
+        if self.symbols[symbol_id.0].lifetime {
             "<'t>".to_string()
         } else {
             "".to_string()
@@ -666,7 +685,7 @@ impl SymbolTable {
     }
 
     pub(crate) fn symbol(&self, symbol_id: SymbolId) -> &Symbol {
-        &self.symbols[symbol_id.0].1
+        &self.symbols[symbol_id.0]
     }
 
     pub(crate) fn type_name(&self, symbol_id: SymbolId) -> Result<&str> {
@@ -680,23 +699,23 @@ impl SymbolTable {
     }
 
     pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> Result<&Instance> {
-        match &self.symbols[symbol_id.0].1 {
-            Symbol::Type(_) => bail!("Ain't no instance!"),
-            Symbol::Instance(i) => Ok(i),
+        match &self.symbols[symbol_id.0].kind {
+            SymbolKind::Type(_) => bail!("Ain't no instance!"),
+            SymbolKind::Instance(i) => Ok(i),
         }
     }
 
     pub(crate) fn symbol_as_instance_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Instance> {
-        match &mut self.symbols[symbol_id.0].1 {
-            Symbol::Type(_) => bail!("Ain't no instance!"),
-            Symbol::Instance(i) => Ok(i),
+        match &mut self.symbols[symbol_id.0].kind {
+            SymbolKind::Type(_) => bail!("Ain't no instance!"),
+            SymbolKind::Instance(i) => Ok(i),
         }
     }
 
     pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> Result<&Type> {
-        match &self.symbols[symbol_id.0].1 {
-            Symbol::Type(t) => Ok(t),
-            Symbol::Instance(_) => bail!("Ain't no type!"),
+        match &self.symbols[symbol_id.0].kind {
+            SymbolKind::Type(t) => Ok(t),
+            SymbolKind::Instance(_) => bail!("Ain't no type!"),
         }
     }
 
@@ -725,18 +744,18 @@ impl SymbolTable {
         my_id
     }
 
-    fn insert_symbol(&mut self, symbol: Symbol) -> SymbolId {
+    fn insert_symbol(&mut self, mut symbol: Symbol) -> SymbolId {
         let symbol_id = self.next_symbol_id();
         let is_clipped = symbol.sem(self) == SymbolAttribute::Clipped;
-        let lifetime = !is_clipped
+        symbol.lifetime = !is_clipped
             && matches!(
-                symbol,
-                Symbol::Type(Type {
+                symbol.kind,
+                SymbolKind::Type(Type {
                     entrails: TypeEntrails::Token,
                     ..
                 })
             );
-        self.symbols.push((lifetime, symbol));
+        self.symbols.push(symbol);
         symbol_id
     }
 
@@ -752,13 +771,13 @@ impl SymbolTable {
         self.symbols
             .iter()
             .filter(|symbol| {
-                if let Some(scope) = symbol.1.member_scope() {
-                    symbol.1.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
+                if let Some(scope) = symbol.member_scope() {
+                    symbol.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
                 } else {
                     false
                 }
             })
-            .map(|symbol| symbol.1.my_id())
+            .map(|symbol| symbol.my_id())
             .collect::<Vec<SymbolId>>()
     }
 
@@ -766,8 +785,8 @@ impl SymbolTable {
         self.symbols
             .iter()
             .enumerate()
-            .filter_map(|(i, (lifetime, symbol))| {
-                if *lifetime {
+            .filter_map(|(i, symbol)| {
+                if symbol.lifetime {
                     debug_assert_eq!(i, symbol.my_id().0);
                     Some(symbol.my_id())
                 } else {
@@ -781,23 +800,23 @@ impl SymbolTable {
         let parent_scope_ids = self.find_containing_scopes(symbol_id);
         let parent_symbols = self.find_symbols_with_member_scopes(&parent_scope_ids);
         for parent_symbol in &parent_symbols {
-            self.symbols[parent_symbol.0].0 = true;
+            self.symbols[parent_symbol.0].lifetime = true;
         }
         let containing_symbols = self
             .symbols
             .iter()
             .filter(|symbol| {
-                if let Some(inner_type) = symbol.1.inner_type() {
+                if let Some(inner_type) = symbol.inner_type() {
                     inner_type == symbol_id
                 } else {
                     false
                 }
             })
-            .map(|symbol| symbol.1.my_id())
+            .map(|symbol| symbol.my_id())
             .collect::<Vec<SymbolId>>();
 
         for containing_symbol in &containing_symbols {
-            self.symbols[containing_symbol.0].0 = true;
+            self.symbols[containing_symbol.0].lifetime = true;
         }
     }
 
@@ -904,7 +923,7 @@ impl SymbolTable {
         self.scope(Self::GLOBAL_SCOPE)
             .symbols
             .iter()
-            .find(|symbol_id| self.symbols[symbol_id.0].1.name(self) == non_terminal)
+            .find(|symbol_id| self.symbols[symbol_id.0].name(self) == non_terminal)
             .copied()
     }
 }
@@ -913,7 +932,7 @@ impl Display for SymbolTable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "// Symbols:")?;
         for (i, sym) in self.symbols.iter().enumerate() {
-            writeln!(f, "Sym({}): {}", i, sym.1.format(self, 0))?;
+            writeln!(f, "Sym({}): {}", i, sym.format(self, 0))?;
         }
         writeln!(f, "// Scopes:")?;
         for scope in &self.scopes {
@@ -948,7 +967,7 @@ mod tests {
             symbol_table.scope(ScopeId(1)).parent
         );
 
-        if let Symbol::Type(struct_type) = symbol_table.symbol(struct_id) {
+        if let SymbolKind::Type(struct_type) = &symbol_table.symbol(struct_id).kind {
             assert_eq!(0, struct_type.my_id.0);
             assert_eq!(1, struct_type.name_id.1);
             assert_eq!(
@@ -971,7 +990,7 @@ mod tests {
             )
             .expect("insert_type should succeed");
 
-        if let Symbol::Type(struct_type) = symbol_table.symbol(struct_id) {
+        if let SymbolKind::Type(struct_type) = &symbol_table.symbol(struct_id).kind {
             assert_eq!(2, symbol_table.scope(struct_type.member_scope).names.len());
         } else {
             panic!("StructA should be a type!");
@@ -980,7 +999,7 @@ mod tests {
         // Member scope of new function should have been added in `insert_type`
         assert_eq!(3, symbol_table.scopes.len());
 
-        if let Symbol::Type(fn_type) = symbol_table.symbol(fn_id) {
+        if let SymbolKind::Type(fn_type) = &symbol_table.symbol(fn_id).kind {
             assert_eq!(1, fn_type.my_id.0);
             assert_eq!(1, fn_type.name_id.1);
             assert_eq!(

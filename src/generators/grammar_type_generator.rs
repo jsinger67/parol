@@ -203,8 +203,8 @@ impl GrammarTypeInfo {
     fn matching_actions(&self, n: &str) -> Vec<SymbolId> {
         self.adapter_actions
             .iter()
-            .filter(|(_, a)| match self.symbol_table.symbol(**a) {
-                super::symbol_table::Symbol::Type(t) => match &t.entrails {
+            .filter(|(_, a)| match &self.symbol_table.symbol(**a).kind {
+                super::symbol_table::SymbolKind::Type(t) => match &t.entrails {
                     TypeEntrails::Function(f) => f.non_terminal == n,
                     _ => panic!("Expecting a function!"),
                 },
