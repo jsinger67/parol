@@ -11,7 +11,7 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
-    Function, FunctionBuilder, SymbolId, SymbolKind, SymbolTable, TypeEntrails,
+    Function, FunctionBuilder, MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails,
 };
 
 ///
@@ -483,7 +483,7 @@ impl GrammarTypeInfo {
         match symbol {
             Symbol::T(Terminal::Trm(_, _, a)) => {
                 if *a == SymbolAttribute::Clipped {
-                    Ok(TypeEntrails::Clipped(SymbolKind::Token))
+                    Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
                 } else {
                     Ok(TypeEntrails::Token)
                 }
@@ -494,7 +494,9 @@ impl GrammarTypeInfo {
                     SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                     SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                     SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
-                    SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(SymbolKind::NonTerminal)),
+                    SymbolAttribute::Clipped => {
+                        Ok(TypeEntrails::Clipped(MetaSymbolKind::NonTerminal))
+                    }
                 }
             }
             _ => Err(miette!("Unexpected symbol kind: {}", symbol)),

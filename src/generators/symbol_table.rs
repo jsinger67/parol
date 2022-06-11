@@ -91,16 +91,16 @@ impl Function {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub(crate) enum SymbolKind {
+pub(crate) enum MetaSymbolKind {
     Token,
     NonTerminal,
 }
 
-impl Display for SymbolKind {
+impl Display for MetaSymbolKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            SymbolKind::Token => write!(f, "Tok"),
-            SymbolKind::NonTerminal => write!(f, "Nt"),
+            MetaSymbolKind::Token => write!(f, "Tok"),
+            MetaSymbolKind::NonTerminal => write!(f, "Nt"),
         }
     }
 }
@@ -135,7 +135,7 @@ pub(crate) enum TypeEntrails {
     /// An Option type
     Option(SymbolId),
     /// An invisible type
-    Clipped(SymbolKind),
+    Clipped(MetaSymbolKind),
 }
 
 impl TypeEntrails {
@@ -609,10 +609,8 @@ impl Display for Scope {
 ///
 #[derive(Clone, Debug, Default, PartialEq)]
 pub(crate) struct SymbolTable {
-    // All symbols, ever created
-    pub(crate) symbols: Vec<Symbol>,
-
-    lifetimes: Vec<bool>,
+    // All symbols, ever created with a bool indication the presence of a lifetime
+    pub(crate) symbols: Vec<(bool, Symbol)>,
 
     // All scopes
     // The one and only global scope has always index 0
@@ -626,7 +624,6 @@ impl SymbolTable {
     pub(crate) fn new() -> Self {
         Self {
             symbols: Vec::new(),
-            lifetimes: Vec::new(),
             scopes: vec![Scope::new(None, Self::GLOBAL_SCOPE)],
         }
     }
@@ -640,11 +637,11 @@ impl SymbolTable {
     }
 
     pub(crate) fn _has_lifetime(&self, symbol_id: SymbolId) -> bool {
-        self.lifetimes[symbol_id.0]
+        self.symbols[symbol_id.0].0
     }
 
     pub(crate) fn lifetime(&self, symbol_id: SymbolId) -> String {
-        if self.lifetimes[symbol_id.0] {
+        if self.symbols[symbol_id.0].0 {
             "<'t>".to_string()
         } else {
             "".to_string()
@@ -669,7 +666,7 @@ impl SymbolTable {
     }
 
     pub(crate) fn symbol(&self, symbol_id: SymbolId) -> &Symbol {
-        &self.symbols[symbol_id.0]
+        &self.symbols[symbol_id.0].1
     }
 
     pub(crate) fn type_name(&self, symbol_id: SymbolId) -> Result<&str> {
@@ -683,21 +680,21 @@ impl SymbolTable {
     }
 
     pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> Result<&Instance> {
-        match &self.symbols[symbol_id.0] {
+        match &self.symbols[symbol_id.0].1 {
             Symbol::Type(_) => bail!("Ain't no instance!"),
             Symbol::Instance(i) => Ok(i),
         }
     }
 
     pub(crate) fn symbol_as_instance_mut(&mut self, symbol_id: SymbolId) -> Result<&mut Instance> {
-        match &mut self.symbols[symbol_id.0] {
+        match &mut self.symbols[symbol_id.0].1 {
             Symbol::Type(_) => bail!("Ain't no instance!"),
             Symbol::Instance(i) => Ok(i),
         }
     }
 
     pub(crate) fn symbol_as_type(&self, symbol_id: SymbolId) -> Result<&Type> {
-        match &self.symbols[symbol_id.0] {
+        match &self.symbols[symbol_id.0].1 {
             Symbol::Type(t) => Ok(t),
             Symbol::Instance(_) => bail!("Ain't no type!"),
         }
@@ -731,17 +728,15 @@ impl SymbolTable {
     fn insert_symbol(&mut self, symbol: Symbol) -> SymbolId {
         let symbol_id = self.next_symbol_id();
         let is_clipped = symbol.sem(self) == SymbolAttribute::Clipped;
-        self.lifetimes.push(
-            !is_clipped
-                && matches!(
-                    symbol,
-                    Symbol::Type(Type {
-                        entrails: TypeEntrails::Token,
-                        ..
-                    })
-                ),
-        );
-        self.symbols.push(symbol);
+        let lifetime = !is_clipped
+            && matches!(
+                symbol,
+                Symbol::Type(Type {
+                    entrails: TypeEntrails::Token,
+                    ..
+                })
+            );
+        self.symbols.push((lifetime, symbol));
         symbol_id
     }
 
@@ -757,22 +752,21 @@ impl SymbolTable {
         self.symbols
             .iter()
             .filter(|symbol| {
-                if let Some(scope) = symbol.member_scope() {
-                    symbol.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
+                if let Some(scope) = symbol.1.member_scope() {
+                    symbol.1.sem(self) != SymbolAttribute::Clipped && scope_ids.contains(&scope)
                 } else {
                     false
                 }
             })
-            .map(|symbol| symbol.my_id())
+            .map(|symbol| symbol.1.my_id())
             .collect::<Vec<SymbolId>>()
     }
 
     fn symbols_with_lifetime(&self) -> Vec<SymbolId> {
-        debug_assert_eq!(self.lifetimes.len(), self.symbols.len());
-        self.lifetimes
+        self.symbols
             .iter()
-            .zip(self.symbols.iter().enumerate())
-            .filter_map(|(lifetime, (i, symbol))| {
+            .enumerate()
+            .filter_map(|(i, (lifetime, symbol))| {
                 if *lifetime {
                     debug_assert_eq!(i, symbol.my_id().0);
                     Some(symbol.my_id())
@@ -787,23 +781,23 @@ impl SymbolTable {
         let parent_scope_ids = self.find_containing_scopes(symbol_id);
         let parent_symbols = self.find_symbols_with_member_scopes(&parent_scope_ids);
         for parent_symbol in &parent_symbols {
-            self.lifetimes[parent_symbol.0] = true;
+            self.symbols[parent_symbol.0].0 = true;
         }
         let containing_symbols = self
             .symbols
             .iter()
             .filter(|symbol| {
-                if let Some(inner_type) = symbol.inner_type() {
+                if let Some(inner_type) = symbol.1.inner_type() {
                     inner_type == symbol_id
                 } else {
                     false
                 }
             })
-            .map(|symbol| symbol.my_id())
+            .map(|symbol| symbol.1.my_id())
             .collect::<Vec<SymbolId>>();
 
         for containing_symbol in &containing_symbols {
-            self.lifetimes[containing_symbol.0] = true;
+            self.symbols[containing_symbol.0].0 = true;
         }
     }
 
@@ -910,7 +904,7 @@ impl SymbolTable {
         self.scope(Self::GLOBAL_SCOPE)
             .symbols
             .iter()
-            .find(|symbol_id| self.symbols[symbol_id.0].name(self) == non_terminal)
+            .find(|symbol_id| self.symbols[symbol_id.0].1.name(self) == non_terminal)
             .copied()
     }
 }
@@ -919,7 +913,7 @@ impl Display for SymbolTable {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "// Symbols:")?;
         for (i, sym) in self.symbols.iter().enumerate() {
-            writeln!(f, "Sym({}): {}", i, sym.format(self, 0))?;
+            writeln!(f, "Sym({}): {}", i, sym.1.format(self, 0))?;
         }
         writeln!(f, "// Scopes:")?;
         for scope in &self.scopes {

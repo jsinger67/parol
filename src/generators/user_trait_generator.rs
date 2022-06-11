@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use super::grammar_type_generator::GrammarTypeInfo;
-use super::symbol_table::{SymbolId, SymbolKind, SymbolTable, TypeEntrails};
+use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
 use super::template_data::{
     NonTerminalTypeEnum, NonTerminalTypeStruct, UserTraitCallerFunctionDataBuilder,
     UserTraitDataBuilder, UserTraitFunctionDataBuilder, UserTraitFunctionStackPopDataBuilder,
@@ -113,7 +113,7 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id)?;
             if matches!(
                 arg_type.entrails,
-                TypeEntrails::Clipped(SymbolKind::NonTerminal)
+                TypeEntrails::Clipped(MetaSymbolKind::NonTerminal)
             ) {
                 let arg_name = symbol_table.name(arg_inst.name_id);
                 code.push(format!("// Ignore clipped member '{}'", arg_name));
