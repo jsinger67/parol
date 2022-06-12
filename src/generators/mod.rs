@@ -40,6 +40,7 @@ pub use rust_code_formatter::try_format;
 mod template_data;
 
 mod symbol_table;
+mod symbol_table_facade;
 
 /// Module with the terminal name generator
 pub mod terminal_name_generator;

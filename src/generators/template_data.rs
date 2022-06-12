@@ -10,8 +10,8 @@ pub(crate) struct UserTraitCallerFunctionData {
 
 #[derive(BartDisplay, Builder, Debug, Default)]
 #[template = "templates/user_trait_function_template.rs.tpl"]
-pub(crate) struct UserTraitFunctionData<'a> {
-    pub fn_name: &'a str,
+pub(crate) struct UserTraitFunctionData {
+    pub fn_name: String,
     #[builder(default)]
     pub prod_num: usize,
     pub fn_arguments: String,

@@ -13,6 +13,7 @@ use super::generate_terminal_name;
 use super::symbol_table::{
     Function, FunctionBuilder, MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails,
 };
+use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
 ///
 /// Type information for a given grammar
@@ -145,10 +146,10 @@ impl GrammarTypeInfo {
 
     fn adjust_arguments_used(&mut self, used: bool) -> Result<()> {
         for action_id in self.adapter_actions.values() {
-            let arguments_scope = self.symbol_table.symbol_as_type(*action_id)?.member_scope;
+            let arguments_scope = self.symbol_table.symbol_as_type(*action_id).member_scope();
             let args = self.symbol_table.scope(arguments_scope).symbols.clone();
             for arg in args {
-                self.symbol_table.symbol_as_instance_mut(arg)?.used &= used;
+                self.symbol_table.set_instance_used(arg, used);
             }
         }
         Ok(())
@@ -203,7 +204,7 @@ impl GrammarTypeInfo {
     fn matching_actions(&self, n: &str) -> Vec<SymbolId> {
         self.adapter_actions
             .iter()
-            .filter(|(_, a)| match &self.symbol_table.symbol(**a).kind {
+            .filter(|(_, a)| match &self.symbol_table.symbol(**a).kind() {
                 super::symbol_table::SymbolKind::Type(t) => match &t.entrails {
                     TypeEntrails::Function(f) => f.non_terminal == n,
                     _ => panic!("Expecting a function!"),
@@ -273,7 +274,7 @@ impl GrammarTypeInfo {
     }
 
     fn arguments(&self, action_id: SymbolId) -> Result<Vec<SymbolId>> {
-        let action_scope = self.symbol_table.symbol_as_type(action_id)?.member_scope;
+        let action_scope = self.symbol_table.symbol_as_type(action_id).member_scope();
         Ok(self.symbol_table.scope(action_scope).symbols.clone())
     }
 
@@ -431,51 +432,51 @@ impl GrammarTypeInfo {
         grammar_config: &GrammarConfig,
         function_id: SymbolId,
     ) -> Result<()> {
-        if let Ok(function) = self.symbol_table.symbol_as_type(function_id) {
-            if let TypeEntrails::Function(function_entrails) = &function.entrails {
-                let prod = &grammar_config.cfg[function_entrails.prod_num];
-                let mut types = prod.get_r().iter().filter(|s| s.is_t() || s.is_n()).fold(
-                    Ok(Vec::new()),
-                    |acc, s| {
-                        acc.and_then(|mut acc| {
-                            self.deduce_type_of_symbol(s).map(|t| {
-                                acc.push((t, s.attribute()));
-                                acc
-                            })
+        let entrails = self
+            .symbol_table
+            .symbol_as_type(function_id)
+            .entrails()
+            .clone();
+        if let TypeEntrails::Function(function_entrails) = entrails {
+            let prod = &grammar_config.cfg[function_entrails.prod_num];
+            let mut types = prod.get_r().iter().filter(|s| s.is_t() || s.is_n()).fold(
+                Ok(Vec::new()),
+                |acc, s| {
+                    acc.and_then(|mut acc| {
+                        self.deduce_type_of_symbol(s).map(|t| {
+                            acc.push((t, s.attribute()));
+                            acc
                         })
-                    },
-                )?;
-
-                if function_entrails.sem == ProductionAttribute::AddToCollection {
-                    let ref_mut_last_type = &mut types.last_mut().unwrap().0;
-                    *ref_mut_last_type = match &ref_mut_last_type {
-                        TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
-                        _ => bail!("Unexpected last symbol in production with AddToCollection"),
-                    };
-                }
-
-                self.generate_member_names(prod.get_r())
-                    .iter()
-                    .zip(types.drain(..))
-                    .fold(Ok(()), |acc, ((n, r), (t, a))| {
-                        acc?;
-                        // Tokens are taken from the parameter list per definition.
-                        let used =
-                            matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
-                        let type_id = self.symbol_table.get_or_create_type(
-                            SymbolTable::UNNAMED_TYPE,
-                            SymbolTable::GLOBAL_SCOPE,
-                            t,
-                        )?;
-                        self.symbol_table
-                            .insert_instance(function_id, n, type_id, used, a, r.to_string())
-                            .map(|_| Ok(()))?
                     })
-            } else {
-                bail!("No function!")
+                },
+            )?;
+
+            if function_entrails.sem == ProductionAttribute::AddToCollection {
+                let ref_mut_last_type = &mut types.last_mut().unwrap().0;
+                *ref_mut_last_type = match &ref_mut_last_type {
+                    TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
+                    _ => bail!("Unexpected last symbol in production with AddToCollection"),
+                };
             }
+
+            self.generate_member_names(prod.get_r())
+                .iter()
+                .zip(types.drain(..))
+                .fold(Ok(()), |acc, ((n, r), (t, a))| {
+                    acc?;
+                    // Tokens are taken from the parameter list per definition.
+                    let used = matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
+                    let type_id = self.symbol_table.get_or_create_type(
+                        SymbolTable::UNNAMED_TYPE,
+                        SymbolTable::GLOBAL_SCOPE,
+                        t,
+                    )?;
+                    self.symbol_table
+                        .insert_instance(function_id, n, type_id, used, a, r.to_string())
+                        .map(|_| Ok(()))?
+                })
         } else {
-            bail!("Function symbol not accessible")
+            bail!("No function!")
         }
     }
 
@@ -511,8 +512,7 @@ impl GrammarTypeInfo {
         let non_terminal = self
             .symbol_table
             .symbol_as_function(function_id)?
-            .non_terminal
-            .clone();
+            .non_terminal;
         let production_type = self
             .symbol_table
             .insert_global_type(&non_terminal, TypeEntrails::Struct)?;
@@ -531,15 +531,11 @@ impl GrammarTypeInfo {
         production_type: SymbolId,
     ) -> Result<()> {
         for arg in arguments {
-            let inst = self.symbol_table.symbol_as_instance(*arg)?;
-            let type_id = inst.type_id;
-            let description = inst.description.clone();
-            let inst_name = self
-                .symbol_table
-                .symbol_as_instance(*arg)?
-                .name(&self.symbol_table)
-                .to_string();
-            let sem = inst.sem(&self.symbol_table);
+            let inst_name = self.symbol_table.symbol(*arg).name().to_string();
+            let (type_id, description, sem) = {
+                let inst = self.symbol_table.symbol_as_instance(*arg);
+                (inst.type_id(), inst.description(), inst.sem())
+            };
             self.symbol_table.insert_instance(
                 production_type,
                 &inst_name,
@@ -604,7 +600,7 @@ impl Display for GrammarTypeInfo {
                 "Prod: {}: {} /* {} */",
                 p,
                 i,
-                self.symbol_table.symbol(*i).name(&self.symbol_table)
+                self.symbol_table.symbol(*i).name()
             )?;
         }
         writeln!(f, "// Non-terminal types:")?;
@@ -614,7 +610,7 @@ impl Display for GrammarTypeInfo {
                 "{}: {} /* {} */",
                 n,
                 i,
-                self.symbol_table.symbol(*i).name(&self.symbol_table)
+                self.symbol_table.symbol(*i).name()
             )?;
         }
         writeln!(f, "// User actions:")?;
@@ -624,7 +620,7 @@ impl Display for GrammarTypeInfo {
                 "{}: {} /* {} */",
                 n,
                 i,
-                self.symbol_table.symbol(*i).name(&self.symbol_table)
+                self.symbol_table.symbol(*i).name()
             )?;
         }
         writeln!(f, "// Adapter actions:")?;
@@ -634,7 +630,7 @@ impl Display for GrammarTypeInfo {
                 "Prod: {}: {} /* {} */",
                 p,
                 i,
-                self.symbol_table.symbol(*i).name(&self.symbol_table)
+                self.symbol_table.symbol(*i).name()
             )?;
         }
         writeln!(f, "// Vector non-terminals:")?;
