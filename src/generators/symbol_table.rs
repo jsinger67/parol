@@ -182,7 +182,7 @@ impl TypeEntrails {
                 format!(
                     "{}({}{}),",
                     my_type_name,
-                    symbol_table.symbol(*t).name(),
+                    symbol_table.symbol_as_type(*t).name(),
                     lifetime
                 )
             }
@@ -266,7 +266,7 @@ impl Type {
     }
 
     pub(crate) fn name(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
-        if my_symbol.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
+        if my_symbol.name_id.is_unnamed() {
             self.entrails.format(my_symbol.my_id, symbol_table)
         } else {
             symbol_table.name(my_symbol.name_id).to_string()
@@ -274,7 +274,7 @@ impl Type {
     }
 
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
-        if my_symbol.name_id.1 == Scope::UNNAMED_TYPE_NAME_ID {
+        if my_symbol.name_id.is_unnamed() {
             self.entrails.inner_name(symbol_table)
         } else {
             symbol_table.name(my_symbol.name_id).to_string()
@@ -426,14 +426,6 @@ impl Symbol {
         }
     }
 
-    // pub(crate) fn imposed_lifetime(&self, symbol_table: &SymbolTable) -> String {
-    //     if self.symbol_has_lifetime(symbol_table) {
-    //         "<'t>".to_string()
-    //     } else {
-    //         "".to_string()
-    //     }
-    // }
-
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
         match &self.kind {
             SymbolKind::Type(t) => t.format(symbol_table, self, scope_depth),
@@ -481,7 +473,7 @@ pub(crate) struct Scope {
 }
 
 impl Scope {
-    pub(crate) const UNNAMED_TYPE_NAME_ID: usize = 0;
+    const UNNAMED_TYPE_NAME_ID: usize = 0;
 
     pub(crate) fn new(parent: Option<ScopeId>, my_id: ScopeId) -> Self {
         Self {
