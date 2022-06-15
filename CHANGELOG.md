@@ -17,6 +17,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.9.5 - Not released yet
+
+* Refactoring of symbol table
+
 ## v0.9.4 - 2022-06-10
 
 * Added possibility to clip grammar symbols in the grammar description by suffixing them with an
