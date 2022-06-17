@@ -22,6 +22,20 @@ lazy_static! {
 
 const INITIAL_STATE: usize = 0;
 
+/// A user defined type name
+#[derive(Debug, Clone, Default, Hash, Ord, PartialOrd, Eq, PartialEq)]
+pub struct UserDefinedTypeName(Vec<String>);
+
+impl Display for UserDefinedTypeName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(
+            f,
+            "{}",
+            self.0.to_vec().join("::")
+        )
+    }
+}
+
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
 // Test run:
@@ -38,10 +52,16 @@ pub enum Factor {
     Repeat(Alternations),
     /// An Optional
     Optional(Alternations),
-    /// A terminal string with associated scanner states
-    Terminal(String, Vec<usize>, SymbolAttribute),
-    /// A non-terminal
-    NonTerminal(String, SymbolAttribute),
+    /// A terminal string with associated scanner states, a symbol attribute an an optional user
+    /// type name
+    Terminal(
+        String,
+        Vec<usize>,
+        SymbolAttribute,
+        Option<UserDefinedTypeName>,
+    ),
+    /// A non-terminal with a symbol attribute an an optional user type name
+    NonTerminal(String, SymbolAttribute, Option<UserDefinedTypeName>),
     /// An identifier, scanner state name
     Identifier(String),
     /// A scanner switch instruction
@@ -54,7 +74,7 @@ pub enum Factor {
 
 impl Factor {
     pub(crate) fn default_non_terminal(non_terminal: String) -> Self {
-        Self::NonTerminal(non_terminal, SymbolAttribute::default())
+        Self::NonTerminal(non_terminal, SymbolAttribute::default(), None)
     }
 
     pub(crate) fn inner_alts_mut(&mut self) -> Result<&mut Alternations> {
@@ -71,9 +91,12 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "G({})", g),
             Self::Repeat(r) => write!(f, "R{{{}}}", r),
             Self::Optional(o) => write!(f, "O[{}]", o),
-            Self::Terminal(t, s, a) => {
+            Self::Terminal(t, s, a, u) => {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", t))?;
+                if let Some(ref user_type) = u {
+                    d.push_str(&format!(" /* : {} */", user_type));
+                }
                 write!(
                     f,
                     "<{}>{}",
@@ -84,9 +107,12 @@ impl Display for Factor {
                     d
                 )
             }
-            Self::NonTerminal(n, a) => {
+            Self::NonTerminal(n, a, u) => {
                 let mut s = String::new();
                 a.decorate(&mut s, &format!("N({})", n))?;
+                if let Some(ref user_type) = u {
+                    s.push_str(&format!(" /* : {} */", user_type));
+                }
                 write!(f, "{}", s)
             }
             Self::Identifier(n) => write!(f, "Id({})", n),
@@ -104,10 +130,13 @@ impl Factor {
             Self::Group(g) => format!("({})", g.to_par()),
             Self::Repeat(r) => format!("{{{}}}", r.to_par()),
             Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, s, a) => {
+            Self::Terminal(t, s, a, u) => {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", t))
                     .expect("Failed to decorate terminal!");
+                if let Some(ref user_type) = u {
+                    d.push_str(&format!(" /* : {} */", user_type));
+                }
                 format!(
                     "<{}>\"{}\"",
                     s.iter()
@@ -117,10 +146,13 @@ impl Factor {
                     d
                 )
             }
-            Self::NonTerminal(n, a) => {
+            Self::NonTerminal(n, a, u) => {
                 let mut buf = String::new();
                 a.decorate(&mut buf, n)
                     .expect("Failed to decorate non-terminal!");
+                if let Some(ref user_type) = u {
+                    buf.push_str(&format!(" /* : {} */", user_type));
+                }
                 buf
             }
             Factor::Identifier(i) => format!("\"{}\"", i),
@@ -344,6 +376,12 @@ impl Default for ScannerConfig {
     }
 }
 
+#[derive(Debug, Clone)]
+enum ASTControlKind {
+    Attr(SymbolAttribute),
+    UserTyped(UserDefinedTypeName),
+}
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -547,43 +585,89 @@ impl ParolGrammar<'_> {
         }
     }
 
+    fn to_user_type_name(
+        user_type_names: &super::parol_grammar_trait::UserTypeName,
+    ) -> UserDefinedTypeName {
+        UserDefinedTypeName(user_type_names.user_type_name_list.iter().fold(
+            vec![user_type_names.identifier.identifier.symbol.to_string()],
+            |mut acc, a| {
+                acc.push(a.identifier.identifier.symbol.to_string());
+                acc
+            },
+        ))
+    }
+
+    fn process_ast_control(
+        &mut self,
+        ast_control: &super::parol_grammar_trait::ASTControl,
+    ) -> ASTControlKind {
+        match ast_control {
+            super::parol_grammar_trait::ASTControl::ASTControl0(_) => {
+                ASTControlKind::Attr(SymbolAttribute::Clipped)
+            }
+            super::parol_grammar_trait::ASTControl::ASTControl1(t) => ASTControlKind::UserTyped(
+                Self::to_user_type_name(&*t.user_type_declaration.user_type_name),
+            ),
+        }
+    }
+
     fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
         match symbol {
-            super::parol_grammar_trait::Symbol::Symbol0(non_terminal) => Ok(Factor::NonTerminal(
-                non_terminal
-                    .non_terminal
-                    .identifier
-                    .identifier
-                    .symbol
-                    .to_string(),
-                if non_terminal.non_terminal.non_terminal_opt.is_some() {
-                    SymbolAttribute::Clipped
-                } else {
-                    SymbolAttribute::None
-                },
-            )),
-            super::parol_grammar_trait::Symbol::Symbol1(simple_token) => Ok(Factor::Terminal(
-                Self::trim_quotes(&simple_token.simple_token.string),
-                vec![0],
-                if simple_token.simple_token.simple_token_opt.is_some() {
-                    SymbolAttribute::Clipped
-                } else {
-                    SymbolAttribute::None
-                },
-            )),
+            super::parol_grammar_trait::Symbol::Symbol0(non_terminal) => {
+                let mut attr = SymbolAttribute::None;
+                let mut user_type_name = None;
+                if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
+                    match self.process_ast_control(&*non_terminal_opt.a_s_t_control) {
+                        ASTControlKind::Attr(a) => attr = a,
+                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                    }
+                }
+                Ok(Factor::NonTerminal(
+                    non_terminal
+                        .non_terminal
+                        .identifier
+                        .identifier
+                        .symbol
+                        .to_string(),
+                    attr,
+                    user_type_name,
+                ))
+            }
+            super::parol_grammar_trait::Symbol::Symbol1(simple_token) => {
+                let mut attr = SymbolAttribute::None;
+                let mut user_type_name = None;
+                if let Some(ref terminal_opt) = &simple_token.simple_token.simple_token_opt {
+                    match self.process_ast_control(&*terminal_opt.a_s_t_control) {
+                        ASTControlKind::Attr(a) => attr = a,
+                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                    }
+                }
+                Ok(Factor::Terminal(
+                    Self::trim_quotes(&simple_token.simple_token.string),
+                    vec![0],
+                    attr,
+                    user_type_name,
+                ))
+            }
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
                 let mut scanner_states = self
                     .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
                 scanner_states.sort_unstable();
+                let mut attr = SymbolAttribute::None;
+                let mut user_type_name = None;
+                if let Some(ref terminal_opt) =
+                    &token_with_states.token_with_states.token_with_states_opt
+                {
+                    match self.process_ast_control(&*terminal_opt.a_s_t_control) {
+                        ASTControlKind::Attr(a) => attr = a,
+                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                    }
+                }
                 Ok(Factor::Terminal(
                     Self::trim_quotes(&token_with_states.token_with_states.string),
                     scanner_states,
-                    SymbolAttribute::None,
-                    // if token_with_states.token_with_states..is_some() {
-                    //     SymbolAttribute::Clipped
-                    // } else {
-                    //     SymbolAttribute::None
-                    // },
+                    attr,
+                    user_type_name,
                 ))
             }
             super::parol_grammar_trait::Symbol::Symbol3(scanner_switch) => {

@@ -34,6 +34,10 @@ GrammarDefinition
     : "%%"^ Production { Production }
     ;
 
+DoubleColon
+    : "::"
+    ;
+
 Production
     : Identifier ":"^ Alternations ";"^
     ;
@@ -61,11 +65,11 @@ Symbol
     ;
 
 SimpleToken
-    : String [CutOperator]
+    : String [ASTControl]
     ;
 
 TokenWithStates
-    :  "<"^ StateList ">"^ String [CutOperator]
+    :  "<"^ StateList ">"^ String [ASTControl]
     ;
 
 Group
@@ -81,7 +85,7 @@ Repeat
     ;
 
 NonTerminal
-    : Identifier [CutOperator]
+    : Identifier [ASTControl]
     ;
 
 Identifier
@@ -106,6 +110,18 @@ ScannerSwitch
     | "%pop"^ "\("^ "\)"^
     ;
 
+ASTControl
+    : CutOperator | UserTypeDeclaration
+    ;
+
 CutOperator
     : "\^"^
+    ;
+
+UserTypeDeclaration
+    : ":"^ UserTypeName
+    ;
+
+UserTypeName
+    : Identifier { DoubleColon^ Identifier }
     ;

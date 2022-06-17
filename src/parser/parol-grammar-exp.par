@@ -23,44 +23,51 @@
 /* 14 */ GrammarDefinition: "%%"^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
 /* 15 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 16 */ GrammarDefinitionList: ; // Vec<T>::New
-/* 17 */ Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
-/* 18 */ Alternations: Alternation AlternationsList /* Vec */;
-/* 19 */ AlternationsList: "\|"^ /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
-/* 20 */ AlternationsList: ; // Vec<T>::New
-/* 21 */ Alternation: AlternationList /* Vec */;
-/* 22 */ AlternationList: Factor AlternationList; // Vec<T>::Push
-/* 23 */ AlternationList: ; // Vec<T>::New
-/* 24 */ Factor: Group;
-/* 25 */ Factor: Repeat;
-/* 26 */ Factor: Optional;
-/* 27 */ Factor: Symbol;
-/* 28 */ Symbol: NonTerminal;
-/* 29 */ Symbol: SimpleToken;
-/* 30 */ Symbol: TokenWithStates;
-/* 31 */ Symbol: ScannerSwitch;
-/* 32 */ SimpleToken: String SimpleTokenOpt /* Option */;
-/* 33 */ SimpleTokenOpt: CutOperator; // Option<T>::Some
-/* 34 */ SimpleTokenOpt: ; // Option<T>::None
-/* 35 */ TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ String TokenWithStatesOpt /* Option */;
-/* 36 */ TokenWithStatesOpt: CutOperator; // Option<T>::Some
-/* 37 */ TokenWithStatesOpt: ; // Option<T>::None
-/* 38 */ Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
-/* 39 */ Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
-/* 40 */ Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
-/* 41 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
-/* 42 */ NonTerminalOpt: CutOperator; // Option<T>::Some
-/* 43 */ NonTerminalOpt: ; // Option<T>::None
-/* 44 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
-/* 45 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
-/* 46 */ ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
-/* 47 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
-/* 48 */ ScannerStateList: ; // Vec<T>::New
-/* 49 */ StateList: Identifier StateListList /* Vec */;
-/* 50 */ StateListList: ","^ /* Clipped */ Identifier StateListList; // Vec<T>::Push
-/* 51 */ StateListList: ; // Vec<T>::New
-/* 52 */ ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
-/* 53 */ ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
-/* 54 */ ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
-/* 55 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
-/* 56 */ ScannerSwitchOpt: ; // Option<T>::None
-/* 57 */ CutOperator: "\^"^ /* Clipped */;
+/* 17 */ DoubleColon: "::";
+/* 18 */ Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
+/* 19 */ Alternations: Alternation AlternationsList /* Vec */;
+/* 20 */ AlternationsList: "\|"^ /* Clipped */ Alternation AlternationsList; // Vec<T>::Push
+/* 21 */ AlternationsList: ; // Vec<T>::New
+/* 22 */ Alternation: AlternationList /* Vec */;
+/* 23 */ AlternationList: Factor AlternationList; // Vec<T>::Push
+/* 24 */ AlternationList: ; // Vec<T>::New
+/* 25 */ Factor: Group;
+/* 26 */ Factor: Repeat;
+/* 27 */ Factor: Optional;
+/* 28 */ Factor: Symbol;
+/* 29 */ Symbol: NonTerminal;
+/* 30 */ Symbol: SimpleToken;
+/* 31 */ Symbol: TokenWithStates;
+/* 32 */ Symbol: ScannerSwitch;
+/* 33 */ SimpleToken: String SimpleTokenOpt /* Option */;
+/* 34 */ SimpleTokenOpt: ASTControl; // Option<T>::Some
+/* 35 */ SimpleTokenOpt: ; // Option<T>::None
+/* 36 */ TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ String TokenWithStatesOpt /* Option */;
+/* 37 */ TokenWithStatesOpt: ASTControl; // Option<T>::Some
+/* 38 */ TokenWithStatesOpt: ; // Option<T>::None
+/* 39 */ Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
+/* 40 */ Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
+/* 41 */ Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
+/* 42 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
+/* 43 */ NonTerminalOpt: ASTControl; // Option<T>::Some
+/* 44 */ NonTerminalOpt: ; // Option<T>::None
+/* 45 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+/* 46 */ String: "\u{0022}([^\\]|\\.)*?\u{0022}";
+/* 47 */ ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
+/* 48 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
+/* 49 */ ScannerStateList: ; // Vec<T>::New
+/* 50 */ StateList: Identifier StateListList /* Vec */;
+/* 51 */ StateListList: ","^ /* Clipped */ Identifier StateListList; // Vec<T>::Push
+/* 52 */ StateListList: ; // Vec<T>::New
+/* 53 */ ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
+/* 54 */ ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
+/* 55 */ ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
+/* 56 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
+/* 57 */ ScannerSwitchOpt: ; // Option<T>::None
+/* 58 */ ASTControl: CutOperator;
+/* 59 */ ASTControl: UserTypeDeclaration;
+/* 60 */ CutOperator: "\^"^ /* Clipped */;
+/* 61 */ UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName;
+/* 62 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
+/* 63 */ UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList; // Vec<T>::Push
+/* 64 */ UserTypeNameList: ; // Vec<T>::New

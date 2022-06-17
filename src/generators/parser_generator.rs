@@ -85,10 +85,10 @@ impl Production {
                 .rev()
                 .fold(StrVec::new(4).first_line_no_indent(), |mut acc, s| {
                     match s {
-                        Symbol::N(n, _) => {
+                        Symbol::N(n, ..) => {
                             acc.push(format!("ParseType::N({}),", get_non_terminal_index(n)))
                         }
-                        Symbol::T(Terminal::Trm(t, _, _)) => {
+                        Symbol::T(Terminal::Trm(t, ..)) => {
                             acc.push(format!("ParseType::T({}),", get_terminal_index(t)))
                         }
                         Symbol::S(s) => acc.push(format!("ParseType::S({}),", s)),

@@ -232,7 +232,7 @@ pub fn left_factor(g: &Cfg) -> Cfg {
                 acc.push(p.get_n_str().to_owned());
             }
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::N(n, _) = s {
+                if let Symbol::N(n, ..) = s {
                     if !acc.contains(n) {
                         acc.push(n.clone());
                     }

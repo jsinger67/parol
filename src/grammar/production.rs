@@ -108,7 +108,7 @@ impl Pr {
 
     /// Sets the non-terminal
     pub fn set_n(&mut self, n: String) {
-        self.0 = Symbol::N(n, SymbolAttribute::default());
+        self.0 = Symbol::N(n, SymbolAttribute::default(), None);
     }
 
     /// Checks if [Rhs] is empty

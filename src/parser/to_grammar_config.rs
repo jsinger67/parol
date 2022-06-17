@@ -1,6 +1,6 @@
 use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
-use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol};
+use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal};
 use miette::{miette, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
@@ -54,8 +54,8 @@ fn try_from_scanner_config(
 
 pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
-        Factor::NonTerminal(n, a) => Ok(Symbol::N(n, a)),
-        Factor::Terminal(t, s, a) => Ok(Symbol::t(&t, s, a)),
+        Factor::NonTerminal(n, a, u) => Ok(Symbol::N(n, a, u)),
+        Factor::Terminal(t, s, a, u) => Ok(Symbol::T(Terminal::Trm(t, s, a, u))),
         Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop => Ok(Symbol::Pop),

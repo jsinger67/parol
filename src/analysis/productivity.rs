@@ -97,7 +97,7 @@ fn create_production_transfer_function<'a>(
 ) -> TransferFunction<'a> {
     let mut result_function: TransferFunction<'a> = Box::new(|_| true);
     for s in symbol_string.0 {
-        if let Symbol::N(n, _) = s {
+        if let Symbol::N(n, _, _) = s {
             let index = non_terminal_index(&n);
             let f = Box::new(move |result_vector: &ResultVector| result_vector[index]);
             result_function = Box::new(short_cut_conjunction_combine(result_function, f));

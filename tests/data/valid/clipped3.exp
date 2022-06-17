@@ -4,4 +4,4 @@
 
 %%
 
-/* 0 */ Start: "a" <B>"b";
+/* 0 */ Start: "a" <B>"b"^ /* Clipped */;

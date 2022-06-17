@@ -160,7 +160,7 @@ fn update_production_equations<'a, 'c: 'a>(
         |mut acc, (i, s)| {
             match s {
                 // For each non-terminal create a separate SymbolString
-                Symbol::N(_, _) => acc.push((i + 1, SymbolString(vec![s.clone()]))),
+                Symbol::N(..) => acc.push((i + 1, SymbolString(vec![s.clone()]))),
                 // Stack terminals as long as possible
                 Symbol::T(_) => {
                     if acc.is_empty() {
@@ -199,7 +199,7 @@ fn update_production_equations<'a, 'c: 'a>(
     // have to provide an equation.
     for (part_index, (symbol_index, symbol_string)) in parts.iter().enumerate() {
         // trace!(" + {}:{}", symbol_index, symbol_string);
-        if let Symbol::N(_, _) = &symbol_string.0[0] {
+        if let Symbol::N(..) = &symbol_string.0[0] {
             // trace!("  For non-terminal {}", nt);
             let mut result_function: TransferFunction = Box::new(move |_, _| DomainType::eps(k));
             for (_, symbol_string) in parts.iter().skip(part_index + 1) {
@@ -220,7 +220,7 @@ fn update_production_equations<'a, 'c: 'a>(
                                 )
                             });
                     }
-                    Symbol::N(nt, _) => {
+                    Symbol::N(nt, _, _) => {
                         let first_of_nt = first_k_of_nt.get(nt).unwrap();
                         // trace!("  concat first k of nt: {}:{}", nt, first_of_nt);
                         result_function =

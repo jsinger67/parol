@@ -1,6 +1,6 @@
 use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
-use crate::parser::parol_grammar::Factor;
+use crate::parser::parol_grammar::{Factor, UserDefinedTypeName};
 use crate::parser::to_grammar_config::try_from_factor;
 use miette::{IntoDiagnostic, Result};
 use parol_runtime::parser::ScannerIndex;
@@ -20,7 +20,12 @@ pub enum Terminal {
     /// A physical terminal symbol with the scanner states it belongs to
     /// Entities that are provided by the lexer.
     ///
-    Trm(String, Vec<usize>, SymbolAttribute),
+    Trm(
+        String,
+        Vec<usize>,
+        SymbolAttribute,
+        Option<UserDefinedTypeName>,
+    ),
 
     ///
     /// Epsilon symbol, the empty word
@@ -39,7 +44,7 @@ pub enum Terminal {
 impl Terminal {
     /// Creates a terminal
     pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::Trm(t.to_owned(), s, a)
+        Self::Trm(t.to_owned(), s, a, None)
     }
     /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
@@ -57,7 +62,9 @@ impl Terminal {
     /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, s, a)) => Terminal::Trm(t.to_string(), s.to_vec(), *a),
+            Symbol::T(Terminal::Trm(t, s, a, u)) => {
+                Terminal::Trm(t.to_string(), s.to_vec(), *a, u.clone())
+            }
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
         }
@@ -66,7 +73,7 @@ impl Terminal {
     /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
-            Terminal::Trm(_, s, _) => {
+            Terminal::Trm(_, s, _, _) => {
                 if !s.contains(&sc) {
                     s.push(sc);
                     s.sort_unstable();
@@ -84,10 +91,13 @@ impl Terminal {
         R: Fn(&[usize]) -> String,
     {
         match self {
-            Self::Trm(t, s, a) => {
+            Self::Trm(t, s, a, u) => {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("\"{}\"", t))
                     .into_diagnostic()?;
+                if let Some(ref user_type) = u {
+                    d.push_str(&format!(" /* : {} */", user_type));
+                }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
                     Ok(d)
@@ -104,7 +114,7 @@ impl Terminal {
 impl Display for Terminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Trm(t, _, _) => write!(f, "\"{}\"", t),
+            Self::Trm(t, ..) => write!(f, "\"{}\"", t),
             Self::Eps => write!(f, "\u{03B5}"), // Lower creek letter Epsilon (ε)
             Self::End => write!(f, "$"),
         }
@@ -141,7 +151,7 @@ pub enum Symbol {
     ///
     /// Non-terminal symbol, Meta symbol of the grammar.
     ///
-    N(String, SymbolAttribute),
+    N(String, SymbolAttribute, Option<UserDefinedTypeName>),
 
     ///
     /// Terminal symbol of the grammar.
@@ -169,15 +179,20 @@ pub enum Symbol {
 impl Symbol {
     /// Creates a terminal symbol
     pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::T(Terminal::Trm(t.to_owned(), s, a))
+        Self::T(Terminal::Trm(t.to_owned(), s, a, None))
     }
     /// Creates a terminal symbol with default symbol attribute
     pub fn t_n(t: &str, s: Vec<usize>) -> Self {
-        Self::T(Terminal::Trm(t.to_owned(), s, SymbolAttribute::default()))
+        Self::T(Terminal::Trm(
+            t.to_owned(),
+            s,
+            SymbolAttribute::default(),
+            None,
+        ))
     }
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
-        Self::N(n.to_owned(), SymbolAttribute::default())
+        Self::N(n.to_owned(), SymbolAttribute::default(), None)
     }
     /// Creates a end-of-input terminal symbol
     pub fn e() -> Self {
@@ -193,7 +208,7 @@ impl Symbol {
     }
     /// Checks if self is a non-terminal
     pub fn is_n(&self) -> bool {
-        matches!(self, Self::N(_, _))
+        matches!(self, Self::N(..))
     }
     /// Checks if self is a end-of-input terminal
     pub fn is_end(&self) -> bool {
@@ -221,7 +236,7 @@ impl Symbol {
     }
     /// Returns a non-terminal if available
     pub fn get_n(&self) -> Option<String> {
-        if let Self::N(n, _) = &self {
+        if let Self::N(n, ..) = &self {
             Some(n.clone())
         } else {
             None
@@ -229,7 +244,7 @@ impl Symbol {
     }
     /// Returns a non-terminal reference if available
     pub fn get_n_ref(&self) -> Option<&str> {
-        if let Self::N(n, _) = &self {
+        if let Self::N(n, ..) = &self {
             Some(n)
         } else {
             None
@@ -239,7 +254,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a) | Symbol::T(Terminal::Trm(_, _, a)) => *a,
+            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, a, _)) => *a,
             _ => SymbolAttribute::None,
         }
     }
@@ -250,7 +265,7 @@ impl Symbol {
         R: Fn(&[usize]) -> String,
     {
         match self {
-            Self::N(n, a) => {
+            Self::N(n, a, u) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n).into_diagnostic()?;
                 Ok(s)
@@ -272,9 +287,12 @@ impl Symbol {
 impl Display for Symbol {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::N(n, a) => {
+            Self::N(n, a, u) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n)?;
+                if let Some(ref user_type) = u {
+                    s.push_str(&format!(" /* : {} */", user_type));
+                }
                 write!(f, "{}", s)
             }
             Self::T(t) => {
