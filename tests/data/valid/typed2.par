@@ -1,0 +1,4 @@
+%start Start
+%%
+Start: "a" B: A::B::C;
+B : "b";

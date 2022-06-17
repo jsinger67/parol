@@ -1,0 +1,5 @@
+%start Start
+
+%%
+
+/* 0 */ Start: "a" "b" /* : A::B::C */;

@@ -1,0 +1,3 @@
+%start Start
+%%
+Start: "a" "b" : A::B::C;
