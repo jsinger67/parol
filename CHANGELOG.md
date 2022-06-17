@@ -17,9 +17,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.9.5 - Not released yet
+## v0.9.5-pre - Not released yet
 
 * Refactoring of symbol table
+* Start with new feature 'User defined symbol types'
 
 ## v0.9.4 - 2022-06-10
 
