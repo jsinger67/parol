@@ -3,6 +3,7 @@ use super::parol_grammar_trait::{
     PrologList0, ScannerDirectives, ScannerState, StartDeclaration,
 };
 use super::ParolParserError;
+use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::grammar::{Decorate, SymbolAttribute};
 
@@ -26,13 +27,96 @@ const INITIAL_STATE: usize = 0;
 #[derive(Debug, Clone, Default, Hash, Ord, PartialOrd, Eq, PartialEq)]
 pub struct UserDefinedTypeName(Vec<String>);
 
+impl UserDefinedTypeName {
+    /// Creates a new [`UserDefinedTypeName`].
+    pub fn new(names: Vec<String>) -> Self {
+        Self(names)
+    }
+
+    /// Returns the length of this [`UserDefinedTypeName`].
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    /// Checks if this [`UserDefinedTypeName`] is empty.
+    /// ```
+    /// use parol::parser::parol_grammar::UserDefinedTypeName;
+    /// let user_type_name = UserDefinedTypeName::default();
+    /// assert!(user_type_name.is_empty());
+    /// let user_type_name = UserDefinedTypeName::new(vec!["bool".to_string()]);
+    /// assert!(!user_type_name.is_empty());
+    /// ```
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+
+    /// Checks if this [`UserDefinedTypeName`] is a built in type.
+    /// ```
+    /// use parol::parser::parol_grammar::UserDefinedTypeName;
+    /// let user_type_name = UserDefinedTypeName::new(vec!["Tuple".to_string()]);
+    /// assert!(!user_type_name.is_built_in());
+    /// let user_type_name = UserDefinedTypeName::new(vec!["bool".to_string()]);
+    /// assert!(user_type_name.is_built_in());
+    /// ```
+    pub fn is_built_in(&self) -> bool {
+        self.len() == 1 && NmHlp::is_rust_built_in_type(&self.0[0])
+    }
+
+    /// Builds the use statement of this [`UserDefinedTypeName`].
+    /// ```
+    /// use parol::parser::parol_grammar::UserDefinedTypeName;
+    /// let user_type_name = UserDefinedTypeName::new(vec!["x".to_string(), "y".to_string(), "Z".to_string()]);
+    /// assert_eq!("use x::y;".to_string(), user_type_name.build_use_statement());
+    /// let user_type_name = UserDefinedTypeName::new(vec!["bool".to_string()]);
+    /// assert_eq!("".to_string(), user_type_name.build_use_statement());
+    /// ```
+    pub fn build_use_statement(&self) -> String {
+        if self.is_built_in() {
+            String::default()
+        } else {
+            format!(
+                "use {};",
+                self.0
+                    .iter()
+                    .rev()
+                    .skip(1)
+                    .rev()
+                    .cloned()
+                    .collect::<Vec<String>>()
+                    .join("::")
+            )
+        }
+    }
+
+    /// Returns module scoped name of this [`UserDefinedTypeName`].
+    /// If you have a type `x:y:Z` this should return `y::Z`. This should work in combination with a
+    /// use statement like this `use x::Y;`
+    /// ```
+    /// use parol::parser::parol_grammar::UserDefinedTypeName;
+    /// let user_type_name = UserDefinedTypeName::new(vec!["x".to_string(), "y".to_string(), "Z".to_string()]);
+    /// assert_eq!("y::Z".to_string(), user_type_name.get_module_scoped_name());
+    /// let user_type_name = UserDefinedTypeName::new(vec!["bool".to_string()]);
+    /// assert_eq!("bool".to_string(), user_type_name.get_module_scoped_name());
+    /// ```
+    pub fn get_module_scoped_name(&self) -> String {
+        if self.len() > 2 {
+            self.0
+            .iter()
+            .skip(self.0.len() - 2)
+            .cloned()
+            .collect::<Vec<String>>()
+            .join("::")
+        } else if !self.is_empty() {
+            self.0[0].clone()
+        } else {
+            String::default()
+        }
+    }
+}
+
 impl Display for UserDefinedTypeName {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(
-            f,
-            "{}",
-            self.0.to_vec().join("::")
-        )
+        write!(f, "{}", self.0.to_vec().join("::"))
     }
 }
 

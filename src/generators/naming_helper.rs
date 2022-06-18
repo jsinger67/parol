@@ -9,6 +9,13 @@ const KEYWORDS: &[&str; 52] = &[
     "typeof", "union", "unsafe", "unsized", "use", "virtual", "where", "while", "yield",
 ];
 
+/// We need to decide if a user given type has to be included via `use` statement.
+/// Actually we should include all types that are present by default through the Rust prelude.
+const BUILT_IN_TYPES: &[&str; 18] = &[
+    "i8", "u8", "i16", "u16", "i32", "u32", "i64", "u64", "i128", "u128", "isize", "usize", "f32",
+    "f64", "char", "str", "bool", "String",
+];
+
 /// Struct used as namespace only
 pub struct NamingHelper;
 
@@ -21,6 +28,16 @@ impl NamingHelper {
     /// ```
     pub fn is_rust_keyword(name: &str) -> bool {
         KEYWORDS.iter().any(|kw| kw == &name)
+    }
+
+    /// Checks whether the given name is a built-in Rust type
+    /// ```
+    /// use parol::generators::NamingHelper as NmHlp;
+    /// assert!(!NmHlp::is_rust_built_in_type("Tuple"));
+    /// assert!(NmHlp::is_rust_built_in_type("bool"));
+    /// ```
+    pub fn is_rust_built_in_type(name: &str) -> bool {
+        BUILT_IN_TYPES.iter().any(|ty| ty == &name)
     }
 
     /// Checks whether the symbol starts with "r#"
