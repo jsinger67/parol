@@ -9,7 +9,7 @@
 /* 2 */ ListOptList: ","^ /* Clipped */ Num ListOptList; // Vec<T>::Push
 /* 3 */ ListOptList: ; // Vec<T>::New
 /* 4 */ ListOpt: ; // Option<T>::None
-/* 5 */ Num: "0|[1-9][0-9]*";
+/* 5 */ Num: "0|[1-9][0-9]*" /* : u32 */;
 /* 6 */ TrailingComma: TrailingCommaOpt /* Option */;
 /* 7 */ TrailingCommaOpt: ","; // Option<T>::Some
 /* 8 */ TrailingCommaOpt: ; // Option<T>::None

@@ -407,6 +407,7 @@ impl GrammarTypeInfo {
     }
 
     /// Generates a member name from a symbol that stems from a production's right-hand side
+    /// The second string in the returned tuple is used as description, here the terminal's content.
     pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
         let get_terminal_index = |tr: &str| self.terminals.iter().position(|t| *t == tr).unwrap();
         match s {
@@ -465,10 +466,14 @@ impl GrammarTypeInfo {
                 .fold(Ok(()), |acc, ((n, r), (t, a))| {
                     acc?;
                     // Tokens are taken from the parameter list per definition.
-                    let used = matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
-                    let type_id = if let TypeEntrails::UserDefinedType(ref u) = t {
+                    let mut used =
+                        matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
+                    let type_id = if let TypeEntrails::UserDefinedType(k, ref u) = t {
+                        if k == MetaSymbolKind::Token {
+                            used = true;
+                        }
                         self.symbol_table
-                            .get_or_create_scoped_user_defined_type(u)?
+                            .get_or_create_scoped_user_defined_type(k, u)?
                     } else {
                         self.symbol_table.get_or_create_type(
                             SymbolTable::UNNAMED_TYPE,
@@ -492,7 +497,10 @@ impl GrammarTypeInfo {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
                 } else {
                     if let Some(ref user_defined_type) = u {
-                        Ok(TypeEntrails::UserDefinedType(user_defined_type.clone()))
+                        Ok(TypeEntrails::UserDefinedType(
+                            MetaSymbolKind::Token,
+                            user_defined_type.clone(),
+                        ))
                     } else {
                         Ok(TypeEntrails::Token)
                     }
@@ -501,7 +509,10 @@ impl GrammarTypeInfo {
             Symbol::N(n, a, u) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
                 if let Some(ref user_defined_type) = u {
-                    Ok(TypeEntrails::UserDefinedType(user_defined_type.clone()))
+                    Ok(TypeEntrails::UserDefinedType(
+                        MetaSymbolKind::NonTerminal,
+                        user_defined_type.clone(),
+                    ))
                 } else {
                     match a {
                         SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),

@@ -19,12 +19,12 @@ pub trait ListGrammarTrait<'t> {
     fn init(&mut self, _file_name: &Path) {}
 
     /// Semantic action for non-terminal 'List'
-    fn list(&mut self, _arg: &List<'t>) -> Result<()> {
+    fn list(&mut self, _arg: &List) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Num'
-    fn num(&mut self, _arg: &Num<'t>) -> Result<()> {
+    fn num(&mut self, _arg: &Num) -> Result<()> {
         Ok(())
     }
 
@@ -49,8 +49,8 @@ pub trait ListGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct List<'t> {
-    pub list_opt: Option<Box<ListOpt<'t>>>,
+pub struct List {
+    pub list_opt: Option<Box<ListOpt>>,
 }
 
 ///
@@ -58,9 +58,9 @@ pub struct List<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ListOpt<'t> {
-    pub num: Box<Num<'t>>,
-    pub list_opt_list: Vec<ListOptList<'t>>,
+pub struct ListOpt {
+    pub num: Box<Num>,
+    pub list_opt_list: Vec<ListOptList>,
 }
 
 ///
@@ -68,8 +68,8 @@ pub struct ListOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ListOptList<'t> {
-    pub num: Box<Num<'t>>,
+pub struct ListOptList {
+    pub num: Box<Num>,
 }
 
 ///
@@ -77,8 +77,8 @@ pub struct ListOptList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Num<'t> {
-    pub num: Token<'t>, /* 0|[1-9][0-9]* */
+pub struct Num {
+    pub num: u32, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -107,10 +107,10 @@ pub struct TrailingCommaOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
-    List(List<'t>),
-    ListOpt(Option<Box<ListOpt<'t>>>),
-    ListOptList(Vec<ListOptList<'t>>),
-    Num(Num<'t>),
+    List(List),
+    ListOpt(Option<Box<ListOpt>>),
+    ListOptList(Vec<ListOptList>),
+    Num(Num),
     TrailingComma(TrailingComma<'t>),
     TrailingCommaOpt(Option<Box<TrailingCommaOpt<'t>>>),
 }
@@ -309,7 +309,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// Num: "0|[1-9][0-9]*";
+    /// Num: "0|[1-9][0-9]*" /* : u32 */;
     ///
     #[named]
     fn num(
@@ -319,7 +319,11 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let num = *num.token(parse_tree)?;
+        let num = num
+            .token(parse_tree)?
+            .symbol
+            .parse::<u32>()
+            .into_diagnostic()?;
         let num_built = NumBuilder::default().num(num).build().into_diagnostic()?;
         // Calling user action here
         self.user_grammar.num(&num_built)?;

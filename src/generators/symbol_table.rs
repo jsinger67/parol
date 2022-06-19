@@ -100,8 +100,9 @@ impl Function {
     }
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub(crate) enum MetaSymbolKind {
+    Undefined,
     Token,
     NonTerminal,
 }
@@ -109,6 +110,7 @@ pub(crate) enum MetaSymbolKind {
 impl Display for MetaSymbolKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
+            MetaSymbolKind::Undefined => write!(f, "Undef"),
             MetaSymbolKind::Token => write!(f, "Tok"),
             MetaSymbolKind::NonTerminal => write!(f, "Nt"),
         }
@@ -147,7 +149,7 @@ pub(crate) enum TypeEntrails {
     /// An invisible type
     Clipped(MetaSymbolKind),
     /// User defined type
-    UserDefinedType(UserDefinedTypeName),
+    UserDefinedType(MetaSymbolKind, UserDefinedTypeName),
 }
 
 impl TypeEntrails {
@@ -202,7 +204,7 @@ impl TypeEntrails {
                 symbol_table.lifetime(*o)
             ),
             TypeEntrails::Clipped(k) => format!("Clipped({})", k),
-            TypeEntrails::UserDefinedType(u) => format!("{}", u),
+            TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
         }
     }
 
@@ -910,17 +912,27 @@ impl SymbolTable {
 
     pub(crate) fn get_or_create_scoped_user_defined_type(
         &mut self,
+        symbol_kind: MetaSymbolKind,
         user_defined_type: &UserDefinedTypeName,
     ) -> Result<SymbolId> {
         let mut symbol_id: SymbolId = SymbolId::default();
         let mut parent_scope = Self::GLOBAL_SCOPE;
         let mut stacked_names = Vec::new();
-        for type_part in user_defined_type.names() {
+        let last = user_defined_type.len() - 1;
+        for (i, type_part) in user_defined_type.names().iter().enumerate() {
             stacked_names.push(type_part.to_string());
+            let symbol_kind = if i == last {
+                symbol_kind
+            } else {
+                MetaSymbolKind::Undefined
+            };
             symbol_id = self.get_or_create_type(
                 type_part,
                 parent_scope,
-                TypeEntrails::UserDefinedType(UserDefinedTypeName::new(stacked_names.clone())),
+                TypeEntrails::UserDefinedType(
+                    symbol_kind,
+                    UserDefinedTypeName::new(stacked_names.clone()),
+                ),
             )?;
             parent_scope = self.symbol_as_type(symbol_id).member_scope();
         }

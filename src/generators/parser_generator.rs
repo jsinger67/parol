@@ -128,6 +128,7 @@ struct ParserData<'a> {
     scanner_builds: StrVec,
     auto_generate: bool,
     user_type_name: &'a str,
+    user_type_life_time: &'static str,
     module_name: &'a str,
 }
 
@@ -192,6 +193,8 @@ pub fn generate_parser_source(
             acc
         });
 
+    let user_type_life_time = "<'t>";
+
     let parser_data = ParserData {
         start_symbol_index,
         lexer_source,
@@ -203,6 +206,7 @@ pub fn generate_parser_source(
         scanner_builds,
         auto_generate,
         user_type_name,
+        user_type_life_time,
         module_name,
     };
 

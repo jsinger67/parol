@@ -46,7 +46,11 @@ impl<'a> UserTraitGenerator<'a> {
         for member_id in symbol_table.members(action_id)? {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
-            if matches!(*arg_type.entrails(), TypeEntrails::Token)
+            if (matches!(*arg_type.entrails(), TypeEntrails::Token)
+                || matches!(
+                    *arg_type.entrails(),
+                    TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _)
+                ))
                 && arg_inst.sem() != SymbolAttribute::Clipped
             {
                 parse_tree_argument_used = true;
@@ -92,6 +96,16 @@ impl<'a> UserTraitGenerator<'a> {
                     "let {} = *{}.token(parse_tree)?;",
                     arg_name, arg_name
                 ))
+            } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, u) =
+                arg_type.entrails()
+            {
+                let arg_name = symbol_table.name(arg_inst.name_id());
+                code.push(format!(
+                    "let {} = {}.token(parse_tree)?.symbol.parse::<{}>().into_diagnostic()?;",
+                    arg_name,
+                    arg_name,
+                    u.get_module_scoped_name(),
+                ))
             }
         }
         Ok(())
@@ -120,6 +134,10 @@ impl<'a> UserTraitGenerator<'a> {
                 code.push(format!("// Ignore clipped member '{}'", arg_name));
                 code.push("self.pop(context);".to_string());
             } else if !matches!(*arg_type.entrails(), TypeEntrails::Token)
+                && !matches!(
+                    *arg_type.entrails(),
+                    TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _)
+                )
                 && arg_inst.sem() != SymbolAttribute::Clipped
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
