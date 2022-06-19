@@ -268,6 +268,9 @@ impl Symbol {
             Self::N(n, a, u) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n).into_diagnostic()?;
+                if let Some(ref user_type) = u {
+                    s.push_str(&format!(" /* : {} */", user_type));
+                }
                 Ok(s)
             }
             Self::T(t) => t.format(scanner_state_resolver),

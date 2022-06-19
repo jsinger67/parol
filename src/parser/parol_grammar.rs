@@ -50,6 +50,11 @@ impl UserDefinedTypeName {
         self.0.is_empty()
     }
 
+    /// Returns a reference to the names of this [`UserDefinedTypeName`].
+    pub fn names(&self) -> &[String] {
+        &self.0
+    }
+
     /// Checks if this [`UserDefinedTypeName`] is a built in type.
     /// ```
     /// use parol::parser::parol_grammar::UserDefinedTypeName;
@@ -101,11 +106,11 @@ impl UserDefinedTypeName {
     pub fn get_module_scoped_name(&self) -> String {
         if self.len() > 2 {
             self.0
-            .iter()
-            .skip(self.0.len() - 2)
-            .cloned()
-            .collect::<Vec<String>>()
-            .join("::")
+                .iter()
+                .skip(self.0.len() - 2)
+                .cloned()
+                .collect::<Vec<String>>()
+                .join("::")
         } else if !self.is_empty() {
             self.0[0].clone()
         } else {

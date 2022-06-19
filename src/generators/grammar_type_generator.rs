@@ -466,11 +466,16 @@ impl GrammarTypeInfo {
                     acc?;
                     // Tokens are taken from the parameter list per definition.
                     let used = matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
-                    let type_id = self.symbol_table.get_or_create_type(
-                        SymbolTable::UNNAMED_TYPE,
-                        SymbolTable::GLOBAL_SCOPE,
-                        t,
-                    )?;
+                    let type_id = if let TypeEntrails::UserDefinedType(ref u) = t {
+                        self.symbol_table
+                            .get_or_create_scoped_user_defined_type(u)?
+                    } else {
+                        self.symbol_table.get_or_create_type(
+                            SymbolTable::UNNAMED_TYPE,
+                            SymbolTable::GLOBAL_SCOPE,
+                            t,
+                        )?
+                    };
                     self.symbol_table
                         .insert_instance(function_id, n, type_id, used, a, r.to_string())
                         .map(|_| Ok(()))?
@@ -480,23 +485,31 @@ impl GrammarTypeInfo {
         }
     }
 
-    fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
+    fn deduce_type_of_symbol(&mut self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
             Symbol::T(Terminal::Trm(_, _, a, u)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
                 } else {
-                    Ok(TypeEntrails::Token)
+                    if let Some(ref user_defined_type) = u {
+                        Ok(TypeEntrails::UserDefinedType(user_defined_type.clone()))
+                    } else {
+                        Ok(TypeEntrails::Token)
+                    }
                 }
             }
             Symbol::N(n, a, u) => {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
-                match a {
-                    SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
-                    SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
-                    SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
-                    SymbolAttribute::Clipped => {
-                        Ok(TypeEntrails::Clipped(MetaSymbolKind::NonTerminal))
+                if let Some(ref user_defined_type) = u {
+                    Ok(TypeEntrails::UserDefinedType(user_defined_type.clone()))
+                } else {
+                    match a {
+                        SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
+                        SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
+                        SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
+                        SymbolAttribute::Clipped => {
+                            Ok(TypeEntrails::Clipped(MetaSymbolKind::NonTerminal))
+                        }
                     }
                 }
             }

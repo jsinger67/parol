@@ -3,6 +3,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::symbol_table_facade::InstanceItem;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
+use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
 use miette::{bail, Result};
 
@@ -145,6 +146,8 @@ pub(crate) enum TypeEntrails {
     Option(SymbolId),
     /// An invisible type
     Clipped(MetaSymbolKind),
+    /// User defined type
+    UserDefinedType(UserDefinedTypeName),
 }
 
 impl TypeEntrails {
@@ -199,6 +202,7 @@ impl TypeEntrails {
                 symbol_table.lifetime(*o)
             ),
             TypeEntrails::Clipped(k) => format!("Clipped({})", k),
+            TypeEntrails::UserDefinedType(u) => format!("{}", u),
         }
     }
 
@@ -902,6 +906,25 @@ impl SymbolTable {
             .iter()
             .find(|symbol_id| self.symbols[symbol_id.0].name(self) == non_terminal)
             .copied()
+    }
+
+    pub(crate) fn get_or_create_scoped_user_defined_type(
+        &mut self,
+        user_defined_type: &UserDefinedTypeName,
+    ) -> Result<SymbolId> {
+        let mut symbol_id: SymbolId = SymbolId::default();
+        let mut parent_scope = Self::GLOBAL_SCOPE;
+        let mut stacked_names = Vec::new();
+        for type_part in user_defined_type.names() {
+            stacked_names.push(type_part.to_string());
+            symbol_id = self.get_or_create_type(
+                type_part,
+                parent_scope,
+                TypeEntrails::UserDefinedType(UserDefinedTypeName::new(stacked_names.clone())),
+            )?;
+            parent_scope = self.symbol_as_type(symbol_id).member_scope();
+        }
+        Ok(symbol_id)
     }
 }
 
