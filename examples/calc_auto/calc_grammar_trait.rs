@@ -164,7 +164,7 @@ pub trait CalcGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'number'
-    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
+    fn number(&mut self, _arg: &Number) -> Result<()> {
         Ok(())
     }
 
@@ -235,8 +235,8 @@ pub struct AddOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0<'t> {
-    pub number: Box<Number<'t>>,
+pub struct Factor0 {
+    pub number: Box<Number>,
 }
 
 ///
@@ -467,7 +467,7 @@ pub struct EqualityOp<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    Factor0(Factor0<'t>),
+    Factor0(Factor0),
     Factor1(Factor1<'t>),
     Factor2(Factor2<'t>),
     Factor3(Factor3<'t>),
@@ -611,8 +611,8 @@ pub struct Negate<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number<'t> {
-    pub number: Token<'t>, /* 0|[1-9][0-9]* */
+pub struct Number {
+    pub number: isize, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -744,7 +744,7 @@ pub enum ASTType<'t> {
     MultList(Vec<MultList<'t>>),
     MultOp(MultOp<'t>),
     Negate(Negate<'t>),
-    Number(Number<'t>),
+    Number(Number),
     Plus(Plus<'t>),
     PowOp(PowOp<'t>),
     Power(Power<'t>),
@@ -2463,7 +2463,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// number: "0|[1-9][0-9]*";
+    /// number: "0|[1-9][0-9]*" /* : isize */;
     ///
     #[named]
     fn number(
@@ -2473,7 +2473,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = *number.token(parse_tree)?;
+        let number = number
+            .token(parse_tree)?
+            .symbol
+            .parse::<isize>()
+            .into_diagnostic()?;
         let number_built = NumberBuilder::default()
             .number(number)
             .build()

@@ -3,7 +3,7 @@ use crate::{
     errors::CalcError,
 };
 use log::trace;
-use miette::{miette, Result, WrapErr};
+use miette::{miette, Result};
 use parol_runtime::{errors::FileSource, lexer::Token};
 use std::{
     collections::BTreeMap,
@@ -49,18 +49,6 @@ impl<'t> CalcGrammar<'t> {
         if !self.env.contains_key(id) {
             trace!("declare {}: {}", context, id);
             self.env.insert(id.to_owned(), 0);
-        }
-    }
-
-    fn parse_number(&self, context: &str, token: &Token<'t>) -> Result<DefinitionRange> {
-        match token.symbol.parse::<DefinitionRange>() {
-            Ok(number) => Ok(number),
-            Err(error) => Err(miette!(CalcError::ParseISizeFailed {
-                context: context.to_owned(),
-                input: FileSource::try_new(self.file_name.clone())?.into(),
-                token: token.into()
-            }))
-            .wrap_err(miette!(error)),
         }
     }
 
@@ -319,9 +307,8 @@ impl<'t> CalcGrammar<'t> {
     }
 
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
-        let context = "process_factor";
         match factor {
-            Factor::Factor0(Factor0 { number }) => Ok(self.parse_number(context, &number.number)?),
+            Factor::Factor0(Factor0 { number }) => Ok(number.number),
             Factor::Factor1(Factor1 { idref }) => self.value(&idref.id.id),
             Factor::Factor2(Factor2 { factor, .. }) => Ok(-(self.process_factor(factor)?)),
             Factor::Factor3(Factor3 { logical_or, .. }) => self.process_logical_or(logical_or),

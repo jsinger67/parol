@@ -495,15 +495,13 @@ impl GrammarTypeInfo {
             Symbol::T(Terminal::Trm(_, _, a, u)) => {
                 if *a == SymbolAttribute::Clipped {
                     Ok(TypeEntrails::Clipped(MetaSymbolKind::Token))
+                } else if let Some(ref user_defined_type) = u {
+                    Ok(TypeEntrails::UserDefinedType(
+                        MetaSymbolKind::Token,
+                        user_defined_type.clone(),
+                    ))
                 } else {
-                    if let Some(ref user_defined_type) = u {
-                        Ok(TypeEntrails::UserDefinedType(
-                            MetaSymbolKind::Token,
-                            user_defined_type.clone(),
-                        ))
-                    } else {
-                        Ok(TypeEntrails::Token)
-                    }
+                    Ok(TypeEntrails::Token)
                 }
             }
             Symbol::N(n, a, u) => {

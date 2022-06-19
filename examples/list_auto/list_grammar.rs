@@ -1,6 +1,9 @@
 use crate::list_grammar_trait::{List, ListGrammarTrait, ListOpt, ListOptList, TrailingComma};
 use miette::Result;
-use std::{fmt::{Debug, Display, Error, Formatter}, marker::PhantomData};
+use std::{
+    fmt::{Debug, Display, Error, Formatter},
+    marker::PhantomData,
+};
 
 ///
 /// Data structure that implements the semantic actions for our list grammar
