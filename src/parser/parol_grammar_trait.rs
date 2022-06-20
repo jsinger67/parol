@@ -509,7 +509,7 @@ pub struct Identifier<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct NonTerminal<'t> {
     pub identifier: Box<Identifier<'t>>,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt<'t>>>,
+    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
 }
 
 ///
@@ -517,8 +517,8 @@ pub struct NonTerminal<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct NonTerminalOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct NonTerminalOpt {
+    pub cut_operator: Box<CutOperator>,
 }
 
 ///
@@ -777,7 +777,7 @@ pub enum ASTType<'t> {
     Group(Group<'t>),
     Identifier(Identifier<'t>),
     NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<Box<NonTerminalOpt<'t>>>),
+    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
     Optional(Optional<'t>),
     Parol(Parol<'t>),
     Production(Production<'t>),
@@ -2135,23 +2135,23 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// NonTerminalOpt: ASTControl; // Option<T>::Some
+    /// NonTerminalOpt: CutOperator; // Option<T>::Some
     ///
     #[named]
     fn non_terminal_opt_0(
         &mut self,
-        _a_s_t_control: &ParseTreeStackEntry<'t>,
+        _cut_operator: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
-            a_s_t_control
+        let cut_operator = if let Some(ASTType::CutOperator(cut_operator)) = self.pop(context) {
+            cut_operator
         } else {
-            bail!("{}: Expecting ASTType::ASTControl", context);
+            bail!("{}: Expecting ASTType::CutOperator", context);
         };
         let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
-            .a_s_t_control(Box::new(a_s_t_control))
+            .cut_operator(Box::new(cut_operator))
             .build()
             .into_diagnostic()?;
         self.push(

@@ -307,7 +307,6 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 39] = &[
     LookaheadDFA {
         states: &[None, Some(43), Some(44)],
         transitions: &[
-            DFATransition(0, 14, 1),
             DFATransition(0, 15, 2),
             DFATransition(0, 16, 2),
             DFATransition(0, 17, 2),
@@ -780,10 +779,10 @@ pub const PRODUCTIONS: &[Production; 65] = &[
         lhs: 13,
         production: &[ParseType::N(14), ParseType::N(12)],
     },
-    // 43 - NonTerminalOpt: ASTControl;
+    // 43 - NonTerminalOpt: CutOperator;
     Production {
         lhs: 14,
-        production: &[ParseType::N(0)],
+        production: &[ParseType::N(5)],
     },
     // 44 - NonTerminalOpt: ;
     Production {

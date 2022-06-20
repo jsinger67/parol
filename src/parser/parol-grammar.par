@@ -85,7 +85,7 @@ Repeat
     ;
 
 NonTerminal
-    : Identifier [ASTControl]
+    : Identifier [CutOperator]
     ;
 
 Identifier
