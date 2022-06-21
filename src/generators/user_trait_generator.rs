@@ -93,7 +93,7 @@ impl<'a> UserTraitGenerator<'a> {
             if matches!(arg_type.entrails(), TypeEntrails::Token) {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = *{}.token(parse_tree)?;",
+                    "let {} = {}.token(parse_tree)?.clone();",
                     arg_name, arg_name
                 ))
             } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, u) =

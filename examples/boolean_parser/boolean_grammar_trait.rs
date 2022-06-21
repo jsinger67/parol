@@ -9,7 +9,6 @@ use id_tree::Tree;
 use crate::boolean_grammar::BooleanGrammar;
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::Path;
 
 ///
 /// The `BooleanGrammarTrait` trait is automatically generated for the
@@ -17,11 +16,6 @@ use std::path::Path;
 /// All functions have default implementations.
 ///
 pub trait BooleanGrammarTrait {
-    ///
-    /// Implement this method if you need the provided information
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for production 0:
     ///
     /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
@@ -446,13 +440,6 @@ pub trait BooleanGrammarTrait {
 }
 
 impl UserActionsTrait<'_> for BooleanGrammar {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     ///
     /// This function is implemented automatically for the user's item BooleanGrammar.
     ///

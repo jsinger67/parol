@@ -9,7 +9,6 @@ use id_tree::Tree;
 use crate::list_grammar::ListGrammar;
 use miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::Path;
 
 ///
 /// The `ListGrammarTrait` trait is automatically generated for the
@@ -17,11 +16,6 @@ use std::path::Path;
 /// All functions have default implementations.
 ///
 pub trait ListGrammarTrait {
-    ///
-    /// Implement this method if you need the provided information
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for production 0:
     ///
     /// List: ListOpt /* Option */;
@@ -120,13 +114,6 @@ pub trait ListGrammarTrait {
 }
 
 impl UserActionsTrait<'_> for ListGrammar {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     ///
     /// This function is implemented automatically for the user's item ListGrammar.
     ///

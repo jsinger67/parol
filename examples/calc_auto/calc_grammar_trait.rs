@@ -11,13 +11,10 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait CalcGrammarTrait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for non-terminal 'calc'
     fn calc(&mut self, _arg: &Calc<'t>) -> Result<()> {
         Ok(())
@@ -770,8 +767,6 @@ where
     user_grammar: &'u mut dyn CalcGrammarTrait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 
 ///
@@ -783,7 +778,6 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -910,7 +904,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equality_op = *equality_op.token(parse_tree)?;
+        let equality_op = equality_op.token(parse_tree)?.clone();
         let equality_op_built = EqualityOpBuilder::default()
             .equality_op(equality_op)
             .build()
@@ -933,7 +927,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op = *assign_op.token(parse_tree)?;
+        let assign_op = assign_op.token(parse_tree)?.clone();
         let assign_op_built = AssignOpBuilder::default()
             .assign_op(assign_op)
             .build()
@@ -956,7 +950,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_op = *logical_or_op.token(parse_tree)?;
+        let logical_or_op = logical_or_op.token(parse_tree)?.clone();
         let logical_or_op_built = LogicalOrOpBuilder::default()
             .logical_or_op(logical_or_op)
             .build()
@@ -979,7 +973,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_and_op = *logical_and_op.token(parse_tree)?;
+        let logical_and_op = logical_and_op.token(parse_tree)?.clone();
         let logical_and_op_built = LogicalAndOpBuilder::default()
             .logical_and_op(logical_and_op)
             .build()
@@ -1002,7 +996,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_or_op = *bitwise_or_op.token(parse_tree)?;
+        let bitwise_or_op = bitwise_or_op.token(parse_tree)?.clone();
         let bitwise_or_op_built = BitwiseOrOpBuilder::default()
             .bitwise_or_op(bitwise_or_op)
             .build()
@@ -1025,7 +1019,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_and_op = *bitwise_and_op.token(parse_tree)?;
+        let bitwise_and_op = bitwise_and_op.token(parse_tree)?.clone();
         let bitwise_and_op_built = BitwiseAndOpBuilder::default()
             .bitwise_and_op(bitwise_and_op)
             .build()
@@ -1048,7 +1042,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_shift_op = *bitwise_shift_op.token(parse_tree)?;
+        let bitwise_shift_op = bitwise_shift_op.token(parse_tree)?.clone();
         let bitwise_shift_op_built = BitwiseShiftOpBuilder::default()
             .bitwise_shift_op(bitwise_shift_op)
             .build()
@@ -1072,7 +1066,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational_op = *relational_op.token(parse_tree)?;
+        let relational_op = relational_op.token(parse_tree)?.clone();
         let relational_op_built = RelationalOpBuilder::default()
             .relational_op(relational_op)
             .build()
@@ -1095,7 +1089,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = *plus.token(parse_tree)?;
+        let plus = plus.token(parse_tree)?.clone();
         let plus_built = PlusBuilder::default()
             .plus(plus)
             .build()
@@ -1118,7 +1112,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = *minus.token(parse_tree)?;
+        let minus = minus.token(parse_tree)?.clone();
         let minus_built = MinusBuilder::default()
             .minus(minus)
             .build()
@@ -1141,7 +1135,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let pow_op = *pow_op.token(parse_tree)?;
+        let pow_op = pow_op.token(parse_tree)?.clone();
         let pow_op_built = PowOpBuilder::default()
             .pow_op(pow_op)
             .build()
@@ -1164,7 +1158,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mult_op = *mult_op.token(parse_tree)?;
+        let mult_op = mult_op.token(parse_tree)?.clone();
         let mult_op_built = MultOpBuilder::default()
             .mult_op(mult_op)
             .build()
@@ -2527,7 +2521,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let id = *id.token(parse_tree)?;
+        let id = id.token(parse_tree)?.clone();
         let id_built = IdBuilder::default().id(id).build().into_diagnostic()?;
         // Calling user action here
         self.user_grammar.id(&id_built)?;
@@ -2537,16 +2531,6 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-    }
-
     ///
     /// This function is implemented automatically for the user's item CalcGrammar.
     ///

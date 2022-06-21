@@ -1,4 +1,4 @@
 %start Start
 %%
-Start: "a" B: A::B::C;
-B : "b";
+Start: "a" B;
+B : "b": i32;

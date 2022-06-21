@@ -11,7 +11,6 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug, Display, Error, Formatter};
-use std::path::PathBuf;
 
 ///
 /// The value range for the supported calculations
@@ -89,7 +88,6 @@ impl Display for CalcGrammarItem {
 pub struct CalcGrammar {
     pub item_stack: Vec<CalcGrammarItem>,
     env: BTreeMap<String, DefinitionRange>,
-    file_name: PathBuf,
 }
 
 impl CalcGrammar {
@@ -379,13 +377,6 @@ impl Display for CalcGrammar {
 }
 
 impl CalcGrammarTrait for CalcGrammar {
-    ///
-    /// Information provided by parser
-    ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        self.file_name = file_name.into();
-    }
-
     /// Semantic action for production 6:
     ///
     /// equality_op: "==|!=";
@@ -1256,7 +1247,10 @@ impl CalcGrammarTrait for CalcGrammar {
             Err(error) => {
                 return Err(miette!(CalcError::ParseISizeFailed {
                     context: context.to_owned(),
-                    input: FileSource::try_new(self.file_name.clone())?.into(),
+                    input: FileSource::try_new(
+                        tk_number.token(parse_tree)?.location.file_name.clone()
+                    )?
+                    .into(),
                     token: tk_number.token(parse_tree)?.into()
                 }))
                 .wrap_err(miette!(error))
@@ -1283,11 +1277,13 @@ impl CalcGrammarTrait for CalcGrammar {
                     let child = parse_tree
                         .get(node_id)
                         .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
-                        .into_diagnostic()?;
+                        .into_diagnostic()?
+                        .data()
+                        .token()?;
                     return Err(miette!(CalcError::UndeclaredVariable {
                         context: context.to_owned(),
-                        input: FileSource::try_new(self.file_name.clone())?.into(),
-                        token: child.data().token()?.into()
+                        input: FileSource::try_new(child.location.file_name.clone())?.into(),
+                        token: child.into()
                     }));
                 } else {
                     return Err(miette!("{}: undeclared variable {}", context, ids));

@@ -23,8 +23,8 @@ lazy_static = "^1.4"
 log = "0.4.17"
 miette = { version = "^4.0", features = ["fancy"] }
 owo-colors = "3.3.0"
-parol_runtime = "0.5.9"
-petgraph = "0.6.0"
+parol_runtime = { path = "../parol-runtime" }
+petgraph = "0.6.2"
 prettyplease = { version = "0.1.7", optional = true }
 rand_regex = "0.15.1"
 rand = "0.8.5"

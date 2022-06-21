@@ -11,13 +11,10 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait ListGrammarTrait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for non-terminal 'List'
     fn list(&mut self, _arg: &List) -> Result<()> {
         Ok(())
@@ -129,8 +126,6 @@ where
     user_grammar: &'u mut dyn ListGrammarTrait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 
 ///
@@ -142,7 +137,6 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -371,7 +365,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = *comma.token(parse_tree)?;
+        let comma = comma.token(parse_tree)?.clone();
         let trailing_comma_opt_0_built = TrailingCommaOptBuilder::default()
             .comma(comma)
             .build()
@@ -397,16 +391,6 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-    }
-
     ///
     /// This function is implemented automatically for the user's item ListGrammar.
     ///

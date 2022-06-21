@@ -11,14 +11,11 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 {{#auto_generate?}}use log::trace;
 {{/auto_generate}}use miette::{miette, {{#auto_generate?}}bail, IntoDiagnostic, {{/auto_generate}}Result};
 use crate::{{module_name}}::{{user_type_name}};
-{{#auto_generate?}}use std::path::{Path, PathBuf};{{/auto_generate}}{{^auto_generate?}}use std::path::Path;{{/auto_generate}}
 
 {{#auto_generate?}}
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait {{user_type_name}}Trait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     {{{user_trait_functions}}}
 }
 
@@ -52,8 +49,6 @@ pub struct {{{user_type_name}}}Auto<'t, 'u> where 't: 'u {
     user_grammar: &'u mut dyn {{user_type_name}}Trait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 {{/auto_generate}}
 
@@ -67,7 +62,6 @@ impl<'t, 'u> {{{user_type_name}}}Auto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -114,11 +108,6 @@ impl<'t, 'u> {{{user_type_name}}}Auto<'t, 'u> {
 /// All functions have default implementations.
 ///
 pub trait {{{user_type_name}}}Trait {
-    ///
-    /// Implement this method if you need the provided information
-    ///
-    fn init(&mut self, _file_name: &Path) {
-    }
 {{/auto_generate}}
 
     {{{trait_functions}}}
@@ -126,18 +115,6 @@ pub trait {{{user_type_name}}}Trait {
 
 {{#auto_generate?}}impl<'t> UserActionsTrait<'t> for {{{user_type_name}}}Auto<'t, '_> { {{/auto_generate}}
 {{^auto_generate?}}impl UserActionsTrait<'_> for {{{user_type_name}}} { {{/auto_generate}}
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, {{^auto_generate?}}_{{/auto_generate}}file_name: &Path) {
-{{#auto_generate?}}
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-{{/auto_generate}}
-    }
-
     ///
     /// This function is implemented automatically for the user's item {{{user_type_name}}}.
     ///

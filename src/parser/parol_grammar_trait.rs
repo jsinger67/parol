@@ -11,13 +11,10 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait ParolGrammarTrait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for non-terminal 'Parol'
     fn parol(&mut self, _arg: &Parol<'t>) -> Result<()> {
         Ok(())
@@ -818,8 +815,6 @@ where
     user_grammar: &'u mut dyn ParolGrammarTrait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 
 ///
@@ -831,7 +826,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -1404,7 +1398,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let double_colon = *double_colon.token(parse_tree)?;
+        let double_colon = double_colon.token(parse_tree)?.clone();
         let double_colon_built = DoubleColonBuilder::default()
             .double_colon(double_colon)
             .build()
@@ -2185,7 +2179,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = *identifier.token(parse_tree)?;
+        let identifier = identifier.token(parse_tree)?.clone();
         let identifier_built = IdentifierBuilder::default()
             .identifier(identifier)
             .build()
@@ -2208,7 +2202,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = *string.token(parse_tree)?;
+        let string = string.token(parse_tree)?.clone();
         let string_built = StringBuilder::default()
             .string(string)
             .build()
@@ -2738,16 +2732,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-    }
-
     ///
     /// This function is implemented automatically for the user's item ParolGrammar.
     ///
