@@ -76,7 +76,7 @@ impl UserDefinedTypeName {
     /// assert_eq!("bool".to_string(), user_type_name.get_module_scoped_name());
     /// ```
     pub fn get_module_scoped_name(&self) -> String {
-        self.0.iter().cloned().collect::<Vec<String>>().join("::")
+        self.0.to_vec().join("::")
     }
 }
 

@@ -609,7 +609,7 @@ pub struct Negate<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Number {
-    pub number: isize, /* 0|[1-9][0-9]* */
+    pub number: crate::calc_grammar::Number, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -2457,7 +2457,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// number: "0|[1-9][0-9]*" /* : isize */;
+    /// number: "0|[1-9][0-9]*" /* : crate::calc_grammar::Number */;
     ///
     #[named]
     fn number(
@@ -2467,11 +2467,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = number
-            .token(parse_tree)?
-            .symbol
-            .parse::<isize>()
-            .into_diagnostic()?;
+        let number = number.token(parse_tree)?.try_into().into_diagnostic()?;
         let number_built = NumberBuilder::default()
             .number(number)
             .build()

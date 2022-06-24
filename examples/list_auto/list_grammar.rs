@@ -1,8 +1,10 @@
 use crate::list_grammar_trait::{List, ListGrammarTrait, ListOpt, ListOptList, TrailingComma};
 use miette::Result;
+use parol_runtime::lexer::Token;
 use std::{
     fmt::{Debug, Display, Error, Formatter},
     marker::PhantomData,
+    str::FromStr,
 };
 
 ///
@@ -35,7 +37,7 @@ impl Display for ListOpt {
         write!(
             f,
             "{}{}",
-            self.num.num,
+            self.num.num.0,
             self.list_opt_list
                 .iter()
                 .map(|e| format!("{}", e))
@@ -47,7 +49,7 @@ impl Display for ListOpt {
 
 impl Display for ListOptList {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, ", {}", self.num.num)
+        write!(f, ", {}", self.num.num.0)
     }
 }
 
@@ -78,5 +80,16 @@ impl<'t> ListGrammarTrait<'t> for ListGrammar<'_> {
     fn list(&mut self, arg: &List) -> Result<()> {
         self.list = Some(arg.clone());
         Ok(())
+    }
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct Number(u32);
+
+impl<'t> TryFrom<&Token<'t>> for Number {
+    type Error = <u32 as FromStr>::Err;
+
+    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+        Ok(Self(number.symbol.parse::<u32>()?))
     }
 }

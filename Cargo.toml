@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.9.5-pre"
+version = "0.10.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 documentation = "https://docs.rs/parol"
@@ -23,7 +23,7 @@ lazy_static = "^1.4"
 log = "0.4.17"
 miette = { version = "^4.0", features = ["fancy"] }
 owo-colors = "3.3.0"
-parol_runtime = { path = "../parol-runtime" }
+parol_runtime = "0.6.0"
 petgraph = "0.6.2"
 prettyplease = { version = "0.1.7", optional = true }
 rand_regex = "0.15.1"

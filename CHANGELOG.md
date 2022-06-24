@@ -17,10 +17,30 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.9.5-pre - Not released yet
+## v0.10.0 - 2022-06-24
 
+A lot of breaking changes.
+
+* Use `parol_runtime` v0.6.0
 * Refactoring of symbol table
 * Start with new feature 'User defined symbol types'
+
+  Since documentation is not updated yet, please see examples `list_auto` and `calc_auto`.
+
+  Basically you can define an onw type for terminals in your grammar description like this:
+
+  ```ebnf
+  number: "0|[1-9][0-9]*": crate::calc_grammar::Number;
+  ```
+
+    Then you have to implement
+
+  ```rust
+  impl<'t> TryFrom<&Token<'t>> for Number;
+  ```
+
+    in the given module (here `crate::calc_grammar`). This way the generated structures get
+    "magically" filled with your own types.
 
 ## v0.9.4 - 2022-06-10
 

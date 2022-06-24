@@ -75,7 +75,7 @@ pub struct ListOptList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Num {
-    pub num: u32, /* 0|[1-9][0-9]* */
+    pub num: crate::list_grammar::Number, /* 0|[1-9][0-9]* */
 }
 
 ///
@@ -303,7 +303,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// Num: "0|[1-9][0-9]*" /* : u32 */;
+    /// Num: "0|[1-9][0-9]*" /* : crate::list_grammar::Number */;
     ///
     #[named]
     fn num(
@@ -313,11 +313,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let num = num
-            .token(parse_tree)?
-            .symbol
-            .parse::<u32>()
-            .into_diagnostic()?;
+        let num = num.token(parse_tree)?.try_into().into_diagnostic()?;
         let num_built = NumBuilder::default().num(num).build().into_diagnostic()?;
         // Calling user action here
         self.user_grammar.num(&num_built)?;

@@ -96,15 +96,13 @@ impl<'a> UserTraitGenerator<'a> {
                     "let {} = {}.token(parse_tree)?.clone();",
                     arg_name, arg_name
                 ))
-            } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, u) =
+            } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _) =
                 arg_type.entrails()
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = {}.token(parse_tree)?.symbol.parse::<{}>().into_diagnostic()?;",
-                    arg_name,
-                    arg_name,
-                    u.get_module_scoped_name(),
+                    "let {} = {}.token(parse_tree)?.try_into().into_diagnostic()?;",
+                    arg_name, arg_name,
                 ))
             }
         }

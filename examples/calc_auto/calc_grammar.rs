@@ -10,6 +10,7 @@ use std::{
     convert::TryInto,
     fmt::{Debug, Display, Error, Formatter},
     marker::PhantomData,
+    str::FromStr,
 };
 
 ///
@@ -309,7 +310,7 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         match factor {
-            Factor::Factor0(Factor0 { number }) => Ok(number.number),
+            Factor::Factor0(Factor0 { number }) => Ok(number.number.0),
             Factor::Factor1(Factor1 { idref }) => self.value(&idref.id.id),
             Factor::Factor2(Factor2 { factor, .. }) => Ok(-(self.process_factor(factor)?)),
             Factor::Factor3(Factor3 { logical_or, .. }) => self.process_logical_or(logical_or),
@@ -349,5 +350,16 @@ impl<'t> CalcGrammarTrait<'t> for CalcGrammar<'t> {
     fn calc(&mut self, arg: &Calc<'t>) -> Result<()> {
         self.process_calc(arg)?;
         Ok(())
+    }
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct Number(isize);
+
+impl<'t> TryFrom<&Token<'t>> for Number {
+    type Error = <isize as FromStr>::Err;
+
+    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+        Ok(Self(number.symbol.parse::<isize>()?))
     }
 }
