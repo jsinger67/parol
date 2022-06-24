@@ -13,6 +13,14 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.6.0 - Not released yet
+
+This version brings rather breaking changes:
+
+* Provide each token with the file name
+* Thus the init method could be removed from `UserActionsTrait`.
+* Factored out the location information form the token types into a separate `Location` struct.
+
 ## v0.5.9 - 2022-03-31
 
 * Add explicit lifetimes in `UserActionsTrait` to aid the use of Token<'t> in `parol`'s auto-generation feature.

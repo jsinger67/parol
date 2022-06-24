@@ -5,6 +5,7 @@ use crate::parser::ScannerIndex;
 use log::trace;
 use miette::{miette, Result};
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -22,7 +23,7 @@ pub struct TokenStream<'t> {
     pub(crate) input: &'t str,
 
     /// The name of the input file
-    pub file_name: PathBuf,
+    pub file_name: Arc<PathBuf>,
 
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
@@ -75,12 +76,15 @@ impl<'t> TokenStream<'t> {
     where
         T: AsRef<Path>,
     {
+        let file_name = Arc::new(file_name.as_ref().to_path_buf());
+        let token_iter = TokenIter::new(&tokenizers[0].1, input, file_name.clone(), k);
+
         let mut token_stream = TokenStream {
             k,
             input,
-            file_name: file_name.as_ref().to_path_buf(),
+            file_name,
             error_token_type: tokenizers[0].1.error_token_type,
-            token_iter: TokenIter::new(&tokenizers[0].1, input, file_name, k),
+            token_iter,
             tokenizers,
             tokens: Vec::with_capacity(k),
             start_pos: 0,
@@ -109,7 +113,7 @@ impl<'t> TokenStream<'t> {
                 Err(miette!("Lookahead exceeds token buffer length"))
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
-                Ok(self.tokens[n])
+                Ok(self.tokens[n].clone())
             }
         }
     }
@@ -150,12 +154,12 @@ impl<'t> TokenStream<'t> {
             // Actually this is token LA(1) with buffer index 0.
             let la1 = &self.tokens[0];
             let (new_lines, column) = TokenIter::count_nl(la1.symbol);
-            self.pos = la1.pos;
-            self.line = la1.line + new_lines;
+            self.pos = la1.location.pos;
+            self.line = la1.location.line + new_lines;
             self.column = if new_lines > 0 {
                 column
             } else {
-                la1.column + la1.length
+                la1.location.column + la1.location.length
             };
             trace!(
                 "Consuming {}, Stream position is {}. Line {}, Column {}",
@@ -299,7 +303,7 @@ impl<'t> TokenStream<'t> {
             if !token.is_skip_token() {
                 tokens_read += 1;
                 trace!("Read {}: {}", self.tokens.len(), token);
-                token.start_pos = self.start_pos;
+                token.location.start_pos = self.start_pos;
                 self.tokens.push(token);
                 if tokens_read >= n {
                     break;
@@ -334,7 +338,7 @@ impl<'t> TokenStream<'t> {
         TokenIter::new(
             &self.tokenizers[scanner_index].1,
             input,
-            &self.file_name.as_path(),
+            self.file_name.clone(),
             self.k,
         )
         .with_position(self.line, self.column)

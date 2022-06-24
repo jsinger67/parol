@@ -116,6 +116,6 @@ fn scanner_switch_and_named_source() {
     assert_eq!(stream.borrow().current_scanner_index, 1);
 
     assert_eq!(prev_tok.symbol, "\"");
-    assert_eq!(prev_tok.line, 7);
-    assert_eq!(prev_tok.column, 26);
+    assert_eq!(prev_tok.location.line, 7);
+    assert_eq!(prev_tok.location.column, 26);
 }

@@ -3,6 +3,8 @@ use miette::SourceSpan;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+use super::Location;
+
 ///
 /// Special token constants the lexer has to deal with regularly.
 /// There are some special fix values used for common token types.
@@ -30,7 +32,7 @@ const EOI_TOKEN: &str = "$";
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
-#[derive(Debug, Clone, Copy, Default, Eq, PartialEq)]
+#[derive(Debug, Clone, Default, Eq, PartialEq)]
 pub struct Token<'t> {
     /// The matched string
     pub symbol: &'t str,
@@ -38,25 +40,8 @@ pub struct Token<'t> {
     /// The index of the terminal in the augmented terminal list
     pub token_type: TerminalIndex,
 
-    /// Position information: line number, starting by 1
-    /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub line: usize,
-
-    /// Position information: column number, starting by 1
-    /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub column: usize,
-
-    /// Length of the matched input terminal
-    /// A value of 0 indicates a virtual token, for instance an EOF token.
-    /// Be careful: User tokens with length 0 are always invalid!!!
-    pub length: usize,
-
-    /// Start position as byte offset at last scanner switching.
-    pub(crate) start_pos: usize,
-
-    /// Relative position from start position as byte offset after matching this
-    /// terminal. Needed for scanner switching.
-    pub(crate) pos: usize,
+    /// Position information
+    pub location: Location,
 }
 
 impl<'t> Token<'t> {
@@ -67,34 +52,18 @@ impl<'t> Token<'t> {
         Self {
             symbol: EOI_TOKEN,
             token_type: EOI,
-            line: 0,
-            column: 0,
-            length: 0,
-            start_pos: 0,
-            pos: 0,
+            location: Location::default(),
         }
     }
 
     ///
     /// Creates a token with given values.
     ///
-    pub fn with(
-        symbol: &'t str,
-        token_type: TerminalIndex,
-        line: usize,
-        column: usize,
-        length: usize,
-        start_pos: usize,
-        pos: usize,
-    ) -> Self {
+    pub fn with(symbol: &'t str, token_type: TerminalIndex, location: Location) -> Self {
         Self {
             symbol,
             token_type,
-            line,
-            column,
-            length,
-            start_pos,
-            pos,
+            location,
         }
     }
 
@@ -113,11 +82,7 @@ impl<'t> Token<'t> {
         OwnedToken {
             symbol: self.symbol.to_owned(),
             token_type: self.token_type,
-            line: self.line,
-            column: self.column,
-            length: self.length,
-            start_pos: self.start_pos,
-            pos: self.pos,
+            location: self.location.clone(),
         }
     }
 }
@@ -131,47 +96,26 @@ impl Display for Token<'_> {
         };
         write!(
             f,
-            "{}{}{}, Ty:{}, Loc:{},{}-{}",
-            c1,
-            self.symbol,
-            c2,
-            self.token_type,
-            self.line,
-            self.column,
-            self.column + self.length
+            "{}{}{}, Ty:{}, at {}",
+            c1, self.symbol, c2, self.token_type, self.location
         )
     }
 }
 
 impl FormatToken for Token<'_> {
-    fn format<T>(
-        &self,
-        file_name: &T,
-        terminal_names: &'static [&'static str],
-    ) -> std::string::String
-    where
-        T: AsRef<std::path::Path>,
-    {
+    fn format(&self, terminal_names: &'static [&'static str]) -> String {
         let name = terminal_names[self.token_type];
         format!(
-            "'{}'({}) at {}:{}:{}",
+            "'{}'({}) at {}",
             self.symbol.escape_default(),
             name,
-            file_name.as_ref().display(),
-            self.line,
-            self.column,
+            self.location,
         )
     }
 }
 
 impl From<&Token<'_>> for SourceSpan {
     fn from(token: &Token<'_>) -> Self {
-        (token.start_pos + token.pos - token.length, token.length).into()
-    }
-}
-
-impl From<Token<'_>> for OwnedToken {
-    fn from(token: Token<'_>) -> Self {
-        token.to_owned()
+        (&token.location).into()
     }
 }

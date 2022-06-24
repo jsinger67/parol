@@ -4,7 +4,7 @@ extern crate lazy_static;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
-use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
+use parol_runtime::lexer::{Location, Token, TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::PathBuf;
 
@@ -81,7 +81,14 @@ fn lexer_token_production() {
         token_stream.borrow_mut().consume().unwrap();
     }
     assert_eq!(k, token_stream.borrow().tokens.len());
-    assert_eq!(Token::with(";", 8, 19, 39, 1, 0, 545), tok);
+    assert_eq!(
+        Token::with(
+            ";",
+            8,
+            Location::with(19, 39, 1, 0, 545, token_stream.borrow().file_name.clone())
+        ),
+        tok
+    );
     assert_eq!(Token::eoi(), token_stream.borrow().tokens[0]);
 }
 

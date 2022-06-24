@@ -4,8 +4,10 @@ use miette::{
     Diagnostic, IntoDiagnostic, MietteError, NamedSource, Result, SourceCode, SourceSpan,
     SpanContents,
 };
+use std::borrow::Borrow;
 use std::fmt::{Display, Formatter};
 use std::path::PathBuf;
+use std::sync::Arc;
 
 #[derive(Error, Diagnostic, Debug)]
 pub enum ParserError {
@@ -128,18 +130,19 @@ impl Display for TokenVec {
 
 #[derive(Debug, Default)]
 pub struct FileSource {
-    file_name: PathBuf,
+    file_name: Arc<PathBuf>,
     input: String,
 }
 
 impl FileSource {
-    pub fn try_new(file_name: PathBuf) -> Result<Self> {
-        let input = std::fs::read_to_string(&file_name).into_diagnostic()?;
+    pub fn try_new(file_name: Arc<PathBuf>) -> Result<Self> {
+        let input = std::fs::read_to_string(<Arc<PathBuf> as Borrow<PathBuf>>::borrow(&file_name))
+            .into_diagnostic()?;
         Ok(Self { file_name, input })
     }
 
     pub fn from_stream(token_stream: &TokenStream<'_>) -> Self {
-        let file_name = token_stream.file_name.to_owned();
+        let file_name = token_stream.file_name.clone();
         let input = token_stream.input.to_string();
         Self { file_name, input }
     }
@@ -159,7 +162,7 @@ impl SourceCode for FileSource {
 impl From<FileSource> for NamedSource {
     fn from(file_source: FileSource) -> Self {
         let file_name = file_source.file_name.clone();
-        let file_name = file_name.to_str().or(Some("<Bad file name>")).unwrap();
+        let file_name = file_name.to_str().unwrap_or("<Bad file name>");
         Self::new(file_name, file_source)
     }
 }

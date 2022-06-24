@@ -182,12 +182,7 @@ impl LookaheadDFA {
                 .position(|t| t.0 == state && t.1 == token_type)
             {
                 diag_msg.push_str(
-                    format!(
-                        "LA({}): {} ",
-                        lookahead + 1,
-                        token.format(&token_stream.file_name, terminal_names)
-                    )
-                    .as_str(),
+                    format!("LA({}): {} ", lookahead + 1, token.format(terminal_names)).as_str(),
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),
@@ -198,12 +193,7 @@ impl LookaheadDFA {
                 state = self.transitions[transition].2;
             } else {
                 diag_msg.push_str(
-                    format!(
-                        "LA({}): {}.",
-                        lookahead + 1,
-                        token.format(&token_stream.file_name, terminal_names),
-                    )
-                    .as_str(),
+                    format!("LA({}): {}.", lookahead + 1, token.format(terminal_names),).as_str(),
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),

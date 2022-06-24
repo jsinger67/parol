@@ -41,7 +41,7 @@ impl<'t> ParseTreeStackEntry<'t> {
     }
 
     ///
-    /// Tries to access the OwnedToken of the ParseTreeStackEntry.
+    /// Tries to access the Token of the ParseTreeStackEntry.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
     /// `'a` refers to the lifetime of self.

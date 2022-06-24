@@ -1,7 +1,6 @@
 use crate::parser::{ParseTreeStackEntry, ParseTreeType};
 use id_tree::Tree;
 use miette::Result;
-use std::path::Path;
 
 ///
 /// This trait is used as a coupling point between the generated parser and
@@ -12,14 +11,6 @@ use std::path::Path;
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub trait UserActionsTrait<'t> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
-    /// Is likely to be extended later.
-    ///
-    fn init(&mut self, file_name: &Path);
-
     ///
     /// This function is implemented automatically for the user's item.
     ///
