@@ -13,7 +13,7 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
-## v0.6.0 - Not released yet
+## v0.6.0 - 2022-06-24
 
 This version brings rather breaking changes:
 
