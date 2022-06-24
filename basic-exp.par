@@ -16,9 +16,9 @@
 /*  5 */ BasicOpt: EndOfLine; // Option<T>::Some
 /*  6 */ BasicOpt: ; // Option<T>::None
 /*  7 */ Line: LineNumber Statement LineList /* Vec */;
-/*  8 */ LineList: <INITIAL, Expr>":" Statement LineList; // Vec<T>::Push
+/*  8 */ LineList: <INITIAL, Expr>":"^ /* Clipped */ Statement LineList; // Vec<T>::Push
 /*  9 */ LineList: ; // Vec<T>::New
-/* 10 */ LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
+/* 10 */ LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" /* : crate::basic_grammar::BasicLineNumber */;
 /* 11 */ Statement: Remark;
 /* 12 */ Statement: GotoStatement;
 /* 13 */ Statement: IfStatement;
@@ -36,21 +36,21 @@
 /* 25 */ IfBody: Then Statement;
 /* 26 */ IfBody: Goto LineNumber;
 /* 27 */ PrintStatement: Print %push(Expr) Expression PrintStatementList /* Vec */ %pop();
-/* 28 */ PrintStatementList: <INITIAL, Expr>"," Expression PrintStatementList; // Vec<T>::Push
+/* 28 */ PrintStatementList: <INITIAL, Expr>","^ /* Clipped */ Expression PrintStatementList; // Vec<T>::Push
 /* 29 */ PrintStatementList: ; // Vec<T>::New
 /* 30 */ EndStatement: End;
-/* 31 */ EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+";
+/* 31 */ EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+"^ /* Clipped */;
 /* 32 */ Literal: Number;
 /* 33 */ Number: Float;
 /* 34 */ Number: Integer;
 /* 35 */ Float: Float1;
 /* 36 */ Float: Float2;
-/* 37 */ Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
-/* 38 */ Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
-/* 39 */ Integer: <Expr>"(?:[0-9] *)+";
+/* 37 */ Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" /* : crate::basic_grammar::BasicNumber */;
+/* 38 */ Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" /* : crate::basic_grammar::BasicNumber */;
+/* 39 */ Integer: <Expr>"(?:[0-9] *)+" /* : crate::basic_grammar::BasicNumber */;
 /* 40 */ If: "IF"^ /* Clipped */;
-/* 41 */ Then: <INITIAL, Expr>"THEN";
-/* 42 */ Goto: <INITIAL, Expr>"GOTO";
+/* 41 */ Then: <INITIAL, Expr>"THEN"^ /* Clipped */;
+/* 42 */ Goto: <INITIAL, Expr>"GOTO"^ /* Clipped */;
 /* 43 */ Let: "LET"^ /* Clipped */;
 /* 44 */ Print: "PRINT|\?"^ /* Clipped */;
 /* 45 */ End: "END"^ /* Clipped */;

@@ -81,7 +81,7 @@ dependencies = [
 
 [[package]]
 name = "basic"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "derive_builder",
  "env_logger",
@@ -514,9 +514,9 @@ checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
 
 [[package]]
 name = "parol"
-version = "0.9.4"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80585c869d9248d46eed719ecf808ae823f928677fdc4c7105fc3bca58ceedd1"
+checksum = "0e704a303d9e596a407ed6c99afe47679e2310c60f18fc433857152715b03567"
 dependencies = [
  "bart",
  "bart_derive",
@@ -543,9 +543,9 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.5.9"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "075c16fd7c2d3ee5c4bba6686b58edbbf987d968160d2c84eabea1f01559f38a"
+checksum = "f0c950d7bea375bdad3f01a891f33eee1a4a803ad780fc8c5f7b79c88c12c100"
 dependencies = [
  "id_tree",
  "id_tree_layout",
@@ -558,9 +558,9 @@ dependencies = [
 
 [[package]]
 name = "petgraph"
-version = "0.6.0"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a13a2fa9d0b63e5f22328828741e523766fff0ee9e779316902290dff3f824f"
+checksum = "e6d5014253a1331579ce62aa67443b4a658c5e7dd03d4bc6d302b94474888143"
 dependencies = [
  "fixedbitset",
  "indexmap",
@@ -662,9 +662,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.5.5"
+version = "1.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a11647b6b25ff05a515cb92c365cec08801e83423a235b51e231e1808747286"
+checksum = "d83f127d94bdbcda4c8cc2e50f6f84f4b611f69c902699ca385a39c3a75f9ff1"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -673,9 +673,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.25"
+version = "0.6.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
+checksum = "49b3de9ec5dc0a3417da371aab17d729997c15010e7fd24ff707773a33bddb64"
 
 [[package]]
 name = "rustc-demangle"

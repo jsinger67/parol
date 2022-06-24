@@ -729,7 +729,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 24,
         production: &[ParseType::N(25), ParseType::N(52), ParseType::N(26)],
     },
-    // 8 - LineList: ":" Statement LineList;
+    // 8 - LineList: ":"^ /* Clipped */ Statement LineList;
     Production {
         lhs: 25,
         production: &[ParseType::N(25), ParseType::N(52), ParseType::T(5)],
@@ -853,7 +853,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
             ParseType::N(43),
         ],
     },
-    // 28 - PrintStatementList: "," Expression PrintStatementList;
+    // 28 - PrintStatementList: ","^ /* Clipped */ Expression PrintStatementList;
     Production {
         lhs: 45,
         production: &[ParseType::N(45), ParseType::N(11), ParseType::T(8)],
@@ -868,7 +868,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 10,
         production: &[ParseType::N(8)],
     },
-    // 31 - EndOfLine: "(?:\r?\n|\r)+";
+    // 31 - EndOfLine: "(?:\r?\n|\r)+"^ /* Clipped */;
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
@@ -918,12 +918,12 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 18,
         production: &[ParseType::T(13)],
     },
-    // 41 - Then: "THEN";
+    // 41 - Then: "THEN"^ /* Clipped */;
     Production {
         lhs: 56,
         production: &[ParseType::T(14)],
     },
-    // 42 - Goto: "GOTO";
+    // 42 - Goto: "GOTO"^ /* Clipped */;
     Production {
         lhs: 16,
         production: &[ParseType::T(15)],
