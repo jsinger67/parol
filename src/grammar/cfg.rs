@@ -319,13 +319,5 @@ impl Index<usize> for Cfg {
     }
 }
 
-impl Index<&Pos> for Cfg {
-    type Output = Symbol;
-
-    fn index(&self, pos: &Pos) -> &Self::Output {
-        &self.pr[pos.pr_index()][pos.sy_index()]
-    }
-}
-
 #[cfg(test)]
 mod test {}

@@ -3,7 +3,6 @@ use crate::{Symbol, Terminal};
 use miette::{IntoDiagnostic, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
-use std::ops::Index;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -164,17 +163,5 @@ impl Pr {
             .into_diagnostic()?;
 
         Ok(s)
-    }
-}
-
-impl Index<usize> for Pr {
-    type Output = Symbol;
-
-    fn index(&self, idx: usize) -> &Self::Output {
-        if idx == 0 {
-            &self.0
-        } else {
-            &self.1[idx]
-        }
     }
 }
