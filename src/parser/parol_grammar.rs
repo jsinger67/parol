@@ -663,11 +663,14 @@ impl ParolGrammar<'_> {
     fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
         match symbol {
             super::parol_grammar_trait::Symbol::Symbol0(non_terminal) => {
-                let attr = if non_terminal.non_terminal.non_terminal_opt.is_some() {
-                    SymbolAttribute::Clipped
-                } else {
-                    SymbolAttribute::None
-                };
+                let mut attr = SymbolAttribute::None;
+                let mut user_type_name = None;
+                if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
+                    match self.process_ast_control(&*non_terminal_opt.a_s_t_control) {
+                        ASTControlKind::Attr(a) => attr = a,
+                        ASTControlKind::UserTyped(u) => user_type_name = Some(u),
+                    }
+                }
                 Ok(Factor::NonTerminal(
                     non_terminal
                         .non_terminal
@@ -676,7 +679,7 @@ impl ParolGrammar<'_> {
                         .symbol
                         .to_string(),
                     attr,
-                    None,
+                    user_type_name,
                 ))
             }
             super::parol_grammar_trait::Symbol::Symbol1(simple_token) => {
