@@ -17,11 +17,15 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.10.1 - 2022-07-xx
+## v0.10.1 - 2022-07-01
 
 * Feature 'User defined symbol types' completed
-  * You can now define User defined types on non-terminal symbols too. Please, see examples
+  * You can now define User defined types on non-terminal symbols too. Please, see example
   `list_auto` for a first impression.
+* Remove `init` function from user's GrammarTrait in `parol new` to fit `parol_runtime` v0.6.0
+  * The file name is now available at each token and thus we don't need to convey it in an `init`
+  function.
+* Repair `parol new` when it's supposed to generates library crates.
 
 ## v0.10.0 - 2022-06-24
 

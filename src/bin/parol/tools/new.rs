@@ -72,18 +72,18 @@ pub fn main(args: &Args) -> Result<()> {
 }
 
 const DEPENDENCIES: &[&[&str]] = &[
-    &["add", "derive_builder@^0.11"],
+    &["add", "derive_builder@0.11"],
     &["add", "env_logger@0.9.0"],
     &["add", "function_name@0.3.0"],
     &["add", "id_tree@^1.8"],
     &["add", "lazy_static@^1.4"],
-    &["add", "log@^0.4"],
+    &["add", "log@0.4"],
     &["add", "miette@^4.0", "--features", "fancy"],
-    &["add", "parol_runtime@0.5.9"],
+    &["add", "parol_runtime@0.6.0"],
     &["add", "thiserror@^1.0"],
     &[
         "add",
-        concat!("parol@^", env!("CARGO_PKG_VERSION")),
+        concat!("parol@", env!("CARGO_PKG_VERSION")),
         "--build",
     ],
 ];

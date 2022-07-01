@@ -3,7 +3,6 @@ use crate::{{crate_name}}_grammar_trait::{ {{grammar_name}}, {{grammar_name}}Gra
 use miette::Result;
 use std::{
     fmt::{Debug, Display, Error, Formatter},
-    path::{Path, PathBuf},
 };
 
 ///
@@ -13,7 +12,6 @@ use std::{
 #[derive(Debug, Default)]
 pub struct {{grammar_name}}Grammar<'t> {
     pub {{crate_name}}: Option<{{grammar_name}}<'t>>,
-    file_name: PathBuf,
 }
 
 impl {{grammar_name}}Grammar<'_> {
@@ -39,10 +37,6 @@ impl Display for {{grammar_name}}Grammar<'_> {
 
 impl<'t> {{grammar_name}}GrammarTrait<'t> for {{grammar_name}}Grammar<'t> {
     // !Adjust your implementation as needed!
-
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.into();
-    }
 
     /// Semantic action for non-terminal '{{grammar_name}}'
     fn {{crate_name}}(&mut self, arg: &{{grammar_name}}<'t>) -> Result<()> {
