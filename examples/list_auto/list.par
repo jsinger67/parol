@@ -4,6 +4,7 @@
 
 %%
 
-List: [Num {","^ Num}] TrailingComma^;
+List: [Items: crate::list_grammar::Numbers] TrailingComma^;
+Items: Num {","^ Num};
 Num: "0|[1-9][0-9]*": crate::list_grammar::Number;
 TrailingComma: [","];

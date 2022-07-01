@@ -20,6 +20,11 @@ pub trait ListGrammarTrait<'t> {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'Items'
+    fn items(&mut self, _arg: &Items) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'Num'
     fn num(&mut self, _arg: &Num) -> Result<()> {
         Ok(())
@@ -42,6 +47,25 @@ pub trait ListGrammarTrait<'t> {
 //
 
 ///
+/// Type derived for non-terminal Items
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Items {
+    pub num: Box<Num>,
+    pub items_list: Vec<ItemsList>,
+}
+
+///
+/// Type derived for non-terminal ItemsList
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct ItemsList {
+    pub num: Box<Num>,
+}
+
+///
 /// Type derived for non-terminal List
 ///
 #[allow(dead_code)]
@@ -56,17 +80,7 @@ pub struct List {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ListOpt {
-    pub num: Box<Num>,
-    pub list_opt_list: Vec<ListOptList>,
-}
-
-///
-/// Type derived for non-terminal ListOptList
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
-pub struct ListOptList {
-    pub num: Box<Num>,
+    pub items: crate::list_grammar::Numbers,
 }
 
 ///
@@ -104,9 +118,10 @@ pub struct TrailingCommaOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
+    Items(Items),
+    ItemsList(Vec<ItemsList>),
     List(List),
     ListOpt(Option<Box<ListOpt>>),
-    ListOptList(Vec<ListOptList>),
     Num(Num),
     TrailingComma(TrailingComma<'t>),
     TrailingCommaOpt(Option<Box<TrailingCommaOpt<'t>>>),
@@ -208,32 +223,23 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt: Num ListOptList /* Vec */; // Option<T>::Some
+    /// ListOpt: Items /* : crate::list_grammar::Numbers */; // Option<T>::Some
     ///
     #[named]
     fn list_opt_0(
         &mut self,
-        _num: &ParseTreeStackEntry<'t>,
-        _list_opt_list: &ParseTreeStackEntry<'t>,
+        _items: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let list_opt_list = if let Some(ASTType::ListOptList(mut list_opt_list)) = self.pop(context)
-        {
-            list_opt_list.reverse();
-            list_opt_list
+        let items = if let Some(ASTType::Items(items)) = self.pop(context) {
+            items
         } else {
-            bail!("{}: Expecting ASTType::ListOptList", context);
-        };
-        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
-            num
-        } else {
-            bail!("{}: Expecting ASTType::Num", context);
+            bail!("{}: Expecting ASTType::Items", context);
         };
         let list_opt_0_built = ListOptBuilder::default()
-            .num(Box::new(num))
-            .list_opt_list(list_opt_list)
+            .items((&items).try_into().into_diagnostic()?)
             .build()
             .into_diagnostic()?;
         self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
@@ -241,55 +247,6 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 2:
-    ///
-    /// ListOptList: ","^ /* Clipped */ Num ListOptList; // Vec<T>::Push
-    ///
-    #[named]
-    fn list_opt_list_0(
-        &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _num: &ParseTreeStackEntry<'t>,
-        _list_opt_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let mut list_opt_list = if let Some(ASTType::ListOptList(list_opt_list)) = self.pop(context)
-        {
-            list_opt_list
-        } else {
-            bail!("{}: Expecting ASTType::ListOptList", context);
-        };
-        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
-            num
-        } else {
-            bail!("{}: Expecting ASTType::Num", context);
-        };
-        let list_opt_list_0_built = ListOptListBuilder::default()
-            .num(Box::new(num))
-            // Ignore clipped member 'comma'
-            .build()
-            .into_diagnostic()?;
-        // Add an element to the vector
-        list_opt_list.push(list_opt_list_0_built);
-        self.push(ASTType::ListOptList(list_opt_list), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 3:
-    ///
-    /// ListOptList: ; // Vec<T>::New
-    ///
-    #[named]
-    fn list_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let list_opt_list_1_built = Vec::new();
-        self.push(ASTType::ListOptList(list_opt_list_1_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 4:
     ///
     /// ListOpt: ; // Option<T>::None
     ///
@@ -301,7 +258,90 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         Ok(())
     }
 
+    /// Semantic action for production 3:
+    ///
+    /// Items: Num ItemsList /* Vec */;
+    ///
+    #[named]
+    fn items(
+        &mut self,
+        _num: &ParseTreeStackEntry<'t>,
+        _items_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let items_list = if let Some(ASTType::ItemsList(mut items_list)) = self.pop(context) {
+            items_list.reverse();
+            items_list
+        } else {
+            bail!("{}: Expecting ASTType::ItemsList", context);
+        };
+        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
+            num
+        } else {
+            bail!("{}: Expecting ASTType::Num", context);
+        };
+        let items_built = ItemsBuilder::default()
+            .num(Box::new(num))
+            .items_list(items_list)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.items(&items_built)?;
+        self.push(ASTType::Items(items_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 4:
+    ///
+    /// ItemsList: ","^ /* Clipped */ Num ItemsList; // Vec<T>::Push
+    ///
+    #[named]
+    fn items_list_0(
+        &mut self,
+        _comma: &ParseTreeStackEntry<'t>,
+        _num: &ParseTreeStackEntry<'t>,
+        _items_list: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let mut items_list = if let Some(ASTType::ItemsList(items_list)) = self.pop(context) {
+            items_list
+        } else {
+            bail!("{}: Expecting ASTType::ItemsList", context);
+        };
+        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
+            num
+        } else {
+            bail!("{}: Expecting ASTType::Num", context);
+        };
+        let items_list_0_built = ItemsListBuilder::default()
+            .num(Box::new(num))
+            // Ignore clipped member 'comma'
+            .build()
+            .into_diagnostic()?;
+        // Add an element to the vector
+        items_list.push(items_list_0_built);
+        self.push(ASTType::ItemsList(items_list), context);
+        Ok(())
+    }
+
     /// Semantic action for production 5:
+    ///
+    /// ItemsList: ; // Vec<T>::New
+    ///
+    #[named]
+    fn items_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let items_list_1_built = Vec::new();
+        self.push(ASTType::ItemsList(items_list_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 6:
     ///
     /// Num: "0|[1-9][0-9]*" /* : crate::list_grammar::Number */;
     ///
@@ -321,7 +361,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 6:
+    /// Semantic action for production 7:
     ///
     /// TrailingComma: TrailingCommaOpt /* Option */;
     ///
@@ -349,7 +389,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 7:
+    /// Semantic action for production 8:
     ///
     /// TrailingCommaOpt: ","; // Option<T>::Some
     ///
@@ -373,7 +413,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 8:
+    /// Semantic action for production 9:
     ///
     /// TrailingCommaOpt: ; // Option<T>::None
     ///
@@ -398,14 +438,15 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
     ) -> Result<()> {
         match prod_num {
             0 => self.list(&children[0], &children[1], parse_tree),
-            1 => self.list_opt_0(&children[0], &children[1], parse_tree),
-            2 => self.list_opt_list_0(&children[0], &children[1], &children[2], parse_tree),
-            3 => self.list_opt_list_1(parse_tree),
-            4 => self.list_opt_1(parse_tree),
-            5 => self.num(&children[0], parse_tree),
-            6 => self.trailing_comma(&children[0], parse_tree),
-            7 => self.trailing_comma_opt_0(&children[0], parse_tree),
-            8 => self.trailing_comma_opt_1(parse_tree),
+            1 => self.list_opt_0(&children[0], parse_tree),
+            2 => self.list_opt_1(parse_tree),
+            3 => self.items(&children[0], &children[1], parse_tree),
+            4 => self.items_list_0(&children[0], &children[1], &children[2], parse_tree),
+            5 => self.items_list_1(parse_tree),
+            6 => self.num(&children[0], parse_tree),
+            7 => self.trailing_comma(&children[0], parse_tree),
+            8 => self.trailing_comma_opt_0(&children[0], parse_tree),
+            9 => self.trailing_comma_opt_1(parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

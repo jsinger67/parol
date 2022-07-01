@@ -471,9 +471,15 @@ impl GrammarTypeInfo {
                     let type_id = if let TypeEntrails::UserDefinedType(k, ref u) = t {
                         if k == MetaSymbolKind::Token {
                             used = true;
+                            self.symbol_table
+                                .get_or_create_scoped_user_defined_type(k, u)?
+                        } else {
+                            self.symbol_table.get_or_create_type(
+                                SymbolTable::UNNAMED_TYPE,
+                                SymbolTable::GLOBAL_SCOPE,
+                                t,
+                            )?
                         }
-                        self.symbol_table
-                            .get_or_create_scoped_user_defined_type(k, u)?
                     } else {
                         self.symbol_table.get_or_create_type(
                             SymbolTable::UNNAMED_TYPE,
@@ -508,7 +514,7 @@ impl GrammarTypeInfo {
                 let inner_type = self.non_terminal_types.get(n).unwrap();
                 if let Some(ref user_defined_type) = u {
                     Ok(TypeEntrails::UserDefinedType(
-                        MetaSymbolKind::NonTerminal,
+                        MetaSymbolKind::NonTerminal(*inner_type),
                         user_defined_type.clone(),
                     ))
                 } else {
@@ -516,9 +522,9 @@ impl GrammarTypeInfo {
                         SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
                         SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                         SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
-                        SymbolAttribute::Clipped => {
-                            Ok(TypeEntrails::Clipped(MetaSymbolKind::NonTerminal))
-                        }
+                        SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(
+                            MetaSymbolKind::NonTerminal(SymbolId::invalid_id()),
+                        )),
                     }
                 }
             }

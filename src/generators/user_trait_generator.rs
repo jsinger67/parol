@@ -126,7 +126,7 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
             if matches!(
                 *arg_type.entrails(),
-                TypeEntrails::Clipped(MetaSymbolKind::NonTerminal)
+                TypeEntrails::Clipped(MetaSymbolKind::NonTerminal(_))
             ) {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!("// Ignore clipped member '{}'", arg_name));
@@ -202,6 +202,11 @@ impl<'a> UserTraitGenerator<'a> {
                 (sem != ProductionAttribute::AddToCollection || arg_inst.sem() != SymbolAttribute::RepetitionAnchor)
             {
                 format!("Box::new({})", arg_name)
+            } else if matches!(
+                *arg_type.entrails(),
+                TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
+            ) {
+                format!("(&{}).try_into().into_diagnostic()?", arg_name)
             } else {
                 arg_name.to_string()
             };

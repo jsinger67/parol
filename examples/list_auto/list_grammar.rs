@@ -1,4 +1,4 @@
-use crate::list_grammar_trait::{List, ListGrammarTrait, ListOpt, ListOptList, TrailingComma};
+use crate::list_grammar_trait::{Items, List, ListGrammarTrait, ListOpt};
 use miette::Result;
 use parol_runtime::lexer::Token;
 use std::{
@@ -22,6 +22,50 @@ impl ListGrammar<'_> {
     }
 }
 
+/// User defined type for a single number
+#[derive(Clone, Debug, Default)]
+pub struct Number(u32);
+
+impl<'t> TryFrom<&Token<'t>> for Number {
+    type Error = <u32 as FromStr>::Err;
+
+    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+        Ok(Self(number.symbol.parse::<u32>()?))
+    }
+}
+
+/// User defined type for a vector of number
+#[derive(Clone, Debug, Default)]
+pub struct Numbers(Vec<u32>);
+
+impl Display for Numbers {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(
+            f,
+            "{}",
+            self.0
+                .iter()
+                .map(|v| v.to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
+        )
+    }
+}
+
+impl TryFrom<&Items> for Numbers {
+    type Error = <u32 as FromStr>::Err;
+
+    fn try_from(items: &Items) -> Result<Self, Self::Error> {
+        Ok(Self(items.items_list.iter().fold(
+            vec![items.num.num.0],
+            |mut acc, e| {
+                acc.push(e.num.num.0);
+                acc
+            },
+        )))
+    }
+}
+
 impl Display for List {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         if let Some(list) = &self.list_opt {
@@ -34,32 +78,7 @@ impl Display for List {
 
 impl Display for ListOpt {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(
-            f,
-            "{}{}",
-            self.num.num.0,
-            self.list_opt_list
-                .iter()
-                .map(|e| format!("{}", e))
-                .collect::<Vec<std::string::String>>()
-                .join("")
-        )
-    }
-}
-
-impl Display for ListOptList {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, ", {}", self.num.num.0)
-    }
-}
-
-impl Display for TrailingComma<'_> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        if let Some(comma) = &self.trailing_comma_opt {
-            write!(f, "{}", comma.comma.symbol)
-        } else {
-            Ok(())
-        }
+        write!(f, "{}", self.items)
     }
 }
 
@@ -73,23 +92,9 @@ impl Display for ListGrammar<'_> {
 }
 
 impl<'t> ListGrammarTrait<'t> for ListGrammar<'_> {
-    /// Semantic action for user production 0:
-    ///
-    /// List: [Num {<0>"," Num}];
-    ///
+    /// Semantic action for non-terminal 'List'
     fn list(&mut self, arg: &List) -> Result<()> {
         self.list = Some(arg.clone());
         Ok(())
-    }
-}
-
-#[derive(Clone, Debug, Default)]
-pub struct Number(u32);
-
-impl<'t> TryFrom<&Token<'t>> for Number {
-    type Error = <u32 as FromStr>::Err;
-
-    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
-        Ok(Self(number.symbol.parse::<u32>()?))
     }
 }

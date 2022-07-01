@@ -15,6 +15,12 @@ use super::symbol_table_facade::{InstanceFacade, SymbolFacade, SymbolItem, TypeF
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct SymbolId(usize);
 
+impl SymbolId {
+    pub(crate) fn invalid_id() -> Self {
+        SymbolId(usize::MAX)
+    }
+}
+
 impl Display for SymbolId {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(f, "Sym({})", self.0)
@@ -104,7 +110,8 @@ impl Function {
 pub(crate) enum MetaSymbolKind {
     Undefined,
     Token,
-    NonTerminal,
+    // With inner type
+    NonTerminal(SymbolId),
 }
 
 impl Display for MetaSymbolKind {
@@ -112,7 +119,7 @@ impl Display for MetaSymbolKind {
         match self {
             MetaSymbolKind::Undefined => write!(f, "Undef"),
             MetaSymbolKind::Token => write!(f, "Tok"),
-            MetaSymbolKind::NonTerminal => write!(f, "Nt"),
+            MetaSymbolKind::NonTerminal(t) => write!(f, "Nt({})", t),
         }
     }
 }
@@ -210,7 +217,10 @@ impl TypeEntrails {
 
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> String {
         match self {
-            TypeEntrails::Box(t) | TypeEntrails::Vec(t) | TypeEntrails::Option(t) => {
+            TypeEntrails::Box(t)
+            | TypeEntrails::Vec(t)
+            | TypeEntrails::Option(t)
+            | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
                 symbol_table.symbol(*t).name()
             }
             _ => "No inner name available!".to_string(),

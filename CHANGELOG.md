@@ -17,6 +17,12 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.10.1 - 2022-07-xx
+
+* Feature 'User defined symbol types' completed
+  * You can now define User defined types on non-terminal symbols too. Please, see examples
+  `list_auto` for a first impression.
+
 ## v0.10.0 - 2022-06-24
 
 A lot of breaking changes.
