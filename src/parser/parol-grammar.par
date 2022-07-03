@@ -20,6 +20,7 @@ StartDeclaration
 Declaration
     : "%title"^ String
     | "%comment"^ String
+    | "%user_type"^ Identifier "="^ UserTypeName
     | ScannerDirectives
     ;
 

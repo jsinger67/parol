@@ -17,6 +17,19 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.10.2 - not released yet
+
+* New artwork - fixing issue [#15](https://github.com/jsinger67/parol/issues/15)
+* Supporting user defined types by a dedicated `%user_type` directive which allows you to define
+aliases for possibly complex user defined types:
+  > %user_type Number = crate::list_grammar::Number
+
+  allows you to refer via the short name to the complex user type:
+
+  >Num: "0|[1-9][0-9]*": Number;
+
+  Please see example `list_auto` for an use case.
+
 ## v0.10.1 - 2022-07-01
 
 * Feature 'User defined symbol types' completed
@@ -26,6 +39,15 @@ But we try to mark incompatible changes with a new minor version.
   * The file name is now available at each token and thus we don't need to convey it in an `init`
   function.
 * Repair `parol new` when it's supposed to generates library crates.
+* `parol` is now the default binary run when using `cargo run`.
+
+  You can use
+  > cargo run -- ...
+
+  instead of
+  > cargo run --bin parol -- ...
+
+  now.
 
 ## v0.10.0 - 2022-06-24
 

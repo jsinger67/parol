@@ -7,12 +7,12 @@ ForEach-Object {
     $raw = "./$([System.IO.Path]::GetFileNameWithoutExtension($_)).raw"
     $expanded = "./$([System.IO.Path]::GetFileNameWithoutExtension($_)).exp"
     Write-Host "&parol -v -f $file -i $expected -u $raw -e $expanded" -ForegroundColor Cyan
-    cargo run --bin parol -- -v -f $file -i $expected -u $raw -e $expanded
+    cargo run -- -v -f $file -i $expected -u $raw -e $expanded
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }
     # Write-Host "&parol -v -f $file -i $expected" -ForegroundColor Cyan
-    # cargo run --bin parol -- -v -f $file -i $expected
+    # cargo run --bin -- -v -f $file -i $expected
 }
 
 # --------------------------------------------------------------------------------------------------
