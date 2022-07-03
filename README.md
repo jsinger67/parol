@@ -18,9 +18,4 @@ Further development on this extension is planned.
 
 ## Installation
 
-Download the vsix package from the latest release and install it with
-
-> ```code --install-extension ./parol-vscode-x.y.z.vsix```
-
-This extension provides syntax highlighting, folding and language icons and will surely be useful
-for you.
+Install this extension from VS Code marketplace [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)

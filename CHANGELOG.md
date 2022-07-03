@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 * New artwork
 * Support of new language features of parol v0.10.2
+* Availability in VS Code marketplace [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
 
 ## v0.1.3
 
