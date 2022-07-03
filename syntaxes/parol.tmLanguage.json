@@ -57,7 +57,7 @@
       "patterns": [
         {
           "name": "keyword.other.parol",
-          "match": "%(start|title|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off)\\b"
+          "match": "%(start|title|comment|line_comment|block_comment|scanner|sc|push|pop|auto_newline_off|auto_ws_off|user_type)\\b"
         }
       ]
     },
@@ -65,7 +65,7 @@
       "patterns": [
         {
           "name": "keyword.control.parol",
-          "match": "%%|\\||:|;|\\^"
+          "match": "%%|\\||:|;|\\^|="
         }
       ]
     },

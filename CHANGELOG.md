@@ -4,6 +4,15 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.4
+
+* New artwork
+* Support of new language features of parol v0.10.2
+
+## v0.1.3
+
+* Add support for cut operator of parol v0.9.4
+
 ## v0.1.0
 
 * Initial release

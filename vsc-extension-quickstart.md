@@ -23,6 +23,17 @@
 
 * To add features such as intellisense, hovers and validators check out the VS Code extenders documentation at https://code.visualstudio.com/docs
 
+## Package and publish your extension
+
+```shell
+npm install -g vsce
+cd myExtension
+vsce package
+# myExtension.vsix generated
+vsce publish
+# <publisherID>.myExtension published to VS Code Marketplace```
+```
+
 ## Install your extension
 
 * To start using your extension with Visual Studio Code copy it into the `<user home>/.vscode/extensions` folder and restart Code.
