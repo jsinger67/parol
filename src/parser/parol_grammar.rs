@@ -87,10 +87,19 @@ impl Display for UserDefinedTypeName {
     }
 }
 
-// To rebuild the parser sources from scratch use the command build_parsers.ps1
-
-// Test run:
-// parol -f .\src\parser\parol-grammar.par -v
+/// This trait is used to automatically convert the generated type `UserTypeName` to our own
+/// `UserDefinedTypeName`.
+impl From<&super::parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
+    fn from(user_type_names: &super::parol_grammar_trait::UserTypeName<'_>) -> Self {
+        Self(user_type_names.user_type_name_list.iter().fold(
+            vec![user_type_names.identifier.identifier.symbol.to_string()],
+            |mut acc, a| {
+                acc.push(a.identifier.identifier.symbol.to_string());
+                acc
+            },
+        ))
+    }
+}
 
 ///
 /// [Factor] is part of the structure of the grammar representation
@@ -639,18 +648,6 @@ impl ParolGrammar<'_> {
         }
     }
 
-    fn to_user_type_name(
-        user_type_names: &super::parol_grammar_trait::UserTypeName,
-    ) -> UserDefinedTypeName {
-        UserDefinedTypeName(user_type_names.user_type_name_list.iter().fold(
-            vec![user_type_names.identifier.identifier.symbol.to_string()],
-            |mut acc, a| {
-                acc.push(a.identifier.identifier.symbol.to_string());
-                acc
-            },
-        ))
-    }
-
     fn process_ast_control(
         &mut self,
         ast_control: &super::parol_grammar_trait::ASTControl,
@@ -660,8 +657,7 @@ impl ParolGrammar<'_> {
                 ASTControlKind::Attr(SymbolAttribute::Clipped)
             }
             super::parol_grammar_trait::ASTControl::ASTControl1(t) => {
-                let mut user_type_name =
-                    Self::to_user_type_name(&*t.user_type_declaration.user_type_name);
+                let mut user_type_name = t.user_type_declaration.user_type_name.clone();
                 if let Some(defined_type) = self
                     .user_type_definitions
                     .get(&user_type_name.get_module_scoped_name())
@@ -791,7 +787,7 @@ impl ParolGrammar<'_> {
     ) {
         self.user_type_definitions.insert(
             user_type_def.identifier.identifier.symbol.to_string(),
-            Self::to_user_type_name(&user_type_def.user_type_name),
+            user_type_def.user_type_name.clone(),
         );
     }
 }

@@ -616,7 +616,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 6,
         production: &[ParseType::N(32), ParseType::T(7)],
     },
-    // 9 - Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName;
+    // 9 - Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
     Production {
         lhs: 6,
         production: &[
@@ -913,7 +913,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 5,
         production: &[ParseType::T(34)],
     },
-    // 62 - UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName;
+    // 62 - UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
     Production {
         lhs: 36,
         production: &[ParseType::N(37), ParseType::T(16)],

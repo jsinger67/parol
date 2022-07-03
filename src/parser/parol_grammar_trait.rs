@@ -131,7 +131,7 @@ pub trait ParolGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'ASTControl'
-    fn a_s_t_control(&mut self, _arg: &ASTControl<'t>) -> Result<()> {
+    fn a_s_t_control(&mut self, _arg: &ASTControl) -> Result<()> {
         Ok(())
     }
 
@@ -141,7 +141,7 @@ pub trait ParolGrammarTrait<'t> {
     }
 
     /// Semantic action for non-terminal 'UserTypeDeclaration'
-    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration<'t>) -> Result<()> {
+    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration) -> Result<()> {
         Ok(())
     }
 
@@ -181,13 +181,13 @@ pub struct Declaration1<'t> {
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName;
+/// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration2<'t> {
     pub identifier: Box<Identifier<'t>>,
-    pub user_type_name: Box<UserTypeName<'t>>,
+    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
 }
 
 ///
@@ -379,8 +379,8 @@ pub struct ASTControl0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ASTControl1<'t> {
-    pub user_type_declaration: Box<UserTypeDeclaration<'t>>,
+pub struct ASTControl1 {
+    pub user_type_declaration: Box<UserTypeDeclaration>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -393,9 +393,9 @@ pub struct ASTControl1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTControl<'t> {
+pub enum ASTControl {
     ASTControl0(ASTControl0),
-    ASTControl1(ASTControl1<'t>),
+    ASTControl1(ASTControl1),
 }
 
 ///
@@ -519,7 +519,7 @@ pub struct Identifier<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct NonTerminal<'t> {
     pub identifier: Box<Identifier<'t>>,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt<'t>>>,
+    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
 }
 
 ///
@@ -527,8 +527,8 @@ pub struct NonTerminal<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct NonTerminalOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct NonTerminalOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -656,7 +656,7 @@ pub struct ScannerSwitchOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 pub struct SimpleToken<'t> {
     pub string: Box<String<'t>>,
-    pub simple_token_opt: Option<Box<SimpleTokenOpt<'t>>>,
+    pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
 ///
@@ -664,8 +664,8 @@ pub struct SimpleToken<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleTokenOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct SimpleTokenOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -725,7 +725,7 @@ pub enum Symbol<'t> {
 pub struct TokenWithStates<'t> {
     pub state_list: Box<StateList<'t>>,
     pub string: Box<String<'t>>,
-    pub token_with_states_opt: Option<Box<TokenWithStatesOpt<'t>>>,
+    pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
 ///
@@ -733,8 +733,8 @@ pub struct TokenWithStates<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenWithStatesOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct TokenWithStatesOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -742,8 +742,8 @@ pub struct TokenWithStatesOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct UserTypeDeclaration<'t> {
-    pub user_type_name: Box<UserTypeName<'t>>,
+pub struct UserTypeDeclaration {
+    pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
 }
 
 ///
@@ -773,7 +773,7 @@ pub struct UserTypeNameList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTType<'t> {
-    ASTControl(ASTControl<'t>),
+    ASTControl(ASTControl),
     Alternation(Alternation<'t>),
     AlternationList(Vec<AlternationList<'t>>),
     Alternations(Alternations<'t>),
@@ -787,7 +787,7 @@ pub enum ASTType<'t> {
     Group(Group<'t>),
     Identifier(Identifier<'t>),
     NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<Box<NonTerminalOpt<'t>>>),
+    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
     Optional(Optional<'t>),
     Parol(Parol<'t>),
     Production(Production<'t>),
@@ -801,15 +801,15 @@ pub enum ASTType<'t> {
     ScannerSwitch(ScannerSwitch<'t>),
     ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
     SimpleToken(SimpleToken<'t>),
-    SimpleTokenOpt(Option<Box<SimpleTokenOpt<'t>>>),
+    SimpleTokenOpt(Option<Box<SimpleTokenOpt>>),
     StartDeclaration(StartDeclaration<'t>),
     StateList(StateList<'t>),
     StateListList(Vec<StateListList<'t>>),
     String(String<'t>),
     Symbol(Symbol<'t>),
     TokenWithStates(TokenWithStates<'t>),
-    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt<'t>>>),
-    UserTypeDeclaration(UserTypeDeclaration<'t>),
+    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
+    UserTypeDeclaration(UserTypeDeclaration),
     UserTypeName(UserTypeName<'t>),
     UserTypeNameList(Vec<UserTypeNameList<'t>>),
 }
@@ -1140,7 +1140,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName;
+    /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
     ///
     #[named]
     fn declaration_2(
@@ -1168,7 +1168,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             // Ignore clipped member 'percent_user_underscore_type'
             .identifier(Box::new(identifier))
             // Ignore clipped member 'equ'
-            .user_type_name(Box::new(user_type_name))
+            .user_type_name((&user_type_name).try_into().into_diagnostic()?)
             .build()
             .into_diagnostic()?;
         let declaration_2_built = Declaration::Declaration2(declaration_2_built);
@@ -2661,7 +2661,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName;
+    /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
     ///
     #[named]
     fn user_type_declaration(
@@ -2680,7 +2680,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         };
         let user_type_declaration_built = UserTypeDeclarationBuilder::default()
             // Ignore clipped member 'colon'
-            .user_type_name(Box::new(user_type_name))
+            .user_type_name((&user_type_name).try_into().into_diagnostic()?)
             .build()
             .into_diagnostic()?;
         // Calling user action here

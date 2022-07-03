@@ -3,6 +3,7 @@
 %comment "Parol's own grammar"
 %line_comment "//"
 %block_comment "/\*" "\*/"
+%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
 
 %%
 
@@ -20,7 +21,7 @@ StartDeclaration
 Declaration
     : "%title"^ String
     | "%comment"^ String
-    | "%user_type"^ Identifier "="^ UserTypeName
+    | "%user_type"^ Identifier "="^ UserTypeName : UserType
     | ScannerDirectives
     ;
 
@@ -120,7 +121,8 @@ CutOperator
     ;
 
 UserTypeDeclaration
-    : ":"^ UserTypeName
+    : ":"^ UserTypeName : UserType
+
     ;
 
 UserTypeName

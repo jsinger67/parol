@@ -15,7 +15,7 @@
 /*  6 */ StartDeclaration: "%start"^ /* Clipped */ Identifier;
 /*  7 */ Declaration: "%title"^ /* Clipped */ String;
 /*  8 */ Declaration: "%comment"^ /* Clipped */ String;
-/*  9 */ Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName;
+/*  9 */ Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
 /* 10 */ Declaration: ScannerDirectives;
 /* 11 */ ScannerDirectives: "%line_comment"^ /* Clipped */ String;
 /* 12 */ ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
@@ -68,7 +68,7 @@
 /* 59 */ ASTControl: CutOperator;
 /* 60 */ ASTControl: UserTypeDeclaration;
 /* 61 */ CutOperator: "\^"^ /* Clipped */;
-/* 62 */ UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName;
+/* 62 */ UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
 /* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
 /* 64 */ UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList; // Vec<T>::Push
 /* 65 */ UserTypeNameList: ; // Vec<T>::New
