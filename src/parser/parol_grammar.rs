@@ -12,7 +12,7 @@ use parol_runtime::errors::FileSource;
 use parol_runtime::lexer::Token;
 
 use std::collections::HashMap;
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::fmt::{Debug, Display, Error, Formatter, Write};
 use std::marker::PhantomData;
 
 lazy_static! {
@@ -155,7 +155,7 @@ impl Display for Factor {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", t))?;
                 if let Some(ref user_type) = u {
-                    d.push_str(&format!(" /* : {} */", user_type));
+                    write!(d, " /* : {} */", user_type)?;
                 }
                 write!(
                     f,
@@ -171,7 +171,7 @@ impl Display for Factor {
                 let mut s = String::new();
                 a.decorate(&mut s, &format!("N({})", n))?;
                 if let Some(ref user_type) = u {
-                    s.push_str(&format!(" /* : {} */", user_type));
+                    write!(s, " /* : {} */", user_type)?;
                 }
                 write!(f, "{}", s)
             }
@@ -195,7 +195,7 @@ impl Factor {
                 a.decorate(&mut d, &format!("T({})", t))
                     .expect("Failed to decorate terminal!");
                 if let Some(ref user_type) = u {
-                    d.push_str(&format!(" /* : {} */", user_type));
+                    let _ = write!(d, " /* : {} */", user_type);
                 }
                 format!(
                     "<{}>\"{}\"",
@@ -211,7 +211,7 @@ impl Factor {
                 a.decorate(&mut buf, n)
                     .expect("Failed to decorate non-terminal!");
                 if let Some(ref user_type) = u {
-                    buf.push_str(&format!(" /* : {} */", user_type));
+                    let _ = write!(buf, " /* : {} */", user_type);
                 }
                 buf
             }

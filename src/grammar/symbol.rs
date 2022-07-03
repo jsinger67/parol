@@ -5,7 +5,7 @@ use crate::parser::to_grammar_config::try_from_factor;
 use miette::{IntoDiagnostic, Result};
 use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::fmt::{Debug, Display, Error, Formatter, Write};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -96,7 +96,7 @@ impl Terminal {
                 a.decorate(&mut d, &format!("\"{}\"", t))
                     .into_diagnostic()?;
                 if let Some(ref user_type) = u {
-                    d.push_str(&format!(" /* : {} */", user_type));
+                    write!(d, " /* : {} */", user_type).into_diagnostic()?;
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
@@ -269,7 +269,7 @@ impl Symbol {
                 let mut s = String::new();
                 a.decorate(&mut s, n).into_diagnostic()?;
                 if let Some(ref user_type) = u {
-                    s.push_str(&format!(" /* : {} */", user_type));
+                    write!(s, " /* : {} */", user_type).into_diagnostic()?;
                 }
                 Ok(s)
             }
@@ -294,7 +294,7 @@ impl Display for Symbol {
                 let mut s = String::new();
                 a.decorate(&mut s, n)?;
                 if let Some(ref user_type) = u {
-                    s.push_str(&format!(" /* : {} */", user_type));
+                    write!(s, " /* : {} */", user_type)?;
                 }
                 write!(f, "{}", s)
             }
