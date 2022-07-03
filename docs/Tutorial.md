@@ -52,12 +52,11 @@ If this is completed open your favorite editor.
 code .
 ```
 
->One side note about your favorite editor. If it happens that you use Visual Studio Code you can
-install my VS Code extension [parol-vscode](https://github.com/jsinger67/parol-vscode.git).
-Download the vsix package from the latest release and install it with
+>One side note about your favorite editor.
 >
->> ```code --install-extension ./parol-vscode-x.y.z.vsix```
->
+>If it happens that you use Visual Studio Code you can
+install this extension from VS Code
+[marketplace](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode).
 >This extension provides syntax highlighting, folding and language icons and will surely be useful
 for you.
 
