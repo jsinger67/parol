@@ -143,6 +143,44 @@ impl Factor {
             _ => bail!("Ain't no inner alternations"),
         }
     }
+
+    /// Generate parol's syntax
+    pub fn to_par(&self) -> String {
+        match self {
+            Self::Group(g) => format!("({})", g.to_par()),
+            Self::Repeat(r) => format!("{{{}}}", r.to_par()),
+            Self::Optional(o) => format!("[{}]", o.to_par()),
+            Self::Terminal(t, s, a, u) => {
+                let mut d = String::new();
+                a.decorate(&mut d, &format!("T({})", t))
+                    .expect("Failed to decorate terminal!");
+                if let Some(ref user_type) = u {
+                    let _ = write!(d, " /* : {} */", user_type);
+                }
+                format!(
+                    "<{}>\"{}\"",
+                    s.iter()
+                        .map(|s| format!("{}", s))
+                        .collect::<Vec<String>>()
+                        .join(", "),
+                    d
+                )
+            }
+            Self::NonTerminal(n, a, u) => {
+                let mut buf = String::new();
+                a.decorate(&mut buf, n)
+                    .expect("Failed to decorate non-terminal!");
+                if let Some(ref user_type) = u {
+                    let _ = write!(buf, " /* : {} */", user_type);
+                }
+                buf
+            }
+            Factor::Identifier(i) => format!("\"{}\"", i),
+            Self::ScannerSwitch(n) => format!("%sc({})", n),
+            Self::ScannerSwitchPush(n) => format!("%push({})", n),
+            Self::ScannerSwitchPop => "%pop()".to_string(),
+        }
+    }
 }
 
 impl Display for Factor {
@@ -183,71 +221,12 @@ impl Display for Factor {
     }
 }
 
-impl Factor {
-    /// Generate parol's syntax
-    pub fn to_par(&self) -> String {
-        match self {
-            Self::Group(g) => format!("({})", g.to_par()),
-            Self::Repeat(r) => format!("{{{}}}", r.to_par()),
-            Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, s, a, u) => {
-                let mut d = String::new();
-                a.decorate(&mut d, &format!("T({})", t))
-                    .expect("Failed to decorate terminal!");
-                if let Some(ref user_type) = u {
-                    let _ = write!(d, " /* : {} */", user_type);
-                }
-                format!(
-                    "<{}>\"{}\"",
-                    s.iter()
-                        .map(|s| format!("{}", s))
-                        .collect::<Vec<String>>()
-                        .join(", "),
-                    d
-                )
-            }
-            Self::NonTerminal(n, a, u) => {
-                let mut buf = String::new();
-                a.decorate(&mut buf, n)
-                    .expect("Failed to decorate non-terminal!");
-                if let Some(ref user_type) = u {
-                    let _ = write!(buf, " /* : {} */", user_type);
-                }
-                buf
-            }
-            Factor::Identifier(i) => format!("\"{}\"", i),
-            Self::ScannerSwitch(n) => format!("%sc({})", n),
-            Self::ScannerSwitchPush(n) => format!("%push({})", n),
-            Self::ScannerSwitchPop => "%pop()".to_string(),
-        }
-    }
-}
-
 ///
 /// An Alternation is a sequence of factors.
 /// Valid operation on Alternation is "|".
 ///
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Alternation(pub Vec<Factor>, pub ProductionAttribute);
-
-impl Display for Alternation {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(
-            f,
-            "Alt({}",
-            self.0
-                .iter()
-                .map(|f| format!("{}", f))
-                .collect::<Vec<String>>()
-                .join(", ")
-        )?;
-        if self.1 != ProductionAttribute::default() {
-            write!(f, ": {})", self.1)
-        } else {
-            write!(f, ")")
-        }
-    }
-}
 
 impl Alternation {
     pub(crate) fn new() -> Self {
@@ -279,6 +258,25 @@ impl Alternation {
             .map(|f| f.to_par())
             .collect::<Vec<String>>()
             .join(" ")
+    }
+}
+
+impl Display for Alternation {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(
+            f,
+            "Alt({}",
+            self.0
+                .iter()
+                .map(|f| format!("{}", f))
+                .collect::<Vec<String>>()
+                .join(", ")
+        )?;
+        if self.1 != ProductionAttribute::default() {
+            write!(f, ": {})", self.1)
+        } else {
+            write!(f, ")")
+        }
     }
 }
 
@@ -361,6 +359,23 @@ pub enum ParolGrammarItem {
     StateList(Vec<usize>),
 }
 
+impl ParolGrammarItem {
+    /// Generate parol's syntax
+    pub fn to_par(&self) -> String {
+        match self {
+            Self::Prod(Production { lhs, rhs }) => format!("{}: {};", lhs, rhs.to_par()),
+            Self::Alts(alts) => alts.to_par(),
+            Self::Alt(alt) => alt.to_par(),
+            Self::Fac(fac) => fac.to_par(),
+            Self::StateList(sl) => sl
+                .iter()
+                .map(|e| format!("<{}>", e))
+                .collect::<Vec<String>>()
+                .join(", "),
+        }
+    }
+}
+
 impl Display for ParolGrammarItem {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
@@ -376,23 +391,6 @@ impl Display for ParolGrammarItem {
                     .collect::<Vec<String>>()
                     .join(", ")
             ),
-        }
-    }
-}
-
-impl ParolGrammarItem {
-    /// Generate parol's syntax
-    pub fn to_par(&self) -> String {
-        match self {
-            Self::Prod(Production { lhs, rhs }) => format!("{}: {};", lhs, rhs.to_par()),
-            Self::Alts(alts) => alts.to_par(),
-            Self::Alt(alt) => alt.to_par(),
-            Self::Fac(fac) => fac.to_par(),
-            Self::StateList(sl) => sl
-                .iter()
-                .map(|e| format!("<{}>", e))
-                .collect::<Vec<String>>()
-                .join(", "),
         }
     }
 }
@@ -489,12 +487,6 @@ pub struct ParolGrammar<'t> {
     user_type_definitions: HashMap<String, UserDefinedTypeName>,
     // Just to hold the lifetime generated by parol
     phantom: PhantomData<&'t str>,
-}
-
-impl Default for &ParolGrammar<'_> {
-    fn default() -> Self {
-        &DEFAULT_PAROL_GRAMMAR
-    }
 }
 
 impl ParolGrammar<'_> {
@@ -829,6 +821,12 @@ impl Display for ParolGrammar<'_> {
                 .collect::<Vec<String>>()
                 .join("\n")
         )
+    }
+}
+
+impl Default for &ParolGrammar<'_> {
+    fn default() -> Self {
+        &DEFAULT_PAROL_GRAMMAR
     }
 }
 
