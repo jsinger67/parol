@@ -46,7 +46,7 @@ pub(crate) struct ClapApp {
     #[clap(short = 'm', long = "module")]
     pub module: Option<String>,
 
-    /// Activates the auto-generation of semantic actions in expanded grammar - experimental
+    /// Activates the auto-generation of semantic actions in expanded grammar - recommended
     #[clap(short = 'g', long = "auto_generate")]
     pub auto_generate: bool,
 
