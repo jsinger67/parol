@@ -4,6 +4,7 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 %user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
+%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
 
 %%
 
@@ -12,7 +13,8 @@ Parol
     ;
 
 Prolog
-    : StartDeclaration { Declaration } { ScannerState };
+    : StartDeclaration { Declaration } { ScannerState : ScannerConfig }
+    ;
 
 StartDeclaration
     : "%start"^ Identifier
@@ -122,7 +124,6 @@ CutOperator
 
 UserTypeDeclaration
     : ":"^ UserTypeName : UserType
-
     ;
 
 UserTypeName

@@ -8,7 +8,7 @@
 
 /*  0 */ Parol: Prolog GrammarDefinition;
 /*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
-/*  2 */ PrologList0: ScannerState PrologList0; // Vec<T>::Push
+/*  2 */ PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0; // Vec<T>::Push
 /*  3 */ PrologList0: ; // Vec<T>::New
 /*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
 /*  5 */ PrologList: ; // Vec<T>::New

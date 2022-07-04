@@ -581,7 +581,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 18,
         production: &[ParseType::N(20), ParseType::N(19), ParseType::N(29)],
     },
-    // 2 - PrologList0: ScannerState PrologList0;
+    // 2 - PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0;
     Production {
         lhs: 20,
         production: &[ParseType::N(20), ParseType::N(23)],

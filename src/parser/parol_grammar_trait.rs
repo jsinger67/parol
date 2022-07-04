@@ -568,7 +568,7 @@ pub struct Production<'t> {
 pub struct Prolog<'t> {
     pub start_declaration: Box<StartDeclaration<'t>>,
     pub prolog_list: Vec<PrologList<'t>>,
-    pub prolog_list0: Vec<PrologList0<'t>>,
+    pub prolog_list0: Vec<PrologList0>,
 }
 
 ///
@@ -585,8 +585,8 @@ pub struct PrologList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct PrologList0<'t> {
-    pub scanner_state: Box<ScannerState<'t>>,
+pub struct PrologList0 {
+    pub scanner_state: crate::parser::parol_grammar::ScannerConfig,
 }
 
 ///
@@ -793,7 +793,7 @@ pub enum ASTType<'t> {
     Production(Production<'t>),
     Prolog(Prolog<'t>),
     PrologList(Vec<PrologList<'t>>),
-    PrologList0(Vec<PrologList0<'t>>),
+    PrologList0(Vec<PrologList0>),
     Repeat(Repeat<'t>),
     ScannerDirectives(ScannerDirectives<'t>),
     ScannerState(ScannerState<'t>),
@@ -958,7 +958,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// PrologList0: ScannerState PrologList0; // Vec<T>::Push
+    /// PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0; // Vec<T>::Push
     ///
     #[named]
     fn prolog_list0_0(
@@ -980,7 +980,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             bail!("{}: Expecting ASTType::ScannerState", context);
         };
         let prolog_list0_0_built = PrologList0Builder::default()
-            .scanner_state(Box::new(scanner_state))
+            .scanner_state((&scanner_state).try_into().into_diagnostic()?)
             .build()
             .into_diagnostic()?;
         // Add an element to the vector
