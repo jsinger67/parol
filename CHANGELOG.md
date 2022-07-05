@@ -13,6 +13,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.7.0 - 2022-07-05
+
+* Using miette 0.5.1 now
+* Also updated some other crate references
+
 ## v0.6.0 - 2022-06-24
 
 This version brings rather breaking changes:
