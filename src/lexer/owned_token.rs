@@ -47,7 +47,7 @@ impl FormatToken for OwnedToken {
     }
 }
 
-impl<'t> From<&OwnedToken> for SourceSpan {
+impl From<&OwnedToken> for SourceSpan {
     fn from(token: &OwnedToken) -> Self {
         (&token.location).into()
     }
