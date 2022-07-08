@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.10.1"
+version = "0.10.2-pre"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -15,26 +15,27 @@ edition = "2021"
 [dependencies]
 bart = "0.1.4"
 bart_derive = "0.1.4"
-cfg-if = "1.0.0"
-clap = { version = "^3.1.0", features = [ "derive", "cargo" ] }
+cfg-if = "^1.0.0"
+clap = { version = "^3.2.8", features = [ "derive", "cargo" ] }
 env_logger = "0.9.0"
 id_tree = "^1.8"
 id_tree_layout = "^2.0"
 lazy_static = "^1.4"
 log = "0.4.17"
-miette = { version = "^4.0", features = ["fancy"] }
-owo-colors = "3.3.0"
-parol_runtime = "0.6.0"
+miette = { version = "^5.1.0", features = ["fancy"] }
+owo-colors = "^3.4.0"
+parol_runtime = "0.7.0"
 petgraph = "0.6.2"
 prettyplease = { version = "0.1.7", optional = true }
 rand_regex = "0.15.1"
 rand = "0.8.5"
 regex = "^1.5"
 regex-syntax = "0.6.25"
-syn = { version = "1", default-features = false, features = ["full", "parsing"] }
+syn = { version = "^1", default-features = false, features = ["full", "parsing"] }
 thiserror = "^1.0"
 derive_builder = "0.11.2"
 function_name = "0.3.0"
+semver = "1.0.12"
 
 [profile.release]
 debug = true
