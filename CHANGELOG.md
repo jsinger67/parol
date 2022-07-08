@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.10.2 - not released yet
+## v0.10.2 - 2022-07-08
 
 * New artwork - fixing issue [#15](https://github.com/jsinger67/parol/issues/15)
 * Supporting user defined types by a dedicated `%user_type` directive which allows you to define
