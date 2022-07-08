@@ -1,8 +1,9 @@
 use clap::ArgGroup;
 use derive_builder::Builder;
-use miette::{miette, Context, IntoDiagnostic, Result};
+use miette::{bail, miette, Context, IntoDiagnostic, Result};
 use owo_colors::OwoColorize;
 use parol::generators::NamingHelper as NmHlp;
+use semver::{BuildMetadata, Prerelease, Version};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -72,14 +73,14 @@ pub fn main(args: &Args) -> Result<()> {
 }
 
 const DEPENDENCIES: &[&[&str]] = &[
-    &["add", "derive_builder@0.11"],
+    &["add", "derive_builder@0.11.2"],
     &["add", "env_logger@0.9.0"],
     &["add", "function_name@0.3.0"],
     &["add", "id_tree@^1.8"],
     &["add", "lazy_static@^1.4"],
-    &["add", "log@0.4"],
-    &["add", "miette@^4.0", "--features", "fancy"],
-    &["add", "parol_runtime@0.6.0"],
+    &["add", "log@0.4.17"],
+    &["add", "miette@^5.1", "--features", "fancy"],
+    &["add", "parol_runtime@0.7.0"],
     &["add", "thiserror@^1.0"],
     &[
         "add",
@@ -99,7 +100,8 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     cargo_args.push("--name");
     cargo_args.push(creation_data.crate_name);
     cargo_args.push(
-        creation_data.path
+        creation_data
+            .path
             .to_str()
             .ok_or_else(|| miette!("Please provide a path"))?,
     );
@@ -116,15 +118,36 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
         .iter()
         .fold(Ok(()), |res: Result<()>, cargo_args| {
             res?;
-            Command::new("cargo")
-                .current_dir(&creation_data.path)
-                .args(*cargo_args)
-                .status()
-                .map(|_| ())
-                .into_diagnostic()
-                .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
+            if !cargo_args[1].contains("-") {
+                Command::new("cargo")
+                    .current_dir(&creation_data.path)
+                    .args(*cargo_args)
+                    .status()
+                    .map(|_| ())
+                    .into_diagnostic()
+                    .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
+            } else {
+                let mut prev_version =
+                    Version::parse(env!("CARGO_PKG_VERSION")).into_diagnostic()?;
+                prev_version.pre = Prerelease::EMPTY;
+                prev_version.build = BuildMetadata::EMPTY;
+                if prev_version.patch > 0 {
+                    prev_version.patch -= 1;
+                } else {
+                    bail!(
+                        r"Can't handle a prerelease version of parol with patch version 0!
+Please, install the latest released version of parol (`cargo install parol`)."
+                    )
+                }
+                let cargo_args = format!("add parol@{} --build", prev_version);
+                Command::new("cargo")
+                    .current_dir(&creation_data.path)
+                    .args(cargo_args.split(' '))
+                    .status()
+                    .map(|_| ())
+                    .into_diagnostic()
+            }
         })?;
-
     Ok(())
 }
 
