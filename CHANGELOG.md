@@ -17,12 +17,14 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.10.3-pre - not release yet
+## v0.10.3 - 2022-07-09
 
-* `parol new` can now enable parse tree visualization in the newly created crates. You can activate
-it by adding the new argument `-t`.
+* `parol new` can now enable parse tree visualization in newly created crates. You can activate it
+by adding the new argument `-t`.
 
 > `parol help new`
+
+* Update reference of `parol_runtime` to v0.7.1
 
 ## v0.10.2 - 2022-07-08
 
