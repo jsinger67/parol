@@ -17,6 +17,13 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.10.3-pre - not release yet
+
+* `parol new` can now enable parse tree visualization in the newly created crates. You can activate
+it by adding the new argument `-t`.
+
+> `parol help new`
+
 ## v0.10.2 - 2022-07-08
 
 * New artwork - fixing issue [#15](https://github.com/jsinger67/parol/issues/15)

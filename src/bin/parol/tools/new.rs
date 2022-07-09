@@ -25,9 +25,13 @@ pub struct Args {
     #[clap(short, long)]
     lib: bool,
 
-    /// The name of the new crate. Defaults to the directory name.
+    /// The name of the new crate, defaults to the directory name
     #[clap(short, long)]
     name: Option<String>,
+
+    /// Add support for generating visualized parse trees
+    #[clap(short, long)]
+    tree: bool,
 }
 
 #[derive(Debug, Builder)]
@@ -36,6 +40,7 @@ struct CreationData<'a> {
     grammar_name: String,
     path: PathBuf,
     is_bin: bool,
+    tree_gen: bool,
 }
 
 pub fn main(args: &Args) -> Result<()> {
@@ -56,6 +61,7 @@ pub fn main(args: &Args) -> Result<()> {
         .grammar_name(NmHlp::to_upper_camel_case(&crate_name))
         .path(args.path.clone())
         .is_bin(args.bin)
+        .tree_gen(args.tree)
         .build()
         .into_diagnostic()?;
 
@@ -88,6 +94,8 @@ const DEPENDENCIES: &[&[&str]] = &[
         "--build",
     ],
 ];
+
+const TREE_GEN_DEPENDENCY: &str = "add id_tree_layout@^2";
 
 fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     // Prepare arguments for the `cargo new` command
@@ -148,6 +156,16 @@ Please, install the latest released version of parol (`cargo install parol`)."
                     .into_diagnostic()
             }
         })?;
+
+    // Add dependency to id_tree_layout
+    if creation_data.tree_gen {
+        Command::new("cargo")
+            .current_dir(&creation_data.path)
+            .args(TREE_GEN_DEPENDENCY.split(' '))
+            .status()
+            .map(|_| ())
+            .into_diagnostic()?
+    }
     Ok(())
 }
 
@@ -214,6 +232,7 @@ fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
 struct MainRsData<'a> {
     crate_name: &'a str,
     grammar_name: String,
+    tree_gen: bool,
 }
 
 fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
@@ -223,6 +242,7 @@ fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
     let main_data = MainRsDataBuilder::default()
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
+        .tree_gen(creation_data.tree_gen)
         .build()
         .into_diagnostic()?;
     let main_source = format!("{}", main_data);
@@ -238,6 +258,7 @@ fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
 struct LibRsData<'a> {
     crate_name: &'a str,
     grammar_name: String,
+    tree_gen: bool,
 }
 
 fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
@@ -247,6 +268,7 @@ fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
     let lib_data = LibRsDataBuilder::default()
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
+        .tree_gen(creation_data.tree_gen)
         .build()
         .into_diagnostic()?;
     let lib_source = format!("{}", lib_data);

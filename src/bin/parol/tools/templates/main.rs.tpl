@@ -13,9 +13,12 @@ mod {{crate_name}}_grammar_trait;
 mod {{crate_name}}_parser;
 
 use crate::{{crate_name}}_grammar::{{grammar_name}}Grammar;
-use crate::{{crate_name}}_parser::parse;
+use crate::{{crate_name}}_parser::parse;{{#tree_gen?}}
+use id_tree::Tree;
+use id_tree_layout::Layouter;{{/tree_gen}}
 use log::debug;
-use miette::{miette, IntoDiagnostic, Result, WrapErr};
+use miette::{miette, IntoDiagnostic, Result, WrapErr};{{#tree_gen?}}
+use parol_runtime::parser::ParseTreeType;{{/tree_gen}}
 use std::env;
 use std::fs;
 use std::time::Instant;
@@ -35,17 +38,30 @@ fn main() -> Result<()> {
             .wrap_err(format!("Can't read file {}", file_name))?;
         let mut {{crate_name}}_grammar = {{grammar_name}}Grammar::new();
         let now = Instant::now();
-        parse(&input, &file_name, &mut {{crate_name}}_grammar)
+        {{#tree_gen?}}let syntax_tree = {{/tree_gen}}parse(&input, &file_name, &mut {{crate_name}}_grammar)
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
         if args.len() > 2 && args[2] == "-q" {
             Ok(())
         } else {
-            println!("Success!\n{}", {{crate_name}}_grammar);
+            {{#tree_gen?}}generate_tree_layout(&syntax_tree, &file_name)?;
+            {{/tree_gen}}println!("Success!\n{}", {{crate_name}}_grammar);
             Ok(())
         }
     } else {
         Err(miette!("Please provide a file name as first parameter!"))
     }
 }
+
+{{#tree_gen?}}fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+    svg_full_file_name.set_extension("svg");
+
+    Layouter::new(syntax_tree)
+        .with_file_path(&svg_full_file_name)
+        .write()
+        .into_diagnostic()
+        .wrap_err("Failed writing layout")
+}
+{{/tree_gen}}
