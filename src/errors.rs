@@ -47,6 +47,17 @@ pub enum ParserError {
         last_token: SourceSpan,
     },
 
+    #[error("{context}Tried to pop from an empty scanner stack")]
+    #[diagnostic(
+        help("Tried to pop from an empty scanner stack"),
+        code(parol_runtime::parser::pop_on_empty_scanner_stack)
+    )]
+    PopOnEmptyScannerStateStack {
+        context: String,
+        #[source_code]
+        input: NamedSource,
+    },
+
     #[error("{0}")]
     #[diagnostic(
         help("Unexpected internal state"),

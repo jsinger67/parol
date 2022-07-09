@@ -149,7 +149,7 @@ impl<'t> LLKParser<'t> {
     fn push_production(&mut self, prod_num: ProductionIndex) {
         self.parser_stack.stack.push(ParseType::E(prod_num));
         for s in self.productions[prod_num].production {
-            self.parser_stack.stack.push(s.clone());
+            self.parser_stack.stack.push(*s);
         }
         // Now push a 'production entry' onto the parse stack
         let root_node_id = self.parse_tree.root_node_id().cloned();
@@ -177,9 +177,9 @@ impl<'t> LLKParser<'t> {
             .push(ParseTreeStackEntry::Id(node_id.unwrap()));
 
         self.production_depth += 1;
-        debug!(
-            "Pushed production {} -> depth {}",
-            prod_num, self.production_depth
+        trace!(
+            "Pushed production {}({}) -> depth {}",
+            prod_num, self.productions[prod_num].production.len(), self.production_depth
         );
     }
 
@@ -405,11 +405,27 @@ impl<'t> LLKParser<'t> {
                         self.parser_stack.stack.pop();
                     }
                     ParseType::Push(s) => {
+                        trace!("%push({}) at production {:?}", s, self.current_production());
                         stream.borrow_mut().push_scanner(s)?;
                         self.parser_stack.stack.pop();
                     }
                     ParseType::Pop => {
-                        stream.borrow_mut().pop_scanner()?;
+                        trace!("%pop() at production {:?}", self.current_production());
+                        let result = stream.borrow_mut().pop_scanner();
+                        if let Err(source) = result {
+                            let error = miette!(ParserError::PopOnEmptyScannerStateStack {
+                                context: self.diagnostic_message(
+                                    format!(
+                                        "Current scanner is {}",
+                                        &stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
+                                ),
+                                input: FileSource::from_stream(&stream.borrow()).into(),
+                            })
+                            .wrap_err(source);
+                            return Err(error);
+                        }
                         self.parser_stack.stack.pop();
                     }
                     ParseType::E(p) => {

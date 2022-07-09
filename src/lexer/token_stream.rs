@@ -241,6 +241,8 @@ impl<'t> TokenStream<'t> {
                 scanner_index,
                 self.tokenizers[scanner_index].0,
             );
+            self.scanner_stack.push(self.current_scanner_index);
+            self.current_scanner_index = scanner_index;
         } else {
             trace!(
                 "Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
@@ -254,6 +256,10 @@ impl<'t> TokenStream<'t> {
             self.current_scanner_index = scanner_index;
             self.tokens.clear();
             self.ensure_buffer();
+            trace!(
+                "push_scanner: Resulting scanner stack: {:?}",
+                self.scanner_stack
+            );
         }
         Ok(())
     }
@@ -280,6 +286,10 @@ impl<'t> TokenStream<'t> {
                 self.current_scanner_index = scanner_index;
                 self.tokens.clear();
                 self.ensure_buffer();
+                trace!(
+                    "pop_scanner: Resulting scanner stack: {:?}",
+                    self.scanner_stack
+                );
             }
             Ok(())
         } else {

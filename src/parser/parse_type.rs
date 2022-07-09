@@ -5,7 +5,7 @@ use std::fmt::{Display, Error, Formatter};
 ///
 /// The type of the elements in the parser stack.
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum ParseType {
     ///
     /// The index of a non-terminal in the generated NON_TERMINALS array

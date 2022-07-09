@@ -13,6 +13,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.7.1 - 2022-07-09
+
+* Fixed a bug in TokenStream::push_scanner
+* Improved debugging support for error `pop from an empty scanner stack`.
+* New error type `ParserError::PopOnEmptyScannerStateStack`
+* Made `ParseType` a `Copy`
+
 ## v0.7.0 - 2022-07-05
 
 * Using miette 0.5.1 now
