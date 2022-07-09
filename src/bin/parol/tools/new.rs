@@ -126,7 +126,7 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
         .iter()
         .fold(Ok(()), |res: Result<()>, cargo_args| {
             res?;
-            if !cargo_args[1].contains("-") {
+            if !cargo_args[1].contains('-') {
                 Command::new("cargo")
                     .current_dir(&creation_data.path)
                     .args(*cargo_args)
