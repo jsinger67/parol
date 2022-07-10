@@ -17,6 +17,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## Upcoming version
+
+* Improved logo. Texts have been converted to curves to ensure equal design on all systems.
+
 ## v0.10.3 - 2022-07-09
 
 * `parol new` can now enable parse tree visualization in newly created crates. You can activate it
