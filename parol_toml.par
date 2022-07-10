@@ -1,0 +1,334 @@
+%start ParolToml
+%title "TOML Grammar"
+%comment "Adapted from https://raw.githubusercontent.com/toml-lang/toml/1.0.0/toml.abnf"
+%line_comment "#"
+
+%scanner Esc { %auto_newline_off %auto_ws_off }
+%scanner Val { %line_comment "#" }
+%scanner BString { %auto_newline_off %auto_ws_off }
+%scanner MLBString { %auto_newline_off %auto_ws_off }
+%scanner LString { %auto_newline_off %auto_ws_off }
+%scanner MLLString { %auto_newline_off %auto_ws_off }
+%scanner HexInt { %auto_newline_off %auto_ws_off }
+%scanner OctInt { %auto_newline_off %auto_ws_off }
+%scanner BinInt { %auto_newline_off %auto_ws_off }
+
+%%
+
+// Overall Structure
+
+ParolToml: { Expression };
+
+Expression
+    : KeyVal | Table;
+
+// Newline
+
+Newline
+    : <MLBString, MLLString>"\r?\n";
+
+WsNewline
+    : <Esc>"[ \t]*\r?\n";
+
+
+NonAscii
+    : <BString, MLBString, LString, MLLString>"[\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}]";
+
+// Key-Value pairs
+
+KeyVal
+    : Key KeyValSep %push(Val) Val %pop();
+
+Key : SimpleKey
+    | SimpleKey DotSep SimpleKey { DotSep SimpleKey }
+    ;
+
+SimpleKey
+    : QuotedKey | UnquotedKey;
+
+QuotedKey
+    : BasicString | LiteralString;
+
+KeyValSep
+    : <INITIAL, Val>"=";
+
+Val : Boolean | Array | InlineTable | DateTime | Numeric
+    | BasicString | MLBasicString | LiteralString | MLLiteralString;
+
+Numeric
+    : Float | Integer;
+    
+// Basic String
+
+BasicString
+    : QuotationMark %push(BString) { BasicChar } %pop() QuotationMark;
+
+BasicChar
+    : BasicUnescaped | %push(Esc) Escaped %pop();
+
+BasicUnescaped
+    : AsciiNoEscape | NonAscii;
+
+Escaped
+    : Escape EscapeSeqChar;
+
+Escape
+    : <BString, MLBString, Esc>"\u{5C}";                // \    reverse solidus U+005C
+
+EscapeSeqChar
+    : QuotationMark                                     // "    quotation mark  U+0022
+    | Escape                                            // \    reverse solidus U+005C
+    | <Esc>"b"                                          // b    backspace       U+0008
+    | <Esc>"f"                                          // f    form feed       U+000C
+    | <Esc>"n"                                          // n    line feed       U+000A
+    | <Esc>"r"                                          // r    carriage return U+000D
+    | <Esc>"t"                                          // t    tab             U+0009
+    | Unicode4
+    | Unicode8
+    | WsNewline
+    | AsciiNoEscape
+    ;
+
+Unicode4
+    : <Esc>"u[0-9a-fA-F]{4}";                           // uXXXX                U+XXXX
+
+Unicode8
+    : <Esc>"U[0-9a-fA-F]{8}";                           // UXXXXXXXX            U+XXXXXXXX
+
+// Multiline Basic String
+
+MLBasicString
+    : MLBasicStringStart %push(MLBString) MLBasicBody MLBasicStringEnd %pop();
+
+MLBasicBody
+    : MLBContentList { MLBQuotes MLBContentList1 };
+
+MLBContentList
+    : MLBContent MLBContentList
+    |
+    ;
+
+MLBContentList1
+    : MLBContent MLBContentList;
+
+MLBContent
+    : MLBChar | Newline | MLBEscapedNL;
+
+MLBChar
+    : MLBUnescaped | %push(Esc) Escaped %pop();
+
+MLBUnescaped
+    : AsciiNoEscape | NonAscii;
+
+MLBEscapedNL
+    : <MLBString>"\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";
+
+
+// Literal String
+
+LiteralString
+    : Apostrophe^ %push(LString) { LiteralChar } %pop() Apostrophe^;
+
+LiteralChar
+    : LiteralCharNoApostrophe
+    | NonAscii
+    ;
+
+LiteralCharNoApostrophe
+    : <LString, MLLString>"[\t\u{20}-\u{26}\u{28}-\u{7E}]+";
+
+// Multiline Literal String
+
+MLLiteralString
+    : MLLiteralStringStart^ %push(MLLString) MLLiteralBody %pop();
+
+MLLiteralBody
+    : MLLContentList { MLLQuotes MLLContentList1 } MLLiteralStringEnd^;
+
+MLLContentList
+    : MLLContent MLLContentList
+    |
+    ;
+
+MLLContentList1
+    : MLLContent MLLContentList;
+
+MLLContent
+    : LiteralChar | Newline;
+
+// Integer
+
+Integer
+    : DecInt | HexInt | OctInt | BinInt;
+
+HexPrefix
+    : <Val>"0x";
+
+OctPrefix
+    : <Val>"0o";
+
+BinPrefix
+    : <Val>"0b";
+
+DecInt
+    : [ Plus | Minus ] UnsignedDecInt;
+
+HexInt
+    : HexPrefix^ %push(HexInt) HexIntContent %pop();
+
+HexIntContent
+    : <HexInt>"[0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])*";
+
+OctInt
+    : OctPrefix^ %push(OctInt) OctIntContent %pop();
+
+OctIntContent
+    : <OctInt>"[0-7]([0-7]|_[0-7])*";
+
+BinInt
+    : BinPrefix^ %push(BinInt) BinIntContent %pop();
+
+BinIntContent
+    : <BinInt>"[01]([01]|_[01])*";
+
+Boolean
+    : <Val>"true" | <Val>"false";
+
+// Float
+
+Float
+    : NormalFloat
+    | SpecialFloat
+    ;
+
+NormalFloat
+    : <Val>"[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))";
+
+SpecialFloat
+    : <Val>"[-+]?(nan|inf)";
+
+// Date and Time (as defined in RFC 3339)
+
+DateTime
+    : OffsetDateTime | LocalDateTime | LocalDate | LocalTime;
+
+OffsetDateTime
+    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})"
+    ;
+
+LocalDateTime
+    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"
+    ;
+
+LocalDate
+    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    ;
+
+LocalTime
+    : <Val>"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"
+    ;
+
+Array
+    : ArrayOpen^ %push(Val) [ ArrayValues ] %pop() ArrayClose^;
+
+ArrayValues
+    : Val ArraySep^ ArrayValues
+    | Val ArraySep^
+    | Val
+    ;
+
+ArraySep
+    : <INITIAL, Val>",";
+
+// Table
+
+Table
+    : StdTable | ArrayTable;
+
+StdTable
+    : StdTableOpen^ Key StdTableClose^;
+
+ArrayTableOpen
+    : <INITIAL>"\u{5B}\u{5B}";                          // [[ Double left square bracket
+
+ArrayTableClose
+    : <INITIAL>"\u{5D}\u{5D}";                          // ]] Double right square bracket
+
+ArrayOpen
+    : <INITIAL, Val>"\u{5B}";                           // [
+
+ArrayClose
+    : <INITIAL, Val>"\u{5D}";                           // ]
+
+StdTableOpen
+    : ArrayOpen;                                        // [ Left square bracket
+
+StdTableClose
+    : ArrayClose;                                       // ] Right square bracket
+
+// Inline Table
+
+InlineTable
+    : InlineTableOpen^ %push(INITIAL) [ InlineTableKeyVals ] %pop() InlineTableClose^;
+
+InlineTableOpen
+    : <INITIAL, Val>"\u{7B}";                           // {
+
+InlineTableClose
+    : <INITIAL, Val>"\u{7D}";                           // }
+
+InlineTableSep
+    : ArraySep;
+
+InlineTableKeyVals
+    : KeyVal [ InlineTableSep^ InlineTableKeyVals ];
+
+// Array Table
+
+ArrayTable
+    : ArrayTableOpen^ Key ArrayTableClose^;
+
+ // Terminals moved behind due to token matching conflict in scanner INITIAL!
+
+UnsignedDecInt
+    : <Val>"0|[1-9]([0-9]|_[0-9])*";
+
+UnquotedKey
+    : "[-_A-Za-z0-9]+";
+
+DotSep
+    : <INITIAL, Val>"\.";
+
+MLBasicStringStart
+    : <INITIAL, Val>"\u{22}{3}";                        // """
+
+MLBasicStringEnd
+    : <MLBString>"\u{22}{3,5}";                         // """ | """" | """""
+
+MLBQuotes
+    : <MLBString>"\u{22}{1,2}";                         // " | ""
+
+QuotationMark
+    : <INITIAL, BString, Esc, Val>"\u{22}";             // "
+
+MLLiteralStringStart
+    : <INITIAL, Val>"\u{27}{3}";                        // '''
+
+MLLiteralStringEnd
+    : <MLLString>"\u{27}{3,5}(?:\r?\n)?";               // '''
+
+MLLQuotes
+    : <MLLString>"\u{27}{1,2}";                         // ' | ''
+
+Apostrophe
+    : <INITIAL, LString, Val>"\u{27}";                  // '
+
+AsciiNoEscape
+    : <BString, Esc, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
+
+Minus
+    : <Val>"\u{2D}";                                    // -
+
+Plus
+    : <Val>"\u{2B}";                                    // +
+
