@@ -5,11 +5,12 @@ can be found here [parol_grammar.par](../src/parser/parol-grammar.par).
 
 ```ebnf
 (* PAR Grammar defined in EBNF *)
-Grammar             = Prolog GrammarDefinition.         (* The start symbol of the PAR grammar *)
+Parol               = Prolog GrammarDefinition.         (* The start symbol of the PAR grammar *)
 Prolog              = StartDeclaration {Declaration} {ScannerState}.
 StartDeclaration    = '%start' Identifier.
 Declaration         = '%title' String
                     | '%comment' String
+                    | "%user_type" Identifier '=' UserTypeName  (* User type alias definition *)
                     | ScannerDirectives.
 ScannerDirectives   = '%line_comment' String
                     | '%block_comment' String String
@@ -27,12 +28,12 @@ Symbol              = NonTerminal                       (* EBNF: Meta-identifier
                     | SimpleToken
                     | TokenWithStates
                     | ScannerSwitch.                    (* Instruction to switch to new scanner state *)
-SimpleToken         = String [CutOperator].             (* EBNF: Terminal-string, always treated as a regular expression! *)
-TokenWithStates     = "<" StateList ">" String [CutOperator].
+SimpleToken         = String [ASTControl].              (* EBNF: Terminal-string, always treated as a regular expression! *)
+TokenWithStates     = "<" StateList ">" String [ASTControl].
 Group               = '(' Alternations ')'.             (* A non-empty grouping *)
 Optional            = '[' Alternations ']'.             (* A non-empty optional expression *)
 Repeat              = '{' Alternations '}'.             (* A non-empty repetition *)
-NonTerminal         = Identifier [CutOperator].
+NonTerminal         = Identifier [ASTControl].
 Identifier          = '[a-zA-Z_]\w*'.
 String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
 ScannerState        = '%scanner' Identifier '{' {ScannerDirectives} '}'.
@@ -40,7 +41,10 @@ StateList           = Identifier { ',' Identifier }.    (* Scanner states a term
 ScannerSwitch       = '%sc' '(' [Identifier] ')'        (* Missing identifier implies INITIAL state *)
                     | '%push' '(' Identifier ')'        (* Identifier of scanner state is mandatory *)
                     | '%pop' '(' ')'.                   (* Parentheses are also mandatory *)
-CutOperator         = "^".                              (* Prevents the symbol from being propagated to the AST in auto-gen *)
+ASTControl          = CutOperator | UserTypeDeclaration.
+CutOperator         = '^'.                              (* Prevents the symbol from being propagated to the AST in auto-gen *)
+UserTypeDeclaration = ':' UserTypeName.                 (* Assigns the user type to a symbol *)
+UserTypeName        = Identifier { '::' Identifier }.   (* A valid Rust qualified name *)
 ```
 
 This grammar is quite concise and most programmers should be familiar with. But there are several
@@ -299,6 +303,16 @@ Group: "\("^ Alternations "\)"^;
 The AST type for the symbol `Group` will then only contain a member for the non-terminal
 `Alternations`. The parentheses are ignored.
 
+## Assigning user types to grammar symbols
+
+You can specify a user type to be inserted into the AST structure at the place where the symbol
+would otherwise had the originally generated type.
+Add after a grammar symbol a colon followed by a user type name to instruct `parol` to use this type
+instead. In your language implementation you have to provide fallible or infallible conversions
+from the original generated types to your types by implementing one of the traits `From` or `TryFrom`.
+An examples can be found in the [list_auto](examples\list_auto) example.
+You can also define aliases for the user type names by inserting as many `%user_type` directives as
+you want. Then use these aliases behind the colons.
 
 ## Semantic actions
 

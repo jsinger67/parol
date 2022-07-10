@@ -20,6 +20,7 @@ But we try to mark incompatible changes with a new minor version.
 ## Upcoming version
 
 * Improved logo. Texts have been converted to curves to ensure equal design on all systems.
+* Update [docs\ParGrammar.md](docs\ParGrammar.md) to fit the new features of `parol`'s input grammar.
 
 ## v0.10.3 - 2022-07-09
 
