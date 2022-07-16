@@ -1,0 +1,74 @@
+%start ParolLs
+%title "Parol grammar"
+%comment "Parol's own grammar"
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%%
+
+/*  0 */ ParolLs: Prolog GrammarDefinition;
+/*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
+/*  2 */ PrologList0: ScannerState PrologList0; // Vec<T>::Push
+/*  3 */ PrologList0: ; // Vec<T>::New
+/*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
+/*  5 */ PrologList: ; // Vec<T>::New
+/*  6 */ StartDeclaration: "%start" Identifier;
+/*  7 */ Declaration: "%title" String;
+/*  8 */ Declaration: "%comment" String;
+/*  9 */ Declaration: "%user_type" Identifier "=" UserTypeName;
+/* 10 */ Declaration: ScannerDirectives;
+/* 11 */ ScannerDirectives: "%line_comment" String;
+/* 12 */ ScannerDirectives: "%block_comment" String String;
+/* 13 */ ScannerDirectives: "%auto_newline_off";
+/* 14 */ ScannerDirectives: "%auto_ws_off";
+/* 15 */ GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
+/* 16 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
+/* 17 */ GrammarDefinitionList: ; // Vec<T>::New
+/* 18 */ DoubleColon: "::";
+/* 19 */ Production: Identifier ":" Alternations ";";
+/* 20 */ Alternations: Alternation AlternationsList /* Vec */;
+/* 21 */ AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
+/* 22 */ AlternationsList: ; // Vec<T>::New
+/* 23 */ Alternation: AlternationList /* Vec */;
+/* 24 */ AlternationList: Factor AlternationList; // Vec<T>::Push
+/* 25 */ AlternationList: ; // Vec<T>::New
+/* 26 */ Factor: Group;
+/* 27 */ Factor: Repeat;
+/* 28 */ Factor: Optional;
+/* 29 */ Factor: Symbol;
+/* 30 */ Symbol: NonTerminal;
+/* 31 */ Symbol: SimpleToken;
+/* 32 */ Symbol: TokenWithStates;
+/* 33 */ Symbol: ScannerSwitch;
+/* 34 */ SimpleToken: String SimpleTokenOpt /* Option */;
+/* 35 */ SimpleTokenOpt: ASTControl; // Option<T>::Some
+/* 36 */ SimpleTokenOpt: ; // Option<T>::None
+/* 37 */ TokenWithStates: "<" StateList ">" String TokenWithStatesOpt /* Option */;
+/* 38 */ TokenWithStatesOpt: ASTControl; // Option<T>::Some
+/* 39 */ TokenWithStatesOpt: ; // Option<T>::None
+/* 40 */ Group: "\(" Alternations "\)";
+/* 41 */ Optional: "\[" Alternations "\]";
+/* 42 */ Repeat: "\{" Alternations "\}";
+/* 43 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
+/* 44 */ NonTerminalOpt: ASTControl; // Option<T>::Some
+/* 45 */ NonTerminalOpt: ; // Option<T>::None
+/* 46 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+/* 47 */ String: "\u{0022}([\\]|\\.)*?\u{0022}";
+/* 48 */ ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+/* 49 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
+/* 50 */ ScannerStateList: ; // Vec<T>::New
+/* 51 */ StateList: Identifier StateListList /* Vec */;
+/* 52 */ StateListList: "," Identifier StateListList; // Vec<T>::Push
+/* 53 */ StateListList: ; // Vec<T>::New
+/* 54 */ ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+/* 55 */ ScannerSwitch: "%push" "\(" Identifier "\)";
+/* 56 */ ScannerSwitch: "%pop" "\(" "\)";
+/* 57 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
+/* 58 */ ScannerSwitchOpt: ; // Option<T>::None
+/* 59 */ ASTControl: CutOperator;
+/* 60 */ ASTControl: UserTypeDeclaration;
+/* 61 */ CutOperator: "\^";
+/* 62 */ UserTypeDeclaration: ":" UserTypeName;
+/* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
+/* 64 */ UserTypeNameList: DoubleColon Identifier UserTypeNameList; // Vec<T>::Push
+/* 65 */ UserTypeNameList: ; // Vec<T>::New
