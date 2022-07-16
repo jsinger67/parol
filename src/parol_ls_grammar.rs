@@ -1,4 +1,4 @@
-use crate::parol_ls_grammar_trait::{ ParolLs, ParolLsGrammarTrait};
+use crate::parol_ls_grammar_trait::{ParolLs, ParolLsGrammarTrait};
 #[allow(unused_imports)]
 use miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};

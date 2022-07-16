@@ -49,4 +49,3 @@ fn main() -> Result<()> {
         Err(miette!("Please provide a file name as first parameter!"))
     }
 }
-
