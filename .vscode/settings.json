@@ -1,5 +1,15 @@
 {
     "cSpell.words": [
         "vsix"
-    ]
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/.js": { "when": "$(basename).ts" },
+        "**/*.js.map": true
+    }
 }
