@@ -120,6 +120,7 @@ use miette::{Context, IntoDiagnostic};
 use parol_runtime::parser::ParseTreeType;
 
 use crate::analysis::LookaheadDFA;
+use crate::generators::grammar_type_generator::GrammarTypeInfo;
 use crate::parser::parol_grammar::Production;
 use crate::{GrammarConfig, ParolGrammar, UserTraitGenerator, MAX_K};
 
@@ -524,6 +525,29 @@ impl GrammarGenerator<'_> {
         let lexer_source = crate::generate_lexer_source(grammar_config)
             .wrap_err("Failed to generate lexer source!")?;
 
+        let user_trait_generator = UserTraitGenerator::try_new(
+            &self.builder.user_type_name,
+            &self.builder.module_name,
+            self.builder.auto_generate,
+            self.builder.productions.clone(),
+            grammar_config,
+        )?;
+        let mut type_info: GrammarTypeInfo =
+            GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
+        let user_trait_source = user_trait_generator
+            .generate_user_trait_source(&mut type_info)
+            .wrap_err("Failed to generate user trait source!")?;
+        if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
+            fs::write(user_trait_file_out, user_trait_source)
+                .into_diagnostic()
+                .wrap_err("Error writing generated user trait source!")?;
+            crate::try_format(user_trait_file_out)?;
+        } else if self.builder.debug_verbose {
+            println!("\nSource for semantic actions:\n{}", user_trait_source);
+        }
+
+        let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
+
         let parser_source = crate::generate_parser_source(
             grammar_config,
             &lexer_source,
@@ -531,6 +555,7 @@ impl GrammarGenerator<'_> {
             &self.builder.user_type_name,
             &self.builder.module_name,
             self.lookahead_dfa_s.as_ref().unwrap(),
+            ast_type_has_lifetime,
         )
         .wrap_err("Failed to generate parser source!")?;
 
@@ -543,25 +568,8 @@ impl GrammarGenerator<'_> {
             println!("\nParser source:\n{}", parser_source);
         }
 
-        let user_trait_generator = UserTraitGenerator::try_new(
-            &self.builder.user_type_name,
-            &self.builder.module_name,
-            self.builder.auto_generate,
-            self.builder.productions.clone(),
-            grammar_config,
-        )?;
-        let user_trait_source = user_trait_generator
-            .generate_user_trait_source()
-            .wrap_err("Failed to generate user trait source!")?;
-        if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
-            fs::write(user_trait_file_out, user_trait_source)
-                .into_diagnostic()
-                .wrap_err("Error writing generated user trait source!")?;
-            crate::try_format(user_trait_file_out)?;
-        } else if self.builder.debug_verbose {
-            println!("\nSource for semantic actions:\n{}", user_trait_source);
-        }
         self.state = Some(State::Finished);
+
         Ok(())
     }
 }

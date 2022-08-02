@@ -9,4 +9,4 @@
 List: [Items: Numbers] TrailingComma^;
 Items: Num {","^ Num};
 Num: "0|[1-9][0-9]*": Number;
-TrailingComma: [","];
+TrailingComma: [","^];

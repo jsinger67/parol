@@ -162,7 +162,7 @@ pub const PRODUCTIONS: &[Production; 10] = &[
         lhs: 5,
         production: &[ParseType::N(6)],
     },
-    // 8 - TrailingCommaOpt: ",";
+    // 8 - TrailingCommaOpt: ","^ /* Clipped */;
     Production {
         lhs: 6,
         production: &[ParseType::T(5)],
@@ -184,7 +184,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut ListGrammar<'t>,
+    user_actions: &mut ListGrammar,
 ) -> Result<Tree<ParseTreeType<'t>>>
 where
     T: AsRef<Path>,

@@ -85,7 +85,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     &["add", "id_tree@^1.8"],
     &["add", "lazy_static@^1.4"],
     &["add", "log@0.4.17"],
-    &["add", "miette@^5.1", "--features", "fancy"],
+    &["add", "miette@^5.2", "--features", "fancy"],
     &["add", "parol_runtime@0.7.1"],
     &["add", "thiserror@^1.0"],
     &[

@@ -146,6 +146,7 @@ pub fn generate_parser_source(
     user_type_name: &str,
     module_name: &str,
     la_dfa: &BTreeMap<String, LookaheadDFA>,
+    ast_type_has_lifetime: bool,
 ) -> Result<String> {
     let terminals = grammar_config
         .cfg
@@ -193,7 +194,7 @@ pub fn generate_parser_source(
             acc
         });
 
-    let user_type_life_time = "<'t>";
+    let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
     let parser_data = ParserData {
         start_symbol_index,

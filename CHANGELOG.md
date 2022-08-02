@@ -19,8 +19,15 @@ But we try to mark incompatible changes with a new minor version.
 
 ## Upcoming version
 
+* No changes yet
+
+## v0.10.4 - 2022-08-02
+
 * Improved logo. Texts have been converted to curves to ensure equal design on all systems.
 * Update [docs\ParGrammar.md](docs\ParGrammar.md) to fit the new features of `parol`'s input grammar.
+* Improved auto-generation:
+  * `parol` can now handle AST types without lifetime references to the scanned text.
+  * See changes in `list_auto` example
 
 ## v0.10.3 - 2022-07-09
 

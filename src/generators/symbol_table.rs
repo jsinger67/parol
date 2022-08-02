@@ -649,7 +649,7 @@ impl SymbolTable {
         ScopeId(self.scopes.len())
     }
 
-    pub(crate) fn _has_lifetime(&self, symbol_id: SymbolId) -> bool {
+    pub(crate) fn has_lifetime(&self, symbol_id: SymbolId) -> bool {
         self.symbols[symbol_id.0].lifetime
     }
 

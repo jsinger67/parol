@@ -12,5 +12,5 @@
 /*  5 */ ItemsList: ; // Vec<T>::New
 /*  6 */ Num: "0|[1-9][0-9]*" /* : crate::list_grammar::Number */;
 /*  7 */ TrailingComma: TrailingCommaOpt /* Option */;
-/*  8 */ TrailingCommaOpt: ","; // Option<T>::Some
+/*  8 */ TrailingCommaOpt: ","^ /* Clipped */; // Option<T>::Some
 /*  9 */ TrailingCommaOpt: ; // Option<T>::None

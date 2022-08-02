@@ -481,12 +481,11 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     /// Generates the file with the user actions trait.
     ///
-    pub fn generate_user_trait_source(&self) -> Result<String> {
-        let mut type_info: GrammarTypeInfo = GrammarTypeInfo::try_new(&self.user_type_name)?;
+    pub fn generate_user_trait_source(&self, type_info: &mut GrammarTypeInfo) -> Result<String> {
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(self.auto_generate)?;
 
-        self.add_user_actions(&mut type_info)?;
+        self.add_user_actions(type_info)?;
         type_info.symbol_table.propagate_lifetimes();
 
         let production_output_types = if self.auto_generate {
@@ -580,9 +579,9 @@ impl<'a> UserTraitGenerator<'a> {
                     self.generate_context(&mut code);
                     self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
                     self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_result_builder(&mut code, action_id, &type_info)?;
+                    self.generate_result_builder(&mut code, action_id, type_info)?;
                     self.generate_push_semantic(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_user_action_call(&mut code, action_id, &type_info)?;
+                    self.generate_user_action_call(&mut code, action_id, type_info)?;
                     self.generate_stack_push(&mut code, action_id, &type_info.symbol_table)?;
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
@@ -610,7 +609,7 @@ impl<'a> UserTraitGenerator<'a> {
                 |acc: Result<StrVec>, (nt, fn_id)| {
                     if let Ok(mut acc) = acc {
                         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-                        let fn_arguments = Self::generate_user_action_args(nt, &type_info)?;
+                        let fn_arguments = Self::generate_user_action_args(nt, type_info)?;
                         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                             .fn_name(fn_name)
                             .non_terminal(nt.to_string())
@@ -655,12 +654,14 @@ impl<'a> UserTraitGenerator<'a> {
         trace!("// Type information:");
         trace!("{}", type_info);
 
+        let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
         let user_trait_data = UserTraitDataBuilder::default()
             .user_type_name(&self.user_type_name)
             .auto_generate(self.auto_generate)
             .production_output_types(production_output_types)
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
+            .ast_type_has_lifetime(ast_type_has_lifetime)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
             .module_name(self.module_name)

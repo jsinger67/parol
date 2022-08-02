@@ -47,6 +47,7 @@ pub(crate) struct UserTraitData<'a> {
     pub production_output_types: StrVec,
     pub non_terminal_types: StrVec,
     pub ast_type_decl: String,
+    pub ast_type_has_lifetime: bool,
     pub trait_functions: StrVec,
     pub trait_caller: StrVec,
     pub module_name: &'a str,
