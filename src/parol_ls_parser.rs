@@ -50,7 +50,7 @@ pub const TERMINALS: &[&str; 36] = &[
     /* 25 */ r###"\{"###,
     /* 26 */ r###"\}"###,
     /* 27 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
-    /* 28 */ r###"\u{0022}([\\]|\\.)*?\u{0022}"###,
+    /* 28 */ r###"\u{22}([^\\]|\\.)*?\u{22}"###,
     /* 29 */ r###"%scanner"###,
     /* 30 */ r###","###,
     /* 31 */ r###"%sc"###,
@@ -822,7 +822,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 12,
         production: &[ParseType::T(27)],
     },
-    // 47 - String: "\u{0022}([\\]|\\.)*?\u{0022}";
+    // 47 - String: "\u{22}([^\\]|\\.)*?\u{22}";
     Production {
         lhs: 32,
         production: &[ParseType::T(28)],
@@ -945,7 +945,7 @@ lazy_static! {
 pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
-    user_actions: &mut ParolLsGrammar<'t>,
+    user_actions: &mut ParolLsGrammar,
 ) -> Result<Tree<ParseTreeType<'t>>>
 where
     T: AsRef<Path>,

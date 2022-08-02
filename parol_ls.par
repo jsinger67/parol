@@ -4,6 +4,9 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
+%user_type OwnedToken = parol_runtime::lexer::OwnedToken
+
+
 %%
 
 ParolLs
@@ -15,37 +18,37 @@ Prolog
     ;
 
 StartDeclaration
-    : "%start" Identifier
+    : "%start": OwnedToken Identifier
     ;
 
 Declaration
-    : "%title" String
-    | "%comment" String
-    | "%user_type" Identifier "=" UserTypeName
+    : "%title": OwnedToken String
+    | "%comment": OwnedToken String
+    | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName
     | ScannerDirectives
     ;
 
 ScannerDirectives
-    : "%line_comment" String
-    | "%block_comment" String String
-    | "%auto_newline_off"
-    | "%auto_ws_off"
+    : "%line_comment": OwnedToken String
+    | "%block_comment": OwnedToken String String
+    | "%auto_newline_off": OwnedToken
+    | "%auto_ws_off": OwnedToken
     ;
 
 GrammarDefinition
-    : "%%" Production { Production }
+    : "%%": OwnedToken Production { Production }
     ;
 
 DoubleColon
-    : "::"
+    : "::": OwnedToken
     ;
 
 Production
-    : Identifier ":" Alternations ";"
+    : Identifier ":": OwnedToken Alternations ";": OwnedToken
     ;
 
 Alternations
-    : Alternation { "\|" Alternation }
+    : Alternation { "\|": OwnedToken Alternation }
     ;
 
 Alternation
@@ -71,19 +74,19 @@ SimpleToken
     ;
 
 TokenWithStates
-    :  "<" StateList ">" String [ASTControl]
+    :  "<": OwnedToken StateList ">": OwnedToken String [ASTControl]
     ;
 
 Group
-    : "\(" Alternations "\)"
+    : "\(": OwnedToken Alternations "\)": OwnedToken
     ;
 
 Optional
-    : "\[" Alternations "\]"
+    : "\[": OwnedToken Alternations "\]": OwnedToken
     ;
 
 Repeat
-    : "\{" Alternations "\}"
+    : "\{": OwnedToken Alternations "\}": OwnedToken
     ;
 
 NonTerminal
@@ -91,25 +94,25 @@ NonTerminal
     ;
 
 Identifier
-    : "[a-zA-Z_][a-zA-Z0-9_]*"
+    : "[a-zA-Z_][a-zA-Z0-9_]*": OwnedToken
     ;
 
 String
-    : "\u{0022}([\\]|\\.)*?\u{0022}"
+    : "\u{22}([^\\]|\\.)*?\u{22}": OwnedToken
     ;
 
 ScannerState
-    : "%scanner" Identifier "\{" { ScannerDirectives } "\}"
+    : "%scanner": OwnedToken Identifier "\{": OwnedToken { ScannerDirectives } "\}": OwnedToken
     ;
 
 StateList
-    : Identifier { "," Identifier }
+    : Identifier { ",": OwnedToken Identifier }
     ;
 
 ScannerSwitch
-    : "%sc" "\(" [Identifier] "\)"
-    | "%push" "\(" Identifier "\)"
-    | "%pop" "\(" "\)"
+    : "%sc": OwnedToken "\(": OwnedToken [Identifier] "\)": OwnedToken
+    | "%push": OwnedToken "\(": OwnedToken Identifier "\)": OwnedToken
+    | "%pop": OwnedToken "\(": OwnedToken "\)": OwnedToken
     ;
 
 ASTControl
@@ -117,11 +120,11 @@ ASTControl
     ;
 
 CutOperator
-    : "\^"
+    : "\^": OwnedToken
     ;
 
 UserTypeDeclaration
-    : ":" UserTypeName
+    : ":": OwnedToken UserTypeName
     ;
 
 UserTypeName

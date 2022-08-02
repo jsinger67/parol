@@ -1,20 +1,26 @@
 [package]
-name = "parol_ls"
+name = "parol-ls"
 version = "0.1.0"
 edition = "2021"
+default-run = "parol-ls"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = { version = "3.2.12", features = [ "derive", "cargo" ] }
 derive_builder = "0.11.2"
 env_logger = "0.9.0"
 function_name = "0.3.0"
 id_tree = "^1.8"
 lazy_static = "^1.4"
 log = "0.4.17"
-miette = { version = "^5.1", features = ["fancy"] }
-parol_runtime = "0.7.1"
+lsp-server = "0.6.0"
+lsp-types = "0.93.0"
+miette = "^5.1"
+parol_runtime = { version = "0.7.1", features = ["trim_parse_tree"] }
+serde = "1.0.139"
+serde_json = "1.0.82"
 thiserror = "^1.0"
 
 [build-dependencies]
-parol = "0.10.3"
+parol = { path = "../parol" }

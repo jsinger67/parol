@@ -11,142 +11,143 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
-pub trait ParolLsGrammarTrait<'t> {
+pub trait ParolLsGrammarTrait {
     /// Semantic action for non-terminal 'ParolLs'
-    fn parol_ls(&mut self, _arg: &ParolLs<'t>) -> Result<()> {
+    fn parol_ls(&mut self, _arg: &ParolLs) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Prolog'
-    fn prolog(&mut self, _arg: &Prolog<'t>) -> Result<()> {
+    fn prolog(&mut self, _arg: &Prolog) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StartDeclaration'
-    fn start_declaration(&mut self, _arg: &StartDeclaration<'t>) -> Result<()> {
+    fn start_declaration(&mut self, _arg: &StartDeclaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Declaration'
-    fn declaration(&mut self, _arg: &Declaration<'t>) -> Result<()> {
+    fn declaration(&mut self, _arg: &Declaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerDirectives'
-    fn scanner_directives(&mut self, _arg: &ScannerDirectives<'t>) -> Result<()> {
+    fn scanner_directives(&mut self, _arg: &ScannerDirectives) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'GrammarDefinition'
-    fn grammar_definition(&mut self, _arg: &GrammarDefinition<'t>) -> Result<()> {
+    fn grammar_definition(&mut self, _arg: &GrammarDefinition) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DoubleColon'
-    fn double_colon(&mut self, _arg: &DoubleColon<'t>) -> Result<()> {
+    fn double_colon(&mut self, _arg: &DoubleColon) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Production'
-    fn production(&mut self, _arg: &Production<'t>) -> Result<()> {
+    fn production(&mut self, _arg: &Production) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Alternations'
-    fn alternations(&mut self, _arg: &Alternations<'t>) -> Result<()> {
+    fn alternations(&mut self, _arg: &Alternations) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Alternation'
-    fn alternation(&mut self, _arg: &Alternation<'t>) -> Result<()> {
+    fn alternation(&mut self, _arg: &Alternation) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+    fn factor(&mut self, _arg: &Factor) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Symbol'
-    fn symbol(&mut self, _arg: &Symbol<'t>) -> Result<()> {
+    fn symbol(&mut self, _arg: &Symbol) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleToken'
-    fn simple_token(&mut self, _arg: &SimpleToken<'t>) -> Result<()> {
+    fn simple_token(&mut self, _arg: &SimpleToken) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TokenWithStates'
-    fn token_with_states(&mut self, _arg: &TokenWithStates<'t>) -> Result<()> {
+    fn token_with_states(&mut self, _arg: &TokenWithStates) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Group'
-    fn group(&mut self, _arg: &Group<'t>) -> Result<()> {
+    fn group(&mut self, _arg: &Group) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Optional'
-    fn optional(&mut self, _arg: &Optional<'t>) -> Result<()> {
+    fn optional(&mut self, _arg: &Optional) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Repeat'
-    fn repeat(&mut self, _arg: &Repeat<'t>) -> Result<()> {
+    fn repeat(&mut self, _arg: &Repeat) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NonTerminal'
-    fn non_terminal(&mut self, _arg: &NonTerminal<'t>) -> Result<()> {
+    fn non_terminal(&mut self, _arg: &NonTerminal) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Identifier'
-    fn identifier(&mut self, _arg: &Identifier<'t>) -> Result<()> {
+    fn identifier(&mut self, _arg: &Identifier) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+    fn string(&mut self, _arg: &String) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerState'
-    fn scanner_state(&mut self, _arg: &ScannerState<'t>) -> Result<()> {
+    fn scanner_state(&mut self, _arg: &ScannerState) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StateList'
-    fn state_list(&mut self, _arg: &StateList<'t>) -> Result<()> {
+    fn state_list(&mut self, _arg: &StateList) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerSwitch'
-    fn scanner_switch(&mut self, _arg: &ScannerSwitch<'t>) -> Result<()> {
+    fn scanner_switch(&mut self, _arg: &ScannerSwitch) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ASTControl'
-    fn a_s_t_control(&mut self, _arg: &ASTControl<'t>) -> Result<()> {
+    fn a_s_t_control(&mut self, _arg: &ASTControl) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'CutOperator'
-    fn cut_operator(&mut self, _arg: &CutOperator<'t>) -> Result<()> {
+    fn cut_operator(&mut self, _arg: &CutOperator) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UserTypeDeclaration'
-    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration<'t>) -> Result<()> {
+    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UserTypeName'
-    fn user_type_name(&mut self, _arg: &UserTypeName<'t>) -> Result<()> {
+    fn user_type_name(&mut self, _arg: &UserTypeName) -> Result<()> {
         Ok(())
     }
 }
@@ -159,39 +160,39 @@ pub trait ParolLsGrammarTrait<'t> {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title" String;
+/// Declaration: "%title" /* : parol_runtime::lexer::OwnedToken */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration0<'t> {
-    pub percent_title: Token<'t>, /* %title */
-    pub string: Box<String<'t>>,
+pub struct Declaration0 {
+    pub percent_title: parol_runtime::lexer::OwnedToken, /* %title */
+    pub string: Box<String>,
 }
 
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment" String;
+/// Declaration: "%comment" /* : parol_runtime::lexer::OwnedToken */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration1<'t> {
-    pub percent_comment: Token<'t>, /* %comment */
-    pub string: Box<String<'t>>,
+pub struct Declaration1 {
+    pub percent_comment: parol_runtime::lexer::OwnedToken, /* %comment */
+    pub string: Box<String>,
 }
 
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type" Identifier "=" UserTypeName;
+/// Declaration: "%user_type" /* : parol_runtime::lexer::OwnedToken */ Identifier "=" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration2<'t> {
-    pub percent_user_underscore_type: Token<'t>, /* %user_type */
-    pub identifier: Box<Identifier<'t>>,
-    pub equ: Token<'t>, /* = */
-    pub user_type_name: Box<UserTypeName<'t>>,
+pub struct Declaration2 {
+    pub percent_user_underscore_type: parol_runtime::lexer::OwnedToken, /* %user_type */
+    pub identifier: Box<Identifier>,
+    pub equ: parol_runtime::lexer::OwnedToken, /* = */
+    pub user_type_name: Box<UserTypeName>,
 }
 
 ///
@@ -201,55 +202,55 @@ pub struct Declaration2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration3<'t> {
-    pub scanner_directives: Box<ScannerDirectives<'t>>,
+pub struct Declaration3 {
+    pub scanner_directives: Box<ScannerDirectives>,
 }
 
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%line_comment" String;
+/// ScannerDirectives: "%line_comment" /* : parol_runtime::lexer::OwnedToken */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives0<'t> {
-    pub percent_line_underscore_comment: Token<'t>, /* %line_comment */
-    pub string: Box<String<'t>>,
+pub struct ScannerDirectives0 {
+    pub percent_line_underscore_comment: parol_runtime::lexer::OwnedToken, /* %line_comment */
+    pub string: Box<String>,
 }
 
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%block_comment" String String;
+/// ScannerDirectives: "%block_comment" /* : parol_runtime::lexer::OwnedToken */ String String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives1<'t> {
-    pub percent_block_underscore_comment: Token<'t>, /* %block_comment */
-    pub string: Box<String<'t>>,
-    pub string0: Box<String<'t>>,
+pub struct ScannerDirectives1 {
+    pub percent_block_underscore_comment: parol_runtime::lexer::OwnedToken, /* %block_comment */
+    pub string: Box<String>,
+    pub string0: Box<String>,
 }
 
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_newline_off";
+/// ScannerDirectives: "%auto_newline_off" /* : parol_runtime::lexer::OwnedToken */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives2<'t> {
-    pub percent_auto_underscore_newline_underscore_off: Token<'t>, /* %auto_newline_off */
+pub struct ScannerDirectives2 {
+    pub percent_auto_underscore_newline_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_newline_off */
 }
 
 ///
 /// Type derived for production 14
 ///
-/// ScannerDirectives: "%auto_ws_off";
+/// ScannerDirectives: "%auto_ws_off" /* : parol_runtime::lexer::OwnedToken */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives3<'t> {
-    pub percent_auto_underscore_ws_underscore_off: Token<'t>, /* %auto_ws_off */
+pub struct ScannerDirectives3 {
+    pub percent_auto_underscore_ws_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_ws_off */
 }
 
 ///
@@ -259,8 +260,8 @@ pub struct ScannerDirectives3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0<'t> {
-    pub group: Box<Group<'t>>,
+pub struct Factor0 {
+    pub group: Box<Group>,
 }
 
 ///
@@ -270,8 +271,8 @@ pub struct Factor0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor1<'t> {
-    pub repeat: Box<Repeat<'t>>,
+pub struct Factor1 {
+    pub repeat: Box<Repeat>,
 }
 
 ///
@@ -281,8 +282,8 @@ pub struct Factor1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor2<'t> {
-    pub optional: Box<Optional<'t>>,
+pub struct Factor2 {
+    pub optional: Box<Optional>,
 }
 
 ///
@@ -292,8 +293,8 @@ pub struct Factor2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor3<'t> {
-    pub symbol: Box<Symbol<'t>>,
+pub struct Factor3 {
+    pub symbol: Box<Symbol>,
 }
 
 ///
@@ -303,8 +304,8 @@ pub struct Factor3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol0<'t> {
-    pub non_terminal: Box<NonTerminal<'t>>,
+pub struct Symbol0 {
+    pub non_terminal: Box<NonTerminal>,
 }
 
 ///
@@ -314,8 +315,8 @@ pub struct Symbol0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol1<'t> {
-    pub simple_token: Box<SimpleToken<'t>>,
+pub struct Symbol1 {
+    pub simple_token: Box<SimpleToken>,
 }
 
 ///
@@ -325,8 +326,8 @@ pub struct Symbol1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol2<'t> {
-    pub token_with_states: Box<TokenWithStates<'t>>,
+pub struct Symbol2 {
+    pub token_with_states: Box<TokenWithStates>,
 }
 
 ///
@@ -336,49 +337,49 @@ pub struct Symbol2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol3<'t> {
-    pub scanner_switch: Box<ScannerSwitch<'t>>,
+pub struct Symbol3 {
+    pub scanner_switch: Box<ScannerSwitch>,
 }
 
 ///
 /// Type derived for production 54
 ///
-/// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+/// ScannerSwitch: "%sc" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ ScannerSwitchOpt /* Option */ "\)" /* : parol_runtime::lexer::OwnedToken */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch0<'t> {
-    pub percent_sc: Token<'t>, /* %sc */
-    pub l_paren: Token<'t>,    /* \( */
-    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
-    pub r_paren: Token<'t>, /* \) */
+pub struct ScannerSwitch0 {
+    pub percent_sc: parol_runtime::lexer::OwnedToken, /* %sc */
+    pub l_paren: parol_runtime::lexer::OwnedToken,    /* \( */
+    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt>>,
+    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
 }
 
 ///
 /// Type derived for production 55
 ///
-/// ScannerSwitch: "%push" "\(" Identifier "\)";
+/// ScannerSwitch: "%push" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ Identifier "\)" /* : parol_runtime::lexer::OwnedToken */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch1<'t> {
-    pub percent_push: Token<'t>, /* %push */
-    pub l_paren: Token<'t>,      /* \( */
-    pub identifier: Box<Identifier<'t>>,
-    pub r_paren: Token<'t>, /* \) */
+pub struct ScannerSwitch1 {
+    pub percent_push: parol_runtime::lexer::OwnedToken, /* %push */
+    pub l_paren: parol_runtime::lexer::OwnedToken,      /* \( */
+    pub identifier: Box<Identifier>,
+    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
 }
 
 ///
 /// Type derived for production 56
 ///
-/// ScannerSwitch: "%pop" "\(" "\)";
+/// ScannerSwitch: "%pop" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ "\)" /* : parol_runtime::lexer::OwnedToken */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch2<'t> {
-    pub percent_pop: Token<'t>, /* %pop */
-    pub l_paren: Token<'t>,     /* \( */
-    pub r_paren: Token<'t>,     /* \) */
+pub struct ScannerSwitch2 {
+    pub percent_pop: parol_runtime::lexer::OwnedToken, /* %pop */
+    pub l_paren: parol_runtime::lexer::OwnedToken,     /* \( */
+    pub r_paren: parol_runtime::lexer::OwnedToken,     /* \) */
 }
 
 ///
@@ -388,8 +389,8 @@ pub struct ScannerSwitch2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ASTControl0<'t> {
-    pub cut_operator: Box<CutOperator<'t>>,
+pub struct ASTControl0 {
+    pub cut_operator: Box<CutOperator>,
 }
 
 ///
@@ -399,8 +400,8 @@ pub struct ASTControl0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ASTControl1<'t> {
-    pub user_type_declaration: Box<UserTypeDeclaration<'t>>,
+pub struct ASTControl1 {
+    pub user_type_declaration: Box<UserTypeDeclaration>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -413,9 +414,9 @@ pub struct ASTControl1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTControl<'t> {
-    ASTControl0(ASTControl0<'t>),
-    ASTControl1(ASTControl1<'t>),
+pub enum ASTControl {
+    ASTControl0(ASTControl0),
+    ASTControl1(ASTControl1),
 }
 
 ///
@@ -423,8 +424,8 @@ pub enum ASTControl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Alternation<'t> {
-    pub alternation_list: Vec<AlternationList<'t>>,
+pub struct Alternation {
+    pub alternation_list: Vec<AlternationList>,
 }
 
 ///
@@ -432,8 +433,8 @@ pub struct Alternation<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AlternationList<'t> {
-    pub factor: Box<Factor<'t>>,
+pub struct AlternationList {
+    pub factor: Box<Factor>,
 }
 
 ///
@@ -441,9 +442,9 @@ pub struct AlternationList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Alternations<'t> {
-    pub alternation: Box<Alternation<'t>>,
-    pub alternations_list: Vec<AlternationsList<'t>>,
+pub struct Alternations {
+    pub alternation: Box<Alternation>,
+    pub alternations_list: Vec<AlternationsList>,
 }
 
 ///
@@ -451,9 +452,9 @@ pub struct Alternations<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AlternationsList<'t> {
-    pub or: Token<'t>, /* \| */
-    pub alternation: Box<Alternation<'t>>,
+pub struct AlternationsList {
+    pub or: parol_runtime::lexer::OwnedToken, /* \| */
+    pub alternation: Box<Alternation>,
 }
 
 ///
@@ -461,8 +462,8 @@ pub struct AlternationsList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CutOperator<'t> {
-    pub cut_operator: Token<'t>, /* \^ */
+pub struct CutOperator {
+    pub cut_operator: parol_runtime::lexer::OwnedToken, /* \^ */
 }
 
 ///
@@ -470,11 +471,11 @@ pub struct CutOperator<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Declaration<'t> {
-    Declaration0(Declaration0<'t>),
-    Declaration1(Declaration1<'t>),
-    Declaration2(Declaration2<'t>),
-    Declaration3(Declaration3<'t>),
+pub enum Declaration {
+    Declaration0(Declaration0),
+    Declaration1(Declaration1),
+    Declaration2(Declaration2),
+    Declaration3(Declaration3),
 }
 
 ///
@@ -482,8 +483,8 @@ pub enum Declaration<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DoubleColon<'t> {
-    pub double_colon: Token<'t>, /* :: */
+pub struct DoubleColon {
+    pub double_colon: parol_runtime::lexer::OwnedToken, /* :: */
 }
 
 ///
@@ -491,11 +492,11 @@ pub struct DoubleColon<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Factor<'t> {
-    Factor0(Factor0<'t>),
-    Factor1(Factor1<'t>),
-    Factor2(Factor2<'t>),
-    Factor3(Factor3<'t>),
+pub enum Factor {
+    Factor0(Factor0),
+    Factor1(Factor1),
+    Factor2(Factor2),
+    Factor3(Factor3),
 }
 
 ///
@@ -503,10 +504,10 @@ pub enum Factor<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct GrammarDefinition<'t> {
-    pub percent_percent: Token<'t>, /* %% */
-    pub production: Box<Production<'t>>,
-    pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>,
+pub struct GrammarDefinition {
+    pub percent_percent: parol_runtime::lexer::OwnedToken, /* %% */
+    pub production: Box<Production>,
+    pub grammar_definition_list: Vec<GrammarDefinitionList>,
 }
 
 ///
@@ -514,8 +515,8 @@ pub struct GrammarDefinition<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct GrammarDefinitionList<'t> {
-    pub production: Box<Production<'t>>,
+pub struct GrammarDefinitionList {
+    pub production: Box<Production>,
 }
 
 ///
@@ -523,10 +524,10 @@ pub struct GrammarDefinitionList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Group<'t> {
-    pub l_paren: Token<'t>, /* \( */
-    pub alternations: Box<Alternations<'t>>,
-    pub r_paren: Token<'t>, /* \) */
+pub struct Group {
+    pub l_paren: parol_runtime::lexer::OwnedToken, /* \( */
+    pub alternations: Box<Alternations>,
+    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
 }
 
 ///
@@ -534,8 +535,8 @@ pub struct Group<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Identifier<'t> {
-    pub identifier: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
+pub struct Identifier {
+    pub identifier: parol_runtime::lexer::OwnedToken, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
 
 ///
@@ -543,9 +544,9 @@ pub struct Identifier<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct NonTerminal<'t> {
-    pub identifier: Box<Identifier<'t>>,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt<'t>>>,
+pub struct NonTerminal {
+    pub identifier: Box<Identifier>,
+    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
 }
 
 ///
@@ -553,8 +554,8 @@ pub struct NonTerminal<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct NonTerminalOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct NonTerminalOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -562,10 +563,10 @@ pub struct NonTerminalOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Optional<'t> {
-    pub l_bracket: Token<'t>, /* \[ */
-    pub alternations: Box<Alternations<'t>>,
-    pub r_bracket: Token<'t>, /* \] */
+pub struct Optional {
+    pub l_bracket: parol_runtime::lexer::OwnedToken, /* \[ */
+    pub alternations: Box<Alternations>,
+    pub r_bracket: parol_runtime::lexer::OwnedToken, /* \] */
 }
 
 ///
@@ -573,9 +574,9 @@ pub struct Optional<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ParolLs<'t> {
-    pub prolog: Box<Prolog<'t>>,
-    pub grammar_definition: Box<GrammarDefinition<'t>>,
+pub struct ParolLs {
+    pub prolog: Box<Prolog>,
+    pub grammar_definition: Box<GrammarDefinition>,
 }
 
 ///
@@ -583,11 +584,11 @@ pub struct ParolLs<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Production<'t> {
-    pub identifier: Box<Identifier<'t>>,
-    pub colon: Token<'t>, /* : */
-    pub alternations: Box<Alternations<'t>>,
-    pub semicolon: Token<'t>, /* ; */
+pub struct Production {
+    pub identifier: Box<Identifier>,
+    pub colon: parol_runtime::lexer::OwnedToken, /* : */
+    pub alternations: Box<Alternations>,
+    pub semicolon: parol_runtime::lexer::OwnedToken, /* ; */
 }
 
 ///
@@ -595,10 +596,10 @@ pub struct Production<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Prolog<'t> {
-    pub start_declaration: Box<StartDeclaration<'t>>,
-    pub prolog_list: Vec<PrologList<'t>>,
-    pub prolog_list0: Vec<PrologList0<'t>>,
+pub struct Prolog {
+    pub start_declaration: Box<StartDeclaration>,
+    pub prolog_list: Vec<PrologList>,
+    pub prolog_list0: Vec<PrologList0>,
 }
 
 ///
@@ -606,8 +607,8 @@ pub struct Prolog<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct PrologList<'t> {
-    pub declaration: Box<Declaration<'t>>,
+pub struct PrologList {
+    pub declaration: Box<Declaration>,
 }
 
 ///
@@ -615,8 +616,8 @@ pub struct PrologList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct PrologList0<'t> {
-    pub scanner_state: Box<ScannerState<'t>>,
+pub struct PrologList0 {
+    pub scanner_state: Box<ScannerState>,
 }
 
 ///
@@ -624,10 +625,10 @@ pub struct PrologList0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Repeat<'t> {
-    pub l_brace: Token<'t>, /* \{ */
-    pub alternations: Box<Alternations<'t>>,
-    pub r_brace: Token<'t>, /* \} */
+pub struct Repeat {
+    pub l_brace: parol_runtime::lexer::OwnedToken, /* \{ */
+    pub alternations: Box<Alternations>,
+    pub r_brace: parol_runtime::lexer::OwnedToken, /* \} */
 }
 
 ///
@@ -635,11 +636,11 @@ pub struct Repeat<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ScannerDirectives<'t> {
-    ScannerDirectives0(ScannerDirectives0<'t>),
-    ScannerDirectives1(ScannerDirectives1<'t>),
-    ScannerDirectives2(ScannerDirectives2<'t>),
-    ScannerDirectives3(ScannerDirectives3<'t>),
+pub enum ScannerDirectives {
+    ScannerDirectives0(ScannerDirectives0),
+    ScannerDirectives1(ScannerDirectives1),
+    ScannerDirectives2(ScannerDirectives2),
+    ScannerDirectives3(ScannerDirectives3),
 }
 
 ///
@@ -647,12 +648,12 @@ pub enum ScannerDirectives<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerState<'t> {
-    pub percent_scanner: Token<'t>, /* %scanner */
-    pub identifier: Box<Identifier<'t>>,
-    pub l_brace: Token<'t>, /* \{ */
-    pub scanner_state_list: Vec<ScannerStateList<'t>>,
-    pub r_brace: Token<'t>, /* \} */
+pub struct ScannerState {
+    pub percent_scanner: parol_runtime::lexer::OwnedToken, /* %scanner */
+    pub identifier: Box<Identifier>,
+    pub l_brace: parol_runtime::lexer::OwnedToken, /* \{ */
+    pub scanner_state_list: Vec<ScannerStateList>,
+    pub r_brace: parol_runtime::lexer::OwnedToken, /* \} */
 }
 
 ///
@@ -660,8 +661,8 @@ pub struct ScannerState<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerStateList<'t> {
-    pub scanner_directives: Box<ScannerDirectives<'t>>,
+pub struct ScannerStateList {
+    pub scanner_directives: Box<ScannerDirectives>,
 }
 
 ///
@@ -669,10 +670,10 @@ pub struct ScannerStateList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ScannerSwitch<'t> {
-    ScannerSwitch0(ScannerSwitch0<'t>),
-    ScannerSwitch1(ScannerSwitch1<'t>),
-    ScannerSwitch2(ScannerSwitch2<'t>),
+pub enum ScannerSwitch {
+    ScannerSwitch0(ScannerSwitch0),
+    ScannerSwitch1(ScannerSwitch1),
+    ScannerSwitch2(ScannerSwitch2),
 }
 
 ///
@@ -680,8 +681,8 @@ pub enum ScannerSwitch<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitchOpt<'t> {
-    pub identifier: Box<Identifier<'t>>,
+pub struct ScannerSwitchOpt {
+    pub identifier: Box<Identifier>,
 }
 
 ///
@@ -689,9 +690,9 @@ pub struct ScannerSwitchOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleToken<'t> {
-    pub string: Box<String<'t>>,
-    pub simple_token_opt: Option<Box<SimpleTokenOpt<'t>>>,
+pub struct SimpleToken {
+    pub string: Box<String>,
+    pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
 ///
@@ -699,8 +700,8 @@ pub struct SimpleToken<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleTokenOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct SimpleTokenOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -708,9 +709,9 @@ pub struct SimpleTokenOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StartDeclaration<'t> {
-    pub percent_start: Token<'t>, /* %start */
-    pub identifier: Box<Identifier<'t>>,
+pub struct StartDeclaration {
+    pub percent_start: parol_runtime::lexer::OwnedToken, /* %start */
+    pub identifier: Box<Identifier>,
 }
 
 ///
@@ -718,9 +719,9 @@ pub struct StartDeclaration<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StateList<'t> {
-    pub identifier: Box<Identifier<'t>>,
-    pub state_list_list: Vec<StateListList<'t>>,
+pub struct StateList {
+    pub identifier: Box<Identifier>,
+    pub state_list_list: Vec<StateListList>,
 }
 
 ///
@@ -728,9 +729,9 @@ pub struct StateList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StateListList<'t> {
-    pub comma: Token<'t>, /* , */
-    pub identifier: Box<Identifier<'t>>,
+pub struct StateListList {
+    pub comma: parol_runtime::lexer::OwnedToken, /* , */
+    pub identifier: Box<Identifier>,
 }
 
 ///
@@ -738,8 +739,8 @@ pub struct StateListList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct String<'t> {
-    pub string: Token<'t>, /* \u{0022}([\\]|\\.)*?\u{0022} */
+pub struct String {
+    pub string: parol_runtime::lexer::OwnedToken, /* \u{22}([^\\]|\\.)*?\u{22} */
 }
 
 ///
@@ -747,11 +748,11 @@ pub struct String<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum Symbol<'t> {
-    Symbol0(Symbol0<'t>),
-    Symbol1(Symbol1<'t>),
-    Symbol2(Symbol2<'t>),
-    Symbol3(Symbol3<'t>),
+pub enum Symbol {
+    Symbol0(Symbol0),
+    Symbol1(Symbol1),
+    Symbol2(Symbol2),
+    Symbol3(Symbol3),
 }
 
 ///
@@ -759,12 +760,12 @@ pub enum Symbol<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenWithStates<'t> {
-    pub l_t: Token<'t>, /* < */
-    pub state_list: Box<StateList<'t>>,
-    pub g_t: Token<'t>, /* > */
-    pub string: Box<String<'t>>,
-    pub token_with_states_opt: Option<Box<TokenWithStatesOpt<'t>>>,
+pub struct TokenWithStates {
+    pub l_t: parol_runtime::lexer::OwnedToken, /* < */
+    pub state_list: Box<StateList>,
+    pub g_t: parol_runtime::lexer::OwnedToken, /* > */
+    pub string: Box<String>,
+    pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
 ///
@@ -772,8 +773,8 @@ pub struct TokenWithStates<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenWithStatesOpt<'t> {
-    pub a_s_t_control: Box<ASTControl<'t>>,
+pub struct TokenWithStatesOpt {
+    pub a_s_t_control: Box<ASTControl>,
 }
 
 ///
@@ -781,9 +782,9 @@ pub struct TokenWithStatesOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct UserTypeDeclaration<'t> {
-    pub colon: Token<'t>, /* : */
-    pub user_type_name: Box<UserTypeName<'t>>,
+pub struct UserTypeDeclaration {
+    pub colon: parol_runtime::lexer::OwnedToken, /* : */
+    pub user_type_name: Box<UserTypeName>,
 }
 
 ///
@@ -791,9 +792,9 @@ pub struct UserTypeDeclaration<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct UserTypeName<'t> {
-    pub identifier: Box<Identifier<'t>>,
-    pub user_type_name_list: Vec<UserTypeNameList<'t>>,
+pub struct UserTypeName {
+    pub identifier: Box<Identifier>,
+    pub user_type_name_list: Vec<UserTypeNameList>,
 }
 
 ///
@@ -801,9 +802,9 @@ pub struct UserTypeName<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct UserTypeNameList<'t> {
-    pub double_colon: Box<DoubleColon<'t>>,
-    pub identifier: Box<Identifier<'t>>,
+pub struct UserTypeNameList {
+    pub double_colon: Box<DoubleColon>,
+    pub identifier: Box<Identifier>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -813,46 +814,46 @@ pub struct UserTypeNameList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum ASTType<'t> {
-    ASTControl(ASTControl<'t>),
-    Alternation(Alternation<'t>),
-    AlternationList(Vec<AlternationList<'t>>),
-    Alternations(Alternations<'t>),
-    AlternationsList(Vec<AlternationsList<'t>>),
-    CutOperator(CutOperator<'t>),
-    Declaration(Declaration<'t>),
-    DoubleColon(DoubleColon<'t>),
-    Factor(Factor<'t>),
-    GrammarDefinition(GrammarDefinition<'t>),
-    GrammarDefinitionList(Vec<GrammarDefinitionList<'t>>),
-    Group(Group<'t>),
-    Identifier(Identifier<'t>),
-    NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<Box<NonTerminalOpt<'t>>>),
-    Optional(Optional<'t>),
-    ParolLs(ParolLs<'t>),
-    Production(Production<'t>),
-    Prolog(Prolog<'t>),
-    PrologList(Vec<PrologList<'t>>),
-    PrologList0(Vec<PrologList0<'t>>),
-    Repeat(Repeat<'t>),
-    ScannerDirectives(ScannerDirectives<'t>),
-    ScannerState(ScannerState<'t>),
-    ScannerStateList(Vec<ScannerStateList<'t>>),
-    ScannerSwitch(ScannerSwitch<'t>),
-    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
-    SimpleToken(SimpleToken<'t>),
-    SimpleTokenOpt(Option<Box<SimpleTokenOpt<'t>>>),
-    StartDeclaration(StartDeclaration<'t>),
-    StateList(StateList<'t>),
-    StateListList(Vec<StateListList<'t>>),
-    String(String<'t>),
-    Symbol(Symbol<'t>),
-    TokenWithStates(TokenWithStates<'t>),
-    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt<'t>>>),
-    UserTypeDeclaration(UserTypeDeclaration<'t>),
-    UserTypeName(UserTypeName<'t>),
-    UserTypeNameList(Vec<UserTypeNameList<'t>>),
+pub enum ASTType {
+    ASTControl(ASTControl),
+    Alternation(Alternation),
+    AlternationList(Vec<AlternationList>),
+    Alternations(Alternations),
+    AlternationsList(Vec<AlternationsList>),
+    CutOperator(CutOperator),
+    Declaration(Declaration),
+    DoubleColon(DoubleColon),
+    Factor(Factor),
+    GrammarDefinition(GrammarDefinition),
+    GrammarDefinitionList(Vec<GrammarDefinitionList>),
+    Group(Group),
+    Identifier(Identifier),
+    NonTerminal(NonTerminal),
+    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
+    Optional(Optional),
+    ParolLs(ParolLs),
+    Production(Production),
+    Prolog(Prolog),
+    PrologList(Vec<PrologList>),
+    PrologList0(Vec<PrologList0>),
+    Repeat(Repeat),
+    ScannerDirectives(ScannerDirectives),
+    ScannerState(ScannerState),
+    ScannerStateList(Vec<ScannerStateList>),
+    ScannerSwitch(ScannerSwitch),
+    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt>>),
+    SimpleToken(SimpleToken),
+    SimpleTokenOpt(Option<Box<SimpleTokenOpt>>),
+    StartDeclaration(StartDeclaration),
+    StateList(StateList),
+    StateListList(Vec<StateListList>),
+    String(String),
+    Symbol(Symbol),
+    TokenWithStates(TokenWithStates),
+    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
+    UserTypeDeclaration(UserTypeDeclaration),
+    UserTypeName(UserTypeName),
+    UserTypeNameList(Vec<UserTypeNameList>),
 }
 
 /// Auto-implemented adapter grammar
@@ -866,9 +867,11 @@ where
     't: 'u,
 {
     // Mutable reference of the actual user grammar to be able to call the semantic actions on it
-    user_grammar: &'u mut dyn ParolLsGrammarTrait<'t>,
+    user_grammar: &'u mut dyn ParolLsGrammarTrait,
     // Stack to construct the AST on it
-    item_stack: Vec<ASTType<'t>>,
+    item_stack: Vec<ASTType>,
+    // Just to hold the lifetime generated by parol
+    phantom: PhantomData<&'t str>,
 }
 
 ///
@@ -876,21 +879,22 @@ where
 /// given grammar.
 ///
 impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
-    pub fn new(user_grammar: &'u mut dyn ParolLsGrammarTrait<'t>) -> Self {
+    pub fn new(user_grammar: &'u mut dyn ParolLsGrammarTrait) -> Self {
         Self {
             user_grammar,
             item_stack: Vec::new(),
+            phantom: PhantomData::default(),
         }
     }
 
     #[allow(dead_code)]
-    fn push(&mut self, item: ASTType<'t>, context: &str) {
+    fn push(&mut self, item: ASTType, context: &str) {
         trace!("push    {}: {:?}", context, item);
         self.item_stack.push(item)
     }
 
     #[allow(dead_code)]
-    fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
+    fn pop(&mut self, context: &str) -> Option<ASTType> {
         if !self.item_stack.is_empty() {
             let item = self.item_stack.pop();
             if let Some(ref item) = item {
@@ -1091,7 +1095,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start" Identifier;
+    /// StartDeclaration: "%start" /* : parol_runtime::lexer::OwnedToken */ Identifier;
     ///
     #[named]
     fn start_declaration(
@@ -1102,7 +1106,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_start = percent_start.token(parse_tree)?.clone();
+        let percent_start = percent_start
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
@@ -1122,7 +1129,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title" String;
+    /// Declaration: "%title" /* : parol_runtime::lexer::OwnedToken */ String;
     ///
     #[named]
     fn declaration_0(
@@ -1133,7 +1140,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_title = percent_title.token(parse_tree)?.clone();
+        let percent_title = percent_title
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1153,7 +1163,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment" String;
+    /// Declaration: "%comment" /* : parol_runtime::lexer::OwnedToken */ String;
     ///
     #[named]
     fn declaration_1(
@@ -1164,7 +1174,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_comment = percent_comment.token(parse_tree)?.clone();
+        let percent_comment = percent_comment
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1184,7 +1197,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type" Identifier "=" UserTypeName;
+    /// Declaration: "%user_type" /* : parol_runtime::lexer::OwnedToken */ Identifier "=" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
     ///
     #[named]
     fn declaration_2(
@@ -1197,8 +1210,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_user_underscore_type = percent_user_underscore_type.token(parse_tree)?.clone();
-        let equ = equ.token(parse_tree)?.clone();
+        let percent_user_underscore_type = percent_user_underscore_type
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let equ = equ.token(parse_tree)?.try_into().into_diagnostic()?;
         let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
         {
             user_type_name
@@ -1255,7 +1271,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%line_comment" String;
+    /// ScannerDirectives: "%line_comment" /* : parol_runtime::lexer::OwnedToken */ String;
     ///
     #[named]
     fn scanner_directives_0(
@@ -1266,8 +1282,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_line_underscore_comment =
-            percent_line_underscore_comment.token(parse_tree)?.clone();
+        let percent_line_underscore_comment = percent_line_underscore_comment
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1292,7 +1310,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%block_comment" String String;
+    /// ScannerDirectives: "%block_comment" /* : parol_runtime::lexer::OwnedToken */ String String;
     ///
     #[named]
     fn scanner_directives_1(
@@ -1304,8 +1322,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_block_underscore_comment =
-            percent_block_underscore_comment.token(parse_tree)?.clone();
+        let percent_block_underscore_comment = percent_block_underscore_comment
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
             string0
         } else {
@@ -1336,7 +1356,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_newline_off";
+    /// ScannerDirectives: "%auto_newline_off" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_directives_2(
@@ -1349,7 +1369,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let percent_auto_underscore_newline_underscore_off =
             percent_auto_underscore_newline_underscore_off
                 .token(parse_tree)?
-                .clone();
+                .try_into()
+                .into_diagnostic()?;
         let scanner_directives_2_built = ScannerDirectives2Builder::default()
             .percent_auto_underscore_newline_underscore_off(
                 percent_auto_underscore_newline_underscore_off,
@@ -1370,7 +1391,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// ScannerDirectives: "%auto_ws_off";
+    /// ScannerDirectives: "%auto_ws_off" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_directives_3(
@@ -1382,7 +1403,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let percent_auto_underscore_ws_underscore_off = percent_auto_underscore_ws_underscore_off
             .token(parse_tree)?
-            .clone();
+            .try_into()
+            .into_diagnostic()?;
         let scanner_directives_3_built = ScannerDirectives3Builder::default()
             .percent_auto_underscore_ws_underscore_off(percent_auto_underscore_ws_underscore_off)
             .build()
@@ -1401,7 +1423,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinition: "%%" Production GrammarDefinitionList /* Vec */;
+    /// GrammarDefinition: "%%" /* : parol_runtime::lexer::OwnedToken */ Production GrammarDefinitionList /* Vec */;
     ///
     #[named]
     fn grammar_definition(
@@ -1413,7 +1435,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_percent = percent_percent.token(parse_tree)?.clone();
+        let percent_percent = percent_percent
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let grammar_definition_list =
             if let Some(ASTType::GrammarDefinitionList(mut grammar_definition_list)) =
                 self.pop(context)
@@ -1501,7 +1526,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// DoubleColon: "::";
+    /// DoubleColon: "::" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn double_colon(
@@ -1511,7 +1536,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let double_colon = double_colon.token(parse_tree)?.clone();
+        let double_colon = double_colon
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let double_colon_built = DoubleColonBuilder::default()
             .double_colon(double_colon)
             .build()
@@ -1524,7 +1552,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Identifier ":" Alternations ";";
+    /// Production: Identifier ":" /* : parol_runtime::lexer::OwnedToken */ Alternations ";" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn production(
@@ -1537,8 +1565,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token(parse_tree)?.clone();
-        let semicolon = semicolon.token(parse_tree)?.clone();
+        let colon = colon.token(parse_tree)?.try_into().into_diagnostic()?;
+        let semicolon = semicolon.token(parse_tree)?.try_into().into_diagnostic()?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
@@ -1600,7 +1628,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList: "\|" Alternation AlternationsList; // Vec<T>::Push
+    /// AlternationsList: "\|" /* : parol_runtime::lexer::OwnedToken */ Alternation AlternationsList; // Vec<T>::Push
     ///
     #[named]
     fn alternations_list_0(
@@ -1612,7 +1640,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let or = or.token(parse_tree)?.clone();
+        let or = or.token(parse_tree)?.try_into().into_diagnostic()?;
         let mut alternations_list =
             if let Some(ASTType::AlternationsList(alternations_list)) = self.pop(context) {
                 alternations_list
@@ -2030,7 +2058,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// TokenWithStates: "<" StateList ">" String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<" /* : parol_runtime::lexer::OwnedToken */ StateList ">" /* : parol_runtime::lexer::OwnedToken */ String TokenWithStatesOpt /* Option */;
     ///
     #[named]
     fn token_with_states(
@@ -2044,8 +2072,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_t = l_t.token(parse_tree)?.clone();
-        let g_t = g_t.token(parse_tree)?.clone();
+        let l_t = l_t.token(parse_tree)?.try_into().into_diagnostic()?;
+        let g_t = g_t.token(parse_tree)?.try_into().into_diagnostic()?;
         let token_with_states_opt =
             if let Some(ASTType::TokenWithStatesOpt(token_with_states_opt)) = self.pop(context) {
                 token_with_states_opt
@@ -2119,7 +2147,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// Group: "\(" Alternations "\)";
+    /// Group: "\(" /* : parol_runtime::lexer::OwnedToken */ Alternations "\)" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn group(
@@ -2131,8 +2159,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = l_paren.token(parse_tree)?.clone();
-        let r_paren = r_paren.token(parse_tree)?.clone();
+        let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
@@ -2152,7 +2180,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// Optional: "\[" Alternations "\]";
+    /// Optional: "\[" /* : parol_runtime::lexer::OwnedToken */ Alternations "\]" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn optional(
@@ -2164,8 +2192,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = l_bracket.token(parse_tree)?.clone();
-        let r_bracket = r_bracket.token(parse_tree)?.clone();
+        let l_bracket = l_bracket.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_bracket = r_bracket.token(parse_tree)?.try_into().into_diagnostic()?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
@@ -2185,7 +2213,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// Repeat: "\{" Alternations "\}";
+    /// Repeat: "\{" /* : parol_runtime::lexer::OwnedToken */ Alternations "\}" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn repeat(
@@ -2197,8 +2225,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace = l_brace.token(parse_tree)?.clone();
-        let r_brace = r_brace.token(parse_tree)?.clone();
+        let l_brace = l_brace.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_brace = r_brace.token(parse_tree)?.try_into().into_diagnostic()?;
         let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
             alternations
         } else {
@@ -2293,7 +2321,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn identifier(
@@ -2303,7 +2331,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = identifier.token(parse_tree)?.clone();
+        let identifier = identifier.token(parse_tree)?.try_into().into_diagnostic()?;
         let identifier_built = IdentifierBuilder::default()
             .identifier(identifier)
             .build()
@@ -2316,7 +2344,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// String: "\u{0022}([\\]|\\.)*?\u{0022}";
+    /// String: "\u{22}([^\\]|\\.)*?\u{22}" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn string(
@@ -2326,7 +2354,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = string.token(parse_tree)?.clone();
+        let string = string.token(parse_tree)?.try_into().into_diagnostic()?;
         let string_built = StringBuilder::default()
             .string(string)
             .build()
@@ -2339,7 +2367,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+    /// ScannerState: "%scanner" /* : parol_runtime::lexer::OwnedToken */ Identifier "\{" /* : parol_runtime::lexer::OwnedToken */ ScannerStateList /* Vec */ "\}" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_state(
@@ -2353,9 +2381,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_scanner = percent_scanner.token(parse_tree)?.clone();
-        let l_brace = l_brace.token(parse_tree)?.clone();
-        let r_brace = r_brace.token(parse_tree)?.clone();
+        let percent_scanner = percent_scanner
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let l_brace = l_brace.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_brace = r_brace.token(parse_tree)?.try_into().into_diagnostic()?;
         let scanner_state_list =
             if let Some(ASTType::ScannerStateList(mut scanner_state_list)) = self.pop(context) {
                 scanner_state_list.reverse();
@@ -2471,7 +2502,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// StateListList: "," Identifier StateListList; // Vec<T>::Push
+    /// StateListList: "," /* : parol_runtime::lexer::OwnedToken */ Identifier StateListList; // Vec<T>::Push
     ///
     #[named]
     fn state_list_list_0(
@@ -2483,7 +2514,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = comma.token(parse_tree)?.clone();
+        let comma = comma.token(parse_tree)?.try_into().into_diagnostic()?;
         let mut state_list_list =
             if let Some(ASTType::StateListList(state_list_list)) = self.pop(context) {
                 state_list_list
@@ -2521,7 +2552,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+    /// ScannerSwitch: "%sc" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ ScannerSwitchOpt /* Option */ "\)" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_switch_0(
@@ -2534,9 +2565,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_sc = percent_sc.token(parse_tree)?.clone();
-        let l_paren = l_paren.token(parse_tree)?.clone();
-        let r_paren = r_paren.token(parse_tree)?.clone();
+        let percent_sc = percent_sc.token(parse_tree)?.try_into().into_diagnostic()?;
+        let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let scanner_switch_opt =
             if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
                 scanner_switch_opt
@@ -2559,7 +2590,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// ScannerSwitch: "%push" "\(" Identifier "\)";
+    /// ScannerSwitch: "%push" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ Identifier "\)" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_switch_1(
@@ -2572,9 +2603,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_push = percent_push.token(parse_tree)?.clone();
-        let l_paren = l_paren.token(parse_tree)?.clone();
-        let r_paren = r_paren.token(parse_tree)?.clone();
+        let percent_push = percent_push
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
@@ -2596,7 +2630,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// ScannerSwitch: "%pop" "\(" "\)";
+    /// ScannerSwitch: "%pop" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ "\)" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn scanner_switch_2(
@@ -2608,9 +2642,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_pop = percent_pop.token(parse_tree)?.clone();
-        let l_paren = l_paren.token(parse_tree)?.clone();
-        let r_paren = r_paren.token(parse_tree)?.clone();
+        let percent_pop = percent_pop
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
+        let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let scanner_switch_2_built = ScannerSwitch2Builder::default()
             .percent_pop(percent_pop)
             .l_paren(l_paren)
@@ -2723,7 +2760,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// CutOperator: "\^";
+    /// CutOperator: "\^" /* : parol_runtime::lexer::OwnedToken */;
     ///
     #[named]
     fn cut_operator(
@@ -2733,7 +2770,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator = cut_operator.token(parse_tree)?.clone();
+        let cut_operator = cut_operator
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
         let cut_operator_built = CutOperatorBuilder::default()
             .cut_operator(cut_operator)
             .build()
@@ -2746,7 +2786,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// UserTypeDeclaration: ":" UserTypeName;
+    /// UserTypeDeclaration: ":" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
     ///
     #[named]
     fn user_type_declaration(
@@ -2757,7 +2797,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token(parse_tree)?.clone();
+        let colon = colon.token(parse_tree)?.try_into().into_diagnostic()?;
         let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
         {
             user_type_name
