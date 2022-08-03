@@ -3,6 +3,7 @@
 %comment "Parol's own grammar"
 %line_comment "//"
 %block_comment "/\*" "\*/"
+%user_type OwnedToken = parol_runtime::lexer::OwnedToken
 
 %%
 
@@ -12,22 +13,22 @@
 /*  3 */ PrologList0: ; // Vec<T>::New
 /*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
 /*  5 */ PrologList: ; // Vec<T>::New
-/*  6 */ StartDeclaration: "%start" /* : parol_runtime::lexer::OwnedToken */ Identifier;
-/*  7 */ Declaration: "%title" /* : parol_runtime::lexer::OwnedToken */ String;
-/*  8 */ Declaration: "%comment" /* : parol_runtime::lexer::OwnedToken */ String;
-/*  9 */ Declaration: "%user_type" /* : parol_runtime::lexer::OwnedToken */ Identifier "=" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
+/*  6 */ StartDeclaration: "%start" : OwnedToken Identifier;
+/*  7 */ Declaration: "%title" : OwnedToken String;
+/*  8 */ Declaration: "%comment" : OwnedToken String;
+/*  9 */ Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
 /* 10 */ Declaration: ScannerDirectives;
-/* 11 */ ScannerDirectives: "%line_comment" /* : parol_runtime::lexer::OwnedToken */ String;
-/* 12 */ ScannerDirectives: "%block_comment" /* : parol_runtime::lexer::OwnedToken */ String String;
-/* 13 */ ScannerDirectives: "%auto_newline_off" /* : parol_runtime::lexer::OwnedToken */;
-/* 14 */ ScannerDirectives: "%auto_ws_off" /* : parol_runtime::lexer::OwnedToken */;
-/* 15 */ GrammarDefinition: "%%" /* : parol_runtime::lexer::OwnedToken */ Production GrammarDefinitionList /* Vec */;
+/* 11 */ ScannerDirectives: "%line_comment" : OwnedToken String;
+/* 12 */ ScannerDirectives: "%block_comment" : OwnedToken String String;
+/* 13 */ ScannerDirectives: "%auto_newline_off" : OwnedToken;
+/* 14 */ ScannerDirectives: "%auto_ws_off" : OwnedToken;
+/* 15 */ GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;
 /* 16 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 17 */ GrammarDefinitionList: ; // Vec<T>::New
-/* 18 */ DoubleColon: "::" /* : parol_runtime::lexer::OwnedToken */;
-/* 19 */ Production: Identifier ":" /* : parol_runtime::lexer::OwnedToken */ Alternations ";" /* : parol_runtime::lexer::OwnedToken */;
+/* 18 */ DoubleColon: "::" : OwnedToken;
+/* 19 */ Production: Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
 /* 20 */ Alternations: Alternation AlternationsList /* Vec */;
-/* 21 */ AlternationsList: "\|" /* : parol_runtime::lexer::OwnedToken */ Alternation AlternationsList; // Vec<T>::Push
+/* 21 */ AlternationsList: "\|" : OwnedToken Alternation AlternationsList; // Vec<T>::Push
 /* 22 */ AlternationsList: ; // Vec<T>::New
 /* 23 */ Alternation: AlternationList /* Vec */;
 /* 24 */ AlternationList: Factor AlternationList; // Vec<T>::Push
@@ -43,32 +44,32 @@
 /* 34 */ SimpleToken: String SimpleTokenOpt /* Option */;
 /* 35 */ SimpleTokenOpt: ASTControl; // Option<T>::Some
 /* 36 */ SimpleTokenOpt: ; // Option<T>::None
-/* 37 */ TokenWithStates: "<" /* : parol_runtime::lexer::OwnedToken */ StateList ">" /* : parol_runtime::lexer::OwnedToken */ String TokenWithStatesOpt /* Option */;
+/* 37 */ TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken String TokenWithStatesOpt /* Option */;
 /* 38 */ TokenWithStatesOpt: ASTControl; // Option<T>::Some
 /* 39 */ TokenWithStatesOpt: ; // Option<T>::None
-/* 40 */ Group: "\(" /* : parol_runtime::lexer::OwnedToken */ Alternations "\)" /* : parol_runtime::lexer::OwnedToken */;
-/* 41 */ Optional: "\[" /* : parol_runtime::lexer::OwnedToken */ Alternations "\]" /* : parol_runtime::lexer::OwnedToken */;
-/* 42 */ Repeat: "\{" /* : parol_runtime::lexer::OwnedToken */ Alternations "\}" /* : parol_runtime::lexer::OwnedToken */;
+/* 40 */ Group: "\(" : OwnedToken Alternations "\)" : OwnedToken;
+/* 41 */ Optional: "\[" : OwnedToken Alternations "\]" : OwnedToken;
+/* 42 */ Repeat: "\{" : OwnedToken Alternations "\}" : OwnedToken;
 /* 43 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
 /* 44 */ NonTerminalOpt: ASTControl; // Option<T>::Some
 /* 45 */ NonTerminalOpt: ; // Option<T>::None
-/* 46 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" /* : parol_runtime::lexer::OwnedToken */;
-/* 47 */ String: "\u{22}([^\\]|\\.)*?\u{22}" /* : parol_runtime::lexer::OwnedToken */;
-/* 48 */ ScannerState: "%scanner" /* : parol_runtime::lexer::OwnedToken */ Identifier "\{" /* : parol_runtime::lexer::OwnedToken */ ScannerStateList /* Vec */ "\}" /* : parol_runtime::lexer::OwnedToken */;
+/* 46 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" : OwnedToken;
+/* 47 */ String: "\u{22}([^\\]|\\.)*?\u{22}" : OwnedToken;
+/* 48 */ ScannerState: "%scanner" : OwnedToken Identifier "\{" : OwnedToken ScannerStateList /* Vec */ "\}" : OwnedToken;
 /* 49 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
 /* 50 */ ScannerStateList: ; // Vec<T>::New
 /* 51 */ StateList: Identifier StateListList /* Vec */;
-/* 52 */ StateListList: "," /* : parol_runtime::lexer::OwnedToken */ Identifier StateListList; // Vec<T>::Push
+/* 52 */ StateListList: "," : OwnedToken Identifier StateListList; // Vec<T>::Push
 /* 53 */ StateListList: ; // Vec<T>::New
-/* 54 */ ScannerSwitch: "%sc" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ ScannerSwitchOpt /* Option */ "\)" /* : parol_runtime::lexer::OwnedToken */;
-/* 55 */ ScannerSwitch: "%push" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ Identifier "\)" /* : parol_runtime::lexer::OwnedToken */;
-/* 56 */ ScannerSwitch: "%pop" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ "\)" /* : parol_runtime::lexer::OwnedToken */;
+/* 54 */ ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
+/* 55 */ ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
+/* 56 */ ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
 /* 57 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
 /* 58 */ ScannerSwitchOpt: ; // Option<T>::None
 /* 59 */ ASTControl: CutOperator;
 /* 60 */ ASTControl: UserTypeDeclaration;
-/* 61 */ CutOperator: "\^" /* : parol_runtime::lexer::OwnedToken */;
-/* 62 */ UserTypeDeclaration: ":" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
+/* 61 */ CutOperator: "\^" : OwnedToken;
+/* 62 */ UserTypeDeclaration: ":" : OwnedToken UserTypeName;
 /* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
 /* 64 */ UserTypeNameList: DoubleColon Identifier UserTypeNameList; // Vec<T>::Push
 /* 65 */ UserTypeNameList: ; // Vec<T>::New

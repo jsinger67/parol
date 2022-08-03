@@ -160,7 +160,7 @@ pub trait ParolLsGrammarTrait {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title" /* : parol_runtime::lexer::OwnedToken */ String;
+/// Declaration: "%title" : OwnedToken String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -172,7 +172,7 @@ pub struct Declaration0 {
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment" /* : parol_runtime::lexer::OwnedToken */ String;
+/// Declaration: "%comment" : OwnedToken String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -184,7 +184,7 @@ pub struct Declaration1 {
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type" /* : parol_runtime::lexer::OwnedToken */ Identifier "=" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
+/// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -209,7 +209,7 @@ pub struct Declaration3 {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%line_comment" /* : parol_runtime::lexer::OwnedToken */ String;
+/// ScannerDirectives: "%line_comment" : OwnedToken String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -221,7 +221,7 @@ pub struct ScannerDirectives0 {
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%block_comment" /* : parol_runtime::lexer::OwnedToken */ String String;
+/// ScannerDirectives: "%block_comment" : OwnedToken String String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -234,7 +234,7 @@ pub struct ScannerDirectives1 {
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_newline_off" /* : parol_runtime::lexer::OwnedToken */;
+/// ScannerDirectives: "%auto_newline_off" : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -245,7 +245,7 @@ pub struct ScannerDirectives2 {
 ///
 /// Type derived for production 14
 ///
-/// ScannerDirectives: "%auto_ws_off" /* : parol_runtime::lexer::OwnedToken */;
+/// ScannerDirectives: "%auto_ws_off" : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -344,7 +344,7 @@ pub struct Symbol3 {
 ///
 /// Type derived for production 54
 ///
-/// ScannerSwitch: "%sc" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ ScannerSwitchOpt /* Option */ "\)" /* : parol_runtime::lexer::OwnedToken */;
+/// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -358,7 +358,7 @@ pub struct ScannerSwitch0 {
 ///
 /// Type derived for production 55
 ///
-/// ScannerSwitch: "%push" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ Identifier "\)" /* : parol_runtime::lexer::OwnedToken */;
+/// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -372,7 +372,7 @@ pub struct ScannerSwitch1 {
 ///
 /// Type derived for production 56
 ///
-/// ScannerSwitch: "%pop" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ "\)" /* : parol_runtime::lexer::OwnedToken */;
+/// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1095,7 +1095,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start" /* : parol_runtime::lexer::OwnedToken */ Identifier;
+    /// StartDeclaration: "%start" : OwnedToken Identifier;
     ///
     #[named]
     fn start_declaration(
@@ -1129,7 +1129,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title" /* : parol_runtime::lexer::OwnedToken */ String;
+    /// Declaration: "%title" : OwnedToken String;
     ///
     #[named]
     fn declaration_0(
@@ -1163,7 +1163,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment" /* : parol_runtime::lexer::OwnedToken */ String;
+    /// Declaration: "%comment" : OwnedToken String;
     ///
     #[named]
     fn declaration_1(
@@ -1197,7 +1197,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type" /* : parol_runtime::lexer::OwnedToken */ Identifier "=" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
+    /// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
     ///
     #[named]
     fn declaration_2(
@@ -1271,7 +1271,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%line_comment" /* : parol_runtime::lexer::OwnedToken */ String;
+    /// ScannerDirectives: "%line_comment" : OwnedToken String;
     ///
     #[named]
     fn scanner_directives_0(
@@ -1310,7 +1310,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%block_comment" /* : parol_runtime::lexer::OwnedToken */ String String;
+    /// ScannerDirectives: "%block_comment" : OwnedToken String String;
     ///
     #[named]
     fn scanner_directives_1(
@@ -1356,7 +1356,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_newline_off" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerDirectives: "%auto_newline_off" : OwnedToken;
     ///
     #[named]
     fn scanner_directives_2(
@@ -1391,7 +1391,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// ScannerDirectives: "%auto_ws_off" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerDirectives: "%auto_ws_off" : OwnedToken;
     ///
     #[named]
     fn scanner_directives_3(
@@ -1423,7 +1423,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinition: "%%" /* : parol_runtime::lexer::OwnedToken */ Production GrammarDefinitionList /* Vec */;
+    /// GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;
     ///
     #[named]
     fn grammar_definition(
@@ -1526,7 +1526,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// DoubleColon: "::" /* : parol_runtime::lexer::OwnedToken */;
+    /// DoubleColon: "::" : OwnedToken;
     ///
     #[named]
     fn double_colon(
@@ -1552,7 +1552,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Identifier ":" /* : parol_runtime::lexer::OwnedToken */ Alternations ";" /* : parol_runtime::lexer::OwnedToken */;
+    /// Production: Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
     ///
     #[named]
     fn production(
@@ -1628,7 +1628,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList: "\|" /* : parol_runtime::lexer::OwnedToken */ Alternation AlternationsList; // Vec<T>::Push
+    /// AlternationsList: "\|" : OwnedToken Alternation AlternationsList; // Vec<T>::Push
     ///
     #[named]
     fn alternations_list_0(
@@ -2058,7 +2058,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// TokenWithStates: "<" /* : parol_runtime::lexer::OwnedToken */ StateList ">" /* : parol_runtime::lexer::OwnedToken */ String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken String TokenWithStatesOpt /* Option */;
     ///
     #[named]
     fn token_with_states(
@@ -2147,7 +2147,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// Group: "\(" /* : parol_runtime::lexer::OwnedToken */ Alternations "\)" /* : parol_runtime::lexer::OwnedToken */;
+    /// Group: "\(" : OwnedToken Alternations "\)" : OwnedToken;
     ///
     #[named]
     fn group(
@@ -2180,7 +2180,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// Optional: "\[" /* : parol_runtime::lexer::OwnedToken */ Alternations "\]" /* : parol_runtime::lexer::OwnedToken */;
+    /// Optional: "\[" : OwnedToken Alternations "\]" : OwnedToken;
     ///
     #[named]
     fn optional(
@@ -2213,7 +2213,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// Repeat: "\{" /* : parol_runtime::lexer::OwnedToken */ Alternations "\}" /* : parol_runtime::lexer::OwnedToken */;
+    /// Repeat: "\{" : OwnedToken Alternations "\}" : OwnedToken;
     ///
     #[named]
     fn repeat(
@@ -2321,7 +2321,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" /* : parol_runtime::lexer::OwnedToken */;
+    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" : OwnedToken;
     ///
     #[named]
     fn identifier(
@@ -2344,7 +2344,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// String: "\u{22}([^\\]|\\.)*?\u{22}" /* : parol_runtime::lexer::OwnedToken */;
+    /// String: "\u{22}([^\\]|\\.)*?\u{22}" : OwnedToken;
     ///
     #[named]
     fn string(
@@ -2367,7 +2367,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// ScannerState: "%scanner" /* : parol_runtime::lexer::OwnedToken */ Identifier "\{" /* : parol_runtime::lexer::OwnedToken */ ScannerStateList /* Vec */ "\}" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerState: "%scanner" : OwnedToken Identifier "\{" : OwnedToken ScannerStateList /* Vec */ "\}" : OwnedToken;
     ///
     #[named]
     fn scanner_state(
@@ -2502,7 +2502,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// StateListList: "," /* : parol_runtime::lexer::OwnedToken */ Identifier StateListList; // Vec<T>::Push
+    /// StateListList: "," : OwnedToken Identifier StateListList; // Vec<T>::Push
     ///
     #[named]
     fn state_list_list_0(
@@ -2552,7 +2552,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerSwitch: "%sc" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ ScannerSwitchOpt /* Option */ "\)" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
     ///
     #[named]
     fn scanner_switch_0(
@@ -2590,7 +2590,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// ScannerSwitch: "%push" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ Identifier "\)" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
     ///
     #[named]
     fn scanner_switch_1(
@@ -2630,7 +2630,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// ScannerSwitch: "%pop" /* : parol_runtime::lexer::OwnedToken */ "\(" /* : parol_runtime::lexer::OwnedToken */ "\)" /* : parol_runtime::lexer::OwnedToken */;
+    /// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
     ///
     #[named]
     fn scanner_switch_2(
@@ -2760,7 +2760,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// CutOperator: "\^" /* : parol_runtime::lexer::OwnedToken */;
+    /// CutOperator: "\^" : OwnedToken;
     ///
     #[named]
     fn cut_operator(
@@ -2786,7 +2786,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// UserTypeDeclaration: ":" /* : parol_runtime::lexer::OwnedToken */ UserTypeName;
+    /// UserTypeDeclaration: ":" : OwnedToken UserTypeName;
     ///
     #[named]
     fn user_type_declaration(

@@ -8,11 +8,13 @@ use lsp_types::{
     },
     Diagnostic, DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
     GotoDefinitionParams, GotoDefinitionResponse, Location, NumberOrString, Position,
-    PublishDiagnosticsParams, TextDocumentContentChangeEvent, Url,
+    PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
 };
 use miette::miette;
 
-use crate::{parol_ls_grammar::ParolLsGrammar, parol_ls_parser::parse};
+use crate::{
+    parol_ls_grammar::ParolLsGrammar, parol_ls_parser::parse, utils::source_code_span_to_range,
+};
 
 #[derive(Debug, Default)]
 pub(crate) struct DocumentState {
@@ -22,7 +24,6 @@ pub(crate) struct DocumentState {
 
 impl DocumentState {
     fn ident_at_position(&self, position: Position) -> String {
-        eprintln!("non_terminals: {:?}", self.parsed_data.non_terminals);
         if let Some((_, non_terminal)) = self
             .parsed_data
             .non_terminals
@@ -30,6 +31,13 @@ impl DocumentState {
             .find(|(k, _)| k.start <= position && k.end > position)
         {
             non_terminal.clone()
+        } else if let Some((_, user_type)) = self
+            .parsed_data
+            .user_types
+            .iter()
+            .find(|(k, _)| k.start <= position && k.end > position)
+        {
+            user_type.clone()
         } else {
             String::default()
         }
@@ -42,7 +50,7 @@ pub(crate) struct Server {
 }
 
 impl Server {
-    pub(crate) fn try_parse(&self, uri: &Url) -> miette::Result<ParolLsGrammar> {
+    pub(crate) fn analyze(&self, uri: &Url) -> miette::Result<ParolLsGrammar> {
         let file_path = uri
             .to_file_path()
             .map_err(|_| miette!("Failed interpreting file path {}", uri.path()))?;
@@ -50,7 +58,7 @@ impl Server {
         let document_state = self.documents.get(uri.path()).unwrap();
         eprintln!("try_parse");
         parse(&document_state.input, &file_path, &mut parol_ls_grammar)?;
-        eprintln!("parol_ls_grammar: {:#?}", parol_ls_grammar);
+        // eprintln!("parol_ls_grammar: {:#?}", parol_ls_grammar);
         Ok(parol_ls_grammar)
     }
 
@@ -71,7 +79,7 @@ impl Server {
                 ..Default::default()
             },
         );
-        let parsed_data = self.try_parse(&params.text_document.uri);
+        let parsed_data = self.analyze(&params.text_document.uri);
         match parsed_data {
             Ok(parsed_data) => {
                 self.documents
@@ -89,9 +97,15 @@ impl Server {
                     }))?;
             }
             Err(err) => {
+                let input = self
+                    .documents
+                    .get(params.text_document.uri.path())
+                    .unwrap()
+                    .input
+                    .as_str();
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri,
-                    Self::to_diagnostics(err),
+                    Self::to_diagnostics(input, err),
                     None,
                 );
                 let params = serde_json::to_value(&result).unwrap();
@@ -114,7 +128,7 @@ impl Server {
     ) -> Result<(), Box<dyn Error>> {
         let params: DidChangeTextDocumentParams = n.extract(DidChangeTextDocument::METHOD)?;
         self.apply_changes(params.text_document.uri.path(), &params.content_changes);
-        let parsed_data = self.try_parse(&params.text_document.uri);
+        let parsed_data = self.analyze(&params.text_document.uri);
         match parsed_data {
             Ok(parsed_data) => {
                 self.documents
@@ -132,9 +146,15 @@ impl Server {
                     }))?;
             }
             Err(err) => {
+                let input = self
+                    .documents
+                    .get(params.text_document.uri.path())
+                    .unwrap()
+                    .input
+                    .as_str();
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri,
-                    Self::to_diagnostics(err),
+                    Self::to_diagnostics(input, err),
                     None,
                 );
                 let params = serde_json::to_value(&result).unwrap();
@@ -177,6 +197,8 @@ impl Server {
             document_state.ident_at_position(params.text_document_position_params.position);
         eprintln!("text_at_position: {}", text_at_position);
         let mut locations = Vec::new();
+
+        // Handle non-terminals here
         if let Some(non_terminal_definitions) = document_state
             .parsed_data
             .non_terminal_definitions
@@ -189,7 +211,25 @@ impl Server {
                         .text_document
                         .uri
                         .clone(),
-                    range: range.clone(),
+                    range: *range,
+                });
+            }
+        }
+
+        // Handle user types here
+        if let Some(user_type_definitions) = document_state
+            .parsed_data
+            .user_type_definitions
+            .get(&text_at_position)
+        {
+            for range in user_type_definitions {
+                locations.push(Location {
+                    uri: params
+                        .text_document_position_params
+                        .text_document
+                        .uri
+                        .clone(),
+                    range: *range,
                 });
             }
         }
@@ -214,10 +254,17 @@ impl Server {
         self.documents.get_mut(file_path).unwrap().input = change.text.clone();
     }
 
-    fn to_diagnostics(err: miette::ErrReport) -> Vec<Diagnostic> {
+    fn to_diagnostics(input: &str, err: miette::ErrReport) -> Vec<Diagnostic> {
         let mut diagnostics = Vec::new();
         if let Some(parser_err) = err.downcast_ref::<parol_runtime::errors::ParserError>() {
             let parser_err_diag: Box<&dyn miette::Diagnostic> = Box::new(parser_err);
+            let range = if let Some(mut labels) = parser_err_diag.labels() {
+                labels.next().map_or(Range::default(), |src| {
+                    source_code_span_to_range(input, src.inner())
+                })
+            } else {
+                Range::default()
+            };
             let diagnostic = Diagnostic {
                 source: Some(
                     parser_err
@@ -229,6 +276,7 @@ impl Server {
                         .code()
                         .map_or("Unknown error code".to_string(), |d| d.to_string()),
                 )),
+                range,
                 message: parser_err_diag.to_string(),
                 ..Default::default()
             };

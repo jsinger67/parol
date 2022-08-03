@@ -1,4 +1,4 @@
-use std::{cell::RefCell, env, error::Error, result::Result};
+use std::{cell::RefCell, error::Error, result::Result};
 
 use crate::arguments::Config;
 
@@ -37,7 +37,6 @@ use lsp_types::{
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
     debug!("env logger started");
-    eprintln!("Args: {:?}", env::args());
 
     let config = Config::parse();
     eprintln!("Starting parol language server");
@@ -98,7 +97,7 @@ fn main_loop(connection: &Connection, params: serde_json::Value) -> Result<(), B
                     }
                     DidChangeTextDocument::METHOD => server
                         .borrow_mut()
-                        .handle_change_document(&connection, not)?,
+                        .handle_change_document(connection, not)?,
                     DidCloseTextDocument::METHOD => {
                         server.borrow_mut().handle_close_document(not)?
                     }
