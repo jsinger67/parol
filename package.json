@@ -8,14 +8,16 @@
     "license": "MIT",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "repository": {
-        "url": "https://github.com/jsinger67/parol-vscode.git"
+        "url": "https://github.com/jsinger67/parol-vscode.git",
+        "type": "git"
     },
     "icon": "icons/parol-vscode.png",
     "engines": {
-        "vscode": "^1.66.0"
+        "vscode": "^1.69.0"
     },
+    "keywords": ["Parol", "Parser generator", "Rust", "Language tool"],
     "categories": [
         "Programming Languages"
     ],
@@ -25,6 +27,10 @@
                 "id": "parol",
                 "extensions": [
                     ".par"
+                ],
+                "aliases": [
+                    "Parol",
+                    "par"
                 ],
                 "configuration": "./language-configuration.json",
                 "icon": {
@@ -57,6 +63,7 @@
     "activationEvents": [
         "onLanguage:parol"
     ],
+    "main": "./out/extension",
     "scripts": {
         "vscode:prepublish": "npm run build-base -- --minify",
         "package": "vsce package -o parol-vscode.vsix",

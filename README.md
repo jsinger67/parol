@@ -19,3 +19,9 @@ Further development on this extension is planned.
 ## Installation
 
 Install this extension from VS Code marketplace [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
+To use the full Language Server capabilities please install `parol-ls` on your platform using the
+following command.
+
+```shell
+cargo install parol-ls
+```

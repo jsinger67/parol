@@ -6,6 +6,7 @@
 import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
 import { spawnSync } from "child_process";
+import { TransportKind } from "vscode-languageclient/node";
 
 let client: lc.LanguageClient;
 
@@ -16,7 +17,7 @@ export interface ParolLsExtensionApi {
 export const log = new (class {
   private enabled = true;
   private readonly output = vscode.window.createOutputChannel(
-    "Parol Language Server Client"
+    "Parol Language Client"
   );
 
   setEnabled(yes: boolean): void {
@@ -83,12 +84,17 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
     throw new Error(message);
   });
 
-
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   let serverOptions: lc.ServerOptions = {
-    run: { command: serverPath },
-    debug: { command: serverPath }
+    run: {
+      command: serverPath,
+      transport: { kind: TransportKind.socket, port: 7061 },
+    },
+    debug: {
+      command: serverPath,
+      transport: { kind: TransportKind.socket, port: 7061 },
+    },
   };
 
   // Options to control the language client
@@ -97,14 +103,14 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
     documentSelector: [{ scheme: "file", language: "parol" }],
     synchronize: {
       // Notify the server about file changes to '.par files contained in the workspace
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/.par')
-    }
+      fileEvents: vscode.workspace.createFileSystemWatcher("**/.par"),
+    },
   };
 
   // Create the language client and start the client.
   client = new lc.LanguageClient(
-    "languageServerExample",
-    "Language Server Example",
+    "parolLanguageServer",
+    "Parol Language Server",
     serverOptions,
     clientOptions
   );
