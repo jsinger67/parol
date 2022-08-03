@@ -2,4 +2,4 @@
 
 %%
 
-Start: "a" "b" /* : A::B::C */;
+Start: "a" "b" : A::B::C;

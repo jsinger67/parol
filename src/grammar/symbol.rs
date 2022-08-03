@@ -86,9 +86,10 @@ impl Terminal {
     ///
     /// Formats self with the help of a scanner state resolver
     ///
-    pub fn format<R>(&self, scanner_state_resolver: R) -> Result<String>
+    pub fn format<R, S>(&self, scanner_state_resolver: &R, user_type_resolver: &S) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
+        S: Fn(&str) -> Option<String>,
     {
         match self {
             Self::Trm(t, s, a, u) => {
@@ -96,7 +97,13 @@ impl Terminal {
                 a.decorate(&mut d, &format!("\"{}\"", t))
                     .into_diagnostic()?;
                 if let Some(ref user_type) = u {
-                    write!(d, " /* : {} */", user_type).into_diagnostic()?;
+                    let user_type =
+                        if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
+                            alias
+                        } else {
+                            user_type.to_string()
+                        };
+                    write!(d, " : {}", user_type).into_diagnostic()?;
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
@@ -260,20 +267,27 @@ impl Symbol {
     }
 
     /// Formats self with the help of a scanner state resolver
-    pub fn format<R>(&self, scanner_state_resolver: &R) -> Result<String>
+    pub fn format<R, S>(&self, scanner_state_resolver: &R, user_type_resolver: &S) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
+        S: Fn(&str) -> Option<String>,
     {
         match self {
             Self::N(n, a, u) => {
                 let mut s = String::new();
                 a.decorate(&mut s, n).into_diagnostic()?;
                 if let Some(ref user_type) = u {
-                    write!(s, " /* : {} */", user_type).into_diagnostic()?;
+                    let user_type =
+                        if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
+                            alias
+                        } else {
+                            user_type.to_string()
+                        };
+                    write!(s, " : {}", user_type).into_diagnostic()?;
                 }
                 Ok(s)
             }
-            Self::T(t) => t.format(scanner_state_resolver),
+            Self::T(t) => t.format(scanner_state_resolver, user_type_resolver),
             Self::S(s) => {
                 if *s == 0 {
                     Ok("%sc()".to_string())
@@ -294,7 +308,7 @@ impl Display for Symbol {
                 let mut s = String::new();
                 a.decorate(&mut s, n)?;
                 if let Some(ref user_type) = u {
-                    write!(s, " /* : {} */", user_type)?;
+                    write!(s, " : {} ", user_type)?;
                 }
                 write!(f, "{}", s)
             }

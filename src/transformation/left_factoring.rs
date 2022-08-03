@@ -1,4 +1,4 @@
-use crate::generators::grammar_config::FnScannerStateResolver;
+use crate::generators::grammar_config::{FnScannerStateResolver, FnUserTypeResolver};
 use crate::{generate_name, group_by, Cfg, GrammarConfig, Pr, Rhs, Symbol};
 use log::trace;
 use miette::Result;
@@ -8,7 +8,8 @@ use std::hash::Hash;
 struct TransformationOperand<'a> {
     modified: bool,
     pr: Vec<Pr>,
-    resolver: &'a FnScannerStateResolver,
+    state_resolver: &'a FnScannerStateResolver,
+    user_type_resolver: &'a FnUserTypeResolver,
 }
 
 /// Substitutes a set of rules with given name in the given rules with the result of
@@ -21,7 +22,8 @@ fn apply_rule_transformation<'a>(
     let TransformationOperand {
         modified: _,
         mut pr,
-        resolver,
+        state_resolver,
+        user_type_resolver,
     } = operand;
     if let Some(rule_index) = pr.iter().position(|r| r.get_n_str() == rule_name) {
         let mut affected_rules = vec![];
@@ -35,13 +37,15 @@ fn apply_rule_transformation<'a>(
         TransformationOperand {
             modified: true,
             pr,
-            resolver,
+            state_resolver,
+            user_type_resolver,
         }
     } else {
         TransformationOperand {
             modified: false,
             pr,
-            resolver,
+            state_resolver,
+            user_type_resolver,
         }
     }
 }
@@ -143,12 +147,13 @@ pub fn left_factor(g: &Cfg) -> Cfg {
     let Cfg { st, pr } = g.clone();
 
     let scanner_state_resolver = GrammarConfig::dummy_scanner_state_resolver();
+    let user_type_resolver = GrammarConfig::dummy_user_type_resolver();
     let format_productions = |pr: &[Pr]| -> Result<String> {
         Ok(pr
             .iter()
             .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
                 if let Ok(mut acc) = acc {
-                    acc.push(p.format(&scanner_state_resolver)?);
+                    acc.push(p.format(&scanner_state_resolver, &user_type_resolver)?);
                     Ok(acc)
                 } else {
                     acc
@@ -160,21 +165,23 @@ pub fn left_factor(g: &Cfg) -> Cfg {
     let mut operand = TransformationOperand {
         modified: true,
         pr,
-        resolver: &scanner_state_resolver,
+        state_resolver: &scanner_state_resolver,
+        user_type_resolver: &user_type_resolver,
     };
 
     fn mod_factor<'a>(
         exclusions: &[String],
         prefix: &[Symbol],
         rules: Vec<Pr>,
-        resolver: &'a FnScannerStateResolver,
+        state_resolver: &'a FnScannerStateResolver,
+        user_type_resolver: &'a FnUserTypeResolver,
     ) -> Vec<Pr> {
         let format_symbols = |symbols: &[Symbol]| -> Result<String> {
             Ok(symbols
                 .iter()
                 .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
                     if let Ok(mut acc) = acc {
-                        acc.push(s.format(resolver)?);
+                        acc.push(s.format(state_resolver, user_type_resolver)?);
                         Ok(acc)
                     } else {
                         acc
@@ -248,9 +255,16 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         prefix: &(String, Rhs),
     ) -> TransformationOperand<'a> {
         let exclusions = var_names(&operand.pr);
-        let resolver = operand.resolver;
+        let state_resolver = operand.state_resolver;
+        let user_type_resolver = operand.user_type_resolver;
         apply_rule_transformation(operand, &prefix.0, |rs| {
-            mod_factor(&exclusions, &prefix.1, rs, resolver)
+            mod_factor(
+                &exclusions,
+                &prefix.1,
+                rs,
+                state_resolver,
+                user_type_resolver,
+            )
         })
     }
 

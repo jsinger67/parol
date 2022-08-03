@@ -4,4 +4,4 @@
 
 %%
 
-Start: "a" <B>"b" /* : A::B::C */;
+Start: "a" <B>"b" : A::B::C;

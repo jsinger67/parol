@@ -41,11 +41,12 @@ pub fn main(args: &Args) -> Result<()> {
     let mut type_info = GrammarTypeInfo::try_new(&grammar_name)?;
     type_info.build(&grammar_config)?;
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
+    let user_type_resolver = grammar_config.get_user_type_resolver();
     for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
         println!(
             "/* {:w$} */ {}",
             i,
-            pr.format(&scanner_state_resolver)?,
+            pr.format(&scanner_state_resolver, &user_type_resolver)?,
             w = width
         );
     }

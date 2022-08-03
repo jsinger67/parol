@@ -30,6 +30,10 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         .with_comment(comment)
         .add_scanner(scanner_config);
 
+    for u in parol_grammar.user_type_definitions {
+        grammar_config = grammar_config.add_user_type_def(u.0, u.1.to_string());
+    }
+
     for s in 1..parol_grammar.scanner_configurations.len() {
         grammar_config = grammar_config.add_scanner(try_from_scanner_config(
             &parol_grammar.scanner_configurations[s],

@@ -1,16 +1,17 @@
 %start List
 %title "A possibly empty comma separated list of integers"
 %comment "A trailing comma is allowed."
+%user_type Number = crate::list_grammar::Number%user_type Numbers = crate::list_grammar::Numbers
 
 %%
 
 /*  0 */ List: ListOpt /* Option */ TrailingComma^ /* Clipped */;
-/*  1 */ ListOpt: Items /* : crate::list_grammar::Numbers */; // Option<T>::Some
+/*  1 */ ListOpt: Items : Numbers; // Option<T>::Some
 /*  2 */ ListOpt: ; // Option<T>::None
 /*  3 */ Items: Num ItemsList /* Vec */;
 /*  4 */ ItemsList: ","^ /* Clipped */ Num ItemsList; // Vec<T>::Push
 /*  5 */ ItemsList: ; // Vec<T>::New
-/*  6 */ Num: "0|[1-9][0-9]*" /* : crate::list_grammar::Number */;
+/*  6 */ Num: "0|[1-9][0-9]*" : Number;
 /*  7 */ TrailingComma: TrailingCommaOpt /* Option */;
 /*  8 */ TrailingCommaOpt: ","^ /* Clipped */; // Option<T>::Some
 /*  9 */ TrailingCommaOpt: ; // Option<T>::None

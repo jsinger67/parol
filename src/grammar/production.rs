@@ -136,9 +136,10 @@ impl Pr {
     }
 
     /// Formats self with the help of a scanner state resolver
-    pub fn format<R>(&self, scanner_state_resolver: &R) -> Result<String>
+    pub fn format<R, S>(&self, scanner_state_resolver: &R, user_type_resolver: &S) -> Result<String>
     where
         R: Fn(&[usize]) -> String,
+        S: Fn(&str) -> Option<String>,
     {
         let mut s = String::new();
         self.2
@@ -151,7 +152,7 @@ impl Pr {
                         .iter()
                         .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
                             if let Ok(mut acc) = acc {
-                                acc.push(s.format(scanner_state_resolver)?);
+                                acc.push(s.format(scanner_state_resolver, user_type_resolver)?);
                                 Ok(acc)
                             } else {
                                 acc

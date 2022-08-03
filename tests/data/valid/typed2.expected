@@ -3,4 +3,4 @@ comment: None
 start_symbol: Start
 name: INITIAL;line_comments: [];block_comments: [];auto_newline_off: false;auto_ws_off: false;
 Start: Alts(Alt(<0>T(a), N(B)));
-B: Alts(Alt(<0>T(b) /* : i32 */));
+B: Alts(Alt(<0>T(b) : i32));

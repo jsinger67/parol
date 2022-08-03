@@ -3,19 +3,20 @@
 %comment "Parol's own grammar"
 %line_comment "//"
 %block_comment "/\*" "\*/"
+%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
 
 %%
 
 /*  0 */ Parol: Prolog GrammarDefinition;
 /*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
-/*  2 */ PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0; // Vec<T>::Push
+/*  2 */ PrologList0: ScannerState : ScannerConfig PrologList0; // Vec<T>::Push
 /*  3 */ PrologList0: ; // Vec<T>::New
 /*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
 /*  5 */ PrologList: ; // Vec<T>::New
 /*  6 */ StartDeclaration: "%start"^ /* Clipped */ Identifier;
 /*  7 */ Declaration: "%title"^ /* Clipped */ String;
 /*  8 */ Declaration: "%comment"^ /* Clipped */ String;
-/*  9 */ Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+/*  9 */ Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
 /* 10 */ Declaration: ScannerDirectives;
 /* 11 */ ScannerDirectives: "%line_comment"^ /* Clipped */ String;
 /* 12 */ ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
@@ -68,7 +69,7 @@
 /* 59 */ ASTControl: CutOperator;
 /* 60 */ ASTControl: UserTypeDeclaration;
 /* 61 */ CutOperator: "\^"^ /* Clipped */;
-/* 62 */ UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+/* 62 */ UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : UserType;
 /* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
 /* 64 */ UserTypeNameList: DoubleColon^ /* Clipped */ Identifier UserTypeNameList; // Vec<T>::Push
 /* 65 */ UserTypeNameList: ; // Vec<T>::New

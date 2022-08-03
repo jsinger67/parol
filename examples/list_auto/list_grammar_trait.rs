@@ -225,7 +225,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt: Items /* : crate::list_grammar::Numbers */; // Option<T>::Some
+    /// ListOpt: Items : Numbers; // Option<T>::Some
     ///
     #[named]
     fn list_opt_0(
@@ -345,7 +345,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// Num: "0|[1-9][0-9]*" /* : crate::list_grammar::Number */;
+    /// Num: "0|[1-9][0-9]*" : Number;
     ///
     #[named]
     fn num(

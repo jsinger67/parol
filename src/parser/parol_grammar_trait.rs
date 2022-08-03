@@ -181,7 +181,7 @@ pub struct Declaration1<'t> {
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+/// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -958,7 +958,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0; // Vec<T>::Push
+    /// PrologList0: ScannerState : ScannerConfig PrologList0; // Vec<T>::Push
     ///
     #[named]
     fn prolog_list0_0(
@@ -1140,7 +1140,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+    /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
     ///
     #[named]
     fn declaration_2(
@@ -2661,7 +2661,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+    /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : UserType;
     ///
     #[named]
     fn user_type_declaration(

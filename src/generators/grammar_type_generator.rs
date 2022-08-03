@@ -367,6 +367,8 @@ impl GrammarTypeInfo {
 
     fn deduce_actions(&mut self, grammar_config: &GrammarConfig) -> Result<()> {
         let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
+        let user_type_resolver = grammar_config.get_user_type_resolver();
+
         for (i, pr) in grammar_config.cfg.pr.iter().enumerate() {
             let rel_idx = grammar_config
                 .cfg
@@ -380,7 +382,7 @@ impl GrammarTypeInfo {
                 .prod_num(i)
                 .rel_idx(rel_idx)
                 .alts(alts)
-                .prod_string(pr.format(&scanner_state_resolver)?)
+                .prod_string(pr.format(&scanner_state_resolver, &user_type_resolver)?)
                 .sem(pr.2)
                 .build()
                 .into_diagnostic()?;

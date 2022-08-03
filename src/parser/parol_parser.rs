@@ -581,7 +581,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 18,
         production: &[ParseType::N(20), ParseType::N(19), ParseType::N(29)],
     },
-    // 2 - PrologList0: ScannerState /* : crate::parser::parol_grammar::ScannerConfig */ PrologList0;
+    // 2 - PrologList0: ScannerState : crate::parser::parol_grammar::ScannerConfig  PrologList0;
     Production {
         lhs: 20,
         production: &[ParseType::N(20), ParseType::N(23)],
@@ -616,7 +616,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 6,
         production: &[ParseType::N(32), ParseType::T(7)],
     },
-    // 9 - Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+    // 9 - Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 6,
         production: &[
@@ -913,7 +913,7 @@ pub const PRODUCTIONS: &[Production; 66] = &[
         lhs: 5,
         production: &[ParseType::T(34)],
     },
-    // 62 - UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName /* : crate::parser::parol_grammar::UserDefinedTypeName */;
+    // 62 - UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : crate::parser::parol_grammar::UserDefinedTypeName ;
     Production {
         lhs: 36,
         production: &[ParseType::N(37), ParseType::T(16)],

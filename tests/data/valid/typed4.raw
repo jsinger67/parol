@@ -2,5 +2,5 @@
 
 %%
 
-Start: "a" B /* : MyNonTerminalType */;
-B: "b" /* : MyTerminalType */;
+Start: "a" B : MyNonTerminalType;
+B: "b" : MyTerminalType;

@@ -127,7 +127,7 @@ pub const PRODUCTIONS: &[Production; 10] = &[
         lhs: 2,
         production: &[ParseType::N(5), ParseType::N(3)],
     },
-    // 1 - ListOpt: Items /* : crate::list_grammar::Numbers */;
+    // 1 - ListOpt: Items : crate::list_grammar::Numbers ;
     Production {
         lhs: 3,
         production: &[ParseType::N(0)],

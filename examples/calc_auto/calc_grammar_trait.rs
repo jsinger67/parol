@@ -2457,7 +2457,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// number: "0|[1-9][0-9]*" /* : crate::calc_grammar::Number */;
+    /// number: "0|[1-9][0-9]*" : crate::calc_grammar::Number;
     ///
     #[named]
     fn number(

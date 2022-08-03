@@ -1,6 +1,7 @@
 use super::ScannerConfig;
 use crate::parser::{try_to_convert, ParolGrammar};
 use crate::Cfg;
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -48,6 +49,11 @@ pub struct GrammarConfig {
     pub comment: Option<String>,
 
     ///
+    /// User type definitions
+    ///
+    pub user_type_defs: Vec<(String, String)>,
+
+    ///
     /// At least one scanner configurations
     ///
     pub scanner_configurations: Vec<ScannerConfig>,
@@ -62,6 +68,10 @@ pub struct GrammarConfig {
 /// A scanner state resolver function translates a list of scanner states into a printable string
 pub(crate) type FnScannerStateResolver = Box<dyn Fn(&[usize]) -> String>;
 
+/// The type of a user type resolver function.
+/// A user type resolver function translates a decorated user type name into its shorter alias
+pub(crate) type FnUserTypeResolver = Box<dyn Fn(&str) -> Option<String>>;
+
 impl GrammarConfig {
     /// Creates a new item
     pub fn new(cfg: Cfg, lookahead_size: usize) -> Self {
@@ -69,6 +79,7 @@ impl GrammarConfig {
             cfg,
             title: None,
             comment: None,
+            user_type_defs: Vec::new(),
             scanner_configurations: Vec::new(),
             lookahead_size,
         }
@@ -89,6 +100,12 @@ impl GrammarConfig {
     /// Adds a scanner configuration
     pub fn add_scanner(mut self, scanner_config: ScannerConfig) -> Self {
         self.scanner_configurations.push(scanner_config);
+        self
+    }
+
+    /// Adds a user type definition
+    pub fn add_user_type_def(mut self, alias: String, type_name: String) -> Self {
+        self.user_type_defs.push((alias, type_name));
         self
     }
 
@@ -150,6 +167,23 @@ impl GrammarConfig {
                 .join(", ")
         })
     }
+
+    /// Generates a function that can be used as user_type_resolver argument on Pr::format
+    pub fn get_user_type_resolver(&self) -> FnUserTypeResolver {
+        let user_type_map = self
+            .user_type_defs
+            .iter()
+            .fold(HashMap::new(), |mut acc, (a, u)| {
+                acc.insert(u.to_string(), a.to_string());
+                acc
+            });
+        Box::new(move |u: &str| user_type_map.get(u).cloned())
+    }
+
+    /// Generates a dummy user_type_resolver function that can be used in Pr::format
+    pub fn dummy_user_type_resolver() -> FnUserTypeResolver {
+        Box::new(|_u: &str| None)
+    }
 }
 
 impl Default for GrammarConfig {
@@ -158,6 +192,7 @@ impl Default for GrammarConfig {
             cfg: Cfg::default(),
             title: None,
             comment: None,
+            user_type_defs: Vec::new(),
             scanner_configurations: vec![ScannerConfig::default()], // There must always be a default scanner
             lookahead_size: 0,
         }

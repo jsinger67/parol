@@ -15,6 +15,7 @@ struct YaccElements {
     block_comments: String,
     auto_newline_off: String,
     auto_ws_off: String,
+    user_types: String,
     scanner_states: StrVec,
     productions: StrVec,
 }
@@ -75,7 +76,22 @@ pub fn render_par_string(
         "\n%auto_ws_off".to_owned()
     };
 
+    let user_types_start = if grammar_config.user_type_defs.is_empty() {
+        "".to_string()
+    } else {
+        "\n".to_string()
+    };
+    let user_types =
+        grammar_config
+            .user_type_defs
+            .iter()
+            .fold(user_types_start, |mut acc, (a, u)| {
+                acc.push_str(&format!("%user_type {} = {}", a, u));
+                acc
+            });
+
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
+    let user_type_resolver = grammar_config.get_user_type_resolver();
 
     let mut productions =
         grammar_config
@@ -84,7 +100,7 @@ pub fn render_par_string(
             .iter()
             .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
                 if let Ok(mut acc) = acc {
-                    acc.push(p.format(&scanner_state_resolver)?);
+                    acc.push(p.format(&scanner_state_resolver, &user_type_resolver)?);
                     Ok(acc)
                 } else {
                     acc
@@ -128,6 +144,7 @@ pub fn render_par_string(
         block_comments,
         auto_newline_off,
         auto_ws_off,
+        user_types,
         scanner_states,
         productions,
     };
