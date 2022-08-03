@@ -1,4 +1,4 @@
-# parol-vscode README
+# parol-ls README
 
 <!-- markdownlint-disable Inline HTML -->
 <br>
