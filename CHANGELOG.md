@@ -19,6 +19,10 @@ But we try to mark incompatible changes with a new minor version.
 
 ## Upcoming version
 
+* No changes yet
+
+## v0.10.5 - 2022-08-03
+
 * Update reference of `parol_runtime` to v0.7.2
 * Fixed display format of non-terminals with attached user types
 * Fixed generation of parol grammars (i.e. as expanded grammar) so that user types are correctly
