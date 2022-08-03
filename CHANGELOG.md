@@ -19,7 +19,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ## Upcoming version
 
-* No changes yet
+* Fixed a missing newline in between multiple user type definitions
 
 ## v0.10.5 - 2022-08-03
 

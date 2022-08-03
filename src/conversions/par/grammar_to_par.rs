@@ -77,18 +77,18 @@ pub fn render_par_string(
     };
 
     let user_types_start = if grammar_config.user_type_defs.is_empty() {
-        "".to_string()
+        vec![]
     } else {
-        "\n".to_string()
+        vec![String::default()]
     };
-    let user_types =
-        grammar_config
-            .user_type_defs
-            .iter()
-            .fold(user_types_start, |mut acc, (a, u)| {
-                acc.push_str(&format!("%user_type {} = {}", a, u));
-                acc
-            });
+    let user_types = grammar_config
+        .user_type_defs
+        .iter()
+        .fold(user_types_start, |mut acc, (a, u)| {
+            acc.push(format!("%user_type {} = {}", a, u));
+            acc
+        })
+        .join("\n");
 
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     let user_type_resolver = grammar_config.get_user_type_resolver();
