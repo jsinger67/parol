@@ -30,6 +30,8 @@ pub enum ParserError {
         cause: String,
         #[source_code]
         input: NamedSource,
+        #[label("Error location")]
+        error_location: SourceSpan,
         #[related("Unexpected tokens")]
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
@@ -99,7 +101,7 @@ pub struct UnexpectedToken {
     #[source_code]
     input: NamedSource,
     #[label("Unexpected token")]
-    token: SourceSpan,
+    pub(crate) token: SourceSpan,
 }
 
 impl UnexpectedToken {

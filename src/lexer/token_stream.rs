@@ -237,7 +237,7 @@ impl<'t> TokenStream<'t> {
     pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> Result<()> {
         if self.current_scanner_index == scanner_index {
             trace!(
-                "Redundant switch to scanner {} <{}> omitted",
+                "push_scanner: Redundant switch to scanner {} <{}> omitted",
                 scanner_index,
                 self.tokenizers[scanner_index].0,
             );
@@ -245,7 +245,7 @@ impl<'t> TokenStream<'t> {
             self.current_scanner_index = scanner_index;
         } else {
             trace!(
-                "Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
+                "push_scanner: Pushing current scanner {} and switching to scanner {} <{}>; Current offset is {}",
                 self.current_scanner_index,
                 scanner_index,
                 self.tokenizers[scanner_index].0,
@@ -271,13 +271,13 @@ impl<'t> TokenStream<'t> {
         if let Some(scanner_index) = self.scanner_stack.pop() {
             if self.current_scanner_index == scanner_index {
                 trace!(
-                    "Redundant switch to scanner {} <{}> omitted",
+                    "pop_scanner: Redundant switch to scanner {} <{}> omitted",
                     scanner_index,
                     self.tokenizers[scanner_index].0,
                 );
             } else {
                 trace!(
-                    "Switching to popped scanner {} <{}>; Current offset is {}",
+                    "pop_scanner: Switching to popped scanner {} <{}>; Current offset is {}",
                     scanner_index,
                     self.tokenizers[scanner_index].0,
                     self.pos,

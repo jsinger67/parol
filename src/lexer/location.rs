@@ -59,7 +59,7 @@ impl Display for Location {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(
             f,
-            "{}({},{}-{})",
+            "{}:{}:{}-{}",
             self.file_name.display(),
             self.line,
             self.column,

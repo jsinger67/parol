@@ -13,6 +13,12 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.7.2 - 2022-08-03
+
+* Better diagnostics to support parol language server
+* Changed display format of `Location` to match vscode's format
+* Improved traces
+
 ## v0.7.1 - 2022-07-09
 
 * Fixed a bug in TokenStream::push_scanner

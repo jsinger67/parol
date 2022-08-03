@@ -6,7 +6,7 @@ use crate::parser::{
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, RemoveBehavior, Tree};
 use log::{debug, trace};
-use miette::{bail, miette, Result, WrapErr};
+use miette::{bail, miette, Result, SourceSpan, WrapErr};
 use std::cell::RefCell;
 
 ///
@@ -179,7 +179,9 @@ impl<'t> LLKParser<'t> {
         self.production_depth += 1;
         trace!(
             "Pushed production {}({}) -> depth {}",
-            prod_num, self.productions[prod_num].production.len(), self.production_depth
+            prod_num,
+            self.productions[prod_num].production.len(),
+            self.production_depth
         );
     }
 
@@ -320,6 +322,9 @@ impl<'t> LLKParser<'t> {
                         .as_str(),
                     ),
                     input: FileSource::from_stream(&stream.borrow()).into(),
+                    error_location: unexpected_tokens
+                        .get(0)
+                        .map_or(SourceSpan::from((0, 0)), |t| t.token),
                     unexpected_tokens,
                     expected_tokens,
                 })
@@ -361,6 +366,7 @@ impl<'t> LLKParser<'t> {
                                     .as_str(),
                                 ),
                                 input: FileSource::from_stream(&stream.borrow()).into(),
+                                error_location: (&token).into(),
                                 unexpected_tokens: vec![UnexpectedToken::new(
                                     "LA(1)".to_owned(),
                                     self.terminal_names[token.token_type].to_owned(),
@@ -393,6 +399,9 @@ impl<'t> LLKParser<'t> {
                                     .as_str(),
                                 ),
                                 input: FileSource::from_stream(&stream.borrow()).into(),
+                                error_location: unexpected_tokens
+                                    .get(0)
+                                    .map_or(SourceSpan::from((0, 0)), |t| t.token),
                                 unexpected_tokens,
                                 expected_tokens,
                             })
