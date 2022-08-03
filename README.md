@@ -11,8 +11,10 @@ of grammar description files (.par files).
 
 ## Features
 
-The extension currently only supports syntax highlighting, folding and language icons. Nevertheless
-these are very helpful features that can improve your workflow a lot.
+The extension currently supports syntax highlighting, folding and language icons.
+When you install the parol language server you get the best support. See below for instructions.
+
+I hope these features are helpful for you and improve your workflow.
 
 Further development on this extension is planned.
 
