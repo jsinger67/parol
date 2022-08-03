@@ -256,32 +256,35 @@ impl Server {
 
     fn to_diagnostics(input: &str, err: miette::ErrReport) -> Vec<Diagnostic> {
         let mut diagnostics = Vec::new();
-        if let Some(parser_err) = err.downcast_ref::<parol_runtime::errors::ParserError>() {
-            let parser_err_diag: Box<&dyn miette::Diagnostic> = Box::new(parser_err);
-            let range = if let Some(mut labels) = parser_err_diag.labels() {
-                labels.next().map_or(Range::default(), |src| {
-                    source_code_span_to_range(input, src.inner())
-                })
-            } else {
-                Range::default()
-            };
-            let diagnostic = Diagnostic {
-                source: Some(
-                    parser_err
-                        .source()
-                        .map_or(String::default(), |e| e.to_string()),
-                ),
-                code: Some(NumberOrString::String(
-                    parser_err_diag
-                        .code()
-                        .map_or("Unknown error code".to_string(), |d| d.to_string()),
-                )),
-                range,
-                message: parser_err_diag.to_string(),
-                ..Default::default()
-            };
-            diagnostics.push(diagnostic);
-        }
+        let parser_err_diag: &dyn miette::Diagnostic = err.as_ref();
+        let range = if let Some(mut labels) = parser_err_diag.labels() {
+            labels.next().map_or(Range::default(), |src| {
+                source_code_span_to_range(input, src.inner())
+            })
+        } else {
+            Range::default()
+        };
+        let source = Some("parol-ls".to_string());
+        let code = parser_err_diag
+            .code()
+            .map(|d| NumberOrString::String(format!("{}", d)));
+
+        // We need to find the correct Display implementation!
+        let message = if let Some(e) = err.downcast_ref::<parol_runtime::errors::ParserError>() {
+            format!("{}:\n{}", err, e)
+        } else if let Some(e) = err.downcast_ref::<parol_runtime::errors::LookaheadError>() {
+            format!("{}:\n{}", err, e)
+        } else {
+            String::default()
+        };
+        let diagnostic = Diagnostic {
+            source,
+            code,
+            range,
+            message,
+            ..Default::default()
+        };
+        diagnostics.push(diagnostic);
         diagnostics
     }
 }

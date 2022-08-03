@@ -29,7 +29,7 @@ pub(crate) fn location_to_range(location: &Location) -> Range {
 ///
 pub(crate) fn source_code_span_to_range(input: &str, span: &SourceSpan) -> Range {
     let input = input.split_at(span.offset()).0;
-    let line = input.lines().count() as u32;
+    let line = input.lines().count() as u32 - 1;
     let start_char = input.lines().last().map_or(0, |l| l.len()) as u32;
     let end_char = start_char + span.len() as u32;
     let range = Range {
