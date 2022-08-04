@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error};
+use std::{collections::HashMap, error::Error, path::Path};
 
 use lsp_server::Message;
 use lsp_types::{
@@ -11,6 +11,7 @@ use lsp_types::{
     PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
 };
 use miette::miette;
+use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
 use crate::{
     parol_ls_grammar::ParolLsGrammar, parol_ls_parser::parse, utils::source_code_span_to_range,
@@ -50,20 +51,41 @@ pub(crate) struct Server {
 }
 
 impl Server {
+    // Todo: Make this constant configurable.
+    const MAX_K: usize = 3;
+
+    pub(crate) fn new() -> Self {
+        Self::default()
+    }
+
     pub(crate) fn analyze(&self, uri: &Url) -> miette::Result<ParolLsGrammar> {
         let file_path = uri
             .to_file_path()
             .map_err(|_| miette!("Failed interpreting file path {}", uri.path()))?;
         let mut parol_ls_grammar = ParolLsGrammar::new();
         let document_state = self.documents.get(uri.path()).unwrap();
-        eprintln!("try_parse");
+        eprintln!("analyze: step 1 - parse");
         parse(&document_state.input, &file_path, &mut parol_ls_grammar)?;
-        // eprintln!("parol_ls_grammar: {:#?}", parol_ls_grammar);
+        eprintln!("analyze: step 2 - check_grammar");
+        Self::check_grammar(&document_state.input, &file_path)?;
+        eprintln!("analyze: finished");
         Ok(parol_ls_grammar)
     }
 
-    pub(crate) fn new() -> Self {
-        Self::default()
+    pub(crate) fn obtain_grammar_config_from_string(
+        input: &str,
+        file_name: &Path,
+    ) -> miette::Result<GrammarConfig> {
+        let mut parol_grammar = ParolGrammar::new();
+        parol::parser::parol_parser::parse(input, file_name, &mut parol_grammar)?;
+        GrammarConfig::try_from(parol_grammar)
+    }
+
+    pub(crate) fn check_grammar(input: &str, file_name: &Path) -> miette::Result<()> {
+        let grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
+        check_and_transform_grammar(&grammar_config.cfg)?;
+        calculate_lookahead_dfas(&grammar_config, Self::MAX_K)?;
+        Ok(())
     }
 
     pub(crate) fn handle_open_document(
@@ -82,11 +104,16 @@ impl Server {
         let parsed_data = self.analyze(&params.text_document.uri);
         match parsed_data {
             Ok(parsed_data) => {
+                eprintln!("handle_open_document: ok");
                 self.documents
                     .get_mut(params.text_document.uri.path())
                     .unwrap()
                     .parsed_data = parsed_data;
-                let result = PublishDiagnosticsParams::new(params.text_document.uri, vec![], None);
+                let result = PublishDiagnosticsParams::new(
+                    params.text_document.uri,
+                    vec![],
+                    Some(params.text_document.version),
+                );
                 let params = serde_json::to_value(&result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 connection
@@ -97,19 +124,22 @@ impl Server {
                     }))?;
             }
             Err(err) => {
+                eprintln!("handle_open_document: error");
                 let input = self
                     .documents
                     .get(params.text_document.uri.path())
                     .unwrap()
                     .input
                     .as_str();
+                eprintln!("handle_open_document: document obtained");
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri,
                     Self::to_diagnostics(input, err),
-                    None,
+                    Some(params.text_document.version),
                 );
                 let params = serde_json::to_value(&result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
+                eprintln!("handle_open_document: sending response\n{:?}", params);
                 connection
                     .sender
                     .send(Message::Notification(lsp_server::Notification {
@@ -131,11 +161,16 @@ impl Server {
         let parsed_data = self.analyze(&params.text_document.uri);
         match parsed_data {
             Ok(parsed_data) => {
+                eprintln!("handle_change_document: ok");
                 self.documents
                     .get_mut(params.text_document.uri.path())
                     .unwrap()
                     .parsed_data = parsed_data;
-                let result = PublishDiagnosticsParams::new(params.text_document.uri, vec![], None);
+                let result = PublishDiagnosticsParams::new(
+                    params.text_document.uri,
+                    vec![],
+                    Some(params.text_document.version),
+                );
                 let params = serde_json::to_value(&result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 connection
@@ -146,19 +181,22 @@ impl Server {
                     }))?;
             }
             Err(err) => {
+                eprintln!("handle_change_document: error");
                 let input = self
                     .documents
                     .get(params.text_document.uri.path())
                     .unwrap()
                     .input
                     .as_str();
+                eprintln!("handle_change_document: document obtained");
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri,
                     Self::to_diagnostics(input, err),
-                    None,
+                    Some(params.text_document.version),
                 );
                 let params = serde_json::to_value(&result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
+                eprintln!("handle_change_document: sending response\n{:?}", params);
                 connection
                     .sender
                     .send(Message::Notification(lsp_server::Notification {
@@ -199,40 +237,15 @@ impl Server {
         let mut locations = Vec::new();
 
         // Handle non-terminals here
-        if let Some(non_terminal_definitions) = document_state
-            .parsed_data
-            .non_terminal_definitions
-            .get(&text_at_position)
-        {
-            for range in non_terminal_definitions {
-                locations.push(Location {
-                    uri: params
-                        .text_document_position_params
-                        .text_document
-                        .uri
-                        .clone(),
-                    range: *range,
-                });
-            }
-        }
+        Self::find_non_terminal_definitions(
+            document_state,
+            &text_at_position,
+            &mut locations,
+            &params,
+        );
 
         // Handle user types here
-        if let Some(user_type_definitions) = document_state
-            .parsed_data
-            .user_type_definitions
-            .get(&text_at_position)
-        {
-            for range in user_type_definitions {
-                locations.push(Location {
-                    uri: params
-                        .text_document_position_params
-                        .text_document
-                        .uri
-                        .clone(),
-                    range: *range,
-                });
-            }
-        }
+        Self::find_user_type_definitions(document_state, text_at_position, &mut locations, params);
         GotoDefinitionResponse::Array(locations)
     }
 
@@ -275,7 +288,7 @@ impl Server {
         } else if let Some(e) = err.downcast_ref::<parol_runtime::errors::LookaheadError>() {
             format!("{}:\n{}", err, e)
         } else {
-            String::default()
+            format!("{}", err)
         };
         let diagnostic = Diagnostic {
             source,
@@ -286,5 +299,53 @@ impl Server {
         };
         diagnostics.push(diagnostic);
         diagnostics
+    }
+
+    fn find_user_type_definitions(
+        document_state: &DocumentState,
+        text_at_position: String,
+        locations: &mut Vec<Location>,
+        params: GotoDefinitionParams,
+    ) {
+        if let Some(user_type_definitions) = document_state
+            .parsed_data
+            .user_type_definitions
+            .get(&text_at_position)
+        {
+            for range in user_type_definitions {
+                locations.push(Location {
+                    uri: params
+                        .text_document_position_params
+                        .text_document
+                        .uri
+                        .clone(),
+                    range: *range,
+                });
+            }
+        }
+    }
+
+    fn find_non_terminal_definitions(
+        document_state: &DocumentState,
+        text_at_position: &String,
+        locations: &mut Vec<Location>,
+        params: &GotoDefinitionParams,
+    ) {
+        if let Some(non_terminal_definitions) = document_state
+            .parsed_data
+            .non_terminal_definitions
+            .get(text_at_position)
+        {
+            for range in non_terminal_definitions {
+                locations.push(Location {
+                    uri: params
+                        .text_document_position_params
+                        .text_document
+                        .uri
+                        .clone(),
+                    range: *range,
+                });
+            }
+        }
     }
 }
