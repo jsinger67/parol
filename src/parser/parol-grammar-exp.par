@@ -3,8 +3,8 @@
 %comment "Parol's own grammar"
 %line_comment "//"
 %block_comment "/\*" "\*/"
-%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
 %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
 
 %%
 

@@ -7,7 +7,7 @@ pub enum ParolParserError {
     /// Undeclared scanner found. Pease declare a scanner via %scanner name {{...}}
     #[error("{context} - Unknown scanner {name}")]
     #[diagnostic(
-        help("Undeclared scanner found. Pease declare a scanner via %scanner name {{...}}"),
+        help("Undeclared scanner found. Please declare a scanner via %scanner name {{...}}"),
         code(parol::parser::unknown_scanner)
     )]
     UnknownScanner {

@@ -20,6 +20,7 @@ But we try to mark incompatible changes with a new minor version.
 ## Upcoming version
 
 * Fixed a missing newline in between multiple user type definitions
+* Better handling of errors from grammar analysis
 
 ## v0.10.5 - 2022-08-03
 

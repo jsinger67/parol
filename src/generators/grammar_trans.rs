@@ -1,6 +1,9 @@
-use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
+use crate::analysis::errors::{Recursion, RelatedHint};
+use crate::analysis::{
+    non_productive_non_terminals, unreachable_non_terminals, GrammarAnalysisError,
+};
 use crate::{detect_left_recursions, left_factor, Cfg};
-use miette::{miette, Result};
+use miette::{bail, Result};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -12,46 +15,40 @@ use miette::{miette, Result};
 pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
     let non_productive = non_productive_non_terminals(cfg);
     if !non_productive.is_empty() {
-        let non_productive_string = non_productive
+        let non_terminals = non_productive
             .iter()
-            .map(|nt| nt.to_string())
-            .collect::<Vec<String>>()
-            .join(", ");
-        return Err(miette!(
-            "Grammar contains non-productive non-terminals:\n{}",
-            non_productive_string
-        ));
+            .map(|nt| RelatedHint {
+                hint: format!("{}", nt),
+            })
+            .collect::<Vec<RelatedHint>>();
+        bail!(GrammarAnalysisError::NonProductiveNonTerminals { non_terminals });
     }
     let unreachable = unreachable_non_terminals(cfg);
     if !unreachable.is_empty() {
-        let unreachable_string = unreachable
+        let non_terminals = unreachable
             .iter()
-            .map(|nt| nt.to_string())
-            .collect::<Vec<String>>()
-            .join(", ");
-        return Err(miette!(
-            "Grammar contains unreachable non-terminals:\n{}",
-            unreachable_string
-        ));
+            .map(|nt| RelatedHint {
+                hint: format!("{}", nt),
+            })
+            .collect::<Vec<RelatedHint>>();
+        bail!(GrammarAnalysisError::UnreachableNonTerminals { non_terminals });
     }
 
     let left_recursions = detect_left_recursions(cfg);
     if !left_recursions.is_empty() {
-        let left_recursions_string = left_recursions
+        let recursions = left_recursions
             .iter()
-            .map(|n| {
-                n.iter()
-                    .map(|s| format!("{}", s))
-                    .collect::<Vec<String>>()
-                    .join(" => ")
+            .map(|n| Recursion {
+                hints: n
+                    .iter()
+                    .map(|s| RelatedHint {
+                        hint: format!("{}", s),
+                    })
+                    .collect::<Vec<RelatedHint>>(),
             })
-            .collect::<Vec<String>>()
-            .join(", ");
+            .collect::<Vec<Recursion>>();
 
-        return Err(miette!(
-            "Grammar contains left_recursions:\n{}",
-            left_recursions_string
-        ));
+        bail!(GrammarAnalysisError::LeftRecursion { recursions });
     }
 
     Ok(left_factor(cfg))

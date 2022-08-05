@@ -5,6 +5,13 @@ pub mod compiled_la_dfa;
 pub mod compiled_terminal;
 pub use compiled_terminal::CompiledTerminal;
 
+///
+/// Error types used by this module
+///
+#[forbid(missing_docs)]
+pub mod errors;
+pub use errors::GrammarAnalysisError;
+
 /// Module with check for left-recursions
 pub mod left_recursion;
 pub use left_recursion::detect_left_recursions;
