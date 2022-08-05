@@ -38,6 +38,14 @@ pub enum GrammarAnalysisError {
         #[related]
         non_terminals: Vec<RelatedHint>,
     },
+
+    /// Maximum lookahead exceeded.
+    #[error("Maximum lookahead {max_k} exceeded")]
+    #[diagnostic(help("Examine your grammar"), code(parol::analysis::max_k_exceeded))]
+    MaxKExceeded {
+        /// Maximum lookahead
+        max_k: usize,
+    },
 }
 
 /// A single recursion

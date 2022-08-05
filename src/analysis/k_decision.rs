@@ -1,6 +1,6 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
-use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
+use crate::analysis::{GrammarAnalysisError, LookaheadDFA};
 use crate::{GrammarConfig, KTuples};
 use log::trace;
 use miette::{bail, miette, Result};
@@ -138,7 +138,7 @@ pub fn decidable(
             }
             current_k += 1;
         }
-        Err(miette!("max_k exceeded"))
+        bail!(GrammarAnalysisError::MaxKExceeded { max_k })
     }
 }
 
