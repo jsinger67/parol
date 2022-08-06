@@ -3,7 +3,9 @@ use std::{cell::RefCell, error::Error, result::Result};
 use crate::arguments::Config;
 
 pub mod arguments;
-mod errors;
+pub mod diagnostics;
+pub mod document_state;
+pub mod errors;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
 mod parol_ls_parser;

@@ -7,10 +7,10 @@
 
 /*  0 */ ParolLs: Prolog GrammarDefinition;
 /*  1 */ Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
-/*  2 */ PrologList0: ScannerState PrologList0; // Vec<T>::Push
-/*  3 */ PrologList0: ; // Vec<T>::New
-/*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
-/*  5 */ PrologList: ; // Vec<T>::New
+/*  2 */ PrologList0 /* Vec<T>::Push */: ScannerState PrologList0;
+/*  3 */ PrologList0 /* Vec<T>::New */: ;
+/*  4 */ PrologList /* Vec<T>::Push */: Declaration PrologList;
+/*  5 */ PrologList /* Vec<T>::New */: ;
 /*  6 */ StartDeclaration: Comments "%start" : OwnedToken Identifier Comments;
 /*  7 */ Declaration: "%title" : OwnedToken String Comments;
 /*  8 */ Declaration: "%comment" : OwnedToken String Comments;
@@ -21,16 +21,16 @@
 /* 13 */ ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
 /* 14 */ ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
 /* 15 */ GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;
-/* 16 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
-/* 17 */ GrammarDefinitionList: ; // Vec<T>::New
+/* 16 */ GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;
+/* 17 */ GrammarDefinitionList /* Vec<T>::New */: ;
 /* 18 */ DoubleColon: "::" : OwnedToken;
-/* 19 */ Production: Comments Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
+/* 19 */ Production: Comments Identifier Comments ":" : OwnedToken Alternations ";" : OwnedToken;
 /* 20 */ Alternations: Alternation AlternationsList /* Vec */;
-/* 21 */ AlternationsList: "\|" : OwnedToken Alternation AlternationsList; // Vec<T>::Push
-/* 22 */ AlternationsList: ; // Vec<T>::New
+/* 21 */ AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Alternation AlternationsList;
+/* 22 */ AlternationsList /* Vec<T>::New */: ;
 /* 23 */ Alternation: AlternationList /* Vec */;
-/* 24 */ AlternationList: Factor Comments AlternationList; // Vec<T>::Push
-/* 25 */ AlternationList: ; // Vec<T>::New
+/* 24 */ AlternationList /* Vec<T>::Push */: Factor Comments AlternationList;
+/* 25 */ AlternationList /* Vec<T>::New */: ;
 /* 26 */ Factor: Group;
 /* 27 */ Factor: Repeat;
 /* 28 */ Factor: Optional;
@@ -40,41 +40,41 @@
 /* 32 */ Symbol: TokenWithStates;
 /* 33 */ Symbol: ScannerSwitch;
 /* 34 */ SimpleToken: String SimpleTokenOpt /* Option */;
-/* 35 */ SimpleTokenOpt: ASTControl; // Option<T>::Some
-/* 36 */ SimpleTokenOpt: ; // Option<T>::None
+/* 35 */ SimpleTokenOpt /* Option<T>::Some */: ASTControl;
+/* 36 */ SimpleTokenOpt /* Option<T>::None */: ;
 /* 37 */ TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken String TokenWithStatesOpt /* Option */;
-/* 38 */ TokenWithStatesOpt: ASTControl; // Option<T>::Some
-/* 39 */ TokenWithStatesOpt: ; // Option<T>::None
+/* 38 */ TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
+/* 39 */ TokenWithStatesOpt /* Option<T>::None */: ;
 /* 40 */ Group: "\(" : OwnedToken Alternations "\)" : OwnedToken;
 /* 41 */ Optional: "\[" : OwnedToken Alternations "\]" : OwnedToken;
 /* 42 */ Repeat: "\{" : OwnedToken Alternations "\}" : OwnedToken;
 /* 43 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
-/* 44 */ NonTerminalOpt: ASTControl; // Option<T>::Some
-/* 45 */ NonTerminalOpt: ; // Option<T>::None
+/* 44 */ NonTerminalOpt /* Option<T>::Some */: ASTControl;
+/* 45 */ NonTerminalOpt /* Option<T>::None */: ;
 /* 46 */ Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" : OwnedToken;
 /* 47 */ String: "\u{22}([^\\]|\\.)*?\u{22}" : OwnedToken;
 /* 48 */ ScannerState: "%scanner" : OwnedToken Identifier "\{" : OwnedToken ScannerStateList /* Vec */ "\}" : OwnedToken;
-/* 49 */ ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
-/* 50 */ ScannerStateList: ; // Vec<T>::New
+/* 49 */ ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
+/* 50 */ ScannerStateList /* Vec<T>::New */: ;
 /* 51 */ StateList: Identifier StateListList /* Vec */;
-/* 52 */ StateListList: "," : OwnedToken Identifier StateListList; // Vec<T>::Push
-/* 53 */ StateListList: ; // Vec<T>::New
+/* 52 */ StateListList /* Vec<T>::Push */: "," : OwnedToken Identifier StateListList;
+/* 53 */ StateListList /* Vec<T>::New */: ;
 /* 54 */ ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
 /* 55 */ ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
 /* 56 */ ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
-/* 57 */ ScannerSwitchOpt: Identifier; // Option<T>::Some
-/* 58 */ ScannerSwitchOpt: ; // Option<T>::None
+/* 57 */ ScannerSwitchOpt /* Option<T>::Some */: Identifier;
+/* 58 */ ScannerSwitchOpt /* Option<T>::None */: ;
 /* 59 */ ASTControl: CutOperator;
 /* 60 */ ASTControl: UserTypeDeclaration;
 /* 61 */ CutOperator: "\^" : OwnedToken;
 /* 62 */ UserTypeDeclaration: ":" : OwnedToken UserTypeName;
 /* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
-/* 64 */ UserTypeNameList: DoubleColon Identifier UserTypeNameList; // Vec<T>::Push
-/* 65 */ UserTypeNameList: ; // Vec<T>::New
-/* 66 */ Comments: CommentsOpt /* Option */;
-/* 67 */ CommentsOpt: CommentsOptGroup; // Option<T>::Some
-/* 68 */ CommentsOptGroup: LineComment;
-/* 69 */ CommentsOptGroup: BlockComment;
-/* 70 */ CommentsOpt: ; // Option<T>::None
+/* 64 */ UserTypeNameList /* Vec<T>::Push */: DoubleColon Identifier UserTypeNameList;
+/* 65 */ UserTypeNameList /* Vec<T>::New */: ;
+/* 66 */ Comments: CommentsList /* Vec */;
+/* 67 */ CommentsList /* Vec<T>::Push */: CommentsListGroup CommentsList;
+/* 68 */ CommentsListGroup: LineComment;
+/* 69 */ CommentsListGroup: BlockComment;
+/* 70 */ CommentsList /* Vec<T>::New */: ;
 /* 71 */ LineComment: "//.*(:?\r\n|\r|\n|$)" : OwnedToken;
 /* 72 */ BlockComment: "(?ms)/\u{2a}.*?\u{2a}/" : OwnedToken;

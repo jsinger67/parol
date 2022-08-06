@@ -6,32 +6,14 @@ use lsp_types::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
         PublishDiagnostics,
     },
-    Diagnostic, DiagnosticRelatedInformation, DidChangeTextDocumentParams,
-    DidCloseTextDocumentParams, DidOpenTextDocumentParams, GotoDefinitionParams,
-    GotoDefinitionResponse, Location, NumberOrString, Position, PublishDiagnosticsParams, Range,
+    DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
+    GotoDefinitionParams, GotoDefinitionResponse, Location, PublishDiagnosticsParams, Range,
     TextDocumentContentChangeEvent, Url,
 };
 use miette::miette;
-use parol::{
-    analysis::GrammarAnalysisError, calculate_lookahead_dfas, check_and_transform_grammar,
-    GrammarConfig, ParolGrammar,
-};
+use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
-use crate::{
-    parol_ls_grammar::ParolLsGrammar, parol_ls_parser::parse, utils::source_code_span_to_range,
-};
-
-#[derive(Debug, Default)]
-pub(crate) struct DocumentState {
-    input: String,
-    parsed_data: ParolLsGrammar,
-}
-
-impl DocumentState {
-    fn ident_at_position(&self, position: Position) -> Option<String> {
-        self.parsed_data.ident_at_position(position)
-    }
-}
+use crate::{diagnostics::Diagnostics, document_state::DocumentState, parol_ls_parser::parse};
 
 #[derive(Debug, Default)]
 pub(crate) struct Server {
@@ -116,7 +98,7 @@ impl Server {
                 eprintln!("handle_open_document: document obtained");
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri.clone(),
-                    Self::to_diagnostics(&params.text_document.uri, document_state, err),
+                    Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
                     Some(params.text_document.version),
                 );
                 let params = serde_json::to_value(&result).unwrap();
@@ -164,7 +146,7 @@ impl Server {
                 eprintln!("handle_change_document: document obtained");
                 let result = PublishDiagnosticsParams::new(
                     params.text_document.uri.clone(),
-                    Self::to_diagnostics(&params.text_document.uri, document_state, err),
+                    Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
                     Some(params.text_document.version),
                 );
                 let params = serde_json::to_value(&result).unwrap();
@@ -247,117 +229,6 @@ impl Server {
         self.documents.get_mut(file_path).unwrap().input = change.text.clone();
     }
 
-    fn to_diagnostics(
-        uri: &Url,
-        document_state: &DocumentState,
-        err: miette::ErrReport,
-    ) -> Vec<Diagnostic> {
-        let mut diagnostics = Vec::new();
-        let parser_err_diag: &dyn miette::Diagnostic = err.as_ref();
-        let range = if let Some(mut labels) = parser_err_diag.labels() {
-            labels.next().map_or(Range::default(), |src| {
-                source_code_span_to_range(&document_state.input, src.inner())
-            })
-        } else {
-            Range::default()
-        };
-        let source = Some("parol-ls".to_string());
-        let code = parser_err_diag
-            .code()
-            .map(|d| NumberOrString::String(format!("{d}")));
-        let mut related_information = vec![];
-
-        // We need to find the correct Display implementation!
-        let message = if let Some(e) = err.downcast_ref::<parol_runtime::errors::ParserError>() {
-            format!("{err}:\n{e}")
-        } else if let Some(e) = err.downcast_ref::<parol_runtime::errors::LookaheadError>() {
-            format!("{err}:\n{e}")
-        } else if let Some(e) = err.downcast_ref::<GrammarAnalysisError>() {
-            match e {
-                GrammarAnalysisError::LeftRecursion { recursions } => {
-                    for (i, rec) in recursions.iter().enumerate() {
-                        related_information.push(DiagnosticRelatedInformation {
-                            location: Location {
-                                uri: uri.to_owned(),
-                                range,
-                            },
-                            message: format!("Recursion #{}:", i + 1),
-                        });
-                        for hint in &rec.hints {
-                            eprintln!("{}", hint);
-                            if let Some(non_terminals) =
-                                Self::find_non_terminal_definitions(document_state, &hint.hint)
-                            {
-                                for rng in non_terminals {
-                                    let (range, message) =
-                                        (*rng, format!("Non-terminal: {}", hint.hint));
-                                    related_information.push(DiagnosticRelatedInformation {
-                                        location: Location {
-                                            uri: uri.to_owned(),
-                                            range,
-                                        },
-                                        message,
-                                    })
-                                }
-                            } else {
-                                let (range, message) = (
-                                    Range::default(),
-                                    format!("Production reference: {}", hint.hint),
-                                );
-                                related_information.push(DiagnosticRelatedInformation {
-                                    location: Location {
-                                        uri: uri.to_owned(),
-                                        range,
-                                    },
-                                    message,
-                                })
-                            }
-                        }
-                    }
-                }
-                GrammarAnalysisError::UnreachableNonTerminals { non_terminals }
-                | GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
-                    for hint in non_terminals {
-                        eprintln!("{}", hint);
-                        if let Some(non_terminals) =
-                            Self::find_non_terminal_definitions(document_state, &hint.hint)
-                        {
-                            for rng in non_terminals {
-                                let (range, message) =
-                                    (*rng, format!("Non-terminal: {}", hint.hint));
-                                related_information.push(DiagnosticRelatedInformation {
-                                    location: Location {
-                                        uri: uri.to_owned(),
-                                        range,
-                                    },
-                                    message,
-                                })
-                            }
-                        }
-                    }
-                }
-                GrammarAnalysisError::MaxKExceeded { max_k: _ } => ()
-            }
-            format!("{err}")
-        } else {
-            format!("{err}")
-        };
-        let diagnostic = Diagnostic {
-            source,
-            code,
-            range,
-            message,
-            related_information: if related_information.is_empty() {
-                None
-            } else {
-                Some(related_information)
-            },
-            ..Default::default()
-        };
-        diagnostics.push(diagnostic);
-        diagnostics
-    }
-
     fn find_user_type_definitions(
         document_state: &DocumentState,
         text_at_position: String,
@@ -382,7 +253,7 @@ impl Server {
         }
     }
 
-    fn find_non_terminal_definitions<'a>(
+    pub(crate) fn find_non_terminal_definitions<'a>(
         document_state: &'a DocumentState,
         non_terminal: &str,
     ) -> Option<&'a Vec<Range>> {

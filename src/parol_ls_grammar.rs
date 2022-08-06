@@ -1,7 +1,7 @@
 use crate::{
     parol_ls_grammar_trait::{
-        Declaration, NonTerminal, ParolLsGrammarTrait, Production,
-        StartDeclaration, UserTypeDeclaration,
+        Declaration, NonTerminal, ParolLsGrammarTrait, Production, StartDeclaration,
+        UserTypeDeclaration,
     },
     utils::location_to_range,
 };
@@ -16,6 +16,7 @@ use std::{collections::HashMap, fmt::Debug};
 ///
 #[derive(Debug, Default)]
 pub struct ParolLsGrammar {
+    // A hash that maps non-terminals to their productions' left-hand side.
     pub non_terminal_definitions: HashMap<String, Vec<Range>>,
     pub non_terminals: Vec<(Range, String)>,
 

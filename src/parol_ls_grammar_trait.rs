@@ -429,22 +429,22 @@ pub struct ASTControl1 {
 ///
 /// Type derived for production 68
 ///
-/// CommentsOptGroup: LineComment;
+/// CommentsListGroup: LineComment;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CommentsOptGroup0 {
+pub struct CommentsListGroup0 {
     pub line_comment: Box<LineComment>,
 }
 
 ///
 /// Type derived for production 69
 ///
-/// CommentsOptGroup: BlockComment;
+/// CommentsListGroup: BlockComment;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CommentsOptGroup1 {
+pub struct CommentsListGroup1 {
     pub block_comment: Box<BlockComment>,
 }
 
@@ -517,26 +517,26 @@ pub struct BlockComment {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Comments {
-    pub comments_opt: Option<Box<CommentsOpt>>,
+    pub comments_list: Vec<CommentsList>,
 }
 
 ///
-/// Type derived for non-terminal CommentsOpt
+/// Type derived for non-terminal CommentsList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CommentsOpt {
-    pub comments_opt_group: Box<CommentsOptGroup>,
+pub struct CommentsList {
+    pub comments_list_group: Box<CommentsListGroup>,
 }
 
 ///
-/// Type derived for non-terminal CommentsOptGroup
+/// Type derived for non-terminal CommentsListGroup
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub enum CommentsOptGroup {
-    CommentsOptGroup0(CommentsOptGroup0),
-    CommentsOptGroup1(CommentsOptGroup1),
+pub enum CommentsListGroup {
+    CommentsListGroup0(CommentsListGroup0),
+    CommentsListGroup1(CommentsListGroup1),
 }
 
 ///
@@ -678,6 +678,7 @@ pub struct ParolLs {
 pub struct Production {
     pub comments: Box<Comments>,
     pub identifier: Box<Identifier>,
+    pub comments0: Box<Comments>,
     pub colon: parol_runtime::lexer::OwnedToken, /* : */
     pub alternations: Box<Alternations>,
     pub semicolon: parol_runtime::lexer::OwnedToken, /* ; */
@@ -916,8 +917,8 @@ pub enum ASTType {
     AlternationsList(Vec<AlternationsList>),
     BlockComment(BlockComment),
     Comments(Comments),
-    CommentsOpt(Option<Box<CommentsOpt>>),
-    CommentsOptGroup(CommentsOptGroup),
+    CommentsList(Vec<CommentsList>),
+    CommentsListGroup(CommentsListGroup),
     CutOperator(CutOperator),
     Declaration(Declaration),
     DoubleColon(DoubleColon),
@@ -1102,7 +1103,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// PrologList0: ScannerState PrologList0; // Vec<T>::Push
+    /// PrologList0 /* Vec<T>::Push */: ScannerState PrologList0;
     ///
     #[named]
     fn prolog_list0_0(
@@ -1135,7 +1136,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// PrologList0: ; // Vec<T>::New
+    /// PrologList0 /* Vec<T>::New */: ;
     ///
     #[named]
     fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1148,7 +1149,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// PrologList: Declaration PrologList; // Vec<T>::Push
+    /// PrologList /* Vec<T>::Push */: Declaration PrologList;
     ///
     #[named]
     fn prolog_list_0(
@@ -1181,7 +1182,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// PrologList: ; // Vec<T>::New
+    /// PrologList /* Vec<T>::New */: ;
     ///
     #[named]
     fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1633,7 +1634,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
+    /// GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;
     ///
     #[named]
     fn grammar_definition_list_0(
@@ -1672,7 +1673,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// GrammarDefinitionList: ; // Vec<T>::New
+    /// GrammarDefinitionList /* Vec<T>::New */: ;
     ///
     #[named]
     fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1714,13 +1715,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Comments Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
+    /// Production: Comments Identifier Comments ":" : OwnedToken Alternations ";" : OwnedToken;
     ///
     #[named]
     fn production(
         &mut self,
         _comments: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
+        _comments0: &ParseTreeStackEntry<'t>,
         colon: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
         semicolon: &ParseTreeStackEntry<'t>,
@@ -1735,6 +1737,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Alternations", context);
         };
+        let comments0 = if let Some(ASTType::Comments(comments0)) = self.pop(context) {
+            comments0
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
@@ -1748,6 +1755,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let production_built = ProductionBuilder::default()
             .comments(Box::new(comments))
             .identifier(Box::new(identifier))
+            .comments0(Box::new(comments0))
             .colon(colon)
             .alternations(Box::new(alternations))
             .semicolon(semicolon)
@@ -1797,7 +1805,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList: "\|" : OwnedToken Alternation AlternationsList; // Vec<T>::Push
+    /// AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Alternation AlternationsList;
     ///
     #[named]
     fn alternations_list_0(
@@ -1834,7 +1842,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationsList: ; // Vec<T>::New
+    /// AlternationsList /* Vec<T>::New */: ;
     ///
     #[named]
     fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1879,7 +1887,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AlternationList: Factor Comments AlternationList; // Vec<T>::Push
+    /// AlternationList /* Vec<T>::Push */: Factor Comments AlternationList;
     ///
     #[named]
     fn alternation_list_0(
@@ -1920,7 +1928,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// AlternationList: ; // Vec<T>::New
+    /// AlternationList /* Vec<T>::New */: ;
     ///
     #[named]
     fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2194,7 +2202,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// SimpleTokenOpt: ASTControl; // Option<T>::Some
+    /// SimpleTokenOpt /* Option<T>::Some */: ASTControl;
     ///
     #[named]
     fn simple_token_opt_0(
@@ -2222,7 +2230,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// SimpleTokenOpt: ; // Option<T>::None
+    /// SimpleTokenOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn simple_token_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2283,7 +2291,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// TokenWithStatesOpt: ASTControl; // Option<T>::Some
+    /// TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
     ///
     #[named]
     fn token_with_states_opt_0(
@@ -2311,7 +2319,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// TokenWithStatesOpt: ; // Option<T>::None
+    /// TokenWithStatesOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn token_with_states_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2457,7 +2465,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// NonTerminalOpt: ASTControl; // Option<T>::Some
+    /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
     #[named]
     fn non_terminal_opt_0(
@@ -2485,7 +2493,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// NonTerminalOpt: ; // Option<T>::None
+    /// NonTerminalOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn non_terminal_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2591,7 +2599,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// ScannerStateList: ScannerDirectives ScannerStateList; // Vec<T>::Push
+    /// ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
     ///
     #[named]
     fn scanner_state_list_0(
@@ -2626,7 +2634,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// ScannerStateList: ; // Vec<T>::New
+    /// ScannerStateList /* Vec<T>::New */: ;
     ///
     #[named]
     fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2678,7 +2686,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// StateListList: "," : OwnedToken Identifier StateListList; // Vec<T>::Push
+    /// StateListList /* Vec<T>::Push */: "," : OwnedToken Identifier StateListList;
     ///
     #[named]
     fn state_list_list_0(
@@ -2715,7 +2723,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// StateListList: ; // Vec<T>::New
+    /// StateListList /* Vec<T>::New */: ;
     ///
     #[named]
     fn state_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2839,7 +2847,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// ScannerSwitchOpt: Identifier; // Option<T>::Some
+    /// ScannerSwitchOpt /* Option<T>::Some */: Identifier;
     ///
     #[named]
     fn scanner_switch_opt_0(
@@ -2867,7 +2875,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// ScannerSwitchOpt: ; // Option<T>::None
+    /// ScannerSwitchOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3033,7 +3041,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// UserTypeNameList: DoubleColon Identifier UserTypeNameList; // Vec<T>::Push
+    /// UserTypeNameList /* Vec<T>::Push */: DoubleColon Identifier UserTypeNameList;
     ///
     #[named]
     fn user_type_name_list_0(
@@ -3074,7 +3082,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// UserTypeNameList: ; // Vec<T>::New
+    /// UserTypeNameList /* Vec<T>::New */: ;
     ///
     #[named]
     fn user_type_name_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3090,23 +3098,25 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// Comments: CommentsOpt /* Option */;
+    /// Comments: CommentsList /* Vec */;
     ///
     #[named]
     fn comments(
         &mut self,
-        _comments_opt: &ParseTreeStackEntry<'t>,
+        _comments_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comments_opt = if let Some(ASTType::CommentsOpt(comments_opt)) = self.pop(context) {
-            comments_opt
-        } else {
-            bail!("{}: Expecting ASTType::CommentsOpt", context);
-        };
+        let comments_list =
+            if let Some(ASTType::CommentsList(mut comments_list)) = self.pop(context) {
+                comments_list.reverse();
+                comments_list
+            } else {
+                bail!("{}: Expecting ASTType::CommentsList", context);
+            };
         let comments_built = CommentsBuilder::default()
-            .comments_opt(comments_opt)
+            .comments_list(comments_list)
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -3117,39 +3127,45 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// CommentsOpt: CommentsOptGroup; // Option<T>::Some
+    /// CommentsList /* Vec<T>::Push */: CommentsListGroup CommentsList;
     ///
     #[named]
-    fn comments_opt_0(
+    fn comments_list_0(
         &mut self,
-        _comments_opt_group: &ParseTreeStackEntry<'t>,
+        _comments_list_group: &ParseTreeStackEntry<'t>,
+        _comments_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comments_opt_group =
-            if let Some(ASTType::CommentsOptGroup(comments_opt_group)) = self.pop(context) {
-                comments_opt_group
+        let mut comments_list =
+            if let Some(ASTType::CommentsList(comments_list)) = self.pop(context) {
+                comments_list
             } else {
-                bail!("{}: Expecting ASTType::CommentsOptGroup", context);
+                bail!("{}: Expecting ASTType::CommentsList", context);
             };
-        let comments_opt_0_built = CommentsOptBuilder::default()
-            .comments_opt_group(Box::new(comments_opt_group))
+        let comments_list_group =
+            if let Some(ASTType::CommentsListGroup(comments_list_group)) = self.pop(context) {
+                comments_list_group
+            } else {
+                bail!("{}: Expecting ASTType::CommentsListGroup", context);
+            };
+        let comments_list_0_built = CommentsListBuilder::default()
+            .comments_list_group(Box::new(comments_list_group))
             .build()
             .into_diagnostic()?;
-        self.push(
-            ASTType::CommentsOpt(Some(Box::new(comments_opt_0_built))),
-            context,
-        );
+        // Add an element to the vector
+        comments_list.push(comments_list_0_built);
+        self.push(ASTType::CommentsList(comments_list), context);
         Ok(())
     }
 
     /// Semantic action for production 68:
     ///
-    /// CommentsOptGroup: LineComment;
+    /// CommentsListGroup: LineComment;
     ///
     #[named]
-    fn comments_opt_group_0(
+    fn comments_list_group_0(
         &mut self,
         _line_comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -3161,14 +3177,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::LineComment", context);
         };
-        let comments_opt_group_0_built = CommentsOptGroup0Builder::default()
+        let comments_list_group_0_built = CommentsListGroup0Builder::default()
             .line_comment(Box::new(line_comment))
             .build()
             .into_diagnostic()?;
-        let comments_opt_group_0_built =
-            CommentsOptGroup::CommentsOptGroup0(comments_opt_group_0_built);
+        let comments_list_group_0_built =
+            CommentsListGroup::CommentsListGroup0(comments_list_group_0_built);
         self.push(
-            ASTType::CommentsOptGroup(comments_opt_group_0_built),
+            ASTType::CommentsListGroup(comments_list_group_0_built),
             context,
         );
         Ok(())
@@ -3176,10 +3192,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// CommentsOptGroup: BlockComment;
+    /// CommentsListGroup: BlockComment;
     ///
     #[named]
-    fn comments_opt_group_1(
+    fn comments_list_group_1(
         &mut self,
         _block_comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -3191,14 +3207,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::BlockComment", context);
         };
-        let comments_opt_group_1_built = CommentsOptGroup1Builder::default()
+        let comments_list_group_1_built = CommentsListGroup1Builder::default()
             .block_comment(Box::new(block_comment))
             .build()
             .into_diagnostic()?;
-        let comments_opt_group_1_built =
-            CommentsOptGroup::CommentsOptGroup1(comments_opt_group_1_built);
+        let comments_list_group_1_built =
+            CommentsListGroup::CommentsListGroup1(comments_list_group_1_built);
         self.push(
-            ASTType::CommentsOptGroup(comments_opt_group_1_built),
+            ASTType::CommentsListGroup(comments_list_group_1_built),
             context,
         );
         Ok(())
@@ -3206,13 +3222,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// CommentsOpt: ; // Option<T>::None
+    /// CommentsList /* Vec<T>::New */: ;
     ///
     #[named]
-    fn comments_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn comments_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        self.push(ASTType::CommentsOpt(None), context);
+        let comments_list_1_built = Vec::new();
+        self.push(ASTType::CommentsList(comments_list_1_built), context);
         Ok(())
     }
 
@@ -3324,6 +3341,7 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
                 &children[2],
                 &children[3],
                 &children[4],
+                &children[5],
                 parse_tree,
             ),
             20 => self.alternations(&children[0], &children[1], parse_tree),
@@ -3399,10 +3417,10 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             64 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
             65 => self.user_type_name_list_1(parse_tree),
             66 => self.comments(&children[0], parse_tree),
-            67 => self.comments_opt_0(&children[0], parse_tree),
-            68 => self.comments_opt_group_0(&children[0], parse_tree),
-            69 => self.comments_opt_group_1(&children[0], parse_tree),
-            70 => self.comments_opt_1(parse_tree),
+            67 => self.comments_list_0(&children[0], &children[1], parse_tree),
+            68 => self.comments_list_group_0(&children[0], parse_tree),
+            69 => self.comments_list_group_1(&children[0], parse_tree),
+            70 => self.comments_list_1(parse_tree),
             71 => self.line_comment(&children[0], parse_tree),
             72 => self.block_comment(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),

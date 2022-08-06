@@ -158,8 +158,8 @@ pub const NON_TERMINALS: &[&str; 44] = &[
     /*  4 */ "AlternationsList",
     /*  5 */ "BlockComment",
     /*  6 */ "Comments",
-    /*  7 */ "CommentsOpt",
-    /*  8 */ "CommentsOptGroup",
+    /*  7 */ "CommentsList",
+    /*  8 */ "CommentsListGroup",
     /*  9 */ "CutOperator",
     /* 10 */ "Declaration",
     /* 11 */ "DoubleColon",
@@ -261,7 +261,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         transitions: &[],
         k: 0,
     },
-    /* 7 - "CommentsOpt" */
+    /* 7 - "CommentsList" */
     LookaheadDFA {
         states: &[None, Some(67), Some(70)],
         transitions: &[
@@ -274,6 +274,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
             DFATransition(0, 12, 2),
             DFATransition(0, 13, 2),
             DFATransition(0, 14, 2),
+            DFATransition(0, 16, 2),
             DFATransition(0, 17, 2),
             DFATransition(0, 18, 2),
             DFATransition(0, 19, 2),
@@ -294,7 +295,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 8 - "CommentsOptGroup" */
+    /* 8 - "CommentsListGroup" */
     LookaheadDFA {
         states: &[None, Some(68), Some(69)],
         transitions: &[DFATransition(0, 35, 1), DFATransition(0, 36, 2)],
@@ -763,13 +764,14 @@ pub const PRODUCTIONS: &[Production; 73] = &[
         lhs: 11,
         production: &[ParseType::T(15)],
     },
-    // 19 - Production: Comments Identifier ":" Alternations ";";
+    // 19 - Production: Comments Identifier Comments ":" Alternations ";";
     Production {
         lhs: 22,
         production: &[
             ParseType::T(17),
             ParseType::N(3),
             ParseType::T(16),
+            ParseType::N(6),
             ParseType::N(16),
             ParseType::N(6),
         ],
@@ -1026,27 +1028,27 @@ pub const PRODUCTIONS: &[Production; 73] = &[
         lhs: 43,
         production: &[],
     },
-    // 66 - Comments: CommentsOpt /* Option */;
+    // 66 - Comments: CommentsList /* Vec */;
     Production {
         lhs: 6,
         production: &[ParseType::N(7)],
     },
-    // 67 - CommentsOpt: CommentsOptGroup;
+    // 67 - CommentsList: CommentsListGroup CommentsList;
     Production {
         lhs: 7,
-        production: &[ParseType::N(8)],
+        production: &[ParseType::N(7), ParseType::N(8)],
     },
-    // 68 - CommentsOptGroup: LineComment;
+    // 68 - CommentsListGroup: LineComment;
     Production {
         lhs: 8,
         production: &[ParseType::N(17)],
     },
-    // 69 - CommentsOptGroup: BlockComment;
+    // 69 - CommentsListGroup: BlockComment;
     Production {
         lhs: 8,
         production: &[ParseType::N(5)],
     },
-    // 70 - CommentsOpt: ;
+    // 70 - CommentsList: ;
     Production {
         lhs: 7,
         production: &[],

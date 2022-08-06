@@ -41,7 +41,7 @@ DoubleColon
     ;
 
 Production
-    : Comments Identifier ":": OwnedToken Alternations ";": OwnedToken
+    : Comments Identifier Comments ":": OwnedToken Alternations ";": OwnedToken
     ;
 
 Alternations
@@ -129,7 +129,7 @@ UserTypeName
     ;
 
 Comments
-    : [ LineComment | BlockComment ]
+    : { LineComment | BlockComment }
     ;
 
 LineComment
