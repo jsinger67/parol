@@ -1,9 +1,6 @@
 %start ParolLs
 %title "Parol grammar"
 %comment "Parol's own grammar"
-%line_comment "//"
-%block_comment "/\*" "\*/"
-
 %user_type OwnedToken = parol_runtime::lexer::OwnedToken
 
 
@@ -18,21 +15,21 @@ Prolog
     ;
 
 StartDeclaration
-    : "%start": OwnedToken Identifier
+    : Comments "%start": OwnedToken Identifier Comments
     ;
 
 Declaration
-    : "%title": OwnedToken String
-    | "%comment": OwnedToken String
-    | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName
+    : "%title": OwnedToken String Comments
+    | "%comment": OwnedToken String Comments
+    | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName Comments
     | ScannerDirectives
     ;
 
 ScannerDirectives
-    : "%line_comment": OwnedToken String
-    | "%block_comment": OwnedToken String String
-    | "%auto_newline_off": OwnedToken
-    | "%auto_ws_off": OwnedToken
+    : "%line_comment": OwnedToken String Comments
+    | "%block_comment": OwnedToken String String Comments
+    | "%auto_newline_off": OwnedToken Comments
+    | "%auto_ws_off": OwnedToken Comments
     ;
 
 GrammarDefinition
@@ -44,7 +41,7 @@ DoubleColon
     ;
 
 Production
-    : Identifier ":": OwnedToken Alternations ";": OwnedToken
+    : Comments Identifier ":": OwnedToken Alternations ";": OwnedToken
     ;
 
 Alternations
@@ -52,7 +49,7 @@ Alternations
     ;
 
 Alternation
-    : { Factor }
+    : { Factor Comments }
     ;
 
 Factor
@@ -129,4 +126,16 @@ UserTypeDeclaration
 
 UserTypeName
     : Identifier { DoubleColon Identifier }
+    ;
+
+Comments
+    : [ LineComment | BlockComment ]
+    ;
+
+LineComment
+    : "//.*(:?\r\n|\r|\n|$)": OwnedToken
+    ;
+
+BlockComment
+    : "(?ms)/\u{2a}.*?\u{2a}/": OwnedToken
     ;

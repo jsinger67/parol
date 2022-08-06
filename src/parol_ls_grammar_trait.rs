@@ -150,6 +150,21 @@ pub trait ParolLsGrammarTrait {
     fn user_type_name(&mut self, _arg: &UserTypeName) -> Result<()> {
         Ok(())
     }
+
+    /// Semantic action for non-terminal 'Comments'
+    fn comments(&mut self, _arg: &Comments) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'LineComment'
+    fn line_comment(&mut self, _arg: &LineComment) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'BlockComment'
+    fn block_comment(&mut self, _arg: &BlockComment) -> Result<()> {
+        Ok(())
+    }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -160,31 +175,33 @@ pub trait ParolLsGrammarTrait {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title" : OwnedToken String;
+/// Declaration: "%title" : OwnedToken String Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration0 {
     pub percent_title: parol_runtime::lexer::OwnedToken, /* %title */
     pub string: Box<String>,
+    pub comments: Box<Comments>,
 }
 
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment" : OwnedToken String;
+/// Declaration: "%comment" : OwnedToken String Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration1 {
     pub percent_comment: parol_runtime::lexer::OwnedToken, /* %comment */
     pub string: Box<String>,
+    pub comments: Box<Comments>,
 }
 
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
+/// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -193,6 +210,7 @@ pub struct Declaration2 {
     pub identifier: Box<Identifier>,
     pub equ: parol_runtime::lexer::OwnedToken, /* = */
     pub user_type_name: Box<UserTypeName>,
+    pub comments: Box<Comments>,
 }
 
 ///
@@ -209,19 +227,20 @@ pub struct Declaration3 {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%line_comment" : OwnedToken String;
+/// ScannerDirectives: "%line_comment" : OwnedToken String Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives0 {
     pub percent_line_underscore_comment: parol_runtime::lexer::OwnedToken, /* %line_comment */
     pub string: Box<String>,
+    pub comments: Box<Comments>,
 }
 
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%block_comment" : OwnedToken String String;
+/// ScannerDirectives: "%block_comment" : OwnedToken String String Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -229,28 +248,31 @@ pub struct ScannerDirectives1 {
     pub percent_block_underscore_comment: parol_runtime::lexer::OwnedToken, /* %block_comment */
     pub string: Box<String>,
     pub string0: Box<String>,
+    pub comments: Box<Comments>,
 }
 
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_newline_off" : OwnedToken;
+/// ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives2 {
     pub percent_auto_underscore_newline_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_newline_off */
+    pub comments: Box<Comments>,
 }
 
 ///
 /// Type derived for production 14
 ///
-/// ScannerDirectives: "%auto_ws_off" : OwnedToken;
+/// ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives3 {
     pub percent_auto_underscore_ws_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_ws_off */
+    pub comments: Box<Comments>,
 }
 
 ///
@@ -404,6 +426,28 @@ pub struct ASTControl1 {
     pub user_type_declaration: Box<UserTypeDeclaration>,
 }
 
+///
+/// Type derived for production 68
+///
+/// CommentsOptGroup: LineComment;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct CommentsOptGroup0 {
+    pub line_comment: Box<LineComment>,
+}
+
+///
+/// Type derived for production 69
+///
+/// CommentsOptGroup: BlockComment;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct CommentsOptGroup1 {
+    pub block_comment: Box<BlockComment>,
+}
+
 // -------------------------------------------------------------------------------------------------
 //
 // Types of non-terminals deduced from the structure of the transformed grammar
@@ -435,6 +479,7 @@ pub struct Alternation {
 #[derive(Builder, Debug, Clone)]
 pub struct AlternationList {
     pub factor: Box<Factor>,
+    pub comments: Box<Comments>,
 }
 
 ///
@@ -455,6 +500,43 @@ pub struct Alternations {
 pub struct AlternationsList {
     pub or: parol_runtime::lexer::OwnedToken, /* \| */
     pub alternation: Box<Alternation>,
+}
+
+///
+/// Type derived for non-terminal BlockComment
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct BlockComment {
+    pub block_comment: parol_runtime::lexer::OwnedToken, /* (?ms)/\u{2a}.*?\u{2a}/ */
+}
+
+///
+/// Type derived for non-terminal Comments
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Comments {
+    pub comments_opt: Option<Box<CommentsOpt>>,
+}
+
+///
+/// Type derived for non-terminal CommentsOpt
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct CommentsOpt {
+    pub comments_opt_group: Box<CommentsOptGroup>,
+}
+
+///
+/// Type derived for non-terminal CommentsOptGroup
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum CommentsOptGroup {
+    CommentsOptGroup0(CommentsOptGroup0),
+    CommentsOptGroup1(CommentsOptGroup1),
 }
 
 ///
@@ -540,6 +622,15 @@ pub struct Identifier {
 }
 
 ///
+/// Type derived for non-terminal LineComment
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct LineComment {
+    pub line_comment: parol_runtime::lexer::OwnedToken, /* //.*(:?\r\n|\r|\n|$) */
+}
+
+///
 /// Type derived for non-terminal NonTerminal
 ///
 #[allow(dead_code)]
@@ -585,6 +676,7 @@ pub struct ParolLs {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Production {
+    pub comments: Box<Comments>,
     pub identifier: Box<Identifier>,
     pub colon: parol_runtime::lexer::OwnedToken, /* : */
     pub alternations: Box<Alternations>,
@@ -710,8 +802,10 @@ pub struct SimpleTokenOpt {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StartDeclaration {
+    pub comments: Box<Comments>,
     pub percent_start: parol_runtime::lexer::OwnedToken, /* %start */
     pub identifier: Box<Identifier>,
+    pub comments0: Box<Comments>,
 }
 
 ///
@@ -820,6 +914,10 @@ pub enum ASTType {
     AlternationList(Vec<AlternationList>),
     Alternations(Alternations),
     AlternationsList(Vec<AlternationsList>),
+    BlockComment(BlockComment),
+    Comments(Comments),
+    CommentsOpt(Option<Box<CommentsOpt>>),
+    CommentsOptGroup(CommentsOptGroup),
     CutOperator(CutOperator),
     Declaration(Declaration),
     DoubleColon(DoubleColon),
@@ -828,6 +926,7 @@ pub enum ASTType {
     GrammarDefinitionList(Vec<GrammarDefinitionList>),
     Group(Group),
     Identifier(Identifier),
+    LineComment(LineComment),
     NonTerminal(NonTerminal),
     NonTerminalOpt(Option<Box<NonTerminalOpt>>),
     Optional(Optional),
@@ -1095,13 +1194,15 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start" : OwnedToken Identifier;
+    /// StartDeclaration: Comments "%start" : OwnedToken Identifier Comments;
     ///
     #[named]
     fn start_declaration(
         &mut self,
+        _comments: &ParseTreeStackEntry<'t>,
         percent_start: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
+        _comments0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1110,14 +1211,26 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments0 = if let Some(ASTType::Comments(comments0)) = self.pop(context) {
+            comments0
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
             identifier
         } else {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let start_declaration_built = StartDeclarationBuilder::default()
+            .comments(Box::new(comments))
             .percent_start(percent_start)
             .identifier(Box::new(identifier))
+            .comments0(Box::new(comments0))
             .build()
             .into_diagnostic()?;
         // Calling user action here
@@ -1129,13 +1242,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title" : OwnedToken String;
+    /// Declaration: "%title" : OwnedToken String Comments;
     ///
     #[named]
     fn declaration_0(
         &mut self,
         percent_title: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1144,6 +1258,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1152,6 +1271,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let declaration_0_built = Declaration0Builder::default()
             .percent_title(percent_title)
             .string(Box::new(string))
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let declaration_0_built = Declaration::Declaration0(declaration_0_built);
@@ -1163,13 +1283,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment" : OwnedToken String;
+    /// Declaration: "%comment" : OwnedToken String Comments;
     ///
     #[named]
     fn declaration_1(
         &mut self,
         percent_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1178,6 +1299,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1186,6 +1312,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let declaration_1_built = Declaration1Builder::default()
             .percent_comment(percent_comment)
             .string(Box::new(string))
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let declaration_1_built = Declaration::Declaration1(declaration_1_built);
@@ -1197,7 +1324,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
+    /// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName Comments;
     ///
     #[named]
     fn declaration_2(
@@ -1206,6 +1333,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         equ: &ParseTreeStackEntry<'t>,
         _user_type_name: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1215,6 +1343,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .try_into()
             .into_diagnostic()?;
         let equ = equ.token(parse_tree)?.try_into().into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
         {
             user_type_name
@@ -1231,6 +1364,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             .equ(equ)
             .user_type_name(Box::new(user_type_name))
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let declaration_2_built = Declaration::Declaration2(declaration_2_built);
@@ -1271,13 +1405,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%line_comment" : OwnedToken String;
+    /// ScannerDirectives: "%line_comment" : OwnedToken String Comments;
     ///
     #[named]
     fn scanner_directives_0(
         &mut self,
         percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1286,6 +1421,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let string = if let Some(ASTType::String(string)) = self.pop(context) {
             string
         } else {
@@ -1294,6 +1434,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let scanner_directives_0_built = ScannerDirectives0Builder::default()
             .percent_line_underscore_comment(percent_line_underscore_comment)
             .string(Box::new(string))
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let scanner_directives_0_built =
@@ -1310,7 +1451,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%block_comment" : OwnedToken String String;
+    /// ScannerDirectives: "%block_comment" : OwnedToken String String Comments;
     ///
     #[named]
     fn scanner_directives_1(
@@ -1318,6 +1459,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
         _string: &ParseTreeStackEntry<'t>,
         _string0: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1326,6 +1468,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
             string0
         } else {
@@ -1340,6 +1487,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .percent_block_underscore_comment(percent_block_underscore_comment)
             .string(Box::new(string))
             .string0(Box::new(string0))
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let scanner_directives_1_built =
@@ -1356,12 +1504,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_newline_off" : OwnedToken;
+    /// ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
     ///
     #[named]
     fn scanner_directives_2(
         &mut self,
         percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1371,10 +1520,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
                 .token(parse_tree)?
                 .try_into()
                 .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let scanner_directives_2_built = ScannerDirectives2Builder::default()
             .percent_auto_underscore_newline_underscore_off(
                 percent_auto_underscore_newline_underscore_off,
             )
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let scanner_directives_2_built =
@@ -1391,12 +1546,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// ScannerDirectives: "%auto_ws_off" : OwnedToken;
+    /// ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
     ///
     #[named]
     fn scanner_directives_3(
         &mut self,
         percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
@@ -1405,8 +1561,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .into_diagnostic()?;
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let scanner_directives_3_built = ScannerDirectives3Builder::default()
             .percent_auto_underscore_ws_underscore_off(percent_auto_underscore_ws_underscore_off)
+            .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
         let scanner_directives_3_built =
@@ -1552,11 +1714,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
+    /// Production: Comments Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
     ///
     #[named]
     fn production(
         &mut self,
+        _comments: &ParseTreeStackEntry<'t>,
         _identifier: &ParseTreeStackEntry<'t>,
         colon: &ParseTreeStackEntry<'t>,
         _alternations: &ParseTreeStackEntry<'t>,
@@ -1577,7 +1740,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Identifier", context);
         };
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let production_built = ProductionBuilder::default()
+            .comments(Box::new(comments))
             .identifier(Box::new(identifier))
             .colon(colon)
             .alternations(Box::new(alternations))
@@ -1710,12 +1879,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AlternationList: Factor AlternationList; // Vec<T>::Push
+    /// AlternationList: Factor Comments AlternationList; // Vec<T>::Push
     ///
     #[named]
     fn alternation_list_0(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         _alternation_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -1727,12 +1897,18 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             } else {
                 bail!("{}: Expecting ASTType::AlternationList", context);
             };
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
             factor
         } else {
             bail!("{}: Expecting ASTType::Factor", context);
         };
         let alternation_list_0_built = AlternationListBuilder::default()
+            .comments(Box::new(comments))
             .factor(Box::new(factor))
             .build()
             .into_diagnostic()?;
@@ -2911,6 +3087,186 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         );
         Ok(())
     }
+
+    /// Semantic action for production 66:
+    ///
+    /// Comments: CommentsOpt /* Option */;
+    ///
+    #[named]
+    fn comments(
+        &mut self,
+        _comments_opt: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let comments_opt = if let Some(ASTType::CommentsOpt(comments_opt)) = self.pop(context) {
+            comments_opt
+        } else {
+            bail!("{}: Expecting ASTType::CommentsOpt", context);
+        };
+        let comments_built = CommentsBuilder::default()
+            .comments_opt(comments_opt)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.comments(&comments_built)?;
+        self.push(ASTType::Comments(comments_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 67:
+    ///
+    /// CommentsOpt: CommentsOptGroup; // Option<T>::Some
+    ///
+    #[named]
+    fn comments_opt_0(
+        &mut self,
+        _comments_opt_group: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let comments_opt_group =
+            if let Some(ASTType::CommentsOptGroup(comments_opt_group)) = self.pop(context) {
+                comments_opt_group
+            } else {
+                bail!("{}: Expecting ASTType::CommentsOptGroup", context);
+            };
+        let comments_opt_0_built = CommentsOptBuilder::default()
+            .comments_opt_group(Box::new(comments_opt_group))
+            .build()
+            .into_diagnostic()?;
+        self.push(
+            ASTType::CommentsOpt(Some(Box::new(comments_opt_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 68:
+    ///
+    /// CommentsOptGroup: LineComment;
+    ///
+    #[named]
+    fn comments_opt_group_0(
+        &mut self,
+        _line_comment: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let line_comment = if let Some(ASTType::LineComment(line_comment)) = self.pop(context) {
+            line_comment
+        } else {
+            bail!("{}: Expecting ASTType::LineComment", context);
+        };
+        let comments_opt_group_0_built = CommentsOptGroup0Builder::default()
+            .line_comment(Box::new(line_comment))
+            .build()
+            .into_diagnostic()?;
+        let comments_opt_group_0_built =
+            CommentsOptGroup::CommentsOptGroup0(comments_opt_group_0_built);
+        self.push(
+            ASTType::CommentsOptGroup(comments_opt_group_0_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 69:
+    ///
+    /// CommentsOptGroup: BlockComment;
+    ///
+    #[named]
+    fn comments_opt_group_1(
+        &mut self,
+        _block_comment: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let block_comment = if let Some(ASTType::BlockComment(block_comment)) = self.pop(context) {
+            block_comment
+        } else {
+            bail!("{}: Expecting ASTType::BlockComment", context);
+        };
+        let comments_opt_group_1_built = CommentsOptGroup1Builder::default()
+            .block_comment(Box::new(block_comment))
+            .build()
+            .into_diagnostic()?;
+        let comments_opt_group_1_built =
+            CommentsOptGroup::CommentsOptGroup1(comments_opt_group_1_built);
+        self.push(
+            ASTType::CommentsOptGroup(comments_opt_group_1_built),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 70:
+    ///
+    /// CommentsOpt: ; // Option<T>::None
+    ///
+    #[named]
+    fn comments_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::CommentsOpt(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 71:
+    ///
+    /// LineComment: "//.*(:?\r\n|\r|\n|$)" : OwnedToken;
+    ///
+    #[named]
+    fn line_comment(
+        &mut self,
+        line_comment: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let line_comment = line_comment
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let line_comment_built = LineCommentBuilder::default()
+            .line_comment(line_comment)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.line_comment(&line_comment_built)?;
+        self.push(ASTType::LineComment(line_comment_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 72:
+    ///
+    /// BlockComment: "(?ms)/\u{2a}.*?\u{2a}/" : OwnedToken;
+    ///
+    #[named]
+    fn block_comment(
+        &mut self,
+        block_comment: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let block_comment = block_comment
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let block_comment_built = BlockCommentBuilder::default()
+            .block_comment(block_comment)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.block_comment(&block_comment_built)?;
+        self.push(ASTType::BlockComment(block_comment_built), context);
+        Ok(())
+    }
 }
 
 impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
@@ -2930,21 +3286,34 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             3 => self.prolog_list0_1(parse_tree),
             4 => self.prolog_list_0(&children[0], &children[1], parse_tree),
             5 => self.prolog_list_1(parse_tree),
-            6 => self.start_declaration(&children[0], &children[1], parse_tree),
-            7 => self.declaration_0(&children[0], &children[1], parse_tree),
-            8 => self.declaration_1(&children[0], &children[1], parse_tree),
-            9 => self.declaration_2(
+            6 => self.start_declaration(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
+            7 => self.declaration_0(&children[0], &children[1], &children[2], parse_tree),
+            8 => self.declaration_1(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.declaration_2(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                &children[4],
+                parse_tree,
+            ),
             10 => self.declaration_3(&children[0], parse_tree),
-            11 => self.scanner_directives_0(&children[0], &children[1], parse_tree),
-            12 => self.scanner_directives_1(&children[0], &children[1], &children[2], parse_tree),
-            13 => self.scanner_directives_2(&children[0], parse_tree),
-            14 => self.scanner_directives_3(&children[0], parse_tree),
+            11 => self.scanner_directives_0(&children[0], &children[1], &children[2], parse_tree),
+            12 => self.scanner_directives_1(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
+            13 => self.scanner_directives_2(&children[0], &children[1], parse_tree),
+            14 => self.scanner_directives_3(&children[0], &children[1], parse_tree),
             15 => self.grammar_definition(&children[0], &children[1], &children[2], parse_tree),
             16 => self.grammar_definition_list_0(&children[0], &children[1], parse_tree),
             17 => self.grammar_definition_list_1(parse_tree),
@@ -2954,13 +3323,14 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
                 &children[1],
                 &children[2],
                 &children[3],
+                &children[4],
                 parse_tree,
             ),
             20 => self.alternations(&children[0], &children[1], parse_tree),
             21 => self.alternations_list_0(&children[0], &children[1], &children[2], parse_tree),
             22 => self.alternations_list_1(parse_tree),
             23 => self.alternation(&children[0], parse_tree),
-            24 => self.alternation_list_0(&children[0], &children[1], parse_tree),
+            24 => self.alternation_list_0(&children[0], &children[1], &children[2], parse_tree),
             25 => self.alternation_list_1(parse_tree),
             26 => self.factor_0(&children[0], parse_tree),
             27 => self.factor_1(&children[0], parse_tree),
@@ -3028,6 +3398,13 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             63 => self.user_type_name(&children[0], &children[1], parse_tree),
             64 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
             65 => self.user_type_name_list_1(parse_tree),
+            66 => self.comments(&children[0], parse_tree),
+            67 => self.comments_opt_0(&children[0], parse_tree),
+            68 => self.comments_opt_group_0(&children[0], parse_tree),
+            69 => self.comments_opt_group_1(&children[0], parse_tree),
+            70 => self.comments_opt_1(parse_tree),
+            71 => self.line_comment(&children[0], parse_tree),
+            72 => self.block_comment(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

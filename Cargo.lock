@@ -568,9 +568,7 @@ checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
 
 [[package]]
 name = "parol"
-version = "0.10.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ecb5a8b6cf0775ef04455d4b3552bca3fc398ff07efb4f83d66c945c0c5881df"
+version = "0.10.6-pre"
 dependencies = [
  "bart",
  "bart_derive",
@@ -598,7 +596,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "clap",
  "derive_builder",

@@ -4,6 +4,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.3
+
+* GotoDefinition can be applied to the Start symbol too
+
 ## v0.1.2
 
 * Include more grammar checks

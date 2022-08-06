@@ -1,8 +1,6 @@
 %start ParolLs
 %title "Parol grammar"
 %comment "Parol's own grammar"
-%line_comment "//"
-%block_comment "/\*" "\*/"
 %user_type OwnedToken = parol_runtime::lexer::OwnedToken
 
 %%
@@ -13,25 +11,25 @@
 /*  3 */ PrologList0: ; // Vec<T>::New
 /*  4 */ PrologList: Declaration PrologList; // Vec<T>::Push
 /*  5 */ PrologList: ; // Vec<T>::New
-/*  6 */ StartDeclaration: "%start" : OwnedToken Identifier;
-/*  7 */ Declaration: "%title" : OwnedToken String;
-/*  8 */ Declaration: "%comment" : OwnedToken String;
-/*  9 */ Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName;
+/*  6 */ StartDeclaration: Comments "%start" : OwnedToken Identifier Comments;
+/*  7 */ Declaration: "%title" : OwnedToken String Comments;
+/*  8 */ Declaration: "%comment" : OwnedToken String Comments;
+/*  9 */ Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName Comments;
 /* 10 */ Declaration: ScannerDirectives;
-/* 11 */ ScannerDirectives: "%line_comment" : OwnedToken String;
-/* 12 */ ScannerDirectives: "%block_comment" : OwnedToken String String;
-/* 13 */ ScannerDirectives: "%auto_newline_off" : OwnedToken;
-/* 14 */ ScannerDirectives: "%auto_ws_off" : OwnedToken;
+/* 11 */ ScannerDirectives: "%line_comment" : OwnedToken String Comments;
+/* 12 */ ScannerDirectives: "%block_comment" : OwnedToken String String Comments;
+/* 13 */ ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
+/* 14 */ ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
 /* 15 */ GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;
 /* 16 */ GrammarDefinitionList: Production GrammarDefinitionList; // Vec<T>::Push
 /* 17 */ GrammarDefinitionList: ; // Vec<T>::New
 /* 18 */ DoubleColon: "::" : OwnedToken;
-/* 19 */ Production: Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
+/* 19 */ Production: Comments Identifier ":" : OwnedToken Alternations ";" : OwnedToken;
 /* 20 */ Alternations: Alternation AlternationsList /* Vec */;
 /* 21 */ AlternationsList: "\|" : OwnedToken Alternation AlternationsList; // Vec<T>::Push
 /* 22 */ AlternationsList: ; // Vec<T>::New
 /* 23 */ Alternation: AlternationList /* Vec */;
-/* 24 */ AlternationList: Factor AlternationList; // Vec<T>::Push
+/* 24 */ AlternationList: Factor Comments AlternationList; // Vec<T>::Push
 /* 25 */ AlternationList: ; // Vec<T>::New
 /* 26 */ Factor: Group;
 /* 27 */ Factor: Repeat;
@@ -73,3 +71,10 @@
 /* 63 */ UserTypeName: Identifier UserTypeNameList /* Vec */;
 /* 64 */ UserTypeNameList: DoubleColon Identifier UserTypeNameList; // Vec<T>::Push
 /* 65 */ UserTypeNameList: ; // Vec<T>::New
+/* 66 */ Comments: CommentsOpt /* Option */;
+/* 67 */ CommentsOpt: CommentsOptGroup; // Option<T>::Some
+/* 68 */ CommentsOptGroup: LineComment;
+/* 69 */ CommentsOptGroup: BlockComment;
+/* 70 */ CommentsOpt: ; // Option<T>::None
+/* 71 */ LineComment: "//.*(:?\r\n|\r|\n|$)" : OwnedToken;
+/* 72 */ BlockComment: "(?ms)/\u{2a}.*?\u{2a}/" : OwnedToken;

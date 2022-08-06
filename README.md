@@ -6,17 +6,21 @@
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
-This is a Language Server used for instance by
-[Parol's VSCode extension](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
-to support
+This project provides a Language Server to support
 [`parol`](https://github.com/jsinger67/parol.git)'s syntax of grammar description files (.par files).
+
+It is used for instance by
+[Parol's VSCode extension](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
+
 This Language Server is developed with the help of `parol` itself.
 
 ## Features
 
 The Language Server currently supports GotoDefinition and shows syntax errors as you are used to.
+Also problems in your grammar are detected and reported.
 
-Further development on this server is planned.
+This tool is still in early development phase. But it can be used in conjunction with Parol's VSCode
+extension.
 
 ## Installation
 
@@ -25,3 +29,7 @@ Please install this language server on your platform using the following command
 ```shell
 cargo install parol-ls
 ```
+
+## Further readings
+
+* [CHANGELOG](./CHANGELOG.md)
