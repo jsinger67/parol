@@ -7,17 +7,17 @@
 %%
 
 /*  0 */ Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
-/*  1 */ ExpressionsList: Semicolon Expression ExpressionsList; // Vec<T>::Push
-/*  2 */ ExpressionsList: ; // Vec<T>::New
-/*  3 */ ExpressionsOpt: Semicolon; // Option<T>::Some
-/*  4 */ ExpressionsOpt: ; // Option<T>::None
+/*  1 */ ExpressionsList /* Vec<T>::Push */: Semicolon Expression ExpressionsList;
+/*  2 */ ExpressionsList /* Vec<T>::New */: ;
+/*  3 */ ExpressionsOpt /* Option<T>::Some */: Semicolon;
+/*  4 */ ExpressionsOpt /* Option<T>::None */: ;
 /*  5 */ Expression: Term TailExpression;
 /*  6 */ TailExpression: TailExpressionList /* Vec */;
-/*  7 */ TailExpressionList: BinaryOperator Term TailExpressionList; // Vec<T>::Push
-/*  8 */ TailExpressionList: ; // Vec<T>::New
+/*  7 */ TailExpressionList /* Vec<T>::Push */: BinaryOperator Term TailExpressionList;
+/*  8 */ TailExpressionList /* Vec<T>::New */: ;
 /*  9 */ Term: TermOpt /* Option */ Factor;
-/* 10 */ TermOpt: UnaryOperator; // Option<T>::Some
-/* 11 */ TermOpt: ; // Option<T>::None
+/* 10 */ TermOpt /* Option<T>::Some */: UnaryOperator;
+/* 11 */ TermOpt /* Option<T>::None */: ;
 /* 12 */ Boolean: True;
 /* 13 */ Boolean: False;
 /* 14 */ UnaryOperator: Not;

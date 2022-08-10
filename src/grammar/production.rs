@@ -142,27 +142,21 @@ impl Pr {
         S: Fn(&str) -> Option<String>,
     {
         let mut s = String::new();
-        self.2
-            .decorate(
-                &mut s,
-                &format!(
-                    "{}: {};",
-                    self.0,
-                    self.1
-                        .iter()
-                        .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
-                            if let Ok(mut acc) = acc {
-                                acc.push(s.format(scanner_state_resolver, user_type_resolver)?);
-                                Ok(acc)
-                            } else {
-                                acc
-                            }
-                        })
-                        .map(|v| v.join(" "))?
-                ),
-            )
-            .into_diagnostic()?;
-
-        Ok(s)
+        self.2.decorate(&mut s, &self.0).into_diagnostic()?;
+        Ok(format!(
+            "{}: {};",
+            s,
+            self.1
+                .iter()
+                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
+                    if let Ok(mut acc) = acc {
+                        acc.push(s.format(scanner_state_resolver, user_type_resolver)?);
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
+                })
+                .map(|v| v.join(" "))?
+        ))
     }
 }

@@ -225,7 +225,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt: Items : Numbers; // Option<T>::Some
+    /// ListOpt /* Option<T>::Some */: Items : Numbers;
     ///
     #[named]
     fn list_opt_0(
@@ -250,7 +250,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ListOpt: ; // Option<T>::None
+    /// ListOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -297,7 +297,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ItemsList: ","^ /* Clipped */ Num ItemsList; // Vec<T>::Push
+    /// ItemsList /* Vec<T>::Push */: ","^ /* Clipped */ Num ItemsList;
     ///
     #[named]
     fn items_list_0(
@@ -332,7 +332,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// ItemsList: ; // Vec<T>::New
+    /// ItemsList /* Vec<T>::New */: ;
     ///
     #[named]
     fn items_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -393,7 +393,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// TrailingCommaOpt: ","^ /* Clipped */; // Option<T>::Some
+    /// TrailingCommaOpt /* Option<T>::Some */: ","^ /* Clipped */;
     ///
     #[named]
     fn trailing_comma_opt_0(
@@ -416,7 +416,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// TrailingCommaOpt: ; // Option<T>::None
+    /// TrailingCommaOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn trailing_comma_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {

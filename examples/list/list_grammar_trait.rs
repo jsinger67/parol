@@ -30,7 +30,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt: Num ListRest ListOpt0 /* Option */; // Option<T>::Some
+    /// ListOpt /* Option<T>::Some */: Num ListRest ListOpt0 /* Option */;
     ///
     fn list_opt_0(
         &mut self,
@@ -44,7 +44,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ListOpt0: ","; // Option<T>::Some
+    /// ListOpt0 /* Option<T>::Some */: ",";
     ///
     fn list_opt0_0(
         &mut self,
@@ -56,7 +56,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ListOpt0: ; // Option<T>::None
+    /// ListOpt0 /* Option<T>::None */: ;
     ///
     fn list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -64,7 +64,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ListOpt: ; // Option<T>::None
+    /// ListOpt /* Option<T>::None */: ;
     ///
     fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -84,7 +84,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// ListRestOpt: "," Num ListRest; // Option<T>::Some
+    /// ListRestOpt /* Option<T>::Some */: "," Num ListRest;
     ///
     fn list_rest_opt_0(
         &mut self,
@@ -98,7 +98,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// ListRestOpt: ; // Option<T>::None
+    /// ListRestOpt /* Option<T>::None */: ;
     ///
     fn list_rest_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())

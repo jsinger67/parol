@@ -1,4 +1,4 @@
-use crate::analysis::errors::{Recursion, RelatedHint};
+use crate::analysis::errors::{RecursionPath, RelatedHint};
 use crate::analysis::{
     non_productive_non_terminals, unreachable_non_terminals, GrammarAnalysisError,
 };
@@ -18,6 +18,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
         let non_terminals = non_productive
             .iter()
             .map(|nt| RelatedHint {
+                topic: "Non-terminal".to_string(),
                 hint: format!("{}", nt),
             })
             .collect::<Vec<RelatedHint>>();
@@ -28,6 +29,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
         let non_terminals = unreachable
             .iter()
             .map(|nt| RelatedHint {
+                topic: "Non-terminal".to_string(),
                 hint: format!("{}", nt),
             })
             .collect::<Vec<RelatedHint>>();
@@ -38,15 +40,18 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
     if !left_recursions.is_empty() {
         let recursions = left_recursions
             .iter()
-            .map(|n| Recursion {
-                hints: n
+            .enumerate()
+            .map(|(number, path_elements)| RecursionPath {
+                number,
+                hints: path_elements
                     .iter()
                     .map(|s| RelatedHint {
+                        topic: "Recursion path element".to_string(),
                         hint: format!("{}", s),
                     })
                     .collect::<Vec<RelatedHint>>(),
             })
-            .collect::<Vec<Recursion>>();
+            .collect::<Vec<RecursionPath>>();
 
         bail!(GrammarAnalysisError::LeftRecursion { recursions });
     }

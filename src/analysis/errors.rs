@@ -12,13 +12,13 @@ pub enum GrammarAnalysisError {
     LeftRecursion {
         /// Recursions
         #[related]
-        recursions: Vec<Recursion>,
+        recursions: Vec<RecursionPath>,
     },
 
     /// Unreachable non-terminals are not allowed.
     #[error("Grammar contains unreachable non-terminals")]
     #[diagnostic(
-        help("If not used they can safely removed"),
+        help("If not used they can safely be removed"),
         code(parol::analysis::unreachable_non_terminals)
     )]
     UnreachableNonTerminals {
@@ -30,7 +30,7 @@ pub enum GrammarAnalysisError {
     /// Nonproductive non-terminals are not allowed.
     #[error("Grammar contains nonproductive non-terminals")]
     #[diagnostic(
-        help("If not used they can safely removed"),
+        help("If not used they can safely be removed"),
         code(parol::analysis::nonproductive_non_terminals)
     )]
     NonProductiveNonTerminals {
@@ -40,8 +40,8 @@ pub enum GrammarAnalysisError {
     },
 
     /// Maximum lookahead exceeded.
-    #[error("Maximum lookahead {max_k} exceeded")]
-    #[diagnostic(help("Examine your grammar"), code(parol::analysis::max_k_exceeded))]
+    #[error("Maximum lookahead of {max_k} exceeded")]
+    #[diagnostic(help("Please examine your grammar"), code(parol::analysis::max_k_exceeded))]
     MaxKExceeded {
         /// Maximum lookahead
         max_k: usize,
@@ -50,9 +50,11 @@ pub enum GrammarAnalysisError {
 
 /// A single recursion
 #[derive(Error, Diagnostic, Debug)]
-#[error("Recursion")]
-pub struct Recursion {
-    /// Hints
+#[error("Recursion {number}")]
+pub struct RecursionPath {
+    /// The number of the recursion path
+    pub number: usize,
+    /// Recursion path elements
     #[related]
     pub hints: Vec<RelatedHint>,
 }
@@ -61,6 +63,8 @@ pub struct Recursion {
 #[derive(Error, Diagnostic, Debug)]
 #[error("Hint: {hint}")]
 pub struct RelatedHint {
+    /// A topic or a category to describe the hint
+    pub topic: String,
     /// Information
     pub hint: String,
 }

@@ -21,6 +21,7 @@ But we try to mark incompatible changes with a new minor version.
 
 * Fixed a missing newline in between multiple user type definitions
 * Better handling of errors from grammar analysis
+* Changed decoration format of production attributes
 
 ## v0.10.5 - 2022-08-03
 

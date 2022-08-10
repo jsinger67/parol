@@ -846,7 +846,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// calcList: instruction ";"^ /* Clipped */ calcList; // Vec<T>::Push
+    /// calcList /* Vec<T>::Push */: instruction ";"^ /* Clipped */ calcList;
     ///
     #[named]
     fn calc_list_0(
@@ -881,7 +881,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// calcList: ; // Vec<T>::New
+    /// calcList /* Vec<T>::New */: ;
     ///
     #[named]
     fn calc_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1304,7 +1304,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// assignmentList: assign_item assignmentList; // Vec<T>::Push
+    /// assignmentList /* Vec<T>::Push */: assign_item assignmentList;
     ///
     #[named]
     fn assignment_list_0(
@@ -1338,7 +1338,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// assignmentList: ; // Vec<T>::New
+    /// assignmentList /* Vec<T>::New */: ;
     ///
     #[named]
     fn assignment_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1387,7 +1387,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// logical_orList: logical_or_op logical_and logical_orList; // Vec<T>::Push
+    /// logical_orList /* Vec<T>::Push */: logical_or_op logical_and logical_orList;
     ///
     #[named]
     fn logical_or_list_0(
@@ -1428,7 +1428,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// logical_orList: ; // Vec<T>::New
+    /// logical_orList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1477,7 +1477,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// logical_andList: logical_and_op bitwise_or logical_andList; // Vec<T>::Push
+    /// logical_andList /* Vec<T>::Push */: logical_and_op bitwise_or logical_andList;
     ///
     #[named]
     fn logical_and_list_0(
@@ -1519,7 +1519,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// logical_andList: ; // Vec<T>::New
+    /// logical_andList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1568,7 +1568,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// bitwise_orList: bitwise_or_op bitwise_and bitwise_orList; // Vec<T>::Push
+    /// bitwise_orList /* Vec<T>::Push */: bitwise_or_op bitwise_and bitwise_orList;
     ///
     #[named]
     fn bitwise_or_list_0(
@@ -1609,7 +1609,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// bitwise_orList: ; // Vec<T>::New
+    /// bitwise_orList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1658,7 +1658,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// bitwise_andList: bitwise_and_op equality bitwise_andList; // Vec<T>::Push
+    /// bitwise_andList /* Vec<T>::Push */: bitwise_and_op equality bitwise_andList;
     ///
     #[named]
     fn bitwise_and_list_0(
@@ -1700,7 +1700,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// bitwise_andList: ; // Vec<T>::New
+    /// bitwise_andList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1749,7 +1749,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// equalityList: equality_op relational equalityList; // Vec<T>::Push
+    /// equalityList /* Vec<T>::Push */: equality_op relational equalityList;
     ///
     #[named]
     fn equality_list_0(
@@ -1790,7 +1790,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// equalityList: ; // Vec<T>::New
+    /// equalityList /* Vec<T>::New */: ;
     ///
     #[named]
     fn equality_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1839,7 +1839,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// relationalList: relational_op bitwise_shift relationalList; // Vec<T>::Push
+    /// relationalList /* Vec<T>::Push */: relational_op bitwise_shift relationalList;
     ///
     #[named]
     fn relational_list_0(
@@ -1880,7 +1880,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// relationalList: ; // Vec<T>::New
+    /// relationalList /* Vec<T>::New */: ;
     ///
     #[named]
     fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1929,7 +1929,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// bitwise_shiftList: bitwise_shift_op summ bitwise_shiftList; // Vec<T>::Push
+    /// bitwise_shiftList /* Vec<T>::Push */: bitwise_shift_op summ bitwise_shiftList;
     ///
     #[named]
     fn bitwise_shift_list_0(
@@ -1971,7 +1971,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// bitwise_shiftList: ; // Vec<T>::New
+    /// bitwise_shiftList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_shift_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2078,7 +2078,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// summList: add_op mult summList; // Vec<T>::Push
+    /// summList /* Vec<T>::Push */: add_op mult summList;
     ///
     #[named]
     fn summ_list_0(
@@ -2118,7 +2118,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// summList: ; // Vec<T>::New
+    /// summList /* Vec<T>::New */: ;
     ///
     #[named]
     fn summ_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2166,7 +2166,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// multList: mult_op power multList; // Vec<T>::Push
+    /// multList /* Vec<T>::Push */: mult_op power multList;
     ///
     #[named]
     fn mult_list_0(
@@ -2206,7 +2206,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// multList: ; // Vec<T>::New
+    /// multList /* Vec<T>::New */: ;
     ///
     #[named]
     fn mult_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2254,7 +2254,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// powerList: pow_op factor powerList; // Vec<T>::Push
+    /// powerList /* Vec<T>::Push */: pow_op factor powerList;
     ///
     #[named]
     fn power_list_0(
@@ -2294,7 +2294,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// powerList: ; // Vec<T>::New
+    /// powerList /* Vec<T>::New */: ;
     ///
     #[named]
     fn power_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {

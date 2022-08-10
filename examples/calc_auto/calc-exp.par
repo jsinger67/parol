@@ -7,8 +7,8 @@
 %%
 
 /*  0 */ calc: calcList /* Vec */;
-/*  1 */ calcList: instruction ";"^ /* Clipped */ calcList; // Vec<T>::Push
-/*  2 */ calcList: ; // Vec<T>::New
+/*  1 */ calcList /* Vec<T>::Push */: instruction ";"^ /* Clipped */ calcList;
+/*  2 */ calcList /* Vec<T>::New */: ;
 /*  3 */ equality_op: "==|!=";
 /*  4 */ assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
 /*  5 */ logical_or_op: "\|\|";
@@ -25,40 +25,40 @@
 /* 16 */ instruction: logical_or;
 /* 17 */ assign_item: id assign_op;
 /* 18 */ assignment: assign_item assignmentList /* Vec */ logical_or;
-/* 19 */ assignmentList: assign_item assignmentList; // Vec<T>::Push
-/* 20 */ assignmentList: ; // Vec<T>::New
+/* 19 */ assignmentList /* Vec<T>::Push */: assign_item assignmentList;
+/* 20 */ assignmentList /* Vec<T>::New */: ;
 /* 21 */ logical_or: logical_and logical_orList /* Vec */;
-/* 22 */ logical_orList: logical_or_op logical_and logical_orList; // Vec<T>::Push
-/* 23 */ logical_orList: ; // Vec<T>::New
+/* 22 */ logical_orList /* Vec<T>::Push */: logical_or_op logical_and logical_orList;
+/* 23 */ logical_orList /* Vec<T>::New */: ;
 /* 24 */ logical_and: bitwise_or logical_andList /* Vec */;
-/* 25 */ logical_andList: logical_and_op bitwise_or logical_andList; // Vec<T>::Push
-/* 26 */ logical_andList: ; // Vec<T>::New
+/* 25 */ logical_andList /* Vec<T>::Push */: logical_and_op bitwise_or logical_andList;
+/* 26 */ logical_andList /* Vec<T>::New */: ;
 /* 27 */ bitwise_or: bitwise_and bitwise_orList /* Vec */;
-/* 28 */ bitwise_orList: bitwise_or_op bitwise_and bitwise_orList; // Vec<T>::Push
-/* 29 */ bitwise_orList: ; // Vec<T>::New
+/* 28 */ bitwise_orList /* Vec<T>::Push */: bitwise_or_op bitwise_and bitwise_orList;
+/* 29 */ bitwise_orList /* Vec<T>::New */: ;
 /* 30 */ bitwise_and: equality bitwise_andList /* Vec */;
-/* 31 */ bitwise_andList: bitwise_and_op equality bitwise_andList; // Vec<T>::Push
-/* 32 */ bitwise_andList: ; // Vec<T>::New
+/* 31 */ bitwise_andList /* Vec<T>::Push */: bitwise_and_op equality bitwise_andList;
+/* 32 */ bitwise_andList /* Vec<T>::New */: ;
 /* 33 */ equality: relational equalityList /* Vec */;
-/* 34 */ equalityList: equality_op relational equalityList; // Vec<T>::Push
-/* 35 */ equalityList: ; // Vec<T>::New
+/* 34 */ equalityList /* Vec<T>::Push */: equality_op relational equalityList;
+/* 35 */ equalityList /* Vec<T>::New */: ;
 /* 36 */ relational: bitwise_shift relationalList /* Vec */;
-/* 37 */ relationalList: relational_op bitwise_shift relationalList; // Vec<T>::Push
-/* 38 */ relationalList: ; // Vec<T>::New
+/* 37 */ relationalList /* Vec<T>::Push */: relational_op bitwise_shift relationalList;
+/* 38 */ relationalList /* Vec<T>::New */: ;
 /* 39 */ bitwise_shift: summ bitwise_shiftList /* Vec */;
-/* 40 */ bitwise_shiftList: bitwise_shift_op summ bitwise_shiftList; // Vec<T>::Push
-/* 41 */ bitwise_shiftList: ; // Vec<T>::New
+/* 40 */ bitwise_shiftList /* Vec<T>::Push */: bitwise_shift_op summ bitwise_shiftList;
+/* 41 */ bitwise_shiftList /* Vec<T>::New */: ;
 /* 42 */ add_op: plus;
 /* 43 */ add_op: minus;
 /* 44 */ summ: mult summList /* Vec */;
-/* 45 */ summList: add_op mult summList; // Vec<T>::Push
-/* 46 */ summList: ; // Vec<T>::New
+/* 45 */ summList /* Vec<T>::Push */: add_op mult summList;
+/* 46 */ summList /* Vec<T>::New */: ;
 /* 47 */ mult: power multList /* Vec */;
-/* 48 */ multList: mult_op power multList; // Vec<T>::Push
-/* 49 */ multList: ; // Vec<T>::New
+/* 48 */ multList /* Vec<T>::Push */: mult_op power multList;
+/* 49 */ multList /* Vec<T>::New */: ;
 /* 50 */ power: factor powerList /* Vec */;
-/* 51 */ powerList: pow_op factor powerList; // Vec<T>::Push
-/* 52 */ powerList: ; // Vec<T>::New
+/* 51 */ powerList /* Vec<T>::Push */: pow_op factor powerList;
+/* 52 */ powerList /* Vec<T>::New */: ;
 /* 53 */ negate: minus;
 /* 54 */ factor: number;
 /* 55 */ factor: idref;
