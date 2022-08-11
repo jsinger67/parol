@@ -7,6 +7,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## v0.1.3
 
 * GotoDefinition can be applied to the Start symbol too
+* First attempt to handle comments by the grammar and preserve them
+  * This is not complete yet and may be a little bumpy - please report any misbehavior
 
 ## v0.1.2
 

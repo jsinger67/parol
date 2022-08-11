@@ -95,7 +95,7 @@ fn main_loop(connection: &Connection, params: serde_json::Value) -> Result<(), B
                 eprintln!("got notification: {:?}", not);
                 match not.method.as_str() {
                     DidOpenTextDocument::METHOD => {
-                        server.borrow_mut().handle_open_document(&connection, not)?
+                        server.borrow_mut().handle_open_document(connection, not)?
                     }
                     DidChangeTextDocument::METHOD => server
                         .borrow_mut()

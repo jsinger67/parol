@@ -40,8 +40,12 @@ DoubleColon
     : "::": OwnedToken
     ;
 
+ProductionLHS
+    : Comments Identifier Comments ":": OwnedToken
+    ;
+
 Production
-    : Comments Identifier Comments ":": OwnedToken Alternations ";": OwnedToken
+    : ProductionLHS Alternations ";": OwnedToken
     ;
 
 Alternations

@@ -1,7 +1,7 @@
 use crate::{
     parol_ls_grammar_trait::{
-        Declaration, NonTerminal, ParolLsGrammarTrait, Production, StartDeclaration,
-        UserTypeDeclaration,
+        Declaration, NonTerminal, ParolLsGrammarTrait, StartDeclaration,
+        UserTypeDeclaration, ProductionLHS,
     },
     utils::location_to_range,
 };
@@ -94,7 +94,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn start_declaration(&mut self, arg: &StartDeclaration) -> Result<()> {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
-        self.add_non_terminal_ref(range, &token);
+        self.add_non_terminal_ref(range, token);
         Ok(())
     }
 
@@ -103,16 +103,16 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         if let Declaration::Declaration2(user_type_def) = arg {
             let token = &user_type_def.identifier.identifier;
             let range = self.add_user_type_definition(token);
-            self.add_user_type_ref(range, &token);
+            self.add_user_type_ref(range, token);
         }
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'Production'
-    fn production(&mut self, arg: &Production) -> Result<()> {
+    /// Semantic action for non-terminal 'ProductionLHS'
+    fn production_l_h_s(&mut self, arg: &ProductionLHS) -> Result<()> {
         let token = &arg.identifier.identifier;
         let range = self.add_non_terminal_definition(token);
-        self.add_non_terminal_ref(range, &token);
+        self.add_non_terminal_ref(range, token);
         Ok(())
     }
 
@@ -120,7 +120,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn non_terminal(&mut self, arg: &NonTerminal) -> Result<()> {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
-        self.add_non_terminal_ref(range, &token);
+        self.add_non_terminal_ref(range, token);
         Ok(())
     }
 
@@ -128,7 +128,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn user_type_declaration(&mut self, arg: &UserTypeDeclaration) -> Result<()> {
         let token = &arg.user_type_name.identifier.identifier;
         let range = location_to_range(&token.location);
-        self.add_user_type_ref(range, &token);
+        self.add_user_type_ref(range, token);
         Ok(())
     }
 }

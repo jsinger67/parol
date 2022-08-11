@@ -12,4 +12,7 @@ pub struct Config {
     /// Server's port
     #[clap(short = 's', long = "socket", default_value = "7061")]
     pub port_number: u16,
+    /// Lookahead limit
+    #[clap(short = 'k', long = "lookahead", default_value = "5")]
+    pub lookahead: usize,
 }

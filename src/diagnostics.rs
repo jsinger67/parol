@@ -1,5 +1,7 @@
 use lsp_types::{Diagnostic, DiagnosticRelatedInformation, Location, NumberOrString, Range, Url};
 use parol::analysis::GrammarAnalysisError;
+use std::collections::HashSet;
+use std::fmt::Write as _;
 
 use crate::{
     document_state::{DocumentState, LocatedDocumentState},
@@ -34,7 +36,7 @@ impl Diagnostics {
             .help()
             .map_or(format!("{err}"), |help| format!("{err}:\nHelp: {help}"));
 
-        // Extract addition information from certain errors
+        // Extract additional information from certain errors
         if let Some(e) = err.downcast_ref::<GrammarAnalysisError>() {
             let located_document_state = LocatedDocumentState::new(uri, document_state);
             extract_grammar_analysis_error(
@@ -84,28 +86,33 @@ fn extract_grammar_analysis_error(
                         located_document_state.document_state,
                         &hint.hint,
                     ) {
+                        // We use a Set to avoid duplicate entries which can occur due to the use of
+                        // an expanded version of the grammar.
+                        // If you write a production P like this:
+                        // P: A | B | C;
+                        // You will eventually end up with three productions for P:
+                        // P: A;
+                        // P: B;
+                        // P: C;
+                        let mut ranges: HashSet<String> = HashSet::new();
                         for rng in non_terminals {
                             let (range, message) = (*rng, format!("Non-terminal: {}", hint.hint));
-                            related_information.push(DiagnosticRelatedInformation {
-                                location: Location {
-                                    uri: located_document_state.uri.to_owned(),
-                                    range,
-                                },
-                                message,
-                            })
+                            if ranges.insert(hint.hint.clone()) {
+                                related_information.push(DiagnosticRelatedInformation {
+                                    location: Location {
+                                        uri: located_document_state.uri.to_owned(),
+                                        range,
+                                    },
+                                    message,
+                                })
+                            }
                         }
-                    } else {
-                        let (range, message) = (
-                            Range::default(),
-                            format!("Production reference: {}", hint.hint),
-                        );
-                        related_information.push(DiagnosticRelatedInformation {
-                            location: Location {
-                                uri: located_document_state.uri.to_owned(),
-                                range,
-                            },
-                            message,
-                        })
+                    } else if let Some(rel) = related_information.last_mut() {
+                        if rel.message.ends_with(':') {
+                            let _ = write!(rel.message, " {}", hint.hint);
+                        } else {
+                            let _ = write!(rel.message, " => {}", hint.hint);
+                        }
                     }
                 }
             }

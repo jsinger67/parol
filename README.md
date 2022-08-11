@@ -30,6 +30,8 @@ Please install this language server on your platform using the following command
 cargo install parol-ls
 ```
 
+Also check regularly for updates and issue the command above again on demand.
+
 ## Further readings
 
 * [CHANGELOG](./CHANGELOG.md)
