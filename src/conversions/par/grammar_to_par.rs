@@ -79,6 +79,7 @@ pub fn render_par_string(
     let user_types_start = if grammar_config.user_type_defs.is_empty() {
         vec![]
     } else {
+        // We simply need a line feed which we induce by an empty entry here
         vec![String::default()]
     };
     let user_types = grammar_config
