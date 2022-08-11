@@ -19,7 +19,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
             .iter()
             .map(|nt| RelatedHint {
                 topic: "Non-terminal".to_string(),
-                hint: format!("{}", nt),
+                hint: nt.to_string(),
             })
             .collect::<Vec<RelatedHint>>();
         bail!(GrammarAnalysisError::NonProductiveNonTerminals { non_terminals });
@@ -30,7 +30,7 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
             .iter()
             .map(|nt| RelatedHint {
                 topic: "Non-terminal".to_string(),
-                hint: format!("{}", nt),
+                hint: nt.to_string(),
             })
             .collect::<Vec<RelatedHint>>();
         bail!(GrammarAnalysisError::UnreachableNonTerminals { non_terminals });
