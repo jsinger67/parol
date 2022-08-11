@@ -41,7 +41,10 @@ pub enum GrammarAnalysisError {
 
     /// Maximum lookahead exceeded.
     #[error("Maximum lookahead of {max_k} exceeded")]
-    #[diagnostic(help("Please examine your grammar"), code(parol::analysis::max_k_exceeded))]
+    #[diagnostic(
+        help("Please examine your grammar"),
+        code(parol::analysis::max_k_exceeded)
+    )]
     MaxKExceeded {
         /// Maximum lookahead
         max_k: usize,
@@ -61,7 +64,7 @@ pub struct RecursionPath {
 
 /// Related information
 #[derive(Error, Diagnostic, Debug)]
-#[error("Hint: {hint}")]
+#[error("{topic}: {hint}")]
 pub struct RelatedHint {
     /// A topic or a category to describe the hint
     pub topic: String,
