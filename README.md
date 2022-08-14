@@ -16,7 +16,12 @@ This Language Server is developed with the help of `parol` itself.
 
 ## Features
 
-The Language Server currently supports GotoDefinition and shows syntax errors as you are used to.
+The Language Server currently supports
+
+* GotoDefinition
+* Hover
+* and shows syntax errors as you are used to.
+
 Also problems in your grammar are detected and reported.
 
 This tool is still in early development phase. But it can be used in conjunction with Parol's VSCode
