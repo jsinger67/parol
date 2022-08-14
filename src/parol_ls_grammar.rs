@@ -1,14 +1,18 @@
 use crate::{
     parol_ls_grammar_trait::{
-        Declaration, NonTerminal, ParolLsGrammarTrait, StartDeclaration,
-        UserTypeDeclaration, ProductionLHS,
+        Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
+        StartDeclaration, UserTypeDeclaration,
     },
-    utils::location_to_range,
+    rng::Rng,
+    utils::{extract_text_range, location_to_range, to_markdown},
 };
-use lsp_types::{Position, Range};
+use lsp_types::{
+    Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind, Position, Range,
+};
 #[allow(unused_imports)]
 use miette::Result;
 use parol_runtime::lexer::OwnedToken;
+use std::fmt::Write as _;
 use std::{collections::HashMap, fmt::Debug};
 
 ///
@@ -22,6 +26,11 @@ pub struct ParolLsGrammar {
 
     pub user_type_definitions: HashMap<String, Vec<Range>>,
     pub user_types: Vec<(Range, String)>,
+
+    // A hash that maps non-terminals to their productions
+    pub productions: HashMap<String, Vec<Production>>,
+
+    pub grammar: Option<ParolLs>,
 }
 
 impl ParolLsGrammar {
@@ -46,6 +55,10 @@ impl ParolLsGrammar {
             None
         }
     }
+
+    // pub(crate) fn item_at_position(&self, _position: Position) -> Option<&ASTType> {
+    //     todo!()
+    // }
 
     pub(crate) fn find_non_terminal_definitions<'a>(
         &'a self,
@@ -87,9 +100,37 @@ impl ParolLsGrammar {
         entry.push(range);
         range
     }
+
+    pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {
+        let mut value = String::new();
+        if let Some(item) = self.ident_at_position(params.text_document_position_params.position) {
+            value = format!("## {}", item);
+            if let Some(productions) = self.productions.get(&item) {
+                for p in productions {
+                    let rng: Rng = p.into();
+                    let _ = write!(value, "\n{}", to_markdown(extract_text_range(input, rng)));
+                }
+            }
+        }
+        let markup_content = MarkupContent {
+            kind: MarkupKind::Markdown,
+            value,
+        };
+        let contents = Markup(markup_content);
+        Hover {
+            contents,
+            range: None,
+        }
+    }
 }
 
 impl ParolLsGrammarTrait for ParolLsGrammar {
+    /// Semantic action for non-terminal 'ParolLs'
+    fn parol_ls(&mut self, arg: &ParolLs) -> Result<()> {
+        self.grammar = Some(arg.clone());
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'StartDeclaration'
     fn start_declaration(&mut self, arg: &StartDeclaration) -> Result<()> {
         let token = &arg.identifier.identifier;
@@ -113,6 +154,14 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let token = &arg.identifier.identifier;
         let range = self.add_non_terminal_definition(token);
         self.add_non_terminal_ref(range, token);
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Production'
+    fn production(&mut self, arg: &Production) -> Result<()> {
+        let nt = arg.production_l_h_s.identifier.identifier.symbol.clone();
+        let entry = self.productions.entry(nt).or_default();
+        entry.push(arg.clone());
         Ok(())
     }
 

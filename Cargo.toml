@@ -1,6 +1,6 @@
 [package]
 name = "parol-ls"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Language server for parol parser generator"
 documentation = "https://docs.rs/parol-ls"
@@ -26,9 +26,13 @@ lsp-types = "0.93.0"
 miette = "^5.2"
 parol = "0.10.6"
 parol_runtime = { version = "0.7.2", features = ["trim_parse_tree"] }
+regex = "1.6.0"
 serde = "^1.0.142"
 serde_json = "^1.0.83"
 thiserror = "^1.0.32"
 
 [build-dependencies]
 parol = "0.10.6"
+
+[profile.release]
+debug = true

@@ -3,12 +3,14 @@ use std::{cell::RefCell, error::Error, result::Result};
 use crate::arguments::Config;
 
 pub mod arguments;
+mod ast;
 pub mod diagnostics;
 pub mod document_state;
 pub mod errors;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
 mod parol_ls_parser;
+mod rng;
 mod server;
 mod utils;
 
@@ -32,8 +34,9 @@ use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
-    request::GotoDefinition,
-    InitializeParams, OneOf, ServerCapabilities, TextDocumentSyncCapability, TextDocumentSyncKind,
+    request::{GotoDefinition, HoverRequest},
+    HoverProviderCapability, InitializeParams, OneOf, ServerCapabilities,
+    TextDocumentSyncCapability, TextDocumentSyncKind,
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -48,6 +51,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let server_capabilities = serde_json::to_value(&ServerCapabilities {
         text_document_sync: Some(TextDocumentSyncCapability::Kind(TextDocumentSyncKind::FULL)),
         definition_provider: Some(OneOf::Left(true)),
+        hover_provider: Some(HoverProviderCapability::Simple(true)),
         ..Default::default()
     })
     .unwrap();
@@ -70,23 +74,47 @@ fn main_loop(connection: &Connection, params: serde_json::Value) -> Result<(), B
                     return Ok(());
                 }
                 eprintln!("got request: {:?}", req);
-                match cast::<GotoDefinition>(req) {
-                    Ok((id, params)) => {
-                        eprintln!("got gotoDefinition request #{}: {:?}", id, params);
-                        let result = server.borrow_mut().handle_goto_definition(params);
-                        let result = serde_json::to_value(&result).unwrap();
-                        let resp = Response {
-                            id,
-                            result: Some(result),
-                            error: None,
+                match req.method.as_str() {
+                    <GotoDefinition as lsp_types::request::Request>::METHOD => {
+                        match cast::<GotoDefinition>(req) {
+                            Ok((id, params)) => {
+                                eprintln!("got gotoDefinition request #{}: {:?}", id, params);
+                                let result = server.borrow_mut().handle_goto_definition(params);
+                                let result = serde_json::to_value(&result).unwrap();
+                                let resp = Response {
+                                    id,
+                                    result: Some(result),
+                                    error: None,
+                                };
+                                eprintln!("got gotoDefinition response {:?}", resp);
+                                connection.sender.send(Message::Response(resp))?;
+                                continue;
+                            }
+                            Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
+                            Err(ExtractError::MethodMismatch(req)) => req,
                         };
-                        eprintln!("got gotoDefinition response {:?}", resp);
-                        connection.sender.send(Message::Response(resp))?;
-                        continue;
                     }
-                    Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
-                    Err(ExtractError::MethodMismatch(req)) => req,
-                };
+                    <HoverRequest as lsp_types::request::Request>::METHOD => {
+                        match cast::<HoverRequest>(req) {
+                            Ok((id, params)) => {
+                                eprintln!("got hover request #{}: {:?}", id, params);
+                                let result = server.borrow_mut().handle_hover(params);
+                                let result = serde_json::to_value(&result).unwrap();
+                                let resp = Response {
+                                    id,
+                                    result: Some(result),
+                                    error: None,
+                                };
+                                eprintln!("got hover response {:?}", resp);
+                                connection.sender.send(Message::Response(resp))?;
+                                continue;
+                            }
+                            Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
+                            Err(ExtractError::MethodMismatch(req)) => req,
+                        };
+                    }
+                    _ => {}
+                }
             }
             Message::Response(resp) => {
                 eprintln!("got response: {:?}", resp);

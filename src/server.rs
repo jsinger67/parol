@@ -7,8 +7,8 @@ use lsp_types::{
         PublishDiagnostics,
     },
     DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
-    GotoDefinitionParams, GotoDefinitionResponse, Location, PublishDiagnosticsParams, Range,
-    TextDocumentContentChangeEvent, Url,
+    GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams, Location,
+    PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
 };
 use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
@@ -209,6 +209,20 @@ impl Server {
             );
         }
         GotoDefinitionResponse::Array(locations)
+    }
+
+    pub(crate) fn handle_hover(&mut self, params: HoverParams) -> Hover {
+        let document_state = self
+            .documents
+            .get(
+                params
+                    .text_document_position_params
+                    .text_document
+                    .uri
+                    .path(),
+            )
+            .unwrap();
+        document_state.hover(params)
     }
 
     fn cleanup(&mut self, file_path: &str) {
