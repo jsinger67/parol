@@ -77,17 +77,16 @@ pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
         // See https://doc.rust-lang.org/std/io/trait.BufRead.html#method.lines
         // We manually correct the offset after examining the newline bytes in the input.
         if input.split_at(offset).1.starts_with("\r\n") {
-            offset += 2;    // Windows
+            offset += 2; // Windows
         } else {
-            offset += 1;    // Linux, Mac
+            offset += 1; // Linux, Mac
         }
     }
     offset = input
         .char_indices()
         .into_iter()
         .skip(offset)
-        .skip(pos.character as usize)
-        .next()
+        .nth(pos.character as usize)
         .unwrap_or_default()
         .0;
     offset
@@ -102,7 +101,7 @@ pub(crate) fn extract_text_range(input: &str, rng: Rng) -> &str {
 pub(crate) fn to_markdown(input: &str) -> String {
     format!(
         "```parol  \n{}  \n```",
-        RX_NEW_LINE.replace_all(input, "  \n").to_string()
+        RX_NEW_LINE.replace_all(input, "  \n")
     )
 }
 

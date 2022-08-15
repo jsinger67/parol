@@ -4,6 +4,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.5
+
+* Fixed range calculation to be more OS aware, hopefully
+* Added tests and ran them on Windows and Linux (on WSL2)
+
 ## v0.1.4
 
 * Add basic Hover support
