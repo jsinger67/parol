@@ -69,32 +69,24 @@ pub(crate) fn source_code_span_to_range(input: &str, span: &SourceSpan) -> Range
 }
 
 pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
-    let mut start_line = pos.line;
-    let mut last_char_was_line_end = false;
     let mut offset = 0;
-    input
-        .char_indices()
-        .into_iter()
-        .skip_while(|c| {
-            offset = c.0;
-            if (c.1 == '\n' || c.1 == '\r') && !last_char_was_line_end {
-                last_char_was_line_end = true;
-                if start_line > 0 {
-                    start_line -= 1;
-                }
-            } else {
-                last_char_was_line_end = false;
-            }
-            start_line > 0
-        })
-        .last()
-        .unwrap_or_default()
-        .0;
+    for line in input.lines().into_iter().take(pos.line as usize) {
+        offset += line.len();
+        // The lines returned from the Lines iterator will not have a newline byte (the 0xA byte)
+        // or CRLF (0xD, 0xA bytes) at the end.
+        // See https://doc.rust-lang.org/std/io/trait.BufRead.html#method.lines
+        // We manually correct the offset after examining the newline bytes in the input.
+        if input.split_at(offset).1.starts_with("\r\n") {
+            offset += 2;    // Windows
+        } else {
+            offset += 1;    // Linux, Mac
+        }
+    }
     offset = input
         .char_indices()
         .into_iter()
         .skip(offset)
-        .skip(pos.character as usize + 1)
+        .skip(pos.character as usize)
         .next()
         .unwrap_or_default()
         .0;
@@ -112,4 +104,76 @@ pub(crate) fn to_markdown(input: &str) -> String {
         "```parol  \n{}  \n```",
         RX_NEW_LINE.replace_all(input, "  \n").to_string()
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use lsp_types::{Position, Range};
+
+    const CONTENT: &str = r#"%start List
+%title "A possibly empty comma separated list of integers"
+%comment "A trailing comma is allowed."
+%user_type Number = crate::list_grammar::Number
+%user_type Numbers = crate::list_grammar::Numbers
+
+%%
+
+List: [Items: Numbers] TrailingComma^;
+Items: Num {","^ Num};
+Num: "0|[1-9][0-9]*": Number;
+TrailingComma: [","^];
+"#;
+
+    #[test]
+    fn test_pos_to_offset() {
+        {
+            let start = Position {
+                line: 0,
+                character: 0,
+            };
+            let end = Position {
+                line: 0,
+                character: 6,
+            };
+            let rng = Rng::new(Range { start, end });
+            assert_eq!("%start", extract_text_range(CONTENT, rng));
+        }
+        {
+            let start = Position {
+                line: 1,
+                character: 0,
+            };
+            let end = Position {
+                line: 1,
+                character: 6,
+            };
+            let rng = Rng::new(Range { start, end });
+            assert_eq!("%title", extract_text_range(CONTENT, rng));
+        }
+        {
+            let start = Position {
+                line: 6,
+                character: 0,
+            };
+            let end = Position {
+                line: 6,
+                character: 2,
+            };
+            let rng = Rng::new(Range { start, end });
+            assert_eq!("%%", extract_text_range(CONTENT, rng));
+        }
+        {
+            let start = Position {
+                line: 11,
+                character: 21,
+            };
+            let end = Position {
+                line: 11,
+                character: 22,
+            };
+            let rng = Rng::new(Range { start, end });
+            assert_eq!(";", extract_text_range(CONTENT, rng));
+        }
+    }
 }
