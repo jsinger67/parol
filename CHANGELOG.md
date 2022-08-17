@@ -4,6 +4,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.6
+
+* Fixed crash of language server on Linux machines
+
 ## v0.1.5
 
 * Fixed range calculation to be more OS aware, hopefully
