@@ -9,21 +9,6 @@ lazy_static! {
     static ref RX_NEW_LINE: Regex = Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE");
 }
 
-// #[derive(Debug, new)]
-// pub(crate) struct Loc<'a>(&'a Location);
-
-// impl<'a> From<&'a Location> for Loc<'a> {
-//     fn from(location: &'a Location) -> Self {
-//         Self(location)
-//     }
-// }
-
-// impl From<Loc<'_>> for Range {
-//     fn from(val: Loc<'_>) -> Self {
-//         location_to_range(val.0)
-//     }
-// }
-
 ///
 /// Converts parol_runtime::lexer::Location to a lsp_types::Range.
 /// The line is kept for both start and end position in the result which could lead to problems!
@@ -87,7 +72,7 @@ pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
         .into_iter()
         .skip(offset)
         .nth(pos.character as usize)
-        .unwrap_or_default()
+        .unwrap_or((offset, '\x00'))
         .0;
     offset
 }
