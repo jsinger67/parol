@@ -71,7 +71,7 @@ pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
         .char_indices()
         .into_iter()
         .skip(offset)
-        .nth(pos.character as usize)
+        .nth(pos.character as usize - 1)
         .unwrap_or((offset, '\x00'))
         .0;
     offset
