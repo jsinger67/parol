@@ -67,14 +67,13 @@ pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
             offset += 1; // Linux, Mac
         }
     }
-    offset = input
+    input
         .char_indices()
         .into_iter()
         .skip(offset)
-        .nth(pos.character as usize - 1)
-        .unwrap_or((offset, '\x00'))
-        .0;
-    offset
+        .nth(pos.character as usize)
+        .unwrap_or((input.char_indices().last().unwrap().0 + 1, '\x00'))
+        .0
 }
 
 pub(crate) fn extract_text_range(input: &str, rng: Rng) -> &str {
@@ -106,8 +105,7 @@ mod tests {
 List: [Items: Numbers] TrailingComma^;
 Items: Num {","^ Num};
 Num: "0|[1-9][0-9]*": Number;
-TrailingComma: [","^];
-"#;
+TrailingComma: [","^];"#;
 
     #[test]
     fn test_pos_to_offset() {
