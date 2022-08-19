@@ -4,6 +4,14 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.7
+
+* Improved detection of the language server's version
+
+## v0.1.6
+
+* Minor improvements
+
 ## v0.1.5
 
 * Add Support for parol-ls Language Server

@@ -6,7 +6,7 @@
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
-This is a VS Code extension to supports [`parol`](https://github.com/jsinger67/parol.git)'s syntax
+This is a VS Code extension to support [`parol`](https://github.com/jsinger67/parol.git)'s syntax
 of grammar description files (.par files).
 
 ## Features
@@ -20,10 +20,16 @@ Further development on this extension is planned.
 
 ## Installation
 
-Install this extension from VS Code marketplace [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
-To use the full Language Server capabilities please install `parol-ls` on your platform using the
-following command.
+Install this extension from VS Code marketplace
+[parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
+To be able use the full Language Server capabilities please install `parol-ls` on your platform
+using the following command.
 
 ```shell
 cargo install parol-ls
 ```
+
+Alternatively you can clone the [repository](https://github.com/jsinger67/parol-ls) and build the
+language server from sources.
+
+Please check regularly for updates.

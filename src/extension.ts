@@ -130,7 +130,18 @@ export function isValidExecutable(path: string): boolean {
 
   const printOutput =
     res.error && (res.error as any).code !== "ENOENT" ? log.warn : log.debug;
-  printOutput(path, "--version:", res);
+  if (Array.isArray(res.output)) {
+    for (let line of res.output) {
+      if (typeof line === "string" && line.includes("parol-ls")) {
+        if (line.startsWith(",")) {
+          line = line.substring(1);
+        }
+        printOutput(line);
+      }
+    }
+  } else {
+    printOutput(typeof res.output);
+  }
 
   return res.status === 0;
 }
