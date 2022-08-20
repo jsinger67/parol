@@ -4,6 +4,12 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.8
+
+* Fighting the position to offset problem again
+* Clearing document state now before each analysis
+* Allowing comments after alternation separator
+
 ## v0.1.7
 
 * Hopefully now finally fixed crash of language server on Linux machines
