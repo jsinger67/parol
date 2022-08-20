@@ -24,7 +24,7 @@ pub struct ParolLsGrammar {
     pub non_terminal_definitions: HashMap<String, Vec<Range>>,
     pub non_terminals: Vec<(Range, String)>,
 
-    pub user_type_definitions: HashMap<String, Vec<Range>>,
+    pub user_type_definitions: HashMap<String, Range>,
     pub user_types: Vec<(Range, String)>,
 
     // A hash that maps non-terminals to their productions
@@ -91,25 +91,31 @@ impl ParolLsGrammar {
         self.user_types.push((range, token.symbol.clone()));
     }
 
-    fn add_user_type_definition(&mut self, token: &OwnedToken) -> Range {
+    fn add_user_type_definition(&mut self, token: &OwnedToken, range: Range) -> Range {
         let entry = self
             .user_type_definitions
             .entry(token.symbol.clone())
             .or_default();
-        let range = location_to_range(&token.location);
-        entry.push(range);
+        *entry = range;
         range
     }
 
     pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {
         let mut value = String::new();
-        if let Some(item) = self.ident_at_position(params.text_document_position_params.position) {
+        let ident = self.ident_at_position(params.text_document_position_params.position);
+        if let Some(item) = ident {
             value = format!("## {}", item);
             if let Some(productions) = self.productions.get(&item) {
                 for p in productions {
                     let rng: Rng = p.into();
                     let _ = write!(value, "\n{}", to_markdown(extract_text_range(input, rng)));
                 }
+            } else if let Some(range) = self.user_type_definitions.get(&item) {
+                let _ = write!(
+                    value,
+                    "\n{}",
+                    to_markdown(extract_text_range(input, Rng(*range)))
+                );
             }
         }
         let markup_content = MarkupContent {
@@ -121,14 +127,6 @@ impl ParolLsGrammar {
             contents,
             range: None,
         }
-    }
-
-    pub(crate) fn clear(&mut self) {
-        self.non_terminal_definitions.clear();
-        self.non_terminals.clear();
-        self.user_type_definitions.clear();
-        self.user_types.clear();
-        self.productions.clear();
     }
 }
 
@@ -151,7 +149,8 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn declaration(&mut self, arg: &Declaration) -> Result<()> {
         if let Declaration::Declaration2(user_type_def) = arg {
             let token = &user_type_def.identifier.identifier;
-            let range = self.add_user_type_definition(token);
+            let range: Rng = arg.into();
+            let range = self.add_user_type_definition(token, range.into());
             self.add_user_type_ref(range, token);
         }
         Ok(())

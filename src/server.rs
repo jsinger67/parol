@@ -1,3 +1,4 @@
+use derive_new::new;
 use std::{collections::HashMap, error::Error, path::Path};
 
 use lsp_server::Message;
@@ -7,27 +8,26 @@ use lsp_types::{
         PublishDiagnostics,
     },
     DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
-    GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams, Location,
-    PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
+    DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
+    Location, PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
 };
 use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
 use crate::{diagnostics::Diagnostics, document_state::DocumentState, parol_ls_parser::parse};
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, new)]
 pub(crate) struct Server {
+    /// Any documents the server has handled, indexed by their URL
+    #[new(default)]
     documents: HashMap<String, DocumentState>,
+
+    /// Limit for lookahead calculation.
+    /// Be careful with high values. The server can get stuck for some grammars.
+    max_k: usize,
 }
 
 impl Server {
-    // Todo: Make this constant configurable.
-    const MAX_K: usize = 3;
-
-    pub(crate) fn new() -> Self {
-        Self::default()
-    }
-
     pub(crate) fn analyze(&mut self, uri: &Url) -> miette::Result<()> {
         let file_path = uri
             .to_file_path()
@@ -41,7 +41,7 @@ impl Server {
             &mut document_state.parsed_data,
         )?;
         eprintln!("analyze: step 2 - check_grammar");
-        Self::check_grammar(&document_state.input, &file_path)?;
+        Self::check_grammar(&document_state.input, &file_path, self.max_k)?;
         eprintln!("analyze: finished");
         Ok(())
     }
@@ -55,10 +55,10 @@ impl Server {
         GrammarConfig::try_from(parol_grammar)
     }
 
-    pub(crate) fn check_grammar(input: &str, file_name: &Path) -> miette::Result<()> {
+    pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> miette::Result<()> {
         let grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
         check_and_transform_grammar(&grammar_config.cfg)?;
-        calculate_lookahead_dfas(&grammar_config, Self::MAX_K)?;
+        calculate_lookahead_dfas(&grammar_config, max_k)?;
         Ok(())
     }
 
@@ -226,6 +226,13 @@ impl Server {
         document_state.hover(params)
     }
 
+    pub(crate) fn handle_document_symbols(
+        &self,
+        _params: lsp_types::DocumentSymbolParams,
+    ) -> DocumentSymbolResponse {
+        todo!()
+    }
+
     fn cleanup(&mut self, file_path: &str) {
         self.documents.remove(file_path);
     }
@@ -250,21 +257,15 @@ impl Server {
         locations: &mut Vec<Location>,
         params: GotoDefinitionParams,
     ) {
-        if let Some(user_type_definitions) = document_state
+        if let Some(range) = document_state
             .parsed_data
             .user_type_definitions
             .get(&text_at_position)
         {
-            for range in user_type_definitions {
-                locations.push(Location {
-                    uri: params
-                        .text_document_position_params
-                        .text_document
-                        .uri
-                        .clone(),
-                    range: *range,
-                });
-            }
+            locations.push(Location {
+                uri: params.text_document_position_params.text_document.uri,
+                range: *range,
+            });
         }
     }
 

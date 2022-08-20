@@ -1,12 +1,14 @@
 use std::{cell::RefCell, error::Error, result::Result};
 
 use crate::arguments::Config;
+use crate::handler::RequestHandler;
 
 pub mod arguments;
 mod ast;
 pub mod diagnostics;
 pub mod document_state;
 pub mod errors;
+mod handler;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
 mod parol_ls_parser;
@@ -29,15 +31,29 @@ extern crate parol_runtime;
 use clap::Parser;
 
 use log::debug;
-use lsp_server::{Connection, ExtractError, Message, Request, RequestId, Response};
+use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
 use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
-    request::{GotoDefinition, HoverRequest},
+    request::{DocumentSymbolRequest, GotoDefinition, HoverRequest},
     HoverProviderCapability, InitializeParams, OneOf, ServerCapabilities,
     TextDocumentSyncCapability, TextDocumentSyncKind,
 };
+
+macro_rules! request_match {
+    ($req_type:ty, $server:expr, $connection:expr, $req:expr) => {
+        match cast::<$req_type>($req) {
+            Ok((id, params)) => {
+                let resp = <$req_type>::handle(&mut $server.borrow_mut(), id, params);
+                $connection.sender.send(Message::Response(resp))?;
+                continue;
+            }
+            Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
+            Err(ExtractError::MethodMismatch(req)) => req,
+        };
+    };
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
@@ -52,21 +68,26 @@ fn main() -> Result<(), Box<dyn Error>> {
         text_document_sync: Some(TextDocumentSyncCapability::Kind(TextDocumentSyncKind::FULL)),
         definition_provider: Some(OneOf::Left(true)),
         hover_provider: Some(HoverProviderCapability::Simple(true)),
+        // document_symbol_provider: Some(OneOf::Left(true)),
         ..Default::default()
     })
     .unwrap();
 
     let initialization_params = connection.initialize(server_capabilities)?;
-    main_loop(&connection, initialization_params)?;
+    main_loop(&connection, initialization_params, config)?;
     io_threads.join()?;
 
     eprintln!("shutting down parol language server");
     Ok(())
 }
 
-fn main_loop(connection: &Connection, params: serde_json::Value) -> Result<(), Box<dyn Error>> {
+fn main_loop(
+    connection: &Connection,
+    params: serde_json::Value,
+    config: Config,
+) -> Result<(), Box<dyn Error>> {
     let _params: InitializeParams = serde_json::from_value(params).unwrap();
-    let server = RefCell::new(server::Server::new());
+    let server = RefCell::new(server::Server::new(config.lookahead));
     for msg in &connection.receiver {
         match msg {
             Message::Request(req) => {
@@ -76,42 +97,13 @@ fn main_loop(connection: &Connection, params: serde_json::Value) -> Result<(), B
                 eprintln!("got request: {:?}", req);
                 match req.method.as_str() {
                     <GotoDefinition as lsp_types::request::Request>::METHOD => {
-                        match cast::<GotoDefinition>(req) {
-                            Ok((id, params)) => {
-                                eprintln!("got gotoDefinition request #{}: {:?}", id, params);
-                                let result = server.borrow_mut().handle_goto_definition(params);
-                                let result = serde_json::to_value(&result).unwrap();
-                                let resp = Response {
-                                    id,
-                                    result: Some(result),
-                                    error: None,
-                                };
-                                eprintln!("got gotoDefinition response {:?}", resp);
-                                connection.sender.send(Message::Response(resp))?;
-                                continue;
-                            }
-                            Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
-                            Err(ExtractError::MethodMismatch(req)) => req,
-                        };
+                        request_match!(GotoDefinition, server, connection, req);
                     }
                     <HoverRequest as lsp_types::request::Request>::METHOD => {
-                        match cast::<HoverRequest>(req) {
-                            Ok((id, params)) => {
-                                eprintln!("got hover request #{}: {:?}", id, params);
-                                let result = server.borrow_mut().handle_hover(params);
-                                let result = serde_json::to_value(&result).unwrap();
-                                let resp = Response {
-                                    id,
-                                    result: Some(result),
-                                    error: None,
-                                };
-                                eprintln!("got hover response {:?}", resp);
-                                connection.sender.send(Message::Response(resp))?;
-                                continue;
-                            }
-                            Err(err @ ExtractError::JsonError { .. }) => panic!("{:?}", err),
-                            Err(ExtractError::MethodMismatch(req)) => req,
-                        };
+                        request_match!(HoverRequest, server, connection, req);
+                    }
+                    <DocumentSymbolRequest as lsp_types::request::Request>::METHOD => {
+                        request_match!(DocumentSymbolRequest, server, connection, req);
                     }
                     _ => {}
                 }

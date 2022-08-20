@@ -37,6 +37,12 @@ cargo install parol-ls
 
 Also check regularly for updates and issue the command above again on demand.
 
+## Acknowledgements
+
+I took some snippets and inspirations from the language server for
+[Lelwel](https://github.com/0x2a-42/lelwel.git).
+It is licensed under MIT and Apache-2.0. Thanks a lot and kudos!
+
 ## Further readings
 
 * [CHANGELOG](./CHANGELOG.md)

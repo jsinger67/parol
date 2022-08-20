@@ -19,7 +19,7 @@ impl DocumentState {
     }
 
     pub(crate) fn clear(&mut self) {
-        self.parsed_data.clear()
+        self.parsed_data = ParolLsGrammar::default()
     }
 }
 

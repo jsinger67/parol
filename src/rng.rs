@@ -66,6 +66,12 @@ impl From<Rng> for Range {
     }
 }
 
+impl From<&Rng> for Range {
+    fn from(val: &Rng) -> Self {
+        val.0
+    }
+}
+
 // impl<'a, 'b, T: 'a> From<&'a [T]> for Rng where &'b T: Into<Rng>, 'a: 'b {
 //     fn from(slc: &'a [T]) -> Self {
 //         if slc.is_empty() {

@@ -4,6 +4,12 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.9
+
+* Refactored the request handling
+* Made the maximum lookahead configurable via server arguments
+* Added Acknowledgements to README
+
 ## v0.1.8
 
 * Fighting the position to offset problem again
