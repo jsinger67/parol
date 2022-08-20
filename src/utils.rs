@@ -55,25 +55,29 @@ pub(crate) fn source_code_span_to_range(input: &str, span: &SourceSpan) -> Range
 
 pub(crate) fn pos_to_offset(input: &str, pos: Position) -> usize {
     let mut offset = 0;
-    for line in input.lines().into_iter().take(pos.line as usize) {
+    for line in input.lines().take(pos.line as usize) {
         offset += line.len();
         // The lines returned from the Lines iterator will not have a newline byte (the 0xA byte)
         // or CRLF (0xD, 0xA bytes) at the end.
         // See https://doc.rust-lang.org/std/io/trait.BufRead.html#method.lines
         // We manually correct the offset after examining the newline bytes in the input.
-        if input.split_at(offset).1.starts_with("\r\n") {
+        let (_, line_end) = input.split_at(offset);
+        if line_end.starts_with("\r\n") {
             offset += 2; // Windows
         } else {
             offset += 1; // Linux, Mac
         }
     }
-    input
-        .char_indices()
-        .into_iter()
-        .skip(offset)
-        .nth(pos.character as usize)
-        .unwrap_or((input.char_indices().last().unwrap().0 + 1, '\x00'))
-        .0
+    if let Some(last_line) = input.lines().nth(pos.line as usize) {
+        if !last_line.is_empty() {
+            if let Some((p, _)) = last_line.char_indices().nth(pos.character as usize) {
+                offset += p
+            } else {
+                offset += last_line.char_indices().last().unwrap().0 + 1
+            }
+        }
+    }
+    offset
 }
 
 pub(crate) fn extract_text_range(input: &str, rng: Rng) -> &str {
@@ -106,6 +110,10 @@ List: [Items: Numbers] TrailingComma^;
 Items: Num {","^ Num};
 Num: "0|[1-9][0-9]*": Number;
 TrailingComma: [","^];"#;
+
+    const CONTENT2: &str = r#"ÜÄÖ
+EXPECTED
+"#;
 
     #[test]
     fn test_pos_to_offset() {
@@ -156,6 +164,18 @@ TrailingComma: [","^];"#;
             };
             let rng = Rng::new(Range { start, end });
             assert_eq!(";", extract_text_range(CONTENT, rng));
+        }
+        {
+            let start = Position {
+                line: 1,
+                character: 0,
+            };
+            let end = Position {
+                line: 1,
+                character: 8,
+            };
+            let rng = Rng::new(Range { start, end });
+            assert_eq!("EXPECTED", extract_text_range(CONTENT2, rng));
         }
     }
 }
