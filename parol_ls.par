@@ -49,7 +49,7 @@ Production
     ;
 
 Alternations
-    : Alternation { "\|": OwnedToken Alternation }
+    : Alternation { "\|": OwnedToken Comments Alternation }
     ;
 
 Alternation

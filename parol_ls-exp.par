@@ -27,7 +27,7 @@
 /* 19 */ ProductionLHS: Comments Identifier Comments ":" : OwnedToken;
 /* 20 */ Production: ProductionLHS Alternations ";" : OwnedToken;
 /* 21 */ Alternations: Alternation AlternationsList /* Vec */;
-/* 22 */ AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Alternation AlternationsList;
+/* 22 */ AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Comments Alternation AlternationsList;
 /* 23 */ AlternationsList /* Vec<T>::New */: ;
 /* 24 */ Alternation: AlternationList /* Vec */;
 /* 25 */ AlternationList /* Vec<T>::Push */: Factor Comments AlternationList;

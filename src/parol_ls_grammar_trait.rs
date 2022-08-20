@@ -504,6 +504,7 @@ pub struct Alternations {
 #[derive(Builder, Debug, Clone)]
 pub struct AlternationsList {
     pub or: parol_runtime::lexer::OwnedToken, /* \| */
+    pub comments: Box<Comments>,
     pub alternation: Box<Alternation>,
 }
 
@@ -1849,12 +1850,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Alternation AlternationsList;
+    /// AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Comments Alternation AlternationsList;
     ///
     #[named]
     fn alternations_list_0(
         &mut self,
         or: &ParseTreeStackEntry<'t>,
+        _comments: &ParseTreeStackEntry<'t>,
         _alternation: &ParseTreeStackEntry<'t>,
         _alternations_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
@@ -1873,8 +1875,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Alternation", context);
         };
+        let comments = if let Some(ASTType::Comments(comments)) = self.pop(context) {
+            comments
+        } else {
+            bail!("{}: Expecting ASTType::Comments", context);
+        };
         let alternations_list_0_built = AlternationsListBuilder::default()
             .alternation(Box::new(alternation))
+            .comments(Box::new(comments))
             .or(or)
             .build()
             .into_diagnostic()?;
@@ -3388,7 +3396,13 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             ),
             20 => self.production(&children[0], &children[1], &children[2], parse_tree),
             21 => self.alternations(&children[0], &children[1], parse_tree),
-            22 => self.alternations_list_0(&children[0], &children[1], &children[2], parse_tree),
+            22 => self.alternations_list_0(
+                &children[0],
+                &children[1],
+                &children[2],
+                &children[3],
+                parse_tree,
+            ),
             23 => self.alternations_list_1(parse_tree),
             24 => self.alternation(&children[0], parse_tree),
             25 => self.alternation_list_0(&children[0], &children[1], &children[2], parse_tree),

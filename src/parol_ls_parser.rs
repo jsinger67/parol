@@ -791,10 +791,15 @@ pub const PRODUCTIONS: &[Production; 74] = &[
         lhs: 3,
         production: &[ParseType::N(4), ParseType::N(1)],
     },
-    // 22 - AlternationsList: "\|" Alternation AlternationsList;
+    // 22 - AlternationsList: "\|" Comments Alternation AlternationsList;
     Production {
         lhs: 4,
-        production: &[ParseType::N(4), ParseType::N(1), ParseType::T(18)],
+        production: &[
+            ParseType::N(4),
+            ParseType::N(1),
+            ParseType::N(6),
+            ParseType::T(18),
+        ],
     },
     // 23 - AlternationsList: ;
     Production {
