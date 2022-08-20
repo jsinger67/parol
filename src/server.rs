@@ -34,6 +34,7 @@ impl Server {
             .map_err(|_| miette!("Failed interpreting file path {}", uri.path()))?;
         let document_state = self.documents.get_mut(uri.path()).unwrap();
         eprintln!("analyze: step 1 - parse");
+        document_state.clear();
         parse(
             &document_state.input,
             &file_path,

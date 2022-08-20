@@ -17,6 +17,10 @@ impl DocumentState {
     pub(crate) fn hover(&self, params: HoverParams) -> Hover {
         self.parsed_data.hover(params, &self.input)
     }
+
+    pub(crate) fn clear(&mut self) {
+        self.parsed_data.clear()
+    }
 }
 
 #[derive(Debug, new)]

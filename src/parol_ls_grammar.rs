@@ -122,6 +122,14 @@ impl ParolLsGrammar {
             range: None,
         }
     }
+
+    pub(crate) fn clear(&mut self) {
+        self.non_terminal_definitions.clear();
+        self.non_terminals.clear();
+        self.user_type_definitions.clear();
+        self.user_types.clear();
+        self.productions.clear();
+    }
 }
 
 impl ParolLsGrammarTrait for ParolLsGrammar {
@@ -160,8 +168,11 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     /// Semantic action for non-terminal 'Production'
     fn production(&mut self, arg: &Production) -> Result<()> {
         let nt = arg.production_l_h_s.identifier.identifier.symbol.clone();
+        let rng: Rng = arg.into();
+        eprintln!("Adding production {nt:?}: {rng:?}");
         let entry = self.productions.entry(nt).or_default();
         entry.push(arg.clone());
+        eprintln!("Length: {}", entry.len());
         Ok(())
     }
 
