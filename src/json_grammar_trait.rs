@@ -11,13 +11,10 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait JsonGrammarTrait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for non-terminal 'Json'
     fn json(&mut self, _arg: &Json<'t>) -> Result<()> {
         Ok(())
@@ -320,8 +317,6 @@ where
     user_grammar: &'u mut dyn JsonGrammarTrait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 
 ///
@@ -333,7 +328,6 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -487,7 +481,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList: ","^ /* Clipped */ Pair ObjectList; // Vec<T>::Push
+    /// ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;
     ///
     #[named]
     fn object_list_0(
@@ -522,7 +516,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList: ; // Vec<T>::New
+    /// ObjectList /* Vec<T>::New */: ;
     ///
     #[named]
     fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -657,7 +651,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList: ","^ /* Clipped */ Value ArrayList; // Vec<T>::Push
+    /// ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;
     ///
     #[named]
     fn array_list_0(
@@ -692,7 +686,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList: ; // Vec<T>::New
+    /// ArrayList /* Vec<T>::New */: ;
     ///
     #[named]
     fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -896,7 +890,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = *string.token(parse_tree)?;
+        let string = string.token(parse_tree)?.clone();
         let string_built = StringBuilder::default()
             .string(string)
             .build()
@@ -919,7 +913,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = *number.token(parse_tree)?;
+        let number = number.token(parse_tree)?.clone();
         let number_built = NumberBuilder::default()
             .number(number)
             .build()
@@ -932,16 +926,6 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-    }
-
     ///
     /// This function is implemented automatically for the user's item JsonGrammar.
     ///
