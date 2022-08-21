@@ -2,6 +2,8 @@
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
 %auto_newline_off
+%user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
+%user_type BasicNumber = crate::basic_grammar::BasicNumber
 
 %scanner Cmnt { %auto_newline_off }
 %scanner Expr { %auto_newline_off }
@@ -13,7 +15,7 @@ Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
 Line    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
         ;
 LineNumber
-        : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : crate::basic_grammar::BasicLineNumber
+        : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : BasicLineNumber
         ;
 Statement
         : Remark
@@ -55,13 +57,12 @@ Float   : Float1
         | Float2
         ;
 // [Integer] DecimalDot [Integer] [Exponent]
-Float1  : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?":
-                crate::basic_grammar::BasicNumber
+Float1  : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?": BasicNumber
         ;
 // Integer Exponent
-Float2  : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": crate::basic_grammar::BasicNumber
+Float2  : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": BasicNumber
         ;
-Integer : <Expr>"(?:[0-9] *)+": crate::basic_grammar::BasicNumber
+Integer : <Expr>"(?:[0-9] *)+": BasicNumber
         ;
 
 // -------------------------------------------------------------------------------------------------

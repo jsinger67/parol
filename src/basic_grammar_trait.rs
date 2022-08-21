@@ -1174,7 +1174,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// BasicList: EndOfLine Line BasicList; // Vec<T>::Push
+    /// BasicList /* Vec<T>::Push */: EndOfLine Line BasicList;
     ///
     #[named]
     fn basic_list_0(
@@ -1214,7 +1214,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// BasicList: ; // Vec<T>::New
+    /// BasicList /* Vec<T>::New */: ;
     ///
     #[named]
     fn basic_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1227,7 +1227,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// BasicOpt0: EndOfLine; // Option<T>::Some
+    /// BasicOpt0 /* Option<T>::Some */: EndOfLine;
     ///
     #[named]
     fn basic_opt0_0(
@@ -1255,7 +1255,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// BasicOpt0: ; // Option<T>::None
+    /// BasicOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1267,7 +1267,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// BasicOpt: EndOfLine; // Option<T>::Some
+    /// BasicOpt /* Option<T>::Some */: EndOfLine;
     ///
     #[named]
     fn basic_opt_0(
@@ -1295,7 +1295,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// BasicOpt: ; // Option<T>::None
+    /// BasicOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1349,7 +1349,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// LineList: <INITIAL, Expr>":"^ /* Clipped */ Statement LineList; // Vec<T>::Push
+    /// LineList /* Vec<T>::Push */: <INITIAL, Expr>":"^ /* Clipped */ Statement LineList;
     ///
     #[named]
     fn line_list_0(
@@ -1384,7 +1384,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// LineList: ; // Vec<T>::New
+    /// LineList /* Vec<T>::New */: ;
     ///
     #[named]
     fn line_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1397,7 +1397,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" /* : crate::basic_grammar::BasicLineNumber */;
+    /// LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : BasicLineNumber;
     ///
     #[named]
     fn line_number(
@@ -1622,7 +1622,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// RemarkOpt: Comment; // Option<T>::Some
+    /// RemarkOpt /* Option<T>::Some */: Comment;
     ///
     #[named]
     fn remark_opt_0(
@@ -1650,7 +1650,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// RemarkOpt: ; // Option<T>::None
+    /// RemarkOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1786,7 +1786,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// AssignmentOpt: Let; // Option<T>::Some
+    /// AssignmentOpt /* Option<T>::Some */: Let;
     ///
     #[named]
     fn assignment_opt_0(
@@ -1814,7 +1814,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AssignmentOpt: ; // Option<T>::None
+    /// AssignmentOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1941,7 +1941,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// PrintStatementList: <INITIAL, Expr>","^ /* Clipped */ Expression PrintStatementList; // Vec<T>::Push
+    /// PrintStatementList /* Vec<T>::Push */: <INITIAL, Expr>","^ /* Clipped */ Expression PrintStatementList;
     ///
     #[named]
     fn print_statement_list_0(
@@ -1977,7 +1977,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// PrintStatementList: ; // Vec<T>::New
+    /// PrintStatementList /* Vec<T>::New */: ;
     ///
     #[named]
     fn print_statement_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2181,7 +2181,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" /* : crate::basic_grammar::BasicNumber */;
+    /// Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" : BasicNumber;
     ///
     #[named]
     fn float1(
@@ -2204,7 +2204,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" /* : crate::basic_grammar::BasicNumber */;
+    /// Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" : BasicNumber;
     ///
     #[named]
     fn float2(
@@ -2227,7 +2227,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// Integer: <Expr>"(?:[0-9] *)+" /* : crate::basic_grammar::BasicNumber */;
+    /// Integer: <Expr>"(?:[0-9] *)+" : BasicNumber;
     ///
     #[named]
     fn integer(
@@ -2720,7 +2720,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList; // Vec<T>::Push
+    /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
     #[named]
     fn logical_or_list_0(
@@ -2761,7 +2761,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// LogicalOrList: ; // Vec<T>::New
+    /// LogicalOrList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2810,7 +2810,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// LogicalAndList: LogicalAndOp LogicalNot LogicalAndList; // Vec<T>::Push
+    /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp LogicalNot LogicalAndList;
     ///
     #[named]
     fn logical_and_list_0(
@@ -2852,7 +2852,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// LogicalAndList: ; // Vec<T>::New
+    /// LogicalAndList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2900,7 +2900,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// LogicalNotOpt: LogicalNotOp; // Option<T>::Some
+    /// LogicalNotOpt /* Option<T>::Some */: LogicalNotOp;
     ///
     #[named]
     fn logical_not_opt_0(
@@ -2929,7 +2929,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// LogicalNotOpt: ; // Option<T>::None
+    /// LogicalNotOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2977,7 +2977,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// RelationalList: RelationalOp Summation RelationalList; // Vec<T>::Push
+    /// RelationalList /* Vec<T>::Push */: RelationalOp Summation RelationalList;
     ///
     #[named]
     fn relational_list_0(
@@ -3018,7 +3018,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// RelationalList: ; // Vec<T>::New
+    /// RelationalList /* Vec<T>::New */: ;
     ///
     #[named]
     fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3068,7 +3068,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// SummationList: SummationListGroup Multiplication SummationList; // Vec<T>::Push
+    /// SummationList /* Vec<T>::Push */: SummationListGroup Multiplication SummationList;
     ///
     #[named]
     fn summation_list_0(
@@ -3171,7 +3171,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// SummationList: ; // Vec<T>::New
+    /// SummationList /* Vec<T>::New */: ;
     ///
     #[named]
     fn summation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3220,7 +3220,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 77:
     ///
-    /// MultiplicationList: MulOp Factor MultiplicationList; // Vec<T>::Push
+    /// MultiplicationList /* Vec<T>::Push */: MulOp Factor MultiplicationList;
     ///
     #[named]
     fn multiplication_list_0(
@@ -3261,7 +3261,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// MultiplicationList: ; // Vec<T>::New
+    /// MultiplicationList /* Vec<T>::New */: ;
     ///
     #[named]
     fn multiplication_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
