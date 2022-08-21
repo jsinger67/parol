@@ -11,13 +11,10 @@ use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use std::path::{Path, PathBuf};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait Oberon2GrammarTrait<'t> {
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for non-terminal 'KwBegin'
     fn kw_begin(&mut self, _arg: &KwBegin) -> Result<()> {
         Ok(())
@@ -2417,8 +2414,6 @@ where
     user_grammar: &'u mut dyn Oberon2GrammarTrait<'t>,
     // Stack to construct the AST on it
     item_stack: Vec<ASTType<'t>>,
-    // Path of the input file. Used for diagnostics.
-    file_name: PathBuf,
 }
 
 ///
@@ -2430,7 +2425,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            file_name: PathBuf::default(),
         }
     }
 
@@ -2783,7 +2777,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// Oberon2Opt: ImportList; // Option<T>::Some
+    /// Oberon2Opt /* Option<T>::Some */: ImportList;
     ///
     #[named]
     fn oberon2_opt_0(
@@ -2811,7 +2805,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// Oberon2Opt: ; // Option<T>::None
+    /// Oberon2Opt /* Option<T>::None */: ;
     ///
     #[named]
     fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2932,7 +2926,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// ImportListList: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList; // Vec<T>::Push
+    /// ImportListList /* Vec<T>::Push */: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList;
     ///
     #[named]
     fn import_list_list_0(
@@ -2976,7 +2970,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// ImportListList: ; // Vec<T>::New
+    /// ImportListList /* Vec<T>::New */: ;
     ///
     #[named]
     fn import_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2989,7 +2983,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// ImportListOpt0: Ident ":="^ /* Clipped */; // Option<T>::Some
+    /// ImportListOpt0 /* Option<T>::Some */: Ident ":="^ /* Clipped */;
     ///
     #[named]
     fn import_list_opt0_0(
@@ -3019,7 +3013,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// ImportListOpt0: ; // Option<T>::None
+    /// ImportListOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn import_list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3031,7 +3025,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// ImportListOpt: Ident ":="^ /* Clipped */; // Option<T>::Some
+    /// ImportListOpt /* Option<T>::Some */: Ident ":="^ /* Clipped */;
     ///
     #[named]
     fn import_list_opt_0(
@@ -3061,7 +3055,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// ImportListOpt: ; // Option<T>::None
+    /// ImportListOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn import_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3111,7 +3105,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// DeclSeqList0: DeclSeqList0Group DeclSeqList0; // Vec<T>::Push
+    /// DeclSeqList0 /* Vec<T>::Push */: DeclSeqList0Group DeclSeqList0;
     ///
     #[named]
     fn decl_seq_list0_0(
@@ -3210,7 +3204,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// DeclSeqList0: ; // Vec<T>::New
+    /// DeclSeqList0 /* Vec<T>::New */: ;
     ///
     #[named]
     fn decl_seq_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3223,7 +3217,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// DeclSeqList: DeclBlock DeclSeqList; // Vec<T>::Push
+    /// DeclSeqList /* Vec<T>::Push */: DeclBlock DeclSeqList;
     ///
     #[named]
     fn decl_seq_list_0(
@@ -3257,7 +3251,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 30:
     ///
-    /// DeclSeqList: ; // Vec<T>::New
+    /// DeclSeqList /* Vec<T>::New */: ;
     ///
     #[named]
     fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3390,7 +3384,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// ConstDeclBlockList: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList; // Vec<T>::Push
+    /// ConstDeclBlockList /* Vec<T>::Push */: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList;
     ///
     #[named]
     fn const_decl_block_list_0(
@@ -3426,7 +3420,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// ConstDeclBlockList: ; // Vec<T>::New
+    /// ConstDeclBlockList /* Vec<T>::New */: ;
     ///
     #[named]
     fn const_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3473,7 +3467,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// TypeDeclBlockList: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList; // Vec<T>::Push
+    /// TypeDeclBlockList /* Vec<T>::Push */: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList;
     ///
     #[named]
     fn type_decl_block_list_0(
@@ -3509,7 +3503,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// TypeDeclBlockList: ; // Vec<T>::New
+    /// TypeDeclBlockList /* Vec<T>::New */: ;
     ///
     #[named]
     fn type_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3558,7 +3552,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// VarDeclBlockList: VarDecl ";"^ /* Clipped */ VarDeclBlockList; // Vec<T>::Push
+    /// VarDeclBlockList /* Vec<T>::Push */: VarDecl ";"^ /* Clipped */ VarDeclBlockList;
     ///
     #[named]
     fn var_decl_block_list_0(
@@ -3594,7 +3588,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// VarDeclBlockList: ; // Vec<T>::New
+    /// VarDeclBlockList /* Vec<T>::New */: ;
     ///
     #[named]
     fn var_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3806,7 +3800,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// ProcedureHeadingOpt0: FormalPars; // Option<T>::Some
+    /// ProcedureHeadingOpt0 /* Option<T>::Some */: FormalPars;
     ///
     #[named]
     fn procedure_heading_opt0_0(
@@ -3834,7 +3828,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// ProcedureHeadingOpt0: ; // Option<T>::None
+    /// ProcedureHeadingOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn procedure_heading_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3846,7 +3840,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// ProcedureHeadingOpt: Receiver; // Option<T>::Some
+    /// ProcedureHeadingOpt /* Option<T>::Some */: Receiver;
     ///
     #[named]
     fn procedure_heading_opt_0(
@@ -3874,7 +3868,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// ProcedureHeadingOpt: ; // Option<T>::None
+    /// ProcedureHeadingOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn procedure_heading_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3960,7 +3954,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// StatementBlockOpt: KwBegin^ /* Clipped */ StatementSeq; // Option<T>::Some
+    /// StatementBlockOpt /* Option<T>::Some */: KwBegin^ /* Clipped */ StatementSeq;
     ///
     #[named]
     fn statement_block_opt_0(
@@ -3992,7 +3986,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// StatementBlockOpt: ; // Option<T>::None
+    /// StatementBlockOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_block_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4018,7 +4012,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let circumflex = *circumflex.token(parse_tree)?;
+        let circumflex = circumflex.token(parse_tree)?.clone();
         let forward_decl_opt0 =
             if let Some(ASTType::ForwardDeclOpt0(forward_decl_opt0)) = self.pop(context) {
                 forward_decl_opt0
@@ -4054,7 +4048,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// ForwardDeclOpt0: FormalPars; // Option<T>::Some
+    /// ForwardDeclOpt0 /* Option<T>::Some */: FormalPars;
     ///
     #[named]
     fn forward_decl_opt0_0(
@@ -4082,7 +4076,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// ForwardDeclOpt0: ; // Option<T>::None
+    /// ForwardDeclOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn forward_decl_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4094,7 +4088,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// ForwardDeclOpt: Receiver; // Option<T>::Some
+    /// ForwardDeclOpt /* Option<T>::Some */: Receiver;
     ///
     #[named]
     fn forward_decl_opt_0(
@@ -4122,7 +4116,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// ForwardDeclOpt: ; // Option<T>::None
+    /// ForwardDeclOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn forward_decl_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4174,7 +4168,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// FormalParsOpt0: ":"^ /* Clipped */ QualIdent; // Option<T>::Some
+    /// FormalParsOpt0 /* Option<T>::Some */: ":"^ /* Clipped */ QualIdent;
     ///
     #[named]
     fn formal_pars_opt0_0(
@@ -4204,7 +4198,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// FormalParsOpt0: ; // Option<T>::None
+    /// FormalParsOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn formal_pars_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4216,7 +4210,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// FormalParsOpt: FPSection FormalParsOptList /* Vec */; // Option<T>::Some
+    /// FormalParsOpt /* Option<T>::Some */: FPSection FormalParsOptList /* Vec */;
     ///
     #[named]
     fn formal_pars_opt_0(
@@ -4253,7 +4247,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// FormalParsOptList: ";"^ /* Clipped */ FPSection FormalParsOptList; // Vec<T>::Push
+    /// FormalParsOptList /* Vec<T>::Push */: ";"^ /* Clipped */ FPSection FormalParsOptList;
     ///
     #[named]
     fn formal_pars_opt_list_0(
@@ -4289,7 +4283,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// FormalParsOptList: ; // Vec<T>::New
+    /// FormalParsOptList /* Vec<T>::New */: ;
     ///
     #[named]
     fn formal_pars_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4305,7 +4299,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// FormalParsOpt: ; // Option<T>::None
+    /// FormalParsOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn formal_pars_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4370,7 +4364,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// FPSectionList: ","^ /* Clipped */ Ident FPSectionList; // Vec<T>::Push
+    /// FPSectionList /* Vec<T>::Push */: ","^ /* Clipped */ Ident FPSectionList;
     ///
     #[named]
     fn f_p_section_list_0(
@@ -4406,7 +4400,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// FPSectionList: ; // Vec<T>::New
+    /// FPSectionList /* Vec<T>::New */: ;
     ///
     #[named]
     fn f_p_section_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4419,7 +4413,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 71:
     ///
-    /// FPSectionOpt: KwVar^ /* Clipped */; // Option<T>::Some
+    /// FPSectionOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
     ///
     #[named]
     fn f_p_section_opt_0(
@@ -4444,7 +4438,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// FPSectionOpt: ; // Option<T>::None
+    /// FPSectionOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn f_p_section_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4495,7 +4489,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 74:
     ///
-    /// ReceiverOpt: KwVar^ /* Clipped */; // Option<T>::Some
+    /// ReceiverOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
     ///
     #[named]
     fn receiver_opt_0(
@@ -4520,7 +4514,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// ReceiverOpt: ; // Option<T>::None
+    /// ReceiverOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4688,7 +4682,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 80:
     ///
-    /// TypeDefList: ";"^ /* Clipped */ FieldList TypeDefList; // Vec<T>::Push
+    /// TypeDefList /* Vec<T>::Push */: ";"^ /* Clipped */ FieldList TypeDefList;
     ///
     #[named]
     fn type_def_list_0(
@@ -4724,7 +4718,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 81:
     ///
-    /// TypeDefList: ; // Vec<T>::New
+    /// TypeDefList /* Vec<T>::New */: ;
     ///
     #[named]
     fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4803,7 +4797,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 84:
     ///
-    /// TypeDefOpt1: FormalPars; // Option<T>::Some
+    /// TypeDefOpt1 /* Option<T>::Some */: FormalPars;
     ///
     #[named]
     fn type_def_opt1_0(
@@ -4831,7 +4825,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 85:
     ///
-    /// TypeDefOpt1: ; // Option<T>::None
+    /// TypeDefOpt1 /* Option<T>::None */: ;
     ///
     #[named]
     fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4843,7 +4837,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 86:
     ///
-    /// TypeDefOpt0: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */; // Option<T>::Some
+    /// TypeDefOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */;
     ///
     #[named]
     fn type_def_opt0_0(
@@ -4875,7 +4869,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 87:
     ///
-    /// TypeDefOpt0: ; // Option<T>::None
+    /// TypeDefOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4887,7 +4881,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 88:
     ///
-    /// TypeDefOpt: ConstExpr TypeDefOptList /* Vec */; // Option<T>::Some
+    /// TypeDefOpt /* Option<T>::Some */: ConstExpr TypeDefOptList /* Vec */;
     ///
     #[named]
     fn type_def_opt_0(
@@ -4924,7 +4918,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 89:
     ///
-    /// TypeDefOptList: ","^ /* Clipped */ ConstExpr TypeDefOptList; // Vec<T>::Push
+    /// TypeDefOptList /* Vec<T>::Push */: ","^ /* Clipped */ ConstExpr TypeDefOptList;
     ///
     #[named]
     fn type_def_opt_list_0(
@@ -4960,7 +4954,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 90:
     ///
-    /// TypeDefOptList: ; // Vec<T>::New
+    /// TypeDefOptList /* Vec<T>::New */: ;
     ///
     #[named]
     fn type_def_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4973,7 +4967,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 91:
     ///
-    /// TypeDefOpt: ; // Option<T>::None
+    /// TypeDefOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5013,7 +5007,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 93:
     ///
-    /// FieldListOpt: IdentList ":"^ /* Clipped */ TypeDef; // Option<T>::Some
+    /// FieldListOpt /* Option<T>::Some */: IdentList ":"^ /* Clipped */ TypeDef;
     ///
     #[named]
     fn field_list_opt_0(
@@ -5050,7 +5044,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 94:
     ///
-    /// FieldListOpt: ; // Option<T>::None
+    /// FieldListOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn field_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5098,7 +5092,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 96:
     ///
-    /// StatementSeqList: ";"^ /* Clipped */ Statement StatementSeqList; // Vec<T>::Push
+    /// StatementSeqList /* Vec<T>::Push */: ";"^ /* Clipped */ Statement StatementSeqList;
     ///
     #[named]
     fn statement_seq_list_0(
@@ -5134,7 +5128,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 97:
     ///
-    /// StatementSeqList: ; // Vec<T>::New
+    /// StatementSeqList /* Vec<T>::New */: ;
     ///
     #[named]
     fn statement_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5177,7 +5171,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 99:
     ///
-    /// StatementOpt: StatementOptGroup; // Option<T>::Some
+    /// StatementOpt /* Option<T>::Some */: StatementOptGroup;
     ///
     #[named]
     fn statement_opt_0(
@@ -5695,7 +5689,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 112:
     ///
-    /// StatementOptGroupList: ElsifPart StatementOptGroupList; // Vec<T>::Push
+    /// StatementOptGroupList /* Vec<T>::Push */: ElsifPart StatementOptGroupList;
     ///
     #[named]
     fn statement_opt_group_list_0(
@@ -5734,7 +5728,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 113:
     ///
-    /// StatementOptGroupList: ; // Vec<T>::New
+    /// StatementOptGroupList /* Vec<T>::New */: ;
     ///
     #[named]
     fn statement_opt_group_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5750,7 +5744,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 114:
     ///
-    /// StatementOptGroupList0: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0; // Vec<T>::Push
+    /// StatementOptGroupList0 /* Vec<T>::Push */: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0;
     ///
     #[named]
     fn statement_opt_group_list0_0(
@@ -5792,7 +5786,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 115:
     ///
-    /// StatementOptGroupList0: ; // Vec<T>::New
+    /// StatementOptGroupList0 /* Vec<T>::New */: ;
     ///
     #[named]
     fn statement_opt_group_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5808,7 +5802,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 116:
     ///
-    /// StatementOpt2: Expr; // Option<T>::Some
+    /// StatementOpt2 /* Option<T>::Some */: Expr;
     ///
     #[named]
     fn statement_opt2_0(
@@ -5836,7 +5830,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 117:
     ///
-    /// StatementOpt2: ; // Option<T>::None
+    /// StatementOpt2 /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_opt2_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5848,7 +5842,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 118:
     ///
-    /// StatementOpt1: ForStep; // Option<T>::Some
+    /// StatementOpt1 /* Option<T>::Some */: ForStep;
     ///
     #[named]
     fn statement_opt1_0(
@@ -5876,7 +5870,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 119:
     ///
-    /// StatementOpt1: ; // Option<T>::None
+    /// StatementOpt1 /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5888,7 +5882,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 120:
     ///
-    /// StatementOpt0: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */; // Option<T>::Some
+    /// StatementOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */;
     ///
     #[named]
     fn statement_opt0_0(
@@ -5921,7 +5915,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 121:
     ///
-    /// StatementOpt3: ExprList; // Option<T>::Some
+    /// StatementOpt3 /* Option<T>::Some */: ExprList;
     ///
     #[named]
     fn statement_opt3_0(
@@ -5949,7 +5943,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 122:
     ///
-    /// StatementOpt3: ; // Option<T>::None
+    /// StatementOpt3 /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5961,7 +5955,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 123:
     ///
-    /// StatementOpt0: ; // Option<T>::None
+    /// StatementOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5973,7 +5967,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 124:
     ///
-    /// StatementOpt: ; // Option<T>::None
+    /// StatementOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6051,7 +6045,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 127:
     ///
-    /// CasesList: "\|"^ /* Clipped */ Case CasesList; // Vec<T>::Push
+    /// CasesList /* Vec<T>::Push */: "\|"^ /* Clipped */ Case CasesList;
     ///
     #[named]
     fn cases_list_0(
@@ -6086,7 +6080,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 128:
     ///
-    /// CasesList: ; // Vec<T>::New
+    /// CasesList /* Vec<T>::New */: ;
     ///
     #[named]
     fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6201,7 +6195,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 132:
     ///
-    /// OptElsePartEndOpt: ElsePart; // Option<T>::Some
+    /// OptElsePartEndOpt /* Option<T>::Some */: ElsePart;
     ///
     #[named]
     fn opt_else_part_end_opt_0(
@@ -6229,7 +6223,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 133:
     ///
-    /// OptElsePartEndOpt: ; // Option<T>::None
+    /// OptElsePartEndOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn opt_else_part_end_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6418,7 +6412,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 139:
     ///
-    /// CaseOpt: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq; // Option<T>::Some
+    /// CaseOpt /* Option<T>::Some */: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq;
     ///
     #[named]
     fn case_opt_0(
@@ -6461,7 +6455,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 140:
     ///
-    /// CaseOptList: ","^ /* Clipped */ CaseLabels CaseOptList; // Vec<T>::Push
+    /// CaseOptList /* Vec<T>::Push */: ","^ /* Clipped */ CaseLabels CaseOptList;
     ///
     #[named]
     fn case_opt_list_0(
@@ -6497,7 +6491,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 141:
     ///
-    /// CaseOptList: ; // Vec<T>::New
+    /// CaseOptList /* Vec<T>::New */: ;
     ///
     #[named]
     fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6510,7 +6504,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 142:
     ///
-    /// CaseOpt: ; // Option<T>::None
+    /// CaseOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6557,7 +6551,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 144:
     ///
-    /// CaseLabelsOpt: "\.\." ConstExpr; // Option<T>::Some
+    /// CaseLabelsOpt /* Option<T>::Some */: "\.\." ConstExpr;
     ///
     #[named]
     fn case_labels_opt_0(
@@ -6568,7 +6562,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dot_dot = *dot_dot.token(parse_tree)?;
+        let dot_dot = dot_dot.token(parse_tree)?.clone();
         let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
             const_expr
         } else {
@@ -6588,7 +6582,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 145:
     ///
-    /// CaseLabelsOpt: ; // Option<T>::None
+    /// CaseLabelsOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn case_labels_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6697,7 +6691,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 149:
     ///
-    /// ExprOpt: Relation SimpleExpr; // Option<T>::Some
+    /// ExprOpt /* Option<T>::Some */: Relation SimpleExpr;
     ///
     #[named]
     fn expr_opt_0(
@@ -6729,7 +6723,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 150:
     ///
-    /// ExprOpt: ; // Option<T>::None
+    /// ExprOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6785,7 +6779,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 152:
     ///
-    /// SimpleExprList: AddOp Term SimpleExprList; // Vec<T>::Push
+    /// SimpleExprList /* Vec<T>::Push */: AddOp Term SimpleExprList;
     ///
     #[named]
     fn simple_expr_list_0(
@@ -6826,7 +6820,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 153:
     ///
-    /// SimpleExprList: ; // Vec<T>::New
+    /// SimpleExprList /* Vec<T>::New */: ;
     ///
     #[named]
     fn simple_expr_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6839,7 +6833,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 154:
     ///
-    /// SimpleExprOpt: SimpleExprOptGroup; // Option<T>::Some
+    /// SimpleExprOpt /* Option<T>::Some */: SimpleExprOptGroup;
     ///
     #[named]
     fn simple_expr_opt_0(
@@ -6878,7 +6872,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = *plus.token(parse_tree)?;
+        let plus = plus.token(parse_tree)?.clone();
         let simple_expr_opt_group_0_built = SimpleExprOptGroup0Builder::default()
             .plus(plus)
             .build()
@@ -6904,7 +6898,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = *minus.token(parse_tree)?;
+        let minus = minus.token(parse_tree)?.clone();
         let simple_expr_opt_group_1_built = SimpleExprOptGroup1Builder::default()
             .minus(minus)
             .build()
@@ -6920,7 +6914,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 157:
     ///
-    /// SimpleExprOpt: ; // Option<T>::None
+    /// SimpleExprOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn simple_expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6967,7 +6961,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 159:
     ///
-    /// TermList: MulOp Factor TermList; // Vec<T>::Push
+    /// TermList /* Vec<T>::Push */: MulOp Factor TermList;
     ///
     #[named]
     fn term_list_0(
@@ -7007,7 +7001,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 160:
     ///
-    /// TermList: ; // Vec<T>::New
+    /// TermList /* Vec<T>::New */: ;
     ///
     #[named]
     fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7252,7 +7246,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 169:
     ///
-    /// FactorOpt: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */; // Option<T>::Some
+    /// FactorOpt /* Option<T>::Some */: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */;
     ///
     #[named]
     fn factor_opt_0(
@@ -7284,7 +7278,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 170:
     ///
-    /// FactorOpt0: ExprList; // Option<T>::Some
+    /// FactorOpt0 /* Option<T>::Some */: ExprList;
     ///
     #[named]
     fn factor_opt0_0(
@@ -7312,7 +7306,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 171:
     ///
-    /// FactorOpt0: ; // Option<T>::None
+    /// FactorOpt0 /* Option<T>::None */: ;
     ///
     #[named]
     fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7324,7 +7318,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 172:
     ///
-    /// FactorOpt: ; // Option<T>::None
+    /// FactorOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7367,7 +7361,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 174:
     ///
-    /// SetOpt: Element SetOptList /* Vec */; // Option<T>::Some
+    /// SetOpt /* Option<T>::Some */: Element SetOptList /* Vec */;
     ///
     #[named]
     fn set_opt_0(
@@ -7400,7 +7394,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 175:
     ///
-    /// SetOptList: ","^ /* Clipped */ Element SetOptList; // Vec<T>::Push
+    /// SetOptList /* Vec<T>::Push */: ","^ /* Clipped */ Element SetOptList;
     ///
     #[named]
     fn set_opt_list_0(
@@ -7435,7 +7429,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 176:
     ///
-    /// SetOptList: ; // Vec<T>::New
+    /// SetOptList /* Vec<T>::New */: ;
     ///
     #[named]
     fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7448,7 +7442,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 177:
     ///
-    /// SetOpt: ; // Option<T>::None
+    /// SetOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7494,7 +7488,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 179:
     ///
-    /// ElementOpt: "\.\."^ /* Clipped */ Expr; // Option<T>::Some
+    /// ElementOpt /* Option<T>::Some */: "\.\."^ /* Clipped */ Expr;
     ///
     #[named]
     fn element_opt_0(
@@ -7524,7 +7518,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 180:
     ///
-    /// ElementOpt: ; // Option<T>::None
+    /// ElementOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -7569,7 +7563,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let hash = *hash.token(parse_tree)?;
+        let hash = hash.token(parse_tree)?.clone();
         let relation_1_built = Relation1Builder::default()
             .hash(hash)
             .build()
@@ -7593,7 +7587,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_t = *l_t.token(parse_tree)?;
+        let l_t = l_t.token(parse_tree)?.clone();
         let relation_2_built = Relation2Builder::default()
             .l_t(l_t)
             .build()
@@ -7617,7 +7611,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_t_equ = *l_t_equ.token(parse_tree)?;
+        let l_t_equ = l_t_equ.token(parse_tree)?.clone();
         let relation_3_built = Relation3Builder::default()
             .l_t_equ(l_t_equ)
             .build()
@@ -7641,7 +7635,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let g_t = *g_t.token(parse_tree)?;
+        let g_t = g_t.token(parse_tree)?.clone();
         let relation_4_built = Relation4Builder::default()
             .g_t(g_t)
             .build()
@@ -7665,7 +7659,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let g_t_equ = *g_t_equ.token(parse_tree)?;
+        let g_t_equ = g_t_equ.token(parse_tree)?.clone();
         let relation_5_built = Relation5Builder::default()
             .g_t_equ(g_t_equ)
             .build()
@@ -7717,7 +7711,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let i_s = *i_s.token(parse_tree)?;
+        let i_s = i_s.token(parse_tree)?.clone();
         let relation_7_built = Relation7Builder::default()
             .i_s(i_s)
             .build()
@@ -7741,7 +7735,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = *plus.token(parse_tree)?;
+        let plus = plus.token(parse_tree)?.clone();
         let add_op_0_built = AddOp0Builder::default()
             .plus(plus)
             .build()
@@ -7765,7 +7759,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = *minus.token(parse_tree)?;
+        let minus = minus.token(parse_tree)?.clone();
         let add_op_1_built = AddOp1Builder::default()
             .minus(minus)
             .build()
@@ -7789,7 +7783,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let o_r = *o_r.token(parse_tree)?;
+        let o_r = o_r.token(parse_tree)?.clone();
         let add_op_2_built = AddOp2Builder::default()
             .o_r(o_r)
             .build()
@@ -7813,7 +7807,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let star = *star.token(parse_tree)?;
+        let star = star.token(parse_tree)?.clone();
         let mul_op_0_built = MulOp0Builder::default()
             .star(star)
             .build()
@@ -7837,7 +7831,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let slash = *slash.token(parse_tree)?;
+        let slash = slash.token(parse_tree)?.clone();
         let mul_op_1_built = MulOp1Builder::default()
             .slash(slash)
             .build()
@@ -7861,7 +7855,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let d_i_v = *d_i_v.token(parse_tree)?;
+        let d_i_v = d_i_v.token(parse_tree)?.clone();
         let mul_op_2_built = MulOp2Builder::default()
             .d_i_v(d_i_v)
             .build()
@@ -7885,7 +7879,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_o_d = *m_o_d.token(parse_tree)?;
+        let m_o_d = m_o_d.token(parse_tree)?.clone();
         let mul_op_3_built = MulOp3Builder::default()
             .m_o_d(m_o_d)
             .build()
@@ -7909,7 +7903,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let amp = *amp.token(parse_tree)?;
+        let amp = amp.token(parse_tree)?.clone();
         let mul_op_4_built = MulOp4Builder::default()
             .amp(amp)
             .build()
@@ -7959,7 +7953,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 198:
     ///
-    /// DesignatorList: DesignatorSuffix DesignatorList; // Vec<T>::Push
+    /// DesignatorList /* Vec<T>::Push */: DesignatorSuffix DesignatorList;
     ///
     #[named]
     fn designator_list_0(
@@ -7994,7 +7988,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 199:
     ///
-    /// DesignatorList: ; // Vec<T>::New
+    /// DesignatorList /* Vec<T>::New */: ;
     ///
     #[named]
     fn designator_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -8143,7 +8137,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 204:
     ///
-    /// ExprListList: ","^ /* Clipped */ Expr ExprListList; // Vec<T>::Push
+    /// ExprListList /* Vec<T>::Push */: ","^ /* Clipped */ Expr ExprListList;
     ///
     #[named]
     fn expr_list_list_0(
@@ -8179,7 +8173,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 205:
     ///
-    /// ExprListList: ; // Vec<T>::New
+    /// ExprListList /* Vec<T>::New */: ;
     ///
     #[named]
     fn expr_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -8228,7 +8222,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 207:
     ///
-    /// IdentListList: ","^ /* Clipped */ IdentDef IdentListList; // Vec<T>::Push
+    /// IdentListList /* Vec<T>::Push */: ","^ /* Clipped */ IdentDef IdentListList;
     ///
     #[named]
     fn ident_list_list_0(
@@ -8264,7 +8258,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 208:
     ///
-    /// IdentListList: ; // Vec<T>::New
+    /// IdentListList /* Vec<T>::New */: ;
     ///
     #[named]
     fn ident_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -8367,7 +8361,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 212:
     ///
-    /// IdentDefOpt: IdentDefOptGroup; // Option<T>::Some
+    /// IdentDefOpt /* Option<T>::Some */: IdentDefOptGroup;
     ///
     #[named]
     fn ident_def_opt_0(
@@ -8406,7 +8400,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let star = *star.token(parse_tree)?;
+        let star = star.token(parse_tree)?.clone();
         let ident_def_opt_group_0_built = IdentDefOptGroup0Builder::default()
             .star(star)
             .build()
@@ -8432,7 +8426,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = *minus.token(parse_tree)?;
+        let minus = minus.token(parse_tree)?.clone();
         let ident_def_opt_group_1_built = IdentDefOptGroup1Builder::default()
             .minus(minus)
             .build()
@@ -8448,7 +8442,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 215:
     ///
-    /// IdentDefOpt: ; // Option<T>::None
+    /// IdentDefOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -8526,7 +8520,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let real = *real.token(parse_tree)?;
+        let real = real.token(parse_tree)?.clone();
         let real_built = RealBuilder::default()
             .real(real)
             .build()
@@ -8549,7 +8543,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let character = *character.token(parse_tree)?;
+        let character = character.token(parse_tree)?.clone();
         let character_built = CharacterBuilder::default()
             .character(character)
             .build()
@@ -8572,7 +8566,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = *integer.token(parse_tree)?;
+        let integer = integer.token(parse_tree)?.clone();
         let integer_built = IntegerBuilder::default()
             .integer(integer)
             .build()
@@ -8595,7 +8589,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let q_ident = *q_ident.token(parse_tree)?;
+        let q_ident = q_ident.token(parse_tree)?.clone();
         let q_ident_built = QIdentBuilder::default()
             .q_ident(q_ident)
             .build()
@@ -8618,7 +8612,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = *ident.token(parse_tree)?;
+        let ident = ident.token(parse_tree)?.clone();
         let ident_built = IdentBuilder::default()
             .ident(ident)
             .build()
@@ -8641,7 +8635,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = *string.token(parse_tree)?;
+        let string = string.token(parse_tree)?.clone();
         let string_built = StringBuilder::default()
             .string(string)
             .build()
@@ -8676,16 +8670,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// It is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, file_name: &Path) {
-        self.file_name = file_name.to_owned();
-        self.user_grammar.init(file_name);
-    }
-
     ///
     /// This function is implemented automatically for the user's item Oberon2Grammar.
     ///

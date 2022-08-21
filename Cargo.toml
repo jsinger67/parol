@@ -12,9 +12,9 @@ function_name = "0.3.0"
 id_tree = "^1.8"
 lazy_static = "^1.4"
 log = "^0.4"
-miette = { version = "^4.0", features = ["fancy"] }
-parol_runtime = { version = "0.5.9", features = ["trim_parse_tree"] }
+miette = { version = "^5.3", features = ["fancy"] }
+parol_runtime = { version = "0.7.2", features = ["trim_parse_tree"] }
 thiserror = "^1.0"
 
 [build-dependencies]
-parol ="0.9.4"
+parol ="0.10.6"
