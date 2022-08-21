@@ -73,7 +73,8 @@ Escaped
     : Escape EscapeSeqChar;
 
 Escape
-    : <BString, MLBString, Esc>"\u{5C}";                // \    reverse solidus U+005C
+    : <BString, MLBString, Esc>"\u{5C}"                 // \    reverse solidus U+005C
+    ;
 
 EscapeSeqChar
     : QuotationMark                                     // "    quotation mark  U+0022
@@ -90,10 +91,12 @@ EscapeSeqChar
     ;
 
 Unicode4
-    : <Esc>"u[0-9a-fA-F]{4}";                           // uXXXX                U+XXXX
+    : <Esc>"u[0-9a-fA-F]{4}"                            // uXXXX                U+XXXX
+    ;
 
 Unicode8
-    : <Esc>"U[0-9a-fA-F]{8}";                           // UXXXXXXXX            U+XXXXXXXX
+    : <Esc>"U[0-9a-fA-F]{8}"                           // UXXXXXXXX            U+XXXXXXXX
+    ;
 
 // Multiline Basic String
 
@@ -249,22 +252,28 @@ StdTable
     : StdTableOpen^ Key StdTableClose^;
 
 ArrayTableOpen
-    : <INITIAL>"\u{5B}\u{5B}";                          // [[ Double left square bracket
+    : <INITIAL>"\u{5B}\u{5B}"                          // [[ Double left square bracket
+    ;
 
 ArrayTableClose
-    : <INITIAL>"\u{5D}\u{5D}";                          // ]] Double right square bracket
+    : <INITIAL>"\u{5D}\u{5D}"                           // ]] Double right square bracket
+    ;
 
 ArrayOpen
-    : <INITIAL, Val>"\u{5B}";                           // [
+    : <INITIAL, Val>"\u{5B}"                            // [
+    ;
 
 ArrayClose
-    : <INITIAL, Val>"\u{5D}";                           // ]
+    : <INITIAL, Val>"\u{5D}"                            // ]
+    ;
 
 StdTableOpen
-    : ArrayOpen;                                        // [ Left square bracket
+    : ArrayOpen                                         // [ Left square bracket
+    ;
 
 StdTableClose
-    : ArrayClose;                                       // ] Right square bracket
+    : ArrayClose                                        // ] Right square bracket
+    ;
 
 // Inline Table
 
@@ -272,10 +281,12 @@ InlineTable
     : InlineTableOpen^ %push(INITIAL) [ InlineTableKeyVals ] %pop() InlineTableClose^;
 
 InlineTableOpen
-    : <INITIAL, Val>"\u{7B}";                           // {
+    : <INITIAL, Val>"\u{7B}"                            // {
+    ;
 
 InlineTableClose
-    : <INITIAL, Val>"\u{7D}";                           // }
+    : <INITIAL, Val>"\u{7D}"                            // }
+    ;
 
 InlineTableSep
     : ArraySep;
@@ -300,35 +311,45 @@ DotSep
     : <INITIAL, Val>"\.";
 
 MLBasicStringStart
-    : <INITIAL, Val>"\u{22}{3}";                        // """
+    : <INITIAL, Val>"\u{22}{3}"                         // """
+    ;
 
 MLBasicStringEnd
-    : <MLBString>"\u{22}{3,5}";                         // """ | """" | """""
+    : <MLBString>"\u{22}{3,5}"                          // """ | """" | """""
+    ;
 
 MLBQuotes
-    : <MLBString>"\u{22}{1,2}";                         // " | ""
+    : <MLBString>"\u{22}{1,2}"                          // " | ""
+    ;
 
 QuotationMark
-    : <INITIAL, BString, Esc, Val>"\u{22}";             // "
+    : <INITIAL, BString, Esc, Val>"\u{22}"              // "
+    ;
 
 MLLiteralStringStart
-    : <INITIAL, Val>"\u{27}{3}";                        // '''
+    : <INITIAL, Val>"\u{27}{3}"                         // '''
+    ;
 
 MLLiteralStringEnd
-    : <MLLString>"\u{27}{3,5}(?:\r?\n)?";               // '''
+    : <MLLString>"\u{27}{3,5}(?:\r?\n)?"                // '''
+    ;
 
 MLLQuotes
-    : <MLLString>"\u{27}{1,2}";                         // ' | ''
+    : <MLLString>"\u{27}{1,2}"                          // ' | ''
+    ;
 
 Apostrophe
-    : <INITIAL, LString, Val>"\u{27}";                  // '
+    : <INITIAL, LString, Val>"\u{27}"                   // '
+    ;
 
 AsciiNoEscape
-    : <BString, Esc, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
+    : <BString, Esc, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+"
+    ;
 
 Minus
-    : <Val>"\u{2D}";                                    // -
+    : <Val>"\u{2D}"                                     // -
+    ;
 
 Plus
-    : <Val>"\u{2B}";                                    // +
-
+    : <Val>"\u{2B}"                                     // +
+    ;

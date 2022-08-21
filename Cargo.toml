@@ -21,9 +21,9 @@ id_tree = "^1.8"
 id_tree_layout = "^2"
 lazy_static = "^1.4"
 log = "0.4.17"
-miette = { version = "^5.1", features = ["fancy"] }
-parol_runtime = "0.7.1"
+miette = { version = "^5.3", features = ["fancy"] }
+parol_runtime = "0.7.2"
 thiserror = "^1.0"
 
 [build-dependencies]
-parol = "0.10.3"
+parol = "0.10.6"

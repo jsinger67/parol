@@ -16,8 +16,8 @@
 %%
 
 /*   0 */ ParolToml: ParolTomlList /* Vec */;
-/*   1 */ ParolTomlList: Expression ParolTomlList; // Vec<T>::Push
-/*   2 */ ParolTomlList: ; // Vec<T>::New
+/*   1 */ ParolTomlList /* Vec<T>::Push */: Expression ParolTomlList;
+/*   2 */ ParolTomlList /* Vec<T>::New */: ;
 /*   3 */ Expression: KeyVal;
 /*   4 */ Expression: Table;
 /*   5 */ Newline: <MLBString, MLLString>"\r?\n";
@@ -27,8 +27,8 @@
 /*   9 */ Key: SimpleKey KeySuffix;
 /*  10 */ KeySuffix: ;
 /*  11 */ KeySuffix: DotSep SimpleKey KeyList /* Vec */;
-/*  12 */ KeyList: DotSep SimpleKey KeyList; // Vec<T>::Push
-/*  13 */ KeyList: ; // Vec<T>::New
+/*  12 */ KeyList /* Vec<T>::Push */: DotSep SimpleKey KeyList;
+/*  13 */ KeyList /* Vec<T>::New */: ;
 /*  14 */ SimpleKey: QuotedKey;
 /*  15 */ SimpleKey: UnquotedKey;
 /*  16 */ QuotedKey: BasicString;
@@ -46,8 +46,8 @@
 /*  28 */ Numeric: Float;
 /*  29 */ Numeric: Integer;
 /*  30 */ BasicString: QuotationMark %push(BString) BasicStringList /* Vec */ %pop() QuotationMark;
-/*  31 */ BasicStringList: BasicChar BasicStringList; // Vec<T>::Push
-/*  32 */ BasicStringList: ; // Vec<T>::New
+/*  31 */ BasicStringList /* Vec<T>::Push */: BasicChar BasicStringList;
+/*  32 */ BasicStringList /* Vec<T>::New */: ;
 /*  33 */ BasicChar: BasicUnescaped;
 /*  34 */ BasicChar: %push(Esc) Escaped %pop();
 /*  35 */ BasicUnescaped: AsciiNoEscape;
@@ -69,8 +69,8 @@
 /*  51 */ Unicode8: <Esc>"U[0-9a-fA-F]{8}";
 /*  52 */ MLBasicString: MLBasicStringStart %push(MLBString) MLBasicBody MLBasicStringEnd %pop();
 /*  53 */ MLBasicBody: MLBContentList MLBasicBodyList /* Vec */;
-/*  54 */ MLBasicBodyList: MLBQuotes MLBContentList1 MLBasicBodyList; // Vec<T>::Push
-/*  55 */ MLBasicBodyList: ; // Vec<T>::New
+/*  54 */ MLBasicBodyList /* Vec<T>::Push */: MLBQuotes MLBContentList1 MLBasicBodyList;
+/*  55 */ MLBasicBodyList /* Vec<T>::New */: ;
 /*  56 */ MLBContentList: MLBContent MLBContentList;
 /*  57 */ MLBContentList: ;
 /*  58 */ MLBContentList1: MLBContent MLBContentList;
@@ -83,15 +83,15 @@
 /*  65 */ MLBUnescaped: NonAscii;
 /*  66 */ MLBEscapedNL: <MLBString>"\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";
 /*  67 */ LiteralString: Apostrophe^ /* Clipped */ %push(LString) LiteralStringList /* Vec */ %pop() Apostrophe^ /* Clipped */;
-/*  68 */ LiteralStringList: LiteralChar LiteralStringList; // Vec<T>::Push
-/*  69 */ LiteralStringList: ; // Vec<T>::New
+/*  68 */ LiteralStringList /* Vec<T>::Push */: LiteralChar LiteralStringList;
+/*  69 */ LiteralStringList /* Vec<T>::New */: ;
 /*  70 */ LiteralChar: LiteralCharNoApostrophe;
 /*  71 */ LiteralChar: NonAscii;
 /*  72 */ LiteralCharNoApostrophe: <LString, MLLString>"[\t\u{20}-\u{26}\u{28}-\u{7E}]+";
 /*  73 */ MLLiteralString: MLLiteralStringStart^ /* Clipped */ %push(MLLString) MLLiteralBody %pop();
 /*  74 */ MLLiteralBody: MLLContentList MLLiteralBodyList /* Vec */ MLLiteralStringEnd^ /* Clipped */;
-/*  75 */ MLLiteralBodyList: MLLQuotes MLLContentList1 MLLiteralBodyList; // Vec<T>::Push
-/*  76 */ MLLiteralBodyList: ; // Vec<T>::New
+/*  75 */ MLLiteralBodyList /* Vec<T>::Push */: MLLQuotes MLLContentList1 MLLiteralBodyList;
+/*  76 */ MLLiteralBodyList /* Vec<T>::New */: ;
 /*  77 */ MLLContentList: MLLContent MLLContentList;
 /*  78 */ MLLContentList: ;
 /*  79 */ MLLContentList1: MLLContent MLLContentList;
@@ -105,10 +105,10 @@
 /*  87 */ OctPrefix: <Val>"0o";
 /*  88 */ BinPrefix: <Val>"0b";
 /*  89 */ DecInt: DecIntOpt /* Option */ UnsignedDecInt;
-/*  90 */ DecIntOpt: DecIntOptGroup; // Option<T>::Some
+/*  90 */ DecIntOpt /* Option<T>::Some */: DecIntOptGroup;
 /*  91 */ DecIntOptGroup: Plus;
 /*  92 */ DecIntOptGroup: Minus;
-/*  93 */ DecIntOpt: ; // Option<T>::None
+/*  93 */ DecIntOpt /* Option<T>::None */: ;
 /*  94 */ HexInt: HexPrefix^ /* Clipped */ %push(HexInt) HexIntContent %pop();
 /*  95 */ HexIntContent: <HexInt>"[0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])*";
 /*  96 */ OctInt: OctPrefix^ /* Clipped */ %push(OctInt) OctIntContent %pop();
@@ -130,8 +130,8 @@
 /* 112 */ LocalDate: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}";
 /* 113 */ LocalTime: <Val>"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
 /* 114 */ Array: ArrayOpen^ /* Clipped */ %push(Val) ArrayOpt /* Option */ %pop() ArrayClose^ /* Clipped */;
-/* 115 */ ArrayOpt: ArrayValues; // Option<T>::Some
-/* 116 */ ArrayOpt: ; // Option<T>::None
+/* 115 */ ArrayOpt /* Option<T>::Some */: ArrayValues;
+/* 116 */ ArrayOpt /* Option<T>::None */: ;
 /* 117 */ ArrayValues: Val ArrayValuesSuffix0;
 /* 118 */ ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;
 /* 119 */ ArrayValuesSuffix0: ;
@@ -148,14 +148,14 @@
 /* 130 */ StdTableOpen: ArrayOpen;
 /* 131 */ StdTableClose: ArrayClose;
 /* 132 */ InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableClose^ /* Clipped */;
-/* 133 */ InlineTableOpt: InlineTableKeyVals; // Option<T>::Some
-/* 134 */ InlineTableOpt: ; // Option<T>::None
+/* 133 */ InlineTableOpt /* Option<T>::Some */: InlineTableKeyVals;
+/* 134 */ InlineTableOpt /* Option<T>::None */: ;
 /* 135 */ InlineTableOpen: <INITIAL, Val>"\u{7B}";
 /* 136 */ InlineTableClose: <INITIAL, Val>"\u{7D}";
 /* 137 */ InlineTableSep: ArraySep;
 /* 138 */ InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
-/* 139 */ InlineTableKeyValsOpt: InlineTableSep^ /* Clipped */ InlineTableKeyVals; // Option<T>::Some
-/* 140 */ InlineTableKeyValsOpt: ; // Option<T>::None
+/* 139 */ InlineTableKeyValsOpt /* Option<T>::Some */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
+/* 140 */ InlineTableKeyValsOpt /* Option<T>::None */: ;
 /* 141 */ ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
 /* 142 */ UnsignedDecInt: <Val>"0|[1-9]([0-9]|_[0-9])*";
 /* 143 */ UnquotedKey: "[-_A-Za-z0-9]+";

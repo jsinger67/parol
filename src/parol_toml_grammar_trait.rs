@@ -2391,7 +2391,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ParolTomlList: Expression ParolTomlList; // Vec<T>::Push
+    /// ParolTomlList /* Vec<T>::Push */: Expression ParolTomlList;
     ///
     #[named]
     fn parol_toml_list_0(
@@ -2425,7 +2425,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ParolTomlList: ; // Vec<T>::New
+    /// ParolTomlList /* Vec<T>::New */: ;
     ///
     #[named]
     fn parol_toml_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2693,7 +2693,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// KeyList: DotSep SimpleKey KeyList; // Vec<T>::Push
+    /// KeyList /* Vec<T>::Push */: DotSep SimpleKey KeyList;
     ///
     #[named]
     fn key_list_0(
@@ -2733,7 +2733,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// KeyList: ; // Vec<T>::New
+    /// KeyList /* Vec<T>::New */: ;
     ///
     #[named]
     fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3238,7 +3238,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// BasicStringList: BasicChar BasicStringList; // Vec<T>::Push
+    /// BasicStringList /* Vec<T>::Push */: BasicChar BasicStringList;
     ///
     #[named]
     fn basic_string_list_0(
@@ -3272,7 +3272,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// BasicStringList: ; // Vec<T>::New
+    /// BasicStringList /* Vec<T>::New */: ;
     ///
     #[named]
     fn basic_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -3887,7 +3887,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// MLBasicBodyList: MLBQuotes MLBContentList1 MLBasicBodyList; // Vec<T>::Push
+    /// MLBasicBodyList /* Vec<T>::Push */: MLBQuotes MLBContentList1 MLBasicBodyList;
     ///
     #[named]
     fn m_l_basic_body_list_0(
@@ -3929,7 +3929,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// MLBasicBodyList: ; // Vec<T>::New
+    /// MLBasicBodyList /* Vec<T>::New */: ;
     ///
     #[named]
     fn m_l_basic_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4301,7 +4301,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// LiteralStringList: LiteralChar LiteralStringList; // Vec<T>::Push
+    /// LiteralStringList /* Vec<T>::Push */: LiteralChar LiteralStringList;
     ///
     #[named]
     fn literal_string_list_0(
@@ -4335,7 +4335,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// LiteralStringList: ; // Vec<T>::New
+    /// LiteralStringList /* Vec<T>::New */: ;
     ///
     #[named]
     fn literal_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4514,7 +4514,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// MLLiteralBodyList: MLLQuotes MLLContentList1 MLLiteralBodyList; // Vec<T>::Push
+    /// MLLiteralBodyList /* Vec<T>::Push */: MLLQuotes MLLContentList1 MLLiteralBodyList;
     ///
     #[named]
     fn m_l_literal_body_list_0(
@@ -4556,7 +4556,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 76:
     ///
-    /// MLLiteralBodyList: ; // Vec<T>::New
+    /// MLLiteralBodyList /* Vec<T>::New */: ;
     ///
     #[named]
     fn m_l_literal_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -4938,7 +4938,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 90:
     ///
-    /// DecIntOpt: DecIntOptGroup; // Option<T>::Some
+    /// DecIntOpt /* Option<T>::Some */: DecIntOptGroup;
     ///
     #[named]
     fn dec_int_opt_0(
@@ -5019,7 +5019,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 93:
     ///
-    /// DecIntOpt: ; // Option<T>::None
+    /// DecIntOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -5588,7 +5588,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 115:
     ///
-    /// ArrayOpt: ArrayValues; // Option<T>::Some
+    /// ArrayOpt /* Option<T>::Some */: ArrayValues;
     ///
     #[named]
     fn array_opt_0(
@@ -5616,7 +5616,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 116:
     ///
-    /// ArrayOpt: ; // Option<T>::None
+    /// ArrayOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6066,7 +6066,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 133:
     ///
-    /// InlineTableOpt: InlineTableKeyVals; // Option<T>::Some
+    /// InlineTableOpt /* Option<T>::Some */: InlineTableKeyVals;
     ///
     #[named]
     fn inline_table_opt_0(
@@ -6095,7 +6095,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 134:
     ///
-    /// InlineTableOpt: ; // Option<T>::None
+    /// InlineTableOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn inline_table_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -6224,7 +6224,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 139:
     ///
-    /// InlineTableKeyValsOpt: InlineTableSep^ /* Clipped */ InlineTableKeyVals; // Option<T>::Some
+    /// InlineTableKeyValsOpt /* Option<T>::Some */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
     ///
     #[named]
     fn inline_table_key_vals_opt_0(
@@ -6257,7 +6257,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 140:
     ///
-    /// InlineTableKeyValsOpt: ; // Option<T>::None
+    /// InlineTableKeyValsOpt /* Option<T>::None */: ;
     ///
     #[named]
     fn inline_table_key_vals_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
