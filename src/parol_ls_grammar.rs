@@ -410,9 +410,10 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 Self::add_scanner_symbols(&mut acc, &*s.scanner_directives);
                 acc
             });
+        let name = format!("{} {}", arg.percent_scanner.symbol, arg.identifier.identifier.symbol);
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
-            name: arg.percent_scanner.symbol.clone(),
+            name,
             detail: Some("Scanner state".to_string()),
             kind: SymbolKind::STRUCT,
             tags: None,
