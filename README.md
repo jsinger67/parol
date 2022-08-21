@@ -20,6 +20,7 @@ The Language Server currently supports
 
 * GotoDefinition
 * Hover
+* Document symbols
 * and shows syntax errors as you are used to.
 
 Also problems in your grammar are detected and reported.
