@@ -68,7 +68,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         text_document_sync: Some(TextDocumentSyncCapability::Kind(TextDocumentSyncKind::FULL)),
         definition_provider: Some(OneOf::Left(true)),
         hover_provider: Some(HoverProviderCapability::Simple(true)),
-        // document_symbol_provider: Some(OneOf::Left(true)),
+        document_symbol_provider: Some(OneOf::Left(true)),
         ..Default::default()
     })
     .unwrap();

@@ -1,13 +1,14 @@
 use crate::{
     parol_ls_grammar_trait::{
         Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
-        StartDeclaration, UserTypeDeclaration,
+        ScannerDirectives, ScannerState, StartDeclaration, UserTypeDeclaration,
     },
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
 use lsp_types::{
-    Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind, Position, Range,
+    DocumentSymbol, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverContents::Markup,
+    HoverParams, MarkupContent, MarkupKind, Position, Range, SymbolKind,
 };
 #[allow(unused_imports)]
 use miette::Result;
@@ -29,6 +30,8 @@ pub struct ParolLsGrammar {
 
     // A hash that maps non-terminals to their productions
     pub productions: HashMap<String, Vec<Production>>,
+
+    pub symbols: Vec<DocumentSymbol>,
 
     pub grammar: Option<ParolLs>,
 }
@@ -55,10 +58,6 @@ impl ParolLsGrammar {
             None
         }
     }
-
-    // pub(crate) fn item_at_position(&self, _position: Position) -> Option<&ASTType> {
-    //     todo!()
-    // }
 
     pub(crate) fn find_non_terminal_definitions<'a>(
         &'a self,
@@ -100,6 +99,114 @@ impl ParolLsGrammar {
         range
     }
 
+    fn add_scanner_symbols(symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
+        match arg {
+            ScannerDirectives::ScannerDirectives0(line_comment) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: line_comment.percent_line_underscore_comment.symbol.clone(),
+                    detail: Some("Line comment for the scanner state".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &line_comment.percent_line_underscore_comment,
+                    )
+                    .0,
+                    children: Some(vec![DocumentSymbol {
+                        name: line_comment.string.string.symbol.clone(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(arg).0,
+                        selection_range: Into::<Rng>::into(&line_comment.string.string).0,
+                        children: None,
+                    }]),
+                });
+            }
+            ScannerDirectives::ScannerDirectives1(block_comment) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: block_comment
+                        .percent_block_underscore_comment
+                        .symbol
+                        .clone(),
+                    detail: Some("Block comment for the scanner state".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &block_comment.percent_block_underscore_comment,
+                    )
+                    .0,
+                    children: Some(vec![
+                        DocumentSymbol {
+                            name: block_comment.string.string.symbol.clone(),
+                            detail: Some("Text".to_string()),
+                            kind: SymbolKind::STRING,
+                            tags: None,
+                            deprecated: None,
+                            range: Into::<Rng>::into(arg).0,
+                            selection_range: Into::<Rng>::into(&block_comment.string.string).0,
+                            children: None,
+                        },
+                        DocumentSymbol {
+                            name: block_comment.string0.string.symbol.clone(),
+                            detail: Some("Text".to_string()),
+                            kind: SymbolKind::STRING,
+                            tags: None,
+                            deprecated: None,
+                            range: Into::<Rng>::into(arg).0,
+                            selection_range: Into::<Rng>::into(&block_comment.string0.string).0,
+                            children: None,
+                        },
+                    ]),
+                });
+            }
+            ScannerDirectives::ScannerDirectives2(auto_newline) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: auto_newline
+                        .percent_auto_underscore_newline_underscore_off
+                        .symbol
+                        .clone(),
+                    detail: Some("Handle newlines alone".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &auto_newline.percent_auto_underscore_newline_underscore_off,
+                    )
+                    .0,
+                    children: None,
+                });
+            }
+            ScannerDirectives::ScannerDirectives3(auto_ws) => {
+                #[allow(deprecated)]
+                symbols.push(DocumentSymbol {
+                    name: auto_ws
+                        .percent_auto_underscore_ws_underscore_off
+                        .symbol
+                        .clone(),
+                    detail: Some("Handle whitespace alone".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &auto_ws.percent_auto_underscore_ws_underscore_off,
+                    )
+                    .0,
+                    children: None,
+                });
+            }
+        }
+    }
+
     pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {
         let mut value = String::new();
         let ident = self.ident_at_position(params.text_document_position_params.position);
@@ -128,6 +235,14 @@ impl ParolLsGrammar {
             range: None,
         }
     }
+
+    pub(crate) fn document_symbols(
+        &self,
+        _params: DocumentSymbolParams,
+        _input: &str,
+    ) -> DocumentSymbolResponse {
+        DocumentSymbolResponse::Nested(self.symbols.clone())
+    }
 }
 
 impl ParolLsGrammarTrait for ParolLsGrammar {
@@ -142,16 +257,109 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
         self.add_non_terminal_ref(range, token);
+
+        #[allow(deprecated)]
+        self.symbols.push(DocumentSymbol {
+            name: arg.percent_start.symbol.clone(),
+            detail: Some("Start symbol".to_string()),
+            kind: SymbolKind::PROPERTY,
+            tags: None,
+            deprecated: None,
+            range: Into::<Rng>::into(arg).0,
+            selection_range: Into::<Rng>::into(&arg.percent_start).0,
+            children: Some(vec![DocumentSymbol {
+                name: arg.identifier.identifier.symbol.clone(),
+                detail: Some("Non-terminal".to_string()),
+                kind: SymbolKind::VARIABLE,
+                tags: None,
+                deprecated: None,
+                range,
+                selection_range: range,
+                children: None,
+            }]),
+        });
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Declaration'
     fn declaration(&mut self, arg: &Declaration) -> Result<()> {
-        if let Declaration::Declaration2(user_type_def) = arg {
-            let token = &user_type_def.identifier.identifier;
-            let range: Rng = arg.into();
-            let range = self.add_user_type_definition(token, range.into());
-            self.add_user_type_ref(range, token);
+        match arg {
+            Declaration::Declaration0(title) => {
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: title.percent_title.symbol.clone(),
+                    detail: Some("Title of the grammar".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&title.percent_title).0,
+                    children: Some(vec![DocumentSymbol {
+                        name: title.string.string.symbol.clone(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(arg).0,
+                        selection_range: Into::<Rng>::into(&title.string.string).0,
+                        children: None,
+                    }]),
+                });
+            }
+            Declaration::Declaration1(comment) => {
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: comment.percent_comment.symbol.clone(),
+                    detail: Some("Comment for the grammar".to_string()),
+                    kind: SymbolKind::PROPERTY,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&comment.percent_comment).0,
+                    children: Some(vec![DocumentSymbol {
+                        name: comment.string.string.symbol.clone(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(arg).0,
+                        selection_range: Into::<Rng>::into(&comment.string.string).0,
+                        children: None,
+                    }]),
+                });
+            }
+            Declaration::Declaration2(user_type_def) => {
+                let token = &user_type_def.identifier.identifier;
+                let range: Rng = arg.into();
+                let range = self.add_user_type_definition(token, range.into());
+                self.add_user_type_ref(range, token);
+                let range = Into::<Rng>::into(&user_type_def.identifier.identifier).0;
+
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: user_type_def.percent_user_underscore_type.symbol.clone(),
+                    detail: Some("User type definition".to_string()),
+                    kind: SymbolKind::CONSTANT,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(&user_type_def.percent_user_underscore_type)
+                        .0,
+                    children: Some(vec![DocumentSymbol {
+                        name: user_type_def.identifier.identifier.symbol.clone(),
+                        detail: Some("Type alias".to_string()),
+                        kind: SymbolKind::CONSTANT,
+                        tags: None,
+                        deprecated: None,
+                        range,
+                        selection_range: range,
+                        children: None,
+                    }]),
+                });
+            }
+            Declaration::Declaration3(scanner) => {
+                Self::add_scanner_symbols(&mut self.symbols, &scanner.scanner_directives);
+            }
         }
         Ok(())
     }
@@ -172,6 +380,18 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let entry = self.productions.entry(nt).or_default();
         entry.push(arg.clone());
         eprintln!("Length: {}", entry.len());
+
+        #[allow(deprecated)]
+        self.symbols.push(DocumentSymbol {
+            name: arg.production_l_h_s.identifier.identifier.symbol.clone(),
+            detail: Some("Production".to_string()),
+            kind: SymbolKind::FUNCTION,
+            tags: None,
+            deprecated: None,
+            range: Into::<Rng>::into(arg).0,
+            selection_range: Into::<Rng>::into(&arg.production_l_h_s.identifier.identifier).0,
+            children: None,
+        });
         Ok(())
     }
 
@@ -180,6 +400,27 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
         self.add_non_terminal_ref(range, token);
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'ScannerState'
+    fn scanner_state(&mut self, arg: &ScannerState) -> Result<()> {
+        let scanner_state_symbols: Vec<DocumentSymbol> =
+            arg.scanner_state_list.iter().fold(vec![], |mut acc, s| {
+                Self::add_scanner_symbols(&mut acc, &*s.scanner_directives);
+                acc
+            });
+        #[allow(deprecated)]
+        self.symbols.push(DocumentSymbol {
+            name: arg.percent_scanner.symbol.clone(),
+            detail: Some("Scanner state".to_string()),
+            kind: SymbolKind::STRUCT,
+            tags: None,
+            deprecated: None,
+            range: Into::<Rng>::into(arg).0,
+            selection_range: Into::<Rng>::into(&arg.percent_scanner).0,
+            children: Some(scanner_state_symbols),
+        });
         Ok(())
     }
 

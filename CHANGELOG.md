@@ -9,6 +9,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 * Refactored the request handling
 * Made the maximum lookahead configurable via server arguments
 * Added Acknowledgements to README
+* Fixed flaw in grammar analysis
+* Add support for document symbols
 
 ## v0.1.8
 

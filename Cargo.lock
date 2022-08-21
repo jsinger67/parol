@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "clap",
  "derive-new",

@@ -56,8 +56,9 @@ impl Server {
     }
 
     pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> miette::Result<()> {
-        let grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
-        check_and_transform_grammar(&grammar_config.cfg)?;
+        let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
+        let cfg = check_and_transform_grammar(&grammar_config.cfg)?;
+        grammar_config.update_cfg(cfg);
         calculate_lookahead_dfas(&grammar_config, max_k)?;
         Ok(())
     }
@@ -228,9 +229,10 @@ impl Server {
 
     pub(crate) fn handle_document_symbols(
         &self,
-        _params: lsp_types::DocumentSymbolParams,
+        params: lsp_types::DocumentSymbolParams,
     ) -> DocumentSymbolResponse {
-        todo!()
+        let document_state = self.documents.get(params.text_document.uri.path()).unwrap();
+        document_state.document_symbols(params)
     }
 
     fn cleanup(&mut self, file_path: &str) {
