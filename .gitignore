@@ -23,3 +23,6 @@ Cargo.lock
 
 /src/**/*.svg
 *.svg
+
+# mdbook
+/book/book/**

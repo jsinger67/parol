@@ -1,0 +1,6 @@
+[book]
+authors = ["Jörg Singer"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The Parol Parser Generator"
