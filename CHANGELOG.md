@@ -124,7 +124,7 @@ symbol to the AST types. This can simplify and shorten the generated code dramat
 
 * Fixed allow(unused_imports) directive
 * Added some test files to git which are missing yet which causes `run_parsers.ps1` to fail
-* Parol is now implemented using the auto-generation approach
+* `parol` is now implemented using the auto-generation approach
   * This is the basis for further improvements like user defined symbol types or clipping of AST
   content because grammar changes are likely. Then such changes won't have much influence on the
   grammar processing code.
