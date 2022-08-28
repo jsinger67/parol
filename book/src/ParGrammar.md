@@ -85,7 +85,7 @@ productions. At least one production must exist.
 It is important to note that the start symbol of the grammar must always be declared with the
 `%start` declaration. It is the very first declaration in the PAR file.
 
-```text
+```parol
 %start Grammar
 ```
 
@@ -143,7 +143,7 @@ It's best to show an example for such a situation.
 Say you have two terminals "-" and "--", _minus_ and _decrement_. The generated scanner is then
 based on the following regular expression:
 
-```regex
+```parol
     "-|--"
 ```
 
@@ -155,7 +155,7 @@ strategy.
 Fortunately there is a simple way to achieve what we want. We just need a resulting regular
 expression with a different order:
 
-```regex
+```parol
     "--|-"
 ```
 
@@ -181,7 +181,7 @@ With this simple but effective means you have the control over terminal conflict
 Please note that terminals should always match non-empty text portions. This means that you have to
 avoid terminals like this:
 
-```regex
+```parol
 "a?", "a*", "\b"
 ```
 
@@ -243,7 +243,7 @@ StringDelimiter
 
 Scanner state references in different occurrences of the same terminal are accumulated. I.e.,
 
-```text
+```parol
 <State1>"term"
 ...
 <State2>"term"
