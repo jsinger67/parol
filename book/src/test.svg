@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="2420" height="305">
+  <rect x="0" y="0" width="2420" height="305" fill="white"></rect>
+  <text x="10" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;-&apos;, Ty:8, at .\test.txt:1:1-2</text>
+  <line x1="160" y1="175" x2="160" y2="190" stroke="black"></line>
+  <text x="135" y="165" style="font-family: 'Courier'; font-style: normal">Minus</text>
+  <line x1="320" y1="140" x2="160" y2="155" stroke="black"></line>
+  <text x="325" y="235" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;1 &apos;, Ty:6, at .\test.txt:1:2-4</text>
+  <line x1="480" y1="210" x2="480" y2="225" stroke="black"></line>
+  <text x="445" y="200" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="480" y1="175" x2="480" y2="190" stroke="black"></line>
+  <text x="450" y="165" style="font-family: 'Courier'; font-style: normal">Factor</text>
+  <line x1="320" y1="140" x2="480" y2="155" stroke="black"></line>
+  <text x="290" y="130" style="font-family: 'Courier'; font-style: normal">Factor</text>
+  <line x1="420" y1="105" x2="320" y2="120" stroke="black"></line>
+  <text x="640" y="130" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="420" y1="105" x2="730" y2="120" stroke="black"></line>
+  <text x="350" y="95" style="font-family: 'Courier'; font-style: normal">Multiplication</text>
+  <line x1="1210" y1="70" x2="420" y2="85" stroke="black"></line>
+  <text x="830" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;+&apos;, Ty:7, at .\test.txt:1:4-5</text>
+  <line x1="980" y1="175" x2="980" y2="190" stroke="black"></line>
+  <text x="960" y="165" style="font-family: 'Courier'; font-style: normal">Plus</text>
+  <line x1="980" y1="140" x2="980" y2="155" stroke="black"></line>
+  <text x="890" y="130" style="font-family: 'Courier'; font-style: normal">SummationListGroup</text>
+  <line x1="1620" y1="105" x2="980" y2="120" stroke="black"></line>
+  <text x="1140" y="235" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;x&apos;, Ty:5, at .\test.txt:1:6-7</text>
+  <line x1="1290" y1="210" x2="1290" y2="225" stroke="black"></line>
+  <text x="1250" y="200" style="font-family: 'Courier'; font-style: normal">Variable</text>
+  <line x1="1290" y1="175" x2="1290" y2="190" stroke="black"></line>
+  <text x="1260" y="165" style="font-family: 'Courier'; font-style: normal">Factor</text>
+  <line x1="1710" y1="140" x2="1290" y2="155" stroke="black"></line>
+  <text x="1450" y="235" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;*&apos;, Ty:9, at .\test.txt:1:8-9</text>
+  <line x1="1600" y1="210" x2="1600" y2="225" stroke="black"></line>
+  <text x="1575" y="200" style="font-family: 'Courier'; font-style: normal">MulOp</text>
+  <line x1="1860" y1="175" x2="1600" y2="190" stroke="black"></line>
+  <text x="1760" y="270" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;5&apos;, Ty:6, at .\test.txt:1:10-11</text>
+  <line x1="1920" y1="245" x2="1920" y2="260" stroke="black"></line>
+  <text x="1885" y="235" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="1920" y1="210" x2="1920" y2="225" stroke="black"></line>
+  <text x="1890" y="200" style="font-family: 'Courier'; font-style: normal">Factor</text>
+  <line x1="1860" y1="175" x2="1920" y2="190" stroke="black"></line>
+  <text x="2090" y="200" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="1860" y1="175" x2="2180" y2="190" stroke="black"></line>
+  <text x="1770" y="165" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="1710" y1="140" x2="1860" y2="155" stroke="black"></line>
+  <text x="1640" y="130" style="font-family: 'Courier'; font-style: normal">Multiplication</text>
+  <line x1="1620" y1="105" x2="1710" y2="120" stroke="black"></line>
+  <text x="2285" y="130" style="font-family: 'Courier'; font-style: normal">SummationList</text>
+  <line x1="1620" y1="105" x2="2350" y2="120" stroke="black"></line>
+  <text x="1555" y="95" style="font-family: 'Courier'; font-style: normal">SummationList</text>
+  <line x1="1210" y1="70" x2="1620" y2="85" stroke="black"></line>
+  <text x="1165" y="60" style="font-family: 'Courier'; font-style: normal">Summation</text>
+  <line x1="1210" y1="35" x2="1210" y2="50" stroke="black"></line>
+  <text x="1160" y="25" style="font-family: 'Courier'; font-style: normal">Precedence</text></svg>
