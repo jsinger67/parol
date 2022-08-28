@@ -1,0 +1,45 @@
+%start Precedence
+%title "Operator precedence"
+%comment "Shows the handling of operator precedence in `parol`"
+
+%%
+
+// ---------------------------------------------------------
+// VARIABLE
+Variable: "(?i)[A-Z][0-9A-Z]*"
+        ;
+Literal : "(?:[0-9] *)+"
+        ;
+
+// ---------------------------------------------------------
+// OPERATOR SYMBOLS
+Plus    : "\+"
+        ;
+Minus   : "-"
+        ;
+MulOp   : "\*|/"
+        ;
+
+// ---------------------------------------------------------
+// PARENTHESIS
+LParen  : "\("
+        ;
+RParen  : "\)"
+        ;
+
+// ---------------------------------------------------------
+// EXPRESSIONS
+Precedence
+        : Summation
+        ;
+Summation
+        : Multiplication { (Plus | Minus) Multiplication }
+        ;
+Multiplication
+        : Factor { MulOp Factor }
+        ;
+Factor  : Literal
+        | Variable
+        | Minus Factor
+        | LParen Precedence RParen
+        ;
