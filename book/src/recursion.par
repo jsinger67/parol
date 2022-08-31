@@ -1,0 +1,10 @@
+%start Start
+%title "Recursion detection"
+%comment "Shows the detection of left recursions in `parol`"
+
+%%
+
+Start: A;
+A:  ["A"] A
+    | "B"
+    ;
