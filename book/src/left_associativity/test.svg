@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="1780" height="235">
+  <rect x="0" y="0" width="1780" height="235" fill="white"></rect>
+  <text x="15" y="130" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;5 &apos;, Ty:5, at .\test.txt:1:1-3</text>
+  <line x1="170" y1="105" x2="170" y2="120" stroke="black"></line>
+  <text x="135" y="95" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="890" y1="70" x2="170" y2="85" stroke="black"></line>
+  <text x="330" y="165" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;*&apos;, Ty:6, at .\test.txt:1:3-4</text>
+  <line x1="480" y1="140" x2="480" y2="155" stroke="black"></line>
+  <text x="455" y="130" style="font-family: 'Courier'; font-style: normal">MulOp</text>
+  <line x1="1050" y1="105" x2="480" y2="120" stroke="black"></line>
+  <text x="645" y="165" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;6 &apos;, Ty:5, at .\test.txt:1:5-7</text>
+  <line x1="800" y1="140" x2="800" y2="155" stroke="black"></line>
+  <text x="765" y="130" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="1050" y1="105" x2="800" y2="120" stroke="black"></line>
+  <text x="960" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;*&apos;, Ty:6, at .\test.txt:1:7-8</text>
+  <line x1="1110" y1="175" x2="1110" y2="190" stroke="black"></line>
+  <text x="1085" y="165" style="font-family: 'Courier'; font-style: normal">MulOp</text>
+  <line x1="1370" y1="140" x2="1110" y2="155" stroke="black"></line>
+  <text x="1275" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;2&apos;, Ty:5, at .\test.txt:1:9-10</text>
+  <line x1="1430" y1="175" x2="1430" y2="190" stroke="black"></line>
+  <text x="1395" y="165" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="1370" y1="140" x2="1430" y2="155" stroke="black"></line>
+  <text x="1590" y="165" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="1370" y1="140" x2="1680" y2="155" stroke="black"></line>
+  <text x="1280" y="130" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="1050" y1="105" x2="1370" y2="120" stroke="black"></line>
+  <text x="960" y="95" style="font-family: 'Courier'; font-style: normal">MultiplicationList</text>
+  <line x1="890" y1="70" x2="1050" y2="85" stroke="black"></line>
+  <text x="820" y="60" style="font-family: 'Courier'; font-style: normal">Multiplication</text>
+  <line x1="890" y1="35" x2="890" y2="50" stroke="black"></line>
+  <text x="805" y="25" style="font-family: 'Courier'; font-style: normal">LeftAssociativity</text></svg>

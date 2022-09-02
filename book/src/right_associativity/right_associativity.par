@@ -1,0 +1,23 @@
+%start RightAssociativity
+%title "Operator associativity"
+%comment "Shows the handling of operator associativity in `parol`"
+
+%%
+
+Literal : "[0-9]+"
+        ;
+
+// ---------------------------------------------------------
+// OPERATOR SYMBOLS
+PowOp   : "\^"
+        ;
+
+// ---------------------------------------------------------
+// EXPRESSIONS
+RightAssociativity
+        : Potentiation
+        ;
+
+Potentiation
+        : Literal { PowOp Literal }
+        ;

@@ -1,0 +1,24 @@
+%start LeftAssociativity
+%title "Operator associativity"
+%comment "Shows the handling of operator associativity in `parol`"
+
+%%
+
+Literal : "[0-9]+"
+        ;
+
+// ---------------------------------------------------------
+// OPERATOR SYMBOLS
+MulOp   : "\*"
+        ;
+
+// ---------------------------------------------------------
+// EXPRESSIONS
+LeftAssociativity
+        : Multiplication
+        ;
+
+Multiplication
+        : Literal { MulOp Literal }
+        ;
+

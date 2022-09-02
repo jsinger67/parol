@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" lang="en" width="1740" height="235">
+  <rect x="0" y="0" width="1740" height="235" fill="white"></rect>
+  <text x="10" y="130" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;4&apos;, Ty:5, at .\test.txt:1:1-2</text>
+  <line x1="160" y1="105" x2="160" y2="120" stroke="black"></line>
+  <text x="125" y="95" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="870" y1="70" x2="160" y2="85" stroke="black"></line>
+  <text x="320" y="165" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;^&apos;, Ty:6, at .\test.txt:1:3-4</text>
+  <line x1="470" y1="140" x2="470" y2="155" stroke="black"></line>
+  <text x="445" y="130" style="font-family: 'Courier'; font-style: normal">PowOp</text>
+  <line x1="1030" y1="105" x2="470" y2="120" stroke="black"></line>
+  <text x="630" y="165" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;3&apos;, Ty:5, at .\test.txt:1:5-6</text>
+  <line x1="780" y1="140" x2="780" y2="155" stroke="black"></line>
+  <text x="745" y="130" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="1030" y1="105" x2="780" y2="120" stroke="black"></line>
+  <text x="940" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;^&apos;, Ty:6, at .\test.txt:1:7-8</text>
+  <line x1="1090" y1="175" x2="1090" y2="190" stroke="black"></line>
+  <text x="1065" y="165" style="font-family: 'Courier'; font-style: normal">PowOp</text>
+  <line x1="1340" y1="140" x2="1090" y2="155" stroke="black"></line>
+  <text x="1255" y="200" style="font-family: 'Courier'; font-weight: bold; font-style: normal">&apos;2&apos;, Ty:5, at .\test.txt:1:9-10</text>
+  <line x1="1410" y1="175" x2="1410" y2="190" stroke="black"></line>
+  <text x="1375" y="165" style="font-family: 'Courier'; font-style: normal">Literal</text>
+  <line x1="1340" y1="140" x2="1410" y2="155" stroke="black"></line>
+  <text x="1570" y="165" style="font-family: 'Courier'; font-style: normal">PotentiationList</text>
+  <line x1="1340" y1="140" x2="1650" y2="155" stroke="black"></line>
+  <text x="1260" y="130" style="font-family: 'Courier'; font-style: normal">PotentiationList</text>
+  <line x1="1030" y1="105" x2="1340" y2="120" stroke="black"></line>
+  <text x="950" y="95" style="font-family: 'Courier'; font-style: normal">PotentiationList</text>
+  <line x1="870" y1="70" x2="1030" y2="85" stroke="black"></line>
+  <text x="810" y="60" style="font-family: 'Courier'; font-style: normal">Potentiation</text>
+  <line x1="870" y1="35" x2="870" y2="50" stroke="black"></line>
+  <text x="780" y="25" style="font-family: 'Courier'; font-style: normal">RightAssociativity</text></svg>

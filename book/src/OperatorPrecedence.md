@@ -54,9 +54,9 @@ Factor  : Literal
         ;
 ```
 
-Parsing the string "-1 + x * 5" with the generated parser will create the following parse tree:
+Parsing the string `-1 + x * 5` with the generated parser will create the following parse tree:
 
-![Parse Tree](./test.svg)
+![Parse Tree](./precedence/test.svg)
 > Hint: If the picture is too small please open it in a separate tab via context menu.
 
 Here you can see that the "inner most" operator is evaluated first by the parser, here the negation
