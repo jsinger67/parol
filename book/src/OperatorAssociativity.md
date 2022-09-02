@@ -210,9 +210,8 @@ Do you see the structural equivalence?
 ## Right associativity
 
 Let's continue with a simple example grammar that only supports potentiation which is right
-associative, i.e. `x ^ y ^ z` is evaluated as `x ^ (y ^ z)`, because of this mathematical meaning:
-
-\\[{x^{y}}^{z}\\]
+associative, i.e. `x ^ y ^ z` is evaluated as `x ^ (y ^ z)`. It becomes obvious if you look at this
+mathematical notation: \\\( {x^{y}}^{z} \\\)
 
 ```parol
 %start RightAssociativity
