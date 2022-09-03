@@ -1,6 +1,6 @@
 # Operator associativity
 
-Operator associativity describes the "direction" in which operators of the same precedence are
+Operator associativity describes the "direction" in which ***operators of the same precedence*** are
 evaluated.
 
 ## Left associativity
@@ -44,7 +44,7 @@ parol new --bin --path .\left_associativity --tree
 ```
 
 Open the generated crate and substitute the generated dummy grammar by the one above.
-Also change the test.txt to the content
+Also change the `test.txt` to the content
 
 ```text
 5 * 6 * 2
@@ -246,7 +246,7 @@ parol new --bin --path .\right_associativity --tree
 ```
 
 Open the generated crate and substitute the generated dummy grammar by the one above.
-Also change the test.txt to the content
+Also change the `test.txt` to the content
 
 ```text
 4 ^ 3 ^ 2
@@ -271,7 +271,7 @@ vectors.
 
 As done before, we will complete this explanation by implementing our example.
 
-So, first please make all the modification to the file `src\right_associativity_grammar.rs` as
+So, first please make all the modification to the file `src/right_associativity_grammar.rs` as
 made in our upper example. Thereby modify prefixes `Left` and `left_` to `Right` and `right_` resp.
 
 Replace the function `process_operation` with this implementation.

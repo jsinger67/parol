@@ -6,3 +6,4 @@
 - [Grammar description syntax](./ParGrammar.md)
 - [Operator precedence](./OperatorPrecedence.md)
 - [Operator associativity](./OperatorAssociativity.md)
+- [AST generation](./AstGeneration.md)
