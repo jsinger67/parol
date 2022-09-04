@@ -10,8 +10,13 @@ converted form in these data types.
 
 ## The BASIC constructs we support
 
-It is not the purpose of this example to implement the whole BASIC language so we selected a useful
-subset.
+Maybe you remember the old C64 with its BASIC V2?
+
+I decided to re-implement a small part of this BASIC dialect for as an example on how to use `parol`.
+You may ask, why to choose a forty years old language? I say, why not? Because we can and because
+it's fun. 😉
+
+Since I can't implement the whole BASIC language in this example I selected a useful subset.
 
 We support the following language elements:
 
