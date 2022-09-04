@@ -7,3 +7,4 @@
 - [Operator precedence](./OperatorPrecedence.md)
 - [Operator associativity](./OperatorAssociativity.md)
 - [AST generation](./AstGeneration.md)
+- [Vanilla mode](./VanillaMode.md)

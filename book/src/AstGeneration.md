@@ -187,13 +187,10 @@ expanded grammar `list-exp.par` which can be found in also generated traits file
 ```
 
 At the line after the trace the original item is popped from the parse stack. It has the Rust type
+`Items`:
 
 ```rust
-///
 /// Type derived for non-terminal Items
-///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
 pub struct Items {
     pub num: Box<Num>,
     pub items_list: Vec<ItemsList>,
@@ -237,9 +234,9 @@ impl<'t> TryFrom<&Token<'t>> for Number {
 }
 ```
 
-Here the scanned text of the token is accessed using the property `symbol` of the `Token` type from
-the `parol_runtime`crate. This text is then parsed into a `u32` type and finally wrapped into a
-`Number`type which is a `newtype` for `u32`.
+Here the scanned text of the token is accessed using the property `symbol` of the `Token` type that
+was imported from the `parol_runtime`crate. This text is then parsed into a `u32` type and finally
+wrapped into a `Number`type which is a *newtype* for `u32`.
 
 By implementing some `From` or `TryFrom` traits for your user type you can integrate them easily
 into the parse process.

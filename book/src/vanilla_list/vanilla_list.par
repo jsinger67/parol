@@ -1,0 +1,10 @@
+%start List
+%title "A possibly empty comma separated list of integers"
+%comment "A trailing comma is allowed."
+
+%%
+
+List: Items TrailingComma^;
+Items: Num {","^ Num} | ;
+Num: "0|[1-9][0-9]*";
+TrailingComma: [","^];
