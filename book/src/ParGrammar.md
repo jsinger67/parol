@@ -287,8 +287,10 @@ __at the point where the switch is made__ is only of size 1 because the lookahea
 aware of scanner states. This means the provision of lookahead tokens will be made with the current
 active scanner and may fail if a token is not known by it. In most cases this can be circumvented by
 an appropriate grammar formulation.
+>
+>If the scanner switch was successful the lookahead buffer is invalidated.
 
-To demonstrate the handling of scanner states a new example `scanner_states` was included.
+You may have look at example `scanner_states` that demonstrates the handling of scanner states.
 
 ## Omitting grammar symbol from the AST in auto-gen modus
 
