@@ -164,7 +164,8 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>)
+      -> Result<()> {
         Ok(())
     }
 }
@@ -177,7 +178,8 @@ Here we can implement our handling:
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>)
+      -> Result<()> {
         let symbol = num.symbol(parse_tree)?;
         let number = symbol
             .parse::<DefinitionRange>()

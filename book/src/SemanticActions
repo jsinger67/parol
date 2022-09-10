@@ -1,0 +1,184 @@
+# Semantic actions (WIP)
+
+The `parol` parser generator creates traits with functions that represent semantic actions.
+The generated parser then calls these functions at parse time at the appropriate points with correct
+arguments.
+
+The generated trait for user actions (i.e. semantic actions) will be named after the following
+scheme:
+
+```rust
+pub trait <NameOfYourGrammar>GrammarTrait<'t> {
+    // ...
+}
+```
+
+The lifetime parameter <'t> can be left out if the types used don't hold references to the scanned
+text. This is automatically deduced.
+
+Eventually your grammar processing item implements this trait and can overwrite those functions of
+the trait in which it is interested in.
+
+It doesn't need to implement all trait functions because the trait is created in a way where all of
+its functions have default implementations.
+
+`parol` provides two different modes with different properties of semantic actions:
+
+* [Vanilla mode](SemanticActions.html#semantic-actions-in-vanilla-mode)
+* [Auto-gen mode](SemanticActions.html#semantic-actions-in-auto-generation-mode)
+
+![Parol's Modes](ParolModes.svg)Overview of the two modes
+
+## Semantic actions in Vanilla mode
+
+In the less comfortable vanilla mode there are some differences we will address next.
+
+The functions in the semantic actions trait correspond to the *productions* of the
+[expanded grammar](AstGeneration.html#the-expanded-grammar). This implies that you as the user have
+to look more closely at this transformed version of your original grammar and that you should have a
+basic understanding of the [transformations](AstGeneration.html#grammar-transformation) that had
+been applied to it.
+
+The functions' parameter then correspond to the left-hand side of the respective production.
+
+To demonstrate this aspect we show an excerpt of the generated semantic actions seen in the example
+from the previous chapter.
+
+```rust
+pub trait VanillaListGrammarTrait {
+    // ...
+
+    /// Semantic action for production 5:
+    ///
+    /// Num: "0|[1-9][0-9]*";
+    ///
+    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>)
+      -> Result<()> {
+        Ok(())
+    }
+
+    // ...
+}
+```
+
+This is only the semantic action for production 5:
+
+```parol
+/* 5 */ Num: "0|[1-9][0-9]*";
+```
+
+The first thing you will notice is that the trait function has a default implementation. It does
+nothing but returning `Ok`.
+
+The second property of a all these functions is that the first argument always is a mutable
+reference to the implementing item, in this case a reference to `VanillaListGrammar`.
+
+The rest of the arguments correspond to the left-hand side of the respective production, except the
+last one which is needed to access the parse tree.
+
+Next you see a concrete implementation of a semantic action, where all arguments of the semantic
+action are used. This is not always necessary the case and depends on your own language
+implementation.
+
+```rust
+impl VanillaListGrammarTrait for VanillaListGrammar {
+    /// Semantic action for production 5:
+    ///
+    /// Num: "0|[1-9][0-9]*";
+    ///
+    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>)
+      -> Result<()> {
+        let symbol = num.symbol(parse_tree)?;
+        let number = symbol
+            .parse::<DefinitionRange>()
+            .into_diagnostic()
+            .wrap_err("num: Error accessing token from ParseTreeStackEntry")?;
+        self.push(number);
+        Ok(())
+    }
+}
+```
+
+You can see that the parameter of the semantic actions which correspond to the left-hand side of the
+respective productions are all of type `&ParseTreeStackEntry`. This type from the
+[parol_runtime](https://crates.io/crates/parol_runtime) crate is defined this way:
+
+```rust
+///
+/// The type of elements in the parser's parse tree stack.
+/// * 'Nd' references nodes not yet inserted into the parse tree.
+/// * 'Id' holds node ids to nodes that are already part of the parse tree.
+///
+#[derive(Debug)]
+pub enum ParseTreeStackEntry<'t> {
+    /// The node is not inserted into the parse tree yet.
+    /// Thus we can access it directly.
+    Nd(Node<ParseTreeType<'t>>),
+
+    /// The node is already inserted into the parse tree.
+    /// Wee need to lookup the node in the parse tree via the NodeId.
+    Id(NodeId),
+}
+```
+
+Actually it is a wrapper type that provides access to a specific tree node type. It implements three
+functions that you can directly call in your semantic actions:
+
+```rust
+impl<'t> ParseTreeStackEntry<'t> {
+    /// Returns the inner ParseTreeType.
+    pub fn get_parse_tree_type<'a, 'b>(&'a self,
+      parse_tree: &'b Tree<ParseTreeType<'t>>)
+      -> &'a ParseTreeType;
+
+    /// Tries to access the Token of the ParseTreeStackEntry.
+    /// Can fail if the entry is no terminal (i.e. a non-terminal).
+    pub fn token<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType<'t>>)
+      -> Result<&'a Token<'t>>;
+
+    /// Tries to access the text of the ParseTreeStackEntry.
+    /// Can fail if the entry is no terminal (i.e. a non-terminal).
+    pub fn symbol<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType>)
+      -> Result<&'a str>;
+}
+```
+
+In your semantic action you exactly know which argument correspond to a terminal or a non-terminal
+symbol. If you want to access the token that contains a concrete terminal you can use the two last
+functions. If you want to access a non-terminal you can use the first function. But this is normally
+not necessary because the non-terminals are simply nodes with the non-terminal's name that
+represents certain subtrees in the concrete parse-tree. So it is worth to consider the following
+hints.
+
+A good way to process your grammar is to implement an own typed parse stack in your grammar
+processing item. Then you construct such stack items from the tokens you encounter in your semantic
+actions and push them on your parse stack. They then are something like the *results* of your
+semantic actions which are collected on the parse stack for further processing. You then can access
+these results of earlier semantic actions later from other semantic actions and construct the parse
+result step by step using them.
+
+A good demonstration of this approach can be found at the example
+[calc](https://github.com/jsinger67/parol/blob/4d8c5d8a16f96da45f74f22f8750c27f9dccbbf1/examples/calc/calc_grammar.rs).
+
+The direction in which the parser derives the symbols of your grammar guarantees that when a
+semantic action of a production is called all elements of the production have been processed before.
+That's why you know the non-terminals are collected and lay on top of your own parse stack.
+
+## Semantic actions in Auto-generation mode
+
+The auto-gen mode abstracts away the [expanded version](AstGeneration.html#the-expanded-grammar) of
+your grammar. As in [vanilla mode](SemanticActions.html#semantic-actions-in-vanilla-mode) the
+`parol` parser generator creates a trait with functions that represent semantic actions. But here
+the semantic actions are typed and they are generated for the *non-terminals of your input grammar*
+instead of for *productions of the [expanded grammar](AstGeneration.html#the-expanded-grammar)*.
+
+You therefore don't have to mess around with `ParseTreeStackEntry` and `ParseTreeType` although you
+still encounter items of type `Token`. Also the expanded version of your grammar is much less of
+interest for you.
+
+`parol`'s great merit is that it can generate an adapter layer automatically that provides the
+conversion to typed grammar items. Indeed I carved out some simple rules that can be applied
+universally to provide this layer of abstraction by generating the production bound semantic
+actions accordingly.
+
+This and the automatic AST type inference are the most outstanding properties of `parol`.

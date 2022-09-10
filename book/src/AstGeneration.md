@@ -1,7 +1,11 @@
 # AST generation
 
 `parol` can be instructed to generate all types your grammar implies automatically. It therefore
-analyzes all productions in your grammar. The first step is to canonicalize your grammar into a
+analyzes all productions in your grammar.
+
+## Grammar transformation
+
+The first step is to canonicalize your grammar into a
 standard format applying the following transformations.
 
 * All EBNF constructs, i.e. optional elements, repetitions and groupings are substituted by
@@ -14,6 +18,8 @@ equivalent representations.
 
 These transformations are applied iteratively until all EBNF constructs are replaced.
 
+## Sanity checks
+
 Then `parol` checks this pre-transformed input grammar for several properties that prevent a
 successful processing. Those unwanted properties are
 
@@ -23,6 +29,8 @@ successful processing. Those unwanted properties are
 
 If the grammar does not have such properties the next step is to left-factor this grammar form. This
 step is crucial for decreasing the number of necessary lookahead symbols.
+
+## The Expanded grammar
 
 This finally transformed grammar is the basis for the parser generation and is typically written to
 file for later reference. By convention this 'expanded' grammar is stored to files named
