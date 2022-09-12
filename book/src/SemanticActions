@@ -39,7 +39,7 @@ to look more closely at this transformed version of your original grammar and th
 basic understanding of the [transformations](AstGeneration.html#grammar-transformation) that had
 been applied to it.
 
-The functions' parameter then correspond to the left-hand side of the respective production.
+The functions' parameter then correspond to the right-hand side of the respective production.
 
 To demonstrate this aspect we show an excerpt of the generated semantic actions seen in the example
 from the previous chapter.
@@ -73,7 +73,7 @@ nothing but returning `Ok`.
 The second property of a all these functions is that the first argument always is a mutable
 reference to the implementing item, in this case a reference to `VanillaListGrammar`.
 
-The rest of the arguments correspond to the left-hand side of the respective production, except the
+The rest of the arguments correspond to the right-hand side of the respective production, except the
 last one which is needed to access the parse tree.
 
 Next you see a concrete implementation of a semantic action, where all arguments of the semantic
@@ -99,8 +99,8 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
 }
 ```
 
-You can see that the parameter of the semantic actions which correspond to the left-hand side of the
-respective productions are all of type `&ParseTreeStackEntry`. This type from the
+You can see that the parameter of the semantic actions which correspond to the right-hand side of
+the respective productions are all of type `&ParseTreeStackEntry`. This type from the
 [parol_runtime](https://crates.io/crates/parol_runtime) crate is defined this way:
 
 ```rust
@@ -144,7 +144,7 @@ impl<'t> ParseTreeStackEntry<'t> {
 ```
 
 In your semantic action you exactly know which argument correspond to a terminal or a non-terminal
-symbol. If you want to access the token that contains a concrete terminal you can use the two last
+symbol. If you want to access the token that contains a concrete terminal you can use the last two
 functions. If you want to access a non-terminal you can use the first function. But this is normally
 not necessary because the non-terminals are simply nodes with the non-terminal's name that
 represents certain subtrees in the concrete parse-tree. So it is worth to consider the following
