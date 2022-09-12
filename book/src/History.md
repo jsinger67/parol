@@ -37,8 +37,8 @@ What I took over:
 
 * The basic approach of using regexes to generate scanners
 * Using DFAs to solve the
-[Rule Decision Problem](https://github.com/jsinger67/Lelek/blob/53b1e13072d545e72828702ad853e615ced1f94c/docs/Approach.md),
-although I changed the way to obtain the k-sets for productions
+[Rule Decision Problem](https://github.com/jsinger67/Lelek/blob/master/docs/Approach.md), although I
+changed the way to obtain the k-sets for productions
 * The basic ideas behind the structure of the grammar description language -  and their resemblance
 to Bison's input format
 * The separation of language description and language implementation

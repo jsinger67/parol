@@ -22,8 +22,8 @@ and showed the vulnerability of the existing implementation to changes in the in
 Anyway, this chapter is dedicated to the way `parol` functions without auto-generation.
 
 You may have a look at example
-[list](https://github.com/jsinger67/parol/blob/8bd3a5f3f0341cc95a6eb2cee548c123209e0ccc/examples/list/list.par)
-that uses the *vanilla mode* and actually shows how easy it is to work this way.
+[list](https://github.com/jsinger67/parol/tree/main/examples/list) that uses the *vanilla mode* and
+actually shows how easy it is to work this way.
 
 We will elaborate this by implementing a list example in an alternative way.
 

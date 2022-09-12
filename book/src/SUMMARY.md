@@ -7,5 +7,5 @@
 - [Operator precedence](./OperatorPrecedence.md)
 - [Operator associativity](./OperatorAssociativity.md)
 - [AST generation](./AstGeneration.md)
-- [Semantic actions](./SemanticActions)
+- [Semantic actions](./SemanticActions.md)
 - [Vanilla mode](./VanillaMode.md)
