@@ -17,9 +17,9 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## Upcoming version
+## v0.10.7 - 2022-09-14
 
-* No changes yet
+* Launching the book as central documentation for `parol`
 
 ## v0.10.6 - 2022-08-11
 
