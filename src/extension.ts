@@ -123,7 +123,7 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
   };
 }
 
-export function isValidExecutable(path: string): boolean {
+export function tryGetServerVersion(path: string): string | undefined {
   log.debug("Checking availability of a binary at", path);
 
   const res = spawnSync(path, ["--version"], { encoding: "utf8" });
@@ -137,13 +137,53 @@ export function isValidExecutable(path: string): boolean {
           line = line.substring(1);
         }
         printOutput(line);
+        var serverVersion = line.substring(line.lastIndexOf(" ")).trim();
+        printOutput(serverVersion);
+        if (!serverVersion.match(/\d+\.\d+\.\d+/)) {
+          printOutput("Unexpected version format!");
+          return undefined;
+        }
+        return serverVersion;
       }
     }
   } else {
     printOutput(typeof res.output);
   }
 
-  return res.status === 0;
+  return undefined;
+}
+
+function checkForServerUpdate(version: string) {
+  const res = spawnSync("cargo", ["search", "parol-ls"], { encoding: "utf8" });
+  if (!res) {
+    log.warn("Version check failed. Missing `cargo`?");
+    return;
+  }
+  for (let line of res.output) {
+    if (line) {
+      const match = line.match(/parol-ls\s*=\s*"(?<ver>.*?)"/);
+      if (match) {
+        const { ver } = match.groups!;
+        if (version === ver) {
+          log.info("Server is up to date!");
+        } else {
+          if (vscode.extensions.getExtension("jsinger67.parol-vscode")) {
+            vscode.window
+                .showWarningMessage(
+                    `You have an older version of parol language server installed: ${version}. ` +
+                    `A newer version is available at crates.io: ${ver}. ` +
+                    `You can update it by calling: ` +
+                    "`cargo install parol-ls`",
+                    "Ok"
+                )
+                .then(() => {}, console.error);
+          }
+        }
+      }
+      return;
+    }
+  }
+  log.warn("Couldn't detect latest language server version.");
 }
 
 async function bootstrap(): Promise<string> {
@@ -151,9 +191,13 @@ async function bootstrap(): Promise<string> {
 
   log.info("Using server binary at", path);
 
-  if (!isValidExecutable(path)) {
+  var serverVersion = tryGetServerVersion(path);
+
+  if (!serverVersion) {
     throw new Error(`Failed to execute ${path} --version`);
   }
+
+  checkForServerUpdate(serverVersion)
 
   return path;
 }
