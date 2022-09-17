@@ -298,6 +298,7 @@ impl ParolLsGrammar {
                 });
             }
         }
+        eprintln!("prepare rename request rejected");
         None
     }
 }

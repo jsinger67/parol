@@ -46,6 +46,7 @@ macro_rules! request_match {
         match cast::<$req_type>($req) {
             Ok((id, params)) => {
                 let resp = <$req_type>::handle(&mut $server.borrow_mut(), id, params);
+                // eprintln!("send response: {:?}", resp);
                 $connection.sender.send(Message::Response(resp))?;
                 continue;
             }
@@ -115,7 +116,9 @@ fn main_loop(
                     <Rename as lsp_types::request::Request>::METHOD => {
                         request_match!(Rename, server, connection, req);
                     }
-                    _ => {}
+                    _ => {
+                        eprintln!("Unhandled request {}", req.method);
+                    }
                 }
             }
             Message::Response(resp) => {
