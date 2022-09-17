@@ -4,6 +4,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.11
+
+* Fixed handling of prepare rename request which sometimes rejected the rename action
+
 ## v0.1.10
 
 * Add support for renaming non-terminal symbols

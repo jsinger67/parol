@@ -48,13 +48,13 @@ impl ParolLsGrammar {
         if let Some((_, non_terminal)) = self
             .non_terminals
             .iter()
-            .find(|(k, _)| k.start <= position && k.end > position)
+            .find(|(r, _)| r.start <= position && r.end > position)
         {
             Some(non_terminal.clone())
         } else if let Some((_, user_type)) = self
             .user_types
             .iter()
-            .find(|(k, _)| k.start <= position && k.end > position)
+            .find(|(r, _)| r.start <= position && r.end > position)
         {
             Some(user_type.clone())
         } else {
@@ -73,10 +73,14 @@ impl ParolLsGrammar {
         self.non_terminal_definitions.get(non_terminal)
     }
 
-    fn find_non_terminal_range(&self, non_terminal: &str) -> Option<Range> {
-        self.non_terminals
-            .iter()
-            .find_map(|(r, n)| if n == non_terminal { Some(*r) } else { None })
+    fn find_non_terminal_range(&self, non_terminal: &str, position: Position) -> Option<Range> {
+        self.non_terminals.iter().find_map(|(r, n)| {
+            if n == non_terminal && r.start <= position && r.end > position {
+                Some(*r)
+            } else {
+                None
+            }
+        })
     }
 
     fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
@@ -259,7 +263,7 @@ impl ParolLsGrammar {
     ) -> Option<PrepareRenameResponse> {
         let ident = self.ident_at_position(params.position);
         if let Some(non_terminal) = ident {
-            if let Some(range) = self.find_non_terminal_range(&non_terminal) {
+            if let Some(range) = self.find_non_terminal_range(&non_terminal, params.position) {
                 // Currently we don't support renaming the start symbol because this would have
                 // impact on the whole structure of the user's crate.
                 if non_terminal != self.start_symbol {
