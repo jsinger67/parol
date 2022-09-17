@@ -8,8 +8,9 @@ use lsp_types::{
         PublishDiagnostics,
     },
     DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
-    DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
-    Location, PublishDiagnosticsParams, Range, TextDocumentContentChangeEvent, Url,
+    DocumentSymbolParams, DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse,
+    Hover, HoverParams, Location, PrepareRenameResponse, PublishDiagnosticsParams, Range,
+    RenameParams, TextDocumentContentChangeEvent, TextDocumentPositionParams, Url, WorkspaceEdit,
 };
 use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
@@ -229,10 +230,32 @@ impl Server {
 
     pub(crate) fn handle_document_symbols(
         &self,
-        params: lsp_types::DocumentSymbolParams,
+        params: DocumentSymbolParams,
     ) -> DocumentSymbolResponse {
         let document_state = self.documents.get(params.text_document.uri.path()).unwrap();
         document_state.document_symbols(params)
+    }
+
+    pub(crate) fn handle_prepare_rename(
+        &self,
+        params: TextDocumentPositionParams,
+    ) -> Option<PrepareRenameResponse> {
+        if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
+            document_state.prepare_rename(params)
+        } else {
+            None
+        }
+    }
+
+    pub(crate) fn handle_rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
+        if let Some(document_state) = self
+            .documents
+            .get(params.text_document_position.text_document.uri.path())
+        {
+            document_state.rename(params)
+        } else {
+            None
+        }
     }
 
     fn cleanup(&mut self, file_path: &str) {

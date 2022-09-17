@@ -1,5 +1,8 @@
 use derive_new::new;
-use lsp_types::{DocumentSymbolResponse, Hover, HoverParams, Position, Url};
+use lsp_types::{
+    DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams, Position,
+    PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Url, WorkspaceEdit,
+};
 
 use crate::parol_ls_grammar::ParolLsGrammar;
 
@@ -22,11 +25,19 @@ impl DocumentState {
         self.parsed_data.hover(params, &self.input)
     }
 
-    pub(crate) fn document_symbols(
-        &self,
-        params: lsp_types::DocumentSymbolParams,
-    ) -> DocumentSymbolResponse {
+    pub(crate) fn document_symbols(&self, params: DocumentSymbolParams) -> DocumentSymbolResponse {
         self.parsed_data.document_symbols(params, &self.input)
+    }
+
+    pub(crate) fn prepare_rename(
+        &self,
+        params: TextDocumentPositionParams,
+    ) -> Option<PrepareRenameResponse> {
+        self.parsed_data.prepare_rename(params)
+    }
+
+    pub(crate) fn rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
+        self.parsed_data.rename(params)
     }
 }
 

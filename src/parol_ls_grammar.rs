@@ -7,8 +7,10 @@ use crate::{
     utils::{extract_text_range, location_to_range, to_markdown},
 };
 use lsp_types::{
-    DocumentSymbol, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverContents::Markup,
-    HoverParams, MarkupContent, MarkupKind, Position, Range, SymbolKind,
+    DocumentChanges, DocumentSymbol, DocumentSymbolParams, DocumentSymbolResponse, Hover,
+    HoverContents::Markup, HoverParams, MarkupContent, MarkupKind, OneOf,
+    OptionalVersionedTextDocumentIdentifier, Position, PrepareRenameResponse, Range, RenameParams,
+    SymbolKind, TextDocumentEdit, TextDocumentPositionParams, TextEdit, WorkspaceEdit,
 };
 #[allow(unused_imports)]
 use miette::Result;
@@ -24,6 +26,7 @@ pub struct ParolLsGrammar {
     // A hash that maps non-terminals to their productions' left-hand side.
     pub non_terminal_definitions: HashMap<String, Vec<Range>>,
     pub non_terminals: Vec<(Range, String)>,
+    pub start_symbol: String,
 
     pub user_type_definitions: HashMap<String, Range>,
     pub user_types: Vec<(Range, String)>,
@@ -68,6 +71,12 @@ impl ParolLsGrammar {
             self.non_terminal_definitions.contains_key(non_terminal)
         );
         self.non_terminal_definitions.get(non_terminal)
+    }
+
+    fn find_non_terminal_range(&self, non_terminal: &str) -> Option<Range> {
+        self.non_terminals
+            .iter()
+            .find_map(|(r, n)| if n == non_terminal { Some(*r) } else { None })
     }
 
     fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
@@ -243,6 +252,54 @@ impl ParolLsGrammar {
     ) -> DocumentSymbolResponse {
         DocumentSymbolResponse::Nested(self.symbols.clone())
     }
+
+    pub(crate) fn prepare_rename(
+        &self,
+        params: TextDocumentPositionParams,
+    ) -> Option<PrepareRenameResponse> {
+        let ident = self.ident_at_position(params.position);
+        if let Some(non_terminal) = ident {
+            if let Some(range) = self.find_non_terminal_range(&non_terminal) {
+                // Currently we don't support renaming the start symbol because this would have
+                // impact on the whole structure of the user's crate.
+                if non_terminal != self.start_symbol {
+                    return Some(PrepareRenameResponse::Range(range));
+                }
+            }
+        }
+        None
+    }
+
+    pub(crate) fn rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
+        let ident = self.ident_at_position(params.text_document_position.position);
+        if let Some(non_terminal) = ident {
+            // Currently we don't support renaming the start symbol because this would have
+            // impact on the whole structure of the user's crate.
+            if non_terminal != self.start_symbol {
+                let text_document_edits = TextDocumentEdit {
+                    text_document: OptionalVersionedTextDocumentIdentifier {
+                        uri: params.text_document_position.text_document.uri.clone(),
+                        version: None,
+                    },
+                    edits: self.non_terminals.iter().fold(vec![], |mut acc, (r, n)| {
+                        if n == &non_terminal {
+                            acc.push(OneOf::Left(TextEdit {
+                                range: *r,
+                                new_text: params.new_name.clone(),
+                            }));
+                        }
+                        acc
+                    }),
+                };
+                let document_changes = Some(DocumentChanges::Edits(vec![text_document_edits]));
+                return Some(WorkspaceEdit {
+                    document_changes,
+                    ..Default::default()
+                });
+            }
+        }
+        None
+    }
 }
 
 impl ParolLsGrammarTrait for ParolLsGrammar {
@@ -257,6 +314,8 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let token = &arg.identifier.identifier;
         let range = location_to_range(&token.location);
         self.add_non_terminal_ref(range, token);
+
+        self.start_symbol = token.symbol.clone();
 
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
@@ -410,7 +469,10 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 Self::add_scanner_symbols(&mut acc, &*s.scanner_directives);
                 acc
             });
-        let name = format!("{} {}", arg.percent_scanner.symbol, arg.identifier.identifier.symbol);
+        let name = format!(
+            "{} {}",
+            arg.percent_scanner.symbol, arg.identifier.identifier.symbol
+        );
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
             name,

@@ -36,9 +36,9 @@ use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
-    request::{DocumentSymbolRequest, GotoDefinition, HoverRequest},
-    HoverProviderCapability, InitializeParams, OneOf, ServerCapabilities,
-    TextDocumentSyncCapability, TextDocumentSyncKind,
+    request::{DocumentSymbolRequest, GotoDefinition, HoverRequest, PrepareRenameRequest, Rename},
+    HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
+    TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
 
 macro_rules! request_match {
@@ -69,6 +69,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         definition_provider: Some(OneOf::Left(true)),
         hover_provider: Some(HoverProviderCapability::Simple(true)),
         document_symbol_provider: Some(OneOf::Left(true)),
+        rename_provider: Some(OneOf::Right(RenameOptions {
+            prepare_provider: Some(true),
+            work_done_progress_options: WorkDoneProgressOptions::default(),
+        })),
         ..Default::default()
     })
     .unwrap();
@@ -104,6 +108,12 @@ fn main_loop(
                     }
                     <DocumentSymbolRequest as lsp_types::request::Request>::METHOD => {
                         request_match!(DocumentSymbolRequest, server, connection, req);
+                    }
+                    <PrepareRenameRequest as lsp_types::request::Request>::METHOD => {
+                        request_match!(PrepareRenameRequest, server, connection, req);
+                    }
+                    <Rename as lsp_types::request::Request>::METHOD => {
+                        request_match!(Rename, server, connection, req);
                     }
                     _ => {}
                 }
