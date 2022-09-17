@@ -17,7 +17,7 @@ lazy_static! {
 pub(crate) fn location_to_range(location: &Location) -> Range {
     let line = location.line as u32 - 1;
     let start_char = location.column as u32 - 1;
-    let end_char = start_char + location.length as u32 + 1;
+    let end_char = start_char + location.length as u32;
     Range {
         start: Position {
             line,
