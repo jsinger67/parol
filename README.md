@@ -128,7 +128,7 @@ strives to mimic a small part of C64 Basic.
 
 ### The book
 
-A [mdBook](book/README.md) explains some internals and the practical use of `parol` in detail. It is
+A [mdBook](https://jsinger67.github.io/) explains some internals and the practical use of `parol` in detail. It is
 still a work in progress but should be considered as the central documentation.
 
 ## State of the project

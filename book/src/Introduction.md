@@ -8,7 +8,7 @@
 
 # The `parol` Parser Generator
 
-`parol` is a parser generator with some unique characteristics.
+[`parol`](https://github.com/jsinger67/parol) is a parser generator with some unique characteristics.
 
 It is an installable command line tool that can generate complete parsers from a single grammar
 description file.

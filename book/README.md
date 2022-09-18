@@ -1,5 +1,11 @@
 # How to read this book
 
+## Directly on jsinger67.github.io
+
+The easiest way is to directly head over to the hosted [book](https://jsinger67.github.io/)
+
+## Using mdbook
+
 Install [mdbook](https://github.com/rust-lang/mdBook.git) if you haven't installed it yet.
 
 ```shell
