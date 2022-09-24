@@ -4,149 +4,214 @@
 %auto_newline_off
 %user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
 %user_type BasicNumber = crate::basic_grammar::BasicNumber
-
-%scanner Cmnt { %auto_newline_off }
-%scanner Expr { %auto_newline_off }
+%scanner Cmnt {
+    %auto_newline_off
+ }
+%scanner Expr {
+    %auto_newline_off
+ }
 
 %%
 
-Basic   : [EndOfLine] Line { EndOfLine Line } [EndOfLine]
-        ;
-Line    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
-        ;
+Basic
+    : [ EndOfLine ] Line { EndOfLine Line } [ EndOfLine ]
+    ;
+
+Line
+    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
+    ;
+
 LineNumber
-        : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : BasicLineNumber
-        ;
+    : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+": BasicLineNumber
+    ;
+
 Statement
-        : Remark
-        | GotoStatement
-        | IfStatement
-        | Assignment
-        | PrintStatement
-        | EndStatement
-        ;
-Remark  : "REM"^ %push(Cmnt) [Comment] %pop()
-        ;
+    : Remark 
+    | GotoStatement
+    | IfStatement
+    | Assignment
+    | PrintStatement
+    | EndStatement
+    ;
+
+Remark
+    : "REM"^ %push(Cmnt) [ Comment ] %pop()
+    ;
+
 GotoStatement
-        : Goto LineNumber
-        ;
+    : Goto LineNumber
+    ;
+
 IfStatement
-        : If %push(Expr) Expression %pop() IfBody
-        ;
+    : If %push(Expr) Expression %pop() IfBody
+    ;
+
 Assignment
-        : [Let] Variable AssignOp %push(Expr) Expression %pop()
-        ;
-IfBody  : Then Statement
-        | Goto LineNumber
-        ;
+    : [ Let ] Variable AssignOp %push(Expr) Expression %pop()
+    ;
+
+IfBody
+    : Then Statement 
+    | Goto LineNumber
+    ;
+
 PrintStatement
-        : Print %push(Expr) Expression  {<INITIAL, Expr>","^ Expression } %pop()
-        ;
+    : Print %push(Expr) Expression { <INITIAL, Expr>","^ Expression } %pop()
+    ;
+
 EndStatement
-        : End
-        ;
+    : End
+    ;
+
 EndOfLine
-        : <INITIAL, Expr>"(?:\r?\n|\r)+"^
-        ;
-Literal : Number
-        ;
-Number  : Float
-        | Integer
-        ;
-Float   : Float1
-        | Float2
-        ;
+    : <INITIAL, Expr>"(?:\r?\n|\r)+"^
+    ;
+
+Literal
+    : Number
+    ;
+
+Number
+    : Float 
+    | Integer
+    ;
+
+Float
+    : Float1 
+    | Float2
+    ;
+
 // [Integer] DecimalDot [Integer] [Exponent]
-Float1  : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?": BasicNumber
-        ;
+ Float1
+    : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?": BasicNumber
+    ;
+
 // Integer Exponent
-Float2  : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": BasicNumber
-        ;
-Integer : <Expr>"(?:[0-9] *)+": BasicNumber
-        ;
+ Float2
+    : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": BasicNumber
+    ;
+
+Integer
+    : <Expr>"(?:[0-9] *)+": BasicNumber
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // KEYWORDS
-If      : "IF"^
-        ;
-Then    : <INITIAL, Expr>"THEN"^
-        ;
-Goto    : <INITIAL, Expr>"GOTO"^
-        ;
-Let     : "LET"^
-        ;
-Print   : "PRINT|\?"^
-        ;
-End     : "END"^
-        ;
+ If
+    : "IF"^
+    ;
+
+Then
+    : <INITIAL, Expr>"THEN"^
+    ;
+
+Goto
+    : <INITIAL, Expr>"GOTO"^
+    ;
+
+Let
+    : "LET"^
+    ;
+
+Print
+    : "PRINT|\?"^
+    ;
+
+End
+    : "END"^
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // OPERATOR SYMBOLS
-AssignOp
-        : "="^
-        ;
+ AssignOp
+    : "="^
+    ;
+
 LogicalOrOp
-        : <Expr>"N?OR"
-        ;
+    : <Expr>"N?OR"
+    ;
+
 LogicalAndOp
-        : <Expr>"AND"
-        ;
+    : <Expr>"AND"
+    ;
+
 LogicalNotOp
-        : <Expr>"NOT"
-        ;
+    : <Expr>"NOT"
+    ;
+
 RelationalOp
-        : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
-        ;
-Plus    : <Expr>"\+"
-        ;
-Minus   : <Expr>"-"
-        ;
-MulOp   : <Expr>"\*|/"
-        ;
+    : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
+    ;
+
+Plus
+    : <Expr>"\+"
+    ;
+
+Minus
+    : <Expr>"-"
+    ;
+
+MulOp
+    : <Expr>"\*|/"
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // PARENTHESIS
-LParen  : <Expr>"\("
-        ;
-RParen  : <Expr>"\)"
-        ;
+ LParen
+    : <Expr>"\("
+    ;
+
+RParen
+    : <Expr>"\)"
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // COMMENT
-Comment : <Cmnt>"[^\r\n]+"
-        ;
+ Comment
+    : <Cmnt>"[^\r\n]+"
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // VARIABLE
-Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*"
-        ;
+ Variable
+    : <INITIAL, Expr>"[A-Z][0-9A-Z]*"
+    ;
 
 // -------------------------------------------------------------------------------------------------
 // EXPRESSIONS
+ Expression
+    : LogicalOr
+    ;
 
-Expression
-        : LogicalOr
-        ;
 LogicalOr
-        : LogicalAnd { LogicalOrOp LogicalAnd }
-        ;
+    : LogicalAnd { LogicalOrOp LogicalAnd }
+    ;
+
 LogicalAnd
-        : LogicalNot { LogicalAndOp LogicalNot }
-        ;
+    : LogicalNot { LogicalAndOp LogicalNot }
+    ;
+
 LogicalNot
-        : [LogicalNotOp] Relational
-        ;
+    : [ LogicalNotOp ] Relational
+    ;
+
 Relational
-        : Summation { RelationalOp Summation }
-        ;
+    : Summation { RelationalOp Summation }
+    ;
+
 Summation
-        : Multiplication { (Plus | Minus) Multiplication }
-        ;
+    : Multiplication { ( Plus 
+    | Minus)
+ Multiplication }
+    ;
+
 Multiplication
-        : Factor { MulOp Factor }
-        ;
-Factor  : Literal
-        | Variable
-        | Minus Factor
-        | LParen Expression RParen
-        ;
+    : Factor { MulOp Factor }
+    ;
+
+Factor
+    : Literal 
+    | Variable
+    | Minus Factor
+    | LParen Expression RParen
+    ;
