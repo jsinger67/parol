@@ -2,7 +2,14 @@
 
 All notable changes to the "parol-ls" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
+file.
+
+## v0.1.12
+
+* Support for "Format document"
+  * Currently no configuration available, i.e the formatting result is a standard format. That may
+  change in the future.
 
 ## v0.1.11
 

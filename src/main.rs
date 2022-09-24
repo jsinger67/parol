@@ -8,6 +8,7 @@ mod ast;
 pub mod diagnostics;
 pub mod document_state;
 pub mod errors;
+mod format;
 mod handler;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
@@ -36,7 +37,10 @@ use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
     },
-    request::{DocumentSymbolRequest, GotoDefinition, HoverRequest, PrepareRenameRequest, Rename},
+    request::{
+        DocumentSymbolRequest, Formatting, GotoDefinition, HoverRequest, PrepareRenameRequest,
+        Rename,
+    },
     HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
     TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
@@ -74,6 +78,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             prepare_provider: Some(true),
             work_done_progress_options: WorkDoneProgressOptions::default(),
         })),
+        document_formatting_provider: Some(OneOf::Left(true)),
         ..Default::default()
     })
     .unwrap();
@@ -115,6 +120,9 @@ fn main_loop(
                     }
                     <Rename as lsp_types::request::Request>::METHOD => {
                         request_match!(Rename, server, connection, req);
+                    }
+                    <Formatting as lsp_types::request::Request>::METHOD => {
+                        request_match!(Formatting, server, connection, req);
                     }
                     _ => {
                         eprintln!("Unhandled request {}", req.method);

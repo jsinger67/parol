@@ -1,7 +1,7 @@
 use derive_new::new;
 use lsp_types::{
-    DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams, Position,
-    PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Url, WorkspaceEdit,
+    DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams,
+    Position, PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Url, WorkspaceEdit,
 };
 
 use crate::parol_ls_grammar::ParolLsGrammar;
@@ -38,6 +38,13 @@ impl DocumentState {
 
     pub(crate) fn rename(&self, params: RenameParams) -> Option<WorkspaceEdit> {
         self.parsed_data.rename(params)
+    }
+
+    pub(crate) fn format(
+        &self,
+        params: DocumentFormattingParams,
+    ) -> Option<Vec<lsp_types::TextEdit>> {
+        self.parsed_data.format(params)
     }
 }
 

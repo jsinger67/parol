@@ -8,9 +8,10 @@ use lsp_types::{
         PublishDiagnostics,
     },
     DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
-    DocumentSymbolParams, DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse,
-    Hover, HoverParams, Location, PrepareRenameResponse, PublishDiagnosticsParams, Range,
-    RenameParams, TextDocumentContentChangeEvent, TextDocumentPositionParams, Url, WorkspaceEdit,
+    DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, GotoDefinitionParams,
+    GotoDefinitionResponse, Hover, HoverParams, Location, PrepareRenameResponse,
+    PublishDiagnosticsParams, Range, RenameParams, TextDocumentContentChangeEvent,
+    TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
 };
 use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
@@ -253,6 +254,17 @@ impl Server {
             .get(params.text_document_position.text_document.uri.path())
         {
             document_state.rename(params)
+        } else {
+            None
+        }
+    }
+
+    pub(crate) fn handle_formatting(
+        &self,
+        params: DocumentFormattingParams,
+    ) -> Option<Vec<TextEdit>> {
+        if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
+            document_state.format(params)
         } else {
             None
         }

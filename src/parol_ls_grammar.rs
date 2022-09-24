@@ -1,16 +1,17 @@
 use crate::{
     parol_ls_grammar_trait::{
-        Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
+        self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
         ScannerDirectives, ScannerState, StartDeclaration, UserTypeDeclaration,
     },
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
 use lsp_types::{
-    DocumentChanges, DocumentSymbol, DocumentSymbolParams, DocumentSymbolResponse, Hover,
-    HoverContents::Markup, HoverParams, MarkupContent, MarkupKind, OneOf,
-    OptionalVersionedTextDocumentIdentifier, Position, PrepareRenameResponse, Range, RenameParams,
-    SymbolKind, TextDocumentEdit, TextDocumentPositionParams, TextEdit, WorkspaceEdit,
+    DocumentChanges, DocumentFormattingParams, DocumentSymbol, DocumentSymbolParams,
+    DocumentSymbolResponse, Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind,
+    OneOf, OptionalVersionedTextDocumentIdentifier, Position, PrepareRenameResponse, Range,
+    RenameParams, SymbolKind, TextDocumentEdit, TextDocumentPositionParams, TextEdit,
+    WorkspaceEdit,
 };
 #[allow(unused_imports)]
 use miette::Result;
@@ -304,6 +305,19 @@ impl ParolLsGrammar {
         }
         eprintln!("prepare rename request rejected");
         None
+    }
+
+    pub(crate) fn format(&self, params: DocumentFormattingParams) -> Option<Vec<TextEdit>> {
+        if let Some(ref grammar) = self.grammar {
+            Some(
+                <&parol_ls_grammar_trait::ParolLs as crate::format::Format>::format(
+                    &grammar,
+                    &params.options,
+                ),
+            )
+        } else {
+            None
+        }
     }
 }
 
