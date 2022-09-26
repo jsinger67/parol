@@ -533,7 +533,7 @@ impl ParolGrammar<'_> {
                 self.comment = Some(Self::trim_quotes(&comment_decl.string))
             }
             Declaration::Declaration2(user_type_def) => {
-                self.process_user_type_definition(&*user_type_def)
+                self.process_user_type_definition(user_type_def)
             }
             Declaration::Declaration3(scanner_decl) => {
                 self.process_scanner_directive(&*scanner_decl.scanner_directives)?
@@ -736,7 +736,7 @@ impl ParolGrammar<'_> {
                 ))
             }
             super::parol_grammar_trait::Symbol::Symbol3(scanner_switch) => {
-                self.process_scanner_switch(&*scanner_switch)
+                self.process_scanner_switch(scanner_switch)
             }
         }
     }

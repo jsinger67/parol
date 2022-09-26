@@ -563,7 +563,7 @@ impl GrammarGenerator<'_> {
             fs::write(parser_file_out, parser_source)
                 .into_diagnostic()
                 .wrap_err("Error writing generated lexer source!")?;
-            crate::try_format(&*parser_file_out)?;
+            crate::try_format(parser_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nParser source:\n{}", parser_source);
         }
