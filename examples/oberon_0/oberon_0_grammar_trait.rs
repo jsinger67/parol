@@ -18,11 +18,11 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 pub trait Oberon0GrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// selector: selectorlist;
+    /// Selector: SelectorList;
     ///
     fn selector(
         &mut self,
-        _selectorlist: &ParseTreeStackEntry,
+        _selector_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -30,13 +30,13 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// selectorlist: "\." ident selectorlist;
+    /// SelectorList: "\." Ident SelectorList;
     ///
-    fn selectorlist_0(
+    fn selector_list_0(
         &mut self,
         _dot: &ParseTreeStackEntry,
         _ident: &ParseTreeStackEntry,
-        _selectorlist: &ParseTreeStackEntry,
+        _selector_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -44,14 +44,14 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// selectorlist: "\[" expression "]" selectorlist;
+    /// SelectorList: "\[" Expression "]" SelectorList;
     ///
-    fn selectorlist_1(
+    fn selector_list_1(
         &mut self,
         _l_bracket: &ParseTreeStackEntry,
         _expression: &ParseTreeStackEntry,
         _r_bracket: &ParseTreeStackEntry,
-        _selectorlist: &ParseTreeStackEntry,
+        _selector_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -59,15 +59,15 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// selectorlist: ;
+    /// SelectorList: ;
     ///
-    fn selectorlist_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn selector_list_2(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// factor: ident selector;
+    /// Factor: Ident Selector;
     ///
     fn factor_0(
         &mut self,
@@ -80,7 +80,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// factor: integer;
+    /// Factor: Integer;
     ///
     fn factor_1(
         &mut self,
@@ -92,7 +92,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// factor: "\(" expression "\)";
+    /// Factor: "\(" Expression "\)";
     ///
     fn factor_2(
         &mut self,
@@ -106,7 +106,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// factor: "~" factor;
+    /// Factor: "~" Factor;
     ///
     fn factor_3(
         &mut self,
@@ -119,7 +119,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// factor: UnaryOp factor;
+    /// Factor: UnaryOp Factor;
     ///
     fn factor_4(
         &mut self,
@@ -132,7 +132,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// term: factor MulExpression;
+    /// Term: Factor MulExpression;
     ///
     fn term(
         &mut self,
@@ -145,7 +145,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// MulExpression: MulOperator factor MulExpression;
+    /// MulExpression: MulOperator Factor MulExpression;
     ///
     fn mul_expression_0(
         &mut self,
@@ -167,7 +167,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// SimpleExpression: term AddExpression;
+    /// SimpleExpression: Term AddExpression;
     ///
     fn simple_expression(
         &mut self,
@@ -180,7 +180,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// AddExpression: AddOperator term AddExpression;
+    /// AddExpression: AddOperator Term AddExpression;
     ///
     fn add_expression_0(
         &mut self,
@@ -262,7 +262,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// expression: SimpleExpression expressionSuffix;
+    /// Expression: SimpleExpression ExpressionSuffix;
     ///
     fn expression(
         &mut self,
@@ -275,7 +275,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// expressionSuffix: RelationOp SimpleExpression;
+    /// ExpressionSuffix: RelationOp SimpleExpression;
     ///
     fn expression_suffix_0(
         &mut self,
@@ -288,7 +288,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// expressionSuffix: ;
+    /// ExpressionSuffix: ;
     ///
     fn expression_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -296,7 +296,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// assignment: ident selector AssignOp expression;
+    /// Assignment: Ident Selector AssignOp Expression;
     ///
     fn assignment(
         &mut self,
@@ -336,12 +336,12 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 26:
     ///
-    /// ActualParametersSuffix: expression expressionlistrest "\)";
+    /// ActualParametersSuffix: Expression ExpressionListRest "\)";
     ///
     fn actual_parameters_suffix_1(
         &mut self,
         _expression: &ParseTreeStackEntry,
-        _expressionlistrest: &ParseTreeStackEntry,
+        _expression_list_rest: &ParseTreeStackEntry,
         _r_paren: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
@@ -350,13 +350,13 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 27:
     ///
-    /// expressionlistrest: "," expression expressionlistrest;
+    /// ExpressionListRest: "," Expression ExpressionListRest;
     ///
-    fn expressionlistrest_0(
+    fn expression_list_rest_0(
         &mut self,
         _comma: &ParseTreeStackEntry,
         _expression: &ParseTreeStackEntry,
-        _expressionlistrest: &ParseTreeStackEntry,
+        _expression_list_rest: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -364,15 +364,15 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 28:
     ///
-    /// expressionlistrest: ;
+    /// ExpressionListRest: ;
     ///
-    fn expressionlistrest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn expression_list_rest_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 29:
     ///
-    /// ProcedureCall: ident ProcedureCallSuffix;
+    /// ProcedureCall: Ident ProcedureCallSuffix;
     ///
     fn procedure_call(
         &mut self,
@@ -444,7 +444,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 35:
     ///
-    /// IfPrefix: "IF" expression "THEN" StatementSequence elseiflist;
+    /// IfPrefix: "IF" Expression "THEN" StatementSequence ElseIfList;
     ///
     fn if_prefix(
         &mut self,
@@ -452,7 +452,7 @@ pub trait Oberon0GrammarTrait {
         _expression: &ParseTreeStackEntry,
         _t_h_e_n: &ParseTreeStackEntry,
         _statement_sequence: &ParseTreeStackEntry,
-        _elseiflist: &ParseTreeStackEntry,
+        _else_if_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -460,15 +460,15 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 36:
     ///
-    /// elseiflist: "ELSIF" expression "THEN" StatementSequence elseiflist;
+    /// ElseIfList: "ELSIF" Expression "THEN" StatementSequence ElseIfList;
     ///
-    fn elseiflist_0(
+    fn else_if_list_0(
         &mut self,
         _e_l_s_i_f: &ParseTreeStackEntry,
         _expression: &ParseTreeStackEntry,
         _t_h_e_n: &ParseTreeStackEntry,
         _statement_sequence: &ParseTreeStackEntry,
-        _elseiflist: &ParseTreeStackEntry,
+        _else_if_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -476,15 +476,15 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 37:
     ///
-    /// elseiflist: ;
+    /// ElseIfList: ;
     ///
-    fn elseiflist_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn else_if_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for production 38:
     ///
-    /// WhileStatement: "WHILE" expression "DO" StatementSequence "END";
+    /// WhileStatement: "WHILE" Expression "DO" StatementSequence "END";
     ///
     fn while_statement(
         &mut self,
@@ -500,7 +500,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 39:
     ///
-    /// RepeatStatement: "REPEAT" StatementSequence "UNTIL" expression;
+    /// RepeatStatement: "REPEAT" StatementSequence "UNTIL" Expression;
     ///
     fn repeat_statement(
         &mut self,
@@ -515,7 +515,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 40:
     ///
-    /// statement: assignment;
+    /// Statement: Assignment;
     ///
     fn statement_0(
         &mut self,
@@ -527,7 +527,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 41:
     ///
-    /// statement: ProcedureCall;
+    /// Statement: ProcedureCall;
     ///
     fn statement_1(
         &mut self,
@@ -539,7 +539,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 42:
     ///
-    /// statement: IfStatement;
+    /// Statement: IfStatement;
     ///
     fn statement_2(
         &mut self,
@@ -551,7 +551,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 43:
     ///
-    /// statement: WhileStatement;
+    /// Statement: WhileStatement;
     ///
     fn statement_3(
         &mut self,
@@ -563,7 +563,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 44:
     ///
-    /// statement: RepeatStatement;
+    /// Statement: RepeatStatement;
     ///
     fn statement_4(
         &mut self,
@@ -575,7 +575,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 45:
     ///
-    /// statement: ;
+    /// Statement: ;
     ///
     fn statement_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -583,7 +583,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 46:
     ///
-    /// StatementSequence: statement StatementSequenceRest;
+    /// StatementSequence: Statement StatementSequenceRest;
     ///
     fn statement_sequence(
         &mut self,
@@ -596,7 +596,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 47:
     ///
-    /// StatementSequenceRest: ";" statement StatementSequenceRest;
+    /// StatementSequenceRest: ";" Statement StatementSequenceRest;
     ///
     fn statement_sequence_rest_0(
         &mut self,
@@ -618,7 +618,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 49:
     ///
-    /// IdentList: ident IdentListRest;
+    /// IdentList: Ident IdentListRest;
     ///
     fn ident_list(
         &mut self,
@@ -631,7 +631,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 50:
     ///
-    /// IdentListRest: "," ident IdentListRest;
+    /// IdentListRest: "," Ident IdentListRest;
     ///
     fn ident_list_rest_0(
         &mut self,
@@ -653,7 +653,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 52:
     ///
-    /// ArrayType: "ARRAY" expression "OF" type;
+    /// ArrayType: "ARRAY" Expression "OF" Type;
     ///
     fn array_type(
         &mut self,
@@ -668,7 +668,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 53:
     ///
-    /// FieldList: IdentList ":" type;
+    /// FieldList: IdentList ":" Type;
     ///
     fn field_list_0(
         &mut self,
@@ -727,7 +727,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 58:
     ///
-    /// type: ident;
+    /// Type: Ident;
     ///
     fn type_0(
         &mut self,
@@ -739,7 +739,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 59:
     ///
-    /// type: ArrayType;
+    /// Type: ArrayType;
     ///
     fn type_1(
         &mut self,
@@ -751,7 +751,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 60:
     ///
-    /// type: RecordType;
+    /// Type: RecordType;
     ///
     fn type_2(
         &mut self,
@@ -763,7 +763,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 61:
     ///
-    /// FPSection: "VAR" IdentList ":" type;
+    /// FPSection: "VAR" IdentList ":" Type;
     ///
     fn f_p_section_0(
         &mut self,
@@ -778,7 +778,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 62:
     ///
-    /// FPSection: IdentList ":" type;
+    /// FPSection: IdentList ":" Type;
     ///
     fn f_p_section_1(
         &mut self,
@@ -853,7 +853,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 68:
     ///
-    /// ProcedureHeading: "PROCEDURE" ident ProcedureHeadingSuffix;
+    /// ProcedureHeading: "PROCEDURE" Ident ProcedureHeadingSuffix;
     ///
     fn procedure_heading(
         &mut self,
@@ -887,7 +887,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 71:
     ///
-    /// ProcedureBody: declarations ProcedureBodySuffix0;
+    /// ProcedureBody: Declarations ProcedureBodySuffix0;
     ///
     fn procedure_body(
         &mut self,
@@ -914,7 +914,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 73:
     ///
-    /// ProcedureBodySuffix0: "RETURN" expression "END" ident;
+    /// ProcedureBodySuffix0: "RETURN" Expression "END" Ident;
     ///
     fn procedure_body_suffix0_1(
         &mut self,
@@ -929,7 +929,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 74:
     ///
-    /// ProcedureBodySuffix0: "END" ident;
+    /// ProcedureBodySuffix0: "END" Ident;
     ///
     fn procedure_body_suffix0_2(
         &mut self,
@@ -942,7 +942,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 75:
     ///
-    /// ProcedureBodySuffix: "RETURN" expression "END" ident;
+    /// ProcedureBodySuffix: "RETURN" Expression "END" Ident;
     ///
     fn procedure_body_suffix_0(
         &mut self,
@@ -957,7 +957,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 76:
     ///
-    /// ProcedureBodySuffix: "END" ident;
+    /// ProcedureBodySuffix: "END" Ident;
     ///
     fn procedure_body_suffix_1(
         &mut self,
@@ -984,7 +984,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 78:
     ///
-    /// declarations: "TYPE" TypeDecls declarationsSuffix1;
+    /// Declarations: "TYPE" TypeDecls DeclarationsSuffix1;
     ///
     fn declarations_0(
         &mut self,
@@ -998,7 +998,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 79:
     ///
-    /// declarations: "CONST" ConstDecls declarationsSuffix0;
+    /// Declarations: "CONST" ConstDecls DeclarationsSuffix0;
     ///
     fn declarations_1(
         &mut self,
@@ -1012,7 +1012,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 80:
     ///
-    /// declarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
+    /// DeclarationsSuffix1: "VAR" VarDecls ProcedureDeclarationList;
     ///
     fn declarations_suffix1_0(
         &mut self,
@@ -1026,7 +1026,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 81:
     ///
-    /// declarationsSuffix1: ProcedureDeclarationList;
+    /// DeclarationsSuffix1: ProcedureDeclarationList;
     ///
     fn declarations_suffix1_1(
         &mut self,
@@ -1038,7 +1038,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 82:
     ///
-    /// declarations: "VAR" VarDecls ProcedureDeclarationList;
+    /// Declarations: "VAR" VarDecls ProcedureDeclarationList;
     ///
     fn declarations_2(
         &mut self,
@@ -1052,7 +1052,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 83:
     ///
-    /// declarations: ProcedureDeclarationList;
+    /// Declarations: ProcedureDeclarationList;
     ///
     fn declarations_3(
         &mut self,
@@ -1064,7 +1064,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 84:
     ///
-    /// declarationsSuffix0: "TYPE" TypeDecls declarationsSuffix;
+    /// DeclarationsSuffix0: "TYPE" TypeDecls DeclarationsSuffix;
     ///
     fn declarations_suffix0_0(
         &mut self,
@@ -1078,7 +1078,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 85:
     ///
-    /// declarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;
+    /// DeclarationsSuffix0: "VAR" VarDecls ProcedureDeclarationList;
     ///
     fn declarations_suffix0_1(
         &mut self,
@@ -1092,7 +1092,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 86:
     ///
-    /// declarationsSuffix0: ProcedureDeclarationList;
+    /// DeclarationsSuffix0: ProcedureDeclarationList;
     ///
     fn declarations_suffix0_2(
         &mut self,
@@ -1104,7 +1104,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 87:
     ///
-    /// declarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;
+    /// DeclarationsSuffix: "VAR" VarDecls ProcedureDeclarationList;
     ///
     fn declarations_suffix_0(
         &mut self,
@@ -1118,7 +1118,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 88:
     ///
-    /// declarationsSuffix: ProcedureDeclarationList;
+    /// DeclarationsSuffix: ProcedureDeclarationList;
     ///
     fn declarations_suffix_1(
         &mut self,
@@ -1152,7 +1152,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 91:
     ///
-    /// ConstDecls: ident AssignOp expression ";" ConstDecls;
+    /// ConstDecls: Ident AssignOp Expression ";" ConstDecls;
     ///
     fn const_decls_0(
         &mut self,
@@ -1176,7 +1176,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 93:
     ///
-    /// TypeDecls: ident AssignOp type ";" TypeDecls;
+    /// TypeDecls: Ident AssignOp Type ";" TypeDecls;
     ///
     fn type_decls_0(
         &mut self,
@@ -1200,7 +1200,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 95:
     ///
-    /// VarDecls: IdentList ":" type ";" VarDecls;
+    /// VarDecls: IdentList ":" Type ";" VarDecls;
     ///
     fn var_decls_0(
         &mut self,
@@ -1224,7 +1224,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 97:
     ///
-    /// module: "MODULE" ident ";" declarations moduleSuffix;
+    /// Module: "MODULE" Ident ";" Declarations ModuleSuffix;
     ///
     fn module(
         &mut self,
@@ -1240,7 +1240,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 98:
     ///
-    /// moduleSuffix: "BEGIN" StatementSequence "END" ident "\.";
+    /// ModuleSuffix: "BEGIN" StatementSequence "END" Ident "\.";
     ///
     fn module_suffix_0(
         &mut self,
@@ -1256,7 +1256,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 99:
     ///
-    /// moduleSuffix: "END" ident "\.";
+    /// ModuleSuffix: "END" Ident "\.";
     ///
     fn module_suffix_1(
         &mut self,
@@ -1306,7 +1306,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 103:
     ///
-    /// ident: "[a-zA-Z][a-zA-Z0-9]*";
+    /// Ident: "[a-zA-Z][a-zA-Z0-9]*";
     ///
     fn ident(
         &mut self,
@@ -1318,7 +1318,7 @@ pub trait Oberon0GrammarTrait {
 
     /// Semantic action for production 104:
     ///
-    /// integer: "[0-9]+";
+    /// Integer: "[0-9]+";
     ///
     fn integer(
         &mut self,
@@ -1341,15 +1341,15 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
     ) -> Result<()> {
         match prod_num {
             0 => self.selector(&children[0], parse_tree),
-            1 => self.selectorlist_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.selectorlist_1(
+            1 => self.selector_list_0(&children[0], &children[1], &children[2], parse_tree),
+            2 => self.selector_list_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            3 => self.selectorlist_2(parse_tree),
+            3 => self.selector_list_2(parse_tree),
             4 => self.factor_0(&children[0], &children[1], parse_tree),
             5 => self.factor_1(&children[0], parse_tree),
             6 => self.factor_2(&children[0], &children[1], &children[2], parse_tree),
@@ -1384,8 +1384,8 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[2],
                 parse_tree,
             ),
-            27 => self.expressionlistrest_0(&children[0], &children[1], &children[2], parse_tree),
-            28 => self.expressionlistrest_1(parse_tree),
+            27 => self.expression_list_rest_0(&children[0], &children[1], &children[2], parse_tree),
+            28 => self.expression_list_rest_1(parse_tree),
             29 => self.procedure_call(&children[0], &children[1], parse_tree),
             30 => self.procedure_call_suffix_0(&children[0], parse_tree),
             31 => self.procedure_call_suffix_1(parse_tree),
@@ -1400,7 +1400,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            36 => self.elseiflist_0(
+            36 => self.else_if_list_0(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -1408,7 +1408,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
                 &children[4],
                 parse_tree,
             ),
-            37 => self.elseiflist_1(parse_tree),
+            37 => self.else_if_list_1(parse_tree),
             38 => self.while_statement(
                 &children[0],
                 &children[1],
