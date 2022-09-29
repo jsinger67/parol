@@ -18,7 +18,7 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 pub trait CalcGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// calc: calc_lst1;
+    /// Calc: CalcLst1;
     ///
     fn calc(
         &mut self,
@@ -30,7 +30,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// calc_lst1: calc_lst1_itm1 calc_lst1;
+    /// CalcLst1: CalcLst1Itm1 CalcLst1;
     ///
     fn calc_lst1_0(
         &mut self,
@@ -43,7 +43,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// calc_lst1_itm1: instruction ";";
+    /// CalcLst1Itm1: Instruction ";";
     ///
     fn calc_lst1_itm1(
         &mut self,
@@ -56,7 +56,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// calc_lst1: ;
+    /// CalcLst1: ;
     ///
     fn calc_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -64,7 +64,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// instruction: assignment;
+    /// Instruction: Assignment;
     ///
     fn instruction_0(
         &mut self,
@@ -76,7 +76,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// instruction: logical_or;
+    /// Instruction: LogicalOr;
     ///
     fn instruction_1(
         &mut self,
@@ -88,7 +88,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// equality_op: "==|!=";
+    /// EqualityOp: "==|!=";
     ///
     fn equality_op(
         &mut self,
@@ -100,7 +100,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
+    /// AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
     fn assign_op(
         &mut self,
@@ -112,7 +112,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// assign_item: id assign_op;
+    /// AssignItem: Id AssignOp;
     ///
     fn assign_item(
         &mut self,
@@ -125,7 +125,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// assignment: assign_item assignment_lst1 logical_or;
+    /// Assignment: AssignItem AssignmentLst1 LogicalOr;
     ///
     fn assignment(
         &mut self,
@@ -139,7 +139,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// assignment_lst1: assignment_lst1_itm1 assignment_lst1;
+    /// AssignmentLst1: AssignmentLst1Itm1 AssignmentLst1;
     ///
     fn assignment_lst1_0(
         &mut self,
@@ -152,7 +152,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// assignment_lst1_itm1: assign_item;
+    /// AssignmentLst1Itm1: AssignItem;
     ///
     fn assignment_lst1_itm1(
         &mut self,
@@ -164,7 +164,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// assignment_lst1: ;
+    /// AssignmentLst1: ;
     ///
     fn assignment_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -172,7 +172,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// logical_or: logical_and logical_or_lst1;
+    /// LogicalOr: LogicalAnd LogicalOrLst1;
     ///
     fn logical_or(
         &mut self,
@@ -185,7 +185,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// logical_or_lst1: logical_or_lst1_itm1 logical_or_lst1;
+    /// LogicalOrLst1: LogicalOrLst1Itm1 LogicalOrLst1;
     ///
     fn logical_or_lst1_0(
         &mut self,
@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// logical_or_lst1_itm1: logical_or_item;
+    /// LogicalOrLst1Itm1: LogicalOrItem;
     ///
     fn logical_or_lst1_itm1(
         &mut self,
@@ -210,7 +210,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// logical_or_lst1: ;
+    /// LogicalOrLst1: ;
     ///
     fn logical_or_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -218,7 +218,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 17:
     ///
-    /// logical_or_op: "\|\|";
+    /// LogicalOrOp: "\|\|";
     ///
     fn logical_or_op(
         &mut self,
@@ -230,7 +230,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 18:
     ///
-    /// logical_or_item: logical_or_op logical_and;
+    /// LogicalOrItem: LogicalOrOp LogicalAnd;
     ///
     fn logical_or_item(
         &mut self,
@@ -243,7 +243,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// logical_and: bitwise_or logical_and_lst1;
+    /// LogicalAnd: BitwiseOr LogicalAndLst1;
     ///
     fn logical_and(
         &mut self,
@@ -256,7 +256,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// logical_and_lst1: logical_and_lst1_itm1 logical_and_lst1;
+    /// LogicalAndLst1: LogicalAndLst1Itm1 LogicalAndLst1;
     ///
     fn logical_and_lst1_0(
         &mut self,
@@ -269,7 +269,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// logical_and_lst1_itm1: logical_and_item;
+    /// LogicalAndLst1Itm1: LogicalAndItem;
     ///
     fn logical_and_lst1_itm1(
         &mut self,
@@ -281,7 +281,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// logical_and_lst1: ;
+    /// LogicalAndLst1: ;
     ///
     fn logical_and_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -289,7 +289,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// logical_and_op: "&&";
+    /// LogicalAndOp: "&&";
     ///
     fn logical_and_op(
         &mut self,
@@ -301,7 +301,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 24:
     ///
-    /// logical_and_item: logical_and_op bitwise_or;
+    /// LogicalAndItem: LogicalAndOp BitwiseOr;
     ///
     fn logical_and_item(
         &mut self,
@@ -314,7 +314,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 25:
     ///
-    /// bitwise_or: bitwise_and bitwise_or_lst1;
+    /// BitwiseOr: BitwiseAnd BitwiseOrLst1;
     ///
     fn bitwise_or(
         &mut self,
@@ -327,7 +327,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 26:
     ///
-    /// bitwise_or_lst1: bitwise_or_lst1_itm1 bitwise_or_lst1;
+    /// BitwiseOrLst1: BitwiseOrLst1Itm1 BitwiseOrLst1;
     ///
     fn bitwise_or_lst1_0(
         &mut self,
@@ -340,7 +340,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 27:
     ///
-    /// bitwise_or_lst1_itm1: bitwise_or_item;
+    /// BitwiseOrLst1Itm1: BitwiseOrItem;
     ///
     fn bitwise_or_lst1_itm1(
         &mut self,
@@ -352,7 +352,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 28:
     ///
-    /// bitwise_or_lst1: ;
+    /// BitwiseOrLst1: ;
     ///
     fn bitwise_or_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -360,7 +360,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 29:
     ///
-    /// bitwise_or_op: "\|";
+    /// BitwiseOrOp: "\|";
     ///
     fn bitwise_or_op(
         &mut self,
@@ -372,7 +372,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 30:
     ///
-    /// bitwise_or_item: bitwise_or_op bitwise_and;
+    /// BitwiseOrItem: BitwiseOrOp BitwiseAnd;
     ///
     fn bitwise_or_item(
         &mut self,
@@ -385,7 +385,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 31:
     ///
-    /// bitwise_and: equality bitwise_and_lst1;
+    /// BitwiseAnd: Equality BitwiseAndLst1;
     ///
     fn bitwise_and(
         &mut self,
@@ -398,7 +398,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 32:
     ///
-    /// bitwise_and_lst1: bitwise_and_lst1_itm1 bitwise_and_lst1;
+    /// BitwiseAndLst1: BitwiseAndLst1Itm1 BitwiseAndLst1;
     ///
     fn bitwise_and_lst1_0(
         &mut self,
@@ -411,7 +411,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 33:
     ///
-    /// bitwise_and_lst1_itm1: bitwise_and_item;
+    /// BitwiseAndLst1Itm1: BitwiseAndItem;
     ///
     fn bitwise_and_lst1_itm1(
         &mut self,
@@ -423,7 +423,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 34:
     ///
-    /// bitwise_and_lst1: ;
+    /// BitwiseAndLst1: ;
     ///
     fn bitwise_and_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -431,7 +431,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 35:
     ///
-    /// bitwise_and_op: "&";
+    /// BitwiseAndOp: "&";
     ///
     fn bitwise_and_op(
         &mut self,
@@ -443,7 +443,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 36:
     ///
-    /// bitwise_and_item: bitwise_and_op equality;
+    /// BitwiseAndItem: BitwiseAndOp Equality;
     ///
     fn bitwise_and_item(
         &mut self,
@@ -456,7 +456,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 37:
     ///
-    /// equality: relational equality_lst1;
+    /// Equality: Relational EqualityLst1;
     ///
     fn equality(
         &mut self,
@@ -469,7 +469,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 38:
     ///
-    /// equality_lst1: equality_lst1_itm1 equality_lst1;
+    /// EqualityLst1: EqualityLst1Itm1 EqualityLst1;
     ///
     fn equality_lst1_0(
         &mut self,
@@ -482,7 +482,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 39:
     ///
-    /// equality_lst1_itm1: equality_item;
+    /// EqualityLst1Itm1: EqualityItem;
     ///
     fn equality_lst1_itm1(
         &mut self,
@@ -494,7 +494,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 40:
     ///
-    /// equality_lst1: ;
+    /// EqualityLst1: ;
     ///
     fn equality_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -502,7 +502,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 41:
     ///
-    /// equality_item: equality_op relational;
+    /// EqualityItem: EqualityOp Relational;
     ///
     fn equality_item(
         &mut self,
@@ -515,7 +515,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 42:
     ///
-    /// bitwise_shift_op: "<<|>>";
+    /// BitwiseShiftOp: "<<|>>";
     ///
     fn bitwise_shift_op(
         &mut self,
@@ -527,7 +527,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 43:
     ///
-    /// relational: bitwise_shift relational_lst1;
+    /// Relational: BitwiseShift RelationalLst1;
     ///
     fn relational(
         &mut self,
@@ -540,7 +540,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 44:
     ///
-    /// relational_lst1: relational_lst1_itm1 relational_lst1;
+    /// RelationalLst1: RelationalLst1Itm1 RelationalLst1;
     ///
     fn relational_lst1_0(
         &mut self,
@@ -553,7 +553,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 45:
     ///
-    /// relational_lst1_itm1: relational_item;
+    /// RelationalLst1Itm1: RelationalItem;
     ///
     fn relational_lst1_itm1(
         &mut self,
@@ -565,7 +565,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 46:
     ///
-    /// relational_lst1: ;
+    /// RelationalLst1: ;
     ///
     fn relational_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -573,7 +573,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 47:
     ///
-    /// relational_op: "<=|<|>=|>";
+    /// RelationalOp: "<=|<|>=|>";
     ///
     fn relational_op(
         &mut self,
@@ -585,7 +585,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 48:
     ///
-    /// relational_item: relational_op bitwise_shift;
+    /// RelationalItem: RelationalOp BitwiseShift;
     ///
     fn relational_item(
         &mut self,
@@ -598,7 +598,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 49:
     ///
-    /// bitwise_shift: summ bitwise_shift_lst1;
+    /// BitwiseShift: Summ BitwiseShiftLst1;
     ///
     fn bitwise_shift(
         &mut self,
@@ -611,7 +611,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 50:
     ///
-    /// bitwise_shift_lst1: bitwise_shift_lst1_itm1 bitwise_shift_lst1;
+    /// BitwiseShiftLst1: BitwiseShiftLst1Itm1 BitwiseShiftLst1;
     ///
     fn bitwise_shift_lst1_0(
         &mut self,
@@ -624,7 +624,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 51:
     ///
-    /// bitwise_shift_lst1_itm1: bitwise_shift_item;
+    /// BitwiseShiftLst1Itm1: BitwiseShiftItem;
     ///
     fn bitwise_shift_lst1_itm1(
         &mut self,
@@ -636,7 +636,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 52:
     ///
-    /// bitwise_shift_lst1: ;
+    /// BitwiseShiftLst1: ;
     ///
     fn bitwise_shift_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -644,7 +644,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 53:
     ///
-    /// bitwise_shift_item: bitwise_shift_op summ;
+    /// BitwiseShiftItem: BitwiseShiftOp Summ;
     ///
     fn bitwise_shift_item(
         &mut self,
@@ -657,7 +657,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 54:
     ///
-    /// summ: mult summ_lst1;
+    /// Summ: Mult SummLst1;
     ///
     fn summ(
         &mut self,
@@ -670,7 +670,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 55:
     ///
-    /// summ_lst1: summ_lst1_itm1 summ_lst1;
+    /// SummLst1: SummLst1Itm1 SummLst1;
     ///
     fn summ_lst1_0(
         &mut self,
@@ -683,7 +683,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 56:
     ///
-    /// summ_lst1_itm1: summ_item;
+    /// SummLst1Itm1: SummItem;
     ///
     fn summ_lst1_itm1(
         &mut self,
@@ -695,7 +695,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 57:
     ///
-    /// summ_lst1: ;
+    /// SummLst1: ;
     ///
     fn summ_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -703,7 +703,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 58:
     ///
-    /// plus: "\+";
+    /// Plus: "\+";
     ///
     fn plus(
         &mut self,
@@ -715,7 +715,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 59:
     ///
-    /// minus: "-";
+    /// Minus: "-";
     ///
     fn minus(
         &mut self,
@@ -727,7 +727,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 60:
     ///
-    /// add_op: plus;
+    /// AddOp: Plus;
     ///
     fn add_op_0(
         &mut self,
@@ -739,7 +739,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 61:
     ///
-    /// add_op: minus;
+    /// AddOp: Minus;
     ///
     fn add_op_1(
         &mut self,
@@ -751,7 +751,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 62:
     ///
-    /// summ_item: add_op mult;
+    /// SummItem: AddOp Mult;
     ///
     fn summ_item(
         &mut self,
@@ -764,7 +764,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 63:
     ///
-    /// pow_op: "\*\*";
+    /// PowOp: "\*\*";
     ///
     fn pow_op(
         &mut self,
@@ -776,7 +776,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 64:
     ///
-    /// mult: power mult_lst1;
+    /// Mult: Power MultLst1;
     ///
     fn mult(
         &mut self,
@@ -789,7 +789,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 65:
     ///
-    /// mult_lst1: mult_lst1_itm1 mult_lst1;
+    /// MultLst1: MultLst1Itm1 MultLst1;
     ///
     fn mult_lst1_0(
         &mut self,
@@ -802,7 +802,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 66:
     ///
-    /// mult_lst1_itm1: mult_item;
+    /// MultLst1Itm1: MultItem;
     ///
     fn mult_lst1_itm1(
         &mut self,
@@ -814,7 +814,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 67:
     ///
-    /// mult_lst1: ;
+    /// MultLst1: ;
     ///
     fn mult_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -822,7 +822,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 68:
     ///
-    /// mult_op: "\*|/|%";
+    /// MultOp: "\*|/|%";
     ///
     fn mult_op(
         &mut self,
@@ -834,7 +834,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 69:
     ///
-    /// mult_item: mult_op power;
+    /// MultItem: MultOp Power;
     ///
     fn mult_item(
         &mut self,
@@ -847,7 +847,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 70:
     ///
-    /// power: factor power_lst1;
+    /// Power: Factor PowerLst1;
     ///
     fn power(
         &mut self,
@@ -860,7 +860,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 71:
     ///
-    /// power_lst1: power_lst1_itm1 power_lst1;
+    /// PowerLst1: PowerLst1Itm1 PowerLst1;
     ///
     fn power_lst1_0(
         &mut self,
@@ -873,7 +873,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 72:
     ///
-    /// power_lst1_itm1: pow_op factor;
+    /// PowerLst1Itm1: PowOp Factor;
     ///
     fn power_lst1_itm1(
         &mut self,
@@ -886,7 +886,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 73:
     ///
-    /// power_lst1: ;
+    /// PowerLst1: ;
     ///
     fn power_lst1_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -894,7 +894,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 74:
     ///
-    /// negate: minus;
+    /// Negate: Minus;
     ///
     fn negate(
         &mut self,
@@ -906,7 +906,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 75:
     ///
-    /// factor: number;
+    /// Factor: Number;
     ///
     fn factor_0(
         &mut self,
@@ -918,11 +918,11 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 76:
     ///
-    /// factor: idref;
+    /// Factor: IdRef;
     ///
     fn factor_1(
         &mut self,
-        _idref: &ParseTreeStackEntry,
+        _id_ref: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -930,7 +930,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 77:
     ///
-    /// factor: negate factor;
+    /// Factor: Negate Factor;
     ///
     fn factor_2(
         &mut self,
@@ -943,7 +943,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 78:
     ///
-    /// factor: "\(" logical_or "\)";
+    /// Factor: "\(" LogicalOr "\)";
     ///
     fn factor_3(
         &mut self,
@@ -957,7 +957,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 79:
     ///
-    /// number: "0|[1-9][0-9]*";
+    /// Number: "0|[1-9][0-9]*";
     ///
     fn number(
         &mut self,
@@ -969,9 +969,9 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 80:
     ///
-    /// idref: id;
+    /// IdRef: Id;
     ///
-    fn idref(
+    fn id_ref(
         &mut self,
         _id: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
@@ -981,7 +981,7 @@ pub trait CalcGrammarTrait {
 
     /// Semantic action for production 81:
     ///
-    /// id: "[a-zA-Z_][a-zA-Z0-9_]*";
+    /// Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
     fn id(&mut self, _id: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
@@ -1079,7 +1079,7 @@ impl UserActionsTrait<'_> for CalcGrammar {
             77 => self.factor_2(&children[0], &children[1], parse_tree),
             78 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
             79 => self.number(&children[0], parse_tree),
-            80 => self.idref(&children[0], parse_tree),
+            80 => self.id_ref(&children[0], parse_tree),
             81 => self.id(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
