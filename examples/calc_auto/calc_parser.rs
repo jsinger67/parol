@@ -106,78 +106,78 @@ const SCANNER_0: (&[&str; 5], &[usize; 17]) = (
 const MAX_K: usize = 2;
 
 pub const NON_TERMINALS: &[&str; 44] = &[
-    /*  0 */ "add_op",
-    /*  1 */ "assign_item",
-    /*  2 */ "assign_op",
-    /*  3 */ "assignment",
-    /*  4 */ "assignmentList",
-    /*  5 */ "bitwise_and",
-    /*  6 */ "bitwise_andList",
-    /*  7 */ "bitwise_and_op",
-    /*  8 */ "bitwise_or",
-    /*  9 */ "bitwise_orList",
-    /* 10 */ "bitwise_or_op",
-    /* 11 */ "bitwise_shift",
-    /* 12 */ "bitwise_shiftList",
-    /* 13 */ "bitwise_shift_op",
-    /* 14 */ "calc",
-    /* 15 */ "calcList",
-    /* 16 */ "equality",
-    /* 17 */ "equalityList",
-    /* 18 */ "equality_op",
-    /* 19 */ "factor",
-    /* 20 */ "id",
-    /* 21 */ "idref",
-    /* 22 */ "instruction",
-    /* 23 */ "logical_and",
-    /* 24 */ "logical_andList",
-    /* 25 */ "logical_and_op",
-    /* 26 */ "logical_or",
-    /* 27 */ "logical_orList",
-    /* 28 */ "logical_or_op",
-    /* 29 */ "minus",
-    /* 30 */ "mult",
-    /* 31 */ "multList",
-    /* 32 */ "mult_op",
-    /* 33 */ "negate",
-    /* 34 */ "number",
-    /* 35 */ "plus",
-    /* 36 */ "pow_op",
-    /* 37 */ "power",
-    /* 38 */ "powerList",
-    /* 39 */ "relational",
-    /* 40 */ "relationalList",
-    /* 41 */ "relational_op",
-    /* 42 */ "summ",
-    /* 43 */ "summList",
+    /*  0 */ "AddOp",
+    /*  1 */ "AssignItem",
+    /*  2 */ "AssignOp",
+    /*  3 */ "Assignment",
+    /*  4 */ "AssignmentList",
+    /*  5 */ "BitwiseAnd",
+    /*  6 */ "BitwiseAndList",
+    /*  7 */ "BitwiseAndOp",
+    /*  8 */ "BitwiseOr",
+    /*  9 */ "BitwiseOrList",
+    /* 10 */ "BitwiseOrOp",
+    /* 11 */ "BitwiseShift",
+    /* 12 */ "BitwiseShiftList",
+    /* 13 */ "BitwiseShiftOp",
+    /* 14 */ "Calc",
+    /* 15 */ "CalcList",
+    /* 16 */ "Equality",
+    /* 17 */ "EqualityList",
+    /* 18 */ "EqualityOp",
+    /* 19 */ "Factor",
+    /* 20 */ "Id",
+    /* 21 */ "IdRef",
+    /* 22 */ "Instruction",
+    /* 23 */ "LogicalAnd",
+    /* 24 */ "LogicalAndList",
+    /* 25 */ "LogicalAndOp",
+    /* 26 */ "LogicalOr",
+    /* 27 */ "LogicalOrList",
+    /* 28 */ "LogicalOrOp",
+    /* 29 */ "Minus",
+    /* 30 */ "Mult",
+    /* 31 */ "MultList",
+    /* 32 */ "MultOp",
+    /* 33 */ "Negate",
+    /* 34 */ "Number",
+    /* 35 */ "Plus",
+    /* 36 */ "PowOp",
+    /* 37 */ "Power",
+    /* 38 */ "PowerList",
+    /* 39 */ "Relational",
+    /* 40 */ "RelationalList",
+    /* 41 */ "RelationalOp",
+    /* 42 */ "Summ",
+    /* 43 */ "SummList",
 ];
 
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
-    /* 0 - "add_op" */
+    /* 0 - "AddOp" */
     LookaheadDFA {
         states: &[None, Some(42), Some(43)],
         transitions: &[DFATransition(0, 14, 1), DFATransition(0, 15, 2)],
         k: 1,
     },
-    /* 1 - "assign_item" */
+    /* 1 - "AssignItem" */
     LookaheadDFA {
         states: &[Some(17)],
         transitions: &[],
         k: 0,
     },
-    /* 2 - "assign_op" */
+    /* 2 - "AssignOp" */
     LookaheadDFA {
         states: &[Some(4)],
         transitions: &[],
         k: 0,
     },
-    /* 3 - "assignment" */
+    /* 3 - "Assignment" */
     LookaheadDFA {
         states: &[Some(18)],
         transitions: &[],
         k: 0,
     },
-    /* 4 - "assignmentList" */
+    /* 4 - "AssignmentList" */
     LookaheadDFA {
         states: &[None, None, Some(19), None, None, None, Some(20)],
         transitions: &[
@@ -221,13 +221,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 2,
     },
-    /* 5 - "bitwise_and" */
+    /* 5 - "BitwiseAnd" */
     LookaheadDFA {
         states: &[Some(30)],
         transitions: &[],
         k: 0,
     },
-    /* 6 - "bitwise_andList" */
+    /* 6 - "BitwiseAndList" */
     LookaheadDFA {
         states: &[None, Some(31), Some(32)],
         transitions: &[
@@ -240,19 +240,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 7 - "bitwise_and_op" */
+    /* 7 - "BitwiseAndOp" */
     LookaheadDFA {
         states: &[Some(8)],
         transitions: &[],
         k: 0,
     },
-    /* 8 - "bitwise_or" */
+    /* 8 - "BitwiseOr" */
     LookaheadDFA {
         states: &[Some(27)],
         transitions: &[],
         k: 0,
     },
-    /* 9 - "bitwise_orList" */
+    /* 9 - "BitwiseOrList" */
     LookaheadDFA {
         states: &[None, Some(28), Some(29)],
         transitions: &[
@@ -264,19 +264,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 10 - "bitwise_or_op" */
+    /* 10 - "BitwiseOrOp" */
     LookaheadDFA {
         states: &[Some(7)],
         transitions: &[],
         k: 0,
     },
-    /* 11 - "bitwise_shift" */
+    /* 11 - "BitwiseShift" */
     LookaheadDFA {
         states: &[Some(39)],
         transitions: &[],
         k: 0,
     },
-    /* 12 - "bitwise_shiftList" */
+    /* 12 - "BitwiseShiftList" */
     LookaheadDFA {
         states: &[None, Some(40), Some(41)],
         transitions: &[
@@ -292,19 +292,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 13 - "bitwise_shift_op" */
+    /* 13 - "BitwiseShiftOp" */
     LookaheadDFA {
         states: &[Some(9)],
         transitions: &[],
         k: 0,
     },
-    /* 14 - "calc" */
+    /* 14 - "Calc" */
     LookaheadDFA {
         states: &[Some(0)],
         transitions: &[],
         k: 0,
     },
-    /* 15 - "calcList" */
+    /* 15 - "CalcList" */
     LookaheadDFA {
         states: &[None, Some(1), Some(2)],
         transitions: &[
@@ -316,13 +316,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 16 - "equality" */
+    /* 16 - "Equality" */
     LookaheadDFA {
         states: &[Some(33)],
         transitions: &[],
         k: 0,
     },
-    /* 17 - "equalityList" */
+    /* 17 - "EqualityList" */
     LookaheadDFA {
         states: &[None, Some(34), Some(35)],
         transitions: &[
@@ -336,13 +336,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 18 - "equality_op" */
+    /* 18 - "EqualityOp" */
     LookaheadDFA {
         states: &[Some(3)],
         transitions: &[],
         k: 0,
     },
-    /* 19 - "factor" */
+    /* 19 - "Factor" */
     LookaheadDFA {
         states: &[None, Some(54), Some(55), Some(56), Some(57)],
         transitions: &[
@@ -353,19 +353,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 20 - "id" */
+    /* 20 - "Id" */
     LookaheadDFA {
         states: &[Some(60)],
         transitions: &[],
         k: 0,
     },
-    /* 21 - "idref" */
+    /* 21 - "IdRef" */
     LookaheadDFA {
         states: &[Some(59)],
         transitions: &[],
         k: 0,
     },
-    /* 22 - "instruction" */
+    /* 22 - "Instruction" */
     LookaheadDFA {
         states: &[None, None, Some(15), None, None, None, Some(16)],
         transitions: &[
@@ -409,13 +409,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 2,
     },
-    /* 23 - "logical_and" */
+    /* 23 - "LogicalAnd" */
     LookaheadDFA {
         states: &[Some(24)],
         transitions: &[],
         k: 0,
     },
-    /* 24 - "logical_andList" */
+    /* 24 - "LogicalAndList" */
     LookaheadDFA {
         states: &[None, Some(25), Some(26)],
         transitions: &[
@@ -426,19 +426,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 25 - "logical_and_op" */
+    /* 25 - "LogicalAndOp" */
     LookaheadDFA {
         states: &[Some(6)],
         transitions: &[],
         k: 0,
     },
-    /* 26 - "logical_or" */
+    /* 26 - "LogicalOr" */
     LookaheadDFA {
         states: &[Some(21)],
         transitions: &[],
         k: 0,
     },
-    /* 27 - "logical_orList" */
+    /* 27 - "LogicalOrList" */
     LookaheadDFA {
         states: &[None, Some(22), Some(23)],
         transitions: &[
@@ -448,25 +448,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 28 - "logical_or_op" */
+    /* 28 - "LogicalOrOp" */
     LookaheadDFA {
         states: &[Some(5)],
         transitions: &[],
         k: 0,
     },
-    /* 29 - "minus" */
+    /* 29 - "Minus" */
     LookaheadDFA {
         states: &[Some(12)],
         transitions: &[],
         k: 0,
     },
-    /* 30 - "mult" */
+    /* 30 - "Mult" */
     LookaheadDFA {
         states: &[Some(47)],
         transitions: &[],
         k: 0,
     },
-    /* 31 - "multList" */
+    /* 31 - "MultList" */
     LookaheadDFA {
         states: &[None, Some(48), Some(49)],
         transitions: &[
@@ -485,43 +485,43 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 32 - "mult_op" */
+    /* 32 - "MultOp" */
     LookaheadDFA {
         states: &[Some(14)],
         transitions: &[],
         k: 0,
     },
-    /* 33 - "negate" */
+    /* 33 - "Negate" */
     LookaheadDFA {
         states: &[Some(53)],
         transitions: &[],
         k: 0,
     },
-    /* 34 - "number" */
+    /* 34 - "Number" */
     LookaheadDFA {
         states: &[Some(58)],
         transitions: &[],
         k: 0,
     },
-    /* 35 - "plus" */
+    /* 35 - "Plus" */
     LookaheadDFA {
         states: &[Some(11)],
         transitions: &[],
         k: 0,
     },
-    /* 36 - "pow_op" */
+    /* 36 - "PowOp" */
     LookaheadDFA {
         states: &[Some(13)],
         transitions: &[],
         k: 0,
     },
-    /* 37 - "power" */
+    /* 37 - "Power" */
     LookaheadDFA {
         states: &[Some(50)],
         transitions: &[],
         k: 0,
     },
-    /* 38 - "powerList" */
+    /* 38 - "PowerList" */
     LookaheadDFA {
         states: &[None, Some(51), Some(52)],
         transitions: &[
@@ -541,13 +541,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 39 - "relational" */
+    /* 39 - "Relational" */
     LookaheadDFA {
         states: &[Some(36)],
         transitions: &[],
         k: 0,
     },
-    /* 40 - "relationalList" */
+    /* 40 - "RelationalList" */
     LookaheadDFA {
         states: &[None, Some(37), Some(38)],
         transitions: &[
@@ -562,19 +562,19 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
         ],
         k: 1,
     },
-    /* 41 - "relational_op" */
+    /* 41 - "RelationalOp" */
     LookaheadDFA {
         states: &[Some(10)],
         transitions: &[],
         k: 0,
     },
-    /* 42 - "summ" */
+    /* 42 - "Summ" */
     LookaheadDFA {
         states: &[Some(44)],
         transitions: &[],
         k: 0,
     },
-    /* 43 - "summList" */
+    /* 43 - "SummList" */
     LookaheadDFA {
         states: &[None, Some(45), Some(46)],
         transitions: &[
@@ -595,307 +595,307 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 44] = &[
 ];
 
 pub const PRODUCTIONS: &[Production; 61] = &[
-    // 0 - calc: calcList /* Vec */;
+    // 0 - Calc: CalcList /* Vec */;
     Production {
         lhs: 14,
         production: &[ParseType::N(15)],
     },
-    // 1 - calcList: instruction ";"^ /* Clipped */ calcList;
+    // 1 - CalcList: Instruction ";"^ /* Clipped */ CalcList;
     Production {
         lhs: 15,
         production: &[ParseType::N(15), ParseType::T(5), ParseType::N(22)],
     },
-    // 2 - calcList: ;
+    // 2 - CalcList: ;
     Production {
         lhs: 15,
         production: &[],
     },
-    // 3 - equality_op: "==|!=";
+    // 3 - EqualityOp: "==|!=";
     Production {
         lhs: 18,
         production: &[ParseType::T(6)],
     },
-    // 4 - assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
+    // 4 - AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     Production {
         lhs: 2,
         production: &[ParseType::T(7)],
     },
-    // 5 - logical_or_op: "\|\|";
+    // 5 - LogicalOrOp: "\|\|";
     Production {
         lhs: 28,
         production: &[ParseType::T(8)],
     },
-    // 6 - logical_and_op: "&&";
+    // 6 - LogicalAndOp: "&&";
     Production {
         lhs: 25,
         production: &[ParseType::T(9)],
     },
-    // 7 - bitwise_or_op: "\|";
+    // 7 - BitwiseOrOp: "\|";
     Production {
         lhs: 10,
         production: &[ParseType::T(10)],
     },
-    // 8 - bitwise_and_op: "&";
+    // 8 - BitwiseAndOp: "&";
     Production {
         lhs: 7,
         production: &[ParseType::T(11)],
     },
-    // 9 - bitwise_shift_op: "<<|>>";
+    // 9 - BitwiseShiftOp: "<<|>>";
     Production {
         lhs: 13,
         production: &[ParseType::T(12)],
     },
-    // 10 - relational_op: "<=|<|>=|>";
+    // 10 - RelationalOp: "<=|<|>=|>";
     Production {
         lhs: 41,
         production: &[ParseType::T(13)],
     },
-    // 11 - plus: "\+";
+    // 11 - Plus: "\+";
     Production {
         lhs: 35,
         production: &[ParseType::T(14)],
     },
-    // 12 - minus: "-";
+    // 12 - Minus: "-";
     Production {
         lhs: 29,
         production: &[ParseType::T(15)],
     },
-    // 13 - pow_op: "\*\*";
+    // 13 - PowOp: "\*\*";
     Production {
         lhs: 36,
         production: &[ParseType::T(16)],
     },
-    // 14 - mult_op: "\*|/|%";
+    // 14 - MultOp: "\*|/|%";
     Production {
         lhs: 32,
         production: &[ParseType::T(17)],
     },
-    // 15 - instruction: assignment;
+    // 15 - Instruction: Assignment;
     Production {
         lhs: 22,
         production: &[ParseType::N(3)],
     },
-    // 16 - instruction: logical_or;
+    // 16 - Instruction: LogicalOr;
     Production {
         lhs: 22,
         production: &[ParseType::N(26)],
     },
-    // 17 - assign_item: id assign_op;
+    // 17 - AssignItem: Id AssignOp;
     Production {
         lhs: 1,
         production: &[ParseType::N(2), ParseType::N(20)],
     },
-    // 18 - assignment: assign_item assignmentList /* Vec */ logical_or;
+    // 18 - Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
     Production {
         lhs: 3,
         production: &[ParseType::N(26), ParseType::N(4), ParseType::N(1)],
     },
-    // 19 - assignmentList: assign_item assignmentList;
+    // 19 - AssignmentList: AssignItem AssignmentList;
     Production {
         lhs: 4,
         production: &[ParseType::N(4), ParseType::N(1)],
     },
-    // 20 - assignmentList: ;
+    // 20 - AssignmentList: ;
     Production {
         lhs: 4,
         production: &[],
     },
-    // 21 - logical_or: logical_and logical_orList /* Vec */;
+    // 21 - LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     Production {
         lhs: 26,
         production: &[ParseType::N(27), ParseType::N(23)],
     },
-    // 22 - logical_orList: logical_or_op logical_and logical_orList;
+    // 22 - LogicalOrList: LogicalOrOp LogicalAnd LogicalOrList;
     Production {
         lhs: 27,
         production: &[ParseType::N(27), ParseType::N(23), ParseType::N(28)],
     },
-    // 23 - logical_orList: ;
+    // 23 - LogicalOrList: ;
     Production {
         lhs: 27,
         production: &[],
     },
-    // 24 - logical_and: bitwise_or logical_andList /* Vec */;
+    // 24 - LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
     Production {
         lhs: 23,
         production: &[ParseType::N(24), ParseType::N(8)],
     },
-    // 25 - logical_andList: logical_and_op bitwise_or logical_andList;
+    // 25 - LogicalAndList: LogicalAndOp BitwiseOr LogicalAndList;
     Production {
         lhs: 24,
         production: &[ParseType::N(24), ParseType::N(8), ParseType::N(25)],
     },
-    // 26 - logical_andList: ;
+    // 26 - LogicalAndList: ;
     Production {
         lhs: 24,
         production: &[],
     },
-    // 27 - bitwise_or: bitwise_and bitwise_orList /* Vec */;
+    // 27 - BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
     Production {
         lhs: 8,
         production: &[ParseType::N(9), ParseType::N(5)],
     },
-    // 28 - bitwise_orList: bitwise_or_op bitwise_and bitwise_orList;
+    // 28 - BitwiseOrList: BitwiseOrOp BitwiseAnd BitwiseOrList;
     Production {
         lhs: 9,
         production: &[ParseType::N(9), ParseType::N(5), ParseType::N(10)],
     },
-    // 29 - bitwise_orList: ;
+    // 29 - BitwiseOrList: ;
     Production {
         lhs: 9,
         production: &[],
     },
-    // 30 - bitwise_and: equality bitwise_andList /* Vec */;
+    // 30 - BitwiseAnd: Equality BitwiseAndList /* Vec */;
     Production {
         lhs: 5,
         production: &[ParseType::N(6), ParseType::N(16)],
     },
-    // 31 - bitwise_andList: bitwise_and_op equality bitwise_andList;
+    // 31 - BitwiseAndList: BitwiseAndOp Equality BitwiseAndList;
     Production {
         lhs: 6,
         production: &[ParseType::N(6), ParseType::N(16), ParseType::N(7)],
     },
-    // 32 - bitwise_andList: ;
+    // 32 - BitwiseAndList: ;
     Production {
         lhs: 6,
         production: &[],
     },
-    // 33 - equality: relational equalityList /* Vec */;
+    // 33 - Equality: Relational EqualityList /* Vec */;
     Production {
         lhs: 16,
         production: &[ParseType::N(17), ParseType::N(39)],
     },
-    // 34 - equalityList: equality_op relational equalityList;
+    // 34 - EqualityList: EqualityOp Relational EqualityList;
     Production {
         lhs: 17,
         production: &[ParseType::N(17), ParseType::N(39), ParseType::N(18)],
     },
-    // 35 - equalityList: ;
+    // 35 - EqualityList: ;
     Production {
         lhs: 17,
         production: &[],
     },
-    // 36 - relational: bitwise_shift relationalList /* Vec */;
+    // 36 - Relational: BitwiseShift RelationalList /* Vec */;
     Production {
         lhs: 39,
         production: &[ParseType::N(40), ParseType::N(11)],
     },
-    // 37 - relationalList: relational_op bitwise_shift relationalList;
+    // 37 - RelationalList: RelationalOp BitwiseShift RelationalList;
     Production {
         lhs: 40,
         production: &[ParseType::N(40), ParseType::N(11), ParseType::N(41)],
     },
-    // 38 - relationalList: ;
+    // 38 - RelationalList: ;
     Production {
         lhs: 40,
         production: &[],
     },
-    // 39 - bitwise_shift: summ bitwise_shiftList /* Vec */;
+    // 39 - BitwiseShift: Summ BitwiseShiftList /* Vec */;
     Production {
         lhs: 11,
         production: &[ParseType::N(12), ParseType::N(42)],
     },
-    // 40 - bitwise_shiftList: bitwise_shift_op summ bitwise_shiftList;
+    // 40 - BitwiseShiftList: BitwiseShiftOp Summ BitwiseShiftList;
     Production {
         lhs: 12,
         production: &[ParseType::N(12), ParseType::N(42), ParseType::N(13)],
     },
-    // 41 - bitwise_shiftList: ;
+    // 41 - BitwiseShiftList: ;
     Production {
         lhs: 12,
         production: &[],
     },
-    // 42 - add_op: plus;
+    // 42 - AddOp: Plus;
     Production {
         lhs: 0,
         production: &[ParseType::N(35)],
     },
-    // 43 - add_op: minus;
+    // 43 - AddOp: Minus;
     Production {
         lhs: 0,
         production: &[ParseType::N(29)],
     },
-    // 44 - summ: mult summList /* Vec */;
+    // 44 - Summ: Mult SummList /* Vec */;
     Production {
         lhs: 42,
         production: &[ParseType::N(43), ParseType::N(30)],
     },
-    // 45 - summList: add_op mult summList;
+    // 45 - SummList: AddOp Mult SummList;
     Production {
         lhs: 43,
         production: &[ParseType::N(43), ParseType::N(30), ParseType::N(0)],
     },
-    // 46 - summList: ;
+    // 46 - SummList: ;
     Production {
         lhs: 43,
         production: &[],
     },
-    // 47 - mult: power multList /* Vec */;
+    // 47 - Mult: Power MultList /* Vec */;
     Production {
         lhs: 30,
         production: &[ParseType::N(31), ParseType::N(37)],
     },
-    // 48 - multList: mult_op power multList;
+    // 48 - MultList: MultOp Power MultList;
     Production {
         lhs: 31,
         production: &[ParseType::N(31), ParseType::N(37), ParseType::N(32)],
     },
-    // 49 - multList: ;
+    // 49 - MultList: ;
     Production {
         lhs: 31,
         production: &[],
     },
-    // 50 - power: factor powerList /* Vec */;
+    // 50 - Power: Factor PowerList /* Vec */;
     Production {
         lhs: 37,
         production: &[ParseType::N(38), ParseType::N(19)],
     },
-    // 51 - powerList: pow_op factor powerList;
+    // 51 - PowerList: PowOp Factor PowerList;
     Production {
         lhs: 38,
         production: &[ParseType::N(38), ParseType::N(19), ParseType::N(36)],
     },
-    // 52 - powerList: ;
+    // 52 - PowerList: ;
     Production {
         lhs: 38,
         production: &[],
     },
-    // 53 - negate: minus;
+    // 53 - Negate: Minus;
     Production {
         lhs: 33,
         production: &[ParseType::N(29)],
     },
-    // 54 - factor: number;
+    // 54 - Factor: Number;
     Production {
         lhs: 19,
         production: &[ParseType::N(34)],
     },
-    // 55 - factor: idref;
+    // 55 - Factor: IdRef;
     Production {
         lhs: 19,
         production: &[ParseType::N(21)],
     },
-    // 56 - factor: negate factor;
+    // 56 - Factor: Negate Factor;
     Production {
         lhs: 19,
         production: &[ParseType::N(19), ParseType::N(33)],
     },
-    // 57 - factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
+    // 57 - Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
     Production {
         lhs: 19,
         production: &[ParseType::T(19), ParseType::N(26), ParseType::T(18)],
     },
-    // 58 - number: "0|[1-9][0-9]*";
+    // 58 - Number: "0|[1-9][0-9]*";
     Production {
         lhs: 34,
         production: &[ParseType::T(20)],
     },
-    // 59 - idref: id;
+    // 59 - IdRef: Id;
     Production {
         lhs: 21,
         production: &[ParseType::N(20)],
     },
-    // 60 - id: "[a-zA-Z_][a-zA-Z0-9_]*";
+    // 60 - Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     Production {
         lhs: 20,
         production: &[ParseType::T(21)],

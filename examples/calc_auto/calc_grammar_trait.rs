@@ -15,162 +15,162 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait CalcGrammarTrait<'t> {
-    /// Semantic action for non-terminal 'calc'
+    /// Semantic action for non-terminal 'Calc'
     fn calc(&mut self, _arg: &Calc<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'equality_op'
+    /// Semantic action for non-terminal 'EqualityOp'
     fn equality_op(&mut self, _arg: &EqualityOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'assign_op'
+    /// Semantic action for non-terminal 'AssignOp'
     fn assign_op(&mut self, _arg: &AssignOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'logical_or_op'
+    /// Semantic action for non-terminal 'LogicalOrOp'
     fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'logical_and_op'
+    /// Semantic action for non-terminal 'LogicalAndOp'
     fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_or_op'
+    /// Semantic action for non-terminal 'BitwiseOrOp'
     fn bitwise_or_op(&mut self, _arg: &BitwiseOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_and_op'
+    /// Semantic action for non-terminal 'BitwiseAndOp'
     fn bitwise_and_op(&mut self, _arg: &BitwiseAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_shift_op'
+    /// Semantic action for non-terminal 'BitwiseShiftOp'
     fn bitwise_shift_op(&mut self, _arg: &BitwiseShiftOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'relational_op'
+    /// Semantic action for non-terminal 'RelationalOp'
     fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'plus'
+    /// Semantic action for non-terminal 'Plus'
     fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'minus'
+    /// Semantic action for non-terminal 'Minus'
     fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'pow_op'
+    /// Semantic action for non-terminal 'PowOp'
     fn pow_op(&mut self, _arg: &PowOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'mult_op'
+    /// Semantic action for non-terminal 'MultOp'
     fn mult_op(&mut self, _arg: &MultOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'instruction'
+    /// Semantic action for non-terminal 'Instruction'
     fn instruction(&mut self, _arg: &Instruction<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'assign_item'
+    /// Semantic action for non-terminal 'AssignItem'
     fn assign_item(&mut self, _arg: &AssignItem<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'assignment'
+    /// Semantic action for non-terminal 'Assignment'
     fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'logical_or'
+    /// Semantic action for non-terminal 'LogicalOr'
     fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'logical_and'
+    /// Semantic action for non-terminal 'LogicalAnd'
     fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_or'
+    /// Semantic action for non-terminal 'BitwiseOr'
     fn bitwise_or(&mut self, _arg: &BitwiseOr<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_and'
+    /// Semantic action for non-terminal 'BitwiseAnd'
     fn bitwise_and(&mut self, _arg: &BitwiseAnd<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'equality'
+    /// Semantic action for non-terminal 'Equality'
     fn equality(&mut self, _arg: &Equality<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'relational'
+    /// Semantic action for non-terminal 'Relational'
     fn relational(&mut self, _arg: &Relational<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'bitwise_shift'
+    /// Semantic action for non-terminal 'BitwiseShift'
     fn bitwise_shift(&mut self, _arg: &BitwiseShift<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'add_op'
+    /// Semantic action for non-terminal 'AddOp'
     fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'summ'
+    /// Semantic action for non-terminal 'Summ'
     fn summ(&mut self, _arg: &Summ<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'mult'
+    /// Semantic action for non-terminal 'Mult'
     fn mult(&mut self, _arg: &Mult<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'power'
+    /// Semantic action for non-terminal 'Power'
     fn power(&mut self, _arg: &Power<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'negate'
+    /// Semantic action for non-terminal 'Negate'
     fn negate(&mut self, _arg: &Negate<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'factor'
+    /// Semantic action for non-terminal 'Factor'
     fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'number'
+    /// Semantic action for non-terminal 'Number'
     fn number(&mut self, _arg: &Number) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'idref'
-    fn idref(&mut self, _arg: &Idref<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'IdRef'
+    fn id_ref(&mut self, _arg: &IdRef<'t>) -> Result<()> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'id'
+    /// Semantic action for non-terminal 'Id'
     fn id(&mut self, _arg: &Id<'t>) -> Result<()> {
         Ok(())
     }
@@ -184,7 +184,7 @@ pub trait CalcGrammarTrait<'t> {
 ///
 /// Type derived for production 15
 ///
-/// instruction: assignment;
+/// Instruction: Assignment;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -195,7 +195,7 @@ pub struct Instruction0<'t> {
 ///
 /// Type derived for production 16
 ///
-/// instruction: logical_or;
+/// Instruction: LogicalOr;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -206,7 +206,7 @@ pub struct Instruction1<'t> {
 ///
 /// Type derived for production 42
 ///
-/// add_op: plus;
+/// AddOp: Plus;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -217,7 +217,7 @@ pub struct AddOp0<'t> {
 ///
 /// Type derived for production 43
 ///
-/// add_op: minus;
+/// AddOp: Minus;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -228,7 +228,7 @@ pub struct AddOp1<'t> {
 ///
 /// Type derived for production 54
 ///
-/// factor: number;
+/// Factor: Number;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -239,18 +239,18 @@ pub struct Factor0 {
 ///
 /// Type derived for production 55
 ///
-/// factor: idref;
+/// Factor: IdRef;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Factor1<'t> {
-    pub idref: Box<Idref<'t>>,
+    pub id_ref: Box<IdRef<'t>>,
 }
 
 ///
 /// Type derived for production 56
 ///
-/// factor: negate factor;
+/// Factor: Negate Factor;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -262,7 +262,7 @@ pub struct Factor2<'t> {
 ///
 /// Type derived for production 57
 ///
-/// factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
+/// Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -276,7 +276,7 @@ pub struct Factor3<'t> {
 //
 
 ///
-/// Type derived for non-terminal add_op
+/// Type derived for non-terminal AddOp
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -286,7 +286,7 @@ pub enum AddOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal assign_item
+/// Type derived for non-terminal AssignItem
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -296,7 +296,7 @@ pub struct AssignItem<'t> {
 }
 
 ///
-/// Type derived for non-terminal assign_op
+/// Type derived for non-terminal AssignOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -305,7 +305,7 @@ pub struct AssignOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal assignment
+/// Type derived for non-terminal Assignment
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -316,7 +316,7 @@ pub struct Assignment<'t> {
 }
 
 ///
-/// Type derived for non-terminal assignmentList
+/// Type derived for non-terminal AssignmentList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -325,7 +325,7 @@ pub struct AssignmentList<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_and
+/// Type derived for non-terminal BitwiseAnd
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -335,7 +335,7 @@ pub struct BitwiseAnd<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_andList
+/// Type derived for non-terminal BitwiseAndList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -345,7 +345,7 @@ pub struct BitwiseAndList<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_and_op
+/// Type derived for non-terminal BitwiseAndOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -354,7 +354,7 @@ pub struct BitwiseAndOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_or
+/// Type derived for non-terminal BitwiseOr
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -364,7 +364,7 @@ pub struct BitwiseOr<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_orList
+/// Type derived for non-terminal BitwiseOrList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -374,7 +374,7 @@ pub struct BitwiseOrList<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_or_op
+/// Type derived for non-terminal BitwiseOrOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -383,7 +383,7 @@ pub struct BitwiseOrOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_shift
+/// Type derived for non-terminal BitwiseShift
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -393,7 +393,7 @@ pub struct BitwiseShift<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_shiftList
+/// Type derived for non-terminal BitwiseShiftList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -403,7 +403,7 @@ pub struct BitwiseShiftList<'t> {
 }
 
 ///
-/// Type derived for non-terminal bitwise_shift_op
+/// Type derived for non-terminal BitwiseShiftOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -412,7 +412,7 @@ pub struct BitwiseShiftOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal calc
+/// Type derived for non-terminal Calc
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -421,7 +421,7 @@ pub struct Calc<'t> {
 }
 
 ///
-/// Type derived for non-terminal calcList
+/// Type derived for non-terminal CalcList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -430,7 +430,7 @@ pub struct CalcList<'t> {
 }
 
 ///
-/// Type derived for non-terminal equality
+/// Type derived for non-terminal Equality
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -440,7 +440,7 @@ pub struct Equality<'t> {
 }
 
 ///
-/// Type derived for non-terminal equalityList
+/// Type derived for non-terminal EqualityList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -450,7 +450,7 @@ pub struct EqualityList<'t> {
 }
 
 ///
-/// Type derived for non-terminal equality_op
+/// Type derived for non-terminal EqualityOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -459,7 +459,7 @@ pub struct EqualityOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal factor
+/// Type derived for non-terminal Factor
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -471,7 +471,7 @@ pub enum Factor<'t> {
 }
 
 ///
-/// Type derived for non-terminal id
+/// Type derived for non-terminal Id
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -480,16 +480,16 @@ pub struct Id<'t> {
 }
 
 ///
-/// Type derived for non-terminal idref
+/// Type derived for non-terminal IdRef
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Idref<'t> {
+pub struct IdRef<'t> {
     pub id: Box<Id<'t>>,
 }
 
 ///
-/// Type derived for non-terminal instruction
+/// Type derived for non-terminal Instruction
 ///
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
@@ -499,7 +499,7 @@ pub enum Instruction<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_and
+/// Type derived for non-terminal LogicalAnd
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -509,7 +509,7 @@ pub struct LogicalAnd<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_andList
+/// Type derived for non-terminal LogicalAndList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -519,7 +519,7 @@ pub struct LogicalAndList<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_and_op
+/// Type derived for non-terminal LogicalAndOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -528,7 +528,7 @@ pub struct LogicalAndOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_or
+/// Type derived for non-terminal LogicalOr
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -538,7 +538,7 @@ pub struct LogicalOr<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_orList
+/// Type derived for non-terminal LogicalOrList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -548,7 +548,7 @@ pub struct LogicalOrList<'t> {
 }
 
 ///
-/// Type derived for non-terminal logical_or_op
+/// Type derived for non-terminal LogicalOrOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -557,7 +557,7 @@ pub struct LogicalOrOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal minus
+/// Type derived for non-terminal Minus
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -566,7 +566,7 @@ pub struct Minus<'t> {
 }
 
 ///
-/// Type derived for non-terminal mult
+/// Type derived for non-terminal Mult
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -576,7 +576,7 @@ pub struct Mult<'t> {
 }
 
 ///
-/// Type derived for non-terminal multList
+/// Type derived for non-terminal MultList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -586,7 +586,7 @@ pub struct MultList<'t> {
 }
 
 ///
-/// Type derived for non-terminal mult_op
+/// Type derived for non-terminal MultOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -595,7 +595,7 @@ pub struct MultOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal negate
+/// Type derived for non-terminal Negate
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -604,7 +604,7 @@ pub struct Negate<'t> {
 }
 
 ///
-/// Type derived for non-terminal number
+/// Type derived for non-terminal Number
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -613,7 +613,7 @@ pub struct Number {
 }
 
 ///
-/// Type derived for non-terminal plus
+/// Type derived for non-terminal Plus
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -622,7 +622,7 @@ pub struct Plus<'t> {
 }
 
 ///
-/// Type derived for non-terminal pow_op
+/// Type derived for non-terminal PowOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -631,7 +631,7 @@ pub struct PowOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal power
+/// Type derived for non-terminal Power
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -641,7 +641,7 @@ pub struct Power<'t> {
 }
 
 ///
-/// Type derived for non-terminal powerList
+/// Type derived for non-terminal PowerList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -651,7 +651,7 @@ pub struct PowerList<'t> {
 }
 
 ///
-/// Type derived for non-terminal relational
+/// Type derived for non-terminal Relational
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -661,7 +661,7 @@ pub struct Relational<'t> {
 }
 
 ///
-/// Type derived for non-terminal relationalList
+/// Type derived for non-terminal RelationalList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -671,7 +671,7 @@ pub struct RelationalList<'t> {
 }
 
 ///
-/// Type derived for non-terminal relational_op
+/// Type derived for non-terminal RelationalOp
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -680,7 +680,7 @@ pub struct RelationalOp<'t> {
 }
 
 ///
-/// Type derived for non-terminal summ
+/// Type derived for non-terminal Summ
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -690,7 +690,7 @@ pub struct Summ<'t> {
 }
 
 ///
-/// Type derived for non-terminal summList
+/// Type derived for non-terminal SummList
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -728,7 +728,7 @@ pub enum ASTType<'t> {
     EqualityOp(EqualityOp<'t>),
     Factor(Factor<'t>),
     Id(Id<'t>),
-    Idref(Idref<'t>),
+    IdRef(IdRef<'t>),
     Instruction(Instruction<'t>),
     LogicalAnd(LogicalAnd<'t>),
     LogicalAndList(Vec<LogicalAndList<'t>>),
@@ -818,7 +818,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// calc: calcList /* Vec */;
+    /// Calc: CalcList /* Vec */;
     ///
     #[named]
     fn calc(
@@ -846,7 +846,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// calcList /* Vec<T>::Push */: instruction ";"^ /* Clipped */ calcList;
+    /// CalcList /* Vec<T>::Push */: Instruction ";"^ /* Clipped */ CalcList;
     ///
     #[named]
     fn calc_list_0(
@@ -881,7 +881,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// calcList /* Vec<T>::New */: ;
+    /// CalcList /* Vec<T>::New */: ;
     ///
     #[named]
     fn calc_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -894,7 +894,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// equality_op: "==|!=";
+    /// EqualityOp: "==|!=";
     ///
     #[named]
     fn equality_op(
@@ -917,7 +917,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
+    /// AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
     #[named]
     fn assign_op(
@@ -940,7 +940,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// logical_or_op: "\|\|";
+    /// LogicalOrOp: "\|\|";
     ///
     #[named]
     fn logical_or_op(
@@ -963,7 +963,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// logical_and_op: "&&";
+    /// LogicalAndOp: "&&";
     ///
     #[named]
     fn logical_and_op(
@@ -986,7 +986,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// bitwise_or_op: "\|";
+    /// BitwiseOrOp: "\|";
     ///
     #[named]
     fn bitwise_or_op(
@@ -1009,7 +1009,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// bitwise_and_op: "&";
+    /// BitwiseAndOp: "&";
     ///
     #[named]
     fn bitwise_and_op(
@@ -1032,7 +1032,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// bitwise_shift_op: "<<|>>";
+    /// BitwiseShiftOp: "<<|>>";
     ///
     #[named]
     fn bitwise_shift_op(
@@ -1056,7 +1056,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// relational_op: "<=|<|>=|>";
+    /// RelationalOp: "<=|<|>=|>";
     ///
     #[named]
     fn relational_op(
@@ -1079,7 +1079,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// plus: "\+";
+    /// Plus: "\+";
     ///
     #[named]
     fn plus(
@@ -1102,7 +1102,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// minus: "-";
+    /// Minus: "-";
     ///
     #[named]
     fn minus(
@@ -1125,7 +1125,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// pow_op: "\*\*";
+    /// PowOp: "\*\*";
     ///
     #[named]
     fn pow_op(
@@ -1148,7 +1148,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// mult_op: "\*|/|%";
+    /// MultOp: "\*|/|%";
     ///
     #[named]
     fn mult_op(
@@ -1171,7 +1171,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// instruction: assignment;
+    /// Instruction: Assignment;
     ///
     #[named]
     fn instruction_0(
@@ -1199,7 +1199,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// instruction: logical_or;
+    /// Instruction: LogicalOr;
     ///
     #[named]
     fn instruction_1(
@@ -1227,7 +1227,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// assign_item: id assign_op;
+    /// AssignItem: Id AssignOp;
     ///
     #[named]
     fn assign_item(
@@ -1261,7 +1261,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// assignment: assign_item assignmentList /* Vec */ logical_or;
+    /// Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
     ///
     #[named]
     fn assignment(
@@ -1304,7 +1304,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// assignmentList /* Vec<T>::Push */: assign_item assignmentList;
+    /// AssignmentList /* Vec<T>::Push */: AssignItem AssignmentList;
     ///
     #[named]
     fn assignment_list_0(
@@ -1338,7 +1338,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// assignmentList /* Vec<T>::New */: ;
+    /// AssignmentList /* Vec<T>::New */: ;
     ///
     #[named]
     fn assignment_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1351,7 +1351,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// logical_or: logical_and logical_orList /* Vec */;
+    /// LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     ///
     #[named]
     fn logical_or(
@@ -1387,7 +1387,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// logical_orList /* Vec<T>::Push */: logical_or_op logical_and logical_orList;
+    /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
     #[named]
     fn logical_or_list_0(
@@ -1428,7 +1428,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// logical_orList /* Vec<T>::New */: ;
+    /// LogicalOrList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1441,7 +1441,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// logical_and: bitwise_or logical_andList /* Vec */;
+    /// LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
     ///
     #[named]
     fn logical_and(
@@ -1477,7 +1477,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// logical_andList /* Vec<T>::Push */: logical_and_op bitwise_or logical_andList;
+    /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp BitwiseOr LogicalAndList;
     ///
     #[named]
     fn logical_and_list_0(
@@ -1519,7 +1519,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// logical_andList /* Vec<T>::New */: ;
+    /// LogicalAndList /* Vec<T>::New */: ;
     ///
     #[named]
     fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1532,7 +1532,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// bitwise_or: bitwise_and bitwise_orList /* Vec */;
+    /// BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
     ///
     #[named]
     fn bitwise_or(
@@ -1568,7 +1568,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// bitwise_orList /* Vec<T>::Push */: bitwise_or_op bitwise_and bitwise_orList;
+    /// BitwiseOrList /* Vec<T>::Push */: BitwiseOrOp BitwiseAnd BitwiseOrList;
     ///
     #[named]
     fn bitwise_or_list_0(
@@ -1609,7 +1609,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// bitwise_orList /* Vec<T>::New */: ;
+    /// BitwiseOrList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1622,7 +1622,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 30:
     ///
-    /// bitwise_and: equality bitwise_andList /* Vec */;
+    /// BitwiseAnd: Equality BitwiseAndList /* Vec */;
     ///
     #[named]
     fn bitwise_and(
@@ -1658,7 +1658,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// bitwise_andList /* Vec<T>::Push */: bitwise_and_op equality bitwise_andList;
+    /// BitwiseAndList /* Vec<T>::Push */: BitwiseAndOp Equality BitwiseAndList;
     ///
     #[named]
     fn bitwise_and_list_0(
@@ -1700,7 +1700,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// bitwise_andList /* Vec<T>::New */: ;
+    /// BitwiseAndList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1713,7 +1713,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 33:
     ///
-    /// equality: relational equalityList /* Vec */;
+    /// Equality: Relational EqualityList /* Vec */;
     ///
     #[named]
     fn equality(
@@ -1749,7 +1749,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// equalityList /* Vec<T>::Push */: equality_op relational equalityList;
+    /// EqualityList /* Vec<T>::Push */: EqualityOp Relational EqualityList;
     ///
     #[named]
     fn equality_list_0(
@@ -1790,7 +1790,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// equalityList /* Vec<T>::New */: ;
+    /// EqualityList /* Vec<T>::New */: ;
     ///
     #[named]
     fn equality_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1803,7 +1803,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// relational: bitwise_shift relationalList /* Vec */;
+    /// Relational: BitwiseShift RelationalList /* Vec */;
     ///
     #[named]
     fn relational(
@@ -1839,7 +1839,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// relationalList /* Vec<T>::Push */: relational_op bitwise_shift relationalList;
+    /// RelationalList /* Vec<T>::Push */: RelationalOp BitwiseShift RelationalList;
     ///
     #[named]
     fn relational_list_0(
@@ -1880,7 +1880,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// relationalList /* Vec<T>::New */: ;
+    /// RelationalList /* Vec<T>::New */: ;
     ///
     #[named]
     fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1893,7 +1893,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// bitwise_shift: summ bitwise_shiftList /* Vec */;
+    /// BitwiseShift: Summ BitwiseShiftList /* Vec */;
     ///
     #[named]
     fn bitwise_shift(
@@ -1929,7 +1929,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// bitwise_shiftList /* Vec<T>::Push */: bitwise_shift_op summ bitwise_shiftList;
+    /// BitwiseShiftList /* Vec<T>::Push */: BitwiseShiftOp Summ BitwiseShiftList;
     ///
     #[named]
     fn bitwise_shift_list_0(
@@ -1971,7 +1971,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// bitwise_shiftList /* Vec<T>::New */: ;
+    /// BitwiseShiftList /* Vec<T>::New */: ;
     ///
     #[named]
     fn bitwise_shift_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -1987,7 +1987,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// add_op: plus;
+    /// AddOp: Plus;
     ///
     #[named]
     fn add_op_0(
@@ -2015,7 +2015,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// add_op: minus;
+    /// AddOp: Minus;
     ///
     #[named]
     fn add_op_1(
@@ -2043,7 +2043,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// summ: mult summList /* Vec */;
+    /// Summ: Mult SummList /* Vec */;
     ///
     #[named]
     fn summ(
@@ -2078,7 +2078,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// summList /* Vec<T>::Push */: add_op mult summList;
+    /// SummList /* Vec<T>::Push */: AddOp Mult SummList;
     ///
     #[named]
     fn summ_list_0(
@@ -2118,7 +2118,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// summList /* Vec<T>::New */: ;
+    /// SummList /* Vec<T>::New */: ;
     ///
     #[named]
     fn summ_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2131,7 +2131,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// mult: power multList /* Vec */;
+    /// Mult: Power MultList /* Vec */;
     ///
     #[named]
     fn mult(
@@ -2166,7 +2166,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// multList /* Vec<T>::Push */: mult_op power multList;
+    /// MultList /* Vec<T>::Push */: MultOp Power MultList;
     ///
     #[named]
     fn mult_list_0(
@@ -2206,7 +2206,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// multList /* Vec<T>::New */: ;
+    /// MultList /* Vec<T>::New */: ;
     ///
     #[named]
     fn mult_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2219,7 +2219,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// power: factor powerList /* Vec */;
+    /// Power: Factor PowerList /* Vec */;
     ///
     #[named]
     fn power(
@@ -2254,7 +2254,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// powerList /* Vec<T>::Push */: pow_op factor powerList;
+    /// PowerList /* Vec<T>::Push */: PowOp Factor PowerList;
     ///
     #[named]
     fn power_list_0(
@@ -2294,7 +2294,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// powerList /* Vec<T>::New */: ;
+    /// PowerList /* Vec<T>::New */: ;
     ///
     #[named]
     fn power_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
@@ -2307,7 +2307,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// negate: minus;
+    /// Negate: Minus;
     ///
     #[named]
     fn negate(
@@ -2334,7 +2334,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// factor: number;
+    /// Factor: Number;
     ///
     #[named]
     fn factor_0(
@@ -2362,23 +2362,23 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// factor: idref;
+    /// Factor: IdRef;
     ///
     #[named]
     fn factor_1(
         &mut self,
-        _idref: &ParseTreeStackEntry<'t>,
+        _id_ref: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let idref = if let Some(ASTType::Idref(idref)) = self.pop(context) {
-            idref
+        let id_ref = if let Some(ASTType::IdRef(id_ref)) = self.pop(context) {
+            id_ref
         } else {
-            bail!("{}: Expecting ASTType::Idref", context);
+            bail!("{}: Expecting ASTType::IdRef", context);
         };
         let factor_1_built = Factor1Builder::default()
-            .idref(Box::new(idref))
+            .id_ref(Box::new(id_ref))
             .build()
             .into_diagnostic()?;
         let factor_1_built = Factor::Factor1(factor_1_built);
@@ -2390,7 +2390,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// factor: negate factor;
+    /// Factor: Negate Factor;
     ///
     #[named]
     fn factor_2(
@@ -2425,7 +2425,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// factor: "\("^ /* Clipped */ logical_or "\)"^ /* Clipped */;
+    /// Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
     ///
     #[named]
     fn factor_3(
@@ -2457,7 +2457,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// number: "0|[1-9][0-9]*" : crate::calc_grammar::Number;
+    /// Number: "0|[1-9][0-9]*" : crate::calc_grammar::Number;
     ///
     #[named]
     fn number(
@@ -2480,10 +2480,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// idref: id;
+    /// IdRef: Id;
     ///
     #[named]
-    fn idref(
+    fn id_ref(
         &mut self,
         _id: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
@@ -2495,19 +2495,19 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         } else {
             bail!("{}: Expecting ASTType::Id", context);
         };
-        let idref_built = IdrefBuilder::default()
+        let id_ref_built = IdRefBuilder::default()
             .id(Box::new(id))
             .build()
             .into_diagnostic()?;
         // Calling user action here
-        self.user_grammar.idref(&idref_built)?;
-        self.push(ASTType::Idref(idref_built), context);
+        self.user_grammar.id_ref(&id_ref_built)?;
+        self.push(ASTType::IdRef(id_ref_built), context);
         Ok(())
     }
 
     /// Semantic action for production 60:
     ///
-    /// id: "[a-zA-Z_][a-zA-Z0-9_]*";
+    /// Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
     #[named]
     fn id(
@@ -2596,7 +2596,7 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
             56 => self.factor_2(&children[0], &children[1], parse_tree),
             57 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
             58 => self.number(&children[0], parse_tree),
-            59 => self.idref(&children[0], parse_tree),
+            59 => self.id_ref(&children[0], parse_tree),
             60 => self.id(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }

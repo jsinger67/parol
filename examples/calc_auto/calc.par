@@ -1,4 +1,4 @@
-%start calc
+%start Calc
 %title "Example grammar of an expression evaluator"
 %comment "To demonstrate use of lists, operator precedence, operator associativity"
 %line_comment "//"
@@ -8,90 +8,90 @@
 
 // -------------------------------------------------------------------------------------------------
 // START SYMBOL
-calc: { instruction ";"^ };
+Calc: { Instruction ";"^ };
 
 
 // -------------------------------------------------------------------------------------------------
 // OPERATOR SYMBOLS
-equality_op: "==|!=";
-assign_op: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
-logical_or_op: "\|\|";
-logical_and_op: "&&";
-bitwise_or_op: "\|";
-bitwise_and_op: "&";
-bitwise_shift_op: "<<|>>";
-relational_op: "<=|<|>=|>";
-plus: "\+";
-minus: "-";
-pow_op: "\*\*";
-mult_op: "\*|/|%";
+EqualityOp: "==|!=";
+AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
+LogicalOrOp: "\|\|";
+LogicalAndOp: "&&";
+BitwiseOrOp: "\|";
+BitwiseAndOp: "&";
+BitwiseShiftOp: "<<|>>";
+RelationalOp: "<=|<|>=|>";
+Plus: "\+";
+Minus: "-";
+PowOp: "\*\*";
+MultOp: "\*|/|%";
 
 // -------------------------------------------------------------------------------------------------
 // INSTRUCTION
-instruction: assignment;
-instruction: logical_or;
+Instruction: Assignment;
+Instruction: LogicalOr;
 
 // -------------------------------------------------------------------------------------------------
 // ASSIGNMENT
-assign_item: id assign_op;
-assignment: assign_item { assign_item } logical_or;
+AssignItem: Id AssignOp;
+Assignment: AssignItem { AssignItem } LogicalOr;
 
 // -------------------------------------------------------------------------------------------------
 // LOGICAL OR
-logical_or: logical_and { logical_or_op logical_and };
+LogicalOr: LogicalAnd { LogicalOrOp LogicalAnd };
 
 // -------------------------------------------------------------------------------------------------
 // LOGICAL AND
-logical_and: bitwise_or { logical_and_op bitwise_or };
+LogicalAnd: BitwiseOr { LogicalAndOp BitwiseOr };
 
 // -------------------------------------------------------------------------------------------------
 // BITWISE OR
-bitwise_or: bitwise_and { bitwise_or_op bitwise_and };
+BitwiseOr: BitwiseAnd { BitwiseOrOp BitwiseAnd };
 
 // -------------------------------------------------------------------------------------------------
 // BITWISE AND
-bitwise_and: equality { bitwise_and_op equality };
+BitwiseAnd: Equality { BitwiseAndOp Equality };
 
 // -------------------------------------------------------------------------------------------------
 // EQUALITY AND INEQUALITY
-equality: relational { equality_op relational } ;
+Equality: Relational { EqualityOp Relational } ;
 
 // -------------------------------------------------------------------------------------------------
 // RELATIONAL
-relational: bitwise_shift { relational_op bitwise_shift };
+Relational: BitwiseShift { RelationalOp BitwiseShift };
 
 // -------------------------------------------------------------------------------------------------
 // BITWISE SHIFT
-bitwise_shift: summ { bitwise_shift_op summ };
+BitwiseShift: Summ { BitwiseShiftOp Summ };
 
 // -------------------------------------------------------------------------------------------------
 // ADDITION AND SUBTRACTION
-add_op : plus | minus;
-summ: mult { add_op mult };
+AddOp : Plus | Minus;
+Summ: Mult { AddOp Mult };
 
 // -------------------------------------------------------------------------------------------------
 // MULTIPLICATION, DIVISION AND REMAINDER
-mult: power { mult_op power };
+Mult: Power { MultOp Power };
 
 // -------------------------------------------------------------------------------------------------
 // POWER
-power: factor { pow_op factor };
+Power: Factor { PowOp Factor };
 
 // -------------------------------------------------------------------------------------------------
 // NEGATION
-negate: minus;
+Negate: Minus;
 
 // -------------------------------------------------------------------------------------------------
 // FACTOR
-factor
-    : number
-    | idref
-    | negate factor
-    | "\("^ logical_or "\)"^
+Factor
+    : Number
+    | IdRef
+    | Negate Factor
+    | "\("^ LogicalOr "\)"^
     ;
 
-number: "0|[1-9][0-9]*": crate::calc_grammar::Number;
+Number: "0|[1-9][0-9]*": crate::calc_grammar::Number;
 
-idref: id;
+IdRef: Id;
 
-id: "[a-zA-Z_][a-zA-Z0-9_]*";
+Id: "[a-zA-Z_][a-zA-Z0-9_]*";
