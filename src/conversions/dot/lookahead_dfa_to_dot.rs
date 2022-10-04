@@ -16,11 +16,7 @@ struct NtDotElements<'a> {
 // *Changes will affect crate's version according to semver*
 // ---------------------------------------------------
 ///
-/// Formats the given Cfg in a special dot-format.
-/// The basic graph type here resembles the same as the NtGrammarGraph type
-/// used for detection of left-recursions.
-/// The outputted dot-format is more suitable for this grammar graph type than
-/// the dot format provides by the PetGraph itself.
+/// Formats the given DFA in a special dot-format.
 ///
 pub fn render_dfa_dot_string(dfa: &LookaheadDFA, title: &str) -> String {
     let start_state = format!("0 [label = \"{}\"];", dfa.states[0]);

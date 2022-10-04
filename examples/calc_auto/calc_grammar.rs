@@ -343,10 +343,7 @@ impl Display for CalcGrammar<'_> {
 }
 
 impl<'t> CalcGrammarTrait<'t> for CalcGrammar<'t> {
-    /// Semantic action for user production 0:
-    ///
-    /// calc: {instruction <0>";"};
-    ///
+    /// Semantic action for non-terminal 'Calc'
     fn calc(&mut self, arg: &Calc<'t>) -> Result<()> {
         self.process_calc(arg)?;
         Ok(())
