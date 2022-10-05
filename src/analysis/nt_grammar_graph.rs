@@ -5,6 +5,7 @@
 
 use crate::{Cfg, Pr, Symbol, Terminal};
 use petgraph::graph::{DiGraph, NodeIndex};
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
@@ -19,9 +20,9 @@ use std::hash::Hash;
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum NtNodeType {
     /// Non-terminal type
-    Nt(String),
+    Nt(Cow<'static, str>),
     /// Non-terminal instance
-    N(String, usize, usize),
+    N(Cow<'static, str>, usize, usize),
     /// Production
     P(Pr),
     /// Terminal instance
@@ -92,41 +93,63 @@ impl From<&Cfg> for NtGrammarGraph {
     fn from(g: &Cfg) -> Self {
         let mut gg = Self::new();
 
+        // ---------------------------------------------------------------------
+        // Add nodes to the graph
+        // ---------------------------------------------------------------------
+
+        // Production node indices
         let prod_node_indices =
             g.pr.iter()
                 .map(|p| gg.0.add_node(NtNodeType::P(p.clone())))
                 .collect::<Vec<NodeIndex<u32>>>();
 
-        let non_terminals = g.get_non_terminal_ordering();
-        let nt_node_indices = non_terminals
+        // Indices of non-terminal types
+        let nt_node_indices = g
+            .get_non_terminal_set()
             .iter()
-            .fold(HashMap::new(), |mut acc, (n, _)| {
-                acc.insert(n.clone(), gg.0.add_node(NtNodeType::Nt(n.clone())));
+            .fold(HashMap::new(), |mut acc, n| {
+                acc.insert(
+                    n.clone(),
+                    gg.0.add_node(NtNodeType::Nt(Cow::Owned(n.clone()))),
+                );
                 acc
             });
-        let nt_positions = g.get_non_terminal_positions();
-        let nt_positions = nt_positions.iter().fold(HashMap::new(), |mut acc, (p, n)| {
-            let node_index =
-                gg.0.add_node(NtNodeType::N(n.clone(), p.pr_index(), p.sy_index()));
-            acc.insert((p.pr_index(), p.sy_index()), node_index);
-            acc
-        });
-        let te_positions = g.get_terminal_positions();
-        let te_positions = te_positions.iter().fold(HashMap::new(), |mut acc, (p, t)| {
-            let node_index = match t {
-                Symbol::T(trm) if matches!(trm, Terminal::Trm(..)) => {
-                    gg.0.add_node(NtNodeType::T(trm.clone(), p.pr_index(), p.sy_index()))
-                }
-                Symbol::T(Terminal::End) => {
-                    gg.0.add_node(NtNodeType::E(p.pr_index(), p.sy_index()))
-                }
-                _ => panic!("Invalid symbol type on RHS of production"),
-            };
-            acc.insert((p.pr_index(), p.sy_index()), node_index);
-            acc
-        });
 
+        // Indices of non-terminal instances
+        let nt_positions =
+            g.get_non_terminal_positions()
+                .iter()
+                .fold(HashMap::new(), |mut acc, (p, n)| {
+                    let node_index = gg.0.add_node(NtNodeType::N(
+                        Cow::Owned(n.clone()),
+                        p.pr_index(),
+                        p.sy_index(),
+                    ));
+                    acc.insert((p.pr_index(), p.sy_index()), node_index);
+                    acc
+                });
+
+        // Indices of terminals
+        let te_positions =
+            g.get_terminal_positions()
+                .iter()
+                .fold(HashMap::new(), |mut acc, (p, t)| {
+                    let node_index = match t {
+                        Symbol::T(trm) if matches!(trm, Terminal::Trm(..)) => {
+                            gg.0.add_node(NtNodeType::T(trm.clone(), p.pr_index(), p.sy_index()))
+                        }
+                        Symbol::T(Terminal::End) => {
+                            gg.0.add_node(NtNodeType::E(p.pr_index(), p.sy_index()))
+                        }
+                        _ => panic!("Invalid symbol type on RHS of production"),
+                    };
+                    acc.insert((p.pr_index(), p.sy_index()), node_index);
+                    acc
+                });
+
+        // ---------------------------------------------------------------------
         // Add edges to the graph
+        // ---------------------------------------------------------------------
         g.pr.iter().enumerate().for_each(|(pi, p)| {
             let lhs_node_index = nt_positions.get(&(pi, 0)).unwrap();
             let pr_node_index = prod_node_indices[pi];
