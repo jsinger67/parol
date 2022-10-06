@@ -28,7 +28,7 @@ pub fn detect_left_recursions(grammar: &Cfg) -> HashSet<Vec<NtNodeType>> {
                     !matches!(n, NtNodeType::T(..))
                 });
 
-                if produces_no_terminals && matches!(graph[p[2]], NtNodeType::P(_)) {
+                if produces_no_terminals {
                     let mut node_set = p.to_vec();
                     node_set.sort();
                     node_set.dedup();

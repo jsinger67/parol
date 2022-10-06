@@ -135,7 +135,18 @@ where
     let input = fs::read_to_string(&file_name)
         .into_diagnostic()
         .wrap_err(format!("Can't read file {:?}", file_name))?;
-    obtain_grammar_config_from_string(&input, verbose)
+
+    let mut parol_grammar = ParolGrammar::new();
+    let _syntax_tree = parse(&input, file_name.as_ref(), &mut parol_grammar).wrap_err(format!(
+        "Failed parsing file {}",
+        file_name.as_ref().display()
+    ))?;
+
+    if verbose {
+        println!("{}", parol_grammar);
+    }
+
+    GrammarConfig::try_from(parol_grammar)
 }
 
 // ---------------------------------------------------
