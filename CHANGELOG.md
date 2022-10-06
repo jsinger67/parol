@@ -22,8 +22,8 @@ But we try to mark incompatible changes with a new minor version.
 *This release provides rather breaking changes to the public API. Therefore we increase minor
 version number to 11.*
 
-* Reworked recursion detection, and fixed hopefully
-  * Removed the use of petgraph as helper library
+* Reworked recursion detection and fixed it hopefully
+  * Replaced proprietary graph based algorithm with a more conventional one
   * Added plenty of tests
 * Switched to clap 4
 * Removed prettyplease option
