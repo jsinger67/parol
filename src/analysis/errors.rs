@@ -1,5 +1,10 @@
 use miette::Diagnostic;
 
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+
 /// Error type used by the [crate::analysis] module
 #[derive(Error, Diagnostic, Debug)]
 pub enum GrammarAnalysisError {
@@ -12,7 +17,7 @@ pub enum GrammarAnalysisError {
     LeftRecursion {
         /// Recursions
         #[related]
-        recursions: Vec<RecursionPath>,
+        recursions: Vec<RecursiveNonTerminal>,
     },
 
     /// Unreachable non-terminals are not allowed.
@@ -51,15 +56,14 @@ pub enum GrammarAnalysisError {
     },
 }
 
-/// A single recursion
+/// A single recursive non-terminal
 #[derive(Error, Diagnostic, Debug)]
-#[error("Recursion {number}")]
-pub struct RecursionPath {
+#[error("Recursive non-terminal #{number}: '{name}'")]
+pub struct RecursiveNonTerminal {
     /// The number of the recursion path
     pub number: usize,
-    /// Recursion path elements
-    #[related]
-    pub hints: Vec<RelatedHint>,
+    /// non-terminal
+    pub name: String,
 }
 
 /// Related information

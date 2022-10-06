@@ -1,8 +1,8 @@
-use crate::analysis::errors::{RecursionPath, RelatedHint};
+use crate::analysis::errors::{RecursiveNonTerminal, RelatedHint};
 use crate::analysis::{
     non_productive_non_terminals, unreachable_non_terminals, GrammarAnalysisError,
 };
-use crate::{detect_left_recursions, left_factor, Cfg};
+use crate::{detect_left_recursive_non_terminals, left_factor, Cfg};
 use miette::{bail, Result};
 
 // ---------------------------------------------------
@@ -36,22 +36,16 @@ pub fn check_and_transform_grammar(cfg: &Cfg) -> Result<Cfg> {
         bail!(GrammarAnalysisError::UnreachableNonTerminals { non_terminals });
     }
 
-    let left_recursions = detect_left_recursions(cfg);
+    let left_recursions = detect_left_recursive_non_terminals(cfg);
     if !left_recursions.is_empty() {
         let recursions = left_recursions
             .iter()
             .enumerate()
-            .map(|(number, path_elements)| RecursionPath {
+            .map(|(number, name)| RecursiveNonTerminal {
                 number,
-                hints: path_elements
-                    .iter()
-                    .map(|s| RelatedHint {
-                        topic: "Recursion path element".to_string(),
-                        hint: format!("{}", s),
-                    })
-                    .collect::<Vec<RelatedHint>>(),
+                name: name.to_string(),
             })
-            .collect::<Vec<RecursionPath>>();
+            .collect::<Vec<RecursiveNonTerminal>>();
 
         bail!(GrammarAnalysisError::LeftRecursion { recursions });
     }

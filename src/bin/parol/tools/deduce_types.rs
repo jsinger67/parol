@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[clap(name = "deduce_types")]
 pub struct Args {
     /// The grammar file to use
-    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    #[clap(short = 'f', long = "grammar-file")]
     grammar_file: Option<PathBuf>,
     /// Grammar input as text
     #[clap(short = 's', long = "grammar-text")]
@@ -28,10 +28,17 @@ pub fn main(args: &Args) -> Result<()> {
     };
 
     let grammar_name = if let Some(file_name) = &args.grammar_file {
-        file_name.file_stem().unwrap().to_str().unwrap_or("TestGrammar")
+        file_name
+            .file_stem()
+            .unwrap()
+            .to_str()
+            .unwrap_or("TestGrammar")
     } else {
         "TestGrammar"
-    }.replace("-exp", "").replace('.', "_").replace('-', "_");
+    }
+    .replace("-exp", "")
+    .replace('.', "_")
+    .replace('-', "_");
 
     let cfg = left_factor(&grammar_config.cfg);
     // Exchange original grammar with transformed one

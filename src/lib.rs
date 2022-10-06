@@ -38,8 +38,8 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, Terminal};
 pub mod analysis;
 
 pub use analysis::{
-    calculate_lookahead_dfas, detect_left_recursions, CompiledTerminal, KTuple, KTuples,
-    NtEdgeType, NtGrammarGraph, NtNodeType,
+    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal, KTuple,
+    KTuples,
 };
 
 ///

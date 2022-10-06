@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[clap(name = "generate")]
 pub struct Args {
     /// The grammar file to use
-    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    #[clap(short = 'f', long = "grammar-file")]
     grammar_file: PathBuf,
     /// The maximum length of generated sentence
     #[clap(short = 'l', long = "max-length")]

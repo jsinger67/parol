@@ -1,5 +1,10 @@
 # Tutorial
 
+>Please note that as of version 0.10.7 we switched to the new documentation. This tutorial will not
+updated anymore.
+>
+>You can directly head over to the hosted [book](https://jsinger67.github.io/).
+
 This tutorial will describe step by step how to build an own language processor.
 We will begin from the scratch and uses [JSON](http://Json.org) as a concrete example.
 The complete source code is available on Github: [json_parser](https://github.com/jsinger67/json_parser.git).
@@ -96,14 +101,8 @@ Value    : String
 
 ![recursion](./images/recursion.png)
 
-To see more clearly what this message means we first save the expanded grammar to a separate file. Please ignore the error in this case. The `json-exp.par` is generated anyway.
-
-```shell
-parol -f ./examples/json/json.par -e ./examples/json/json-exp.par
-```
-
-When you open this expanded version which contains an equivalent transformation of your initial grammar definition you can understand the message better.
-The left-recursion is detected at the non-terminal 'Value', then leads over the non-terminal reference at production 17, position 0 (LHS) via production (P) 'Value: Value;' to the non-terminal reference at production 17, position 1 (RHS) to the non-terminal 'Value'.
+This clearly tells us that the non-terminal `Value` is recursive and gives us the hint that we
+should rework our grammar.
 
 Now please undo this additional alternation and return to the original version.
 

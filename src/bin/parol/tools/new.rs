@@ -14,7 +14,7 @@ use std::process::Command;
 #[clap(group(ArgGroup::new("lib_or_bin").args(&["lib", "bin"]).multiple(false).required(true)))]
 pub struct Args {
     /// The directory where to create the new crate
-    #[clap(short, long, parse(from_os_str))]
+    #[clap(short, long)]
     path: PathBuf,
 
     /// The new crate should be a binary executable
@@ -86,7 +86,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     &["add", "lazy_static@^1.4"],
     &["add", "log@0.4.17"],
     &["add", "miette@^5.2", "--features", "fancy"],
-    &["add", "parol_runtime@0.7.1"],
+    &["add", "parol_runtime@0.7"],
     &["add", "thiserror@^1.0"],
     &[
         "add",

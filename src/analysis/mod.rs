@@ -14,7 +14,7 @@ pub use errors::GrammarAnalysisError;
 
 /// Module with check for left-recursions
 pub mod left_recursion;
-pub use left_recursion::detect_left_recursions;
+pub use left_recursion::detect_left_recursive_non_terminals;
 
 /// Module with the KTuple type
 pub mod k_tuple;
@@ -42,10 +42,6 @@ pub use k_decision::{
 /// Module with types for production selection
 pub mod lookahead_dfa;
 pub use lookahead_dfa::LookaheadDFA;
-
-/// Module with a graph used for recursion detection in the grammar
-pub mod nt_grammar_graph;
-pub use nt_grammar_graph::{NtEdgeType, NtGrammarGraph, NtNodeType};
 
 /// Module with productivity calculations
 pub mod productivity;

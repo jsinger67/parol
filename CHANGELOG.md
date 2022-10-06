@@ -17,6 +17,18 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
+## v0.11.0 - 2022-10-xx
+
+*This release provides rather breaking changes to the public API. Therefore we increase minor
+version number to 11.*
+
+* Reworked recursion detection, and fixed hopefully
+  * Removed the use of petgraph as helper library
+  * Added plenty of tests
+* Switched to clap 4
+* Removed prettyplease option
+  * Opting clearly for rustfmt now
+
 ## v0.10.7 - 2022-09-14
 
 * Launching the book as central documentation for `parol`

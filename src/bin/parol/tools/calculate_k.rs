@@ -8,7 +8,7 @@ use std::path::PathBuf;
 #[clap(name = "calculate_k")]
 pub struct Args {
     /// The grammar file to use
-    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    #[clap(short = 'f', long = "grammar-file")]
     grammar_file: PathBuf,
     /// The maximum number of lookahead tokens to be used
     #[clap(short = 'k', long = "lookahead", default_value = "5")]

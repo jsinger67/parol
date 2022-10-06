@@ -7,7 +7,7 @@ use clap::Parser;
 #[clap(author, version, about)]
 pub(crate) struct ClapApp {
     /// Input grammar file
-    #[clap(short = 'f', long = "file", parse(from_os_str))]
+    #[clap(short = 'f', long = "file")]
     pub grammar: Option<PathBuf>,
 
     /// Lookahead limit for Lookahead DFA calculation
@@ -15,27 +15,27 @@ pub(crate) struct ClapApp {
     pub lookahead: usize,
 
     /// Output file for the generated parser source
-    #[clap(short = 'p', long = "parser", parse(from_os_str))]
+    #[clap(short = 'p', long = "parser")]
     pub parser: Option<PathBuf>,
 
     /// Output file for the expanded grammar. Use -e-- to output to stdout
-    #[clap(short = 'e', long = "expanded", parse(from_os_str))]
+    #[clap(short = 'e', long = "expanded")]
     pub expanded: Option<PathBuf>,
 
     /// Writes the internal parsed grammar (ParolGrammar)
-    #[clap(short = 'i', long = "write_internal", parse(from_os_str))]
+    #[clap(short = 'i', long = "write_internal")]
     pub write_internal: Option<PathBuf>,
 
     /// Writes the untransformed parsed grammar
-    #[clap(short = 'u', long = "write_untransformed", parse(from_os_str))]
+    #[clap(short = 'u', long = "write_untransformed")]
     pub write_untransformed: Option<PathBuf>,
 
     /// Writes the transformed parsed grammar
-    #[clap(short = 'w', long = "write_transformed", parse(from_os_str))]
+    #[clap(short = 'w', long = "write_transformed")]
     pub write_transformed: Option<PathBuf>,
 
     /// Output file for the generated trait with semantic actions
-    #[clap(short = 'a', long = "actions", parse(from_os_str))]
+    #[clap(short = 'a', long = "actions")]
     pub actions: Option<PathBuf>,
 
     /// User type that implements the language processing

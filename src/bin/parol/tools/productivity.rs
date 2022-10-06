@@ -8,7 +8,7 @@ use parol::obtain_grammar_config;
 #[derive(clap::Parser)]
 pub struct Args {
     /// The grammar file to use
-    #[clap(short = 'f', long = "grammar-file", parse(from_os_str))]
+    #[clap(short = 'f', long = "grammar-file")]
     grammar_file: PathBuf,
 }
 
