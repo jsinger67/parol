@@ -5,6 +5,12 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.2.0
+
+* Switched to clap 4
+* Using parol 0.11.0 now
+  * Implied some changes in error handling
+
 ## v0.1.12
 
 * Support for "Format document"

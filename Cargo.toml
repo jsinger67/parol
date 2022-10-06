@@ -1,6 +1,6 @@
 [package]
 name = "parol-ls"
-version = "0.1.12"
+version = "0.2.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Language server for parol parser generator"
 documentation = "https://docs.rs/parol-ls"
@@ -13,9 +13,9 @@ edition = "2021"
 default-run = "parol-ls"
 
 [dependencies]
-clap = { version = "^3.2.16", features = [ "derive", "cargo" ] }
-derive-new = "0.5.9"
+clap = { version = "4.0.10", features = [ "derive", "cargo" ] }
 derive_builder = "0.11.2"
+derive-new = "0.5.9"
 env_logger = "0.9.0"
 function_name = "0.3.0"
 id_tree = "^1.8"
@@ -24,7 +24,7 @@ log = "0.4.17"
 lsp-server = "0.6.0"
 lsp-types = "0.93.0"
 miette = "^5.2"
-parol = "0.10.6"
+parol = "0.11.0"
 parol_runtime = { version = "0.7.2", features = ["trim_parse_tree"] }
 regex = "1.6.0"
 serde = "^1.0.142"
@@ -32,7 +32,7 @@ serde_json = "^1.0.83"
 thiserror = "^1.0.32"
 
 [build-dependencies]
-parol = "0.10.6"
+parol = "0.11.0"
 
 [profile.release]
 debug = true

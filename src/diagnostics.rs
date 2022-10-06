@@ -1,6 +1,5 @@
 use lsp_types::{Diagnostic, DiagnosticRelatedInformation, Location, NumberOrString, Range, Url};
 use parol::analysis::GrammarAnalysisError;
-use std::collections::HashSet;
 use std::fmt::Write as _;
 
 use crate::{
@@ -80,40 +79,23 @@ fn extract_grammar_analysis_error(
                     },
                     message: format!("Recursion #{}:", i + 1),
                 });
-                for hint in &rec.hints {
-                    eprintln!("{}", hint);
-                    if let Some(non_terminals) = Server::find_non_terminal_definitions(
-                        located_document_state.document_state,
-                        &hint.hint,
-                    ) {
-                        // We use a Set to avoid duplicate entries which can occur due to the use of
-                        // an expanded version of the grammar.
-                        // If you write a production P like this:
-                        // P: A | B | C;
-                        // You will eventually end up with three productions for P:
-                        // P: A;
-                        // P: B;
-                        // P: C;
-                        let mut ranges: HashSet<String> = HashSet::new();
-                        for rng in non_terminals {
-                            let (range, message) = (*rng, format!("Non-terminal: {}", hint.hint));
-                            if ranges.insert(hint.hint.clone()) {
-                                related_information.push(DiagnosticRelatedInformation {
-                                    location: Location {
-                                        uri: located_document_state.uri.to_owned(),
-                                        range,
-                                    },
-                                    message,
-                                })
-                            }
-                        }
-                    } else if let Some(rel) = related_information.last_mut() {
-                        if rel.message.ends_with(':') {
-                            let _ = write!(rel.message, " {}", hint.hint);
-                        } else {
-                            let _ = write!(rel.message, " => {}", hint.hint);
-                        }
+                eprintln!("{}", rec.name);
+                if let Some(non_terminals) = Server::find_non_terminal_definitions(
+                    located_document_state.document_state,
+                    &rec.name,
+                ) {
+                    for rng in non_terminals {
+                        let (range, message) = (*rng, format!("Non-terminal: {}", rec.name));
+                        related_information.push(DiagnosticRelatedInformation {
+                            location: Location {
+                                uri: located_document_state.uri.to_owned(),
+                                range,
+                            },
+                            message,
+                        })
                     }
+                } else if let Some(rel) = related_information.last_mut() {
+                    let _ = write!(rel.message, " {}", rec.name);
                 }
             }
         }
