@@ -17,7 +17,7 @@ But we try to mark incompatible changes with a new minor version.
 
 ---
 
-## v0.11.0 - 2022-10-xx
+## v0.11.0 - 2022-10-22
 
 *This release provides rather breaking changes to the public API. Therefore we increase minor
 version number to 11.*
