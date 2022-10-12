@@ -66,19 +66,19 @@ impl<'t> ParseTreeStackEntry<'t> {
     /// `'a` refers to the lifetime of self.
     /// `'b` refers to the lifetime of the parse tree.
     ///
-    pub fn symbol<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType>) -> Result<&'a str>
+    pub fn text<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType>) -> Result<&'a str>
     where
         'b: 'a,
     {
         match self {
             Self::Nd(node) => {
                 let token = node.data().token()?;
-                Ok(token.symbol)
+                Ok(&token.text)
             }
             Self::Id(i) => {
                 let node = parse_tree.get(i).into_diagnostic()?;
                 let token = node.data().token()?;
-                Ok(token.symbol)
+                Ok(&token.text)
             }
         }
     }

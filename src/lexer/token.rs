@@ -1,15 +1,15 @@
-use crate::lexer::{FormatToken, OwnedToken, TerminalIndex};
+use crate::lexer::{FormatToken, TerminalIndex};
 use miette::SourceSpan;
+use std::borrow::Cow;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 use super::Location;
 
-///
-/// Special token constants the lexer has to deal with regularly.
-/// There are some special fix values used for common token types.
-/// See constants below.
-///
+//
+// Special token constants the lexer has to deal with regularly.
+// There are some special fix values used for common token types.
+//
 
 /// End of input constant
 pub const EOI: TerminalIndex = 0;
@@ -28,14 +28,14 @@ const EOI_TOKEN: &str = "$";
 
 ///
 /// The Token<'t> type represents a scanned token.
-/// It has a reference to the scanned text in the symbol member.
+/// It has a reference to the scanned text in the text member.
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
 pub struct Token<'t> {
     /// The matched string
-    pub symbol: &'t str,
+    pub(crate) text: Cow<'t, str>,
 
     /// The index of the terminal in the augmented terminal list
     pub token_type: TerminalIndex,
@@ -50,7 +50,7 @@ impl<'t> Token<'t> {
     ///
     pub fn eoi() -> Self {
         Self {
-            symbol: EOI_TOKEN,
+            text: EOI_TOKEN.into(),
             token_type: EOI,
             location: Location::default(),
         }
@@ -59,9 +59,12 @@ impl<'t> Token<'t> {
     ///
     /// Creates a token with given values.
     ///
-    pub fn with(symbol: &'t str, token_type: TerminalIndex, location: Location) -> Self {
+    pub fn with<T>(text: T, token_type: TerminalIndex, location: Location) -> Self
+    where
+        T: Into<Cow<'t, str>>,
+    {
         Self {
-            symbol,
+            text: text.into(),
             token_type,
             location,
         }
@@ -76,11 +79,18 @@ impl<'t> Token<'t> {
     }
 
     ///
+    /// Accesses the token's scanned text
+    ///
+    pub fn text(&self) -> &str {
+        self.text.as_ref()
+    }
+
+    ///
     /// Creates an owned variant of the token
     ///
-    pub fn to_owned(&self) -> OwnedToken {
-        OwnedToken {
-            symbol: self.symbol.to_owned(),
+    pub fn to_owned(&self) -> Self {
+        Self {
+            text: self.text.to_owned(),
             token_type: self.token_type,
             location: self.location.clone(),
         }
@@ -89,7 +99,7 @@ impl<'t> Token<'t> {
 
 impl Display for Token<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        let (c1, c2) = if self.symbol.starts_with('\'') {
+        let (c1, c2) = if self.text.starts_with('\'') {
             ('<', '>')
         } else {
             ('\'', '\'')
@@ -97,7 +107,7 @@ impl Display for Token<'_> {
         write!(
             f,
             "{}{}{}, Ty:{}, at {}",
-            c1, self.symbol, c2, self.token_type, self.location
+            c1, self.text, c2, self.token_type, self.location
         )
     }
 }
@@ -107,7 +117,7 @@ impl FormatToken for Token<'_> {
         let name = terminal_names[self.token_type];
         format!(
             "'{}'({}) at {}",
-            self.symbol.escape_default(),
+            self.text.escape_default(),
             name,
             self.location,
         )

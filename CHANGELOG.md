@@ -13,6 +13,22 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 But we try to mark incompatible changes with a new minor version.
 
+## v0.8.0 - 2022-10-08
+
+*This release introduces breaking changes to the public API. To indicate this we increase minor
+version number.*
+
+* Removed `OwnedToken` type and used `Cow` to hold the scanned text in `Token`s instead. Anyway this
+member is private and can only be accessed via method `text()`. See below for more on this new
+method.
+* The `Token`'s constructor method `with` had a change in the type of the text parameter which
+should be fairly easy to adapt in user code.
+* The `Token`'s `to_owned` method returns a `Token` now.
+* The parsed text of a token can now be accessed via method `text()` of type `Token` now. Formerly
+you used the member `symbol` directly which is not possible anymore.
+* Similarly the method to access the token's text via `ParseTree` was renamed from `symbol()` to
+`text()` in the implementation of `ParseTreeStackEntry`
+
 ## v0.7.2 - 2022-08-03
 
 * Better diagnostics to support parol language server

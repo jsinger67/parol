@@ -2,7 +2,7 @@ use crate::lexer::{location, TerminalIndex, Token, Tokenizer, RX_NEW_LINE};
 use location::Location;
 use log::trace;
 use regex::CaptureMatches;
-use std::{path::PathBuf, sync::Arc};
+use std::{borrow::Cow, path::Path};
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
@@ -20,13 +20,13 @@ pub struct TokenIter<'t> {
 
     /// A list of valid group names. They are used to associate the token type
     /// with the matched text.
-    group_names: Vec<String>,
+    group_names: Vec<&'t str>,
 
     /// The lookahead size
     k: usize,
 
     /// The name of the input file
-    pub file_name: Arc<PathBuf>,
+    pub file_name: Cow<'static, Path>,
 }
 
 impl<'t> TokenIter<'t> {
@@ -34,25 +34,22 @@ impl<'t> TokenIter<'t> {
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new(
-        rx: &'static Tokenizer,
-        input: &'t str,
-        file_name: Arc<PathBuf>,
-        k: usize,
-    ) -> TokenIter<'t> {
-        let group_names: Vec<String> = rx
+    pub fn new<T>(rx: &'static Tokenizer, input: &'t str, file_name: T, k: usize) -> Self
+    where
+        T: Into<Cow<'static, Path>>,
+    {
+        let group_names: Vec<&'t str> = rx
             .rx
             .capture_names()
             .flatten()
             .filter(|n| n.starts_with('G'))
-            .map(String::from)
             .collect();
-        TokenIter {
+        Self {
             line: 1,
             col: 1,
             capture_iter: rx.rx.captures_iter(input),
             group_names,
-            file_name,
+            file_name: file_name.into(),
             k,
         }
     }
@@ -95,15 +92,15 @@ impl<'t> Iterator for TokenIter<'t> {
                 // Token type is taken from the group name
                 let group_name = group_name_opt.unwrap();
                 let token_type = TerminalIndex::from_str_radix(&group_name[1..], 10).unwrap();
-                // The symbol is taken from the match
-                let symbol = ma.as_str();
-                let length = symbol.len();
+                // The token's text is taken from the match
+                let text = ma.as_str();
+                let length = text.len();
                 // The token position is calculated from the matched text
                 let start_line = self.line;
                 let start_column = self.col;
 
                 // Set the inner position behind the scanned token
-                let (new_lines, column_after_nl) = Self::count_nl(symbol);
+                let (new_lines, column_after_nl) = Self::count_nl(text);
                 let pos = ma.end();
                 self.line += new_lines;
                 self.col = if new_lines > 0 {
@@ -120,7 +117,7 @@ impl<'t> Iterator for TokenIter<'t> {
                     pos,
                     self.file_name.clone(),
                 );
-                let token = Token::with(symbol, token_type, location);
+                let token = Token::with(text, token_type, location);
                 trace!("{}, newline count: {}", token, new_lines);
                 Some(token)
             } else {

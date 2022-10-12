@@ -1,5 +1,6 @@
+use std::borrow::Cow;
 use std::fmt::{Debug, Display, Error, Formatter};
-use std::{path::PathBuf, sync::Arc};
+use std::path::Path;
 
 use miette::SourceSpan;
 
@@ -29,28 +30,31 @@ pub struct Location {
     pub(crate) pos: usize,
 
     /// The name of the input file
-    pub file_name: Arc<PathBuf>,
+    pub file_name: Cow<'static, Path>,
 }
 
 impl Location {
     ///
     /// Creates a token with given values.
     ///
-    pub fn with(
+    pub fn with<T>(
         line: usize,
         column: usize,
         length: usize,
         start_pos: usize,
         pos: usize,
-        file_name: Arc<PathBuf>,
-    ) -> Self {
+        file_name: T,
+    ) -> Self
+    where
+        T: Into<Cow<'static, Path>>,
+    {
         Self {
             line,
             column,
             length,
             start_pos,
             pos,
-            file_name,
+            file_name: file_name.into(),
         }
     }
 }

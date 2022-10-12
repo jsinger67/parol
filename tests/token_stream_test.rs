@@ -11,10 +11,11 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
+use std::borrow::Cow;
 use std::cell::RefCell;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-const INPUT: &'static str = r#"Id1
+const INPUT: &str = r#"Id1
 "1. String"
 Id2
 "2. \"String\t\" with \
@@ -82,8 +83,8 @@ lazy_static! {
 
 #[test]
 fn scanner_switch_and_named_source() {
-    let stream =
-        RefCell::new(TokenStream::new(INPUT, &PathBuf::default(), &TOKENIZERS, MAX_K).unwrap());
+    let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
+    let stream = RefCell::new(TokenStream::new(INPUT, file_name, &TOKENIZERS, MAX_K).unwrap());
 
     assert_eq!(stream.borrow().current_scanner_index, 0);
 
@@ -94,9 +95,9 @@ fn scanner_switch_and_named_source() {
 
         // Check contents of named source
         let file_source: NamedSource = FileSource::from_stream(&stream.borrow()).into();
-        let source_span: SourceSpan = (&tok.to_owned()).into();
+        let source_span: SourceSpan = (&tok).into();
         let span_contents = file_source.read_span(&source_span, 0, 0).unwrap();
-        assert_eq!(span_contents.data(), tok.symbol.as_bytes());
+        assert_eq!(span_contents.data(), tok.text().as_bytes());
 
         if tok.token_type == 9
         /* StringDelimiter */
@@ -115,7 +116,7 @@ fn scanner_switch_and_named_source() {
 
     assert_eq!(stream.borrow().current_scanner_index, 1);
 
-    assert_eq!(prev_tok.symbol, "\"");
+    assert_eq!(prev_tok.text(), "\"");
     assert_eq!(prev_tok.location.line, 7);
     assert_eq!(prev_tok.location.column, 26);
 }

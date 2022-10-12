@@ -4,10 +4,9 @@ use miette::{
     Diagnostic, IntoDiagnostic, MietteError, NamedSource, Result, SourceCode, SourceSpan,
     SpanContents,
 };
-use std::borrow::Borrow;
+use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
-use std::path::PathBuf;
-use std::sync::Arc;
+use std::path::Path;
 
 #[derive(Error, Diagnostic, Debug)]
 pub enum ParserError {
@@ -141,16 +140,19 @@ impl Display for TokenVec {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct FileSource {
-    file_name: Arc<PathBuf>,
+    file_name: Cow<'static, Path>,
     input: String,
 }
 
 impl FileSource {
-    pub fn try_new(file_name: Arc<PathBuf>) -> Result<Self> {
-        let input = std::fs::read_to_string(<Arc<PathBuf> as Borrow<PathBuf>>::borrow(&file_name))
-            .into_diagnostic()?;
+    pub fn try_new<T>(file_name: T) -> Result<Self>
+    where
+        T: Into<Cow<'static, Path>>,
+    {
+        let file_name: Cow<Path> = file_name.into();
+        let input = std::fs::read_to_string(&*file_name).into_diagnostic()?;
         Ok(Self { file_name, input })
     }
 

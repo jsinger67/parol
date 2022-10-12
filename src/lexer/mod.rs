@@ -25,12 +25,6 @@ pub mod token;
 pub use token::{Token, BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE};
 
 ///
-/// The owned token type is a token with owning token text.
-///
-pub mod owned_token;
-pub use owned_token::OwnedToken;
-
-///
 /// Module that provides the Tokenizer type.
 ///
 pub mod tokenizer;

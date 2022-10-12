@@ -5,10 +5,11 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::lexer::{Location, Token, TokenStream, Tokenizer};
+use std::borrow::Cow;
 use std::cell::RefCell;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-const PAROL_CFG_1: &'static str = r#"%start Grammar
+const PAROL_CFG_1: &str = r#"%start Grammar
 %%
 
 // Test grammar
@@ -57,7 +58,7 @@ const SCANNER_0: &[&str; 5] = &[
 lazy_static! {
     static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
         "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0, &vec![5, 6, 7, 8, 9, 10]).unwrap()
+        Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap()
     ),];
 }
 
@@ -72,8 +73,9 @@ fn tokenizer_test() {
 #[test]
 fn lexer_token_production() {
     let k = 3;
+    let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, k).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, k).unwrap());
     let mut tok = Token::default();
     while !token_stream.borrow().all_input_consumed() {
         tok = token_stream.borrow_mut().lookahead(0).unwrap();
@@ -95,16 +97,17 @@ fn lexer_token_production() {
 #[test]
 #[should_panic(expected = "Lookahead exceeds its maximum")]
 fn lookahead_must_fail() {
-    let mut token_stream =
-        TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, 1).unwrap();
+    let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
+    let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap();
     let _tok = token_stream.lookahead(2).unwrap();
 }
 
 #[test]
 #[should_panic(expected = "Lookahead exceeds token buffer length")]
 fn lookahead_beyond_buffer_must_fail() {
+    let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =
-        RefCell::new(TokenStream::new(PAROL_CFG_1, &PathBuf::default(), &TOKENIZERS, 1).unwrap());
+        RefCell::new(TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap());
     while !token_stream.borrow().all_input_consumed() {
         if token_stream.borrow_mut().consume().is_ok() {
             let tok = token_stream.borrow_mut().lookahead(0).unwrap();

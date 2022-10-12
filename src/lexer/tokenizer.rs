@@ -53,7 +53,7 @@ impl Tokenizer {
         augmented_terminals: &[&str],
         scanner_specifics: &[&str],
         scanner_terminal_indices: &[usize],
-    ) -> Result<Tokenizer> {
+    ) -> Result<Self> {
         debug_assert_eq!(5, scanner_specifics.len());
         let internal_terminals =
             scanner_specifics
@@ -92,7 +92,7 @@ impl Tokenizer {
             .into_diagnostic()
             .wrap_err("Unable to compile generated RegEx!")?;
 
-        Ok(Tokenizer {
+        Ok(Self {
             rx,
             error_token_type,
         })
