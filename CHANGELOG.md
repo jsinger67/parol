@@ -11,9 +11,12 @@ Be aware that this project is still v0.y.z which means that anything can change 
 >
 >(Semantic Versioning Specification)
 
-But we try to mark incompatible changes with a new minor version.
+## Indicating incompatible changes on major version zero
 
-## v0.8.0 - 2022-10-08
+We defined for this project that while being on major version zero we mark incompatible changes with
+new minor version numbers. Please note that this is no version handling covered by `Semver`.
+
+## v0.8.0 - 2022-10-12
 
 *This release introduces breaking changes to the public API. To indicate this we increase minor
 version number.*
@@ -27,7 +30,13 @@ should be fairly easy to adapt in user code.
 * The parsed text of a token can now be accessed via method `text()` of type `Token` now. Formerly
 you used the member `symbol` directly which is not possible anymore.
 * Similarly the method to access the token's text via `ParseTree` was renamed from `symbol()` to
-`text()` in the implementation of `ParseTreeStackEntry`
+`text()` in the implementation of `parser::ParseTreeStackEntry`
+* The types `errors::FileSource`, `lexer::Location` and `lexer::TokenIter` now internally use a
+`Cow<Path>` for holding the file name instead of a more expensive `Arc<PathBuf>`. This was
+originally chosen because of the necessity of `miette::SourceCode` to be `Send + Sync`. But the Cow
+will do the same with much less effort.
+  * These changes effect user code due to changes in the methods `try_new` of `errors::FileSource`,
+`with` of `lexer::Location` and `new` of `lexer::TokenIter`
 
 ## v0.7.2 - 2022-08-03
 
