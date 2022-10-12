@@ -3,7 +3,6 @@ use super::parol_grammar_trait::{
     PrologList0, ScannerDirectives, StartDeclaration,
 };
 use super::ParolParserError;
-use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::grammar::{Decorate, SymbolAttribute};
 
@@ -55,18 +54,6 @@ impl UserDefinedTypeName {
         &self.0
     }
 
-    /// Checks if this [`UserDefinedTypeName`] is a built in type.
-    /// ```
-    /// use parol::parser::parol_grammar::UserDefinedTypeName;
-    /// let user_type_name = UserDefinedTypeName::new(vec!["Tuple".to_string()]);
-    /// assert!(!user_type_name.is_built_in());
-    /// let user_type_name = UserDefinedTypeName::new(vec!["bool".to_string()]);
-    /// assert!(user_type_name.is_built_in());
-    /// ```
-    pub fn is_built_in(&self) -> bool {
-        self.len() == 1 && NmHlp::is_rust_built_in_type(&self.0[0])
-    }
-
     /// Returns module scoped name of this [`UserDefinedTypeName`].
     /// If you have a type `x::y::Z` this should return `x::y::Z`.
     /// ```
@@ -92,9 +79,9 @@ impl Display for UserDefinedTypeName {
 impl From<&super::parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
     fn from(user_type_names: &super::parol_grammar_trait::UserTypeName<'_>) -> Self {
         Self(user_type_names.user_type_name_list.iter().fold(
-            vec![user_type_names.identifier.identifier.symbol.to_string()],
+            vec![user_type_names.identifier.identifier.text().to_string()],
             |mut acc, a| {
-                acc.push(a.identifier.identifier.symbol.to_string());
+                acc.push(a.identifier.identifier.text().to_string());
                 acc
             },
         ))
@@ -439,7 +426,7 @@ impl Default for ScannerConfig {
 impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
     fn from(scanner_state: &super::parol_grammar_trait::ScannerState<'_>) -> Self {
         let mut me = Self {
-            name: scanner_state.identifier.identifier.symbol.to_string(),
+            name: scanner_state.identifier.identifier.text().to_string(),
             ..Default::default()
         };
         for scanner_directive in &scanner_state.scanner_state_list {
@@ -521,7 +508,7 @@ impl ParolGrammar<'_> {
     }
 
     fn trim_quotes(string: &super::parol_grammar_trait::String) -> String {
-        string.string.symbol.trim_matches('"').to_string()
+        string.string.text().trim_matches('"').to_string()
     }
 
     fn process_declaration(&mut self, declaration: &PrologList) -> Result<()> {
@@ -583,7 +570,7 @@ impl ParolGrammar<'_> {
     }
 
     fn process_start_declaration(&mut self, start_declaration: &StartDeclaration) -> Result<()> {
-        self.start_symbol = start_declaration.identifier.identifier.symbol.to_string();
+        self.start_symbol = start_declaration.identifier.identifier.text().to_string();
         Ok(())
     }
 
@@ -609,7 +596,7 @@ impl ParolGrammar<'_> {
     }
 
     fn process_production(&mut self, prod: &super::parol_grammar_trait::Production) -> Result<()> {
-        let lhs = prod.identifier.identifier.symbol.to_string();
+        let lhs = prod.identifier.identifier.text().to_string();
         let alternations = Self::to_alternation_vec(&prod.alternations);
         let rhs = self.process_alternations(&alternations)?;
         self.productions.push(Production { lhs, rhs });
@@ -692,7 +679,7 @@ impl ParolGrammar<'_> {
                         .non_terminal
                         .identifier
                         .identifier
-                        .symbol
+                        .text()
                         .to_string(),
                     attr,
                     user_type_name,
@@ -757,10 +744,10 @@ impl ParolGrammar<'_> {
         let context = function_name!();
         self.scanner_configurations
             .iter()
-            .position(|s| s.name == scanner_name.symbol)
+            .position(|s| s.name == scanner_name.text())
             .ok_or(miette!(ParolParserError::UnknownScanner {
                 context: context.to_owned(),
-                name: scanner_name.symbol.to_string(),
+                name: scanner_name.text().to_string(),
                 input: FileSource::try_new(scanner_name.location.file_name.clone())?.into(),
                 token: scanner_name.into()
             }))
@@ -793,7 +780,7 @@ impl ParolGrammar<'_> {
         user_type_def: &super::parol_grammar_trait::Declaration2,
     ) {
         self.user_type_definitions.insert(
-            user_type_def.identifier.identifier.symbol.to_string(),
+            user_type_def.identifier.identifier.text().to_string(),
             user_type_def.user_type_name.clone(),
         );
     }

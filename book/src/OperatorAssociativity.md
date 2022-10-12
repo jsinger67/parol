@@ -121,7 +121,7 @@ Add the following two functions to the impl block of the struct `LeftAssociativi
 
 ```rust
     fn number(literal: &Literal) -> Result<u32> {
-        literal.literal.symbol.parse::<u32>().into_diagnostic()
+        literal.literal.text().parse::<u32>().into_diagnostic()
     }
 
     fn process_operation(&mut self) -> Result<()> {

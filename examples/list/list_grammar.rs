@@ -47,7 +47,7 @@ impl ListGrammarTrait for ListGrammar {
     /// Num: "[0-9]+";
     ///
     fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let symbol = num.symbol(parse_tree)?;
+        let symbol = num.text(parse_tree)?;
         let number = symbol
             .parse::<DefinitionRange>()
             .into_diagnostic()

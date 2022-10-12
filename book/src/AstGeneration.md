@@ -237,7 +237,7 @@ impl<'t> TryFrom<&Token<'t>> for Number {
     type Error = <u32 as FromStr>::Err;
 
     fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
-        Ok(Self(number.symbol.parse::<u32>()?))
+        Ok(Self(number.text().parse::<u32>()?))
     }
 }
 ```

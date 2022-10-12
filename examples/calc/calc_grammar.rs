@@ -295,7 +295,7 @@ impl CalcGrammar {
         parse_tree: &Tree<ParseTreeType>,
         context: &str,
     ) -> Result<()> {
-        let symbol = stack_entry.symbol(parse_tree)?;
+        let symbol = stack_entry.text(parse_tree)?;
         let op: BinaryOperator = symbol.into();
         self.push(CalcGrammarItem::BinaryOp(op), context);
         Ok(())
@@ -400,7 +400,7 @@ impl CalcGrammarTrait for CalcGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "assign_op";
-        let symbol = tk_assign_op.symbol(parse_tree)?;
+        let symbol = tk_assign_op.text(parse_tree)?;
         let assign_op: AssignOperator = symbol.into();
         self.push(CalcGrammarItem::AssignOp(assign_op), context);
         Ok(())
@@ -1241,7 +1241,7 @@ impl CalcGrammarTrait for CalcGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "number";
-        let symbol = tk_number.symbol(parse_tree)?;
+        let symbol = tk_number.text(parse_tree)?;
         let number = match symbol.parse::<DefinitionRange>() {
             Ok(number) => number,
             Err(error) => {
@@ -1300,7 +1300,7 @@ impl CalcGrammarTrait for CalcGrammar {
     ///
     fn id(&mut self, tk_id: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "id";
-        let id = tk_id.symbol(parse_tree)?;
+        let id = tk_id.text(parse_tree)?;
         self.push(CalcGrammarItem::Id(id.to_owned()), context);
         Ok(())
     }

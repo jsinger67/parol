@@ -9,13 +9,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Be aware that this project is still v0.y.z which means that anything can change anytime:
 
->"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The public API SHOULD NOT be considered stable."
+>"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The
+public API SHOULD NOT be considered stable."
 >
 >(Semantic Versioning Specification)
 
 But we try to mark incompatible changes with a new minor version.
 
 ---
+
+## v0.12.0 - 2022-10-08
+
+*This release provides rather breaking changes to the public API. Therefore we increase minor
+version number.*
+
+* Using `parol_runtime` in version 0.8.0 now. This implies some changes in token handling.
+  * Access the parsed text of a token with method `text()` of the `Token` type now. Formerly you
+  could access the member `symbol` directly which is not possible anymore.
+  * Similarly the method to access the token's text via `ParseTree` was renamed from `symbol()` to
+  `text()` in the implementation of `ParseTreeStackEntry`
 
 ## v0.11.0 - 2022-10-06
 
@@ -72,7 +84,9 @@ aliases for possibly complex user defined types:
 
   allows you to refer via the short name to the complex user type:
 
+<!-- markdownlint-disable Reference links and images should use a label that is defined -->
   >Num: "0|[1-9][0-9]*": Number;
+<!-- markdownlint-enable Reference links and images should use a label that is defined -->
 
   Please see example `list_auto` for an use case.
 

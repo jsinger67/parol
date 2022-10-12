@@ -88,8 +88,8 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
     ///
     fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>)
       -> Result<()> {
-        let symbol = num.symbol(parse_tree)?;
-        let number = symbol
+        let text = num.text(parse_tree)?;
+        let number = text
             .parse::<DefinitionRange>()
             .into_diagnostic()
             .wrap_err("num: Error accessing token from ParseTreeStackEntry")?;

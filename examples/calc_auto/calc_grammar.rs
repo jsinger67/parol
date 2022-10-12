@@ -35,7 +35,7 @@ impl<'t> CalcGrammar<'t> {
 
     fn value(&self, id: &Token<'t>) -> Result<DefinitionRange> {
         self.env
-            .get(id.symbol)
+            .get(id.text())
             .cloned()
             .ok_or(miette!(CalcError::UndeclaredVariable {
                 context: "value".to_owned(),
@@ -163,12 +163,12 @@ impl<'t> CalcGrammar<'t> {
         );
         // Assign from right to left (right associative)
         for assign_item in assignment_list.iter().rev() {
-            let id = assign_item.assign_item.id.id.symbol;
+            let id = assign_item.assign_item.id.id.text();
             let op = assign_item
                 .assign_item
                 .assign_op
                 .assign_op
-                .symbol
+                .text()
                 .try_into()?;
             self.declare(id, context);
             if let Some(var) = self.env.get_mut(id) {
@@ -192,7 +192,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_logical_or";
         let mut result = self.process_logical_and(&logical_or.logical_and)?;
         for item in &logical_or.logical_or_list {
-            let op: BinaryOperator = item.logical_or_op.logical_or_op.symbol.try_into()?;
+            let op: BinaryOperator = item.logical_or_op.logical_or_op.text().try_into()?;
             let next_operand = self.process_logical_and(&item.logical_and)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -203,7 +203,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_logical_and";
         let mut result = self.process_bitwise_or(&logical_and.bitwise_or)?;
         for item in &logical_and.logical_and_list {
-            let op: BinaryOperator = item.logical_and_op.logical_and_op.symbol.try_into()?;
+            let op: BinaryOperator = item.logical_and_op.logical_and_op.text().try_into()?;
             let next_operand = self.process_bitwise_or(&item.bitwise_or)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -214,7 +214,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_bitwise_or";
         let mut result = self.process_bitwise_and(&bitwise_or.bitwise_and)?;
         for item in &bitwise_or.bitwise_or_list {
-            let op: BinaryOperator = item.bitwise_or_op.bitwise_or_op.symbol.try_into()?;
+            let op: BinaryOperator = item.bitwise_or_op.bitwise_or_op.text().try_into()?;
             let next_operand = self.process_bitwise_and(&item.bitwise_and)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -225,7 +225,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_bitwise_and";
         let mut result = self.process_equality(&bitwise_and.equality)?;
         for item in &bitwise_and.bitwise_and_list {
-            let op: BinaryOperator = item.bitwise_and_op.bitwise_and_op.symbol.try_into()?;
+            let op: BinaryOperator = item.bitwise_and_op.bitwise_and_op.text().try_into()?;
             let next_operand = self.process_equality(&item.equality)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -236,7 +236,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_equality";
         let mut result = self.process_relational(&equality.relational)?;
         for item in &equality.equality_list {
-            let op: BinaryOperator = item.equality_op.equality_op.symbol.try_into()?;
+            let op: BinaryOperator = item.equality_op.equality_op.text().try_into()?;
             let next_operand = self.process_relational(&item.relational)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -247,7 +247,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_relational";
         let mut result = self.process_bitwise_shift(&relational.bitwise_shift)?;
         for item in &relational.relational_list {
-            let op: BinaryOperator = item.relational_op.relational_op.symbol.try_into()?;
+            let op: BinaryOperator = item.relational_op.relational_op.text().try_into()?;
             let next_operand = self.process_bitwise_shift(&item.bitwise_shift)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -258,7 +258,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_bitwise_shift";
         let mut result = self.process_sum(&bitwise_shift.summ)?;
         for item in &bitwise_shift.bitwise_shift_list {
-            let op: BinaryOperator = item.bitwise_shift_op.bitwise_shift_op.symbol.try_into()?;
+            let op: BinaryOperator = item.bitwise_shift_op.bitwise_shift_op.text().try_into()?;
             let next_operand = self.process_sum(&item.summ)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -270,8 +270,8 @@ impl<'t> CalcGrammar<'t> {
         let mut result = self.process_mult(&summ.mult)?;
         for item in &summ.summ_list {
             let op: BinaryOperator = match &*item.add_op {
-                AddOp::AddOp0(plus) => plus.plus.plus.symbol.try_into(),
-                AddOp::AddOp1(minus) => minus.minus.minus.symbol.try_into(),
+                AddOp::AddOp0(plus) => plus.plus.plus.text().try_into(),
+                AddOp::AddOp1(minus) => minus.minus.minus.text().try_into(),
             }?;
             let next_operand = self.process_mult(&item.mult)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
@@ -283,7 +283,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_mult";
         let mut result = self.process_power(&mult.power)?;
         for item in &mult.mult_list {
-            let op: BinaryOperator = item.mult_op.mult_op.symbol.try_into()?;
+            let op: BinaryOperator = item.mult_op.mult_op.text().try_into()?;
             let next_operand = self.process_power(&item.power)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -357,6 +357,6 @@ impl<'t> TryFrom<&Token<'t>> for Number {
     type Error = <isize as FromStr>::Err;
 
     fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
-        Ok(Self(number.symbol.parse::<isize>()?))
+        Ok(Self(number.text().parse::<isize>()?))
     }
 }

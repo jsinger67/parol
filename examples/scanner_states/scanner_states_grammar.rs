@@ -80,7 +80,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "identifier";
-        let id = identifier.symbol(parse_tree)?;
+        let id = identifier.text(parse_tree)?;
         self.push(ScannerStatesGrammarItem::Identifier(id.to_owned()), context);
         Ok(())
     }
@@ -96,7 +96,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ) -> Result<()> {
         let context = "escaped";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
-            let mut element = escaped.symbol(parse_tree)?.to_string();
+            let mut element = escaped.text(parse_tree)?.to_string();
             element.remove(0);
             trace!("Escaped: {}", element);
             match element.as_str() {
@@ -125,7 +125,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
     ) -> Result<()> {
         let context = "none_quote";
         if let Some(ScannerStatesGrammarItem::String(mut s)) = self.pop(context) {
-            let element = none_quote.symbol(parse_tree)?;
+            let element = none_quote.text(parse_tree)?;
             s.push_str(element);
             self.push(ScannerStatesGrammarItem::String(s), context);
             Ok(())
