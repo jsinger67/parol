@@ -37,7 +37,7 @@ impl RecurseFor for Alternation {
                 return recursions;
             }
         }
-        return vec![];
+        vec![]
     }
 }
 impl RecurseFor for Alternations {
@@ -52,7 +52,7 @@ impl RecurseFor for Alternations {
                 return recursions;
             }
         }
-        return vec![];
+        vec![]
     }
 }
 // impl RecurseFor for BlockComment {
@@ -121,7 +121,7 @@ impl RecurseFor for Group {
 //     }
 // }
 impl RecurseFor for Optional {
-    fn recurse_for(&self, non_terminal: &str, productions: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }
@@ -146,7 +146,7 @@ impl RecurseFor for Optional {
 //     }
 // }
 impl RecurseFor for Repeat {
-    fn recurse_for(&self, non_terminal: &str, productions: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }
@@ -186,7 +186,7 @@ impl RecurseFor for Repeat {
 //     }
 // }
 impl RecurseFor for Symbol {
-    fn recurse_for(&self, non_terminal: &str, productions: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }

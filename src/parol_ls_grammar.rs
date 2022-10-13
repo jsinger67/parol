@@ -224,7 +224,7 @@ impl ParolLsGrammar {
 
     pub(crate) fn find_left_recursions(&self) -> Vec<Vec<Range>> {
         let mut recursions = Vec::new();
-        if let Some(ref grammar) = self.grammar.as_ref() {
+        if let Some(grammar) = self.grammar.as_ref() {
             let production_refs = grammar
                 .grammar_definition
                 .grammar_definition_list
@@ -237,9 +237,9 @@ impl ParolLsGrammar {
                     },
                 );
             for p in &production_refs {
-                p.find_left_recursion(&production_refs).map(|r| {
+                if let Some(r) = p.find_left_recursion(&production_refs) {
                     recursions.push(r);
-                });
+                }
             }
         }
         recursions
