@@ -80,14 +80,14 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "derive_builder@0.11.2"],
-    &["add", "env_logger@0.9.0"],
+    &["add", "env_logger@0.9.1"],
     &["add", "function_name@0.3.0"],
-    &["add", "id_tree@^1.8"],
-    &["add", "lazy_static@^1.4"],
+    &["add", "id_tree@1.8"],
+    &["add", "lazy_static@1.4"],
     &["add", "log@0.4.17"],
-    &["add", "miette@^5.2", "--features", "fancy"],
-    &["add", "parol_runtime@0.7"],
-    &["add", "thiserror@^1.0"],
+    &["add", "miette@5.2", "--features", "fancy"],
+    &["add", "parol_runtime@0.8.1"],
+    &["add", "thiserror@1.0"],
     &[
         "add",
         concat!("parol@", env!("CARGO_PKG_VERSION")),
@@ -95,7 +95,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     ],
 ];
 
-const TREE_GEN_DEPENDENCY: &str = "add id_tree_layout@^2";
+const TREE_GEN_DEPENDENCY: &str = "add id_tree_layout@2.0";
 
 fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     // Prepare arguments for the `cargo new` command

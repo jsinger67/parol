@@ -14,9 +14,16 @@ public API SHOULD NOT be considered stable."
 >
 >(Semantic Versioning Specification)
 
-But we try to mark incompatible changes with a new minor version.
+## Indicating incompatible changes on major version zero
+
+We defined for this project that while being on major version zero we mark incompatible changes with
+new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
+
+## v0.12.1 - 2022-10-14
+
+* Using `parol_runtime` in version 0.8.1 now.
 
 ## v0.12.0 - 2022-10-08
 
