@@ -86,13 +86,24 @@ impl<'t> Token<'t> {
     }
 
     ///
-    /// Creates an owned variant of the token
+    /// Creates an owned instance of the token from a shared reference
     ///
-    pub fn to_owned(&self) -> Self {
-        Self {
-            text: self.text.to_owned(),
+    pub fn to_owned(&self) -> Token<'static> {
+        Token {
+            text: Cow::Owned(self.text.clone().into_owned()),
             token_type: self.token_type,
             location: self.location.clone(),
+        }
+    }
+
+    ///
+    /// Creates an owned instance of the token and consumes self
+    ///
+    pub fn into_owned(self) -> Token<'static> {
+        Token {
+            text: Cow::Owned(self.text.into_owned()),
+            token_type: self.token_type,
+            location: self.location,
         }
     }
 }

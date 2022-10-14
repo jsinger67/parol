@@ -16,6 +16,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## v0.8.1 - 2022-10-14
+
+* `Token`: Fixed the method `to_owned` and added a method `into_owned`.
+
 ## v0.8.0 - 2022-10-12
 
 *This release introduces breaking changes to the public API. To indicate this we increase minor
