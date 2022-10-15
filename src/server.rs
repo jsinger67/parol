@@ -13,16 +13,10 @@ use lsp_types::{
     PublishDiagnosticsParams, Range, RenameParams, TextDocumentContentChangeEvent,
     TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
 };
-use miette::{bail, miette};
-use parol::{
-    analysis::GrammarAnalysisError, calculate_lookahead_dfas, check_and_transform_grammar,
-    GrammarConfig, ParolGrammar,
-};
+use miette::miette;
+use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
-use crate::{
-    diagnostics::Diagnostics, document_state::DocumentState, errors::ServerError,
-    parol_ls_parser::parse,
-};
+use crate::{diagnostics::Diagnostics, document_state::DocumentState, parol_ls_parser::parse};
 
 #[derive(Debug, Default, new)]
 pub(crate) struct Server {
@@ -50,7 +44,7 @@ impl Server {
         )?;
         eprintln!("analyze: step 2 - check_grammar");
         let document_state = self.documents.get(uri.path()).unwrap();
-        self.check_grammar(&document_state.input, &file_path, self.max_k)?;
+        Self::check_grammar(&document_state.input, &file_path, self.max_k)?;
         eprintln!("analyze: finished");
         Ok(())
     }
@@ -64,39 +58,11 @@ impl Server {
         GrammarConfig::try_from(parol_grammar)
     }
 
-    pub(crate) fn check_grammar(
-        &self,
-        input: &str,
-        file_name: &Path,
-        max_k: usize,
-    ) -> miette::Result<()> {
+    pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> miette::Result<()> {
         let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
-        match check_and_transform_grammar(&grammar_config.cfg) {
-            Ok(cfg) => {
-                grammar_config.update_cfg(cfg);
-                calculate_lookahead_dfas(&grammar_config, max_k).map(|_| ())
-            }
-            Err(err) => {
-                if err.downcast_ref::<GrammarAnalysisError>().is_some() {
-                    if let Some(document_state) =
-                        self.documents.get(file_name.to_str().unwrap_or_default())
-                    {
-                        let paths = document_state.find_left_recursions();
-                        if paths.is_empty() {
-                            Err(err)
-                        } else {
-                            bail!(ServerError::LeftRecursions { paths })
-                        }
-                    } else {
-                        bail!(ServerError::UnknownDocument {
-                            path: file_name.into()
-                        })
-                    }
-                } else {
-                    Err(err)
-                }
-            }
-        }
+        let cfg = check_and_transform_grammar(&grammar_config.cfg)?;
+        grammar_config.update_cfg(cfg);
+        calculate_lookahead_dfas(&grammar_config, max_k).map(|_| ())
     }
 
     pub(crate) fn handle_open_document(

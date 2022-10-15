@@ -16,9 +16,9 @@ use lsp_types::{
 };
 #[allow(unused_imports)]
 use miette::Result;
-use parol_runtime::lexer::OwnedToken;
-use std::fmt::Write as _;
-use std::{collections::HashMap, fmt::Debug};
+use parol_runtime::lexer::Token;
+use std::collections::HashMap;
+use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
 ///
 /// Data structure that implements the semantic actions for our ParolLs grammar
@@ -86,29 +86,29 @@ impl ParolLsGrammar {
     }
 
     fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
-        eprintln!("add_non_terminal_ref: {range:?}, {}", token.symbol);
-        self.non_terminals.push((range, token.symbol.clone()));
+        eprintln!("add_non_terminal_ref: {range:?}, {}", token);
+        self.non_terminals.push((range, token.text().to_string()));
     }
 
     fn add_non_terminal_definition(&mut self, token: &OwnedToken) -> Range {
         let entry = self
             .non_terminal_definitions
-            .entry(token.symbol.clone())
+            .entry(token.text().to_string())
             .or_default();
         let range = location_to_range(&token.location);
-        eprintln!("add_non_terminal_definition: {range:?}, {}", token.symbol);
+        eprintln!("add_non_terminal_definition: {range:?}, {}", token);
         entry.push(range);
         range
     }
 
     fn add_user_type_ref(&mut self, range: Range, token: &OwnedToken) {
-        self.user_types.push((range, token.symbol.clone()));
+        self.user_types.push((range, token.text().to_string()));
     }
 
     fn add_user_type_definition(&mut self, token: &OwnedToken, range: Range) -> Range {
         let entry = self
             .user_type_definitions
-            .entry(token.symbol.clone())
+            .entry(token.text().to_string())
             .or_default();
         *entry = range;
         range
@@ -119,7 +119,10 @@ impl ParolLsGrammar {
             ScannerDirectives::ScannerDirectives0(line_comment) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
-                    name: line_comment.percent_line_underscore_comment.symbol.clone(),
+                    name: line_comment
+                        .percent_line_underscore_comment
+                        .text()
+                        .to_string(),
                     detail: Some("Line comment for the scanner state".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -130,7 +133,7 @@ impl ParolLsGrammar {
                     )
                     .0,
                     children: Some(vec![DocumentSymbol {
-                        name: line_comment.string.string.symbol.clone(),
+                        name: line_comment.string.string.text().to_string(),
                         detail: Some("Text".to_string()),
                         kind: SymbolKind::STRING,
                         tags: None,
@@ -146,8 +149,8 @@ impl ParolLsGrammar {
                 symbols.push(DocumentSymbol {
                     name: block_comment
                         .percent_block_underscore_comment
-                        .symbol
-                        .clone(),
+                        .text()
+                        .to_string(),
                     detail: Some("Block comment for the scanner state".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -159,7 +162,7 @@ impl ParolLsGrammar {
                     .0,
                     children: Some(vec![
                         DocumentSymbol {
-                            name: block_comment.string.string.symbol.clone(),
+                            name: block_comment.string.string.text().to_string(),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,
@@ -169,7 +172,7 @@ impl ParolLsGrammar {
                             children: None,
                         },
                         DocumentSymbol {
-                            name: block_comment.string0.string.symbol.clone(),
+                            name: block_comment.string0.string.text().to_string(),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,
@@ -186,8 +189,8 @@ impl ParolLsGrammar {
                 symbols.push(DocumentSymbol {
                     name: auto_newline
                         .percent_auto_underscore_newline_underscore_off
-                        .symbol
-                        .clone(),
+                        .text()
+                        .to_string(),
                     detail: Some("Handle newlines alone".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -205,8 +208,8 @@ impl ParolLsGrammar {
                 symbols.push(DocumentSymbol {
                     name: auto_ws
                         .percent_auto_underscore_ws_underscore_off
-                        .symbol
-                        .clone(),
+                        .text()
+                        .to_string(),
                     detail: Some("Handle whitespace alone".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -222,7 +225,7 @@ impl ParolLsGrammar {
         }
     }
 
-    pub(crate) fn find_left_recursions(&self) -> Vec<Vec<Range>> {
+    pub(crate) fn _find_left_recursions(&self) -> Vec<Vec<Range>> {
         let mut recursions = Vec::new();
         if let Some(grammar) = self.grammar.as_ref() {
             let production_refs = grammar
@@ -358,11 +361,11 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let range = location_to_range(&token.location);
         self.add_non_terminal_ref(range, token);
 
-        self.start_symbol = token.symbol.clone();
+        self.start_symbol = token.text().to_string();
 
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
-            name: arg.percent_start.symbol.clone(),
+            name: arg.percent_start.text().to_string(),
             detail: Some("Start symbol".to_string()),
             kind: SymbolKind::PROPERTY,
             tags: None,
@@ -370,7 +373,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             range: Into::<Rng>::into(arg).0,
             selection_range: Into::<Rng>::into(&arg.percent_start).0,
             children: Some(vec![DocumentSymbol {
-                name: arg.identifier.identifier.symbol.clone(),
+                name: arg.identifier.identifier.text().to_string(),
                 detail: Some("Non-terminal".to_string()),
                 kind: SymbolKind::VARIABLE,
                 tags: None,
@@ -389,7 +392,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             Declaration::Declaration0(title) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
-                    name: title.percent_title.symbol.clone(),
+                    name: title.percent_title.text().to_string(),
                     detail: Some("Title of the grammar".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -397,7 +400,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     range: Into::<Rng>::into(arg).0,
                     selection_range: Into::<Rng>::into(&title.percent_title).0,
                     children: Some(vec![DocumentSymbol {
-                        name: title.string.string.symbol.clone(),
+                        name: title.string.string.text().to_string(),
                         detail: Some("Text".to_string()),
                         kind: SymbolKind::STRING,
                         tags: None,
@@ -411,7 +414,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             Declaration::Declaration1(comment) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
-                    name: comment.percent_comment.symbol.clone(),
+                    name: comment.percent_comment.text().to_string(),
                     detail: Some("Comment for the grammar".to_string()),
                     kind: SymbolKind::PROPERTY,
                     tags: None,
@@ -419,7 +422,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     range: Into::<Rng>::into(arg).0,
                     selection_range: Into::<Rng>::into(&comment.percent_comment).0,
                     children: Some(vec![DocumentSymbol {
-                        name: comment.string.string.symbol.clone(),
+                        name: comment.string.string.text().to_string(),
                         detail: Some("Text".to_string()),
                         kind: SymbolKind::STRING,
                         tags: None,
@@ -439,7 +442,10 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
 
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
-                    name: user_type_def.percent_user_underscore_type.symbol.clone(),
+                    name: user_type_def
+                        .percent_user_underscore_type
+                        .text()
+                        .to_string(),
                     detail: Some("User type definition".to_string()),
                     kind: SymbolKind::CONSTANT,
                     tags: None,
@@ -448,7 +454,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     selection_range: Into::<Rng>::into(&user_type_def.percent_user_underscore_type)
                         .0,
                     children: Some(vec![DocumentSymbol {
-                        name: user_type_def.identifier.identifier.symbol.clone(),
+                        name: user_type_def.identifier.identifier.text().to_string(),
                         detail: Some("Type alias".to_string()),
                         kind: SymbolKind::CONSTANT,
                         tags: None,
@@ -476,7 +482,12 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
 
     /// Semantic action for non-terminal 'Production'
     fn production(&mut self, arg: &Production) -> Result<()> {
-        let nt = arg.production_l_h_s.identifier.identifier.symbol.clone();
+        let nt = arg
+            .production_l_h_s
+            .identifier
+            .identifier
+            .text()
+            .to_string();
         let rng: Rng = arg.into();
         eprintln!("Adding production {nt:?}: {rng:?}");
         let entry = self.productions.entry(nt).or_default();
@@ -485,7 +496,12 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
 
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
-            name: arg.production_l_h_s.identifier.identifier.symbol.clone(),
+            name: arg
+                .production_l_h_s
+                .identifier
+                .identifier
+                .text()
+                .to_string(),
             detail: Some("Production".to_string()),
             kind: SymbolKind::FUNCTION,
             tags: None,
@@ -512,10 +528,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                 Self::add_scanner_symbols(&mut acc, &*s.scanner_directives);
                 acc
             });
-        let name = format!(
-            "{} {}",
-            arg.percent_scanner.symbol, arg.identifier.identifier.symbol
-        );
+        let name = format!("{} {}", arg.percent_scanner, arg.identifier.identifier);
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
             name,
@@ -536,5 +549,29 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let range = location_to_range(&token.location);
         self.add_user_type_ref(range, token);
         Ok(())
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct OwnedToken(Token<'static>);
+
+impl<'t> From<&Token<'t>> for OwnedToken {
+    fn from(token: &Token<'t>) -> Self {
+        let owned_token = token.clone().into_owned();
+        Self(owned_token)
+    }
+}
+
+impl std::ops::Deref for OwnedToken {
+    type Target = Token<'static>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Display for OwnedToken {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
+        write!(f, "{}", self.0.text())
     }
 }

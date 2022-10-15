@@ -185,7 +185,7 @@ pub trait ParolLsGrammarTrait {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration0 {
-    pub percent_title: parol_runtime::lexer::OwnedToken, /* %title */
+    pub percent_title: crate::parol_ls_grammar::OwnedToken, /* %title */
     pub string: Box<String>,
     pub comments: Box<Comments>,
 }
@@ -198,7 +198,7 @@ pub struct Declaration0 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration1 {
-    pub percent_comment: parol_runtime::lexer::OwnedToken, /* %comment */
+    pub percent_comment: crate::parol_ls_grammar::OwnedToken, /* %comment */
     pub string: Box<String>,
     pub comments: Box<Comments>,
 }
@@ -211,9 +211,9 @@ pub struct Declaration1 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Declaration2 {
-    pub percent_user_underscore_type: parol_runtime::lexer::OwnedToken, /* %user_type */
+    pub percent_user_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %user_type */
     pub identifier: Box<Identifier>,
-    pub equ: parol_runtime::lexer::OwnedToken, /* = */
+    pub equ: crate::parol_ls_grammar::OwnedToken, /* = */
     pub user_type_name: Box<UserTypeName>,
     pub comments: Box<Comments>,
 }
@@ -237,7 +237,7 @@ pub struct Declaration3 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives0 {
-    pub percent_line_underscore_comment: parol_runtime::lexer::OwnedToken, /* %line_comment */
+    pub percent_line_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %line_comment */
     pub string: Box<String>,
     pub comments: Box<Comments>,
 }
@@ -250,7 +250,7 @@ pub struct ScannerDirectives0 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives1 {
-    pub percent_block_underscore_comment: parol_runtime::lexer::OwnedToken, /* %block_comment */
+    pub percent_block_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %block_comment */
     pub string: Box<String>,
     pub string0: Box<String>,
     pub comments: Box<Comments>,
@@ -264,7 +264,7 @@ pub struct ScannerDirectives1 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives2 {
-    pub percent_auto_underscore_newline_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_newline_off */
+    pub percent_auto_underscore_newline_underscore_off: crate::parol_ls_grammar::OwnedToken, /* %auto_newline_off */
     pub comments: Box<Comments>,
 }
 
@@ -276,7 +276,7 @@ pub struct ScannerDirectives2 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives3 {
-    pub percent_auto_underscore_ws_underscore_off: parol_runtime::lexer::OwnedToken, /* %auto_ws_off */
+    pub percent_auto_underscore_ws_underscore_off: crate::parol_ls_grammar::OwnedToken, /* %auto_ws_off */
     pub comments: Box<Comments>,
 }
 
@@ -376,10 +376,10 @@ pub struct Symbol3 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch0 {
-    pub percent_sc: parol_runtime::lexer::OwnedToken, /* %sc */
-    pub l_paren: parol_runtime::lexer::OwnedToken,    /* \( */
+    pub percent_sc: crate::parol_ls_grammar::OwnedToken, /* %sc */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* \( */
     pub scanner_switch_opt: Option<Box<ScannerSwitchOpt>>,
-    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
 }
 
 ///
@@ -390,10 +390,10 @@ pub struct ScannerSwitch0 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch1 {
-    pub percent_push: parol_runtime::lexer::OwnedToken, /* %push */
-    pub l_paren: parol_runtime::lexer::OwnedToken,      /* \( */
+    pub percent_push: crate::parol_ls_grammar::OwnedToken, /* %push */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* \( */
     pub identifier: Box<Identifier>,
-    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
 }
 
 ///
@@ -404,9 +404,9 @@ pub struct ScannerSwitch1 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch2 {
-    pub percent_pop: parol_runtime::lexer::OwnedToken, /* %pop */
-    pub l_paren: parol_runtime::lexer::OwnedToken,     /* \( */
-    pub r_paren: parol_runtime::lexer::OwnedToken,     /* \) */
+    pub percent_pop: crate::parol_ls_grammar::OwnedToken, /* %pop */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,     /* \( */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken,     /* \) */
 }
 
 ///
@@ -503,7 +503,7 @@ pub struct Alternations {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct AlternationsList {
-    pub or: parol_runtime::lexer::OwnedToken, /* \| */
+    pub or: crate::parol_ls_grammar::OwnedToken, /* \| */
     pub comments: Box<Comments>,
     pub alternation: Box<Alternation>,
 }
@@ -514,7 +514,7 @@ pub struct AlternationsList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct BlockComment {
-    pub block_comment: parol_runtime::lexer::OwnedToken, /* (?ms)/\u{2a}.*?\u{2a}/ */
+    pub block_comment: crate::parol_ls_grammar::OwnedToken, /* (?ms)/\u{2a}.*?\u{2a}/ */
 }
 
 ///
@@ -551,7 +551,7 @@ pub enum CommentsListGroup {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct CutOperator {
-    pub cut_operator: parol_runtime::lexer::OwnedToken, /* \^ */
+    pub cut_operator: crate::parol_ls_grammar::OwnedToken, /* \^ */
 }
 
 ///
@@ -572,7 +572,7 @@ pub enum Declaration {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct DoubleColon {
-    pub double_colon: parol_runtime::lexer::OwnedToken, /* :: */
+    pub double_colon: crate::parol_ls_grammar::OwnedToken, /* :: */
 }
 
 ///
@@ -593,7 +593,7 @@ pub enum Factor {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct GrammarDefinition {
-    pub percent_percent: parol_runtime::lexer::OwnedToken, /* %% */
+    pub percent_percent: crate::parol_ls_grammar::OwnedToken, /* %% */
     pub production: Box<Production>,
     pub grammar_definition_list: Vec<GrammarDefinitionList>,
 }
@@ -613,9 +613,9 @@ pub struct GrammarDefinitionList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Group {
-    pub l_paren: parol_runtime::lexer::OwnedToken, /* \( */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken, /* \( */
     pub alternations: Box<Alternations>,
-    pub r_paren: parol_runtime::lexer::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
 }
 
 ///
@@ -624,7 +624,7 @@ pub struct Group {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Identifier {
-    pub identifier: parol_runtime::lexer::OwnedToken, /* [a-zA-Z_][a-zA-Z0-9_]* */
+    pub identifier: crate::parol_ls_grammar::OwnedToken, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
 
 ///
@@ -633,7 +633,7 @@ pub struct Identifier {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct LineComment {
-    pub line_comment: parol_runtime::lexer::OwnedToken, /* //.*(:?\r\n|\r|\n|$) */
+    pub line_comment: crate::parol_ls_grammar::OwnedToken, /* //.*(:?\r\n|\r|\n|$) */
 }
 
 ///
@@ -661,9 +661,9 @@ pub struct NonTerminalOpt {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Optional {
-    pub l_bracket: parol_runtime::lexer::OwnedToken, /* \[ */
+    pub l_bracket: crate::parol_ls_grammar::OwnedToken, /* \[ */
     pub alternations: Box<Alternations>,
-    pub r_bracket: parol_runtime::lexer::OwnedToken, /* \] */
+    pub r_bracket: crate::parol_ls_grammar::OwnedToken, /* \] */
 }
 
 ///
@@ -684,7 +684,7 @@ pub struct ParolLs {
 pub struct Production {
     pub production_l_h_s: Box<ProductionLHS>,
     pub alternations: Box<Alternations>,
-    pub semicolon: parol_runtime::lexer::OwnedToken, /* ; */
+    pub semicolon: crate::parol_ls_grammar::OwnedToken, /* ; */
 }
 
 ///
@@ -696,7 +696,7 @@ pub struct ProductionLHS {
     pub comments: Box<Comments>,
     pub identifier: Box<Identifier>,
     pub comments0: Box<Comments>,
-    pub colon: parol_runtime::lexer::OwnedToken, /* : */
+    pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
 }
 
 ///
@@ -734,9 +734,9 @@ pub struct PrologList0 {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Repeat {
-    pub l_brace: parol_runtime::lexer::OwnedToken, /* \{ */
+    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* \{ */
     pub alternations: Box<Alternations>,
-    pub r_brace: parol_runtime::lexer::OwnedToken, /* \} */
+    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* \} */
 }
 
 ///
@@ -757,11 +757,11 @@ pub enum ScannerDirectives {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerState {
-    pub percent_scanner: parol_runtime::lexer::OwnedToken, /* %scanner */
+    pub percent_scanner: crate::parol_ls_grammar::OwnedToken, /* %scanner */
     pub identifier: Box<Identifier>,
-    pub l_brace: parol_runtime::lexer::OwnedToken, /* \{ */
+    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* \{ */
     pub scanner_state_list: Vec<ScannerStateList>,
-    pub r_brace: parol_runtime::lexer::OwnedToken, /* \} */
+    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* \} */
 }
 
 ///
@@ -819,7 +819,7 @@ pub struct SimpleTokenOpt {
 #[derive(Builder, Debug, Clone)]
 pub struct StartDeclaration {
     pub comments: Box<Comments>,
-    pub percent_start: parol_runtime::lexer::OwnedToken, /* %start */
+    pub percent_start: crate::parol_ls_grammar::OwnedToken, /* %start */
     pub identifier: Box<Identifier>,
     pub comments0: Box<Comments>,
 }
@@ -840,7 +840,7 @@ pub struct StateList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct StateListList {
-    pub comma: parol_runtime::lexer::OwnedToken, /* , */
+    pub comma: crate::parol_ls_grammar::OwnedToken, /* , */
     pub identifier: Box<Identifier>,
 }
 
@@ -850,7 +850,7 @@ pub struct StateListList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String {
-    pub string: parol_runtime::lexer::OwnedToken, /* \u{22}([^\\]|\\.)*?\u{22} */
+    pub string: crate::parol_ls_grammar::OwnedToken, /* \u{22}([^\\]|\\.)*?\u{22} */
 }
 
 ///
@@ -871,9 +871,9 @@ pub enum Symbol {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TokenWithStates {
-    pub l_t: parol_runtime::lexer::OwnedToken, /* < */
+    pub l_t: crate::parol_ls_grammar::OwnedToken, /* < */
     pub state_list: Box<StateList>,
-    pub g_t: parol_runtime::lexer::OwnedToken, /* > */
+    pub g_t: crate::parol_ls_grammar::OwnedToken, /* > */
     pub string: Box<String>,
     pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
@@ -893,7 +893,7 @@ pub struct TokenWithStatesOpt {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct UserTypeDeclaration {
-    pub colon: parol_runtime::lexer::OwnedToken, /* : */
+    pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
     pub user_type_name: Box<UserTypeName>,
 }
 

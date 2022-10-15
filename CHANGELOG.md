@@ -5,6 +5,12 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.3.0
+
+* Using `parol_runtime` in version 0.8.1 and `parol`in version 0.12.1 now to take advantage of
+latest fixes.
+* Rethought the concept of `OwnedToken`
+
 ## v0.2.0
 
 * Switched to clap 4

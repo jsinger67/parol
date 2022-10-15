@@ -239,9 +239,9 @@ checksum = "3f107b87b6afc2a64fd13cac55fe06d6c8859f12d4b14cbcdd2c67d0976781be"
 
 [[package]]
 name = "env_logger"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b2cf0344971ee6c64c31be0d530793fba457d322dfec2810c453d0ef228f9c3"
+checksum = "c90bf5f19754d10198ccb95b70664fc925bd1fc090a0fd9a6ebc54acc8cd6272"
 dependencies = [
  "atty",
  "humantime",
@@ -549,15 +549,15 @@ checksum = "21326818e99cfe6ce1e524c2a805c189a99b5ae555a35d19f9a284b427d86afa"
 
 [[package]]
 name = "owo-colors"
-version = "3.4.0"
+version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "decf7381921fea4dcb2549c5667eda59b3ec297ab7e2b5fc33eac69d2e7da87b"
+checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-version = "0.11.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "692e03ecec62e48cb0642b0fa2175ca66e4f32e8b4fb7541690b59bcdafa324f"
+checksum = "8fe0efa78c57490ec65657b6c171d40a8f6133df03d7bb3404fabea294b0d459"
 dependencies = [
  "bart",
  "bart_derive",
@@ -584,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "clap",
  "derive-new",
@@ -607,9 +607,9 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.7.2"
+version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "837773bbff07209a331079c0448b33ed0380ca75be135e0a675263c6d140f571"
+checksum = "505ab5721b9eae065d02be179b3f95817cfc532832355cebbc7db2a9cdd85fb1"
 dependencies = [
  "id_tree",
  "id_tree_layout",

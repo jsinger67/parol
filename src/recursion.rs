@@ -10,7 +10,7 @@ pub(crate) trait RecursionDetection {
 
 impl RecursionDetection for &Production {
     fn find_left_recursion(&self, productions: &[&Production]) -> Option<Vec<Range>> {
-        let non_terminal = &self.production_l_h_s.identifier.identifier.symbol;
+        let non_terminal = &self.production_l_h_s.identifier.identifier.text();
         let recursions = self.alternations.recurse_for(non_terminal, productions);
         if recursions.is_empty() {
             None

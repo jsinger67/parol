@@ -82,7 +82,7 @@ impl Fmt for AlternationsList {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "\n    {} {}{}",
-            self.or.symbol,
+            self.or,
             handle_comments(&*self.comments, Padding::Both, options),
             self.alternation.txt(options)
         )
@@ -90,7 +90,7 @@ impl Fmt for AlternationsList {
 }
 impl Fmt for BlockComment {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.block_comment.symbol.clone()
+        self.block_comment.text().to_string()
     }
 }
 impl Fmt for CommentsList {
@@ -108,7 +108,7 @@ impl Fmt for CommentsListGroup {
 }
 impl Fmt for CutOperator {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.cut_operator.symbol.clone()
+        self.cut_operator.text().to_string()
     }
 }
 impl Fmt for Declaration {
@@ -116,21 +116,21 @@ impl Fmt for Declaration {
         match self {
             Declaration::Declaration0(title) => format!(
                 "{} {}{}\n",
-                title.percent_title.symbol,
+                title.percent_title,
                 title.string.txt(options),
                 handle_comments(&*title.comments, Padding::Left, options),
             ),
             Declaration::Declaration1(comment) => format!(
                 "{} {}{}\n",
-                comment.percent_comment.symbol,
+                comment.percent_comment,
                 comment.string.txt(options),
                 handle_comments(&*comment.comments, Padding::Left, options),
             ),
             Declaration::Declaration2(user_type) => format!(
                 "{} {} {} {}{}\n",
-                user_type.percent_user_underscore_type.symbol,
+                user_type.percent_user_underscore_type,
                 user_type.identifier.txt(options),
-                user_type.equ.symbol,
+                user_type.equ,
                 user_type.user_type_name.txt(options),
                 handle_comments(&*user_type.comments, Padding::Left, options),
             ),
@@ -143,7 +143,7 @@ impl Fmt for Declaration {
 
 impl Fmt for DoubleColon {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.double_colon.symbol.clone()
+        self.double_colon.text().to_string()
     }
 }
 impl Fmt for Factor {
@@ -160,7 +160,7 @@ impl Fmt for GrammarDefinition {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{}{}{}",
-            self.percent_percent.symbol,
+            self.percent_percent,
             self.production.txt(options),
             self.grammar_definition_list
                 .iter()
@@ -180,27 +180,27 @@ impl Fmt for Group {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{} {}{}\n",
-            self.l_paren.symbol,
+            self.l_paren,
             self.alternations.txt(options),
-            self.r_paren.symbol,
+            self.r_paren,
         )
     }
 }
 impl Fmt for Identifier {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.identifier.symbol.clone()
+        self.identifier.text().to_string()
     }
 }
 impl Fmt for LineComment {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.line_comment.symbol.clone()
+        self.line_comment.text().to_string()
     }
 }
 impl Fmt for NonTerminal {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{}{}",
-            self.identifier.identifier.symbol,
+            self.identifier.identifier,
             self.non_terminal_opt
                 .as_ref()
                 .map_or(String::default(), |a| { a.txt(options) })
@@ -216,9 +216,9 @@ impl Fmt for Optional {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{} {}{}",
-            self.l_bracket.symbol,
+            self.l_bracket,
             self.alternations.txt(options),
-            self.r_bracket.symbol,
+            self.r_bracket,
         )
     }
 }
@@ -237,7 +237,7 @@ impl Fmt for Production {
             "\n{}{}\n    {}",
             self.production_l_h_s.txt(options),
             self.alternations.txt(options).trim(),
-            self.semicolon.symbol,
+            self.semicolon,
         )
     }
 }
@@ -246,9 +246,9 @@ impl Fmt for ProductionLHS {
         format!(
             "\n{}{}{}\n    {} ",
             handle_comments(&*self.comments, Padding::Right, options),
-            self.identifier.identifier.symbol,
+            self.identifier.identifier,
             handle_comments(&*self.comments0, Padding::Both, options),
-            self.colon.symbol,
+            self.colon,
         )
     }
 }
@@ -282,9 +282,9 @@ impl Fmt for Repeat {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{} {}{}",
-            self.l_brace.symbol,
+            self.l_brace,
             self.alternations.txt(options),
-            self.r_brace.symbol,
+            self.r_brace,
         )
     }
 }
@@ -297,9 +297,9 @@ impl Fmt for ScannerState {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{} {} {}\n{} {}\n",
-            self.percent_scanner.symbol,
+            self.percent_scanner,
             self.identifier.txt(options),
-            self.l_brace.symbol,
+            self.l_brace,
             self.scanner_state_list
                 .iter()
                 .fold(String::new(), |mut acc, s| {
@@ -307,7 +307,7 @@ impl Fmt for ScannerState {
                     acc.push_str(&s.txt(options));
                     acc
                 }),
-            self.r_brace.symbol,
+            self.r_brace,
         )
     }
 }
@@ -321,24 +321,23 @@ impl Fmt for ScannerSwitch {
         match self {
             ScannerSwitch::ScannerSwitch0(sc) => format!(
                 "{}{}{}{}",
-                sc.percent_sc.symbol,
-                sc.l_paren.symbol,
+                sc.percent_sc,
+                sc.l_paren,
                 sc.scanner_switch_opt
                     .as_ref()
                     .map_or(String::default(), |s| { s.txt(options) }),
-                sc.r_paren.symbol,
+                sc.r_paren,
             ),
             ScannerSwitch::ScannerSwitch1(push) => format!(
                 "{}{}{}{}",
-                push.percent_push.symbol,
-                push.l_paren.symbol,
+                push.percent_push,
+                push.l_paren,
                 push.identifier.txt(options),
-                push.r_paren.symbol,
+                push.r_paren,
             ),
-            ScannerSwitch::ScannerSwitch2(pop) => format!(
-                "{}{}{}",
-                pop.percent_pop.symbol, pop.l_paren.symbol, pop.r_paren.symbol,
-            ),
+            ScannerSwitch::ScannerSwitch2(pop) => {
+                format!("{}{}{}", pop.percent_pop, pop.l_paren, pop.r_paren,)
+            }
         }
     }
 }
@@ -351,7 +350,7 @@ impl Fmt for SimpleToken {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{}{}",
-            self.string.string.symbol,
+            self.string.string,
             self.simple_token_opt
                 .as_ref()
                 .map_or(String::default(), |s| { s.txt(options) })
@@ -368,7 +367,7 @@ impl Fmt for StartDeclaration {
         format!(
             "{}{} {}{}\n",
             handle_comments(&*self.comments, Padding::Right, options),
-            self.percent_start.symbol,
+            self.percent_start,
             self.identifier.txt(options),
             handle_comments(&*self.comments0, Padding::Left, options),
         )
@@ -390,12 +389,12 @@ impl Fmt for StateList {
 }
 impl Fmt for StateListList {
     fn txt(&self, options: &FormattingOptions) -> String {
-        format!("{} {}", self.comma.symbol, self.identifier.txt(options),)
+        format!("{} {}", self.comma, self.identifier.txt(options),)
     }
 }
 impl Fmt for crate::parol_ls_grammar_trait::String {
     fn txt(&self, _options: &FormattingOptions) -> String {
-        self.string.symbol.clone()
+        self.string.text().to_string()
     }
 }
 impl Fmt for Symbol {
@@ -407,9 +406,9 @@ impl Fmt for TokenWithStates {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{}{}{}{}{}",
-            self.l_t.symbol,
+            self.l_t,
             self.state_list.txt(options).trim(),
-            self.g_t.symbol,
+            self.g_t,
             self.string.txt(options),
             self.token_with_states_opt
                 .as_ref()
@@ -424,7 +423,7 @@ impl Fmt for TokenWithStatesOpt {
 }
 impl Fmt for UserTypeDeclaration {
     fn txt(&self, options: &FormattingOptions) -> String {
-        format!("{} {}", self.colon.symbol, self.user_type_name.txt(options),)
+        format!("{} {}", self.colon, self.user_type_name.txt(options),)
     }
 }
 impl Fmt for UserTypeName {
@@ -445,7 +444,7 @@ impl Fmt for UserTypeNameList {
     fn txt(&self, options: &FormattingOptions) -> String {
         format!(
             "{}{}",
-            self.double_colon.double_colon.symbol,
+            self.double_colon.double_colon,
             self.identifier.txt(options),
         )
     }
@@ -458,25 +457,25 @@ fn handle_scanner_directives(
     match scanner_directives {
         ScannerDirectives::ScannerDirectives0(l) => format!(
             "{} {}{}\n",
-            l.percent_line_underscore_comment.symbol,
+            l.percent_line_underscore_comment,
             l.string.txt(options),
             handle_comments(&*l.comments, Padding::Left, options),
         ),
         ScannerDirectives::ScannerDirectives1(b) => format!(
             "{} {} {}{}\n",
-            b.percent_block_underscore_comment.symbol,
+            b.percent_block_underscore_comment,
             b.string.txt(options),
             b.string0.txt(options),
             handle_comments(&*b.comments, Padding::Left, options),
         ),
         ScannerDirectives::ScannerDirectives2(n) => format!(
             "{}{}\n",
-            n.percent_auto_underscore_newline_underscore_off.symbol,
+            n.percent_auto_underscore_newline_underscore_off,
             handle_comments(&*n.comments, Padding::Left, options),
         ),
         ScannerDirectives::ScannerDirectives3(w) => format!(
             "{}{}\n",
-            w.percent_auto_underscore_ws_underscore_off.symbol,
+            w.percent_auto_underscore_ws_underscore_off,
             handle_comments(&*w.comments, Padding::Left, options),
         ),
     }

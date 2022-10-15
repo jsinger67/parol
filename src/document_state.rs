@@ -22,8 +22,8 @@ impl DocumentState {
         self.parsed_data = ParolLsGrammar::default()
     }
 
-    pub(crate) fn find_left_recursions(&self) -> Vec<Vec<Range>> {
-        self.parsed_data.find_left_recursions()
+    pub(crate) fn _find_left_recursions(&self) -> Vec<Vec<Range>> {
+        self.parsed_data._find_left_recursions()
     }
 
     pub(crate) fn hover(&self, params: HoverParams) -> Hover {

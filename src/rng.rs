@@ -1,6 +1,6 @@
+use crate::parol_ls_grammar::OwnedToken;
 use derive_new::new;
 use lsp_types::Range;
-use parol_runtime::lexer::OwnedToken;
 
 use crate::utils::location_to_range;
 
