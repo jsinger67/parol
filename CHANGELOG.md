@@ -10,6 +10,7 @@ file.
 * Using `parol_runtime` in version 0.8.1 and `parol`in version 0.12.1 now to take advantage of
 latest fixes.
 * Rethought the concept of `OwnedToken`
+* Format document: Improved formatting of line comments
 
 ## v0.2.0
 
