@@ -1,15 +1,18 @@
 //! Allows programmatically invoking parol from a `build.rs` script
 //!
-//! The process of invoking a grammar starts with a [`Builder`] and one of two output modes:
+//! The process of invoking a grammar starts with a [`struct@Builder`] and one of two output modes:
 //! 1. Cargo build script output mode, via [Builder::with_cargo_script_output] (easiest)
 //! 2. Explicitly specifying an output directory via [Builder::with_explicit_output_dir]
 //!
 //! ## Cargo integration
-//! If this API detects it is running inside a [Cargo `build.rs` script](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html),
+//! If this API detects it is running inside a
+//! [Cargo `build.rs` script](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html),
 //! then it implicitly enables cargo integration.
 //!
-//! This has Cargo *automatically* regenerate the parser sources whenever the grammar changes. This is done by
-//! implicitly outputting the appropriate [`rerun-if-changed=<grammar>`](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#change-detection) instructions to Cargo.
+//! This has Cargo *automatically* regenerate the parser sources whenever the grammar changes. This
+//! is done by implicitly outputting the appropriate
+//! [`rerun-if-changed=<grammar>`](https://doc.rust-lang.org/stable/cargo/reference/build-scripts.html#change-detection)
+//! instructions to Cargo.
 //!
 //! ### Defaults
 //! When using [`Builder::with_cargo_script_output`], a number of reasonable defaults are set:
@@ -18,7 +21,7 @@
 //! By default, the generated parser name is `parser.rs` and the generated grammar action file is `
 //!
 //! You can
-//! ```ignore
+//! ```no_run
 //! mod parser {
 //!     include!(concat!(env!("OUT_DIR"), "/parser.rs"));
 //! }
@@ -28,19 +31,21 @@
 //! The disadvantage of using this mode (or using Cargo build scripts in general),
 //! is that it adds the `parol` crate as an explicit build dependency.
 //!
-//! Although this doesn't increase the runtime binary size, it does increase the initial compile times.
-//! If someone just wants to `cargo install <your crate>`, Cargo will have to download and execute `parol` to generate your parser code.
+//! Although this doesn't increase the runtime binary size, it does increase the initial compile
+//! times.
+//! If someone just wants to `cargo install <your crate>`, Cargo will have to download and execute
+//! `parol` to generate your parser code.
 //!
-//! Contributors to your project (who modify your grammar) will have to download and invoke parol anyways,
-//! so this cost primarily affects initial compile times. Also cargo is very intelligent about caching build script outputs,
-//! so it really only affects
+//! Contributors to your project (who modify your grammar) will have to download and invoke parol
+//! anyways, so this cost primarily affects initial compile times. Also cargo is very intelligent
+//! about caching build script outputs.
 //!
 //! Despite the impact on initial compiles, this is somewhat traditional in the Rust community.
 //! It's [the recommended way to use `bindgen`](https://rust-lang.github.io/rust-bindgen/library-usage.html)
 //! and it's the only way to use [`pest`](https://pest.rs/).
 //!
-//! If you are really concerned about compile times,
-//! you can use explicit output (below) to avoid invoking pest.
+//! If you are really concerned about compile times, you can use explicit output (below) to avoid
+//! invoking pest.
 //!
 //! ## Explicitly controlling Output Locations
 //! If you want more control over the location of generated grammar files,
@@ -52,8 +57,8 @@
 //! This is used to power the command line `parol` tool, and is useful for additional control.
 //!
 //! Any configured *output* paths (including generated parsers, expanded grammars, etc)
-//! are resolved relative to this base output using [Path::join]. This means that specifying absolute paths
-//! overrides this explicit base directory.
+//! are resolved relative to this base output using [Path::join]. This means that specifying
+//! absolute paths overrides this explicit base directory.
 //!
 //! The grammar input file is resolved in the regular manner.
 //! It does not use the "output" directory.
@@ -62,23 +67,27 @@
 //! When using [`Builder::with_cargo_script_output`], the output is put in a subdir of the `target`
 //! directory and excluded from version control.
 //!
-//! This is useful if you want to ignore changes in machine-generated code.
+//! This is useful if you want to ignore changes in generated code.
 //!
 //! However, when specifying an explicit output directory (with [`Builder::with_explicit_output_dir`]),
+//! you may have to include the generated sources explicitly into the build process. One way is
+//! indicated above where the include! macro is used.
 //!
-//! In this case, you would probably set the output to a sub-directory of `src`.
-//! This means that files are version controlled
-//! and you would have to commit them whenever changes are made.
+//! Otherwise, you would probably set the output to a sub-directory of `src`.
+//! This means that files are version controlled and you would have to commit them whenever changes
+//! are made.
 //!
 //! ## Using the CLI directly
-//! Note that explicitly specifying the output directory doesn't avoid running parol on `cargo install`.
+//! Note that explicitly specifying the output directory doesn't avoid running parol on `cargo
+//! install`.
 //!
 //! It does not increase the initial build speed, and still requires compiling and invoking `parol`.
 //!
 //! If you really want to avoid adding `parol` as a build dependency,
 //! you need to invoke the CLI manually to generate the parser sources ahead of time.
 //!
-//! Using a build script requires adding a build dependency, and cargo will unconditionally execute build scripts it on first install.
+//! Using a build script requires adding a build dependency, and cargo will unconditionally execute
+//! build scripts on first install.
 //! While Cargo's build script caching is excellent, it only activates on recompiles.
 //!
 //! As such, using the CLI manually is really the only way to improve (initial) compile times.
@@ -95,7 +104,7 @@
 //! As a side note, the CLI does not require you to specify an output location.
 //! You can run `parol -f grammar.parol` just fine and it will generate no output.
 //!
-//! In build scripts, this is typically an mistake (so it errors by default).
+//! In build scripts, this is typically a mistake (so it errors by default).
 //! If you want to disable this sanity check, use [`Builder::disable_output_sanity_checks`]
 //!
 //! ### Internal APIs
@@ -655,7 +664,7 @@ impl IntermediateGrammar {
     pub const LAST: IntermediateGrammar = IntermediateGrammar::Transformed;
 }
 
-/// An error that occurs configuring the [Builder].
+/// An error that occurs configuring the [struct@Builder].
 #[derive(Debug, thiserror::Error, miette::Diagnostic)]
 #[non_exhaustive]
 pub enum BuilderError {

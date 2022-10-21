@@ -60,6 +60,9 @@ pub use generators::{
     GrammarConfig, LanguageGenerator, ScannerConfig, UserTraitGenerator,
 };
 
+///
+/// Module with parol's parser for input grammars
+///
 pub mod parser;
 pub use parser::{parse, ParolGrammar};
 

@@ -17,15 +17,9 @@ lazy_static! {
 // ---------------------------------------------------
 ///
 /// Configuration information for a context free grammar.
-/// Currently containing comment tokens and maximum lookahead size.
-/// Can later be amended with further information and even pragmas that control
-/// the generation of lexers and parsers.
-/// Examples for amendments:
-///     * Ignore case, generate a case-insensitive lexer
-///     * Parse whitespace instead of skipping them by default
-///     * Prologue and epilogue for generated parser output
-///
-/// Newly added feature is to optionally switch automatic handling off newlines off.
+/// Currently containing the CFG itself along with accompanying information as title and comment of
+/// the grammar, user type aliases, maximum lookahead size and a list of scanner configurations.
+/// Can later be amended with further information or pragmas that control lexer/parser generation.
 ///
 #[derive(Debug, Clone)]
 pub struct GrammarConfig {
@@ -33,7 +27,7 @@ pub struct GrammarConfig {
     /// The actual context free grammar.
     /// It should be checked and left-factored here.
     /// For this task use the
-    /// ´generators::grammar_trans::check_and_transform_grammar`
+    /// [generators::grammar_trans::check_and_transform_grammar]
     /// function to prepare the grammar.
     ///
     pub cfg: Cfg,

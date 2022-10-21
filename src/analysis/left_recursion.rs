@@ -7,8 +7,7 @@ use std::collections::{BTreeMap, HashSet};
 // ---------------------------------------------------
 ///
 /// Detects left recursions.
-/// The result is a collection of vectors of [NtNodeType].
-/// The vectors of nodes are cycles in the [NtGrammarGraph].
+/// The result is a collection of vectors of non-terminal names that contain recursions.
 ///
 pub fn detect_left_recursive_non_terminals(cfg: &Cfg) -> Vec<String> {
     let nullables = cfg.calculate_nullable_non_terminals();

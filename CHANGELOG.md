@@ -21,6 +21,10 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.12.2 - Not yet released
+
+* Consolidated cargo docs
+
 ## v0.12.1 - 2022-10-14
 
 * Using `parol_runtime` in version 0.8.1 now.
