@@ -21,7 +21,7 @@
 //! By default, the generated parser name is `parser.rs` and the generated grammar action file is `
 //!
 //! You can
-//! ```no_run
+//! ```ignore
 //! mod parser {
 //!     include!(concat!(env!("OUT_DIR"), "/parser.rs"));
 //! }
