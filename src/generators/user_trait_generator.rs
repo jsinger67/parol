@@ -666,6 +666,11 @@ impl<'a> UserTraitGenerator<'a> {
             .trait_caller(trait_caller)
             .module_name(self.module_name)
             .user_trait_functions(user_trait_functions)
+            .parol_crate(if self.user_type_name == "ParolGrammar" {
+                "crate"
+            } else {
+                "parol"
+            })
             .build()
             .into_diagnostic()?;
 

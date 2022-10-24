@@ -9,6 +9,7 @@ use crate::calc_grammar::CalcGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -828,12 +829,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let calc_list = if let Some(ASTType::CalcList(mut calc_list)) = self.pop(context) {
-            calc_list.reverse();
-            calc_list
-        } else {
-            bail!("{}: Expecting ASTType::CalcList", context);
-        };
+        let calc_list = pop_and_reverse_item!(self, calc_list, CalcList, context);
         let calc_built = CalcBuilder::default()
             .calc_list(calc_list)
             .build()
@@ -858,16 +854,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut calc_list = if let Some(ASTType::CalcList(calc_list)) = self.pop(context) {
-            calc_list
-        } else {
-            bail!("{}: Expecting ASTType::CalcList", context);
-        };
-        let instruction = if let Some(ASTType::Instruction(instruction)) = self.pop(context) {
-            instruction
-        } else {
-            bail!("{}: Expecting ASTType::Instruction", context);
-        };
+        let mut calc_list = pop_item!(self, calc_list, CalcList, context);
+        let instruction = pop_item!(self, instruction, Instruction, context);
         let calc_list_0_built = CalcListBuilder::default()
             // Ignore clipped member 'semicolon'
             .instruction(Box::new(instruction))
@@ -1181,11 +1169,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assignment = if let Some(ASTType::Assignment(assignment)) = self.pop(context) {
-            assignment
-        } else {
-            bail!("{}: Expecting ASTType::Assignment", context);
-        };
+        let assignment = pop_item!(self, assignment, Assignment, context);
         let instruction_0_built = Instruction0Builder::default()
             .assignment(Box::new(assignment))
             .build()
@@ -1209,11 +1193,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
-            logical_or
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOr", context);
-        };
+        let logical_or = pop_item!(self, logical_or, LogicalOr, context);
         let instruction_1_built = Instruction1Builder::default()
             .logical_or(Box::new(logical_or))
             .build()
@@ -1238,16 +1218,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op = if let Some(ASTType::AssignOp(assign_op)) = self.pop(context) {
-            assign_op
-        } else {
-            bail!("{}: Expecting ASTType::AssignOp", context);
-        };
-        let id = if let Some(ASTType::Id(id)) = self.pop(context) {
-            id
-        } else {
-            bail!("{}: Expecting ASTType::Id", context);
-        };
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let id = pop_item!(self, id, Id, context);
         let assign_item_built = AssignItemBuilder::default()
             .id(Box::new(id))
             .assign_op(Box::new(assign_op))
@@ -1273,23 +1245,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
-            logical_or
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOr", context);
-        };
-        let assignment_list =
-            if let Some(ASTType::AssignmentList(mut assignment_list)) = self.pop(context) {
-                assignment_list.reverse();
-                assignment_list
-            } else {
-                bail!("{}: Expecting ASTType::AssignmentList", context);
-            };
-        let assign_item = if let Some(ASTType::AssignItem(assign_item)) = self.pop(context) {
-            assign_item
-        } else {
-            bail!("{}: Expecting ASTType::AssignItem", context);
-        };
+        let logical_or = pop_item!(self, logical_or, LogicalOr, context);
+        let assignment_list = pop_and_reverse_item!(self, assignment_list, AssignmentList, context);
+        let assign_item = pop_item!(self, assign_item, AssignItem, context);
         let assignment_built = AssignmentBuilder::default()
             .assign_item(Box::new(assign_item))
             .assignment_list(assignment_list)
@@ -1315,17 +1273,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut assignment_list =
-            if let Some(ASTType::AssignmentList(assignment_list)) = self.pop(context) {
-                assignment_list
-            } else {
-                bail!("{}: Expecting ASTType::AssignmentList", context);
-            };
-        let assign_item = if let Some(ASTType::AssignItem(assign_item)) = self.pop(context) {
-            assign_item
-        } else {
-            bail!("{}: Expecting ASTType::AssignItem", context);
-        };
+        let mut assignment_list = pop_item!(self, assignment_list, AssignmentList, context);
+        let assign_item = pop_item!(self, assign_item, AssignItem, context);
         let assignment_list_0_built = AssignmentListBuilder::default()
             .assign_item(Box::new(assign_item))
             .build()
@@ -1362,18 +1311,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_list =
-            if let Some(ASTType::LogicalOrList(mut logical_or_list)) = self.pop(context) {
-                logical_or_list.reverse();
-                logical_or_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalOrList", context);
-            };
-        let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
-            logical_and
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAnd", context);
-        };
+        let logical_or_list = pop_and_reverse_item!(self, logical_or_list, LogicalOrList, context);
+        let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
         let logical_or_built = LogicalOrBuilder::default()
             .logical_and(Box::new(logical_and))
             .logical_or_list(logical_or_list)
@@ -1399,22 +1338,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut logical_or_list =
-            if let Some(ASTType::LogicalOrList(logical_or_list)) = self.pop(context) {
-                logical_or_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalOrList", context);
-            };
-        let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
-            logical_and
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAnd", context);
-        };
-        let logical_or_op = if let Some(ASTType::LogicalOrOp(logical_or_op)) = self.pop(context) {
-            logical_or_op
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOrOp", context);
-        };
+        let mut logical_or_list = pop_item!(self, logical_or_list, LogicalOrList, context);
+        let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
+        let logical_or_op = pop_item!(self, logical_or_op, LogicalOrOp, context);
         let logical_or_list_0_built = LogicalOrListBuilder::default()
             .logical_and(Box::new(logical_and))
             .logical_or_op(Box::new(logical_or_op))
@@ -1453,17 +1379,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list =
-            if let Some(ASTType::LogicalAndList(mut logical_and_list)) = self.pop(context) {
-                logical_and_list.reverse();
-                logical_and_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalAndList", context);
-            };
-        let bitwise_or = if let Some(ASTType::BitwiseOr(bitwise_or)) = self.pop(context) {
-            bitwise_or
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseOr", context);
-        };
+            pop_and_reverse_item!(self, logical_and_list, LogicalAndList, context);
+        let bitwise_or = pop_item!(self, bitwise_or, BitwiseOr, context);
         let logical_and_built = LogicalAndBuilder::default()
             .bitwise_or(Box::new(bitwise_or))
             .logical_and_list(logical_and_list)
@@ -1489,23 +1406,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut logical_and_list =
-            if let Some(ASTType::LogicalAndList(logical_and_list)) = self.pop(context) {
-                logical_and_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalAndList", context);
-            };
-        let bitwise_or = if let Some(ASTType::BitwiseOr(bitwise_or)) = self.pop(context) {
-            bitwise_or
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseOr", context);
-        };
-        let logical_and_op = if let Some(ASTType::LogicalAndOp(logical_and_op)) = self.pop(context)
-        {
-            logical_and_op
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAndOp", context);
-        };
+        let mut logical_and_list = pop_item!(self, logical_and_list, LogicalAndList, context);
+        let bitwise_or = pop_item!(self, bitwise_or, BitwiseOr, context);
+        let logical_and_op = pop_item!(self, logical_and_op, LogicalAndOp, context);
         let logical_and_list_0_built = LogicalAndListBuilder::default()
             .bitwise_or(Box::new(bitwise_or))
             .logical_and_op(Box::new(logical_and_op))
@@ -1543,18 +1446,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_or_list =
-            if let Some(ASTType::BitwiseOrList(mut bitwise_or_list)) = self.pop(context) {
-                bitwise_or_list.reverse();
-                bitwise_or_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseOrList", context);
-            };
-        let bitwise_and = if let Some(ASTType::BitwiseAnd(bitwise_and)) = self.pop(context) {
-            bitwise_and
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseAnd", context);
-        };
+        let bitwise_or_list = pop_and_reverse_item!(self, bitwise_or_list, BitwiseOrList, context);
+        let bitwise_and = pop_item!(self, bitwise_and, BitwiseAnd, context);
         let bitwise_or_built = BitwiseOrBuilder::default()
             .bitwise_and(Box::new(bitwise_and))
             .bitwise_or_list(bitwise_or_list)
@@ -1580,22 +1473,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut bitwise_or_list =
-            if let Some(ASTType::BitwiseOrList(bitwise_or_list)) = self.pop(context) {
-                bitwise_or_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseOrList", context);
-            };
-        let bitwise_and = if let Some(ASTType::BitwiseAnd(bitwise_and)) = self.pop(context) {
-            bitwise_and
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseAnd", context);
-        };
-        let bitwise_or_op = if let Some(ASTType::BitwiseOrOp(bitwise_or_op)) = self.pop(context) {
-            bitwise_or_op
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseOrOp", context);
-        };
+        let mut bitwise_or_list = pop_item!(self, bitwise_or_list, BitwiseOrList, context);
+        let bitwise_and = pop_item!(self, bitwise_and, BitwiseAnd, context);
+        let bitwise_or_op = pop_item!(self, bitwise_or_op, BitwiseOrOp, context);
         let bitwise_or_list_0_built = BitwiseOrListBuilder::default()
             .bitwise_and(Box::new(bitwise_and))
             .bitwise_or_op(Box::new(bitwise_or_op))
@@ -1634,17 +1514,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_list =
-            if let Some(ASTType::BitwiseAndList(mut bitwise_and_list)) = self.pop(context) {
-                bitwise_and_list.reverse();
-                bitwise_and_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseAndList", context);
-            };
-        let equality = if let Some(ASTType::Equality(equality)) = self.pop(context) {
-            equality
-        } else {
-            bail!("{}: Expecting ASTType::Equality", context);
-        };
+            pop_and_reverse_item!(self, bitwise_and_list, BitwiseAndList, context);
+        let equality = pop_item!(self, equality, Equality, context);
         let bitwise_and_built = BitwiseAndBuilder::default()
             .equality(Box::new(equality))
             .bitwise_and_list(bitwise_and_list)
@@ -1670,23 +1541,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut bitwise_and_list =
-            if let Some(ASTType::BitwiseAndList(bitwise_and_list)) = self.pop(context) {
-                bitwise_and_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseAndList", context);
-            };
-        let equality = if let Some(ASTType::Equality(equality)) = self.pop(context) {
-            equality
-        } else {
-            bail!("{}: Expecting ASTType::Equality", context);
-        };
-        let bitwise_and_op = if let Some(ASTType::BitwiseAndOp(bitwise_and_op)) = self.pop(context)
-        {
-            bitwise_and_op
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseAndOp", context);
-        };
+        let mut bitwise_and_list = pop_item!(self, bitwise_and_list, BitwiseAndList, context);
+        let equality = pop_item!(self, equality, Equality, context);
+        let bitwise_and_op = pop_item!(self, bitwise_and_op, BitwiseAndOp, context);
         let bitwise_and_list_0_built = BitwiseAndListBuilder::default()
             .equality(Box::new(equality))
             .bitwise_and_op(Box::new(bitwise_and_op))
@@ -1724,18 +1581,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equality_list =
-            if let Some(ASTType::EqualityList(mut equality_list)) = self.pop(context) {
-                equality_list.reverse();
-                equality_list
-            } else {
-                bail!("{}: Expecting ASTType::EqualityList", context);
-            };
-        let relational = if let Some(ASTType::Relational(relational)) = self.pop(context) {
-            relational
-        } else {
-            bail!("{}: Expecting ASTType::Relational", context);
-        };
+        let equality_list = pop_and_reverse_item!(self, equality_list, EqualityList, context);
+        let relational = pop_item!(self, relational, Relational, context);
         let equality_built = EqualityBuilder::default()
             .relational(Box::new(relational))
             .equality_list(equality_list)
@@ -1761,22 +1608,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut equality_list =
-            if let Some(ASTType::EqualityList(equality_list)) = self.pop(context) {
-                equality_list
-            } else {
-                bail!("{}: Expecting ASTType::EqualityList", context);
-            };
-        let relational = if let Some(ASTType::Relational(relational)) = self.pop(context) {
-            relational
-        } else {
-            bail!("{}: Expecting ASTType::Relational", context);
-        };
-        let equality_op = if let Some(ASTType::EqualityOp(equality_op)) = self.pop(context) {
-            equality_op
-        } else {
-            bail!("{}: Expecting ASTType::EqualityOp", context);
-        };
+        let mut equality_list = pop_item!(self, equality_list, EqualityList, context);
+        let relational = pop_item!(self, relational, Relational, context);
+        let equality_op = pop_item!(self, equality_op, EqualityOp, context);
         let equality_list_0_built = EqualityListBuilder::default()
             .relational(Box::new(relational))
             .equality_op(Box::new(equality_op))
@@ -1814,18 +1648,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational_list =
-            if let Some(ASTType::RelationalList(mut relational_list)) = self.pop(context) {
-                relational_list.reverse();
-                relational_list
-            } else {
-                bail!("{}: Expecting ASTType::RelationalList", context);
-            };
-        let bitwise_shift = if let Some(ASTType::BitwiseShift(bitwise_shift)) = self.pop(context) {
-            bitwise_shift
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseShift", context);
-        };
+        let relational_list = pop_and_reverse_item!(self, relational_list, RelationalList, context);
+        let bitwise_shift = pop_item!(self, bitwise_shift, BitwiseShift, context);
         let relational_built = RelationalBuilder::default()
             .bitwise_shift(Box::new(bitwise_shift))
             .relational_list(relational_list)
@@ -1851,22 +1675,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut relational_list =
-            if let Some(ASTType::RelationalList(relational_list)) = self.pop(context) {
-                relational_list
-            } else {
-                bail!("{}: Expecting ASTType::RelationalList", context);
-            };
-        let bitwise_shift = if let Some(ASTType::BitwiseShift(bitwise_shift)) = self.pop(context) {
-            bitwise_shift
-        } else {
-            bail!("{}: Expecting ASTType::BitwiseShift", context);
-        };
-        let relational_op = if let Some(ASTType::RelationalOp(relational_op)) = self.pop(context) {
-            relational_op
-        } else {
-            bail!("{}: Expecting ASTType::RelationalOp", context);
-        };
+        let mut relational_list = pop_item!(self, relational_list, RelationalList, context);
+        let bitwise_shift = pop_item!(self, bitwise_shift, BitwiseShift, context);
+        let relational_op = pop_item!(self, relational_op, RelationalOp, context);
         let relational_list_0_built = RelationalListBuilder::default()
             .bitwise_shift(Box::new(bitwise_shift))
             .relational_op(Box::new(relational_op))
@@ -1905,17 +1716,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_list =
-            if let Some(ASTType::BitwiseShiftList(mut bitwise_shift_list)) = self.pop(context) {
-                bitwise_shift_list.reverse();
-                bitwise_shift_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseShiftList", context);
-            };
-        let summ = if let Some(ASTType::Summ(summ)) = self.pop(context) {
-            summ
-        } else {
-            bail!("{}: Expecting ASTType::Summ", context);
-        };
+            pop_and_reverse_item!(self, bitwise_shift_list, BitwiseShiftList, context);
+        let summ = pop_item!(self, summ, Summ, context);
         let bitwise_shift_built = BitwiseShiftBuilder::default()
             .summ(Box::new(summ))
             .bitwise_shift_list(bitwise_shift_list)
@@ -1941,23 +1743,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut bitwise_shift_list =
-            if let Some(ASTType::BitwiseShiftList(bitwise_shift_list)) = self.pop(context) {
-                bitwise_shift_list
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseShiftList", context);
-            };
-        let summ = if let Some(ASTType::Summ(summ)) = self.pop(context) {
-            summ
-        } else {
-            bail!("{}: Expecting ASTType::Summ", context);
-        };
-        let bitwise_shift_op =
-            if let Some(ASTType::BitwiseShiftOp(bitwise_shift_op)) = self.pop(context) {
-                bitwise_shift_op
-            } else {
-                bail!("{}: Expecting ASTType::BitwiseShiftOp", context);
-            };
+        let mut bitwise_shift_list = pop_item!(self, bitwise_shift_list, BitwiseShiftList, context);
+        let summ = pop_item!(self, summ, Summ, context);
+        let bitwise_shift_op = pop_item!(self, bitwise_shift_op, BitwiseShiftOp, context);
         let bitwise_shift_list_0_built = BitwiseShiftListBuilder::default()
             .summ(Box::new(summ))
             .bitwise_shift_op(Box::new(bitwise_shift_op))
@@ -1997,11 +1785,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = if let Some(ASTType::Plus(plus)) = self.pop(context) {
-            plus
-        } else {
-            bail!("{}: Expecting ASTType::Plus", context);
-        };
+        let plus = pop_item!(self, plus, Plus, context);
         let add_op_0_built = AddOp0Builder::default()
             .plus(Box::new(plus))
             .build()
@@ -2025,11 +1809,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
-            minus
-        } else {
-            bail!("{}: Expecting ASTType::Minus", context);
-        };
+        let minus = pop_item!(self, minus, Minus, context);
         let add_op_1_built = AddOp1Builder::default()
             .minus(Box::new(minus))
             .build()
@@ -2054,17 +1834,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let summ_list = if let Some(ASTType::SummList(mut summ_list)) = self.pop(context) {
-            summ_list.reverse();
-            summ_list
-        } else {
-            bail!("{}: Expecting ASTType::SummList", context);
-        };
-        let mult = if let Some(ASTType::Mult(mult)) = self.pop(context) {
-            mult
-        } else {
-            bail!("{}: Expecting ASTType::Mult", context);
-        };
+        let summ_list = pop_and_reverse_item!(self, summ_list, SummList, context);
+        let mult = pop_item!(self, mult, Mult, context);
         let summ_built = SummBuilder::default()
             .mult(Box::new(mult))
             .summ_list(summ_list)
@@ -2090,21 +1861,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut summ_list = if let Some(ASTType::SummList(summ_list)) = self.pop(context) {
-            summ_list
-        } else {
-            bail!("{}: Expecting ASTType::SummList", context);
-        };
-        let mult = if let Some(ASTType::Mult(mult)) = self.pop(context) {
-            mult
-        } else {
-            bail!("{}: Expecting ASTType::Mult", context);
-        };
-        let add_op = if let Some(ASTType::AddOp(add_op)) = self.pop(context) {
-            add_op
-        } else {
-            bail!("{}: Expecting ASTType::AddOp", context);
-        };
+        let mut summ_list = pop_item!(self, summ_list, SummList, context);
+        let mult = pop_item!(self, mult, Mult, context);
+        let add_op = pop_item!(self, add_op, AddOp, context);
         let summ_list_0_built = SummListBuilder::default()
             .mult(Box::new(mult))
             .add_op(Box::new(add_op))
@@ -2142,17 +1901,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mult_list = if let Some(ASTType::MultList(mut mult_list)) = self.pop(context) {
-            mult_list.reverse();
-            mult_list
-        } else {
-            bail!("{}: Expecting ASTType::MultList", context);
-        };
-        let power = if let Some(ASTType::Power(power)) = self.pop(context) {
-            power
-        } else {
-            bail!("{}: Expecting ASTType::Power", context);
-        };
+        let mult_list = pop_and_reverse_item!(self, mult_list, MultList, context);
+        let power = pop_item!(self, power, Power, context);
         let mult_built = MultBuilder::default()
             .power(Box::new(power))
             .mult_list(mult_list)
@@ -2178,21 +1928,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut mult_list = if let Some(ASTType::MultList(mult_list)) = self.pop(context) {
-            mult_list
-        } else {
-            bail!("{}: Expecting ASTType::MultList", context);
-        };
-        let power = if let Some(ASTType::Power(power)) = self.pop(context) {
-            power
-        } else {
-            bail!("{}: Expecting ASTType::Power", context);
-        };
-        let mult_op = if let Some(ASTType::MultOp(mult_op)) = self.pop(context) {
-            mult_op
-        } else {
-            bail!("{}: Expecting ASTType::MultOp", context);
-        };
+        let mut mult_list = pop_item!(self, mult_list, MultList, context);
+        let power = pop_item!(self, power, Power, context);
+        let mult_op = pop_item!(self, mult_op, MultOp, context);
         let mult_list_0_built = MultListBuilder::default()
             .power(Box::new(power))
             .mult_op(Box::new(mult_op))
@@ -2230,17 +1968,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let power_list = if let Some(ASTType::PowerList(mut power_list)) = self.pop(context) {
-            power_list.reverse();
-            power_list
-        } else {
-            bail!("{}: Expecting ASTType::PowerList", context);
-        };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
+        let power_list = pop_and_reverse_item!(self, power_list, PowerList, context);
+        let factor = pop_item!(self, factor, Factor, context);
         let power_built = PowerBuilder::default()
             .factor(Box::new(factor))
             .power_list(power_list)
@@ -2266,21 +1995,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut power_list = if let Some(ASTType::PowerList(power_list)) = self.pop(context) {
-            power_list
-        } else {
-            bail!("{}: Expecting ASTType::PowerList", context);
-        };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
-        let pow_op = if let Some(ASTType::PowOp(pow_op)) = self.pop(context) {
-            pow_op
-        } else {
-            bail!("{}: Expecting ASTType::PowOp", context);
-        };
+        let mut power_list = pop_item!(self, power_list, PowerList, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let pow_op = pop_item!(self, pow_op, PowOp, context);
         let power_list_0_built = PowerListBuilder::default()
             .factor(Box::new(factor))
             .pow_op(Box::new(pow_op))
@@ -2317,11 +2034,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
-            minus
-        } else {
-            bail!("{}: Expecting ASTType::Minus", context);
-        };
+        let minus = pop_item!(self, minus, Minus, context);
         let negate_built = NegateBuilder::default()
             .minus(Box::new(minus))
             .build()
@@ -2344,11 +2057,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = if let Some(ASTType::Number(number)) = self.pop(context) {
-            number
-        } else {
-            bail!("{}: Expecting ASTType::Number", context);
-        };
+        let number = pop_item!(self, number, Number, context);
         let factor_0_built = Factor0Builder::default()
             .number(Box::new(number))
             .build()
@@ -2372,11 +2081,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let id_ref = if let Some(ASTType::IdRef(id_ref)) = self.pop(context) {
-            id_ref
-        } else {
-            bail!("{}: Expecting ASTType::IdRef", context);
-        };
+        let id_ref = pop_item!(self, id_ref, IdRef, context);
         let factor_1_built = Factor1Builder::default()
             .id_ref(Box::new(id_ref))
             .build()
@@ -2401,16 +2106,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
-        let negate = if let Some(ASTType::Negate(negate)) = self.pop(context) {
-            negate
-        } else {
-            bail!("{}: Expecting ASTType::Negate", context);
-        };
+        let factor = pop_item!(self, factor, Factor, context);
+        let negate = pop_item!(self, negate, Negate, context);
         let factor_2_built = Factor2Builder::default()
             .negate(Box::new(negate))
             .factor(Box::new(factor))
@@ -2437,11 +2134,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
-            logical_or
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOr", context);
-        };
+        let logical_or = pop_item!(self, logical_or, LogicalOr, context);
         let factor_3_built = Factor3Builder::default()
             // Ignore clipped member 'l_paren'
             .logical_or(Box::new(logical_or))
@@ -2490,11 +2183,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let id = if let Some(ASTType::Id(id)) = self.pop(context) {
-            id
-        } else {
-            bail!("{}: Expecting ASTType::Id", context);
-        };
+        let id = pop_item!(self, id, Id, context);
         let id_ref_built = IdRefBuilder::default()
             .id(Box::new(id))
             .build()

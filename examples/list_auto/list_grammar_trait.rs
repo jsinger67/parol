@@ -9,6 +9,7 @@ use crate::list_grammar::ListGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 use std::marker::PhantomData;
@@ -207,11 +208,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'trailing_comma'
         self.pop(context);
-        let list_opt = if let Some(ASTType::ListOpt(list_opt)) = self.pop(context) {
-            list_opt
-        } else {
-            bail!("{}: Expecting ASTType::ListOpt", context);
-        };
+        let list_opt = pop_item!(self, list_opt, ListOpt, context);
         let list_built = ListBuilder::default()
             .list_opt(list_opt)
             // Ignore clipped member 'trailing_comma'
@@ -235,11 +232,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let items = if let Some(ASTType::Items(items)) = self.pop(context) {
-            items
-        } else {
-            bail!("{}: Expecting ASTType::Items", context);
-        };
+        let items = pop_item!(self, items, Items, context);
         let list_opt_0_built = ListOptBuilder::default()
             .items((&items).try_into().into_diagnostic()?)
             .build()
@@ -273,17 +266,8 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let items_list = if let Some(ASTType::ItemsList(mut items_list)) = self.pop(context) {
-            items_list.reverse();
-            items_list
-        } else {
-            bail!("{}: Expecting ASTType::ItemsList", context);
-        };
-        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
-            num
-        } else {
-            bail!("{}: Expecting ASTType::Num", context);
-        };
+        let items_list = pop_and_reverse_item!(self, items_list, ItemsList, context);
+        let num = pop_item!(self, num, Num, context);
         let items_built = ItemsBuilder::default()
             .num(Box::new(num))
             .items_list(items_list)
@@ -309,16 +293,8 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut items_list = if let Some(ASTType::ItemsList(items_list)) = self.pop(context) {
-            items_list
-        } else {
-            bail!("{}: Expecting ASTType::ItemsList", context);
-        };
-        let num = if let Some(ASTType::Num(num)) = self.pop(context) {
-            num
-        } else {
-            bail!("{}: Expecting ASTType::Num", context);
-        };
+        let mut items_list = pop_item!(self, items_list, ItemsList, context);
+        let num = pop_item!(self, num, Num, context);
         let items_list_0_built = ItemsListBuilder::default()
             .num(Box::new(num))
             // Ignore clipped member 'comma'
@@ -375,12 +351,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma_opt =
-            if let Some(ASTType::TrailingCommaOpt(trailing_comma_opt)) = self.pop(context) {
-                trailing_comma_opt
-            } else {
-                bail!("{}: Expecting ASTType::TrailingCommaOpt", context);
-            };
+        let trailing_comma_opt = pop_item!(self, trailing_comma_opt, TrailingCommaOpt, context);
         let trailing_comma_built = TrailingCommaBuilder::default()
             .trailing_comma_opt(trailing_comma_opt)
             .build()

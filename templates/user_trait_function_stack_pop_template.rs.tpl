@@ -1,6 +1,1 @@
-        let {{#vec_push_semantic?}}mut {{/vec_push_semantic}}{{arg_name}} = if let Some(ASTType::{{{arg_type}}}({{#vec_anchor?}}mut {{/vec_anchor}}{{arg_name}})) = self.pop(context) {
-            {{#vec_anchor?}}{{arg_name}}.reverse();
-            {{/vec_anchor}}{{arg_name}}
-        } else {
-            bail!("{}: Expecting ASTType::{{{arg_type}}}", context);
-        };
+        let {{#vec_push_semantic?}}mut {{/vec_push_semantic}}{{arg_name}} = {{#vec_anchor?}}pop_and_reverse_item{{/vec_anchor}}{{^vec_anchor?}}pop_item{{/vec_anchor}}!(self, {{arg_name}}, {{{arg_type}}}, context);

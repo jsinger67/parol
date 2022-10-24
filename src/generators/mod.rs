@@ -25,6 +25,10 @@ pub use language_generator::LanguageGenerator;
 pub mod lexer_generator;
 pub use lexer_generator::{generate_lexer_source, generate_terminal_names};
 
+/// Module with some macros used in generated parsers
+#[macro_use]
+pub mod macros;
+
 /// Module with the parser generator
 pub mod parser_generator;
 pub use parser_generator::generate_parser_source;
