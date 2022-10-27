@@ -6,7 +6,7 @@
 
 {{#auto_generate?}}#![allow(unused_imports)]{{/auto_generate}}
 use id_tree::Tree;
-{{#auto_generate?}}use {{parol_crate}}::{pop_item, pop_and_reverse_item};{{/auto_generate}}
+{{#auto_generate?}}use parol_macros::{pop_item, pop_and_reverse_item};{{/auto_generate}}
 {{#auto_generate?}}use parol_runtime::lexer::Token;{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 {{#auto_generate?}}use log::trace;

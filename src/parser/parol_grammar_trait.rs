@@ -6,7 +6,7 @@
 
 #![allow(unused_imports)]
 use crate::parser::parol_grammar::ParolGrammar;
-use crate::{pop_and_reverse_item, pop_item};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};

@@ -26,6 +26,7 @@ lazy_static = "1.4"
 log = "0.4.17"
 miette = { version = "5.2.0", features = ["fancy"] }
 owo-colors = "3.5.0"
+parol-macros = "0.1.0"
 parol_runtime = "0.8.1"
 rand = "0.8.5"
 rand_regex = "0.15.1"
