@@ -21,9 +21,15 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.12.2 - Not yet released
+## v0.13.0 - Not yet released
 
 * Consolidated cargo docs
+* Using macros in generated adapter grammars, i.e. in auto-generation mode
+  * This results in changed generated code which should be completely compatible but considerably
+  smaller (in the order of 10 percent)
+  * It also forces the user to have `parol` in his dependencies, not only as a build-dependency.
+  `parol new` subcommand is modified accordingly. This fact is currently considered as a bigger
+  problem and my result in a separate crate that only contains the used macros.
 
 ## v0.12.1 - 2022-10-14
 
