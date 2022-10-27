@@ -52,7 +52,13 @@ pub(crate) struct UserTraitData<'a> {
     pub trait_caller: StrVec,
     pub module_name: &'a str,
     pub user_trait_functions: StrVec,
-    /// The name of the parol crate when used in use statements
+    /// The name of the parol crate when used in use statements.
+    /// Either 'crate' for parol itself or 'parol' for all other crates.
+    /// Results in
+    /// use crate::{pop_and_reverse_item, pop_item};
+    /// for parol or
+    /// use parol::{pop_and_reverse_item, pop_item};
+    /// otherwise.
     pub parol_crate: &'static str,
 }
 
