@@ -1,0 +1,14 @@
+[package]
+name = "parol-macros"
+version = "0.1.0"
+authors = ["Jörg Singer <singer.joerg@gmx.de>"]
+description = "Macros for LL(k) parser generator `parol`"
+readme = "README.md"
+keywords = ["parser", "parsing", "parser-generator", "LLk"]
+categories = ["algorithms", "parsing", "Parsing tools"]
+license = "MIT"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
