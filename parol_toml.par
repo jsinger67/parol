@@ -128,20 +128,13 @@ Escape
     ;
 
 EscapeSeqChar
-    : QuotationMark // "    quotation mark  U+0022
- 
+    : QuotationMark // "    quotation mark  U+0022 
     | Escape // \    reverse solidus U+005C
-
     | <Esc>"b" // b    backspace       U+0008
-
     | <Esc>"f" // f    form feed       U+000C
-
     | <Esc>"n" // n    line feed       U+000A
-
     | <Esc>"r" // r    carriage return U+000D
-
     | <Esc>"t" // t    tab             U+0009
-
     | Unicode4
     | Unicode8
     | WsNewline

@@ -9,6 +9,7 @@ use crate::parol_toml_grammar::ParolTomlGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -2372,13 +2373,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let parol_toml_list =
-            if let Some(ASTType::ParolTomlList(mut parol_toml_list)) = self.pop(context) {
-                parol_toml_list.reverse();
-                parol_toml_list
-            } else {
-                bail!("{}: Expecting ASTType::ParolTomlList", context);
-            };
+        let parol_toml_list = pop_and_reverse_item!(self, parol_toml_list, ParolTomlList, context);
         let parol_toml_built = ParolTomlBuilder::default()
             .parol_toml_list(parol_toml_list)
             .build()
@@ -2402,17 +2397,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut parol_toml_list =
-            if let Some(ASTType::ParolTomlList(parol_toml_list)) = self.pop(context) {
-                parol_toml_list
-            } else {
-                bail!("{}: Expecting ASTType::ParolTomlList", context);
-            };
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
+        let mut parol_toml_list = pop_item!(self, parol_toml_list, ParolTomlList, context);
+        let expression = pop_item!(self, expression, Expression, context);
         let parol_toml_list_0_built = ParolTomlListBuilder::default()
             .expression(Box::new(expression))
             .build()
@@ -2448,11 +2434,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let key_val = if let Some(ASTType::KeyVal(key_val)) = self.pop(context) {
-            key_val
-        } else {
-            bail!("{}: Expecting ASTType::KeyVal", context);
-        };
+        let key_val = pop_item!(self, key_val, KeyVal, context);
         let expression_0_built = Expression0Builder::default()
             .key_val(Box::new(key_val))
             .build()
@@ -2476,11 +2458,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let table = if let Some(ASTType::Table(table)) = self.pop(context) {
-            table
-        } else {
-            bail!("{}: Expecting ASTType::Table", context);
-        };
+        let table = pop_item!(self, table, Table, context);
         let expression_1_built = Expression1Builder::default()
             .table(Box::new(table))
             .build()
@@ -2575,21 +2553,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let val = if let Some(ASTType::Val(val)) = self.pop(context) {
-            val
-        } else {
-            bail!("{}: Expecting ASTType::Val", context);
-        };
-        let key_val_sep = if let Some(ASTType::KeyValSep(key_val_sep)) = self.pop(context) {
-            key_val_sep
-        } else {
-            bail!("{}: Expecting ASTType::KeyValSep", context);
-        };
-        let key = if let Some(ASTType::Key(key)) = self.pop(context) {
-            key
-        } else {
-            bail!("{}: Expecting ASTType::Key", context);
-        };
+        let val = pop_item!(self, val, Val, context);
+        let key_val_sep = pop_item!(self, key_val_sep, KeyValSep, context);
+        let key = pop_item!(self, key, Key, context);
         let key_val_built = KeyValBuilder::default()
             .key(Box::new(key))
             .key_val_sep(Box::new(key_val_sep))
@@ -2615,16 +2581,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let key_suffix = if let Some(ASTType::KeySuffix(key_suffix)) = self.pop(context) {
-            key_suffix
-        } else {
-            bail!("{}: Expecting ASTType::KeySuffix", context);
-        };
-        let simple_key = if let Some(ASTType::SimpleKey(simple_key)) = self.pop(context) {
-            simple_key
-        } else {
-            bail!("{}: Expecting ASTType::SimpleKey", context);
-        };
+        let key_suffix = pop_item!(self, key_suffix, KeySuffix, context);
+        let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let key_built = KeyBuilder::default()
             .simple_key(Box::new(simple_key))
             .key_suffix(Box::new(key_suffix))
@@ -2664,22 +2622,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let key_list = if let Some(ASTType::KeyList(mut key_list)) = self.pop(context) {
-            key_list.reverse();
-            key_list
-        } else {
-            bail!("{}: Expecting ASTType::KeyList", context);
-        };
-        let simple_key = if let Some(ASTType::SimpleKey(simple_key)) = self.pop(context) {
-            simple_key
-        } else {
-            bail!("{}: Expecting ASTType::SimpleKey", context);
-        };
-        let dot_sep = if let Some(ASTType::DotSep(dot_sep)) = self.pop(context) {
-            dot_sep
-        } else {
-            bail!("{}: Expecting ASTType::DotSep", context);
-        };
+        let key_list = pop_and_reverse_item!(self, key_list, KeyList, context);
+        let simple_key = pop_item!(self, simple_key, SimpleKey, context);
+        let dot_sep = pop_item!(self, dot_sep, DotSep, context);
         let key_suffix_1_built = KeySuffix1Builder::default()
             .dot_sep(Box::new(dot_sep))
             .simple_key(Box::new(simple_key))
@@ -2705,21 +2650,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut key_list = if let Some(ASTType::KeyList(key_list)) = self.pop(context) {
-            key_list
-        } else {
-            bail!("{}: Expecting ASTType::KeyList", context);
-        };
-        let simple_key = if let Some(ASTType::SimpleKey(simple_key)) = self.pop(context) {
-            simple_key
-        } else {
-            bail!("{}: Expecting ASTType::SimpleKey", context);
-        };
-        let dot_sep = if let Some(ASTType::DotSep(dot_sep)) = self.pop(context) {
-            dot_sep
-        } else {
-            bail!("{}: Expecting ASTType::DotSep", context);
-        };
+        let mut key_list = pop_item!(self, key_list, KeyList, context);
+        let simple_key = pop_item!(self, simple_key, SimpleKey, context);
+        let dot_sep = pop_item!(self, dot_sep, DotSep, context);
         let key_list_0_built = KeyListBuilder::default()
             .simple_key(Box::new(simple_key))
             .dot_sep(Box::new(dot_sep))
@@ -2756,11 +2689,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let quoted_key = if let Some(ASTType::QuotedKey(quoted_key)) = self.pop(context) {
-            quoted_key
-        } else {
-            bail!("{}: Expecting ASTType::QuotedKey", context);
-        };
+        let quoted_key = pop_item!(self, quoted_key, QuotedKey, context);
         let simple_key_0_built = SimpleKey0Builder::default()
             .quoted_key(Box::new(quoted_key))
             .build()
@@ -2784,11 +2713,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let unquoted_key = if let Some(ASTType::UnquotedKey(unquoted_key)) = self.pop(context) {
-            unquoted_key
-        } else {
-            bail!("{}: Expecting ASTType::UnquotedKey", context);
-        };
+        let unquoted_key = pop_item!(self, unquoted_key, UnquotedKey, context);
         let simple_key_1_built = SimpleKey1Builder::default()
             .unquoted_key(Box::new(unquoted_key))
             .build()
@@ -2812,11 +2737,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_string = if let Some(ASTType::BasicString(basic_string)) = self.pop(context) {
-            basic_string
-        } else {
-            bail!("{}: Expecting ASTType::BasicString", context);
-        };
+        let basic_string = pop_item!(self, basic_string, BasicString, context);
         let quoted_key_0_built = QuotedKey0Builder::default()
             .basic_string(Box::new(basic_string))
             .build()
@@ -2840,12 +2761,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal_string = if let Some(ASTType::LiteralString(literal_string)) = self.pop(context)
-        {
-            literal_string
-        } else {
-            bail!("{}: Expecting ASTType::LiteralString", context);
-        };
+        let literal_string = pop_item!(self, literal_string, LiteralString, context);
         let quoted_key_1_built = QuotedKey1Builder::default()
             .literal_string(Box::new(literal_string))
             .build()
@@ -2892,11 +2808,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let boolean = if let Some(ASTType::Boolean(boolean)) = self.pop(context) {
-            boolean
-        } else {
-            bail!("{}: Expecting ASTType::Boolean", context);
-        };
+        let boolean = pop_item!(self, boolean, Boolean, context);
         let val_0_built = Val0Builder::default()
             .boolean(Box::new(boolean))
             .build()
@@ -2920,11 +2832,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array = if let Some(ASTType::Array(array)) = self.pop(context) {
-            array
-        } else {
-            bail!("{}: Expecting ASTType::Array", context);
-        };
+        let array = pop_item!(self, array, Array, context);
         let val_1_built = Val1Builder::default()
             .array(Box::new(array))
             .build()
@@ -2948,11 +2856,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let inline_table = if let Some(ASTType::InlineTable(inline_table)) = self.pop(context) {
-            inline_table
-        } else {
-            bail!("{}: Expecting ASTType::InlineTable", context);
-        };
+        let inline_table = pop_item!(self, inline_table, InlineTable, context);
         let val_2_built = Val2Builder::default()
             .inline_table(Box::new(inline_table))
             .build()
@@ -2976,11 +2880,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let date_time = if let Some(ASTType::DateTime(date_time)) = self.pop(context) {
-            date_time
-        } else {
-            bail!("{}: Expecting ASTType::DateTime", context);
-        };
+        let date_time = pop_item!(self, date_time, DateTime, context);
         let val_3_built = Val3Builder::default()
             .date_time(Box::new(date_time))
             .build()
@@ -3004,11 +2904,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let numeric = if let Some(ASTType::Numeric(numeric)) = self.pop(context) {
-            numeric
-        } else {
-            bail!("{}: Expecting ASTType::Numeric", context);
-        };
+        let numeric = pop_item!(self, numeric, Numeric, context);
         let val_4_built = Val4Builder::default()
             .numeric(Box::new(numeric))
             .build()
@@ -3032,11 +2928,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_string = if let Some(ASTType::BasicString(basic_string)) = self.pop(context) {
-            basic_string
-        } else {
-            bail!("{}: Expecting ASTType::BasicString", context);
-        };
+        let basic_string = pop_item!(self, basic_string, BasicString, context);
         let val_5_built = Val5Builder::default()
             .basic_string(Box::new(basic_string))
             .build()
@@ -3060,12 +2952,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_basic_string =
-            if let Some(ASTType::MLBasicString(m_l_basic_string)) = self.pop(context) {
-                m_l_basic_string
-            } else {
-                bail!("{}: Expecting ASTType::MLBasicString", context);
-            };
+        let m_l_basic_string = pop_item!(self, m_l_basic_string, MLBasicString, context);
         let val_6_built = Val6Builder::default()
             .m_l_basic_string(Box::new(m_l_basic_string))
             .build()
@@ -3089,12 +2976,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal_string = if let Some(ASTType::LiteralString(literal_string)) = self.pop(context)
-        {
-            literal_string
-        } else {
-            bail!("{}: Expecting ASTType::LiteralString", context);
-        };
+        let literal_string = pop_item!(self, literal_string, LiteralString, context);
         let val_7_built = Val7Builder::default()
             .literal_string(Box::new(literal_string))
             .build()
@@ -3118,12 +3000,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_literal_string =
-            if let Some(ASTType::MLLiteralString(m_l_literal_string)) = self.pop(context) {
-                m_l_literal_string
-            } else {
-                bail!("{}: Expecting ASTType::MLLiteralString", context);
-            };
+        let m_l_literal_string = pop_item!(self, m_l_literal_string, MLLiteralString, context);
         let val_8_built = Val8Builder::default()
             .m_l_literal_string(Box::new(m_l_literal_string))
             .build()
@@ -3147,11 +3024,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float = if let Some(ASTType::Float(float)) = self.pop(context) {
-            float
-        } else {
-            bail!("{}: Expecting ASTType::Float", context);
-        };
+        let float = pop_item!(self, float, Float, context);
         let numeric_0_built = Numeric0Builder::default()
             .float(Box::new(float))
             .build()
@@ -3175,11 +3048,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = if let Some(ASTType::Integer(integer)) = self.pop(context) {
-            integer
-        } else {
-            bail!("{}: Expecting ASTType::Integer", context);
-        };
+        let integer = pop_item!(self, integer, Integer, context);
         let numeric_1_built = Numeric1Builder::default()
             .integer(Box::new(integer))
             .build()
@@ -3205,25 +3074,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let quotation_mark0 =
-            if let Some(ASTType::QuotationMark(quotation_mark0)) = self.pop(context) {
-                quotation_mark0
-            } else {
-                bail!("{}: Expecting ASTType::QuotationMark", context);
-            };
+        let quotation_mark0 = pop_item!(self, quotation_mark0, QuotationMark, context);
         let basic_string_list =
-            if let Some(ASTType::BasicStringList(mut basic_string_list)) = self.pop(context) {
-                basic_string_list.reverse();
-                basic_string_list
-            } else {
-                bail!("{}: Expecting ASTType::BasicStringList", context);
-            };
-        let quotation_mark = if let Some(ASTType::QuotationMark(quotation_mark)) = self.pop(context)
-        {
-            quotation_mark
-        } else {
-            bail!("{}: Expecting ASTType::QuotationMark", context);
-        };
+            pop_and_reverse_item!(self, basic_string_list, BasicStringList, context);
+        let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
         let basic_string_built = BasicStringBuilder::default()
             .quotation_mark(Box::new(quotation_mark))
             .basic_string_list(basic_string_list)
@@ -3249,17 +3103,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut basic_string_list =
-            if let Some(ASTType::BasicStringList(basic_string_list)) = self.pop(context) {
-                basic_string_list
-            } else {
-                bail!("{}: Expecting ASTType::BasicStringList", context);
-            };
-        let basic_char = if let Some(ASTType::BasicChar(basic_char)) = self.pop(context) {
-            basic_char
-        } else {
-            bail!("{}: Expecting ASTType::BasicChar", context);
-        };
+        let mut basic_string_list = pop_item!(self, basic_string_list, BasicStringList, context);
+        let basic_char = pop_item!(self, basic_char, BasicChar, context);
         let basic_string_list_0_built = BasicStringListBuilder::default()
             .basic_char(Box::new(basic_char))
             .build()
@@ -3295,12 +3140,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_unescaped =
-            if let Some(ASTType::BasicUnescaped(basic_unescaped)) = self.pop(context) {
-                basic_unescaped
-            } else {
-                bail!("{}: Expecting ASTType::BasicUnescaped", context);
-            };
+        let basic_unescaped = pop_item!(self, basic_unescaped, BasicUnescaped, context);
         let basic_char_0_built = BasicChar0Builder::default()
             .basic_unescaped(Box::new(basic_unescaped))
             .build()
@@ -3324,11 +3164,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let escaped = if let Some(ASTType::Escaped(escaped)) = self.pop(context) {
-            escaped
-        } else {
-            bail!("{}: Expecting ASTType::Escaped", context);
-        };
+        let escaped = pop_item!(self, escaped, Escaped, context);
         let basic_char_1_built = BasicChar1Builder::default()
             .escaped(Box::new(escaped))
             .build()
@@ -3352,12 +3188,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ascii_no_escape =
-            if let Some(ASTType::AsciiNoEscape(ascii_no_escape)) = self.pop(context) {
-                ascii_no_escape
-            } else {
-                bail!("{}: Expecting ASTType::AsciiNoEscape", context);
-            };
+        let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
         let basic_unescaped_0_built = BasicUnescaped0Builder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
@@ -3382,11 +3213,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_ascii = if let Some(ASTType::NonAscii(non_ascii)) = self.pop(context) {
-            non_ascii
-        } else {
-            bail!("{}: Expecting ASTType::NonAscii", context);
-        };
+        let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
         let basic_unescaped_1_built = BasicUnescaped1Builder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
@@ -3412,17 +3239,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let escape_seq_char =
-            if let Some(ASTType::EscapeSeqChar(escape_seq_char)) = self.pop(context) {
-                escape_seq_char
-            } else {
-                bail!("{}: Expecting ASTType::EscapeSeqChar", context);
-            };
-        let escape = if let Some(ASTType::Escape(escape)) = self.pop(context) {
-            escape
-        } else {
-            bail!("{}: Expecting ASTType::Escape", context);
-        };
+        let escape_seq_char = pop_item!(self, escape_seq_char, EscapeSeqChar, context);
+        let escape = pop_item!(self, escape, Escape, context);
         let escaped_built = EscapedBuilder::default()
             .escape(Box::new(escape))
             .escape_seq_char(Box::new(escape_seq_char))
@@ -3469,12 +3287,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let quotation_mark = if let Some(ASTType::QuotationMark(quotation_mark)) = self.pop(context)
-        {
-            quotation_mark
-        } else {
-            bail!("{}: Expecting ASTType::QuotationMark", context);
-        };
+        let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
         let escape_seq_char_0_built = EscapeSeqChar0Builder::default()
             .quotation_mark(Box::new(quotation_mark))
             .build()
@@ -3499,11 +3312,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let escape = if let Some(ASTType::Escape(escape)) = self.pop(context) {
-            escape
-        } else {
-            bail!("{}: Expecting ASTType::Escape", context);
-        };
+        let escape = pop_item!(self, escape, Escape, context);
         let escape_seq_char_1_built = EscapeSeqChar1Builder::default()
             .escape(Box::new(escape))
             .build()
@@ -3653,11 +3462,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let unicode4 = if let Some(ASTType::Unicode4(unicode4)) = self.pop(context) {
-            unicode4
-        } else {
-            bail!("{}: Expecting ASTType::Unicode4", context);
-        };
+        let unicode4 = pop_item!(self, unicode4, Unicode4, context);
         let escape_seq_char_7_built = EscapeSeqChar7Builder::default()
             .unicode4(Box::new(unicode4))
             .build()
@@ -3682,11 +3487,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let unicode8 = if let Some(ASTType::Unicode8(unicode8)) = self.pop(context) {
-            unicode8
-        } else {
-            bail!("{}: Expecting ASTType::Unicode8", context);
-        };
+        let unicode8 = pop_item!(self, unicode8, Unicode8, context);
         let escape_seq_char_8_built = EscapeSeqChar8Builder::default()
             .unicode8(Box::new(unicode8))
             .build()
@@ -3711,11 +3512,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ws_newline = if let Some(ASTType::WsNewline(ws_newline)) = self.pop(context) {
-            ws_newline
-        } else {
-            bail!("{}: Expecting ASTType::WsNewline", context);
-        };
+        let ws_newline = pop_item!(self, ws_newline, WsNewline, context);
         let escape_seq_char_9_built = EscapeSeqChar9Builder::default()
             .ws_newline(Box::new(ws_newline))
             .build()
@@ -3740,12 +3537,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ascii_no_escape =
-            if let Some(ASTType::AsciiNoEscape(ascii_no_escape)) = self.pop(context) {
-                ascii_no_escape
-            } else {
-                bail!("{}: Expecting ASTType::AsciiNoEscape", context);
-            };
+        let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
         let escape_seq_char_10_built = EscapeSeqChar10Builder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
@@ -3818,23 +3610,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_basic_string_end =
-            if let Some(ASTType::MLBasicStringEnd(m_l_basic_string_end)) = self.pop(context) {
-                m_l_basic_string_end
-            } else {
-                bail!("{}: Expecting ASTType::MLBasicStringEnd", context);
-            };
-        let m_l_basic_body = if let Some(ASTType::MLBasicBody(m_l_basic_body)) = self.pop(context) {
-            m_l_basic_body
-        } else {
-            bail!("{}: Expecting ASTType::MLBasicBody", context);
-        };
+        let m_l_basic_string_end = pop_item!(self, m_l_basic_string_end, MLBasicStringEnd, context);
+        let m_l_basic_body = pop_item!(self, m_l_basic_body, MLBasicBody, context);
         let m_l_basic_string_start =
-            if let Some(ASTType::MLBasicStringStart(m_l_basic_string_start)) = self.pop(context) {
-                m_l_basic_string_start
-            } else {
-                bail!("{}: Expecting ASTType::MLBasicStringStart", context);
-            };
+            pop_item!(self, m_l_basic_string_start, MLBasicStringStart, context);
         let m_l_basic_string_built = MLBasicStringBuilder::default()
             .m_l_basic_string_start(Box::new(m_l_basic_string_start))
             .m_l_basic_body(Box::new(m_l_basic_body))
@@ -3862,18 +3641,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_body_list =
-            if let Some(ASTType::MLBasicBodyList(mut m_l_basic_body_list)) = self.pop(context) {
-                m_l_basic_body_list.reverse();
-                m_l_basic_body_list
-            } else {
-                bail!("{}: Expecting ASTType::MLBasicBodyList", context);
-            };
-        let m_l_b_content_list =
-            if let Some(ASTType::MLBContentList(m_l_b_content_list)) = self.pop(context) {
-                m_l_b_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLBContentList", context);
-            };
+            pop_and_reverse_item!(self, m_l_basic_body_list, MLBasicBodyList, context);
+        let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_basic_body_built = MLBasicBodyBuilder::default()
             .m_l_b_content_list(Box::new(m_l_b_content_list))
             .m_l_basic_body_list(m_l_basic_body_list)
@@ -3900,22 +3669,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_basic_body_list =
-            if let Some(ASTType::MLBasicBodyList(m_l_basic_body_list)) = self.pop(context) {
-                m_l_basic_body_list
-            } else {
-                bail!("{}: Expecting ASTType::MLBasicBodyList", context);
-            };
-        let m_l_b_content_list1 =
-            if let Some(ASTType::MLBContentList1(m_l_b_content_list1)) = self.pop(context) {
-                m_l_b_content_list1
-            } else {
-                bail!("{}: Expecting ASTType::MLBContentList1", context);
-            };
-        let m_l_b_quotes = if let Some(ASTType::MLBQuotes(m_l_b_quotes)) = self.pop(context) {
-            m_l_b_quotes
-        } else {
-            bail!("{}: Expecting ASTType::MLBQuotes", context);
-        };
+            pop_item!(self, m_l_basic_body_list, MLBasicBodyList, context);
+        let m_l_b_content_list1 = pop_item!(self, m_l_b_content_list1, MLBContentList1, context);
+        let m_l_b_quotes = pop_item!(self, m_l_b_quotes, MLBQuotes, context);
         let m_l_basic_body_list_0_built = MLBasicBodyListBuilder::default()
             .m_l_b_content_list1(Box::new(m_l_b_content_list1))
             .m_l_b_quotes(Box::new(m_l_b_quotes))
@@ -3956,17 +3712,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_content_list =
-            if let Some(ASTType::MLBContentList(m_l_b_content_list)) = self.pop(context) {
-                m_l_b_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLBContentList", context);
-            };
-        let m_l_b_content = if let Some(ASTType::MLBContent(m_l_b_content)) = self.pop(context) {
-            m_l_b_content
-        } else {
-            bail!("{}: Expecting ASTType::MLBContent", context);
-        };
+        let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
+        let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
         let m_l_b_content_list_0_built = MLBContentList0Builder::default()
             .m_l_b_content(Box::new(m_l_b_content))
             .m_l_b_content_list(Box::new(m_l_b_content_list))
@@ -4014,17 +3761,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_content_list =
-            if let Some(ASTType::MLBContentList(m_l_b_content_list)) = self.pop(context) {
-                m_l_b_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLBContentList", context);
-            };
-        let m_l_b_content = if let Some(ASTType::MLBContent(m_l_b_content)) = self.pop(context) {
-            m_l_b_content
-        } else {
-            bail!("{}: Expecting ASTType::MLBContent", context);
-        };
+        let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
+        let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
         let m_l_b_content_list1_built = MLBContentList1Builder::default()
             .m_l_b_content(Box::new(m_l_b_content))
             .m_l_b_content_list(Box::new(m_l_b_content_list))
@@ -4049,11 +3787,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_char = if let Some(ASTType::MLBChar(m_l_b_char)) = self.pop(context) {
-            m_l_b_char
-        } else {
-            bail!("{}: Expecting ASTType::MLBChar", context);
-        };
+        let m_l_b_char = pop_item!(self, m_l_b_char, MLBChar, context);
         let m_l_b_content_0_built = MLBContent0Builder::default()
             .m_l_b_char(Box::new(m_l_b_char))
             .build()
@@ -4077,11 +3811,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let newline = if let Some(ASTType::Newline(newline)) = self.pop(context) {
-            newline
-        } else {
-            bail!("{}: Expecting ASTType::Newline", context);
-        };
+        let newline = pop_item!(self, newline, Newline, context);
         let m_l_b_content_1_built = MLBContent1Builder::default()
             .newline(Box::new(newline))
             .build()
@@ -4105,12 +3835,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_escaped_n_l =
-            if let Some(ASTType::MLBEscapedNL(m_l_b_escaped_n_l)) = self.pop(context) {
-                m_l_b_escaped_n_l
-            } else {
-                bail!("{}: Expecting ASTType::MLBEscapedNL", context);
-            };
+        let m_l_b_escaped_n_l = pop_item!(self, m_l_b_escaped_n_l, MLBEscapedNL, context);
         let m_l_b_content_2_built = MLBContent2Builder::default()
             .m_l_b_escaped_n_l(Box::new(m_l_b_escaped_n_l))
             .build()
@@ -4134,12 +3859,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_unescaped =
-            if let Some(ASTType::MLBUnescaped(m_l_b_unescaped)) = self.pop(context) {
-                m_l_b_unescaped
-            } else {
-                bail!("{}: Expecting ASTType::MLBUnescaped", context);
-            };
+        let m_l_b_unescaped = pop_item!(self, m_l_b_unescaped, MLBUnescaped, context);
         let m_l_b_char_0_built = MLBChar0Builder::default()
             .m_l_b_unescaped(Box::new(m_l_b_unescaped))
             .build()
@@ -4163,11 +3883,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let escaped = if let Some(ASTType::Escaped(escaped)) = self.pop(context) {
-            escaped
-        } else {
-            bail!("{}: Expecting ASTType::Escaped", context);
-        };
+        let escaped = pop_item!(self, escaped, Escaped, context);
         let m_l_b_char_1_built = MLBChar1Builder::default()
             .escaped(Box::new(escaped))
             .build()
@@ -4191,12 +3907,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ascii_no_escape =
-            if let Some(ASTType::AsciiNoEscape(ascii_no_escape)) = self.pop(context) {
-                ascii_no_escape
-            } else {
-                bail!("{}: Expecting ASTType::AsciiNoEscape", context);
-            };
+        let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
         let m_l_b_unescaped_0_built = MLBUnescaped0Builder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
@@ -4221,11 +3932,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_ascii = if let Some(ASTType::NonAscii(non_ascii)) = self.pop(context) {
-            non_ascii
-        } else {
-            bail!("{}: Expecting ASTType::NonAscii", context);
-        };
+        let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
         let m_l_b_unescaped_1_built = MLBUnescaped1Builder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
@@ -4279,12 +3986,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         // Ignore clipped member 'apostrophe0'
         self.pop(context);
         let literal_string_list =
-            if let Some(ASTType::LiteralStringList(mut literal_string_list)) = self.pop(context) {
-                literal_string_list.reverse();
-                literal_string_list
-            } else {
-                bail!("{}: Expecting ASTType::LiteralStringList", context);
-            };
+            pop_and_reverse_item!(self, literal_string_list, LiteralStringList, context);
         // Ignore clipped member 'apostrophe'
         self.pop(context);
         let literal_string_built = LiteralStringBuilder::default()
@@ -4313,16 +4015,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut literal_string_list =
-            if let Some(ASTType::LiteralStringList(literal_string_list)) = self.pop(context) {
-                literal_string_list
-            } else {
-                bail!("{}: Expecting ASTType::LiteralStringList", context);
-            };
-        let literal_char = if let Some(ASTType::LiteralChar(literal_char)) = self.pop(context) {
-            literal_char
-        } else {
-            bail!("{}: Expecting ASTType::LiteralChar", context);
-        };
+            pop_item!(self, literal_string_list, LiteralStringList, context);
+        let literal_char = pop_item!(self, literal_char, LiteralChar, context);
         let literal_string_list_0_built = LiteralStringListBuilder::default()
             .literal_char(Box::new(literal_char))
             .build()
@@ -4361,14 +4055,12 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal_char_no_apostrophe =
-            if let Some(ASTType::LiteralCharNoApostrophe(literal_char_no_apostrophe)) =
-                self.pop(context)
-            {
-                literal_char_no_apostrophe
-            } else {
-                bail!("{}: Expecting ASTType::LiteralCharNoApostrophe", context);
-            };
+        let literal_char_no_apostrophe = pop_item!(
+            self,
+            literal_char_no_apostrophe,
+            LiteralCharNoApostrophe,
+            context
+        );
         let literal_char_0_built = LiteralChar0Builder::default()
             .literal_char_no_apostrophe(Box::new(literal_char_no_apostrophe))
             .build()
@@ -4392,11 +4084,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_ascii = if let Some(ASTType::NonAscii(non_ascii)) = self.pop(context) {
-            non_ascii
-        } else {
-            bail!("{}: Expecting ASTType::NonAscii", context);
-        };
+        let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
         let literal_char_1_built = LiteralChar1Builder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
@@ -4448,12 +4136,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_literal_body =
-            if let Some(ASTType::MLLiteralBody(m_l_literal_body)) = self.pop(context) {
-                m_l_literal_body
-            } else {
-                bail!("{}: Expecting ASTType::MLLiteralBody", context);
-            };
+        let m_l_literal_body = pop_item!(self, m_l_literal_body, MLLiteralBody, context);
         // Ignore clipped member 'm_l_literal_string_start'
         self.pop(context);
         let m_l_literal_string_built = MLLiteralStringBuilder::default()
@@ -4484,21 +4167,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'm_l_literal_string_end'
         self.pop(context);
-        let m_l_literal_body_list = if let Some(ASTType::MLLiteralBodyList(
-            mut m_l_literal_body_list,
-        )) = self.pop(context)
-        {
-            m_l_literal_body_list.reverse();
-            m_l_literal_body_list
-        } else {
-            bail!("{}: Expecting ASTType::MLLiteralBodyList", context);
-        };
-        let m_l_l_content_list =
-            if let Some(ASTType::MLLContentList(m_l_l_content_list)) = self.pop(context) {
-                m_l_l_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLLContentList", context);
-            };
+        let m_l_literal_body_list =
+            pop_and_reverse_item!(self, m_l_literal_body_list, MLLiteralBodyList, context);
+        let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_literal_body_built = MLLiteralBodyBuilder::default()
             .m_l_l_content_list(Box::new(m_l_l_content_list))
             .m_l_literal_body_list(m_l_literal_body_list)
@@ -4527,22 +4198,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_literal_body_list =
-            if let Some(ASTType::MLLiteralBodyList(m_l_literal_body_list)) = self.pop(context) {
-                m_l_literal_body_list
-            } else {
-                bail!("{}: Expecting ASTType::MLLiteralBodyList", context);
-            };
-        let m_l_l_content_list1 =
-            if let Some(ASTType::MLLContentList1(m_l_l_content_list1)) = self.pop(context) {
-                m_l_l_content_list1
-            } else {
-                bail!("{}: Expecting ASTType::MLLContentList1", context);
-            };
-        let m_l_l_quotes = if let Some(ASTType::MLLQuotes(m_l_l_quotes)) = self.pop(context) {
-            m_l_l_quotes
-        } else {
-            bail!("{}: Expecting ASTType::MLLQuotes", context);
-        };
+            pop_item!(self, m_l_literal_body_list, MLLiteralBodyList, context);
+        let m_l_l_content_list1 = pop_item!(self, m_l_l_content_list1, MLLContentList1, context);
+        let m_l_l_quotes = pop_item!(self, m_l_l_quotes, MLLQuotes, context);
         let m_l_literal_body_list_0_built = MLLiteralBodyListBuilder::default()
             .m_l_l_content_list1(Box::new(m_l_l_content_list1))
             .m_l_l_quotes(Box::new(m_l_l_quotes))
@@ -4583,17 +4241,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_l_content_list =
-            if let Some(ASTType::MLLContentList(m_l_l_content_list)) = self.pop(context) {
-                m_l_l_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLLContentList", context);
-            };
-        let m_l_l_content = if let Some(ASTType::MLLContent(m_l_l_content)) = self.pop(context) {
-            m_l_l_content
-        } else {
-            bail!("{}: Expecting ASTType::MLLContent", context);
-        };
+        let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
+        let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
         let m_l_l_content_list_0_built = MLLContentList0Builder::default()
             .m_l_l_content(Box::new(m_l_l_content))
             .m_l_l_content_list(Box::new(m_l_l_content_list))
@@ -4641,17 +4290,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_l_content_list =
-            if let Some(ASTType::MLLContentList(m_l_l_content_list)) = self.pop(context) {
-                m_l_l_content_list
-            } else {
-                bail!("{}: Expecting ASTType::MLLContentList", context);
-            };
-        let m_l_l_content = if let Some(ASTType::MLLContent(m_l_l_content)) = self.pop(context) {
-            m_l_l_content
-        } else {
-            bail!("{}: Expecting ASTType::MLLContent", context);
-        };
+        let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
+        let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
         let m_l_l_content_list1_built = MLLContentList1Builder::default()
             .m_l_l_content(Box::new(m_l_l_content))
             .m_l_l_content_list(Box::new(m_l_l_content_list))
@@ -4676,11 +4316,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal_char = if let Some(ASTType::LiteralChar(literal_char)) = self.pop(context) {
-            literal_char
-        } else {
-            bail!("{}: Expecting ASTType::LiteralChar", context);
-        };
+        let literal_char = pop_item!(self, literal_char, LiteralChar, context);
         let m_l_l_content_0_built = MLLContent0Builder::default()
             .literal_char(Box::new(literal_char))
             .build()
@@ -4704,11 +4340,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let newline = if let Some(ASTType::Newline(newline)) = self.pop(context) {
-            newline
-        } else {
-            bail!("{}: Expecting ASTType::Newline", context);
-        };
+        let newline = pop_item!(self, newline, Newline, context);
         let m_l_l_content_1_built = MLLContent1Builder::default()
             .newline(Box::new(newline))
             .build()
@@ -4732,11 +4364,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dec_int = if let Some(ASTType::DecInt(dec_int)) = self.pop(context) {
-            dec_int
-        } else {
-            bail!("{}: Expecting ASTType::DecInt", context);
-        };
+        let dec_int = pop_item!(self, dec_int, DecInt, context);
         let integer_0_built = Integer0Builder::default()
             .dec_int(Box::new(dec_int))
             .build()
@@ -4760,11 +4388,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let hex_int = if let Some(ASTType::HexInt(hex_int)) = self.pop(context) {
-            hex_int
-        } else {
-            bail!("{}: Expecting ASTType::HexInt", context);
-        };
+        let hex_int = pop_item!(self, hex_int, HexInt, context);
         let integer_1_built = Integer1Builder::default()
             .hex_int(Box::new(hex_int))
             .build()
@@ -4788,11 +4412,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let oct_int = if let Some(ASTType::OctInt(oct_int)) = self.pop(context) {
-            oct_int
-        } else {
-            bail!("{}: Expecting ASTType::OctInt", context);
-        };
+        let oct_int = pop_item!(self, oct_int, OctInt, context);
         let integer_2_built = Integer2Builder::default()
             .oct_int(Box::new(oct_int))
             .build()
@@ -4816,11 +4436,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bin_int = if let Some(ASTType::BinInt(bin_int)) = self.pop(context) {
-            bin_int
-        } else {
-            bail!("{}: Expecting ASTType::BinInt", context);
-        };
+        let bin_int = pop_item!(self, bin_int, BinInt, context);
         let integer_3_built = Integer3Builder::default()
             .bin_int(Box::new(bin_int))
             .build()
@@ -4914,17 +4530,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let unsigned_dec_int =
-            if let Some(ASTType::UnsignedDecInt(unsigned_dec_int)) = self.pop(context) {
-                unsigned_dec_int
-            } else {
-                bail!("{}: Expecting ASTType::UnsignedDecInt", context);
-            };
-        let dec_int_opt = if let Some(ASTType::DecIntOpt(dec_int_opt)) = self.pop(context) {
-            dec_int_opt
-        } else {
-            bail!("{}: Expecting ASTType::DecIntOpt", context);
-        };
+        let unsigned_dec_int = pop_item!(self, unsigned_dec_int, UnsignedDecInt, context);
+        let dec_int_opt = pop_item!(self, dec_int_opt, DecIntOpt, context);
         let dec_int_built = DecIntBuilder::default()
             .dec_int_opt(dec_int_opt)
             .unsigned_dec_int(Box::new(unsigned_dec_int))
@@ -4948,12 +4555,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let dec_int_opt_group =
-            if let Some(ASTType::DecIntOptGroup(dec_int_opt_group)) = self.pop(context) {
-                dec_int_opt_group
-            } else {
-                bail!("{}: Expecting ASTType::DecIntOptGroup", context);
-            };
+        let dec_int_opt_group = pop_item!(self, dec_int_opt_group, DecIntOptGroup, context);
         let dec_int_opt_0_built = DecIntOptBuilder::default()
             .dec_int_opt_group(Box::new(dec_int_opt_group))
             .build()
@@ -4977,11 +4579,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = if let Some(ASTType::Plus(plus)) = self.pop(context) {
-            plus
-        } else {
-            bail!("{}: Expecting ASTType::Plus", context);
-        };
+        let plus = pop_item!(self, plus, Plus, context);
         let dec_int_opt_group_0_built = DecIntOptGroup0Builder::default()
             .plus(Box::new(plus))
             .build()
@@ -5003,11 +4601,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
-            minus
-        } else {
-            bail!("{}: Expecting ASTType::Minus", context);
-        };
+        let minus = pop_item!(self, minus, Minus, context);
         let dec_int_opt_group_1_built = DecIntOptGroup1Builder::default()
             .minus(Box::new(minus))
             .build()
@@ -5042,12 +4636,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let hex_int_content =
-            if let Some(ASTType::HexIntContent(hex_int_content)) = self.pop(context) {
-                hex_int_content
-            } else {
-                bail!("{}: Expecting ASTType::HexIntContent", context);
-            };
+        let hex_int_content = pop_item!(self, hex_int_content, HexIntContent, context);
         // Ignore clipped member 'hex_prefix'
         self.pop(context);
         let hex_int_built = HexIntBuilder::default()
@@ -5097,12 +4686,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let oct_int_content =
-            if let Some(ASTType::OctIntContent(oct_int_content)) = self.pop(context) {
-                oct_int_content
-            } else {
-                bail!("{}: Expecting ASTType::OctIntContent", context);
-            };
+        let oct_int_content = pop_item!(self, oct_int_content, OctIntContent, context);
         // Ignore clipped member 'oct_prefix'
         self.pop(context);
         let oct_int_built = OctIntBuilder::default()
@@ -5152,12 +4736,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bin_int_content =
-            if let Some(ASTType::BinIntContent(bin_int_content)) = self.pop(context) {
-                bin_int_content
-            } else {
-                bail!("{}: Expecting ASTType::BinIntContent", context);
-            };
+        let bin_int_content = pop_item!(self, bin_int_content, BinIntContent, context);
         // Ignore clipped member 'bin_prefix'
         self.pop(context);
         let bin_int_built = BinIntBuilder::default()
@@ -5254,11 +4833,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let normal_float = if let Some(ASTType::NormalFloat(normal_float)) = self.pop(context) {
-            normal_float
-        } else {
-            bail!("{}: Expecting ASTType::NormalFloat", context);
-        };
+        let normal_float = pop_item!(self, normal_float, NormalFloat, context);
         let float_0_built = Float0Builder::default()
             .normal_float(Box::new(normal_float))
             .build()
@@ -5282,11 +4857,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let special_float = if let Some(ASTType::SpecialFloat(special_float)) = self.pop(context) {
-            special_float
-        } else {
-            bail!("{}: Expecting ASTType::SpecialFloat", context);
-        };
+        let special_float = pop_item!(self, special_float, SpecialFloat, context);
         let float_1_built = Float1Builder::default()
             .special_float(Box::new(special_float))
             .build()
@@ -5356,12 +4927,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let offset_date_time =
-            if let Some(ASTType::OffsetDateTime(offset_date_time)) = self.pop(context) {
-                offset_date_time
-            } else {
-                bail!("{}: Expecting ASTType::OffsetDateTime", context);
-            };
+        let offset_date_time = pop_item!(self, offset_date_time, OffsetDateTime, context);
         let date_time_0_built = DateTime0Builder::default()
             .offset_date_time(Box::new(offset_date_time))
             .build()
@@ -5385,12 +4951,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let local_date_time =
-            if let Some(ASTType::LocalDateTime(local_date_time)) = self.pop(context) {
-                local_date_time
-            } else {
-                bail!("{}: Expecting ASTType::LocalDateTime", context);
-            };
+        let local_date_time = pop_item!(self, local_date_time, LocalDateTime, context);
         let date_time_1_built = DateTime1Builder::default()
             .local_date_time(Box::new(local_date_time))
             .build()
@@ -5414,11 +4975,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let local_date = if let Some(ASTType::LocalDate(local_date)) = self.pop(context) {
-            local_date
-        } else {
-            bail!("{}: Expecting ASTType::LocalDate", context);
-        };
+        let local_date = pop_item!(self, local_date, LocalDate, context);
         let date_time_2_built = DateTime2Builder::default()
             .local_date(Box::new(local_date))
             .build()
@@ -5442,11 +4999,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let local_time = if let Some(ASTType::LocalTime(local_time)) = self.pop(context) {
-            local_time
-        } else {
-            bail!("{}: Expecting ASTType::LocalTime", context);
-        };
+        let local_time = pop_item!(self, local_time, LocalTime, context);
         let date_time_3_built = DateTime3Builder::default()
             .local_time(Box::new(local_time))
             .build()
@@ -5567,11 +5120,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_close'
         self.pop(context);
-        let array_opt = if let Some(ASTType::ArrayOpt(array_opt)) = self.pop(context) {
-            array_opt
-        } else {
-            bail!("{}: Expecting ASTType::ArrayOpt", context);
-        };
+        let array_opt = pop_item!(self, array_opt, ArrayOpt, context);
         // Ignore clipped member 'array_open'
         self.pop(context);
         let array_built = ArrayBuilder::default()
@@ -5598,11 +5147,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values = if let Some(ASTType::ArrayValues(array_values)) = self.pop(context) {
-            array_values
-        } else {
-            bail!("{}: Expecting ASTType::ArrayValues", context);
-        };
+        let array_values = pop_item!(self, array_values, ArrayValues, context);
         let array_opt_0_built = ArrayOptBuilder::default()
             .array_values(Box::new(array_values))
             .build()
@@ -5640,16 +5185,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix0 =
-            if let Some(ASTType::ArrayValuesSuffix0(array_values_suffix0)) = self.pop(context) {
-                array_values_suffix0
-            } else {
-                bail!("{}: Expecting ASTType::ArrayValuesSuffix0", context);
-            };
-        let val = if let Some(ASTType::Val(val)) = self.pop(context) {
-            val
-        } else {
-            bail!("{}: Expecting ASTType::Val", context);
-        };
+            pop_item!(self, array_values_suffix0, ArrayValuesSuffix0, context);
+        let val = pop_item!(self, val, Val, context);
         let array_values_built = ArrayValuesBuilder::default()
             .val(Box::new(val))
             .array_values_suffix0(Box::new(array_values_suffix0))
@@ -5674,12 +5211,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values_suffix =
-            if let Some(ASTType::ArrayValuesSuffix(array_values_suffix)) = self.pop(context) {
-                array_values_suffix
-            } else {
-                bail!("{}: Expecting ASTType::ArrayValuesSuffix", context);
-            };
+        let array_values_suffix = pop_item!(self, array_values_suffix, ArrayValuesSuffix, context);
         // Ignore clipped member 'array_sep'
         self.pop(context);
         let array_values_suffix0_0_built = ArrayValuesSuffix1Builder::default()
@@ -5728,11 +5260,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values = if let Some(ASTType::ArrayValues(array_values)) = self.pop(context) {
-            array_values
-        } else {
-            bail!("{}: Expecting ASTType::ArrayValues", context);
-        };
+        let array_values = pop_item!(self, array_values, ArrayValues, context);
         let array_values_suffix_0_built = ArrayValuesSuffix3Builder::default()
             .array_values(Box::new(array_values))
             .build()
@@ -5801,11 +5329,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let std_table = if let Some(ASTType::StdTable(std_table)) = self.pop(context) {
-            std_table
-        } else {
-            bail!("{}: Expecting ASTType::StdTable", context);
-        };
+        let std_table = pop_item!(self, std_table, StdTable, context);
         let table_0_built = Table0Builder::default()
             .std_table(Box::new(std_table))
             .build()
@@ -5829,11 +5353,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_table = if let Some(ASTType::ArrayTable(array_table)) = self.pop(context) {
-            array_table
-        } else {
-            bail!("{}: Expecting ASTType::ArrayTable", context);
-        };
+        let array_table = pop_item!(self, array_table, ArrayTable, context);
         let table_1_built = Table1Builder::default()
             .array_table(Box::new(array_table))
             .build()
@@ -5861,11 +5381,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'std_table_close'
         self.pop(context);
-        let key = if let Some(ASTType::Key(key)) = self.pop(context) {
-            key
-        } else {
-            bail!("{}: Expecting ASTType::Key", context);
-        };
+        let key = pop_item!(self, key, Key, context);
         // Ignore clipped member 'std_table_open'
         self.pop(context);
         let std_table_built = StdTableBuilder::default()
@@ -5986,11 +5502,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_open = if let Some(ASTType::ArrayOpen(array_open)) = self.pop(context) {
-            array_open
-        } else {
-            bail!("{}: Expecting ASTType::ArrayOpen", context);
-        };
+        let array_open = pop_item!(self, array_open, ArrayOpen, context);
         let std_table_open_built = StdTableOpenBuilder::default()
             .array_open(Box::new(array_open))
             .build()
@@ -6013,11 +5525,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_close = if let Some(ASTType::ArrayClose(array_close)) = self.pop(context) {
-            array_close
-        } else {
-            bail!("{}: Expecting ASTType::ArrayClose", context);
-        };
+        let array_close = pop_item!(self, array_close, ArrayClose, context);
         let std_table_close_built = StdTableCloseBuilder::default()
             .array_close(Box::new(array_close))
             .build()
@@ -6044,12 +5552,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'inline_table_close'
         self.pop(context);
-        let inline_table_opt =
-            if let Some(ASTType::InlineTableOpt(inline_table_opt)) = self.pop(context) {
-                inline_table_opt
-            } else {
-                bail!("{}: Expecting ASTType::InlineTableOpt", context);
-            };
+        let inline_table_opt = pop_item!(self, inline_table_opt, InlineTableOpt, context);
         // Ignore clipped member 'inline_table_open'
         self.pop(context);
         let inline_table_built = InlineTableBuilder::default()
@@ -6077,11 +5580,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
-            if let Some(ASTType::InlineTableKeyVals(inline_table_key_vals)) = self.pop(context) {
-                inline_table_key_vals
-            } else {
-                bail!("{}: Expecting ASTType::InlineTableKeyVals", context);
-            };
+            pop_item!(self, inline_table_key_vals, InlineTableKeyVals, context);
         let inline_table_opt_0_built = InlineTableOptBuilder::default()
             .inline_table_key_vals(Box::new(inline_table_key_vals))
             .build()
@@ -6165,11 +5664,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_sep = if let Some(ASTType::ArraySep(array_sep)) = self.pop(context) {
-            array_sep
-        } else {
-            bail!("{}: Expecting ASTType::ArraySep", context);
-        };
+        let array_sep = pop_item!(self, array_sep, ArraySep, context);
         let inline_table_sep_built = InlineTableSepBuilder::default()
             .array_sep(Box::new(array_sep))
             .build()
@@ -6194,19 +5689,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let inline_table_key_vals_opt =
-            if let Some(ASTType::InlineTableKeyValsOpt(inline_table_key_vals_opt)) =
-                self.pop(context)
-            {
-                inline_table_key_vals_opt
-            } else {
-                bail!("{}: Expecting ASTType::InlineTableKeyValsOpt", context);
-            };
-        let key_val = if let Some(ASTType::KeyVal(key_val)) = self.pop(context) {
-            key_val
-        } else {
-            bail!("{}: Expecting ASTType::KeyVal", context);
-        };
+        let inline_table_key_vals_opt = pop_item!(
+            self,
+            inline_table_key_vals_opt,
+            InlineTableKeyValsOpt,
+            context
+        );
+        let key_val = pop_item!(self, key_val, KeyVal, context);
         let inline_table_key_vals_built = InlineTableKeyValsBuilder::default()
             .key_val(Box::new(key_val))
             .inline_table_key_vals_opt(inline_table_key_vals_opt)
@@ -6236,11 +5725,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
-            if let Some(ASTType::InlineTableKeyVals(inline_table_key_vals)) = self.pop(context) {
-                inline_table_key_vals
-            } else {
-                bail!("{}: Expecting ASTType::InlineTableKeyVals", context);
-            };
+            pop_item!(self, inline_table_key_vals, InlineTableKeyVals, context);
         // Ignore clipped member 'inline_table_sep'
         self.pop(context);
         let inline_table_key_vals_opt_0_built = InlineTableKeyValsOptBuilder::default()
@@ -6283,11 +5768,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_table_close'
         self.pop(context);
-        let key = if let Some(ASTType::Key(key)) = self.pop(context) {
-            key
-        } else {
-            bail!("{}: Expecting ASTType::Key", context);
-        };
+        let key = pop_item!(self, key, Key, context);
         // Ignore clipped member 'array_table_open'
         self.pop(context);
         let array_table_built = ArrayTableBuilder::default()
