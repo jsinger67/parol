@@ -6,10 +6,10 @@
 
 #![allow(unused_imports)]
 use crate::parser::parol_grammar::ParolGrammar;
-use parol_macros::{pop_and_reverse_item, pop_item};
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 

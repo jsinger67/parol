@@ -9,7 +9,7 @@ use crate::calc_grammar::CalcGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
-use parol::{pop_and_reverse_item, pop_item};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
