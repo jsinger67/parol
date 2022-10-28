@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.13.0 - Not yet released
+## v0.13.0 - 2022-10-28
 
 * Consolidated cargo docs
 * Using macros in generated adapter grammars, i.e. in auto-generation mode
