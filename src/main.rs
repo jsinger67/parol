@@ -97,7 +97,8 @@ fn main_loop(
     params: serde_json::Value,
     config: Config,
 ) -> Result<(), Box<dyn Error>> {
-    let _params: InitializeParams = serde_json::from_value(params).unwrap();
+    let params: InitializeParams = serde_json::from_value(params).unwrap();
+    eprintln!("Initialization options {:?}", params.initialization_options);
     let server = RefCell::new(server::Server::new(config.lookahead));
     for msg in &connection.receiver {
         match msg {

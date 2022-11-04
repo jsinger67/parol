@@ -555,9 +555,9 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-version = "0.12.1"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fe0efa78c57490ec65657b6c171d40a8f6133df03d7bb3404fabea294b0d459"
+checksum = "afebbce20bb5ecae86a9ad56d02ad1ff8702ad7c74f15dca802dfa60d644d5c3"
 dependencies = [
  "bart",
  "bart_derive",
@@ -572,6 +572,7 @@ dependencies = [
  "log",
  "miette",
  "owo-colors",
+ "parol-macros",
  "parol_runtime",
  "rand",
  "rand_regex",
@@ -584,7 +585,7 @@ dependencies = [
 
 [[package]]
 name = "parol-ls"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "clap",
  "derive-new",
@@ -598,12 +599,19 @@ dependencies = [
  "lsp-types",
  "miette",
  "parol",
+ "parol-macros",
  "parol_runtime",
  "regex",
  "serde",
  "serde_json",
  "thiserror",
 ]
+
+[[package]]
+name = "parol-macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e050a66a0efd1a8a62f51ec99383cbabf00f7c557747591383c5f02c16cdce5b"
 
 [[package]]
 name = "parol_runtime"
