@@ -1,5 +1,9 @@
+param(
+    [ValidatePattern("debug|release")]
+    $Config = "debug"
+)
+
 $ErrorCount = 0
-$Config = "debug"
 $CargoConfig = if ($Config -eq "release") { "--release" } else { "" }
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
