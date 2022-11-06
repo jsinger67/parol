@@ -21,6 +21,18 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.13.1 - Not released yet
+
+* Looked after new clippy warnings (from Rust 1.65)
+* Optimized release profile
+* Making the build profile an argument of our test scripts `build_parsers.ps1` and `run_parsers.ps1`
+so you can call it this way:
+
+```powershell
+> .\build_parsers.ps1 -Config release
+> .\run_parsers.ps1 -Config debug
+```
+
 ## v0.13.0 - 2022-10-28
 
 * Consolidated cargo docs
