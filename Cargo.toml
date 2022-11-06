@@ -38,6 +38,9 @@ thiserror = "1.0"
 
 [profile.release]
 debug = true
+strip = true
+lto = true
+opt-level = "s"
 
 [features]
 default = ["build"]
