@@ -20,7 +20,7 @@ pub struct Args {
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 
-    let grammar_config = obtain_grammar_config(&file_name, false)?;
+    let grammar_config = obtain_grammar_config(file_name, false)?;
     let max_k = args.lookahead;
 
     if max_k > MAX_K {

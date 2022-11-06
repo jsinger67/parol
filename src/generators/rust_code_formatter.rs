@@ -10,7 +10,7 @@ use std::process::Command;
 ///
 pub fn try_format(path_to_file: &Path) -> Result<()> {
     Command::new("rustfmt")
-        .args(&[path_to_file])
+        .args([path_to_file])
         .status()
         .map(|_| ())
         .into_diagnostic()

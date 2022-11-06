@@ -15,7 +15,7 @@ pub struct Args {
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 
-    let grammar_config = obtain_grammar_config(&file_name, false)?;
+    let grammar_config = obtain_grammar_config(file_name, false)?;
 
     let non_productive_non_terminals = non_productive_non_terminals(&grammar_config.cfg);
     if non_productive_non_terminals.is_empty() {

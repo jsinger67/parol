@@ -489,14 +489,14 @@ impl ParolGrammar<'_> {
     }
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
-        self.process_prolog(&*parol.prolog)?;
-        self.process_grammar_definition(&*parol.grammar_definition)
+        self.process_prolog(&parol.prolog)?;
+        self.process_grammar_definition(&parol.grammar_definition)
     }
 
     fn process_prolog(&mut self, prolog: &Prolog) -> Result<()> {
-        self.process_start_declaration(&*prolog.start_declaration)?;
-        self.process_declarations(&*prolog.prolog_list)?;
-        self.process_scanner_states(&*prolog.prolog_list0);
+        self.process_start_declaration(&prolog.start_declaration)?;
+        self.process_declarations(&prolog.prolog_list)?;
+        self.process_scanner_states(&prolog.prolog_list0);
         Ok(())
     }
 
@@ -523,7 +523,7 @@ impl ParolGrammar<'_> {
                 self.process_user_type_definition(user_type_def)
             }
             Declaration::Declaration3(scanner_decl) => {
-                self.process_scanner_directive(&*scanner_decl.scanner_directives)?
+                self.process_scanner_directive(&scanner_decl.scanner_directives)?
             }
         }
         Ok(())
@@ -617,7 +617,7 @@ impl ParolGrammar<'_> {
     fn process_alternation(&mut self, alternation_list: &[AlternationList]) -> Result<Alternation> {
         let mut result = Alternation::new();
         for a in alternation_list {
-            result.insert(self.process_factor(&*a.factor)?)
+            result.insert(self.process_factor(&a.factor)?)
         }
         Ok(result)
     }
@@ -637,7 +637,7 @@ impl ParolGrammar<'_> {
                 Ok(Factor::Optional(self.process_alternations(&alternations)?))
             }
             super::parol_grammar_trait::Factor::Factor3(symbol) => {
-                self.process_symbol(&*symbol.symbol)
+                self.process_symbol(&symbol.symbol)
             }
         }
     }
@@ -669,7 +669,7 @@ impl ParolGrammar<'_> {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
-                    match self.process_ast_control(&*non_terminal_opt.a_s_t_control) {
+                    match self.process_ast_control(&non_terminal_opt.a_s_t_control) {
                         ASTControlKind::Attr(a) => attr = a,
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
@@ -689,7 +689,7 @@ impl ParolGrammar<'_> {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 if let Some(ref terminal_opt) = &simple_token.simple_token.simple_token_opt {
-                    match self.process_ast_control(&*terminal_opt.a_s_t_control) {
+                    match self.process_ast_control(&terminal_opt.a_s_t_control) {
                         ASTControlKind::Attr(a) => attr = a,
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
@@ -703,14 +703,14 @@ impl ParolGrammar<'_> {
             }
             super::parol_grammar_trait::Symbol::Symbol2(token_with_states) => {
                 let mut scanner_states = self
-                    .process_scanner_state_list(&*token_with_states.token_with_states.state_list)?;
+                    .process_scanner_state_list(&token_with_states.token_with_states.state_list)?;
                 scanner_states.sort_unstable();
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 if let Some(ref terminal_opt) =
                     &token_with_states.token_with_states.token_with_states_opt
                 {
-                    match self.process_ast_control(&*terminal_opt.a_s_t_control) {
+                    match self.process_ast_control(&terminal_opt.a_s_t_control) {
                         ASTControlKind::Attr(a) => attr = a,
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }

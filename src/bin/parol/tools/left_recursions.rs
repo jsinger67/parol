@@ -15,7 +15,7 @@ pub struct Args {
 pub fn main(args: &Args) -> Result<()> {
     let file_name = &args.grammar_file;
 
-    let grammar_config = obtain_grammar_config(&file_name, false)?;
+    let grammar_config = obtain_grammar_config(file_name, false)?;
     let recursions = detect_left_recursive_non_terminals(&grammar_config.cfg);
     if recursions.is_empty() {
         println!("No left recursions found!\n");

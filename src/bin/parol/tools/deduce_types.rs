@@ -20,7 +20,7 @@ pub struct Args {
 
 pub fn main(args: &Args) -> Result<()> {
     let mut grammar_config = if let Some(file_name) = &args.grammar_file {
-        obtain_grammar_config(&file_name, args.verbose)?
+        obtain_grammar_config(file_name, args.verbose)?
     } else if let Some(input) = &args.grammar {
         obtain_grammar_config_from_string(input, args.verbose)?
     } else {
@@ -37,8 +37,7 @@ pub fn main(args: &Args) -> Result<()> {
         "TestGrammar"
     }
     .replace("-exp", "")
-    .replace('.', "_")
-    .replace('-', "_");
+    .replace(['.', '-'], "_");
 
     let cfg = left_factor(&grammar_config.cfg);
     // Exchange original grammar with transformed one

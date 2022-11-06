@@ -48,7 +48,7 @@ fn main() -> Result<()> {
         .grammar
         .as_ref()
         .ok_or_else(|| miette!("Missing input grammar file (Specify with `-f`)"))?;
-    builder.grammar_file(&grammar_file);
+    builder.grammar_file(grammar_file);
 
     builder.max_lookahead(config.lookahead)?;
     if let Some(module) = &config.module {
@@ -115,7 +115,7 @@ impl BuildListener for CLIListener<'_> {
         }
 
         if self.config.generate_tree_graph {
-            parol::generate_tree_layout(syntax_tree, &self.grammar_file)
+            parol::generate_tree_layout(syntax_tree, self.grammar_file)
                 .wrap_err("Error generating tree layout")?;
         }
 
