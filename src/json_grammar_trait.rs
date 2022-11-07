@@ -9,6 +9,7 @@ use crate::json_grammar::JsonGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -378,11 +379,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
-            value
-        } else {
-            bail!("{}: Expecting ASTType::Value", context);
-        };
+        let value = pop_item!(self, value, Value, context);
         let json_built = JsonBuilder::default()
             .value(Box::new(value))
             .build()
@@ -406,11 +403,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_suffix = if let Some(ASTType::ObjectSuffix(object_suffix)) = self.pop(context) {
-            object_suffix
-        } else {
-            bail!("{}: Expecting ASTType::ObjectSuffix", context);
-        };
+        let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
         let object_built = ObjectBuilder::default()
             // Ignore clipped member 'l_brace'
             .object_suffix(Box::new(object_suffix))
@@ -436,17 +429,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_list = if let Some(ASTType::ObjectList(mut object_list)) = self.pop(context) {
-            object_list.reverse();
-            object_list
-        } else {
-            bail!("{}: Expecting ASTType::ObjectList", context);
-        };
-        let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
-            pair
-        } else {
-            bail!("{}: Expecting ASTType::Pair", context);
-        };
+        let object_list = pop_and_reverse_item!(self, object_list, ObjectList, context);
+        let pair = pop_item!(self, pair, Pair, context);
         let object_suffix_0_built = ObjectSuffix0Builder::default()
             .pair(Box::new(pair))
             .object_list(object_list)
@@ -493,16 +477,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut object_list = if let Some(ASTType::ObjectList(object_list)) = self.pop(context) {
-            object_list
-        } else {
-            bail!("{}: Expecting ASTType::ObjectList", context);
-        };
-        let pair = if let Some(ASTType::Pair(pair)) = self.pop(context) {
-            pair
-        } else {
-            bail!("{}: Expecting ASTType::Pair", context);
-        };
+        let mut object_list = pop_item!(self, object_list, ObjectList, context);
+        let pair = pop_item!(self, pair, Pair, context);
         let object_list_0_built = ObjectListBuilder::default()
             .pair(Box::new(pair))
             // Ignore clipped member 'comma'
@@ -541,16 +517,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
-            value
-        } else {
-            bail!("{}: Expecting ASTType::Value", context);
-        };
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let value = pop_item!(self, value, Value, context);
+        let string = pop_item!(self, string, String, context);
         let pair_built = PairBuilder::default()
             .string(Box::new(string))
             // Ignore clipped member 'colon'
@@ -576,11 +544,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_suffix = if let Some(ASTType::ArraySuffix(array_suffix)) = self.pop(context) {
-            array_suffix
-        } else {
-            bail!("{}: Expecting ASTType::ArraySuffix", context);
-        };
+        let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
         let array_built = ArrayBuilder::default()
             // Ignore clipped member 'l_bracket'
             .array_suffix(Box::new(array_suffix))
@@ -606,17 +570,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_list = if let Some(ASTType::ArrayList(mut array_list)) = self.pop(context) {
-            array_list.reverse();
-            array_list
-        } else {
-            bail!("{}: Expecting ASTType::ArrayList", context);
-        };
-        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
-            value
-        } else {
-            bail!("{}: Expecting ASTType::Value", context);
-        };
+        let array_list = pop_and_reverse_item!(self, array_list, ArrayList, context);
+        let value = pop_item!(self, value, Value, context);
         let array_suffix_0_built = ArraySuffix0Builder::default()
             .value(Box::new(value))
             .array_list(array_list)
@@ -663,16 +618,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut array_list = if let Some(ASTType::ArrayList(array_list)) = self.pop(context) {
-            array_list
-        } else {
-            bail!("{}: Expecting ASTType::ArrayList", context);
-        };
-        let value = if let Some(ASTType::Value(value)) = self.pop(context) {
-            value
-        } else {
-            bail!("{}: Expecting ASTType::Value", context);
-        };
+        let mut array_list = pop_item!(self, array_list, ArrayList, context);
+        let value = pop_item!(self, value, Value, context);
         let array_list_0_built = ArrayListBuilder::default()
             .value(Box::new(value))
             // Ignore clipped member 'comma'
@@ -709,11 +656,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let value_0_built = Value0Builder::default()
             .string(Box::new(string))
             .build()
@@ -737,11 +680,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = if let Some(ASTType::Number(number)) = self.pop(context) {
-            number
-        } else {
-            bail!("{}: Expecting ASTType::Number", context);
-        };
+        let number = pop_item!(self, number, Number, context);
         let value_1_built = Value1Builder::default()
             .number(Box::new(number))
             .build()
@@ -765,11 +704,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object = if let Some(ASTType::Object(object)) = self.pop(context) {
-            object
-        } else {
-            bail!("{}: Expecting ASTType::Object", context);
-        };
+        let object = pop_item!(self, object, Object, context);
         let value_2_built = Value2Builder::default()
             .object(Box::new(object))
             .build()
@@ -793,11 +728,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array = if let Some(ASTType::Array(array)) = self.pop(context) {
-            array
-        } else {
-            bail!("{}: Expecting ASTType::Array", context);
-        };
+        let array = pop_item!(self, array, Array, context);
         let value_3_built = Value3Builder::default()
             .array(Box::new(array))
             .build()

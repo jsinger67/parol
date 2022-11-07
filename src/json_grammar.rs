@@ -11,8 +11,8 @@ impl Display for Json<'_> {
 impl Display for Value<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Value::Value0(v) => write!(f, "{}", v.string.string.symbol),
-            Value::Value1(v) => write!(f, "{}", v.number.number.symbol),
+            Value::Value0(v) => write!(f, "{}", v.string.string.text()),
+            Value::Value1(v) => write!(f, "{}", v.number.number.text()),
             Value::Value2(v) => write!(f, "{{{}}}", v.object.object_suffix),
             Value::Value3(v) => write!(f, "[{}]", v.array.array_suffix),
             Value::Value4(_) => write!(f, "true"),
@@ -72,7 +72,7 @@ impl Display for ArrayList<'_> {
 
 impl Display for Pair<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        write!(f, "{}: {}", self.string.string.symbol, self.value)
+        write!(f, "{}: {}", self.string.string.text(), self.value)
     }
 }
 
