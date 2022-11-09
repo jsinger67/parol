@@ -9,6 +9,7 @@ use crate::oberon2_grammar::Oberon2Grammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -2742,26 +2743,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let module_body = if let Some(ASTType::ModuleBody(module_body)) = self.pop(context) {
-            module_body
-        } else {
-            bail!("{}: Expecting ASTType::ModuleBody", context);
-        };
-        let decl_seq = if let Some(ASTType::DeclSeq(decl_seq)) = self.pop(context) {
-            decl_seq
-        } else {
-            bail!("{}: Expecting ASTType::DeclSeq", context);
-        };
-        let oberon2_opt = if let Some(ASTType::Oberon2Opt(oberon2_opt)) = self.pop(context) {
-            oberon2_opt
-        } else {
-            bail!("{}: Expecting ASTType::Oberon2Opt", context);
-        };
-        let module_head = if let Some(ASTType::ModuleHead(module_head)) = self.pop(context) {
-            module_head
-        } else {
-            bail!("{}: Expecting ASTType::ModuleHead", context);
-        };
+        let module_body = pop_item!(self, module_body, ModuleBody, context);
+        let decl_seq = pop_item!(self, decl_seq, DeclSeq, context);
+        let oberon2_opt = pop_item!(self, oberon2_opt, Oberon2Opt, context);
+        let module_head = pop_item!(self, module_head, ModuleHead, context);
         let oberon2_built = Oberon2Builder::default()
             .module_head(Box::new(module_head))
             .oberon2_opt(oberon2_opt)
@@ -2787,11 +2772,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let import_list = if let Some(ASTType::ImportList(import_list)) = self.pop(context) {
-            import_list
-        } else {
-            bail!("{}: Expecting ASTType::ImportList", context);
-        };
+        let import_list = pop_item!(self, import_list, ImportList, context);
         let oberon2_opt_0_built = Oberon2OptBuilder::default()
             .import_list(Box::new(import_list))
             .build()
@@ -2829,11 +2810,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         let module_head_built = ModuleHeadBuilder::default()
             // Ignore clipped member 'm_o_d_u_l_e'
             .ident(Box::new(ident))
@@ -2859,12 +2836,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_block =
-            if let Some(ASTType::StatementBlock(statement_block)) = self.pop(context) {
-                statement_block
-            } else {
-                bail!("{}: Expecting ASTType::StatementBlock", context);
-            };
+        let statement_block = pop_item!(self, statement_block, StatementBlock, context);
         let module_body_built = ModuleBodyBuilder::default()
             .statement_block(Box::new(statement_block))
             // Ignore clipped member 'dot'
@@ -2893,23 +2865,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list_list =
-            if let Some(ASTType::ImportListList(mut import_list_list)) = self.pop(context) {
-                import_list_list.reverse();
-                import_list_list
-            } else {
-                bail!("{}: Expecting ASTType::ImportListList", context);
-            };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
-        let import_list_opt =
-            if let Some(ASTType::ImportListOpt(import_list_opt)) = self.pop(context) {
-                import_list_opt
-            } else {
-                bail!("{}: Expecting ASTType::ImportListOpt", context);
-            };
+            pop_and_reverse_item!(self, import_list_list, ImportListList, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let import_list_opt = pop_item!(self, import_list_opt, ImportListOpt, context);
         let import_list_built = ImportListBuilder::default()
             // Ignore clipped member 'i_m_p_o_r_t'
             .import_list_opt(import_list_opt)
@@ -2939,23 +2897,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut import_list_list =
-            if let Some(ASTType::ImportListList(import_list_list)) = self.pop(context) {
-                import_list_list
-            } else {
-                bail!("{}: Expecting ASTType::ImportListList", context);
-            };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
-        let import_list_opt0 =
-            if let Some(ASTType::ImportListOpt0(import_list_opt0)) = self.pop(context) {
-                import_list_opt0
-            } else {
-                bail!("{}: Expecting ASTType::ImportListOpt0", context);
-            };
+        let mut import_list_list = pop_item!(self, import_list_list, ImportListList, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let import_list_opt0 = pop_item!(self, import_list_opt0, ImportListOpt0, context);
         let import_list_list_0_built = ImportListListBuilder::default()
             .ident(Box::new(ident))
             .import_list_opt0(import_list_opt0)
@@ -2994,11 +2938,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt0_0_built = ImportListOpt0Builder::default()
             .ident(Box::new(ident))
             // Ignore clipped member 'colon_equ'
@@ -3036,11 +2976,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt_0_built = ImportListOptBuilder::default()
             .ident(Box::new(ident))
             // Ignore clipped member 'colon_equ'
@@ -3078,20 +3014,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let decl_seq_list0 =
-            if let Some(ASTType::DeclSeqList0(mut decl_seq_list0)) = self.pop(context) {
-                decl_seq_list0.reverse();
-                decl_seq_list0
-            } else {
-                bail!("{}: Expecting ASTType::DeclSeqList0", context);
-            };
-        let decl_seq_list = if let Some(ASTType::DeclSeqList(mut decl_seq_list)) = self.pop(context)
-        {
-            decl_seq_list.reverse();
-            decl_seq_list
-        } else {
-            bail!("{}: Expecting ASTType::DeclSeqList", context);
-        };
+        let decl_seq_list0 = pop_and_reverse_item!(self, decl_seq_list0, DeclSeqList0, context);
+        let decl_seq_list = pop_and_reverse_item!(self, decl_seq_list, DeclSeqList, context);
         let decl_seq_built = DeclSeqBuilder::default()
             .decl_seq_list(decl_seq_list)
             .decl_seq_list0(decl_seq_list0)
@@ -3116,18 +3040,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut decl_seq_list0 =
-            if let Some(ASTType::DeclSeqList0(decl_seq_list0)) = self.pop(context) {
-                decl_seq_list0
-            } else {
-                bail!("{}: Expecting ASTType::DeclSeqList0", context);
-            };
+        let mut decl_seq_list0 = pop_item!(self, decl_seq_list0, DeclSeqList0, context);
         let decl_seq_list0_group =
-            if let Some(ASTType::DeclSeqList0Group(decl_seq_list0_group)) = self.pop(context) {
-                decl_seq_list0_group
-            } else {
-                bail!("{}: Expecting ASTType::DeclSeqList0Group", context);
-            };
+            pop_item!(self, decl_seq_list0_group, DeclSeqList0Group, context);
         let decl_seq_list0_0_built = DeclSeqList0Builder::default()
             .decl_seq_list0_group(Box::new(decl_seq_list0_group))
             .build()
@@ -3151,11 +3066,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let proc_decl = if let Some(ASTType::ProcDecl(proc_decl)) = self.pop(context) {
-            proc_decl
-        } else {
-            bail!("{}: Expecting ASTType::ProcDecl", context);
-        };
+        let proc_decl = pop_item!(self, proc_decl, ProcDecl, context);
         let decl_seq_list0_group_0_built = DeclSeqList0Group0Builder::default()
             .proc_decl(Box::new(proc_decl))
             // Ignore clipped member 'semicolon'
@@ -3183,11 +3094,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let forward_decl = if let Some(ASTType::ForwardDecl(forward_decl)) = self.pop(context) {
-            forward_decl
-        } else {
-            bail!("{}: Expecting ASTType::ForwardDecl", context);
-        };
+        let forward_decl = pop_item!(self, forward_decl, ForwardDecl, context);
         let decl_seq_list0_group_1_built = DeclSeqList0Group1Builder::default()
             .forward_decl(Box::new(forward_decl))
             // Ignore clipped member 'semicolon'
@@ -3228,17 +3135,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut decl_seq_list = if let Some(ASTType::DeclSeqList(decl_seq_list)) = self.pop(context)
-        {
-            decl_seq_list
-        } else {
-            bail!("{}: Expecting ASTType::DeclSeqList", context);
-        };
-        let decl_block = if let Some(ASTType::DeclBlock(decl_block)) = self.pop(context) {
-            decl_block
-        } else {
-            bail!("{}: Expecting ASTType::DeclBlock", context);
-        };
+        let mut decl_seq_list = pop_item!(self, decl_seq_list, DeclSeqList, context);
+        let decl_block = pop_item!(self, decl_block, DeclBlock, context);
         let decl_seq_list_0_built = DeclSeqListBuilder::default()
             .decl_block(Box::new(decl_block))
             .build()
@@ -3274,12 +3172,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let const_decl_block =
-            if let Some(ASTType::ConstDeclBlock(const_decl_block)) = self.pop(context) {
-                const_decl_block
-            } else {
-                bail!("{}: Expecting ASTType::ConstDeclBlock", context);
-            };
+        let const_decl_block = pop_item!(self, const_decl_block, ConstDeclBlock, context);
         let decl_block_0_built = DeclBlock0Builder::default()
             .const_decl_block(Box::new(const_decl_block))
             .build()
@@ -3303,12 +3196,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_decl_block =
-            if let Some(ASTType::TypeDeclBlock(type_decl_block)) = self.pop(context) {
-                type_decl_block
-            } else {
-                bail!("{}: Expecting ASTType::TypeDeclBlock", context);
-            };
+        let type_decl_block = pop_item!(self, type_decl_block, TypeDeclBlock, context);
         let decl_block_1_built = DeclBlock1Builder::default()
             .type_decl_block(Box::new(type_decl_block))
             .build()
@@ -3332,12 +3220,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let var_decl_block = if let Some(ASTType::VarDeclBlock(var_decl_block)) = self.pop(context)
-        {
-            var_decl_block
-        } else {
-            bail!("{}: Expecting ASTType::VarDeclBlock", context);
-        };
+        let var_decl_block = pop_item!(self, var_decl_block, VarDeclBlock, context);
         let decl_block_2_built = DeclBlock2Builder::default()
             .var_decl_block(Box::new(var_decl_block))
             .build()
@@ -3363,13 +3246,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block_list =
-            if let Some(ASTType::ConstDeclBlockList(mut const_decl_block_list)) = self.pop(context)
-            {
-                const_decl_block_list.reverse();
-                const_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::ConstDeclBlockList", context);
-            };
+            pop_and_reverse_item!(self, const_decl_block_list, ConstDeclBlockList, context);
         let const_decl_block_built = ConstDeclBlockBuilder::default()
             // Ignore clipped member 'c_o_n_s_t'
             .const_decl_block_list(const_decl_block_list)
@@ -3397,16 +3274,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut const_decl_block_list =
-            if let Some(ASTType::ConstDeclBlockList(const_decl_block_list)) = self.pop(context) {
-                const_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::ConstDeclBlockList", context);
-            };
-        let const_decl = if let Some(ASTType::ConstDecl(const_decl)) = self.pop(context) {
-            const_decl
-        } else {
-            bail!("{}: Expecting ASTType::ConstDecl", context);
-        };
+            pop_item!(self, const_decl_block_list, ConstDeclBlockList, context);
+        let const_decl = pop_item!(self, const_decl, ConstDecl, context);
         let const_decl_block_list_0_built = ConstDeclBlockListBuilder::default()
             // Ignore clipped member 'semicolon'
             .const_decl(Box::new(const_decl))
@@ -3448,12 +3317,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block_list =
-            if let Some(ASTType::TypeDeclBlockList(mut type_decl_block_list)) = self.pop(context) {
-                type_decl_block_list.reverse();
-                type_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::TypeDeclBlockList", context);
-            };
+            pop_and_reverse_item!(self, type_decl_block_list, TypeDeclBlockList, context);
         let type_decl_block_built = TypeDeclBlockBuilder::default()
             // Ignore clipped member 't_y_p_e'
             .type_decl_block_list(type_decl_block_list)
@@ -3480,16 +3344,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_decl_block_list =
-            if let Some(ASTType::TypeDeclBlockList(type_decl_block_list)) = self.pop(context) {
-                type_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::TypeDeclBlockList", context);
-            };
-        let type_decl = if let Some(ASTType::TypeDecl(type_decl)) = self.pop(context) {
-            type_decl
-        } else {
-            bail!("{}: Expecting ASTType::TypeDecl", context);
-        };
+            pop_item!(self, type_decl_block_list, TypeDeclBlockList, context);
+        let type_decl = pop_item!(self, type_decl, TypeDecl, context);
         let type_decl_block_list_0_built = TypeDeclBlockListBuilder::default()
             // Ignore clipped member 'semicolon'
             .type_decl(Box::new(type_decl))
@@ -3531,12 +3387,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list =
-            if let Some(ASTType::VarDeclBlockList(mut var_decl_block_list)) = self.pop(context) {
-                var_decl_block_list.reverse();
-                var_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::VarDeclBlockList", context);
-            };
+            pop_and_reverse_item!(self, var_decl_block_list, VarDeclBlockList, context);
         // Ignore clipped member 'kw_var'
         self.pop(context);
         let var_decl_block_built = VarDeclBlockBuilder::default()
@@ -3565,16 +3416,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut var_decl_block_list =
-            if let Some(ASTType::VarDeclBlockList(var_decl_block_list)) = self.pop(context) {
-                var_decl_block_list
-            } else {
-                bail!("{}: Expecting ASTType::VarDeclBlockList", context);
-            };
-        let var_decl = if let Some(ASTType::VarDecl(var_decl)) = self.pop(context) {
-            var_decl
-        } else {
-            bail!("{}: Expecting ASTType::VarDecl", context);
-        };
+            pop_item!(self, var_decl_block_list, VarDeclBlockList, context);
+        let var_decl = pop_item!(self, var_decl, VarDecl, context);
         let var_decl_block_list_0_built = VarDeclBlockListBuilder::default()
             // Ignore clipped member 'semicolon'
             .var_decl(Box::new(var_decl))
@@ -3616,16 +3459,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let const_decl_built = ConstDeclBuilder::default()
             .ident_def(Box::new(ident_def))
             // Ignore clipped member 'equ'
@@ -3652,16 +3487,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let type_decl_built = TypeDeclBuilder::default()
             .ident_def(Box::new(ident_def))
             // Ignore clipped member 'equ'
@@ -3688,16 +3515,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
-        let ident_list = if let Some(ASTType::IdentList(ident_list)) = self.pop(context) {
-            ident_list
-        } else {
-            bail!("{}: Expecting ASTType::IdentList", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
         let var_decl_built = VarDeclBuilder::default()
             .ident_list(Box::new(ident_list))
             // Ignore clipped member 'colon'
@@ -3724,18 +3543,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let procedure_body = if let Some(ASTType::ProcedureBody(procedure_body)) = self.pop(context)
-        {
-            procedure_body
-        } else {
-            bail!("{}: Expecting ASTType::ProcedureBody", context);
-        };
-        let procedure_heading =
-            if let Some(ASTType::ProcedureHeading(procedure_heading)) = self.pop(context) {
-                procedure_heading
-            } else {
-                bail!("{}: Expecting ASTType::ProcedureHeading", context);
-            };
+        let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
+        let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
         let proc_decl_built = ProcDeclBuilder::default()
             .procedure_heading(Box::new(procedure_heading))
             // Ignore clipped member 'semicolon'
@@ -3763,25 +3572,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let procedure_heading_opt0 = if let Some(ASTType::ProcedureHeadingOpt0(
-            procedure_heading_opt0,
-        )) = self.pop(context)
-        {
-            procedure_heading_opt0
-        } else {
-            bail!("{}: Expecting ASTType::ProcedureHeadingOpt0", context);
-        };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
+        let procedure_heading_opt0 =
+            pop_item!(self, procedure_heading_opt0, ProcedureHeadingOpt0, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let procedure_heading_opt =
-            if let Some(ASTType::ProcedureHeadingOpt(procedure_heading_opt)) = self.pop(context) {
-                procedure_heading_opt
-            } else {
-                bail!("{}: Expecting ASTType::ProcedureHeadingOpt", context);
-            };
+            pop_item!(self, procedure_heading_opt, ProcedureHeadingOpt, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let procedure_heading_built = ProcedureHeadingBuilder::default()
@@ -3810,11 +3605,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let formal_pars = if let Some(ASTType::FormalPars(formal_pars)) = self.pop(context) {
-            formal_pars
-        } else {
-            bail!("{}: Expecting ASTType::FormalPars", context);
-        };
+        let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
         let procedure_heading_opt0_0_built = ProcedureHeadingOpt0Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
@@ -3850,11 +3641,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let receiver = if let Some(ASTType::Receiver(receiver)) = self.pop(context) {
-            receiver
-        } else {
-            bail!("{}: Expecting ASTType::Receiver", context);
-        };
+        let receiver = pop_item!(self, receiver, Receiver, context);
         let procedure_heading_opt_0_built = ProcedureHeadingOptBuilder::default()
             .receiver(Box::new(receiver))
             .build()
@@ -3891,17 +3678,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_block =
-            if let Some(ASTType::StatementBlock(statement_block)) = self.pop(context) {
-                statement_block
-            } else {
-                bail!("{}: Expecting ASTType::StatementBlock", context);
-            };
-        let decl_seq = if let Some(ASTType::DeclSeq(decl_seq)) = self.pop(context) {
-            decl_seq
-        } else {
-            bail!("{}: Expecting ASTType::DeclSeq", context);
-        };
+        let statement_block = pop_item!(self, statement_block, StatementBlock, context);
+        let decl_seq = pop_item!(self, decl_seq, DeclSeq, context);
         let procedure_body_built = ProcedureBodyBuilder::default()
             .decl_seq(Box::new(decl_seq))
             .statement_block(Box::new(statement_block))
@@ -3927,19 +3705,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         // Ignore clipped member 'kw_end'
         self.pop(context);
-        let statement_block_opt =
-            if let Some(ASTType::StatementBlockOpt(statement_block_opt)) = self.pop(context) {
-                statement_block_opt
-            } else {
-                bail!("{}: Expecting ASTType::StatementBlockOpt", context);
-            };
+        let statement_block_opt = pop_item!(self, statement_block_opt, StatementBlockOpt, context);
         let statement_block_built = StatementBlockBuilder::default()
             .statement_block_opt(statement_block_opt)
             // Ignore clipped member 'kw_end'
@@ -3965,11 +3734,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_begin'
         self.pop(context);
         let statement_block_opt_0_built = StatementBlockOptBuilder::default()
@@ -4013,23 +3778,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let circumflex = circumflex.token(parse_tree)?.clone();
-        let forward_decl_opt0 =
-            if let Some(ASTType::ForwardDeclOpt0(forward_decl_opt0)) = self.pop(context) {
-                forward_decl_opt0
-            } else {
-                bail!("{}: Expecting ASTType::ForwardDeclOpt0", context);
-            };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
-        let forward_decl_opt =
-            if let Some(ASTType::ForwardDeclOpt(forward_decl_opt)) = self.pop(context) {
-                forward_decl_opt
-            } else {
-                bail!("{}: Expecting ASTType::ForwardDeclOpt", context);
-            };
+        let forward_decl_opt0 = pop_item!(self, forward_decl_opt0, ForwardDeclOpt0, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
+        let forward_decl_opt = pop_item!(self, forward_decl_opt, ForwardDeclOpt, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let forward_decl_built = ForwardDeclBuilder::default()
@@ -4058,11 +3809,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let formal_pars = if let Some(ASTType::FormalPars(formal_pars)) = self.pop(context) {
-            formal_pars
-        } else {
-            bail!("{}: Expecting ASTType::FormalPars", context);
-        };
+        let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
         let forward_decl_opt0_0_built = ForwardDeclOpt0Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
@@ -4098,11 +3845,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let receiver = if let Some(ASTType::Receiver(receiver)) = self.pop(context) {
-            receiver
-        } else {
-            bail!("{}: Expecting ASTType::Receiver", context);
-        };
+        let receiver = pop_item!(self, receiver, Receiver, context);
         let forward_decl_opt_0_built = ForwardDeclOptBuilder::default()
             .receiver(Box::new(receiver))
             .build()
@@ -4141,18 +3884,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let formal_pars_opt0 =
-            if let Some(ASTType::FormalParsOpt0(formal_pars_opt0)) = self.pop(context) {
-                formal_pars_opt0
-            } else {
-                bail!("{}: Expecting ASTType::FormalParsOpt0", context);
-            };
-        let formal_pars_opt =
-            if let Some(ASTType::FormalParsOpt(formal_pars_opt)) = self.pop(context) {
-                formal_pars_opt
-            } else {
-                bail!("{}: Expecting ASTType::FormalParsOpt", context);
-            };
+        let formal_pars_opt0 = pop_item!(self, formal_pars_opt0, FormalParsOpt0, context);
+        let formal_pars_opt = pop_item!(self, formal_pars_opt, FormalParsOpt, context);
         let formal_pars_built = FormalParsBuilder::default()
             // Ignore clipped member 'l_paren'
             .formal_pars_opt(formal_pars_opt)
@@ -4179,11 +3912,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
-            qual_ident
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
+        let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let formal_pars_opt0_0_built = FormalParsOpt0Builder::default()
             // Ignore clipped member 'colon'
             .qual_ident(Box::new(qual_ident))
@@ -4222,17 +3951,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt_list =
-            if let Some(ASTType::FormalParsOptList(mut formal_pars_opt_list)) = self.pop(context) {
-                formal_pars_opt_list.reverse();
-                formal_pars_opt_list
-            } else {
-                bail!("{}: Expecting ASTType::FormalParsOptList", context);
-            };
-        let f_p_section = if let Some(ASTType::FPSection(f_p_section)) = self.pop(context) {
-            f_p_section
-        } else {
-            bail!("{}: Expecting ASTType::FPSection", context);
-        };
+            pop_and_reverse_item!(self, formal_pars_opt_list, FormalParsOptList, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
         let formal_pars_opt_0_built = FormalParsOptBuilder::default()
             .f_p_section(Box::new(f_p_section))
             .formal_pars_opt_list(formal_pars_opt_list)
@@ -4260,16 +3980,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut formal_pars_opt_list =
-            if let Some(ASTType::FormalParsOptList(formal_pars_opt_list)) = self.pop(context) {
-                formal_pars_opt_list
-            } else {
-                bail!("{}: Expecting ASTType::FormalParsOptList", context);
-            };
-        let f_p_section = if let Some(ASTType::FPSection(f_p_section)) = self.pop(context) {
-            f_p_section
-        } else {
-            bail!("{}: Expecting ASTType::FPSection", context);
-        };
+            pop_item!(self, formal_pars_opt_list, FormalParsOptList, context);
+        let f_p_section = pop_item!(self, f_p_section, FPSection, context);
         let formal_pars_opt_list_0_built = FormalParsOptListBuilder::default()
             .f_p_section(Box::new(f_p_section))
             // Ignore clipped member 'semicolon'
@@ -4325,29 +4037,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
         let f_p_section_list =
-            if let Some(ASTType::FPSectionList(mut f_p_section_list)) = self.pop(context) {
-                f_p_section_list.reverse();
-                f_p_section_list
-            } else {
-                bail!("{}: Expecting ASTType::FPSectionList", context);
-            };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
-        let f_p_section_opt =
-            if let Some(ASTType::FPSectionOpt(f_p_section_opt)) = self.pop(context) {
-                f_p_section_opt
-            } else {
-                bail!("{}: Expecting ASTType::FPSectionOpt", context);
-            };
+            pop_and_reverse_item!(self, f_p_section_list, FPSectionList, context);
+        let ident = pop_item!(self, ident, Ident, context);
+        let f_p_section_opt = pop_item!(self, f_p_section_opt, FPSectionOpt, context);
         let f_p_section_built = FPSectionBuilder::default()
             .f_p_section_opt(f_p_section_opt)
             .ident(Box::new(ident))
@@ -4376,17 +4070,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut f_p_section_list =
-            if let Some(ASTType::FPSectionList(f_p_section_list)) = self.pop(context) {
-                f_p_section_list
-            } else {
-                bail!("{}: Expecting ASTType::FPSectionList", context);
-            };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let mut f_p_section_list = pop_item!(self, f_p_section_list, FPSectionList, context);
+        let ident = pop_item!(self, ident, Ident, context);
         let f_p_section_list_0_built = FPSectionListBuilder::default()
             .ident(Box::new(ident))
             // Ignore clipped member 'comma'
@@ -4463,17 +4148,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let receiver_var_decl =
-            if let Some(ASTType::ReceiverVarDecl(receiver_var_decl)) = self.pop(context) {
-                receiver_var_decl
-            } else {
-                bail!("{}: Expecting ASTType::ReceiverVarDecl", context);
-            };
-        let receiver_opt = if let Some(ASTType::ReceiverOpt(receiver_opt)) = self.pop(context) {
-            receiver_opt
-        } else {
-            bail!("{}: Expecting ASTType::ReceiverOpt", context);
-        };
+        let receiver_var_decl = pop_item!(self, receiver_var_decl, ReceiverVarDecl, context);
+        let receiver_opt = pop_item!(self, receiver_opt, ReceiverOpt, context);
         let receiver_built = ReceiverBuilder::default()
             // Ignore clipped member 'l_paren'
             .receiver_opt(receiver_opt)
@@ -4538,16 +4214,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident0 = if let Some(ASTType::Ident(ident0)) = self.pop(context) {
-            ident0
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident0 = pop_item!(self, ident0, Ident, context);
+        let ident = pop_item!(self, ident, Ident, context);
         let receiver_var_decl_built = ReceiverVarDeclBuilder::default()
             .ident(Box::new(ident))
             // Ignore clipped member 'colon'
@@ -4573,11 +4241,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
-            qual_ident
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
+        let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let type_def_0_built = TypeDef0Builder::default()
             .qual_ident(Box::new(qual_ident))
             .build()
@@ -4604,18 +4268,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
         // Ignore clipped member 'kw_of'
         self.pop(context);
-        let type_def_opt = if let Some(ASTType::TypeDefOpt(type_def_opt)) = self.pop(context) {
-            type_def_opt
-        } else {
-            bail!("{}: Expecting ASTType::TypeDefOpt", context);
-        };
+        let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
         let type_def_1_built = TypeDef1Builder::default()
             // Ignore clipped member 'a_r_r_a_y'
             .type_def_opt(type_def_opt)
@@ -4648,23 +4304,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
         self.pop(context);
-        let type_def_list = if let Some(ASTType::TypeDefList(mut type_def_list)) = self.pop(context)
-        {
-            type_def_list.reverse();
-            type_def_list
-        } else {
-            bail!("{}: Expecting ASTType::TypeDefList", context);
-        };
-        let field_list = if let Some(ASTType::FieldList(field_list)) = self.pop(context) {
-            field_list
-        } else {
-            bail!("{}: Expecting ASTType::FieldList", context);
-        };
-        let type_def_opt0 = if let Some(ASTType::TypeDefOpt0(type_def_opt0)) = self.pop(context) {
-            type_def_opt0
-        } else {
-            bail!("{}: Expecting ASTType::TypeDefOpt0", context);
-        };
+        let type_def_list = pop_and_reverse_item!(self, type_def_list, TypeDefList, context);
+        let field_list = pop_item!(self, field_list, FieldList, context);
+        let type_def_opt0 = pop_item!(self, type_def_opt0, TypeDefOpt0, context);
         let type_def_2_built = TypeDef2Builder::default()
             // Ignore clipped member 'r_e_c_o_r_d'
             .type_def_opt0(type_def_opt0)
@@ -4694,17 +4336,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut type_def_list = if let Some(ASTType::TypeDefList(type_def_list)) = self.pop(context)
-        {
-            type_def_list
-        } else {
-            bail!("{}: Expecting ASTType::TypeDefList", context);
-        };
-        let field_list = if let Some(ASTType::FieldList(field_list)) = self.pop(context) {
-            field_list
-        } else {
-            bail!("{}: Expecting ASTType::FieldList", context);
-        };
+        let mut type_def_list = pop_item!(self, type_def_list, TypeDefList, context);
+        let field_list = pop_item!(self, field_list, FieldList, context);
         let type_def_list_0_built = TypeDefListBuilder::default()
             .field_list(Box::new(field_list))
             // Ignore clipped member 'semicolon'
@@ -4743,11 +4376,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
         // Ignore clipped member 'kw_to'
         self.pop(context);
         let type_def_3_built = TypeDef3Builder::default()
@@ -4776,11 +4405,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def_opt1 = if let Some(ASTType::TypeDefOpt1(type_def_opt1)) = self.pop(context) {
-            type_def_opt1
-        } else {
-            bail!("{}: Expecting ASTType::TypeDefOpt1", context);
-        };
+        let type_def_opt1 = pop_item!(self, type_def_opt1, TypeDefOpt1, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let type_def_4_built = TypeDef4Builder::default()
@@ -4807,11 +4432,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let formal_pars = if let Some(ASTType::FormalPars(formal_pars)) = self.pop(context) {
-            formal_pars
-        } else {
-            bail!("{}: Expecting ASTType::FormalPars", context);
-        };
+        let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
         let type_def_opt1_0_built = TypeDefOpt1Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
@@ -4849,11 +4470,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
-            qual_ident
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
+        let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let type_def_opt0_0_built = TypeDefOpt0Builder::default()
             // Ignore clipped member 'l_paren'
             .qual_ident(Box::new(qual_ident))
@@ -4893,17 +4510,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt_list =
-            if let Some(ASTType::TypeDefOptList(mut type_def_opt_list)) = self.pop(context) {
-                type_def_opt_list.reverse();
-                type_def_opt_list
-            } else {
-                bail!("{}: Expecting ASTType::TypeDefOptList", context);
-            };
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
+            pop_and_reverse_item!(self, type_def_opt_list, TypeDefOptList, context);
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let type_def_opt_0_built = TypeDefOptBuilder::default()
             .const_expr(Box::new(const_expr))
             .type_def_opt_list(type_def_opt_list)
@@ -4930,17 +4538,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut type_def_opt_list =
-            if let Some(ASTType::TypeDefOptList(type_def_opt_list)) = self.pop(context) {
-                type_def_opt_list
-            } else {
-                bail!("{}: Expecting ASTType::TypeDefOptList", context);
-            };
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
+        let mut type_def_opt_list = pop_item!(self, type_def_opt_list, TypeDefOptList, context);
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let type_def_opt_list_0_built = TypeDefOptListBuilder::default()
             .const_expr(Box::new(const_expr))
             // Ignore clipped member 'comma'
@@ -4989,12 +4588,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let field_list_opt = if let Some(ASTType::FieldListOpt(field_list_opt)) = self.pop(context)
-        {
-            field_list_opt
-        } else {
-            bail!("{}: Expecting ASTType::FieldListOpt", context);
-        };
+        let field_list_opt = pop_item!(self, field_list_opt, FieldListOpt, context);
         let field_list_built = FieldListBuilder::default()
             .field_list_opt(field_list_opt)
             .build()
@@ -5019,16 +4613,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let type_def = if let Some(ASTType::TypeDef(type_def)) = self.pop(context) {
-            type_def
-        } else {
-            bail!("{}: Expecting ASTType::TypeDef", context);
-        };
-        let ident_list = if let Some(ASTType::IdentList(ident_list)) = self.pop(context) {
-            ident_list
-        } else {
-            bail!("{}: Expecting ASTType::IdentList", context);
-        };
+        let type_def = pop_item!(self, type_def, TypeDef, context);
+        let ident_list = pop_item!(self, ident_list, IdentList, context);
         let field_list_opt_0_built = FieldListOptBuilder::default()
             .ident_list(Box::new(ident_list))
             // Ignore clipped member 'colon'
@@ -5068,17 +4654,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq_list =
-            if let Some(ASTType::StatementSeqList(mut statement_seq_list)) = self.pop(context) {
-                statement_seq_list.reverse();
-                statement_seq_list
-            } else {
-                bail!("{}: Expecting ASTType::StatementSeqList", context);
-            };
-        let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
-            statement
-        } else {
-            bail!("{}: Expecting ASTType::Statement", context);
-        };
+            pop_and_reverse_item!(self, statement_seq_list, StatementSeqList, context);
+        let statement = pop_item!(self, statement, Statement, context);
         let statement_seq_built = StatementSeqBuilder::default()
             .statement(Box::new(statement))
             .statement_seq_list(statement_seq_list)
@@ -5104,17 +4681,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut statement_seq_list =
-            if let Some(ASTType::StatementSeqList(statement_seq_list)) = self.pop(context) {
-                statement_seq_list
-            } else {
-                bail!("{}: Expecting ASTType::StatementSeqList", context);
-            };
-        let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
-            statement
-        } else {
-            bail!("{}: Expecting ASTType::Statement", context);
-        };
+        let mut statement_seq_list = pop_item!(self, statement_seq_list, StatementSeqList, context);
+        let statement = pop_item!(self, statement, Statement, context);
         let statement_seq_list_0_built = StatementSeqListBuilder::default()
             .statement(Box::new(statement))
             // Ignore clipped member 'semicolon'
@@ -5154,11 +4722,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt = if let Some(ASTType::StatementOpt(statement_opt)) = self.pop(context) {
-            statement_opt
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt", context);
-        };
+        let statement_opt = pop_item!(self, statement_opt, StatementOpt, context);
         let statement_built = StatementBuilder::default()
             .statement_opt(statement_opt)
             .build()
@@ -5181,12 +4745,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt_group =
-            if let Some(ASTType::StatementOptGroup(statement_opt_group)) = self.pop(context) {
-                statement_opt_group
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroup", context);
-            };
+        let statement_opt_group = pop_item!(self, statement_opt_group, StatementOptGroup, context);
         let statement_opt_0_built = StatementOptBuilder::default()
             .statement_opt_group(Box::new(statement_opt_group))
             .build()
@@ -5211,19 +4770,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt_group_suffix =
-            if let Some(ASTType::StatementOptGroupSuffix(statement_opt_group_suffix)) =
-                self.pop(context)
-            {
-                statement_opt_group_suffix
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroupSuffix", context);
-            };
-        let designator = if let Some(ASTType::Designator(designator)) = self.pop(context) {
-            designator
-        } else {
-            bail!("{}: Expecting ASTType::Designator", context);
-        };
+        let statement_opt_group_suffix = pop_item!(
+            self,
+            statement_opt_group_suffix,
+            StatementOptGroupSuffix,
+            context
+        );
+        let designator = pop_item!(self, designator, Designator, context);
         let statement_opt_group_0_built = StatementOptGroup0Builder::default()
             .designator(Box::new(designator))
             .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
@@ -5251,11 +4804,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         let statement_opt_group_suffix_0_built = StatementOptGroupSuffix0Builder::default()
             // Ignore clipped member 'colon_equ'
             .expr(Box::new(expr))
@@ -5282,12 +4831,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt0 = if let Some(ASTType::StatementOpt0(statement_opt0)) = self.pop(context)
-        {
-            statement_opt0
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt0", context);
-        };
+        let statement_opt0 = pop_item!(self, statement_opt0, StatementOpt0, context);
         let statement_opt_group_suffix_1_built = StatementOptGroupSuffix1Builder::default()
             .statement_opt0(statement_opt0)
             .build()
@@ -5317,31 +4861,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let opt_else_part_end =
-            if let Some(ASTType::OptElsePartEnd(opt_else_part_end)) = self.pop(context) {
-                opt_else_part_end
-            } else {
-                bail!("{}: Expecting ASTType::OptElsePartEnd", context);
-            };
-        let statement_opt_group_list =
-            if let Some(ASTType::StatementOptGroupList(mut statement_opt_group_list)) =
-                self.pop(context)
-            {
-                statement_opt_group_list.reverse();
-                statement_opt_group_list
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroupList", context);
-            };
-        let then_block = if let Some(ASTType::ThenBlock(then_block)) = self.pop(context) {
-            then_block
-        } else {
-            bail!("{}: Expecting ASTType::ThenBlock", context);
-        };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
+        let statement_opt_group_list = pop_and_reverse_item!(
+            self,
+            statement_opt_group_list,
+            StatementOptGroupList,
+            context
+        );
+        let then_block = pop_item!(self, then_block, ThenBlock, context);
+        let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_if'
         self.pop(context);
         let statement_opt_group_1_built = StatementOptGroup1Builder::default()
@@ -5377,24 +4905,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let opt_else_part_end =
-            if let Some(ASTType::OptElsePartEnd(opt_else_part_end)) = self.pop(context) {
-                opt_else_part_end
-            } else {
-                bail!("{}: Expecting ASTType::OptElsePartEnd", context);
-            };
-        let cases = if let Some(ASTType::Cases(cases)) = self.pop(context) {
-            cases
-        } else {
-            bail!("{}: Expecting ASTType::Cases", context);
-        };
+        let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
+        let cases = pop_item!(self, cases, Cases, context);
         // Ignore clipped member 'kw_of'
         self.pop(context);
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_case'
         self.pop(context);
         let statement_opt_group_2_built = StatementOptGroup2Builder::default()
@@ -5428,16 +4943,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let do_block = if let Some(ASTType::DoBlock(do_block)) = self.pop(context) {
-            do_block
-        } else {
-            bail!("{}: Expecting ASTType::DoBlock", context);
-        };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let do_block = pop_item!(self, do_block, DoBlock, context);
+        let expr = pop_item!(self, expr, Expr, context);
         let statement_opt_group_3_built = StatementOptGroup3Builder::default()
             // Ignore clipped member 'w_h_i_l_e'
             .expr(Box::new(expr))
@@ -5468,16 +4975,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let statement_opt_group_4_built = StatementOptGroup4Builder::default()
             // Ignore clipped member 'r_e_p_e_a_t'
             .statement_seq(Box::new(statement_seq))
@@ -5509,22 +5008,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let do_block = if let Some(ASTType::DoBlock(do_block)) = self.pop(context) {
-            do_block
-        } else {
-            bail!("{}: Expecting ASTType::DoBlock", context);
-        };
-        let statement_opt1 = if let Some(ASTType::StatementOpt1(statement_opt1)) = self.pop(context)
-        {
-            statement_opt1
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt1", context);
-        };
-        let for_init = if let Some(ASTType::ForInit(for_init)) = self.pop(context) {
-            for_init
-        } else {
-            bail!("{}: Expecting ASTType::ForInit", context);
-        };
+        let do_block = pop_item!(self, do_block, DoBlock, context);
+        let statement_opt1 = pop_item!(self, statement_opt1, StatementOpt1, context);
+        let for_init = pop_item!(self, for_init, ForInit, context);
         let statement_opt_group_5_built = StatementOptGroup5Builder::default()
             // Ignore clipped member 'f_o_r'
             .for_init(Box::new(for_init))
@@ -5557,11 +5043,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
         self.pop(context);
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let statement_opt_group_6_built = StatementOptGroup6Builder::default()
             // Ignore clipped member 'l_o_o_p'
             .statement_seq(Box::new(statement_seq))
@@ -5592,27 +5074,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let opt_else_part_end =
-            if let Some(ASTType::OptElsePartEnd(opt_else_part_end)) = self.pop(context) {
-                opt_else_part_end
-            } else {
-                bail!("{}: Expecting ASTType::OptElsePartEnd", context);
-            };
-        let statement_opt_group_list0 =
-            if let Some(ASTType::StatementOptGroupList0(mut statement_opt_group_list0)) =
-                self.pop(context)
-            {
-                statement_opt_group_list0.reverse();
-                statement_opt_group_list0
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroupList0", context);
-            };
-        let guarded_do_block =
-            if let Some(ASTType::GuardedDoBlock(guarded_do_block)) = self.pop(context) {
-                guarded_do_block
-            } else {
-                bail!("{}: Expecting ASTType::GuardedDoBlock", context);
-            };
+        let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
+        let statement_opt_group_list0 = pop_and_reverse_item!(
+            self,
+            statement_opt_group_list0,
+            StatementOptGroupList0,
+            context
+        );
+        let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
         let statement_opt_group_7_built = StatementOptGroup7Builder::default()
             // Ignore clipped member 'w_i_t_h'
             .guarded_do_block(Box::new(guarded_do_block))
@@ -5667,12 +5136,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt2 = if let Some(ASTType::StatementOpt2(statement_opt2)) = self.pop(context)
-        {
-            statement_opt2
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt2", context);
-        };
+        let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
         let statement_opt_group_9_built = StatementOptGroup9Builder::default()
             // Ignore clipped member 'r_e_t_u_r_n'
             .statement_opt2(statement_opt2)
@@ -5700,19 +5164,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut statement_opt_group_list =
-            if let Some(ASTType::StatementOptGroupList(statement_opt_group_list)) =
-                self.pop(context)
-            {
-                statement_opt_group_list
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroupList", context);
-            };
-        let elsif_part = if let Some(ASTType::ElsifPart(elsif_part)) = self.pop(context) {
-            elsif_part
-        } else {
-            bail!("{}: Expecting ASTType::ElsifPart", context);
-        };
+        let mut statement_opt_group_list = pop_item!(
+            self,
+            statement_opt_group_list,
+            StatementOptGroupList,
+            context
+        );
+        let elsif_part = pop_item!(self, elsif_part, ElsifPart, context);
         let statement_opt_group_list_0_built = StatementOptGroupListBuilder::default()
             .elsif_part(Box::new(elsif_part))
             .build()
@@ -5756,20 +5214,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut statement_opt_group_list0 =
-            if let Some(ASTType::StatementOptGroupList0(statement_opt_group_list0)) =
-                self.pop(context)
-            {
-                statement_opt_group_list0
-            } else {
-                bail!("{}: Expecting ASTType::StatementOptGroupList0", context);
-            };
-        let guarded_do_block =
-            if let Some(ASTType::GuardedDoBlock(guarded_do_block)) = self.pop(context) {
-                guarded_do_block
-            } else {
-                bail!("{}: Expecting ASTType::GuardedDoBlock", context);
-            };
+        let mut statement_opt_group_list0 = pop_item!(
+            self,
+            statement_opt_group_list0,
+            StatementOptGroupList0,
+            context
+        );
+        let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
         let statement_opt_group_list0_0_built = StatementOptGroupList0Builder::default()
             .guarded_do_block(Box::new(guarded_do_block))
             // Ignore clipped member 'or'
@@ -5812,11 +5263,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         let statement_opt2_0_built = StatementOpt2Builder::default()
             .expr(Box::new(expr))
             .build()
@@ -5852,11 +5299,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let for_step = if let Some(ASTType::ForStep(for_step)) = self.pop(context) {
-            for_step
-        } else {
-            bail!("{}: Expecting ASTType::ForStep", context);
-        };
+        let for_step = pop_item!(self, for_step, ForStep, context);
         let statement_opt1_0_built = StatementOpt1Builder::default()
             .for_step(Box::new(for_step))
             .build()
@@ -5894,12 +5337,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt3 = if let Some(ASTType::StatementOpt3(statement_opt3)) = self.pop(context)
-        {
-            statement_opt3
-        } else {
-            bail!("{}: Expecting ASTType::StatementOpt3", context);
-        };
+        let statement_opt3 = pop_item!(self, statement_opt3, StatementOpt3, context);
         let statement_opt0_0_built = StatementOpt0Builder::default()
             // Ignore clipped member 'l_paren'
             .statement_opt3(statement_opt3)
@@ -5925,11 +5363,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr_list = if let Some(ASTType::ExprList(expr_list)) = self.pop(context) {
-            expr_list
-        } else {
-            bail!("{}: Expecting ASTType::ExprList", context);
-        };
+        let expr_list = pop_item!(self, expr_list, ExprList, context);
         let statement_opt3_0_built = StatementOpt3Builder::default()
             .expr_list(Box::new(expr_list))
             .build()
@@ -5990,11 +5424,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_then'
         self.pop(context);
         let then_block_built = ThenBlockBuilder::default()
@@ -6021,17 +5451,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cases_list = if let Some(ASTType::CasesList(mut cases_list)) = self.pop(context) {
-            cases_list.reverse();
-            cases_list
-        } else {
-            bail!("{}: Expecting ASTType::CasesList", context);
-        };
-        let case = if let Some(ASTType::Case(case)) = self.pop(context) {
-            case
-        } else {
-            bail!("{}: Expecting ASTType::Case", context);
-        };
+        let cases_list = pop_and_reverse_item!(self, cases_list, CasesList, context);
+        let case = pop_item!(self, case, Case, context);
         let cases_built = CasesBuilder::default()
             .case(Box::new(case))
             .cases_list(cases_list)
@@ -6057,16 +5478,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut cases_list = if let Some(ASTType::CasesList(cases_list)) = self.pop(context) {
-            cases_list
-        } else {
-            bail!("{}: Expecting ASTType::CasesList", context);
-        };
-        let case = if let Some(ASTType::Case(case)) = self.pop(context) {
-            case
-        } else {
-            bail!("{}: Expecting ASTType::Case", context);
-        };
+        let mut cases_list = pop_item!(self, cases_list, CasesList, context);
+        let case = pop_item!(self, case, Case, context);
         let cases_list_0_built = CasesListBuilder::default()
             .case(Box::new(case))
             // Ignore clipped member 'or'
@@ -6105,16 +5518,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let then_block = if let Some(ASTType::ThenBlock(then_block)) = self.pop(context) {
-            then_block
-        } else {
-            bail!("{}: Expecting ASTType::ThenBlock", context);
-        };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let then_block = pop_item!(self, then_block, ThenBlock, context);
+        let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_elsif'
         self.pop(context);
         let elsif_part_built = ElsifPartBuilder::default()
@@ -6142,11 +5547,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_else'
         self.pop(context);
         let else_part_built = ElsePartBuilder::default()
@@ -6176,11 +5577,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_end'
         self.pop(context);
         let opt_else_part_end_opt =
-            if let Some(ASTType::OptElsePartEndOpt(opt_else_part_end_opt)) = self.pop(context) {
-                opt_else_part_end_opt
-            } else {
-                bail!("{}: Expecting ASTType::OptElsePartEndOpt", context);
-            };
+            pop_item!(self, opt_else_part_end_opt, OptElsePartEndOpt, context);
         let opt_else_part_end_built = OptElsePartEndBuilder::default()
             .opt_else_part_end_opt(opt_else_part_end_opt)
             // Ignore clipped member 'kw_end'
@@ -6205,11 +5602,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let else_part = if let Some(ASTType::ElsePart(else_part)) = self.pop(context) {
-            else_part
-        } else {
-            bail!("{}: Expecting ASTType::ElsePart", context);
-        };
+        let else_part = pop_item!(self, else_part, ElsePart, context);
         let opt_else_part_end_opt_0_built = OptElsePartEndOptBuilder::default()
             .else_part(Box::new(else_part))
             .build()
@@ -6249,11 +5642,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
         self.pop(context);
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_do'
         self.pop(context);
         let do_block_built = DoBlockBuilder::default()
@@ -6282,18 +5671,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_do'
         self.pop(context);
-        let guard = if let Some(ASTType::Guard(guard)) = self.pop(context) {
-            guard
-        } else {
-            bail!("{}: Expecting ASTType::Guard", context);
-        };
+        let guard = pop_item!(self, guard, Guard, context);
         let guarded_do_block_built = GuardedDoBlockBuilder::default()
             .guard(Box::new(guard))
             // Ignore clipped member 'kw_do'
@@ -6323,23 +5704,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr0 = if let Some(ASTType::Expr(expr0)) = self.pop(context) {
-            expr0
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr0 = pop_item!(self, expr0, Expr, context);
         // Ignore clipped member 'kw_to'
         self.pop(context);
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
+        let ident = pop_item!(self, ident, Ident, context);
         let for_init_built = ForInitBuilder::default()
             .ident(Box::new(ident))
             // Ignore clipped member 'colon_equ'
@@ -6367,11 +5736,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let for_step_built = ForStepBuilder::default()
             // Ignore clipped member 'b_y'
             .const_expr(Box::new(const_expr))
@@ -6395,11 +5760,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let case_opt = if let Some(ASTType::CaseOpt(case_opt)) = self.pop(context) {
-            case_opt
-        } else {
-            bail!("{}: Expecting ASTType::CaseOpt", context);
-        };
+        let case_opt = pop_item!(self, case_opt, CaseOpt, context);
         let case_built = CaseBuilder::default()
             .case_opt(case_opt)
             .build()
@@ -6425,23 +5786,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_seq = if let Some(ASTType::StatementSeq(statement_seq)) = self.pop(context) {
-            statement_seq
-        } else {
-            bail!("{}: Expecting ASTType::StatementSeq", context);
-        };
-        let case_opt_list = if let Some(ASTType::CaseOptList(mut case_opt_list)) = self.pop(context)
-        {
-            case_opt_list.reverse();
-            case_opt_list
-        } else {
-            bail!("{}: Expecting ASTType::CaseOptList", context);
-        };
-        let case_labels = if let Some(ASTType::CaseLabels(case_labels)) = self.pop(context) {
-            case_labels
-        } else {
-            bail!("{}: Expecting ASTType::CaseLabels", context);
-        };
+        let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
+        let case_opt_list = pop_and_reverse_item!(self, case_opt_list, CaseOptList, context);
+        let case_labels = pop_item!(self, case_labels, CaseLabels, context);
         let case_opt_0_built = CaseOptBuilder::default()
             .case_labels(Box::new(case_labels))
             .case_opt_list(case_opt_list)
@@ -6467,17 +5814,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut case_opt_list = if let Some(ASTType::CaseOptList(case_opt_list)) = self.pop(context)
-        {
-            case_opt_list
-        } else {
-            bail!("{}: Expecting ASTType::CaseOptList", context);
-        };
-        let case_labels = if let Some(ASTType::CaseLabels(case_labels)) = self.pop(context) {
-            case_labels
-        } else {
-            bail!("{}: Expecting ASTType::CaseLabels", context);
-        };
+        let mut case_opt_list = pop_item!(self, case_opt_list, CaseOptList, context);
+        let case_labels = pop_item!(self, case_labels, CaseLabels, context);
         let case_opt_list_0_built = CaseOptListBuilder::default()
             .case_labels(Box::new(case_labels))
             // Ignore clipped member 'comma'
@@ -6527,17 +5865,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let case_labels_opt =
-            if let Some(ASTType::CaseLabelsOpt(case_labels_opt)) = self.pop(context) {
-                case_labels_opt
-            } else {
-                bail!("{}: Expecting ASTType::CaseLabelsOpt", context);
-            };
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
+        let case_labels_opt = pop_item!(self, case_labels_opt, CaseLabelsOpt, context);
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_built = CaseLabelsBuilder::default()
             .const_expr(Box::new(const_expr))
             .case_labels_opt(case_labels_opt)
@@ -6563,11 +5892,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_dot = dot_dot.token(parse_tree)?.clone();
-        let const_expr = if let Some(ASTType::ConstExpr(const_expr)) = self.pop(context) {
-            const_expr
-        } else {
-            bail!("{}: Expecting ASTType::ConstExpr", context);
-        };
+        let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_opt_0_built = CaseLabelsOptBuilder::default()
             .dot_dot(dot_dot)
             .const_expr(Box::new(const_expr))
@@ -6606,16 +5931,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let qual_ident0 = if let Some(ASTType::QualIdent(qual_ident0)) = self.pop(context) {
-            qual_ident0
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
-        let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
-            qual_ident
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
+        let qual_ident0 = pop_item!(self, qual_ident0, QualIdent, context);
+        let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let guard_built = GuardBuilder::default()
             .qual_ident(Box::new(qual_ident))
             // Ignore clipped member 'colon'
@@ -6640,11 +5957,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         let const_expr_built = ConstExprBuilder::default()
             .expr(Box::new(expr))
             .build()
@@ -6668,16 +5981,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr_opt = if let Some(ASTType::ExprOpt(expr_opt)) = self.pop(context) {
-            expr_opt
-        } else {
-            bail!("{}: Expecting ASTType::ExprOpt", context);
-        };
-        let simple_expr = if let Some(ASTType::SimpleExpr(simple_expr)) = self.pop(context) {
-            simple_expr
-        } else {
-            bail!("{}: Expecting ASTType::SimpleExpr", context);
-        };
+        let expr_opt = pop_item!(self, expr_opt, ExprOpt, context);
+        let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
         let expr_built = ExprBuilder::default()
             .simple_expr(Box::new(simple_expr))
             .expr_opt(expr_opt)
@@ -6702,16 +6007,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let simple_expr = if let Some(ASTType::SimpleExpr(simple_expr)) = self.pop(context) {
-            simple_expr
-        } else {
-            bail!("{}: Expecting ASTType::SimpleExpr", context);
-        };
-        let relation = if let Some(ASTType::Relation(relation)) = self.pop(context) {
-            relation
-        } else {
-            bail!("{}: Expecting ASTType::Relation", context);
-        };
+        let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
+        let relation = pop_item!(self, relation, Relation, context);
         let expr_opt_0_built = ExprOptBuilder::default()
             .relation(Box::new(relation))
             .simple_expr(Box::new(simple_expr))
@@ -6748,23 +6045,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_list =
-            if let Some(ASTType::SimpleExprList(mut simple_expr_list)) = self.pop(context) {
-                simple_expr_list.reverse();
-                simple_expr_list
-            } else {
-                bail!("{}: Expecting ASTType::SimpleExprList", context);
-            };
-        let term = if let Some(ASTType::Term(term)) = self.pop(context) {
-            term
-        } else {
-            bail!("{}: Expecting ASTType::Term", context);
-        };
-        let simple_expr_opt =
-            if let Some(ASTType::SimpleExprOpt(simple_expr_opt)) = self.pop(context) {
-                simple_expr_opt
-            } else {
-                bail!("{}: Expecting ASTType::SimpleExprOpt", context);
-            };
+            pop_and_reverse_item!(self, simple_expr_list, SimpleExprList, context);
+        let term = pop_item!(self, term, Term, context);
+        let simple_expr_opt = pop_item!(self, simple_expr_opt, SimpleExprOpt, context);
         let simple_expr_built = SimpleExprBuilder::default()
             .simple_expr_opt(simple_expr_opt)
             .term(Box::new(term))
@@ -6791,22 +6074,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut simple_expr_list =
-            if let Some(ASTType::SimpleExprList(simple_expr_list)) = self.pop(context) {
-                simple_expr_list
-            } else {
-                bail!("{}: Expecting ASTType::SimpleExprList", context);
-            };
-        let term = if let Some(ASTType::Term(term)) = self.pop(context) {
-            term
-        } else {
-            bail!("{}: Expecting ASTType::Term", context);
-        };
-        let add_op = if let Some(ASTType::AddOp(add_op)) = self.pop(context) {
-            add_op
-        } else {
-            bail!("{}: Expecting ASTType::AddOp", context);
-        };
+        let mut simple_expr_list = pop_item!(self, simple_expr_list, SimpleExprList, context);
+        let term = pop_item!(self, term, Term, context);
+        let add_op = pop_item!(self, add_op, AddOp, context);
         let simple_expr_list_0_built = SimpleExprListBuilder::default()
             .term(Box::new(term))
             .add_op(Box::new(add_op))
@@ -6844,11 +6114,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_opt_group =
-            if let Some(ASTType::SimpleExprOptGroup(simple_expr_opt_group)) = self.pop(context) {
-                simple_expr_opt_group
-            } else {
-                bail!("{}: Expecting ASTType::SimpleExprOptGroup", context);
-            };
+            pop_item!(self, simple_expr_opt_group, SimpleExprOptGroup, context);
         let simple_expr_opt_0_built = SimpleExprOptBuilder::default()
             .simple_expr_opt_group(Box::new(simple_expr_opt_group))
             .build()
@@ -6937,17 +6203,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let term_list = if let Some(ASTType::TermList(mut term_list)) = self.pop(context) {
-            term_list.reverse();
-            term_list
-        } else {
-            bail!("{}: Expecting ASTType::TermList", context);
-        };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
+        let term_list = pop_and_reverse_item!(self, term_list, TermList, context);
+        let factor = pop_item!(self, factor, Factor, context);
         let term_built = TermBuilder::default()
             .factor(Box::new(factor))
             .term_list(term_list)
@@ -6973,21 +6230,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut term_list = if let Some(ASTType::TermList(term_list)) = self.pop(context) {
-            term_list
-        } else {
-            bail!("{}: Expecting ASTType::TermList", context);
-        };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
-        let mul_op = if let Some(ASTType::MulOp(mul_op)) = self.pop(context) {
-            mul_op
-        } else {
-            bail!("{}: Expecting ASTType::MulOp", context);
-        };
+        let mut term_list = pop_item!(self, term_list, TermList, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let mul_op = pop_item!(self, mul_op, MulOp, context);
         let term_list_0_built = TermListBuilder::default()
             .factor(Box::new(factor))
             .mul_op(Box::new(mul_op))
@@ -7025,16 +6270,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor_opt = if let Some(ASTType::FactorOpt(factor_opt)) = self.pop(context) {
-            factor_opt
-        } else {
-            bail!("{}: Expecting ASTType::FactorOpt", context);
-        };
-        let designator = if let Some(ASTType::Designator(designator)) = self.pop(context) {
-            designator
-        } else {
-            bail!("{}: Expecting ASTType::Designator", context);
-        };
+        let factor_opt = pop_item!(self, factor_opt, FactorOpt, context);
+        let designator = pop_item!(self, designator, Designator, context);
         let factor_0_built = Factor0Builder::default()
             .designator(Box::new(designator))
             .factor_opt(factor_opt)
@@ -7059,11 +6296,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = if let Some(ASTType::Number(number)) = self.pop(context) {
-            number
-        } else {
-            bail!("{}: Expecting ASTType::Number", context);
-        };
+        let number = pop_item!(self, number, Number, context);
         let factor_1_built = Factor1Builder::default()
             .number(Box::new(number))
             .build()
@@ -7087,11 +6320,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let character = if let Some(ASTType::Character(character)) = self.pop(context) {
-            character
-        } else {
-            bail!("{}: Expecting ASTType::Character", context);
-        };
+        let character = pop_item!(self, character, Character, context);
         let factor_2_built = Factor2Builder::default()
             .character(Box::new(character))
             .build()
@@ -7115,11 +6344,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let factor_3_built = Factor3Builder::default()
             .string(Box::new(string))
             .build()
@@ -7166,11 +6391,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let set = if let Some(ASTType::Set(set)) = self.pop(context) {
-            set
-        } else {
-            bail!("{}: Expecting ASTType::Set", context);
-        };
+        let set = pop_item!(self, set, Set, context);
         let factor_5_built = Factor5Builder::default()
             .set(Box::new(set))
             .build()
@@ -7196,11 +6417,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         let factor_6_built = Factor6Builder::default()
             // Ignore clipped member 'l_paren'
             .expr(Box::new(expr))
@@ -7227,11 +6444,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
+        let factor = pop_item!(self, factor, Factor, context);
         let factor_7_built = Factor7Builder::default()
             // Ignore clipped member 'tilde'
             .factor(Box::new(factor))
@@ -7258,11 +6471,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor_opt0 = if let Some(ASTType::FactorOpt0(factor_opt0)) = self.pop(context) {
-            factor_opt0
-        } else {
-            bail!("{}: Expecting ASTType::FactorOpt0", context);
-        };
+        let factor_opt0 = pop_item!(self, factor_opt0, FactorOpt0, context);
         let factor_opt_0_built = FactorOptBuilder::default()
             // Ignore clipped member 'l_paren'
             .factor_opt0(factor_opt0)
@@ -7288,11 +6497,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr_list = if let Some(ASTType::ExprList(expr_list)) = self.pop(context) {
-            expr_list
-        } else {
-            bail!("{}: Expecting ASTType::ExprList", context);
-        };
+        let expr_list = pop_item!(self, expr_list, ExprList, context);
         let factor_opt0_0_built = FactorOpt0Builder::default()
             .expr_list(Box::new(expr_list))
             .build()
@@ -7342,11 +6547,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let set_opt = if let Some(ASTType::SetOpt(set_opt)) = self.pop(context) {
-            set_opt
-        } else {
-            bail!("{}: Expecting ASTType::SetOpt", context);
-        };
+        let set_opt = pop_item!(self, set_opt, SetOpt, context);
         let set_built = SetBuilder::default()
             // Ignore clipped member 'l_brace'
             .set_opt(set_opt)
@@ -7372,17 +6573,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let set_opt_list = if let Some(ASTType::SetOptList(mut set_opt_list)) = self.pop(context) {
-            set_opt_list.reverse();
-            set_opt_list
-        } else {
-            bail!("{}: Expecting ASTType::SetOptList", context);
-        };
-        let element = if let Some(ASTType::Element(element)) = self.pop(context) {
-            element
-        } else {
-            bail!("{}: Expecting ASTType::Element", context);
-        };
+        let set_opt_list = pop_and_reverse_item!(self, set_opt_list, SetOptList, context);
+        let element = pop_item!(self, element, Element, context);
         let set_opt_0_built = SetOptBuilder::default()
             .element(Box::new(element))
             .set_opt_list(set_opt_list)
@@ -7406,16 +6598,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut set_opt_list = if let Some(ASTType::SetOptList(set_opt_list)) = self.pop(context) {
-            set_opt_list
-        } else {
-            bail!("{}: Expecting ASTType::SetOptList", context);
-        };
-        let element = if let Some(ASTType::Element(element)) = self.pop(context) {
-            element
-        } else {
-            bail!("{}: Expecting ASTType::Element", context);
-        };
+        let mut set_opt_list = pop_item!(self, set_opt_list, SetOptList, context);
+        let element = pop_item!(self, element, Element, context);
         let set_opt_list_0_built = SetOptListBuilder::default()
             .element(Box::new(element))
             // Ignore clipped member 'comma'
@@ -7465,16 +6649,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let element_opt = if let Some(ASTType::ElementOpt(element_opt)) = self.pop(context) {
-            element_opt
-        } else {
-            bail!("{}: Expecting ASTType::ElementOpt", context);
-        };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let element_opt = pop_item!(self, element_opt, ElementOpt, context);
+        let expr = pop_item!(self, expr, Expr, context);
         let element_built = ElementBuilder::default()
             .expr(Box::new(expr))
             .element_opt(element_opt)
@@ -7499,11 +6675,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr = pop_item!(self, expr, Expr, context);
         let element_opt_0_built = ElementOptBuilder::default()
             // Ignore clipped member 'dot_dot'
             .expr(Box::new(expr))
@@ -7683,11 +6855,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let in_op = if let Some(ASTType::InOp(in_op)) = self.pop(context) {
-            in_op
-        } else {
-            bail!("{}: Expecting ASTType::InOp", context);
-        };
+        let in_op = pop_item!(self, in_op, InOp, context);
         let relation_6_built = Relation6Builder::default()
             .in_op(Box::new(in_op))
             .build()
@@ -7928,18 +7096,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let designator_list =
-            if let Some(ASTType::DesignatorList(mut designator_list)) = self.pop(context) {
-                designator_list.reverse();
-                designator_list
-            } else {
-                bail!("{}: Expecting ASTType::DesignatorList", context);
-            };
-        let qual_ident = if let Some(ASTType::QualIdent(qual_ident)) = self.pop(context) {
-            qual_ident
-        } else {
-            bail!("{}: Expecting ASTType::QualIdent", context);
-        };
+        let designator_list = pop_and_reverse_item!(self, designator_list, DesignatorList, context);
+        let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let designator_built = DesignatorBuilder::default()
             .qual_ident(Box::new(qual_ident))
             .designator_list(designator_list)
@@ -7964,18 +7122,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut designator_list =
-            if let Some(ASTType::DesignatorList(designator_list)) = self.pop(context) {
-                designator_list
-            } else {
-                bail!("{}: Expecting ASTType::DesignatorList", context);
-            };
-        let designator_suffix =
-            if let Some(ASTType::DesignatorSuffix(designator_suffix)) = self.pop(context) {
-                designator_suffix
-            } else {
-                bail!("{}: Expecting ASTType::DesignatorSuffix", context);
-            };
+        let mut designator_list = pop_item!(self, designator_list, DesignatorList, context);
+        let designator_suffix = pop_item!(self, designator_suffix, DesignatorSuffix, context);
         let designator_list_0_built = DesignatorListBuilder::default()
             .designator_suffix(Box::new(designator_suffix))
             .build()
@@ -8012,11 +7160,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         let designator_suffix_0_built = DesignatorSuffix0Builder::default()
             // Ignore clipped member 'dot'
             .ident(Box::new(ident))
@@ -8048,11 +7192,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr_list = if let Some(ASTType::ExprList(expr_list)) = self.pop(context) {
-            expr_list
-        } else {
-            bail!("{}: Expecting ASTType::ExprList", context);
-        };
+        let expr_list = pop_item!(self, expr_list, ExprList, context);
         let designator_suffix_1_built = DesignatorSuffix1Builder::default()
             // Ignore clipped member 'l_bracket'
             .expr_list(Box::new(expr_list))
@@ -8112,18 +7252,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expr_list_list =
-            if let Some(ASTType::ExprListList(mut expr_list_list)) = self.pop(context) {
-                expr_list_list.reverse();
-                expr_list_list
-            } else {
-                bail!("{}: Expecting ASTType::ExprListList", context);
-            };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let expr_list_list = pop_and_reverse_item!(self, expr_list_list, ExprListList, context);
+        let expr = pop_item!(self, expr, Expr, context);
         let expr_list_built = ExprListBuilder::default()
             .expr(Box::new(expr))
             .expr_list_list(expr_list_list)
@@ -8149,17 +7279,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut expr_list_list =
-            if let Some(ASTType::ExprListList(expr_list_list)) = self.pop(context) {
-                expr_list_list
-            } else {
-                bail!("{}: Expecting ASTType::ExprListList", context);
-            };
-        let expr = if let Some(ASTType::Expr(expr)) = self.pop(context) {
-            expr
-        } else {
-            bail!("{}: Expecting ASTType::Expr", context);
-        };
+        let mut expr_list_list = pop_item!(self, expr_list_list, ExprListList, context);
+        let expr = pop_item!(self, expr, Expr, context);
         let expr_list_list_0_built = ExprListListBuilder::default()
             .expr(Box::new(expr))
             // Ignore clipped member 'comma'
@@ -8197,18 +7318,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident_list_list =
-            if let Some(ASTType::IdentListList(mut ident_list_list)) = self.pop(context) {
-                ident_list_list.reverse();
-                ident_list_list
-            } else {
-                bail!("{}: Expecting ASTType::IdentListList", context);
-            };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
+        let ident_list_list = pop_and_reverse_item!(self, ident_list_list, IdentListList, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let ident_list_built = IdentListBuilder::default()
             .ident_def(Box::new(ident_def))
             .ident_list_list(ident_list_list)
@@ -8234,17 +7345,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut ident_list_list =
-            if let Some(ASTType::IdentListList(ident_list_list)) = self.pop(context) {
-                ident_list_list
-            } else {
-                bail!("{}: Expecting ASTType::IdentListList", context);
-            };
-        let ident_def = if let Some(ASTType::IdentDef(ident_def)) = self.pop(context) {
-            ident_def
-        } else {
-            bail!("{}: Expecting ASTType::IdentDef", context);
-        };
+        let mut ident_list_list = pop_item!(self, ident_list_list, IdentListList, context);
+        let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let ident_list_list_0_built = IdentListListBuilder::default()
             .ident_def(Box::new(ident_def))
             // Ignore clipped member 'comma'
@@ -8281,11 +7383,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident = pop_item!(self, ident, Ident, context);
         let qual_ident_0_built = QualIdent0Builder::default()
             .ident(Box::new(ident))
             .build()
@@ -8309,11 +7407,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let q_ident = if let Some(ASTType::QIdent(q_ident)) = self.pop(context) {
-            q_ident
-        } else {
-            bail!("{}: Expecting ASTType::QIdent", context);
-        };
+        let q_ident = pop_item!(self, q_ident, QIdent, context);
         let qual_ident_1_built = QualIdent1Builder::default()
             .q_ident(Box::new(q_ident))
             .build()
@@ -8338,16 +7432,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident_def_opt = if let Some(ASTType::IdentDefOpt(ident_def_opt)) = self.pop(context) {
-            ident_def_opt
-        } else {
-            bail!("{}: Expecting ASTType::IdentDefOpt", context);
-        };
-        let ident = if let Some(ASTType::Ident(ident)) = self.pop(context) {
-            ident
-        } else {
-            bail!("{}: Expecting ASTType::Ident", context);
-        };
+        let ident_def_opt = pop_item!(self, ident_def_opt, IdentDefOpt, context);
+        let ident = pop_item!(self, ident, Ident, context);
         let ident_def_built = IdentDefBuilder::default()
             .ident(Box::new(ident))
             .ident_def_opt(ident_def_opt)
@@ -8371,12 +7457,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let ident_def_opt_group =
-            if let Some(ASTType::IdentDefOptGroup(ident_def_opt_group)) = self.pop(context) {
-                ident_def_opt_group
-            } else {
-                bail!("{}: Expecting ASTType::IdentDefOptGroup", context);
-            };
+        let ident_def_opt_group = pop_item!(self, ident_def_opt_group, IdentDefOptGroup, context);
         let ident_def_opt_0_built = IdentDefOptBuilder::default()
             .ident_def_opt_group(Box::new(ident_def_opt_group))
             .build()
@@ -8464,11 +7545,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = if let Some(ASTType::Integer(integer)) = self.pop(context) {
-            integer
-        } else {
-            bail!("{}: Expecting ASTType::Integer", context);
-        };
+        let integer = pop_item!(self, integer, Integer, context);
         let number_0_built = Number0Builder::default()
             .integer(Box::new(integer))
             .build()
@@ -8492,11 +7569,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let real = if let Some(ASTType::Real(real)) = self.pop(context) {
-            real
-        } else {
-            bail!("{}: Expecting ASTType::Real", context);
-        };
+        let real = pop_item!(self, real, Real, context);
         let number_1_built = Number1Builder::default()
             .real(Box::new(real))
             .build()

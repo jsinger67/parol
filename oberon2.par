@@ -5,106 +5,337 @@
 
 %%
 
-KwBegin         : "BEGIN"^;
-KwCase          : "CASE"^;
-KwDo            : "DO"^;
-KwElse          : "ELSE"^;
-KwElsif         : "ELSIF"^;
-KwEnd           : "END"^;
-KwIf            : "IF"^;
-KwOf            : "OF"^;
-KwProcedure     : "PROCEDURE"^;
-KwThen          : "THEN"^;
-KwTo            : "TO"^;
-KwVar           : "VAR"^;
+KwBegin
+    : "BEGIN"^
+    ;
 
+KwCase
+    : "CASE"^
+    ;
 
-Oberon2         : ModuleHead [ImportList] DeclSeq ModuleBody;
-ModuleHead      : "MODULE"^ Ident ";"^ ;
-ModuleBody      : StatementBlock "\."^;
-ImportList      : "IMPORT"^ [Ident ":="^] Ident {","^ [Ident ":="^] Ident} ";"^;
-DeclSeq         : { DeclBlock } {ProcDecl ";"^ | ForwardDecl ";"^ };
-DeclBlock       : ConstDeclBlock
-                | TypeDeclBlock
-                | VarDeclBlock;
-ConstDeclBlock  : "CONST"^ {ConstDecl ";"^ };
-TypeDeclBlock   : "TYPE"^ {TypeDecl ";"^};
-VarDeclBlock    : KwVar^ {VarDecl ";"^};
-ConstDecl       : IdentDef "="^ ConstExpr;
-TypeDecl        : IdentDef "="^ TypeDef;
-VarDecl         : IdentList ":"^ TypeDef;
-ProcDecl        : ProcedureHeading ";"^ ProcedureBody;
-ProcedureHeading: KwProcedure^ [Receiver] IdentDef [FormalPars];
-ProcedureBody   : DeclSeq StatementBlock;
-StatementBlock  : [KwBegin^ StatementSeq] KwEnd^ Ident;
-ForwardDecl     : KwProcedure^ "\^" [Receiver] IdentDef [FormalPars];
-FormalPars      : "\("^ [FPSection {";"^ FPSection}] "\)"^ [":"^ QualIdent];
-FPSection       : [KwVar^] Ident {","^ Ident} ":"^ TypeDef;
-Receiver        : "\("^ [KwVar^] ReceiverVarDecl "\)"^;
-ReceiverVarDecl : Ident ":"^ Ident;
-TypeDef         : QualIdent
-                | "ARRAY"^ [ConstExpr {","^ ConstExpr}] KwOf^ TypeDef
-                | "RECORD"^ ["\("^QualIdent"\)"^] FieldList {";"^ FieldList} KwEnd^
-                | "POINTER"^ KwTo^ TypeDef
-                | KwProcedure^ [FormalPars];
-FieldList       : [IdentList ":"^ TypeDef];
-StatementSeq    : Statement {";"^ Statement};
-Statement       : [ Designator ":="^ Expr 
-                | Designator ["\("^ [ExprList] "\)"^] 
-                | KwIf^ Expr ThenBlock { ElsifPart } OptElsePartEnd 
-                | KwCase^ Expr KwOf^ Cases OptElsePartEnd 
-                | "WHILE"^ Expr DoBlock 
-                | "REPEAT"^ StatementSeq "UNTIL"^ Expr 
-                | "FOR"^ ForInit [ForStep] DoBlock 
-                | "LOOP"^ StatementSeq KwEnd^
-                | "WITH"^ GuardedDoBlock {"\|"^ GuardedDoBlock} OptElsePartEnd
-                | "EXIT"^
-                | "RETURN"^ [Expr]
-                ];
-ThenBlock       : KwThen^ StatementSeq;
-Cases           : Case {"\|"^ Case};
-ElsifPart       : KwElsif^ Expr ThenBlock;
-ElsePart        : KwElse^ StatementSeq;
-OptElsePartEnd  : [ElsePart] KwEnd^;
-DoBlock         : KwDo^ StatementSeq KwEnd^;
-GuardedDoBlock  : Guard KwDo^ StatementSeq;
-ForInit         : Ident ":="^ Expr KwTo^ Expr;
-ForStep         : "BY"^ ConstExpr;
-Case            : [CaseLabels {","^ CaseLabels} ":"^ StatementSeq];
-CaseLabels      : ConstExpr ["\.\." ConstExpr];
-Guard           : QualIdent ":"^ QualIdent;
-ConstExpr       : Expr;
-Expr            : SimpleExpr [Relation SimpleExpr];
-SimpleExpr      : ["\+" | "-"] Term {AddOp Term};
-Term            : Factor {MulOp Factor};
-Factor          : Designator ["\("^ [ExprList] "\)"^]
-                | Number
-                | Character
-                | String
-                | "NIL"^
-                | Set
-                | "\("^ Expr "\)"^
-                | "~"^ Factor;
-Set             : "\{"^ [Element {","^ Element}] "\}"^;
-Element         : Expr ["\.\."^ Expr];
-Relation        : "="^ | "#" | "<" | "<=" | ">" | ">=" | InOp | "IS";
-AddOp           : "\+" | "-" | "OR";
-MulOp           : "\*" | "/" | "DIV" | "MOD" | "&";
-Designator      : QualIdent { DesignatorSuffix };
-DesignatorSuffix: "\."^ Ident
-                | "\["^ ExprList "\]"^
-                | "\^"^;
-                //| "\("^ QualIdent "\)"^;
-ExprList        : Expr {","^ Expr};
-IdentList       : IdentDef {","^ IdentDef};
-QualIdent       : Ident
-                | QIdent;
-IdentDef        : Ident ["\*" | "-"];
-Number          : Integer | Real;
-Real            : "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
-Character       : "[0-9][0-9A-F]*X";
-Integer         : "[0-9][0-9]*|[0-9][0-9A-F]*H";
-QIdent          : "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
-Ident           : "[a-zA-Z_]\w*";
-String          : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
-InOp            : "IN"^;
+KwDo
+    : "DO"^
+    ;
+
+KwElse
+    : "ELSE"^
+    ;
+
+KwElsif
+    : "ELSIF"^
+    ;
+
+KwEnd
+    : "END"^
+    ;
+
+KwIf
+    : "IF"^
+    ;
+
+KwOf
+    : "OF"^
+    ;
+
+KwProcedure
+    : "PROCEDURE"^
+    ;
+
+KwThen
+    : "THEN"^
+    ;
+
+KwTo
+    : "TO"^
+    ;
+
+KwVar
+    : "VAR"^
+    ;
+
+Oberon2
+    : ModuleHead [ ImportList ] DeclSeq ModuleBody
+    ;
+
+ModuleHead
+    : "MODULE"^ Ident ";"^
+    ;
+
+ModuleBody
+    : StatementBlock "\."^
+    ;
+
+ImportList
+    : "IMPORT"^ [ Ident ":="^ ] Ident { ","^ [ Ident ":="^ ] Ident } ";"^
+    ;
+
+DeclSeq
+    : { DeclBlock } { ProcDecl ";"^ 
+    | ForwardDecl ";"^}
+    ;
+
+DeclBlock
+    : ConstDeclBlock 
+    | TypeDeclBlock
+    | VarDeclBlock
+    ;
+
+ConstDeclBlock
+    : "CONST"^ { ConstDecl ";"^ }
+    ;
+
+TypeDeclBlock
+    : "TYPE"^ { TypeDecl ";"^ }
+    ;
+
+VarDeclBlock
+    : KwVar^ { VarDecl ";"^ }
+    ;
+
+ConstDecl
+    : IdentDef "="^ ConstExpr
+    ;
+
+TypeDecl
+    : IdentDef "="^ TypeDef
+    ;
+
+VarDecl
+    : IdentList ":"^ TypeDef
+    ;
+
+ProcDecl
+    : ProcedureHeading ";"^ ProcedureBody
+    ;
+
+ProcedureHeading
+    : KwProcedure^ [ Receiver ] IdentDef [ FormalPars ]
+    ;
+
+ProcedureBody
+    : DeclSeq StatementBlock
+    ;
+
+StatementBlock
+    : [ KwBegin^ StatementSeq ] KwEnd^ Ident
+    ;
+
+ForwardDecl
+    : KwProcedure^ "\^" [ Receiver ] IdentDef [ FormalPars ]
+    ;
+
+FormalPars
+    : "\("^ [ FPSection { ";"^ FPSection } ] "\)"^ [ ":"^ QualIdent ]
+    ;
+
+FPSection
+    : [ KwVar^ ] Ident { ","^ Ident } ":"^ TypeDef
+    ;
+
+Receiver
+    : "\("^ [ KwVar^ ] ReceiverVarDecl "\)"^
+    ;
+
+ReceiverVarDecl
+    : Ident ":"^ Ident
+    ;
+
+TypeDef
+    : QualIdent 
+    | "ARRAY"^ [ ConstExpr { ","^ ConstExpr } ] KwOf^ TypeDef
+    | "RECORD"^ [ "\("^ QualIdent "\)"^ ] FieldList { ";"^ FieldList } KwEnd^
+    | "POINTER"^ KwTo^ TypeDef
+    | KwProcedure^ [ FormalPars ]
+    ;
+
+FieldList
+    : [ IdentList ":"^ TypeDef ]
+    ;
+
+StatementSeq
+    : Statement { ";"^ Statement }
+    ;
+
+Statement
+    : [ Designator ":="^ Expr 
+    | Designator [ "\("^ [ ExprList ] "\)"^ ]
+    | KwIf^ Expr ThenBlock { ElsifPart } OptElsePartEnd
+    | KwCase^ Expr KwOf^ Cases OptElsePartEnd
+    | "WHILE"^ Expr DoBlock
+    | "REPEAT"^ StatementSeq "UNTIL"^ Expr
+    | "FOR"^ ForInit [ ForStep ] DoBlock
+    | "LOOP"^ StatementSeq KwEnd^
+    | "WITH"^ GuardedDoBlock { "\|"^ GuardedDoBlock } OptElsePartEnd
+    | "EXIT"^
+    | "RETURN"^ [ Expr ]]
+    ;
+
+ThenBlock
+    : KwThen^ StatementSeq
+    ;
+
+Cases
+    : Case { "\|"^ Case }
+    ;
+
+ElsifPart
+    : KwElsif^ Expr ThenBlock
+    ;
+
+ElsePart
+    : KwElse^ StatementSeq
+    ;
+
+OptElsePartEnd
+    : [ ElsePart ] KwEnd^
+    ;
+
+DoBlock
+    : KwDo^ StatementSeq KwEnd^
+    ;
+
+GuardedDoBlock
+    : Guard KwDo^ StatementSeq
+    ;
+
+ForInit
+    : Ident ":="^ Expr KwTo^ Expr
+    ;
+
+ForStep
+    : "BY"^ ConstExpr
+    ;
+
+Case
+    : [ CaseLabels { ","^ CaseLabels } ":"^ StatementSeq ]
+    ;
+
+CaseLabels
+    : ConstExpr [ "\.\." ConstExpr ]
+    ;
+
+Guard
+    : QualIdent ":"^ QualIdent
+    ;
+
+ConstExpr
+    : Expr
+    ;
+
+Expr
+    : SimpleExpr [ Relation SimpleExpr ]
+    ;
+
+SimpleExpr
+    : [ "\+" 
+    | "-"] Term { AddOp Term }
+    ;
+
+Term
+    : Factor { MulOp Factor }
+    ;
+
+Factor
+    : Designator [ "\("^ [ ExprList ] "\)"^ ] 
+    | Number
+    | Character
+    | String
+    | "NIL"^
+    | Set
+    | "\("^ Expr "\)"^
+    | "~"^ Factor
+    ;
+
+Set
+    : "\{"^ [ Element { ","^ Element } ] "\}"^
+    ;
+
+Element
+    : Expr [ "\.\."^ Expr ]
+    ;
+
+Relation
+    : "="^ 
+    | "#"
+    | "<"
+    | "<="
+    | ">"
+    | ">="
+    | InOp
+    | "IS"
+    ;
+
+AddOp
+    : "\+" 
+    | "-"
+    | "OR"
+    ;
+
+MulOp
+    : "\*" 
+    | "/"
+    | "DIV"
+    | "MOD"
+    | "&"
+    ;
+
+Designator
+    : QualIdent { DesignatorSuffix }
+    ;
+
+DesignatorSuffix
+    : "\."^ Ident 
+    | "\["^ ExprList "\]"^ //| "\("^ QualIdent "\)"^;
+    | "\^"^
+    ;
+
+ExprList
+    : Expr { ","^ Expr }
+    ;
+
+IdentList
+    : IdentDef { ","^ IdentDef }
+    ;
+
+QualIdent
+    : Ident 
+    | QIdent
+    ;
+
+IdentDef
+    : Ident [ "\*" 
+    | "-"]
+    ;
+
+Number
+    : Integer 
+    | Real
+    ;
+
+Real
+    : "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?"
+    ;
+
+Character
+    : "[0-9][0-9A-F]*X"
+    ;
+
+Integer
+    : "[0-9][0-9]*|[0-9][0-9A-F]*H"
+    ;
+
+QIdent
+    : "[a-zA-Z_]\w*\.[a-zA-Z_]\w*"
+    ;
+
+Ident
+    : "[a-zA-Z_]\w*"
+    ;
+
+String
+    : "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'"
+    ;
+
+InOp
+    : "IN"^
+    ;
