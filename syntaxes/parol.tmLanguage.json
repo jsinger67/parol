@@ -42,14 +42,14 @@
       "patterns": [
         {
           "name": "string.quoted.parol",
-		  "begin": "\"",
-		  "end": "\"",
-		  "patterns": [
-			{
-			  "name": "string.quoted.double.parol",
-			  "match": "\\\\(\\\\|[bfnrt\"]|u\\{[0-9a-fA-F]{1,8}\\})|[^\"]"
-			}
-		  ]
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "string.quoted.double.parol",
+              "match": "\\\\(\\\\|[bfnrt\"]|u\\{[0-9a-fA-F]{1,8}\\})|[^\"]"
+            }
+          ]
         }
       ]
     },
@@ -70,13 +70,13 @@
       ]
     },
     "identifier": {
-		"patterns": [
-		  {
-			"name": "variable.name.parol",
-			"match": "[a-zA-Z_][a-zA-Z0-9_]*"
-		  }
-		]
-	  }
-	},
+      "patterns": [
+        {
+          "name": "variable.name.parol",
+          "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+        }
+      ]
+    }
+  },
   "scopeName": "source.parol"
 }

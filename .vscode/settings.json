@@ -1,7 +1,5 @@
 {
-    "cSpell.words": [
-        "vsix"
-    ],
+    "cSpell.words": ["vsix"],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,

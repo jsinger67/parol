@@ -1,5 +1,4 @@
-{
-    "name": "parol-vscode",
+{     "name": "parol-vscode",
     "displayName": "parol-vscode",
     "author": {
         "name": "Jörg Singer",
@@ -8,7 +7,7 @@
     "license": "MIT",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "repository": {
         "url": "https://github.com/jsinger67/parol-vscode.git",
         "type": "git"
@@ -22,6 +21,18 @@
         "Programming Languages"
     ],
     "contributes": {
+        "configuration": {
+            "title": "Parol Language Server",
+            "properties": {
+                "parol-vscode.max_k": {
+                    "type": "integer",
+                    "markdownDescription": "#### Maximum lookahead size\n\nused for language analysis\n\n* Keep in mind that large *numbers can slow down language analysis significantly*",
+                    "default": 3,
+                    "minimum": 1,
+                    "maximum": 10
+                }
+            }
+        },
         "languages": [
             {
                 "id": "parol",

@@ -6,6 +6,7 @@
 import * as vscode from "vscode";
 import * as lc from "vscode-languageclient/node";
 import { spawnSync } from "child_process";
+import { Config } from "./config";
 import { TransportKind } from "vscode-languageclient/node";
 
 let client: lc.LanguageClient;
@@ -60,10 +61,10 @@ export function isParolDocument(
   return document.languageId === "parol" && document.uri.scheme === "file";
 }
 
-export async function activate(_context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   // VS Code doesn't show a notification when an extension fails to activate
   // so we do it ourselves.
-  return await tryActivate().catch((err) => {
+  return await tryActivate(context).catch((err) => {
     void vscode.window.showErrorMessage(
       `Cannot activate parol-ls: ${err.message}`
     );
@@ -71,7 +72,9 @@ export async function activate(_context: vscode.ExtensionContext) {
   });
 }
 
-async function tryActivate(): Promise<ParolLsExtensionApi> {
+async function tryActivate(
+  context: vscode.ExtensionContext
+): Promise<ParolLsExtensionApi> {
   const serverPath = await bootstrap().catch((err) => {
     let message = "bootstrap error. ";
 
@@ -83,6 +86,8 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
     log.error("Bootstrap error", err);
     throw new Error(message);
   });
+
+  let config = new Config();
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
@@ -105,6 +110,7 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
       // Notify the server about file changes to '.par files contained in the workspace
       fileEvents: vscode.workspace.createFileSystemWatcher("**/.par"),
     },
+    initializationOptions: config.getInitializeOptions(),
   };
 
   // Create the language client and start the client.
@@ -113,6 +119,17 @@ async function tryActivate(): Promise<ParolLsExtensionApi> {
     "Parol Language Server",
     serverOptions,
     clientOptions
+  );
+
+  vscode.workspace.onDidChangeConfiguration(
+    async (_) => {
+      config.onChanged();
+      await client.sendNotification("workspace/didChangeConfiguration", {
+        settings: config.getChangedConfigs(),
+      });
+    },
+    null,
+    context.subscriptions
   );
 
   // Start the client. This will also launch the server
@@ -169,14 +186,14 @@ function checkForServerUpdate(version: string) {
         } else {
           if (vscode.extensions.getExtension("jsinger67.parol-vscode")) {
             vscode.window
-                .showWarningMessage(
-                    `You have an older version of parol language server installed: ${version}. ` +
-                    `A newer version is available at crates.io: ${ver}. ` +
-                    `You can update it by calling: ` +
-                    "`cargo install parol-ls`",
-                    "Ok"
-                )
-                .then(() => {}, console.error);
+              .showWarningMessage(
+                `You have a different version of parol language server installed: ${version}.\n` +
+                  `The latest available version at crates.io is ${ver}.\n` +
+                  `You can update it by calling:\n` +
+                  "`cargo install parol-ls`",
+                "Ok"
+              )
+              .then(() => {}, console.error);
           }
         }
       }
@@ -197,7 +214,7 @@ async function bootstrap(): Promise<string> {
     throw new Error(`Failed to execute ${path} --version`);
   }
 
-  checkForServerUpdate(serverVersion)
+  checkForServerUpdate(serverVersion);
 
   return path;
 }
