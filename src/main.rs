@@ -37,7 +37,8 @@ use clap::Parser;
 use errors::ServerError;
 use log::debug;
 use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
-use lsp_types::request::{RegisterCapability, WorkspaceConfiguration};
+use lsp_types::notification::DidChangeConfiguration;
+use lsp_types::request::RegisterCapability;
 use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
@@ -49,7 +50,7 @@ use lsp_types::{
     HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
     TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
-use lsp_types::{ConfigurationItem, ConfigurationParams, Registration, RegistrationParams};
+use lsp_types::{Registration, RegistrationParams};
 use serde::Serialize;
 use server::Server;
 
@@ -93,10 +94,9 @@ where
     R::Params: Serialize,
 {
     let r = Request::new(RequestCounter::next(), R::METHOD.to_string(), params);
-    Ok(conn
-        .sender
+    conn.sender
         .send(r.into())
-        .map_err(|err| ServerError::ProtocolError { err: Box::new(err) })?)
+        .map_err(|err| ServerError::ProtocolError { err: Box::new(err) })
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -142,11 +142,16 @@ fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Erro
         "Initialization options {:#?}",
         config.initialization_options()
     );
+    // First initialize the server with the lookahead from the server invocation
     let server = RefCell::new(server::Server::new(config.lookahead()));
+    // Then update properties from client configuration (i.e. settings).
+    server
+        .borrow_mut()
+        .update_configuration(config.config_properties())?;
 
     if config.supports_dynamic_registration_for_change_config() {
         send_request::<RegisterCapability>(
-            &connection,
+            connection,
             RegistrationParams {
                 registrations: vec![Registration {
                     id: "workspace/didChangeConfiguration".to_string(),
@@ -157,17 +162,6 @@ fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Erro
             &server,
         )?;
     }
-
-    send_request::<WorkspaceConfiguration>(
-        &connection,
-        ConfigurationParams {
-            items: vec![ConfigurationItem {
-                scope_uri: None,
-                section: Some("parol-vscode".to_string()),
-            }],
-        },
-        &server,
-    )?;
 
     for msg in &connection.receiver {
         match msg {
@@ -217,14 +211,16 @@ fn process_notification(
     server: &RefCell<Server>,
 ) -> Result<(), Box<dyn Error>> {
     eprintln!("got notification: {:?}", not);
-    Ok(match not.method.as_str() {
+    match not.method.as_str() {
         DidOpenTextDocument::METHOD => server.borrow_mut().handle_open_document(connection, not)?,
         DidChangeTextDocument::METHOD => server
             .borrow_mut()
             .handle_change_document(connection, not)?,
         DidCloseTextDocument::METHOD => server.borrow_mut().handle_close_document(not)?,
+        DidChangeConfiguration::METHOD => server.borrow_mut().handle_changed_configuration(not)?,
         _ => {}
-    })
+    }
+    Ok(())
 }
 
 fn cast<R>(req: Request) -> Result<(RequestId, R::Params), ExtractError<Request>>

@@ -4,19 +4,22 @@ use std::{collections::HashMap, error::Error, path::Path};
 use lsp_server::Message;
 use lsp_types::{
     notification::{
-        DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
-        PublishDiagnostics,
+        DidChangeConfiguration, DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument,
+        Notification, PublishDiagnostics,
     },
-    DidChangeTextDocumentParams, DidCloseTextDocumentParams, DidOpenTextDocumentParams,
-    DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, GotoDefinitionParams,
-    GotoDefinitionResponse, Hover, HoverParams, Location, PrepareRenameResponse,
-    PublishDiagnosticsParams, Range, RenameParams, TextDocumentContentChangeEvent,
-    TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
+    DidChangeConfigurationParams, DidChangeTextDocumentParams, DidCloseTextDocumentParams,
+    DidOpenTextDocumentParams, DocumentFormattingParams, DocumentSymbolParams,
+    DocumentSymbolResponse, GotoDefinitionParams, GotoDefinitionResponse, Hover, HoverParams,
+    Location, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
+    TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
 };
 use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
-use crate::{diagnostics::Diagnostics, document_state::DocumentState, parol_ls_parser::parse};
+use crate::{
+    config::ConfigProperties, diagnostics::Diagnostics, document_state::DocumentState,
+    parol_ls_parser::parse,
+};
 
 #[derive(Debug, Default, new)]
 pub(crate) struct Server {
@@ -30,6 +33,23 @@ pub(crate) struct Server {
 }
 
 impl Server {
+    pub(crate) fn update_configuration(
+        &mut self,
+        props: &ConfigProperties,
+    ) -> Result<(), serde_json::error::Error> {
+        if props.0.contains_key("max_k") {
+            self.max_k = serde_json::from_value(
+                props
+                    .0
+                    .get("max_k")
+                    .unwrap_or(&serde_json::Value::Null)
+                    .clone(),
+            )?;
+            eprintln!("Using a maximum lookahead of {} now", self.max_k);
+        }
+        Ok(())
+    }
+
     pub(crate) fn analyze(&mut self, uri: &Url) -> miette::Result<()> {
         let file_path = uri
             .to_file_path()
@@ -268,6 +288,17 @@ impl Server {
         } else {
             None
         }
+    }
+
+    pub(crate) fn handle_changed_configuration(
+        &mut self,
+        n: lsp_server::Notification,
+    ) -> Result<(), Box<dyn Error>> {
+        let params: DidChangeConfigurationParams = n.extract(DidChangeConfiguration::METHOD)?;
+        let config_properties: ConfigProperties =
+            serde_json::from_value(params.settings).unwrap_or_default();
+        self.update_configuration(&config_properties)?;
+        Ok(())
     }
 
     fn cleanup(&mut self, file_path: &str) {

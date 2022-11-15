@@ -7,7 +7,7 @@ use serde_json::Value;
 use crate::arguments::Arguments;
 
 #[derive(Debug, Default, Deserialize)]
-pub(crate) struct ConfigProperties(HashMap<String, Value>);
+pub(crate) struct ConfigProperties(pub(crate) HashMap<String, Value>);
 
 #[derive(Debug)]
 pub(crate) struct Config {
@@ -42,6 +42,10 @@ impl Config {
 
     pub(crate) fn initialization_options(&self) -> Option<&Value> {
         self.initialization_params.initialization_options.as_ref()
+    }
+
+    pub(crate) fn config_properties(&self) -> &ConfigProperties {
+        &self.config_properties
     }
 
     pub(crate) fn supports_dynamic_registration_for_change_config(&self) -> bool {
