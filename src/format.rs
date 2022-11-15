@@ -100,7 +100,7 @@ impl Fmt for AlternationList {
         format!(
             "{}{}",
             self.factor.txt(options),
-            handle_comments(&*self.comments, &comment_options)
+            handle_comments(&self.comments, &comment_options)
         )
     }
 }
@@ -124,7 +124,7 @@ impl Fmt for AlternationsList {
         format!(
             "\n    {} {}{}",
             self.or,
-            handle_comments(&*self.comments, &comment_options),
+            handle_comments(&self.comments, &comment_options),
             self.alternation.txt(options)
         )
     }
@@ -160,13 +160,13 @@ impl Fmt for Declaration {
                 "{} {}{}\n",
                 title.percent_title,
                 title.string.txt(options),
-                handle_comments(&*title.comments, &comment_options),
+                handle_comments(&title.comments, &comment_options),
             ),
             Declaration::Declaration1(comment) => format!(
                 "{} {}{}\n",
                 comment.percent_comment,
                 comment.string.txt(options),
-                handle_comments(&*comment.comments, &comment_options),
+                handle_comments(&comment.comments, &comment_options),
             ),
             Declaration::Declaration2(user_type) => format!(
                 "{} {} {} {}{}\n",
@@ -174,10 +174,10 @@ impl Fmt for Declaration {
                 user_type.identifier.txt(options),
                 user_type.equ,
                 user_type.user_type_name.txt(options),
-                handle_comments(&*user_type.comments, &comment_options),
+                handle_comments(&user_type.comments, &comment_options),
             ),
             Declaration::Declaration3(scanner_directives) => {
-                handle_scanner_directives(&*scanner_directives.scanner_directives, options)
+                handle_scanner_directives(&scanner_directives.scanner_directives, options)
             }
         }
     }
@@ -194,7 +194,7 @@ impl Fmt for Factor {
             Factor::Factor0(g) => g.group.txt(options),
             Factor::Factor1(r) => r.repeat.txt(options),
             Factor::Factor2(o) => o.optional.txt(options),
-            Factor::Factor3(s) => handle_symbol(&*s.symbol, options),
+            Factor::Factor3(s) => handle_symbol(&s.symbol, options),
         }
     }
 }
@@ -289,9 +289,9 @@ impl Fmt for ProductionLHS {
         let comment_options_right = options.clone().with_padding(Padding::Right);
         format!(
             "\n{}{}{}\n    {} ",
-            handle_comments(&*self.comments, &comment_options_right),
+            handle_comments(&self.comments, &comment_options_right),
             self.identifier.identifier,
-            handle_comments(&*self.comments0, &comment_options_both),
+            handle_comments(&self.comments0, &comment_options_both),
             self.colon,
         )
     }
@@ -412,10 +412,10 @@ impl Fmt for StartDeclaration {
         let comment_options_right = options.clone().with_padding(Padding::Right);
         format!(
             "{}{} {}{}\n",
-            handle_comments(&*self.comments, &comment_options_right),
+            handle_comments(&self.comments, &comment_options_right),
             self.percent_start,
             self.identifier.txt(options),
-            handle_comments(&*self.comments0, &comment_options_left),
+            handle_comments(&self.comments0, &comment_options_left),
         )
     }
 }
@@ -506,26 +506,26 @@ fn handle_scanner_directives(
             "{} {}{}\n",
             l.percent_line_underscore_comment,
             l.string.txt(options),
-            handle_comments(&*l.comments, &comment_options),
+            handle_comments(&l.comments, &comment_options),
         ),
         ScannerDirectives::ScannerDirectives1(b) => format!(
             "{} {} {}{}\n",
             b.percent_block_underscore_comment,
             b.string.txt(options),
             b.string0.txt(options),
-            handle_comments(&*b.comments, &comment_options),
+            handle_comments(&b.comments, &comment_options),
         ),
 
         ScannerDirectives::ScannerDirectives2(n) => format!(
             "{}{}\n",
             n.percent_auto_underscore_newline_underscore_off,
-            handle_comments(&*n.comments, &comment_options),
+            handle_comments(&n.comments, &comment_options),
         ),
 
         ScannerDirectives::ScannerDirectives3(w) => format!(
             "{}{}\n",
             w.percent_auto_underscore_ws_underscore_off,
-            handle_comments(&*w.comments, &comment_options),
+            handle_comments(&w.comments, &comment_options),
         ),
     }
 }

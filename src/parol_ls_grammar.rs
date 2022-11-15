@@ -525,7 +525,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     fn scanner_state(&mut self, arg: &ScannerState) -> Result<()> {
         let scanner_state_symbols: Vec<DocumentSymbol> =
             arg.scanner_state_list.iter().fold(vec![], |mut acc, s| {
-                Self::add_scanner_symbols(&mut acc, &*s.scanner_directives);
+                Self::add_scanner_symbols(&mut acc, &s.scanner_directives);
                 acc
             });
         let name = format!("{} {}", arg.percent_scanner, arg.identifier.identifier);

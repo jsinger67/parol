@@ -3,9 +3,9 @@ use std::net::IpAddr;
 use clap::Parser;
 
 // Parol Language Server
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[clap(author, version, about)]
-pub struct Config {
+pub struct Arguments {
     /// Server's IP address
     #[clap(short = 'a', long = "address", default_value = "127.0.0.1")]
     pub ip_address: IpAddr,

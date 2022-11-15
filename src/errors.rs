@@ -28,4 +28,12 @@ pub enum ServerError {
         /// Recursion paths
         paths: Vec<Vec<Range>>,
     },
+    /// Unexpected error in communication protocol
+    #[error("Unexpected error in communication protocol {err}")]
+    #[diagnostic(help("Protocol error"), code(parol_ls::server::protocol_error))]
+    ProtocolError { err: Box<dyn std::error::Error> },
+    /// Unexpected error in communication protocol
+    #[error("Unexpected error in communication protocol {err}")]
+    #[diagnostic(help("Protocol error"), code(parol_ls::server::communication_error))]
+    CommunicationError { err: String },
 }

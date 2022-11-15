@@ -1,10 +1,12 @@
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::{cell::RefCell, error::Error, result::Result};
 
-use crate::arguments::Config;
 use crate::handler::RequestHandler;
+use crate::{arguments::Arguments, config::Config};
 
 pub mod arguments;
 mod ast;
+mod config;
 pub mod diagnostics;
 pub mod document_state;
 pub mod errors;
@@ -32,8 +34,10 @@ extern crate parol_runtime;
 
 use clap::Parser;
 
+use errors::ServerError;
 use log::debug;
 use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
+use lsp_types::request::{RegisterCapability, WorkspaceConfiguration};
 use lsp_types::{
     notification::{
         DidChangeTextDocument, DidCloseTextDocument, DidOpenTextDocument, Notification,
@@ -45,6 +49,23 @@ use lsp_types::{
     HoverProviderCapability, InitializeParams, OneOf, RenameOptions, ServerCapabilities,
     TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
+use lsp_types::{ConfigurationItem, ConfigurationParams, Registration, RegistrationParams};
+use serde::Serialize;
+use server::Server;
+
+static GLOBAL_REQUEST_ID: RequestCounter = RequestCounter::new();
+
+struct RequestCounter(AtomicI32);
+impl RequestCounter {
+    const fn new() -> RequestCounter {
+        Self(AtomicI32::new(1000))
+    }
+
+    fn next() -> RequestId {
+        let id = GLOBAL_REQUEST_ID.0.fetch_add(1, Ordering::SeqCst);
+        RequestId::from(id)
+    }
+}
 
 macro_rules! request_match {
     ($req_type:ty, $server:expr, $connection:expr, $req:expr) => {
@@ -61,13 +82,30 @@ macro_rules! request_match {
     };
 }
 
+// Note that this function only sends the request. The response handling is done in the main loop!
+pub(crate) fn send_request<R>(
+    conn: &Connection,
+    params: R::Params,
+    _server: &RefCell<Server>,
+) -> Result<(), ServerError>
+where
+    R: lsp_types::request::Request,
+    R::Params: Serialize,
+{
+    let r = Request::new(RequestCounter::next(), R::METHOD.to_string(), params);
+    Ok(conn
+        .sender
+        .send(r.into())
+        .map_err(|err| ServerError::ProtocolError { err: Box::new(err) })?)
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::init();
     debug!("env logger started");
 
-    let config = Config::parse();
+    let args = Arguments::parse();
     eprintln!("Starting parol language server");
-    let (connection, io_threads) = Connection::connect((config.ip_address, config.port_number))?;
+    let (connection, io_threads) = Connection::connect((args.ip_address, args.port_number))?;
 
     // Run the server and wait for the two threads to end (typically by trigger LSP Exit event).
     let server_capabilities = serde_json::to_value(&ServerCapabilities {
@@ -84,29 +122,60 @@ fn main() -> Result<(), Box<dyn Error>> {
     })
     .unwrap();
 
-    let initialization_params = connection.initialize(server_capabilities)?;
-    main_loop(&connection, initialization_params, config)?;
+    let initialization_params: InitializeParams =
+        serde_json::from_value(connection.initialize(server_capabilities)?).unwrap();
+    let config = Config::new(initialization_params, args);
+
+    main_loop(&connection, config)?;
     io_threads.join()?;
 
     eprintln!("shutting down parol language server");
     Ok(())
 }
 
-fn main_loop(
-    connection: &Connection,
-    params: serde_json::Value,
-    config: Config,
-) -> Result<(), Box<dyn Error>> {
-    let params: InitializeParams = serde_json::from_value(params).unwrap();
-    eprintln!("Initialization options {:?}", params.initialization_options);
-    let server = RefCell::new(server::Server::new(config.lookahead));
+fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Error>> {
+    eprintln!(
+        "Initialization params {:#?}",
+        config.initialization_params()
+    );
+    eprintln!(
+        "Initialization options {:#?}",
+        config.initialization_options()
+    );
+    let server = RefCell::new(server::Server::new(config.lookahead()));
+
+    if config.supports_dynamic_registration_for_change_config() {
+        send_request::<RegisterCapability>(
+            &connection,
+            RegistrationParams {
+                registrations: vec![Registration {
+                    id: "workspace/didChangeConfiguration".to_string(),
+                    method: "workspace/didChangeConfiguration".to_string(),
+                    register_options: None,
+                }],
+            },
+            &server,
+        )?;
+    }
+
+    send_request::<WorkspaceConfiguration>(
+        &connection,
+        ConfigurationParams {
+            items: vec![ConfigurationItem {
+                scope_uri: None,
+                section: Some("parol-vscode".to_string()),
+            }],
+        },
+        &server,
+    )?;
+
     for msg in &connection.receiver {
         match msg {
             Message::Request(req) => {
+                eprintln!("got request: {:?}", req);
                 if connection.handle_shutdown(&req)? {
                     return Ok(());
                 }
-                eprintln!("got request: {:?}", req);
                 match req.method.as_str() {
                     <GotoDefinition as lsp_types::request::Request>::METHOD => {
                         request_match!(GotoDefinition, server, connection, req);
@@ -135,23 +204,27 @@ fn main_loop(
                 eprintln!("got response: {:?}", resp);
             }
             Message::Notification(not) => {
-                eprintln!("got notification: {:?}", not);
-                match not.method.as_str() {
-                    DidOpenTextDocument::METHOD => {
-                        server.borrow_mut().handle_open_document(connection, not)?
-                    }
-                    DidChangeTextDocument::METHOD => server
-                        .borrow_mut()
-                        .handle_change_document(connection, not)?,
-                    DidCloseTextDocument::METHOD => {
-                        server.borrow_mut().handle_close_document(not)?
-                    }
-                    _ => {}
-                }
+                process_notification(not, connection, &server)?;
             }
         }
     }
     Ok(())
+}
+
+fn process_notification(
+    not: lsp_server::Notification,
+    connection: &Connection,
+    server: &RefCell<Server>,
+) -> Result<(), Box<dyn Error>> {
+    eprintln!("got notification: {:?}", not);
+    Ok(match not.method.as_str() {
+        DidOpenTextDocument::METHOD => server.borrow_mut().handle_open_document(connection, not)?,
+        DidChangeTextDocument::METHOD => server
+            .borrow_mut()
+            .handle_change_document(connection, not)?,
+        DidCloseTextDocument::METHOD => server.borrow_mut().handle_close_document(not)?,
+        _ => {}
+    })
 }
 
 fn cast<R>(req: Request) -> Result<(RequestId, R::Params), ExtractError<Request>>
