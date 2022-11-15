@@ -5,6 +5,13 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.3.2
+
+* Configuration is now possible via settings in VSCode. Changes are updated in the language server
+now.
+  * The first effective property is the maximum number of lookahead tokens that is calculated
+  during grammar analysis.
+
 ## v0.3.1
 
 * Using `parol` in version 0.13.0 now to take advantage of latest fixes. Also add `parol-macros` as
