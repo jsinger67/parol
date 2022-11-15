@@ -1,88 +1,91 @@
 import * as vscode from "vscode";
-import { integer, LSPAny } from "vscode-languageclient";
+import { LSPAny } from "vscode-languageclient";
 import { log } from "./extension";
 
-class ConfigProperty<T> {
-  private _changed: boolean;
-  private readonly _name: string;
-  private _value: T;
+class ConfigProperty {
+    private _changed: boolean;
 
-  public constructor(name: string, value: T) {
-    this._name = name;
-    this._value = value;
-    this._changed = true;
-  }
-
-  get value(): T {
-    return this._value;
-  }
-
-  set value(value: T) {
-    if (this._value !== value) {
-      this._value = value;
-      this._changed = true;
+    public constructor(private readonly _name: string, private _value: any) {
+        this._changed = true;
     }
-  }
 
-  get name(): string {
-    return this._name;
-  }
+    get value(): any {
+        return this._value;
+    }
 
-  get hasChanged(): boolean {
-    return this._changed;
-  }
+    set value(value: any) {
+        if (this._value !== value) {
+            this._value = value;
+            this._changed = true;
+        }
+    }
+
+    get name(): string {
+        return this._name;
+    }
+
+    get hasChanged(): boolean {
+        return this._changed;
+    }
+
+    public resetChanged() {
+        this._changed = false;
+    }
 }
 
 export class Config {
-  readonly rootSection = "parol-vscode";
-  // Todo! This should become some kind of container when more configuration values are added.
-  max_k: ConfigProperty<integer>;
-  changedConfigs: string[] = [];
+    readonly rootSection = "parol-vscode";
+    configProps: ConfigProperty[] = [];
+    changedConfigProps: string[] = [];
 
-  constructor() {
-    this.max_k = new ConfigProperty("max_k", 3);
-    this.loadConfiguration();
-  }
-
-  public getInitializeOptions(): LSPAny {
-    return {
-      max_k: this.getMaxLookahead(),
-    };
-  }
-
-  public getChangedConfigs(): LSPAny {
-    let changedConfigs: any = {};
-    if (this.max_k.hasChanged) {
-      changedConfigs[`${this.max_k.name}`] = this.max_k.value
+    constructor() {
+        this.configProps.push(new ConfigProperty("max_k", 3));
+        this.configProps.push(new ConfigProperty("dummy", "Peter"));
+        this.loadConfiguration();
     }
-    return changedConfigs;
-  }
 
-  public onChanged() {
-    this.changedConfigs = [];
-    this.loadConfiguration();
-  }
-
-  private makePropertyName(section: string): string {
-    return this.rootSection + "." + section;
-  }
-
-  private loadConfiguration() {
-    let config = vscode.workspace.getConfiguration(this.rootSection);
-    if (config) {
-      this.max_k.value = config.get<integer>(this.max_k.name, 3);
-      if (this.max_k.hasChanged) {
-        this.changedConfigs.push(this.makePropertyName(this.max_k.name));
-      }
-    } else {
-      log.error("Error loading configuration");
+    public getInitializeOptions(): LSPAny {
+        let properties: any = {};
+        for (let property of this.configProps) {
+            if (property.hasChanged) {
+                properties[property.name] = property.value;
+            }
+        }
+        return properties;
     }
-  }
 
-  private getMaxLookahead(): integer {
-    if (this.max_k) {
-      return this.max_k.value;
+    public getChangedConfigs(): LSPAny {
+        let changedConfigs: any = {};
+        for (let property of this.configProps) {
+            if (property.hasChanged) {
+                changedConfigs[property.name] = property.value;
+            }
+        }
+        return changedConfigs;
     }
-    return 3;
-  }
+
+    public onChanged() {
+        this.changedConfigProps = [];
+        for (let property of this.configProps) {
+            property.resetChanged();
+        }
+        this.loadConfiguration();
+    }
+
+    private loadConfiguration() {
+        let config = vscode.workspace.getConfiguration(this.rootSection);
+        if (config) {
+            for (let property of this.configProps) {
+                property.value = config.get<typeof property.value>(
+                    property.name,
+                    property.value as typeof property.value
+                );
+                if (property.hasChanged) {
+                    this.changedConfigProps.push(property.name);
+                }
+            }
+        } else {
+            log.error("Error loading configuration");
+        }
+    }
 }

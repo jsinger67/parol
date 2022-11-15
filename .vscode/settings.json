@@ -1,5 +1,10 @@
 {
-    "cSpell.words": ["vsix"],
+    "cSpell.words": [
+        "esbuild",
+        "outfile",
+        "systemjs",
+        "vsix"
+    ],
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
