@@ -1,6 +1,6 @@
 # The syntax of `parol`'s Grammar description
 
-Here I provide the definition of the PAR grammar in EBNF.
+Here I provide the definition of the PAR grammar in EBNF (PAR grammar in PAR is [here](https://github.com/jsinger67/parol/blob/main/src/parser/parol-grammar.par)).
 
 ```ebnf
 (* PAR Grammar defined in EBNF *)
