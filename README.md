@@ -169,3 +169,4 @@ Thanks to all the contributors for improving this project!
 * [Techcable](https://github.com/Techcable)
 * [oaleaf](https://github.com/oaleaf)
 * [mobotsar](https://github.com/mobotsar)
+* [ryo33](https://github.com/ryo33)
