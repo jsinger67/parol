@@ -1,10 +1,3 @@
-#[macro_use]
-extern crate derive_builder;
-#[macro_use]
-extern crate function_name;
-#[macro_use]
-extern crate lazy_static;
-
 extern crate parol_runtime;
 
 mod {{crate_name}}_grammar;
@@ -14,10 +7,10 @@ mod {{crate_name}}_parser;
 
 use crate::{{crate_name}}_grammar::{{grammar_name}}Grammar;
 use crate::{{crate_name}}_parser::parse;{{#tree_gen?}}
-use id_tree::Tree;
-use id_tree_layout::Layouter;{{/tree_gen}}
-use log::debug;
-use miette::{miette, IntoDiagnostic, Result, WrapErr};{{#tree_gen?}}
+use parol_runtime::id_tree::Tree;
+use parol_runtime::id_tree_layout::Layouter;{{/tree_gen}}
+use parol_runtime::log::debug;
+use parol_runtime::miette::{miette, IntoDiagnostic, Result, WrapErr};{{#tree_gen?}}
 use parol_runtime::parser::ParseTreeType;{{/tree_gen}}
 use std::env;
 use std::fs;

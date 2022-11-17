@@ -1,6 +1,6 @@
 use crate::{{crate_name}}_grammar_trait::{ {{grammar_name}}, {{grammar_name}}GrammarTrait};
 #[allow(unused_imports)]
-use miette::Result;
+use parol_runtime::miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
