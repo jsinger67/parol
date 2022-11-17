@@ -5,20 +5,25 @@ use std::collections::{BTreeMap, BTreeSet};
 /// Calculates all reachable non-terminals.
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::reachable_non_terminals;
 /// use std::collections::BTreeSet;
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
+///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t_n("a", vec![0])]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t_n("b", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), terminal!("a")]))
+///     .add_pr(Pr::new("Y", vec![terminal!("b")]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t_n("c", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t_n("d", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::t_n("d", vec![0])]))
+///     .add_pr(Pr::new("X", vec![terminal!("c")]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), terminal!("d")]))
+///     .add_pr(Pr::new("V", vec![terminal!("d")]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_non_terminals(&g);
 /// assert_eq!(
@@ -60,20 +65,25 @@ pub fn reachable_non_terminals(cfg: &Cfg) -> BTreeSet<String> {
 /// Calculates all unreachable non-terminals.
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::unreachable_non_terminals;
 /// use std::collections::BTreeSet;
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
+///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t_n("a", vec![0])]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t_n("b", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), terminal!("a")]))
+///     .add_pr(Pr::new("Y", vec![terminal!("b")]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t_n("c", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t_n("d", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::t_n("d", vec![0])]))
+///     .add_pr(Pr::new("X", vec![terminal!("c")]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), terminal!("d")]))
+///     .add_pr(Pr::new("V", vec![terminal!("d")]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = unreachable_non_terminals(&g);
 /// assert_eq!(
@@ -105,20 +115,25 @@ pub fn all_non_terminals_reachable(cfg: &Cfg) -> bool {
 /// Used for special derivation calculations (i.e. FOLLOW k relations)
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::reachable_from_production;
 /// use std::collections::BTreeSet;
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
+///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t_n("a", vec![0])]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t_n("b", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), terminal!("a")]))
+///     .add_pr(Pr::new("Y", vec![terminal!("b")]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t_n("c", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t_n("d", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::t_n("d", vec![0])]))
+///     .add_pr(Pr::new("X", vec![terminal!("c")]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), terminal!("d")]))
+///     .add_pr(Pr::new("V", vec![terminal!("d")]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_from_production(&g, 0);
 /// assert_eq!(
@@ -224,20 +239,24 @@ pub fn reachable_from_production(cfg: &Cfg, prod_num: usize) -> BTreeSet<String>
 /// Used for special derivation calculations (i.e. FOLLOW k relations)
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::reachable_from_non_terminal;
 /// use std::collections::BTreeSet;
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
 ///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::n("Z")]))
-///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), Symbol::t_n("a", vec![0])]))
-///     .add_pr(Pr::new("Y", vec![Symbol::t_n("b", vec![0])]))
+///     .add_pr(Pr::new("Y", vec![Symbol::n("Y"), terminal!("a")]))
+///     .add_pr(Pr::new("Y", vec![terminal!("b")]))
 ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
-///     .add_pr(Pr::new("X", vec![Symbol::t_n("c", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t_n("d", vec![0])]))
-///     .add_pr(Pr::new("V", vec![Symbol::t_n("d", vec![0])]))
+///     .add_pr(Pr::new("X", vec![terminal!("c")]))
+///     .add_pr(Pr::new("V", vec![Symbol::n("V"), terminal!("d")]))
+///     .add_pr(Pr::new("V", vec![terminal!("d")]))
 ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
 /// let productive = reachable_from_non_terminal(&g, "S");
 /// assert_eq!(
@@ -318,18 +337,23 @@ pub fn reachable_from_non_terminal(cfg: &Cfg, nt: &str) -> BTreeSet<String> {
 ///
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::nt_producing_productions;
 /// use std::collections::BTreeSet;
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
+///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("A")]))
-///     .add_pr(Pr::new("A", vec![Symbol::t_n("x", vec![0]), Symbol::n("B"), Symbol::n("AA")]))
-///     .add_pr(Pr::new("AA", vec![Symbol::t_n("d", vec![0]), Symbol::n("AA")]))
+///     .add_pr(Pr::new("A", vec![terminal!("x"), Symbol::n("B"), Symbol::n("AA")]))
+///     .add_pr(Pr::new("AA", vec![terminal!("d"), Symbol::n("AA")]))
 ///     .add_pr(Pr::new("AA", vec![]))
-///     .add_pr(Pr::new("B", vec![Symbol::t_n("y", vec![0])]))
-///     .add_pr(Pr::new("C", vec![Symbol::t_n("b", vec![0])]));
+///     .add_pr(Pr::new("B", vec![terminal!("y")]))
+///     .add_pr(Pr::new("C", vec![terminal!("b")]));
 /// let prod_numbers = nt_producing_productions(&g, "S");
 /// assert_eq!(
 ///     [].iter().cloned().collect::<BTreeSet<usize>>(),
@@ -385,18 +409,23 @@ pub fn nt_producing_productions(cfg: &Cfg, nt: &str) -> BTreeSet<usize> {
 /// Used for special derivation calculations (i.e. FOLLOW k relations)
 ///
 /// ```
-/// use parol::{Cfg, Pr, Symbol};
+/// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
 /// use parol::analysis::nt_reachability;
 /// use std::collections::{BTreeMap, BTreeSet};
 /// use std::convert::From;
 ///
+/// macro_rules! terminal {
+///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+///         vec![0], SymbolAttribute::None, None))};
+/// }
+///
 /// let g = Cfg::with_start_symbol("S")
 ///     .add_pr(Pr::new("S", vec![Symbol::n("A")]))
-///     .add_pr(Pr::new("A", vec![Symbol::t_n("x", vec![0]), Symbol::n("B"), Symbol::n("AA")]))
-///     .add_pr(Pr::new("AA", vec![Symbol::t_n("d", vec![0]), Symbol::n("AA")]))
+///     .add_pr(Pr::new("A", vec![terminal!("x"), Symbol::n("B"), Symbol::n("AA")]))
+///     .add_pr(Pr::new("AA", vec![terminal!("d"), Symbol::n("AA")]))
 ///     .add_pr(Pr::new("AA", vec![]))
-///     .add_pr(Pr::new("B", vec![Symbol::t_n("y", vec![0])]))
-///     .add_pr(Pr::new("C", vec![Symbol::t_n("b", vec![0])]));
+///     .add_pr(Pr::new("B", vec![terminal!("y")]))
+///     .add_pr(Pr::new("C", vec![terminal!("b")]));
 /// let reachability = nt_reachability(&g);
 /// assert_eq!(
 ///     [

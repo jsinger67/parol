@@ -3,5 +3,5 @@
 %%
 
 /* 0 */ Start: StartOpt /* Option */;
-/* 1 */ StartOpt: "a"; // Option<T>::Some
-/* 2 */ StartOpt: ; // Option<T>::None
+/* 1 */ StartOpt /* Option<T>::Some */: "a";
+/* 2 */ StartOpt /* Option<T>::None */: ;

@@ -2,4 +2,4 @@ title: None
 comment: None
 start_symbol: Start
 name: INITIAL;line_comments: [];block_comments: [];auto_newline_off: false;auto_ws_off: false;
-Start: Alts(Alt(G(Alts(Alt(<0>T(x), G(Alts(Alt(<0>T(a)) | Alt(<0>T(b))))))), <0>T(y)));
+Start: Alts(Alt(G(Alts(Alt(<0>T("x"), G(Alts(Alt(<0>T("a")) | Alt(<0>T("b"))))))), <0>T("y")));

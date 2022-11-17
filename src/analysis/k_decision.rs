@@ -295,39 +295,40 @@ pub fn explain_conflicts(
 #[cfg(test)]
 mod test {
     use super::{calculate_k, decidable, FirstCache, FollowCache};
-    use crate::{Cfg, GrammarConfig, Pr, Symbol};
+    use crate::grammar::SymbolAttribute;
+    use crate::{Cfg, GrammarConfig, Pr, Symbol, Terminal, TerminalKind};
+
+    macro_rules! terminal {
+        ($term:literal) => {
+            Symbol::T(Terminal::Trm(
+                $term.to_string(),
+                TerminalKind::Legacy,
+                vec![0],
+                SymbolAttribute::None,
+                None,
+            ))
+        };
+    }
 
     #[test]
     fn check_decidable() {
         let cfg = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new(
-                "S",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("X")],
-            ))
-            .add_pr(Pr::new(
-                "X",
-                vec![Symbol::t_n("b", vec![0]), Symbol::n("S")],
-            ))
+            .add_pr(Pr::new("S", vec![terminal!("a"), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![terminal!("b"), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t_n("a", vec![0]),
+                    terminal!("a"),
                     Symbol::n("Y"),
-                    Symbol::t_n("b", vec![0]),
+                    terminal!("b"),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new(
-                "Y",
-                vec![Symbol::t_n("b", vec![0]), Symbol::t_n("a", vec![0])],
-            ))
-            .add_pr(Pr::new(
-                "Y",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")],
-            ))
+            .add_pr(Pr::new("Y", vec![terminal!("b"), terminal!("a")]))
+            .add_pr(Pr::new("Y", vec![terminal!("a"), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
+                vec![terminal!("a"), Symbol::n("Z"), Symbol::n("X")],
             ));
         let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();
@@ -352,34 +353,22 @@ mod test {
     #[test]
     fn check_calculate_k() {
         let cfg = Cfg::with_start_symbol("S")
-            .add_pr(Pr::new(
-                "S",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("X")],
-            ))
-            .add_pr(Pr::new(
-                "X",
-                vec![Symbol::t_n("b", vec![0]), Symbol::n("S")],
-            ))
+            .add_pr(Pr::new("S", vec![terminal!("a"), Symbol::n("X")]))
+            .add_pr(Pr::new("X", vec![terminal!("b"), Symbol::n("S")]))
             .add_pr(Pr::new(
                 "X",
                 vec![
-                    Symbol::t_n("a", vec![0]),
+                    terminal!("a"),
                     Symbol::n("Y"),
-                    Symbol::t_n("b", vec![0]),
+                    terminal!("b"),
                     Symbol::n("Y"),
                 ],
             ))
-            .add_pr(Pr::new(
-                "Y",
-                vec![Symbol::t_n("b", vec![0]), Symbol::t_n("a", vec![0])],
-            ))
-            .add_pr(Pr::new(
-                "Y",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z")],
-            ))
+            .add_pr(Pr::new("Y", vec![terminal!("b"), terminal!("a")]))
+            .add_pr(Pr::new("Y", vec![terminal!("a"), Symbol::n("Z")]))
             .add_pr(Pr::new(
                 "Z",
-                vec![Symbol::t_n("a", vec![0]), Symbol::n("Z"), Symbol::n("X")],
+                vec![terminal!("a"), Symbol::n("Z"), Symbol::n("X")],
             ));
         let grammar_config = GrammarConfig::new(cfg, 5);
         let first_cache = FirstCache::new();

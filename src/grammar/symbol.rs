@@ -12,6 +12,34 @@ use std::fmt::{Debug, Display, Error, Formatter, Write};
 // *Changes will affect crate's version according to semver*
 // ---------------------------------------------------
 ///
+/// Determines how the terminal literal is interpreted by parol
+///
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash, Ord, PartialOrd)]
+pub enum TerminalKind {
+    /// Uninterpreted by parol, same as regex - the old double quoted form
+    Legacy,
+    /// Uninterpreted by parol, usually used for regular expressions
+    Regex,
+    /// Meta characters will be escaped when regex for scanner is created
+    Raw,
+}
+
+impl TerminalKind {
+    /// Retrieves the syntactic delimiter character
+    pub fn delimiter(&self) -> char {
+        match self {
+            TerminalKind::Legacy => '"',
+            TerminalKind::Regex => '/',
+            TerminalKind::Raw => '\'',
+        }
+    }
+}
+
+// ---------------------------------------------------
+// Part of the Public API
+// *Changes will affect crate's version according to semver*
+// ---------------------------------------------------
+///
 /// A terminal symbol with different specificities
 ///
 #[derive(Debug, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
@@ -22,6 +50,7 @@ pub enum Terminal {
     ///
     Trm(
         String,
+        TerminalKind,
         Vec<usize>,
         SymbolAttribute,
         Option<UserDefinedTypeName>,
@@ -44,7 +73,7 @@ pub enum Terminal {
 impl Terminal {
     /// Creates a terminal
     pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::Trm(t.to_owned(), s, a, None)
+        Self::Trm(t.to_owned(), TerminalKind::Legacy, s, a, None)
     }
     /// Checks if self is a terminal
     pub fn is_trm(&self) -> bool {
@@ -62,8 +91,8 @@ impl Terminal {
     /// Creates a terminal from a [Symbol]
     pub fn create(s: &Symbol) -> Self {
         match s {
-            Symbol::T(Terminal::Trm(t, s, a, u)) => {
-                Terminal::Trm(t.to_string(), s.to_vec(), *a, u.clone())
+            Symbol::T(Terminal::Trm(t, k, s, a, u)) => {
+                Terminal::Trm(t.to_string(), *k, s.to_vec(), *a, u.clone())
             }
             Symbol::T(Terminal::End) => Terminal::End,
             _ => panic!("Unexpected symbol type: {:?}", s),
@@ -73,7 +102,7 @@ impl Terminal {
     /// Adds a scanner index
     pub fn add_scanner(&mut self, sc: usize) {
         match self {
-            Terminal::Trm(_, s, _, _) => {
+            Terminal::Trm(_, _, s, _, _) => {
                 if !s.contains(&sc) {
                     s.push(sc);
                     s.sort_unstable();
@@ -92,9 +121,10 @@ impl Terminal {
         S: Fn(&str) -> Option<String>,
     {
         match self {
-            Self::Trm(t, s, a, u) => {
+            Self::Trm(t, k, s, a, u) => {
                 let mut d = String::new();
-                a.decorate(&mut d, &format!("\"{}\"", t))
+                let delimiter = k.delimiter();
+                a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
                     .into_diagnostic()?;
                 if let Some(ref user_type) = u {
                     let user_type =
@@ -121,7 +151,10 @@ impl Terminal {
 impl Display for Terminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         match self {
-            Self::Trm(t, ..) => write!(f, "\"{}\"", t),
+            Self::Trm(t, k, ..) => {
+                let delimiter = k.delimiter();
+                write!(f, "{}{}{}", delimiter, t, delimiter)
+            }
             Self::Eps => write!(f, "\u{03B5}"), // Lower creek letter Epsilon (ε)
             Self::End => write!(f, "$"),
         }
@@ -184,19 +217,19 @@ pub enum Symbol {
 }
 
 impl Symbol {
-    /// Creates a terminal symbol
-    pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-        Self::T(Terminal::Trm(t.to_owned(), s, a, None))
-    }
-    /// Creates a terminal symbol with default symbol attribute
-    pub fn t_n(t: &str, s: Vec<usize>) -> Self {
-        Self::T(Terminal::Trm(
-            t.to_owned(),
-            s,
-            SymbolAttribute::default(),
-            None,
-        ))
-    }
+    // /// Creates a terminal symbol
+    // pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
+    //     Self::T(Terminal::Trm(t.to_owned(), s, a, None))
+    // }
+    // /// Creates a terminal symbol with default symbol attribute
+    // pub fn t_n(t: &str, s: Vec<usize>) -> Self {
+    //     Self::T(Terminal::Trm(
+    //         t.to_owned(),
+    //         s,
+    //         SymbolAttribute::default(),
+    //         None,
+    //     ))
+    // }
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
         Self::N(n.to_owned(), SymbolAttribute::default(), None)
@@ -261,7 +294,7 @@ impl Symbol {
     /// Get the symbol attribute or a default value
     pub fn attribute(&self) -> SymbolAttribute {
         match self {
-            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, a, _)) => *a,
+            Symbol::N(_, a, _) | Symbol::T(Terminal::Trm(_, _, _, a, _)) => *a,
             _ => SymbolAttribute::None,
         }
     }

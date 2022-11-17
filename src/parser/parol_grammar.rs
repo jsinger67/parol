@@ -1,10 +1,10 @@
 use super::parol_grammar_trait::{
     AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog, PrologList,
-    PrologList0, ScannerDirectives, StartDeclaration,
+    PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
 use super::ParolParserError;
 use crate::grammar::ProductionAttribute;
-use crate::grammar::{Decorate, SymbolAttribute};
+use crate::grammar::{Decorate, SymbolAttribute, TerminalKind};
 
 use miette::{bail, miette, Result};
 use parol_runtime::errors::FileSource;
@@ -102,9 +102,15 @@ pub enum Factor {
     /// A terminal string with associated scanner states, a symbol attribute an an optional user
     /// type name
     Terminal(
+        /// The scanned text
         String,
+        /// interpretation of the terminals context regarding regular expression meta characters
+        TerminalKind,
+        /// The associated scanner states
         Vec<usize>,
+        /// The symbol attribute associated with this terminal
         SymbolAttribute,
+        /// A possibly provided user destination type
         Option<UserDefinedTypeName>,
     ),
     /// A non-terminal with a symbol attribute an an optional user type name
@@ -137,20 +143,23 @@ impl Factor {
             Self::Group(g) => format!("({})", g.to_par()),
             Self::Repeat(r) => format!("{{{}}}", r.to_par()),
             Self::Optional(o) => format!("[{}]", o.to_par()),
-            Self::Terminal(t, s, a, u) => {
+            Self::Terminal(t, k, s, a, u) => {
                 let mut d = String::new();
                 a.decorate(&mut d, &format!("T({})", t))
                     .expect("Failed to decorate terminal!");
                 if let Some(ref user_type) = u {
                     let _ = write!(d, " /* : {} */", user_type);
                 }
+                let delimiter = k.delimiter();
                 format!(
-                    "<{}>\"{}\"",
+                    "<{}>{}{}{}",
                     s.iter()
                         .map(|s| format!("{}", s))
                         .collect::<Vec<String>>()
                         .join(", "),
-                    d
+                    delimiter,
+                    d,
+                    delimiter
                 )
             }
             Self::NonTerminal(n, a, u) => {
@@ -176,9 +185,10 @@ impl Display for Factor {
             Self::Group(g) => write!(f, "G({})", g),
             Self::Repeat(r) => write!(f, "R{{{}}}", r),
             Self::Optional(o) => write!(f, "O[{}]", o),
-            Self::Terminal(t, s, a, u) => {
+            Self::Terminal(t, k, s, a, u) => {
                 let mut d = String::new();
-                a.decorate(&mut d, &format!("T({})", t))?;
+                let delimiter = k.delimiter();
+                a.decorate(&mut d, &format!("T({}{}{})", delimiter, t, delimiter))?;
                 if let Some(ref user_type) = u {
                     write!(d, " : {}", user_type)?;
                 }
@@ -431,12 +441,12 @@ impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
         };
         for scanner_directive in &scanner_state.scanner_state_list {
             match &*scanner_directive.scanner_directives {
-                ScannerDirectives::ScannerDirectives0(line_comment) => me
-                    .line_comments
-                    .push(ParolGrammar::trim_quotes(&line_comment.string)),
+                ScannerDirectives::ScannerDirectives0(line_comment) => me.line_comments.push(
+                    ParolGrammar::trim_quotes(line_comment.string.string.text()),
+                ),
                 ScannerDirectives::ScannerDirectives1(block_comment) => me.block_comments.push((
-                    ParolGrammar::trim_quotes(&block_comment.string),
-                    ParolGrammar::trim_quotes(&block_comment.string0),
+                    ParolGrammar::trim_quotes(block_comment.string.string.text()),
+                    ParolGrammar::trim_quotes(block_comment.string0.string.text()),
                 )),
                 ScannerDirectives::ScannerDirectives2(_) => me.auto_newline_off = true,
                 ScannerDirectives::ScannerDirectives3(_) => me.auto_ws_off = true,
@@ -507,17 +517,23 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
-    fn trim_quotes(string: &super::parol_grammar_trait::String) -> String {
-        string.string.text().trim_matches('"').to_string()
+    fn trim_quotes(string: &str) -> String {
+        let delimiters: &[_] = &['"', '\'', '/'];
+        string
+            .strip_prefix(delimiters)
+            .unwrap()
+            .strip_suffix(delimiters)
+            .unwrap()
+            .to_string()
     }
 
     fn process_declaration(&mut self, declaration: &PrologList) -> Result<()> {
         match &*declaration.declaration {
             Declaration::Declaration0(title_decl) => {
-                self.title = Some(Self::trim_quotes(&title_decl.string))
+                self.title = Some(Self::trim_quotes(title_decl.string.string.text()))
             }
             Declaration::Declaration1(comment_decl) => {
-                self.comment = Some(Self::trim_quotes(&comment_decl.string))
+                self.comment = Some(Self::trim_quotes(comment_decl.string.string.text()))
             }
             Declaration::Declaration2(user_type_def) => {
                 self.process_user_type_definition(user_type_def)
@@ -534,13 +550,13 @@ impl ParolGrammar<'_> {
             ScannerDirectives::ScannerDirectives0(line_comment) => self.scanner_configurations
                 [INITIAL_STATE]
                 .line_comments
-                .push(Self::trim_quotes(&line_comment.string)),
+                .push(Self::trim_quotes(line_comment.string.string.text())),
             ScannerDirectives::ScannerDirectives1(block_comment) => self.scanner_configurations
                 [INITIAL_STATE]
                 .block_comments
                 .push((
-                    Self::trim_quotes(&block_comment.string),
-                    Self::trim_quotes(&block_comment.string0),
+                    Self::trim_quotes(block_comment.string.string.text()),
+                    Self::trim_quotes(block_comment.string0.string.text()),
                 )),
             ScannerDirectives::ScannerDirectives2(_) => {
                 self.scanner_configurations[INITIAL_STATE].auto_newline_off = true
@@ -663,6 +679,20 @@ impl ParolGrammar<'_> {
         }
     }
 
+    fn measure_token_literal<'a>(literal: &'a TokenLiteral) -> (&'a str, TerminalKind) {
+        match literal {
+            super::parol_grammar_trait::TokenLiteral::TokenLiteral0(s) => {
+                (s.string.string.text(), TerminalKind::Legacy)
+            }
+            super::parol_grammar_trait::TokenLiteral::TokenLiteral1(l) => {
+                (l.raw_string.raw_string.text(), TerminalKind::Raw)
+            }
+            super::parol_grammar_trait::TokenLiteral::TokenLiteral2(r) => {
+                (r.regex.regex.text(), TerminalKind::Regex)
+            }
+        }
+    }
+
     fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
         match symbol {
             super::parol_grammar_trait::Symbol::Symbol0(non_terminal) => {
@@ -694,8 +724,11 @@ impl ParolGrammar<'_> {
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
                 }
+                let (content, kind) =
+                    Self::measure_token_literal(&simple_token.simple_token.token_literal);
                 Ok(Factor::Terminal(
-                    Self::trim_quotes(&simple_token.simple_token.string),
+                    Self::trim_quotes(content),
+                    kind,
                     vec![0],
                     attr,
                     user_type_name,
@@ -715,8 +748,12 @@ impl ParolGrammar<'_> {
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
                 }
+                let (content, kind) = Self::measure_token_literal(
+                    &token_with_states.token_with_states.token_literal,
+                );
                 Ok(Factor::Terminal(
-                    Self::trim_quotes(&token_with_states.token_with_states.string),
+                    Self::trim_quotes(content),
+                    kind,
                     scanner_states,
                     attr,
                     user_type_name,

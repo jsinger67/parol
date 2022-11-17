@@ -68,12 +68,18 @@ Symbol
     | ScannerSwitch
     ;
 
+TokenLiteral
+    : String
+    | RawString
+    | Regex
+    ;
+
 SimpleToken
-    : String [ASTControl]
+    : TokenLiteral [ASTControl]
     ;
 
 TokenWithStates
-    :  "<"^ StateList ">"^ String [ASTControl]
+    :  "<"^ StateList ">"^ TokenLiteral [ASTControl]
     ;
 
 Group
@@ -97,7 +103,15 @@ Identifier
     ;
 
 String
-    : "\u{0022}([^\\]|\\.)*?\u{0022}"
+    : "\u{22}(\\.|[^\\])*?\u{22}"
+    ;
+
+RawString
+    : "'(\\'|[^'])*?'"
+    ;
+
+Regex
+    : "/(\\/|[^/]|)*?/"
     ;
 
 ScannerState

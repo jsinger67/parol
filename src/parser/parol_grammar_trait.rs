@@ -9,7 +9,6 @@ use crate::parser::parol_grammar::ParolGrammar;
 use id_tree::Tree;
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::lexer::Token;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -76,6 +75,11 @@ pub trait ParolGrammarTrait<'t> {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'TokenLiteral'
+    fn token_literal(&mut self, _arg: &TokenLiteral<'t>) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'SimpleToken'
     fn simple_token(&mut self, _arg: &SimpleToken<'t>) -> Result<()> {
         Ok(())
@@ -113,6 +117,16 @@ pub trait ParolGrammarTrait<'t> {
 
     /// Semantic action for non-terminal 'String'
     fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RawString'
+    fn raw_string(&mut self, _arg: &RawString<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Regex'
+    fn regex(&mut self, _arg: &Regex<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -332,7 +346,40 @@ pub struct Symbol3<'t> {
 }
 
 ///
-/// Type derived for production 54
+/// Type derived for production 34
+///
+/// TokenLiteral: String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral0<'t> {
+    pub string: Box<String<'t>>,
+}
+
+///
+/// Type derived for production 35
+///
+/// TokenLiteral: RawString;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral1<'t> {
+    pub raw_string: Box<RawString<'t>>,
+}
+
+///
+/// Type derived for production 36
+///
+/// TokenLiteral: Regex;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral2<'t> {
+    pub regex: Box<Regex<'t>>,
+}
+
+///
+/// Type derived for production 59
 ///
 /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
 ///
@@ -343,7 +390,7 @@ pub struct ScannerSwitch0<'t> {
 }
 
 ///
-/// Type derived for production 55
+/// Type derived for production 60
 ///
 /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
 ///
@@ -354,7 +401,7 @@ pub struct ScannerSwitch1<'t> {
 }
 
 ///
-/// Type derived for production 56
+/// Type derived for production 61
 ///
 /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
 ///
@@ -363,7 +410,7 @@ pub struct ScannerSwitch1<'t> {
 pub struct ScannerSwitch2 {}
 
 ///
-/// Type derived for production 59
+/// Type derived for production 64
 ///
 /// ASTControl: CutOperator;
 ///
@@ -374,7 +421,7 @@ pub struct ASTControl0 {
 }
 
 ///
-/// Type derived for production 60
+/// Type derived for production 65
 ///
 /// ASTControl: UserTypeDeclaration;
 ///
@@ -591,6 +638,24 @@ pub struct PrologList0 {
 }
 
 ///
+/// Type derived for non-terminal RawString
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct RawString<'t> {
+    pub raw_string: Token<'t>, /* '(\\'|[^'])*?' */
+}
+
+///
+/// Type derived for non-terminal Regex
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Regex<'t> {
+    pub regex: Token<'t>, /* /(\\/|[^/]|)*?/ */
+}
+
+///
 /// Type derived for non-terminal Repeat
 ///
 #[allow(dead_code)]
@@ -656,7 +721,7 @@ pub struct ScannerSwitchOpt<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct SimpleToken<'t> {
-    pub string: Box<String<'t>>,
+    pub token_literal: Box<TokenLiteral<'t>>,
     pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
@@ -703,7 +768,7 @@ pub struct StateListList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String<'t> {
-    pub string: Token<'t>, /* \u{0022}([^\\]|\\.)*?\u{0022} */
+    pub string: Token<'t>, /* \u{22}(\\.|[^\\])*?\u{22} */
 }
 
 ///
@@ -719,13 +784,24 @@ pub enum Symbol<'t> {
 }
 
 ///
+/// Type derived for non-terminal TokenLiteral
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum TokenLiteral<'t> {
+    TokenLiteral0(TokenLiteral0<'t>),
+    TokenLiteral1(TokenLiteral1<'t>),
+    TokenLiteral2(TokenLiteral2<'t>),
+}
+
+///
 /// Type derived for non-terminal TokenWithStates
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct TokenWithStates<'t> {
     pub state_list: Box<StateList<'t>>,
-    pub string: Box<String<'t>>,
+    pub token_literal: Box<TokenLiteral<'t>>,
     pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
@@ -795,6 +871,8 @@ pub enum ASTType<'t> {
     Prolog(Prolog<'t>),
     PrologList(Vec<PrologList<'t>>),
     PrologList0(Vec<PrologList0>),
+    RawString(RawString<'t>),
+    Regex(Regex<'t>),
     Repeat(Repeat<'t>),
     ScannerDirectives(ScannerDirectives<'t>),
     ScannerState(ScannerState<'t>),
@@ -808,6 +886,7 @@ pub enum ASTType<'t> {
     StateListList(Vec<StateListList<'t>>),
     String(String<'t>),
     Symbol(Symbol<'t>),
+    TokenLiteral(TokenLiteral<'t>),
     TokenWithStates(TokenWithStates<'t>),
     TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
     UserTypeDeclaration(UserTypeDeclaration),
@@ -891,8 +970,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let grammar_definition = pop_item!(self, grammar_definition, GrammarDefinition, context);
-        let prolog = pop_item!(self, prolog, Prolog, context);
+        let grammar_definition =
+            if let Some(ASTType::GrammarDefinition(grammar_definition)) = self.pop(context) {
+                grammar_definition
+            } else {
+                bail!("{}: Expecting ASTType::GrammarDefinition", context);
+            };
+        let prolog = if let Some(ASTType::Prolog(prolog)) = self.pop(context) {
+            prolog
+        } else {
+            bail!("{}: Expecting ASTType::Prolog", context);
+        };
         let parol_built = ParolBuilder::default()
             .prolog(Box::new(prolog))
             .grammar_definition(Box::new(grammar_definition))
@@ -918,9 +1006,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let prolog_list0 = pop_and_reverse_item!(self, prolog_list0, PrologList0, context);
-        let prolog_list = pop_and_reverse_item!(self, prolog_list, PrologList, context);
-        let start_declaration = pop_item!(self, start_declaration, StartDeclaration, context);
+        let prolog_list0 = if let Some(ASTType::PrologList0(mut prolog_list0)) = self.pop(context) {
+            prolog_list0.reverse();
+            prolog_list0
+        } else {
+            bail!("{}: Expecting ASTType::PrologList0", context);
+        };
+        let prolog_list = if let Some(ASTType::PrologList(mut prolog_list)) = self.pop(context) {
+            prolog_list.reverse();
+            prolog_list
+        } else {
+            bail!("{}: Expecting ASTType::PrologList", context);
+        };
+        let start_declaration =
+            if let Some(ASTType::StartDeclaration(start_declaration)) = self.pop(context) {
+                start_declaration
+            } else {
+                bail!("{}: Expecting ASTType::StartDeclaration", context);
+            };
         let prolog_built = PrologBuilder::default()
             .start_declaration(Box::new(start_declaration))
             .prolog_list(prolog_list)
@@ -946,8 +1049,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
-        let scanner_state = pop_item!(self, scanner_state, ScannerState, context);
+        let mut prolog_list0 = if let Some(ASTType::PrologList0(prolog_list0)) = self.pop(context) {
+            prolog_list0
+        } else {
+            bail!("{}: Expecting ASTType::PrologList0", context);
+        };
+        let scanner_state = if let Some(ASTType::ScannerState(scanner_state)) = self.pop(context) {
+            scanner_state
+        } else {
+            bail!("{}: Expecting ASTType::ScannerState", context);
+        };
         let prolog_list0_0_built = PrologList0Builder::default()
             .scanner_state((&scanner_state).try_into().into_diagnostic()?)
             .build()
@@ -984,8 +1095,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut prolog_list = pop_item!(self, prolog_list, PrologList, context);
-        let declaration = pop_item!(self, declaration, Declaration, context);
+        let mut prolog_list = if let Some(ASTType::PrologList(prolog_list)) = self.pop(context) {
+            prolog_list
+        } else {
+            bail!("{}: Expecting ASTType::PrologList", context);
+        };
+        let declaration = if let Some(ASTType::Declaration(declaration)) = self.pop(context) {
+            declaration
+        } else {
+            bail!("{}: Expecting ASTType::Declaration", context);
+        };
         let prolog_list_0_built = PrologListBuilder::default()
             .declaration(Box::new(declaration))
             .build()
@@ -1022,7 +1141,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let start_declaration_built = StartDeclarationBuilder::default()
             // Ignore clipped member 'percent_start'
             .identifier(Box::new(identifier))
@@ -1048,7 +1171,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = pop_item!(self, string, String, context);
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
         let declaration_0_built = Declaration0Builder::default()
             // Ignore clipped member 'percent_title'
             .string(Box::new(string))
@@ -1074,7 +1201,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = pop_item!(self, string, String, context);
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
         let declaration_1_built = Declaration1Builder::default()
             // Ignore clipped member 'percent_comment'
             .string(Box::new(string))
@@ -1102,8 +1233,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
+        {
+            user_type_name
+        } else {
+            bail!("{}: Expecting ASTType::UserTypeName", context);
+        };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let declaration_2_built = Declaration2Builder::default()
             // Ignore clipped member 'percent_user_underscore_type'
             .identifier(Box::new(identifier))
@@ -1130,7 +1270,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
+        let scanner_directives =
+            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
+                scanner_directives
+            } else {
+                bail!("{}: Expecting ASTType::ScannerDirectives", context);
+            };
         let declaration_3_built = Declaration3Builder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
@@ -1155,7 +1300,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = pop_item!(self, string, String, context);
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
         let scanner_directives_0_built = ScannerDirectives0Builder::default()
             // Ignore clipped member 'percent_line_underscore_comment'
             .string(Box::new(string))
@@ -1187,8 +1336,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string0 = pop_item!(self, string0, String, context);
-        let string = pop_item!(self, string, String, context);
+        let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
+            string0
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
         let scanner_directives_1_built = ScannerDirectives1Builder::default()
             // Ignore clipped member 'percent_block_underscore_comment'
             .string(Box::new(string))
@@ -1277,13 +1434,20 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let grammar_definition_list = pop_and_reverse_item!(
-            self,
-            grammar_definition_list,
-            GrammarDefinitionList,
-            context
-        );
-        let production = pop_item!(self, production, Production, context);
+        let grammar_definition_list =
+            if let Some(ASTType::GrammarDefinitionList(mut grammar_definition_list)) =
+                self.pop(context)
+            {
+                grammar_definition_list.reverse();
+                grammar_definition_list
+            } else {
+                bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
+            };
+        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
+            production
+        } else {
+            bail!("{}: Expecting ASTType::Production", context);
+        };
         let grammar_definition_built = GrammarDefinitionBuilder::default()
             // Ignore clipped member 'percent_percent'
             .production(Box::new(production))
@@ -1313,13 +1477,19 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut grammar_definition_list = pop_item!(
-            self,
+        let mut grammar_definition_list = if let Some(ASTType::GrammarDefinitionList(
             grammar_definition_list,
-            GrammarDefinitionList,
-            context
-        );
-        let production = pop_item!(self, production, Production, context);
+        )) = self.pop(context)
+        {
+            grammar_definition_list
+        } else {
+            bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
+        };
+        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
+            production
+        } else {
+            bail!("{}: Expecting ASTType::Production", context);
+        };
         let grammar_definition_list_0_built = GrammarDefinitionListBuilder::default()
             .production(Box::new(production))
             .build()
@@ -1387,8 +1557,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = pop_item!(self, alternations, Alternations, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let production_built = ProductionBuilder::default()
             .identifier(Box::new(identifier))
             // Ignore clipped member 'colon'
@@ -1416,8 +1594,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternations_list =
-            pop_and_reverse_item!(self, alternations_list, AlternationsList, context);
-        let alternation = pop_item!(self, alternation, Alternation, context);
+            if let Some(ASTType::AlternationsList(mut alternations_list)) = self.pop(context) {
+                alternations_list.reverse();
+                alternations_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationsList", context);
+            };
+        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
+            alternation
+        } else {
+            bail!("{}: Expecting ASTType::Alternation", context);
+        };
         let alternations_built = AlternationsBuilder::default()
             .alternation(Box::new(alternation))
             .alternations_list(alternations_list)
@@ -1443,8 +1630,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
-        let alternation = pop_item!(self, alternation, Alternation, context);
+        let mut alternations_list =
+            if let Some(ASTType::AlternationsList(alternations_list)) = self.pop(context) {
+                alternations_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationsList", context);
+            };
+        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
+            alternation
+        } else {
+            bail!("{}: Expecting ASTType::Alternation", context);
+        };
         let alternations_list_0_built = AlternationsListBuilder::default()
             .alternation(Box::new(alternation))
             // Ignore clipped member 'or'
@@ -1485,7 +1681,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternation_list =
-            pop_and_reverse_item!(self, alternation_list, AlternationList, context);
+            if let Some(ASTType::AlternationList(mut alternation_list)) = self.pop(context) {
+                alternation_list.reverse();
+                alternation_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationList", context);
+            };
         let alternation_built = AlternationBuilder::default()
             .alternation_list(alternation_list)
             .build()
@@ -1509,8 +1710,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut alternation_list = pop_item!(self, alternation_list, AlternationList, context);
-        let factor = pop_item!(self, factor, Factor, context);
+        let mut alternation_list =
+            if let Some(ASTType::AlternationList(alternation_list)) = self.pop(context) {
+                alternation_list
+            } else {
+                bail!("{}: Expecting ASTType::AlternationList", context);
+            };
+        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
+            factor
+        } else {
+            bail!("{}: Expecting ASTType::Factor", context);
+        };
         let alternation_list_0_built = AlternationListBuilder::default()
             .factor(Box::new(factor))
             .build()
@@ -1546,7 +1756,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let group = pop_item!(self, group, Group, context);
+        let group = if let Some(ASTType::Group(group)) = self.pop(context) {
+            group
+        } else {
+            bail!("{}: Expecting ASTType::Group", context);
+        };
         let factor_0_built = Factor0Builder::default()
             .group(Box::new(group))
             .build()
@@ -1570,7 +1784,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let repeat = pop_item!(self, repeat, Repeat, context);
+        let repeat = if let Some(ASTType::Repeat(repeat)) = self.pop(context) {
+            repeat
+        } else {
+            bail!("{}: Expecting ASTType::Repeat", context);
+        };
         let factor_1_built = Factor1Builder::default()
             .repeat(Box::new(repeat))
             .build()
@@ -1594,7 +1812,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let optional = pop_item!(self, optional, Optional, context);
+        let optional = if let Some(ASTType::Optional(optional)) = self.pop(context) {
+            optional
+        } else {
+            bail!("{}: Expecting ASTType::Optional", context);
+        };
         let factor_2_built = Factor2Builder::default()
             .optional(Box::new(optional))
             .build()
@@ -1618,7 +1840,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let symbol = pop_item!(self, symbol, Symbol, context);
+        let symbol = if let Some(ASTType::Symbol(symbol)) = self.pop(context) {
+            symbol
+        } else {
+            bail!("{}: Expecting ASTType::Symbol", context);
+        };
         let factor_3_built = Factor3Builder::default()
             .symbol(Box::new(symbol))
             .build()
@@ -1642,7 +1868,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
+        let non_terminal = if let Some(ASTType::NonTerminal(non_terminal)) = self.pop(context) {
+            non_terminal
+        } else {
+            bail!("{}: Expecting ASTType::NonTerminal", context);
+        };
         let symbol_0_built = Symbol0Builder::default()
             .non_terminal(Box::new(non_terminal))
             .build()
@@ -1666,7 +1896,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let simple_token = pop_item!(self, simple_token, SimpleToken, context);
+        let simple_token = if let Some(ASTType::SimpleToken(simple_token)) = self.pop(context) {
+            simple_token
+        } else {
+            bail!("{}: Expecting ASTType::SimpleToken", context);
+        };
         let symbol_1_built = Symbol1Builder::default()
             .simple_token(Box::new(simple_token))
             .build()
@@ -1690,7 +1924,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
+        let token_with_states =
+            if let Some(ASTType::TokenWithStates(token_with_states)) = self.pop(context) {
+                token_with_states
+            } else {
+                bail!("{}: Expecting ASTType::TokenWithStates", context);
+            };
         let symbol_2_built = Symbol2Builder::default()
             .token_with_states(Box::new(token_with_states))
             .build()
@@ -1714,7 +1953,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
+        let scanner_switch = if let Some(ASTType::ScannerSwitch(scanner_switch)) = self.pop(context)
+        {
+            scanner_switch
+        } else {
+            bail!("{}: Expecting ASTType::ScannerSwitch", context);
+        };
         let symbol_3_built = Symbol3Builder::default()
             .scanner_switch(Box::new(scanner_switch))
             .build()
@@ -1728,21 +1972,114 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// SimpleToken: String SimpleTokenOpt /* Option */;
+    /// TokenLiteral: String;
+    ///
+    #[named]
+    fn token_literal_0(
+        &mut self,
+        _string: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string = if let Some(ASTType::String(string)) = self.pop(context) {
+            string
+        } else {
+            bail!("{}: Expecting ASTType::String", context);
+        };
+        let token_literal_0_built = TokenLiteral0Builder::default()
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_0_built = TokenLiteral::TokenLiteral0(token_literal_0_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_0_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 35:
+    ///
+    /// TokenLiteral: RawString;
+    ///
+    #[named]
+    fn token_literal_1(
+        &mut self,
+        _raw_string: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let raw_string = if let Some(ASTType::RawString(raw_string)) = self.pop(context) {
+            raw_string
+        } else {
+            bail!("{}: Expecting ASTType::RawString", context);
+        };
+        let token_literal_1_built = TokenLiteral1Builder::default()
+            .raw_string(Box::new(raw_string))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_1_built = TokenLiteral::TokenLiteral1(token_literal_1_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_1_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 36:
+    ///
+    /// TokenLiteral: Regex;
+    ///
+    #[named]
+    fn token_literal_2(
+        &mut self,
+        _regex: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = if let Some(ASTType::Regex(regex)) = self.pop(context) {
+            regex
+        } else {
+            bail!("{}: Expecting ASTType::Regex", context);
+        };
+        let token_literal_2_built = TokenLiteral2Builder::default()
+            .regex(Box::new(regex))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_2_built = TokenLiteral::TokenLiteral2(token_literal_2_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_2_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 37:
+    ///
+    /// SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;
     ///
     #[named]
     fn simple_token(
         &mut self,
-        _string: &ParseTreeStackEntry<'t>,
+        _token_literal: &ParseTreeStackEntry<'t>,
         _simple_token_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
-        let string = pop_item!(self, string, String, context);
+        let simple_token_opt =
+            if let Some(ASTType::SimpleTokenOpt(simple_token_opt)) = self.pop(context) {
+                simple_token_opt
+            } else {
+                bail!("{}: Expecting ASTType::SimpleTokenOpt", context);
+            };
+        let token_literal = if let Some(ASTType::TokenLiteral(token_literal)) = self.pop(context) {
+            token_literal
+        } else {
+            bail!("{}: Expecting ASTType::TokenLiteral", context);
+        };
         let simple_token_built = SimpleTokenBuilder::default()
-            .string(Box::new(string))
+            .token_literal(Box::new(token_literal))
             .simple_token_opt(simple_token_opt)
             .build()
             .into_diagnostic()?;
@@ -1752,7 +2089,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 38:
     ///
     /// SimpleTokenOpt /* Option<T>::Some */: ASTControl;
     ///
@@ -1764,7 +2101,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
+        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
+            a_s_t_control
+        } else {
+            bail!("{}: Expecting ASTType::ASTControl", context);
+        };
         let simple_token_opt_0_built = SimpleTokenOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -1776,7 +2117,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 39:
     ///
     /// SimpleTokenOpt /* Option<T>::None */: ;
     ///
@@ -1788,9 +2129,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 40:
     ///
-    /// TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
     ///
     #[named]
     fn token_with_states(
@@ -1798,21 +2139,33 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         _l_t: &ParseTreeStackEntry<'t>,
         _state_list: &ParseTreeStackEntry<'t>,
         _g_t: &ParseTreeStackEntry<'t>,
-        _string: &ParseTreeStackEntry<'t>,
+        _token_literal: &ParseTreeStackEntry<'t>,
         _token_with_states_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states_opt =
-            pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
-        let string = pop_item!(self, string, String, context);
-        let state_list = pop_item!(self, state_list, StateList, context);
+            if let Some(ASTType::TokenWithStatesOpt(token_with_states_opt)) = self.pop(context) {
+                token_with_states_opt
+            } else {
+                bail!("{}: Expecting ASTType::TokenWithStatesOpt", context);
+            };
+        let token_literal = if let Some(ASTType::TokenLiteral(token_literal)) = self.pop(context) {
+            token_literal
+        } else {
+            bail!("{}: Expecting ASTType::TokenLiteral", context);
+        };
+        let state_list = if let Some(ASTType::StateList(state_list)) = self.pop(context) {
+            state_list
+        } else {
+            bail!("{}: Expecting ASTType::StateList", context);
+        };
         let token_with_states_built = TokenWithStatesBuilder::default()
             // Ignore clipped member 'l_t'
             .state_list(Box::new(state_list))
             // Ignore clipped member 'g_t'
-            .string(Box::new(string))
+            .token_literal(Box::new(token_literal))
             .token_with_states_opt(token_with_states_opt)
             .build()
             .into_diagnostic()?;
@@ -1823,7 +2176,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 41:
     ///
     /// TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
     ///
@@ -1835,7 +2188,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
+        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
+            a_s_t_control
+        } else {
+            bail!("{}: Expecting ASTType::ASTControl", context);
+        };
         let token_with_states_opt_0_built = TokenWithStatesOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -1847,7 +2204,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 42:
     ///
     /// TokenWithStatesOpt /* Option<T>::None */: ;
     ///
@@ -1859,7 +2216,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 43:
     ///
     /// Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
     ///
@@ -1873,7 +2230,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = pop_item!(self, alternations, Alternations, context);
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
         let group_built = GroupBuilder::default()
             // Ignore clipped member 'l_paren'
             .alternations(Box::new(alternations))
@@ -1886,7 +2247,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 44:
     ///
     /// Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
     ///
@@ -1900,7 +2261,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = pop_item!(self, alternations, Alternations, context);
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
         let optional_built = OptionalBuilder::default()
             // Ignore clipped member 'l_bracket'
             .alternations(Box::new(alternations))
@@ -1913,7 +2278,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 45:
     ///
     /// Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
     ///
@@ -1927,7 +2292,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = pop_item!(self, alternations, Alternations, context);
+        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
+            alternations
+        } else {
+            bail!("{}: Expecting ASTType::Alternations", context);
+        };
         let repeat_built = RepeatBuilder::default()
             // Ignore clipped member 'l_brace'
             .alternations(Box::new(alternations))
@@ -1940,7 +2309,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 46:
     ///
     /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
@@ -1953,8 +2322,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_terminal_opt = pop_item!(self, non_terminal_opt, NonTerminalOpt, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let non_terminal_opt =
+            if let Some(ASTType::NonTerminalOpt(non_terminal_opt)) = self.pop(context) {
+                non_terminal_opt
+            } else {
+                bail!("{}: Expecting ASTType::NonTerminalOpt", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let non_terminal_built = NonTerminalBuilder::default()
             .identifier(Box::new(identifier))
             .non_terminal_opt(non_terminal_opt)
@@ -1966,7 +2344,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 47:
     ///
     /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
@@ -1978,7 +2356,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
+        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
+            a_s_t_control
+        } else {
+            bail!("{}: Expecting ASTType::ASTControl", context);
+        };
         let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -1990,7 +2372,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 48:
     ///
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
@@ -2002,7 +2384,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 49:
     ///
     /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
@@ -2025,9 +2407,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 50:
     ///
-    /// String: "\u{0022}([^\\]|\\.)*?\u{0022}";
+    /// String: "\u{22}(\\.|[^\\])*?\u{22}";
     ///
     #[named]
     fn string(
@@ -2048,7 +2430,53 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 51:
+    ///
+    /// RawString: "'(\\'|[^'])*?'";
+    ///
+    #[named]
+    fn raw_string(
+        &mut self,
+        raw_string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let raw_string = raw_string.token(parse_tree)?.clone();
+        let raw_string_built = RawStringBuilder::default()
+            .raw_string(raw_string)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.raw_string(&raw_string_built)?;
+        self.push(ASTType::RawString(raw_string_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 52:
+    ///
+    /// Regex: "/(\\/|[^/]|)*?/";
+    ///
+    #[named]
+    fn regex(
+        &mut self,
+        regex: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = regex.token(parse_tree)?.clone();
+        let regex_built = RegexBuilder::default()
+            .regex(regex)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.regex(&regex_built)?;
+        self.push(ASTType::Regex(regex_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 53:
     ///
     /// ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
     ///
@@ -2065,8 +2493,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_state_list =
-            pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+            if let Some(ASTType::ScannerStateList(mut scanner_state_list)) = self.pop(context) {
+                scanner_state_list.reverse();
+                scanner_state_list
+            } else {
+                bail!("{}: Expecting ASTType::ScannerStateList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let scanner_state_built = ScannerStateBuilder::default()
             // Ignore clipped member 'percent_scanner'
             .identifier(Box::new(identifier))
@@ -2081,7 +2518,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 54:
     ///
     /// ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
     ///
@@ -2094,8 +2531,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut scanner_state_list = pop_item!(self, scanner_state_list, ScannerStateList, context);
-        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
+        let mut scanner_state_list =
+            if let Some(ASTType::ScannerStateList(scanner_state_list)) = self.pop(context) {
+                scanner_state_list
+            } else {
+                bail!("{}: Expecting ASTType::ScannerStateList", context);
+            };
+        let scanner_directives =
+            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
+                scanner_directives
+            } else {
+                bail!("{}: Expecting ASTType::ScannerDirectives", context);
+            };
         let scanner_state_list_0_built = ScannerStateListBuilder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
@@ -2106,7 +2553,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 55:
     ///
     /// ScannerStateList /* Vec<T>::New */: ;
     ///
@@ -2122,7 +2569,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 56:
     ///
     /// StateList: Identifier StateListList /* Vec */;
     ///
@@ -2135,8 +2582,18 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let state_list_list =
+            if let Some(ASTType::StateListList(mut state_list_list)) = self.pop(context) {
+                state_list_list.reverse();
+                state_list_list
+            } else {
+                bail!("{}: Expecting ASTType::StateListList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let state_list_built = StateListBuilder::default()
             .identifier(Box::new(identifier))
             .state_list_list(state_list_list)
@@ -2148,7 +2605,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 57:
     ///
     /// StateListList /* Vec<T>::Push */: ","^ /* Clipped */ Identifier StateListList;
     ///
@@ -2162,8 +2619,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let mut state_list_list =
+            if let Some(ASTType::StateListList(state_list_list)) = self.pop(context) {
+                state_list_list
+            } else {
+                bail!("{}: Expecting ASTType::StateListList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let state_list_list_0_built = StateListListBuilder::default()
             .identifier(Box::new(identifier))
             // Ignore clipped member 'comma'
@@ -2175,7 +2641,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 58:
     ///
     /// StateListList /* Vec<T>::New */: ;
     ///
@@ -2188,7 +2654,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 59:
     ///
     /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
     ///
@@ -2203,7 +2669,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
+        let scanner_switch_opt =
+            if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
+                scanner_switch_opt
+            } else {
+                bail!("{}: Expecting ASTType::ScannerSwitchOpt", context);
+            };
         let scanner_switch_0_built = ScannerSwitch0Builder::default()
             // Ignore clipped member 'percent_sc'
             // Ignore clipped member 'l_paren'
@@ -2218,7 +2689,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 60:
     ///
     /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
     ///
@@ -2233,7 +2704,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let scanner_switch_1_built = ScannerSwitch1Builder::default()
             // Ignore clipped member 'percent_push'
             // Ignore clipped member 'l_paren'
@@ -2248,7 +2723,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 61:
     ///
     /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
     ///
@@ -2275,7 +2750,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 62:
     ///
     /// ScannerSwitchOpt /* Option<T>::Some */: Identifier;
     ///
@@ -2287,7 +2762,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = pop_item!(self, identifier, Identifier, context);
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
             .identifier(Box::new(identifier))
             .build()
@@ -2299,7 +2778,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 58:
+    /// Semantic action for production 63:
     ///
     /// ScannerSwitchOpt /* Option<T>::None */: ;
     ///
@@ -2311,7 +2790,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 59:
+    /// Semantic action for production 64:
     ///
     /// ASTControl: CutOperator;
     ///
@@ -2323,7 +2802,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
+        let cut_operator = if let Some(ASTType::CutOperator(cut_operator)) = self.pop(context) {
+            cut_operator
+        } else {
+            bail!("{}: Expecting ASTType::CutOperator", context);
+        };
         let a_s_t_control_0_built = ASTControl0Builder::default()
             .cut_operator(Box::new(cut_operator))
             .build()
@@ -2335,7 +2818,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 60:
+    /// Semantic action for production 65:
     ///
     /// ASTControl: UserTypeDeclaration;
     ///
@@ -2348,7 +2831,11 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_declaration =
-            pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
+            if let Some(ASTType::UserTypeDeclaration(user_type_declaration)) = self.pop(context) {
+                user_type_declaration
+            } else {
+                bail!("{}: Expecting ASTType::UserTypeDeclaration", context);
+            };
         let a_s_t_control_1_built = ASTControl1Builder::default()
             .user_type_declaration(Box::new(user_type_declaration))
             .build()
@@ -2360,7 +2847,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 66:
     ///
     /// CutOperator: "\^"^ /* Clipped */;
     ///
@@ -2382,7 +2869,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 67:
     ///
     /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : UserType;
     ///
@@ -2395,7 +2882,12 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
+        let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
+        {
+            user_type_name
+        } else {
+            bail!("{}: Expecting ASTType::UserTypeName", context);
+        };
         let user_type_declaration_built = UserTypeDeclarationBuilder::default()
             // Ignore clipped member 'colon'
             .user_type_name((&user_type_name).try_into().into_diagnostic()?)
@@ -2411,7 +2903,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 68:
     ///
     /// UserTypeName: Identifier UserTypeNameList /* Vec */;
     ///
@@ -2425,8 +2917,17 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_name_list =
-            pop_and_reverse_item!(self, user_type_name_list, UserTypeNameList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+            if let Some(ASTType::UserTypeNameList(mut user_type_name_list)) = self.pop(context) {
+                user_type_name_list.reverse();
+                user_type_name_list
+            } else {
+                bail!("{}: Expecting ASTType::UserTypeNameList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         let user_type_name_built = UserTypeNameBuilder::default()
             .identifier(Box::new(identifier))
             .user_type_name_list(user_type_name_list)
@@ -2438,7 +2939,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 69:
     ///
     /// UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
     ///
@@ -2453,8 +2954,16 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut user_type_name_list =
-            pop_item!(self, user_type_name_list, UserTypeNameList, context);
-        let identifier = pop_item!(self, identifier, Identifier, context);
+            if let Some(ASTType::UserTypeNameList(user_type_name_list)) = self.pop(context) {
+                user_type_name_list
+            } else {
+                bail!("{}: Expecting ASTType::UserTypeNameList", context);
+            };
+        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
+            identifier
+        } else {
+            bail!("{}: Expecting ASTType::Identifier", context);
+        };
         // Ignore clipped member 'double_colon'
         self.pop(context);
         let user_type_name_list_0_built = UserTypeNameListBuilder::default()
@@ -2468,7 +2977,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 70:
     ///
     /// UserTypeNameList /* Vec<T>::New */: ;
     ///
@@ -2542,10 +3051,13 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             31 => self.symbol_1(&children[0], parse_tree),
             32 => self.symbol_2(&children[0], parse_tree),
             33 => self.symbol_3(&children[0], parse_tree),
-            34 => self.simple_token(&children[0], &children[1], parse_tree),
-            35 => self.simple_token_opt_0(&children[0], parse_tree),
-            36 => self.simple_token_opt_1(parse_tree),
-            37 => self.token_with_states(
+            34 => self.token_literal_0(&children[0], parse_tree),
+            35 => self.token_literal_1(&children[0], parse_tree),
+            36 => self.token_literal_2(&children[0], parse_tree),
+            37 => self.simple_token(&children[0], &children[1], parse_tree),
+            38 => self.simple_token_opt_0(&children[0], parse_tree),
+            39 => self.simple_token_opt_1(parse_tree),
+            40 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -2553,17 +3065,19 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            38 => self.token_with_states_opt_0(&children[0], parse_tree),
-            39 => self.token_with_states_opt_1(parse_tree),
-            40 => self.group(&children[0], &children[1], &children[2], parse_tree),
-            41 => self.optional(&children[0], &children[1], &children[2], parse_tree),
-            42 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
-            43 => self.non_terminal(&children[0], &children[1], parse_tree),
-            44 => self.non_terminal_opt_0(&children[0], parse_tree),
-            45 => self.non_terminal_opt_1(parse_tree),
-            46 => self.identifier(&children[0], parse_tree),
-            47 => self.string(&children[0], parse_tree),
-            48 => self.scanner_state(
+            41 => self.token_with_states_opt_0(&children[0], parse_tree),
+            42 => self.token_with_states_opt_1(parse_tree),
+            43 => self.group(&children[0], &children[1], &children[2], parse_tree),
+            44 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            45 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            46 => self.non_terminal(&children[0], &children[1], parse_tree),
+            47 => self.non_terminal_opt_0(&children[0], parse_tree),
+            48 => self.non_terminal_opt_1(parse_tree),
+            49 => self.identifier(&children[0], parse_tree),
+            50 => self.string(&children[0], parse_tree),
+            51 => self.raw_string(&children[0], parse_tree),
+            52 => self.regex(&children[0], parse_tree),
+            53 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -2571,35 +3085,35 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            49 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
-            50 => self.scanner_state_list_1(parse_tree),
-            51 => self.state_list(&children[0], &children[1], parse_tree),
-            52 => self.state_list_list_0(&children[0], &children[1], &children[2], parse_tree),
-            53 => self.state_list_list_1(parse_tree),
-            54 => self.scanner_switch_0(
+            54 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
+            55 => self.scanner_state_list_1(parse_tree),
+            56 => self.state_list(&children[0], &children[1], parse_tree),
+            57 => self.state_list_list_0(&children[0], &children[1], &children[2], parse_tree),
+            58 => self.state_list_list_1(parse_tree),
+            59 => self.scanner_switch_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            55 => self.scanner_switch_1(
+            60 => self.scanner_switch_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            56 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
-            57 => self.scanner_switch_opt_0(&children[0], parse_tree),
-            58 => self.scanner_switch_opt_1(parse_tree),
-            59 => self.a_s_t_control_0(&children[0], parse_tree),
-            60 => self.a_s_t_control_1(&children[0], parse_tree),
-            61 => self.cut_operator(&children[0], parse_tree),
-            62 => self.user_type_declaration(&children[0], &children[1], parse_tree),
-            63 => self.user_type_name(&children[0], &children[1], parse_tree),
-            64 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
-            65 => self.user_type_name_list_1(parse_tree),
+            61 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
+            62 => self.scanner_switch_opt_0(&children[0], parse_tree),
+            63 => self.scanner_switch_opt_1(parse_tree),
+            64 => self.a_s_t_control_0(&children[0], parse_tree),
+            65 => self.a_s_t_control_1(&children[0], parse_tree),
+            66 => self.cut_operator(&children[0], parse_tree),
+            67 => self.user_type_declaration(&children[0], &children[1], parse_tree),
+            68 => self.user_type_name(&children[0], &children[1], parse_tree),
+            69 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
+            70 => self.user_type_name_list_1(parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

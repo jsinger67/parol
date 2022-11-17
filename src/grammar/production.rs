@@ -29,7 +29,12 @@ impl Display for Pr {
     /// The output format for a production roughly follows the Yacc format.
     ///
     /// ```
-    /// use parol::{Pr, Symbol};
+    /// use parol::{Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
+    ///
+    /// macro_rules! terminal {
+    ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+    ///         vec![0], SymbolAttribute::None, None))};
+    /// }
     ///
     /// let pr = Pr::new("S", vec![]);
     /// assert_eq!("S: ;", format!("{}", pr));
@@ -37,11 +42,11 @@ impl Display for Pr {
     /// assert_eq!("S: N L;", format!("{}", pr));
     /// let pr = Pr::new("S", vec![Symbol::n("I"), Symbol::n("L")]);
     /// assert_eq!("S: I L;", format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t_n(",", vec![0]), Symbol::n("N")]);
+    /// let pr = Pr::new("S", vec![terminal!(","), Symbol::n("N")]);
     /// assert_eq!(r#"S: "," N;"#, format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t_n("d", vec![0])]);
+    /// let pr = Pr::new("S", vec![terminal!("d")]);
     /// assert_eq!(r#"S: "d";"#, format!("{}", pr));
-    /// let pr = Pr::new("S", vec![Symbol::t_n(r#"[0-9]"#, vec![0]), Symbol::t_n("e", vec![0])]);
+    /// let pr = Pr::new("S", vec![terminal!(r#"[0-9]"#), terminal!("e")]);
     /// assert_eq!(r#"S: "[0-9]" "e";"#, format!("{}", pr));
     /// ```
     ///

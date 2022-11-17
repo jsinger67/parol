@@ -29,7 +29,7 @@ pub mod build;
 #[forbid(missing_docs)]
 pub mod grammar;
 
-pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, Terminal};
+pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolAttribute, Terminal, TerminalKind};
 
 ///
 /// Module with functionalities for grammar analysis

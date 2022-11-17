@@ -20,4 +20,4 @@ pub(crate) mod symbol_string;
 
 /// Module with symbol types
 pub mod symbol;
-pub use symbol::{Symbol, Terminal};
+pub use symbol::{Symbol, Terminal, TerminalKind};

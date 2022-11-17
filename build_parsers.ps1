@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorCont = 0
-$CargoConfig = if ($Config -eq "release") { "--release" } else { "" }
+$CargoConfig = if ($Config -eq "release") { "--release" } else { $null}
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
 cargo build $CargoConfig

@@ -59,7 +59,7 @@ fn try_from_scanner_config(
 pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
     match factor {
         Factor::NonTerminal(n, a, u) => Ok(Symbol::N(n, a, u)),
-        Factor::Terminal(t, s, a, u) => Ok(Symbol::T(Terminal::Trm(t, s, a, u))),
+        Factor::Terminal(t, k, s, a, u) => Ok(Symbol::T(Terminal::Trm(t, k, s, a, u))),
         Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop => Ok(Symbol::Pop),

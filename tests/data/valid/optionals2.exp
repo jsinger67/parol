@@ -3,7 +3,7 @@
 %%
 
 /* 0 */ Start: StartOpt /* Option */;
-/* 1 */ StartOpt: StartOptGroup; // Option<T>::Some
+/* 1 */ StartOpt /* Option<T>::Some */: StartOptGroup;
 /* 2 */ StartOptGroup: "a";
 /* 3 */ StartOptGroup: "b";
-/* 4 */ StartOpt: ; // Option<T>::None
+/* 4 */ StartOpt /* Option<T>::None */: ;

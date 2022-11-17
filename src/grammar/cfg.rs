@@ -107,7 +107,7 @@ impl Cfg {
     pub fn get_ordered_terminals(&self) -> Vec<(&str, Vec<usize>)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::T(Terminal::Trm(t, s, ..)) = s {
+                if let Symbol::T(Terminal::Trm(t, _, s, ..)) = s {
                     if let Some(pos) = acc.iter_mut().position(|(trm, _)| trm == t) {
                         for st in s {
                             if !acc[pos].1.contains(st) {
@@ -226,20 +226,25 @@ impl Cfg {
     /// Calculates all nullable non-terminals.
     ///
     /// ```
-    /// use parol::{Cfg, Pr, Symbol};
+    /// use parol::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
     /// use std::collections::BTreeSet;
     /// use std::convert::From;
+    ///
+    /// macro_rules! terminal {
+    ///     ($term:literal) => {Symbol::T(Terminal::Trm($term.to_string(), TerminalKind::Legacy,
+    ///         vec![0], SymbolAttribute::None, None))};
+    /// }
     ///
     /// let g = Cfg::with_start_symbol("S")
     ///     .add_pr(Pr::new("S", vec![Symbol::n("Y")]))
     ///     .add_pr(Pr::new("Y", vec![Symbol::n("U"), Symbol::n("Z")]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), Symbol::t_n("a", vec![0])]))
-    ///     .add_pr(Pr::new("Y", vec![Symbol::t_n("b", vec![0])]))
+    ///     .add_pr(Pr::new("Y", vec![Symbol::n("X"), terminal!("a")]))
+    ///     .add_pr(Pr::new("Y", vec![terminal!("b")]))
     ///     .add_pr(Pr::new("U", vec![Symbol::n("V")]))
     ///     .add_pr(Pr::new("U", vec![]))
-    ///     .add_pr(Pr::new("X", vec![Symbol::t_n("c", vec![0])]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), Symbol::t_n("d", vec![0])]))
-    ///     .add_pr(Pr::new("V", vec![Symbol::t_n("d", vec![0])]))
+    ///     .add_pr(Pr::new("X", vec![terminal!("c")]))
+    ///     .add_pr(Pr::new("V", vec![Symbol::n("V"), terminal!("d")]))
+    ///     .add_pr(Pr::new("V", vec![terminal!("d")]))
     ///     .add_pr(Pr::new("Z", vec![]))
     ///     .add_pr(Pr::new("Z", vec![Symbol::n("Z"), Symbol::n("X")]));
     /// let productive = g.calculate_nullable_non_terminals();
