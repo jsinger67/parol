@@ -32,7 +32,6 @@ rand = "0.8.5"
 rand_regex = "0.15.1"
 regex = "1.6"
 regex-syntax = "0.6.27"
-semver = "1.0"
 syn = { version = "1", default-features = false, features = ["full", "parsing"] }
 thiserror = "1.0"
 

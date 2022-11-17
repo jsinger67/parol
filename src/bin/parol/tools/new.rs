@@ -3,7 +3,6 @@ use derive_builder::Builder;
 use miette::{bail, miette, Context, IntoDiagnostic, Result};
 use owo_colors::OwoColorize;
 use parol::generators::NamingHelper as NmHlp;
-use semver::{BuildMetadata, Prerelease, Version};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
