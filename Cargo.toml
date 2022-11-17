@@ -12,11 +12,14 @@ license = "MIT"
 edition = "2018"
 
 [dependencies]
+derive_builder = { version = "0.11.2", optional = true }
+function_name = "0.3.0"
 id_tree = "1.8"
 id_tree_layout = "2.0.3"
 lazy_static = "1.4"
 log = "0.4.17"
 miette = "5.2"
+parol-macros = { version = "0.1.0", optional = true }
 regex = "1.6"
 thiserror = "1.0"
 
@@ -26,3 +29,5 @@ default = []
 # The feature `trim_parse_tree` is usefull if performace is a goal and the full parse tree is not
 # needed at the end of the parse process.
 trim_parse_tree = []
+# Auto generation mode requires these crates.
+auto_generation = ["derive_builder", "parol-macros"]
