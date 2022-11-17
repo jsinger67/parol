@@ -4,14 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::calc_grammar::CalcGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
+use parol_runtime::derive_builder::Builder;
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -821,7 +821,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Calc: CalcList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn calc(
         &mut self,
         _calc_list: &ParseTreeStackEntry<'t>,
@@ -844,7 +844,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// CalcList /* Vec<T>::Push */: Instruction ";"^ /* Clipped */ CalcList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn calc_list_0(
         &mut self,
         _instruction: &ParseTreeStackEntry<'t>,
@@ -871,7 +871,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// CalcList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn calc_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -884,7 +884,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// EqualityOp: "==|!=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn equality_op(
         &mut self,
         equality_op: &ParseTreeStackEntry<'t>,
@@ -907,7 +907,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assign_op(
         &mut self,
         assign_op: &ParseTreeStackEntry<'t>,
@@ -930,7 +930,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrOp: "\|\|";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_op(
         &mut self,
         logical_or_op: &ParseTreeStackEntry<'t>,
@@ -953,7 +953,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndOp: "&&";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_op(
         &mut self,
         logical_and_op: &ParseTreeStackEntry<'t>,
@@ -976,7 +976,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseOrOp: "\|";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_or_op(
         &mut self,
         bitwise_or_op: &ParseTreeStackEntry<'t>,
@@ -999,7 +999,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseAndOp: "&";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_and_op(
         &mut self,
         bitwise_and_op: &ParseTreeStackEntry<'t>,
@@ -1022,7 +1022,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseShiftOp: "<<|>>";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_shift_op(
         &mut self,
         bitwise_shift_op: &ParseTreeStackEntry<'t>,
@@ -1046,7 +1046,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// RelationalOp: "<=|<|>=|>";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_op(
         &mut self,
         relational_op: &ParseTreeStackEntry<'t>,
@@ -1069,7 +1069,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Plus: "\+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn plus(
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
@@ -1092,7 +1092,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Minus: "-";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn minus(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -1115,7 +1115,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// PowOp: "\*\*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn pow_op(
         &mut self,
         pow_op: &ParseTreeStackEntry<'t>,
@@ -1138,7 +1138,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// MultOp: "\*|/|%";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mult_op(
         &mut self,
         mult_op: &ParseTreeStackEntry<'t>,
@@ -1161,7 +1161,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Instruction: Assignment;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn instruction_0(
         &mut self,
         _assignment: &ParseTreeStackEntry<'t>,
@@ -1185,7 +1185,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Instruction: LogicalOr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn instruction_1(
         &mut self,
         _logical_or: &ParseTreeStackEntry<'t>,
@@ -1209,7 +1209,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AssignItem: Id AssignOp;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assign_item(
         &mut self,
         _id: &ParseTreeStackEntry<'t>,
@@ -1235,7 +1235,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment(
         &mut self,
         _assign_item: &ParseTreeStackEntry<'t>,
@@ -1264,7 +1264,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AssignmentList /* Vec<T>::Push */: AssignItem AssignmentList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment_list_0(
         &mut self,
         _assign_item: &ParseTreeStackEntry<'t>,
@@ -1289,7 +1289,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AssignmentList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1302,7 +1302,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or(
         &mut self,
         _logical_and: &ParseTreeStackEntry<'t>,
@@ -1328,7 +1328,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_list_0(
         &mut self,
         _logical_or_op: &ParseTreeStackEntry<'t>,
@@ -1356,7 +1356,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1369,7 +1369,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and(
         &mut self,
         _bitwise_or: &ParseTreeStackEntry<'t>,
@@ -1396,7 +1396,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp BitwiseOr LogicalAndList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_list_0(
         &mut self,
         _logical_and_op: &ParseTreeStackEntry<'t>,
@@ -1424,7 +1424,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1437,7 +1437,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_or(
         &mut self,
         _bitwise_and: &ParseTreeStackEntry<'t>,
@@ -1463,7 +1463,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseOrList /* Vec<T>::Push */: BitwiseOrOp BitwiseAnd BitwiseOrList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_or_list_0(
         &mut self,
         _bitwise_or_op: &ParseTreeStackEntry<'t>,
@@ -1491,7 +1491,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseOrList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1504,7 +1504,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseAnd: Equality BitwiseAndList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_and(
         &mut self,
         _equality: &ParseTreeStackEntry<'t>,
@@ -1531,7 +1531,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseAndList /* Vec<T>::Push */: BitwiseAndOp Equality BitwiseAndList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_and_list_0(
         &mut self,
         _bitwise_and_op: &ParseTreeStackEntry<'t>,
@@ -1559,7 +1559,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseAndList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1572,7 +1572,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Equality: Relational EqualityList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn equality(
         &mut self,
         _relational: &ParseTreeStackEntry<'t>,
@@ -1598,7 +1598,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// EqualityList /* Vec<T>::Push */: EqualityOp Relational EqualityList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn equality_list_0(
         &mut self,
         _equality_op: &ParseTreeStackEntry<'t>,
@@ -1626,7 +1626,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// EqualityList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn equality_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1639,7 +1639,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Relational: BitwiseShift RelationalList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational(
         &mut self,
         _bitwise_shift: &ParseTreeStackEntry<'t>,
@@ -1665,7 +1665,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// RelationalList /* Vec<T>::Push */: RelationalOp BitwiseShift RelationalList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_list_0(
         &mut self,
         _relational_op: &ParseTreeStackEntry<'t>,
@@ -1693,7 +1693,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// RelationalList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1706,7 +1706,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseShift: Summ BitwiseShiftList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_shift(
         &mut self,
         _summ: &ParseTreeStackEntry<'t>,
@@ -1733,7 +1733,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseShiftList /* Vec<T>::Push */: BitwiseShiftOp Summ BitwiseShiftList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_shift_list_0(
         &mut self,
         _bitwise_shift_op: &ParseTreeStackEntry<'t>,
@@ -1761,7 +1761,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// BitwiseShiftList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bitwise_shift_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1777,7 +1777,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AddOp: Plus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn add_op_0(
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
@@ -1801,7 +1801,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// AddOp: Minus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn add_op_1(
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
@@ -1825,7 +1825,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Summ: Mult SummList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summ(
         &mut self,
         _mult: &ParseTreeStackEntry<'t>,
@@ -1851,7 +1851,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// SummList /* Vec<T>::Push */: AddOp Mult SummList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summ_list_0(
         &mut self,
         _add_op: &ParseTreeStackEntry<'t>,
@@ -1879,7 +1879,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// SummList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summ_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1892,7 +1892,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Mult: Power MultList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mult(
         &mut self,
         _power: &ParseTreeStackEntry<'t>,
@@ -1918,7 +1918,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// MultList /* Vec<T>::Push */: MultOp Power MultList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mult_list_0(
         &mut self,
         _mult_op: &ParseTreeStackEntry<'t>,
@@ -1946,7 +1946,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// MultList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mult_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1959,7 +1959,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Power: Factor PowerList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn power(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
@@ -1985,7 +1985,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// PowerList /* Vec<T>::Push */: PowOp Factor PowerList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn power_list_0(
         &mut self,
         _pow_op: &ParseTreeStackEntry<'t>,
@@ -2013,7 +2013,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// PowerList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn power_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2026,7 +2026,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Negate: Minus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn negate(
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
@@ -2049,7 +2049,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Factor: Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_0(
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
@@ -2073,7 +2073,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Factor: IdRef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_1(
         &mut self,
         _id_ref: &ParseTreeStackEntry<'t>,
@@ -2097,7 +2097,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Factor: Negate Factor;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
         _negate: &ParseTreeStackEntry<'t>,
@@ -2124,7 +2124,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Factor: "\("^ /* Clipped */ LogicalOr "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -2152,7 +2152,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Number: "0|[1-9][0-9]*" : crate::calc_grammar::Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number(
         &mut self,
         number: &ParseTreeStackEntry<'t>,
@@ -2175,7 +2175,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// IdRef: Id;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn id_ref(
         &mut self,
         _id: &ParseTreeStackEntry<'t>,
@@ -2198,7 +2198,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ///
     /// Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn id(
         &mut self,
         id: &ParseTreeStackEntry<'t>,

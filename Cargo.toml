@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.13.1"
+version = "0.14.0-alpah.1"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -27,7 +27,7 @@ log = "0.4.17"
 miette = { version = "5.2.0", features = ["fancy"] }
 owo-colors = "3.5.0"
 parol-macros = "0.1.0"
-parol_runtime = "0.8.1"
+parol_runtime = { path = "../parol-runtime", features = ["auto_generation"] }
 rand = "0.8.5"
 rand_regex = "0.15.1"
 regex = "1.6"

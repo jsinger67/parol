@@ -1,4 +1,4 @@
-use miette::{NamedSource, SourceSpan};
+use miette::{NamedSource, SourceSpan, Diagnostic};
 
 #[derive(Error, Diagnostic, Debug)]
 pub enum CalcError {
