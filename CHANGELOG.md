@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.13.1 - Not released yet
+## v0.13.1 - 2022-11-17
 
 * Looked after new clippy warnings (from Rust 1.65)
 * Optimized release profile
