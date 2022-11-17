@@ -16,6 +16,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## v0.9.0 - 2022-11-16
+
+* Merged PR #2 from ry033. Kudos 👍
+  * This introduces a new feature "auto_generation" that should be enabled for crates that use
+  `parol`'s auto generation mode. If you don't know exactly what this is, please enable this
+  feature! I consider to make it a default feature in future release.
+
 ## v0.8.1 - 2022-10-14
 
 * `Token`: Fixed the method `to_owned` and added a method `into_owned`.
