@@ -80,7 +80,7 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.9.1"],
-    &["add", "parol_runtime@0.8.1"],
+    &["add", "parol_runtime@0.9.0", "--features", "auto_generation"],
     &["add", "thiserror@1.0"],
     &[
         "add",
@@ -129,19 +129,7 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
                     .into_diagnostic()
                     .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
             } else {
-                let mut prev_version =
-                    Version::parse(env!("CARGO_PKG_VERSION")).into_diagnostic()?;
-                prev_version.pre = Prerelease::EMPTY;
-                prev_version.build = BuildMetadata::EMPTY;
-                if prev_version.patch > 0 {
-                    prev_version.patch -= 1;
-                } else {
-                    bail!(
-                        r"Can't handle a prerelease version of parol with patch version 0!
-Please, install the latest released version of parol (`cargo install parol`)."
-                    )
-                }
-                let cargo_args = format!("add parol@{} --build", prev_version);
+                let cargo_args = "add parol --build --git https://github.com/jsinger67/parol.git";
                 Command::new("cargo")
                     .current_dir(&creation_data.path)
                     .args(cargo_args.split(' '))

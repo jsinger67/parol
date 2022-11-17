@@ -11,7 +11,6 @@ use parol_runtime::log::trace;
 use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
-use parol_runtime::derive_builder::Builder;
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -52,7 +51,7 @@ pub trait ListGrammarTrait {
 /// Type derived for non-terminal Items
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct Items {
     pub num: Box<Num>,
     pub items_list: Vec<ItemsList>,
@@ -62,7 +61,7 @@ pub struct Items {
 /// Type derived for non-terminal ItemsList
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct ItemsList {
     pub num: Box<Num>,
 }
@@ -71,7 +70,7 @@ pub struct ItemsList {
 /// Type derived for non-terminal List
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct List {
     pub list_opt: Option<Box<ListOpt>>,
 }
@@ -80,7 +79,7 @@ pub struct List {
 /// Type derived for non-terminal ListOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct ListOpt {
     pub items: crate::list_grammar::Numbers,
 }
@@ -89,7 +88,7 @@ pub struct ListOpt {
 /// Type derived for non-terminal Num
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct Num {
     pub num: crate::list_grammar::Number, /* 0|[1-9][0-9]* */
 }
@@ -98,7 +97,7 @@ pub struct Num {
 /// Type derived for non-terminal TrailingComma
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct TrailingComma {
     pub trailing_comma_opt: Option<Box<TrailingCommaOpt>>,
 }
@@ -107,7 +106,7 @@ pub struct TrailingComma {
 /// Type derived for non-terminal TrailingCommaOpt
 ///
 #[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
+#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
 pub struct TrailingCommaOpt {}
 
 // -------------------------------------------------------------------------------------------------

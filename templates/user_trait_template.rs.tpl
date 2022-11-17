@@ -12,7 +12,6 @@ use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait
 {{/auto_generate}}use parol_runtime::miette::{miette, {{#auto_generate?}}bail, IntoDiagnostic, {{/auto_generate}}Result};
 {{^auto_generate?}}use crate::{{module_name}}::{{user_type_name}};{{/auto_generate}}{{^ast_type_has_lifetime?}}
 use std::marker::PhantomData;{{/ast_type_has_lifetime}}
-{{#auto_generate?}}use parol_runtime::derive_builder::Builder;{{/auto_generate}}
 
 {{#auto_generate?}}
 /// Semantic actions trait generated for the user grammar
