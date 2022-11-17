@@ -79,14 +79,7 @@ pub fn main(args: &Args) -> Result<()> {
 }
 
 const DEPENDENCIES: &[&[&str]] = &[
-    &["add", "derive_builder@0.11.2"],
     &["add", "env_logger@0.9.1"],
-    &["add", "function_name@0.3.0"],
-    &["add", "id_tree@1.8"],
-    &["add", "lazy_static@1.4"],
-    &["add", "log@0.4.17"],
-    &["add", "miette@5.2", "--features", "fancy"],
-    &["add", "parol-macros@0.1.0"],
     &["add", "parol_runtime@0.8.1"],
     &["add", "thiserror@1.0"],
     &[
