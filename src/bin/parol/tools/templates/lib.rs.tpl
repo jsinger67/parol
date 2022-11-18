@@ -1,3 +1,7 @@
+// auto generation needs derive_builder
+mod derive_builder {
+    pub use parol_runtime::derive_builder::*;
+}
 {{#tree_gen?}}use parol_runtime::id_tree::Tree;
 use parol_runtime::id_tree_layout::Layouter;
 use parol_runtime::parser::ParseTreeType;{{/tree_gen}}
