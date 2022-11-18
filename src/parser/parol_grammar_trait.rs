@@ -654,7 +654,7 @@ pub struct RawString<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Regex<'t> {
-    pub regex: Token<'t>, /* \u{2F}(\\/|[^/]|)*?\u{2F} */
+    pub regex: Token<'t>, /* \u{2F}(\\.|[^\\]|)*?\u{2F} */
 }
 
 ///
@@ -2041,7 +2041,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// Regex: "\u{2F}(\\/|[^/]|)*?\u{2F}";
+    /// Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
     ///
     #[parol_runtime::function_name::named]
     fn regex(

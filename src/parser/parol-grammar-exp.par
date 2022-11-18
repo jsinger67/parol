@@ -52,7 +52,7 @@
 /* 41 */ TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
 /* 42 */ TokenWithStatesOpt /* Option<T>::None */: ;
 /* 43 */ Group: '('^ /* Clipped */ Alternations ')'^ /* Clipped */;
-/* 44 */ Regex: "\u{2F}(\\/|[^/]|)*?\u{2F}";
+/* 44 */ Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
 /* 45 */ Optional: '['^ /* Clipped */ Alternations ']'^ /* Clipped */;
 /* 46 */ Repeat: '{'^ /* Clipped */ Alternations '}'^ /* Clipped */;
 /* 47 */ NonTerminal: Identifier NonTerminalOpt /* Option */;

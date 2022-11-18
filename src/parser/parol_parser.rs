@@ -45,7 +45,7 @@ pub const TERMINALS: &[&str; 38] = &[
     /* 20 */ r###">"###,
     /* 21 */ r###"\("###,
     /* 22 */ r###"\)"###,
-    /* 23 */ r###"\u{2F}(\\/|[^/]|)*?\u{2F}"###,
+    /* 23 */ r###"\u{2F}(\\.|[^\\]|)*?\u{2F}"###,
     /* 24 */ r###"\["###,
     /* 25 */ r###"\]"###,
     /* 26 */ r###"\{"###,
@@ -852,7 +852,7 @@ pub const PRODUCTIONS: &[Production; 71] = &[
         lhs: 11,
         production: &[ParseType::T(22), ParseType::N(3), ParseType::T(21)],
     },
-    // 44 - Regex: "\u{2F}(\\/|[^/]|)*?\u{2F}";
+    // 44 - Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
     Production {
         lhs: 22,
         production: &[ParseType::T(23)],
