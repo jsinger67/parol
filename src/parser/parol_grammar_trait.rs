@@ -4,10 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
+#[allow(unused_imports)]
 use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
@@ -161,7 +164,7 @@ pub trait ParolGrammarTrait<'t> {
 /// Declaration: "%title"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Declaration0<'t> {
     pub string: Box<String<'t>>,
 }
@@ -172,7 +175,7 @@ pub struct Declaration0<'t> {
 /// Declaration: "%comment"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Declaration1<'t> {
     pub string: Box<String<'t>>,
 }
@@ -183,7 +186,7 @@ pub struct Declaration1<'t> {
 /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Declaration2<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
@@ -195,7 +198,7 @@ pub struct Declaration2<'t> {
 /// Declaration: ScannerDirectives;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Declaration3<'t> {
     pub scanner_directives: Box<ScannerDirectives<'t>>,
 }
@@ -206,7 +209,7 @@ pub struct Declaration3<'t> {
 /// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives0<'t> {
     pub string: Box<String<'t>>,
 }
@@ -217,7 +220,7 @@ pub struct ScannerDirectives0<'t> {
 /// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives1<'t> {
     pub string: Box<String<'t>>,
     pub string0: Box<String<'t>>,
@@ -229,7 +232,7 @@ pub struct ScannerDirectives1<'t> {
 /// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives2 {}
 
 ///
@@ -238,7 +241,7 @@ pub struct ScannerDirectives2 {}
 /// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives3 {}
 
 ///
@@ -247,7 +250,7 @@ pub struct ScannerDirectives3 {}
 /// Factor: Group;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Factor0<'t> {
     pub group: Box<Group<'t>>,
 }
@@ -258,7 +261,7 @@ pub struct Factor0<'t> {
 /// Factor: Repeat;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Factor1<'t> {
     pub repeat: Box<Repeat<'t>>,
 }
@@ -269,7 +272,7 @@ pub struct Factor1<'t> {
 /// Factor: Optional;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Factor2<'t> {
     pub optional: Box<Optional<'t>>,
 }
@@ -280,7 +283,7 @@ pub struct Factor2<'t> {
 /// Factor: Symbol;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Factor3<'t> {
     pub symbol: Box<Symbol<'t>>,
 }
@@ -291,7 +294,7 @@ pub struct Factor3<'t> {
 /// Symbol: NonTerminal;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Symbol0<'t> {
     pub non_terminal: Box<NonTerminal<'t>>,
 }
@@ -302,7 +305,7 @@ pub struct Symbol0<'t> {
 /// Symbol: SimpleToken;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Symbol1<'t> {
     pub simple_token: Box<SimpleToken<'t>>,
 }
@@ -313,7 +316,7 @@ pub struct Symbol1<'t> {
 /// Symbol: TokenWithStates;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Symbol2<'t> {
     pub token_with_states: Box<TokenWithStates<'t>>,
 }
@@ -324,7 +327,7 @@ pub struct Symbol2<'t> {
 /// Symbol: ScannerSwitch;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Symbol3<'t> {
     pub scanner_switch: Box<ScannerSwitch<'t>>,
 }
@@ -335,7 +338,7 @@ pub struct Symbol3<'t> {
 /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch0<'t> {
     pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
 }
@@ -346,7 +349,7 @@ pub struct ScannerSwitch0<'t> {
 /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch1<'t> {
     pub identifier: Box<Identifier<'t>>,
 }
@@ -357,7 +360,7 @@ pub struct ScannerSwitch1<'t> {
 /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitch2 {}
 
 ///
@@ -366,7 +369,7 @@ pub struct ScannerSwitch2 {}
 /// ASTControl: CutOperator;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ASTControl0 {
     pub cut_operator: Box<CutOperator>,
 }
@@ -377,7 +380,7 @@ pub struct ASTControl0 {
 /// ASTControl: UserTypeDeclaration;
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ASTControl1 {
     pub user_type_declaration: Box<UserTypeDeclaration>,
 }
@@ -401,7 +404,7 @@ pub enum ASTControl {
 /// Type derived for non-terminal Alternation
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Alternation<'t> {
     pub alternation_list: Vec<AlternationList<'t>>,
 }
@@ -410,7 +413,7 @@ pub struct Alternation<'t> {
 /// Type derived for non-terminal AlternationList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct AlternationList<'t> {
     pub factor: Box<Factor<'t>>,
 }
@@ -419,7 +422,7 @@ pub struct AlternationList<'t> {
 /// Type derived for non-terminal Alternations
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Alternations<'t> {
     pub alternation: Box<Alternation<'t>>,
     pub alternations_list: Vec<AlternationsList<'t>>,
@@ -429,7 +432,7 @@ pub struct Alternations<'t> {
 /// Type derived for non-terminal AlternationsList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct AlternationsList<'t> {
     pub alternation: Box<Alternation<'t>>,
 }
@@ -438,7 +441,7 @@ pub struct AlternationsList<'t> {
 /// Type derived for non-terminal CutOperator
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct CutOperator {}
 
 ///
@@ -457,7 +460,7 @@ pub enum Declaration<'t> {
 /// Type derived for non-terminal DoubleColon
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct DoubleColon<'t> {
     pub double_colon: Token<'t>, /* :: */
 }
@@ -478,7 +481,7 @@ pub enum Factor<'t> {
 /// Type derived for non-terminal GrammarDefinition
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct GrammarDefinition<'t> {
     pub production: Box<Production<'t>>,
     pub grammar_definition_list: Vec<GrammarDefinitionList<'t>>,
@@ -488,7 +491,7 @@ pub struct GrammarDefinition<'t> {
 /// Type derived for non-terminal GrammarDefinitionList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct GrammarDefinitionList<'t> {
     pub production: Box<Production<'t>>,
 }
@@ -497,7 +500,7 @@ pub struct GrammarDefinitionList<'t> {
 /// Type derived for non-terminal Group
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Group<'t> {
     pub alternations: Box<Alternations<'t>>,
 }
@@ -506,7 +509,7 @@ pub struct Group<'t> {
 /// Type derived for non-terminal Identifier
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Identifier<'t> {
     pub identifier: Token<'t>, /* [a-zA-Z_][a-zA-Z0-9_]* */
 }
@@ -515,7 +518,7 @@ pub struct Identifier<'t> {
 /// Type derived for non-terminal NonTerminal
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct NonTerminal<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
@@ -525,7 +528,7 @@ pub struct NonTerminal<'t> {
 /// Type derived for non-terminal NonTerminalOpt
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct NonTerminalOpt {
     pub a_s_t_control: Box<ASTControl>,
 }
@@ -534,7 +537,7 @@ pub struct NonTerminalOpt {
 /// Type derived for non-terminal Optional
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Optional<'t> {
     pub alternations: Box<Alternations<'t>>,
 }
@@ -543,7 +546,7 @@ pub struct Optional<'t> {
 /// Type derived for non-terminal Parol
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Parol<'t> {
     pub prolog: Box<Prolog<'t>>,
     pub grammar_definition: Box<GrammarDefinition<'t>>,
@@ -553,7 +556,7 @@ pub struct Parol<'t> {
 /// Type derived for non-terminal Production
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Production<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub alternations: Box<Alternations<'t>>,
@@ -563,7 +566,7 @@ pub struct Production<'t> {
 /// Type derived for non-terminal Prolog
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Prolog<'t> {
     pub start_declaration: Box<StartDeclaration<'t>>,
     pub prolog_list: Vec<PrologList<'t>>,
@@ -574,7 +577,7 @@ pub struct Prolog<'t> {
 /// Type derived for non-terminal PrologList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct PrologList<'t> {
     pub declaration: Box<Declaration<'t>>,
 }
@@ -583,7 +586,7 @@ pub struct PrologList<'t> {
 /// Type derived for non-terminal PrologList0
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct PrologList0 {
     pub scanner_state: crate::parser::parol_grammar::ScannerConfig,
 }
@@ -592,7 +595,7 @@ pub struct PrologList0 {
 /// Type derived for non-terminal Repeat
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct Repeat<'t> {
     pub alternations: Box<Alternations<'t>>,
 }
@@ -613,7 +616,7 @@ pub enum ScannerDirectives<'t> {
 /// Type derived for non-terminal ScannerState
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerState<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub scanner_state_list: Vec<ScannerStateList<'t>>,
@@ -623,7 +626,7 @@ pub struct ScannerState<'t> {
 /// Type derived for non-terminal ScannerStateList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerStateList<'t> {
     pub scanner_directives: Box<ScannerDirectives<'t>>,
 }
@@ -643,7 +646,7 @@ pub enum ScannerSwitch<'t> {
 /// Type derived for non-terminal ScannerSwitchOpt
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct ScannerSwitchOpt<'t> {
     pub identifier: Box<Identifier<'t>>,
 }
@@ -652,7 +655,7 @@ pub struct ScannerSwitchOpt<'t> {
 /// Type derived for non-terminal SimpleToken
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct SimpleToken<'t> {
     pub string: Box<String<'t>>,
     pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
@@ -662,7 +665,7 @@ pub struct SimpleToken<'t> {
 /// Type derived for non-terminal SimpleTokenOpt
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct SimpleTokenOpt {
     pub a_s_t_control: Box<ASTControl>,
 }
@@ -671,7 +674,7 @@ pub struct SimpleTokenOpt {
 /// Type derived for non-terminal StartDeclaration
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct StartDeclaration<'t> {
     pub identifier: Box<Identifier<'t>>,
 }
@@ -680,7 +683,7 @@ pub struct StartDeclaration<'t> {
 /// Type derived for non-terminal StateList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct StateList<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub state_list_list: Vec<StateListList<'t>>,
@@ -690,7 +693,7 @@ pub struct StateList<'t> {
 /// Type derived for non-terminal StateListList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct StateListList<'t> {
     pub identifier: Box<Identifier<'t>>,
 }
@@ -699,7 +702,7 @@ pub struct StateListList<'t> {
 /// Type derived for non-terminal String
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct String<'t> {
     pub string: Token<'t>, /* \u{0022}([^\\]|\\.)*?\u{0022} */
 }
@@ -720,7 +723,7 @@ pub enum Symbol<'t> {
 /// Type derived for non-terminal TokenWithStates
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct TokenWithStates<'t> {
     pub state_list: Box<StateList<'t>>,
     pub string: Box<String<'t>>,
@@ -731,7 +734,7 @@ pub struct TokenWithStates<'t> {
 /// Type derived for non-terminal TokenWithStatesOpt
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct TokenWithStatesOpt {
     pub a_s_t_control: Box<ASTControl>,
 }
@@ -740,7 +743,7 @@ pub struct TokenWithStatesOpt {
 /// Type derived for non-terminal UserTypeDeclaration
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct UserTypeDeclaration {
     pub user_type_name: crate::parser::parol_grammar::UserDefinedTypeName,
 }
@@ -749,7 +752,7 @@ pub struct UserTypeDeclaration {
 /// Type derived for non-terminal UserTypeName
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct UserTypeName<'t> {
     pub identifier: Box<Identifier<'t>>,
     pub user_type_name_list: Vec<UserTypeNameList<'t>>,
@@ -759,7 +762,7 @@ pub struct UserTypeName<'t> {
 /// Type derived for non-terminal UserTypeNameList
 ///
 #[allow(dead_code)]
-#[derive(parol_runtime::derive_builder::Builder, Debug, Clone)]
+#[derive(Builder, Debug, Clone)]
 pub struct UserTypeNameList<'t> {
     pub identifier: Box<Identifier<'t>>,
 }

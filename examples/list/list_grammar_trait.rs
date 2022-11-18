@@ -7,6 +7,7 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::list_grammar::ListGrammar;
+#[allow(unused_imports)]
 use parol_runtime::miette::{miette, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
