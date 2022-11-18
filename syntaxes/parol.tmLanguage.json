@@ -47,7 +47,29 @@
           "patterns": [
             {
               "name": "string.quoted.double.parol",
-              "match": "\\\\(\\\\|[bfnrt\"]|u\\{[0-9a-fA-F]{1,8}\\})|[^\"]"
+              "match": "\\.|[^\\\"]"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.parol",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "string.quoted.single.parol",
+              "match": "\\'|[^']"
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.parol",
+          "begin": "/",
+          "end": "/",
+          "patterns": [
+            {
+              "name": "string.quoted.regex.parol",
+              "match": "\\/|[^/]"
             }
           ]
         }

@@ -7,7 +7,7 @@
     "license": "MIT",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "repository": {
         "url": "https://github.com/jsinger67/parol-vscode.git",
         "type": "git"

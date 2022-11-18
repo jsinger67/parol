@@ -4,6 +4,10 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.11
+
+- Support for new parol features from 0.14.0 (new terminal representation forms)
+
 ## v0.1.10
 
 - Improved support for configuration properties.
