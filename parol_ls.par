@@ -70,12 +70,18 @@ Symbol
     | ScannerSwitch
     ;
 
+TokenLiteral
+    : String
+    | LiteralString
+    | Regex
+    ;
+
 SimpleToken
-    : String [ASTControl]
+    : TokenLiteral [ASTControl]
     ;
 
 TokenWithStates
-    :  "<": OwnedToken StateList ">": OwnedToken String [ASTControl]
+    :  "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ASTControl]
     ;
 
 Group
@@ -99,7 +105,11 @@ Identifier
     ;
 
 String
-    : "\u{22}([^\\]|\\.)*?\u{22}": OwnedToken
+    : "\u{22}(\\.|[^\\])*?\u{22}": OwnedToken
+    ;
+
+LiteralString
+    : "'(\\'|[^'])*?'": OwnedToken
     ;
 
 ScannerState
@@ -142,4 +152,8 @@ LineComment
 
 BlockComment
     : "(?ms)/\u{2a}.*?\u{2a}/": OwnedToken
+    ;
+
+Regex
+    : "/(\\/|[^/]|)*?/": OwnedToken
     ;

@@ -265,7 +265,7 @@ impl From<&ScannerSwitchOpt> for Rng {
 
 impl From<&SimpleToken> for Rng {
     fn from(val: &SimpleToken) -> Self {
-        let rng = Self::from(&val.string.string);
+        let rng = Self::from(&*val.token_literal);
         val.simple_token_opt
             .as_ref()
             .map_or(rng, |simple_token_opt| {
@@ -321,11 +321,21 @@ impl From<&Symbol> for Rng {
     }
 }
 
+impl From<&TokenLiteral> for Rng {
+    fn from(val: &TokenLiteral) -> Self {
+        match val {
+            TokenLiteral::TokenLiteral0(s) => Self::from(&s.string.string),
+            TokenLiteral::TokenLiteral1(l) => Self::from(&l.literal_string.literal_string),
+            TokenLiteral::TokenLiteral2(r) => Self::from(&r.regex.regex),
+        }
+    }
+}
+
 impl From<&TokenWithStates> for Rng {
     fn from(val: &TokenWithStates) -> Self {
         let rng = Self::from(&val.l_t);
         val.token_with_states_opt.as_ref().map_or(
-            rng.extend(Self::from(&val.string.string)),
+            rng.extend(Self::from(&*val.token_literal)),
             |token_with_states| rng.extend(Self::from(&**token_with_states)),
         )
     }

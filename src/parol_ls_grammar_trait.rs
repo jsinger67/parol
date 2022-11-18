@@ -4,14 +4,16 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::parol_ls_grammar::ParolLsGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::lexer::Token;
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -82,6 +84,11 @@ pub trait ParolLsGrammarTrait {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'TokenLiteral'
+    fn token_literal(&mut self, _arg: &TokenLiteral) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'SimpleToken'
     fn simple_token(&mut self, _arg: &SimpleToken) -> Result<()> {
         Ok(())
@@ -119,6 +126,11 @@ pub trait ParolLsGrammarTrait {
 
     /// Semantic action for non-terminal 'String'
     fn string(&mut self, _arg: &String) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'LiteralString'
+    fn literal_string(&mut self, _arg: &LiteralString) -> Result<()> {
         Ok(())
     }
 
@@ -169,6 +181,11 @@ pub trait ParolLsGrammarTrait {
 
     /// Semantic action for non-terminal 'BlockComment'
     fn block_comment(&mut self, _arg: &BlockComment) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Regex'
+    fn regex(&mut self, _arg: &Regex) -> Result<()> {
         Ok(())
     }
 }
@@ -370,7 +387,40 @@ pub struct Symbol3 {
 }
 
 ///
-/// Type derived for production 55
+/// Type derived for production 35
+///
+/// TokenLiteral: String;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral0 {
+    pub string: Box<String>,
+}
+
+///
+/// Type derived for production 36
+///
+/// TokenLiteral: LiteralString;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral1 {
+    pub literal_string: Box<LiteralString>,
+}
+
+///
+/// Type derived for production 37
+///
+/// TokenLiteral: Regex;
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct TokenLiteral2 {
+    pub regex: Box<Regex>,
+}
+
+///
+/// Type derived for production 59
 ///
 /// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
 ///
@@ -384,7 +434,7 @@ pub struct ScannerSwitch0 {
 }
 
 ///
-/// Type derived for production 56
+/// Type derived for production 60
 ///
 /// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
 ///
@@ -398,7 +448,7 @@ pub struct ScannerSwitch1 {
 }
 
 ///
-/// Type derived for production 57
+/// Type derived for production 61
 ///
 /// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
 ///
@@ -411,7 +461,7 @@ pub struct ScannerSwitch2 {
 }
 
 ///
-/// Type derived for production 60
+/// Type derived for production 64
 ///
 /// ASTControl: CutOperator;
 ///
@@ -422,7 +472,7 @@ pub struct ASTControl0 {
 }
 
 ///
-/// Type derived for production 61
+/// Type derived for production 65
 ///
 /// ASTControl: UserTypeDeclaration;
 ///
@@ -433,7 +483,7 @@ pub struct ASTControl1 {
 }
 
 ///
-/// Type derived for production 69
+/// Type derived for production 73
 ///
 /// CommentsListGroup: LineComment;
 ///
@@ -444,7 +494,7 @@ pub struct CommentsListGroup0 {
 }
 
 ///
-/// Type derived for production 70
+/// Type derived for production 74
 ///
 /// CommentsListGroup: BlockComment;
 ///
@@ -638,6 +688,15 @@ pub struct LineComment {
 }
 
 ///
+/// Type derived for non-terminal LiteralString
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct LiteralString {
+    pub literal_string: crate::parol_ls_grammar::OwnedToken, /* '(\\'|[^'])*?' */
+}
+
+///
 /// Type derived for non-terminal NonTerminal
 ///
 #[allow(dead_code)]
@@ -730,6 +789,15 @@ pub struct PrologList0 {
 }
 
 ///
+/// Type derived for non-terminal Regex
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+pub struct Regex {
+    pub regex: crate::parol_ls_grammar::OwnedToken, /* /(\\/|[^/]|)*?/ */
+}
+
+///
 /// Type derived for non-terminal Repeat
 ///
 #[allow(dead_code)]
@@ -800,7 +868,7 @@ pub struct ScannerSwitchOpt {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct SimpleToken {
-    pub string: Box<String>,
+    pub token_literal: Box<TokenLiteral>,
     pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
@@ -851,7 +919,7 @@ pub struct StateListList {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String {
-    pub string: crate::parol_ls_grammar::OwnedToken, /* \u{22}([^\\]|\\.)*?\u{22} */
+    pub string: crate::parol_ls_grammar::OwnedToken, /* \u{22}(\\.|[^\\])*?\u{22} */
 }
 
 ///
@@ -867,6 +935,17 @@ pub enum Symbol {
 }
 
 ///
+/// Type derived for non-terminal TokenLiteral
+///
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub enum TokenLiteral {
+    TokenLiteral0(TokenLiteral0),
+    TokenLiteral1(TokenLiteral1),
+    TokenLiteral2(TokenLiteral2),
+}
+
+///
 /// Type derived for non-terminal TokenWithStates
 ///
 #[allow(dead_code)]
@@ -875,7 +954,7 @@ pub struct TokenWithStates {
     pub l_t: crate::parol_ls_grammar::OwnedToken, /* < */
     pub state_list: Box<StateList>,
     pub g_t: crate::parol_ls_grammar::OwnedToken, /* > */
-    pub string: Box<String>,
+    pub token_literal: Box<TokenLiteral>,
     pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
@@ -944,6 +1023,7 @@ pub enum ASTType {
     Group(Group),
     Identifier(Identifier),
     LineComment(LineComment),
+    LiteralString(LiteralString),
     NonTerminal(NonTerminal),
     NonTerminalOpt(Option<Box<NonTerminalOpt>>),
     Optional(Optional),
@@ -953,6 +1033,7 @@ pub enum ASTType {
     Prolog(Prolog),
     PrologList(Vec<PrologList>),
     PrologList0(Vec<PrologList0>),
+    Regex(Regex),
     Repeat(Repeat),
     ScannerDirectives(ScannerDirectives),
     ScannerState(ScannerState),
@@ -966,6 +1047,7 @@ pub enum ASTType {
     StateListList(Vec<StateListList>),
     String(String),
     Symbol(Symbol),
+    TokenLiteral(TokenLiteral),
     TokenWithStates(TokenWithStates),
     TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
     UserTypeDeclaration(UserTypeDeclaration),
@@ -1043,7 +1125,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ParolLs: Prolog GrammarDefinition;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn parol_ls(
         &mut self,
         _prolog: &ParseTreeStackEntry<'t>,
@@ -1069,7 +1151,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog(
         &mut self,
         _start_declaration: &ParseTreeStackEntry<'t>,
@@ -1098,7 +1180,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// PrologList0 /* Vec<T>::Push */: ScannerState PrologList0;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list0_0(
         &mut self,
         _scanner_state: &ParseTreeStackEntry<'t>,
@@ -1123,7 +1205,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// PrologList0 /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1136,7 +1218,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// PrologList /* Vec<T>::Push */: Declaration PrologList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list_0(
         &mut self,
         _declaration: &ParseTreeStackEntry<'t>,
@@ -1161,7 +1243,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// PrologList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1174,7 +1256,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// StartDeclaration: Comments "%start" : OwnedToken Identifier Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn start_declaration(
         &mut self,
         _comments: &ParseTreeStackEntry<'t>,
@@ -1210,7 +1292,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%title" : OwnedToken String Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_0(
         &mut self,
         percent_title: &ParseTreeStackEntry<'t>,
@@ -1243,7 +1325,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%comment" : OwnedToken String Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_1(
         &mut self,
         percent_comment: &ParseTreeStackEntry<'t>,
@@ -1276,7 +1358,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_2(
         &mut self,
         percent_user_underscore_type: &ParseTreeStackEntry<'t>,
@@ -1315,7 +1397,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Declaration: ScannerDirectives;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_3(
         &mut self,
         _scanner_directives: &ParseTreeStackEntry<'t>,
@@ -1339,7 +1421,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%line_comment" : OwnedToken String Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_0(
         &mut self,
         percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
@@ -1377,7 +1459,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%block_comment" : OwnedToken String String Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_1(
         &mut self,
         percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
@@ -1418,7 +1500,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_2(
         &mut self,
         percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
@@ -1456,7 +1538,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_3(
         &mut self,
         percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
@@ -1491,7 +1573,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition(
         &mut self,
         percent_percent: &ParseTreeStackEntry<'t>,
@@ -1532,7 +1614,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition_list_0(
         &mut self,
         _production: &ParseTreeStackEntry<'t>,
@@ -1565,7 +1647,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinitionList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1581,7 +1663,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// DoubleColon: "::" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn double_colon(
         &mut self,
         double_colon: &ParseTreeStackEntry<'t>,
@@ -1607,7 +1689,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// ProductionLHS: Comments Identifier Comments ":" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn production_l_h_s(
         &mut self,
         _comments: &ParseTreeStackEntry<'t>,
@@ -1640,7 +1722,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Production: ProductionLHS Alternations ";" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn production(
         &mut self,
         _production_l_h_s: &ParseTreeStackEntry<'t>,
@@ -1669,7 +1751,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Alternations: Alternation AlternationsList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations(
         &mut self,
         _alternation: &ParseTreeStackEntry<'t>,
@@ -1696,7 +1778,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// AlternationsList /* Vec<T>::Push */: "\|" : OwnedToken Comments Alternation AlternationsList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations_list_0(
         &mut self,
         or: &ParseTreeStackEntry<'t>,
@@ -1727,7 +1809,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// AlternationsList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1743,7 +1825,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Alternation: AlternationList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation(
         &mut self,
         _alternation_list: &ParseTreeStackEntry<'t>,
@@ -1767,7 +1849,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// AlternationList /* Vec<T>::Push */: Factor Comments AlternationList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation_list_0(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
@@ -1795,7 +1877,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// AlternationList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1808,7 +1890,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Factor: Group;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_0(
         &mut self,
         _group: &ParseTreeStackEntry<'t>,
@@ -1832,7 +1914,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Factor: Repeat;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_1(
         &mut self,
         _repeat: &ParseTreeStackEntry<'t>,
@@ -1856,7 +1938,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Factor: Optional;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
         _optional: &ParseTreeStackEntry<'t>,
@@ -1880,7 +1962,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Factor: Symbol;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
         _symbol: &ParseTreeStackEntry<'t>,
@@ -1904,7 +1986,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Symbol: NonTerminal;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_0(
         &mut self,
         _non_terminal: &ParseTreeStackEntry<'t>,
@@ -1928,7 +2010,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Symbol: SimpleToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_1(
         &mut self,
         _simple_token: &ParseTreeStackEntry<'t>,
@@ -1952,7 +2034,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Symbol: TokenWithStates;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_2(
         &mut self,
         _token_with_states: &ParseTreeStackEntry<'t>,
@@ -1976,7 +2058,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ///
     /// Symbol: ScannerSwitch;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_3(
         &mut self,
         _scanner_switch: &ParseTreeStackEntry<'t>,
@@ -1998,21 +2080,93 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// SimpleToken: String SimpleTokenOpt /* Option */;
+    /// TokenLiteral: String;
     ///
-    #[named]
-    fn simple_token(
+    #[parol_runtime::function_name::named]
+    fn token_literal_0(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string = pop_item!(self, string, String, context);
+        let token_literal_0_built = TokenLiteral0Builder::default()
+            .string(Box::new(string))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_0_built = TokenLiteral::TokenLiteral0(token_literal_0_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_0_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_0_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 36:
+    ///
+    /// TokenLiteral: LiteralString;
+    ///
+    #[parol_runtime::function_name::named]
+    fn token_literal_1(
+        &mut self,
+        _literal_string: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let literal_string = pop_item!(self, literal_string, LiteralString, context);
+        let token_literal_1_built = TokenLiteral1Builder::default()
+            .literal_string(Box::new(literal_string))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_1_built = TokenLiteral::TokenLiteral1(token_literal_1_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_1_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_1_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 37:
+    ///
+    /// TokenLiteral: Regex;
+    ///
+    #[parol_runtime::function_name::named]
+    fn token_literal_2(
+        &mut self,
+        _regex: &ParseTreeStackEntry<'t>,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = pop_item!(self, regex, Regex, context);
+        let token_literal_2_built = TokenLiteral2Builder::default()
+            .regex(Box::new(regex))
+            .build()
+            .into_diagnostic()?;
+        let token_literal_2_built = TokenLiteral::TokenLiteral2(token_literal_2_built);
+        // Calling user action here
+        self.user_grammar.token_literal(&token_literal_2_built)?;
+        self.push(ASTType::TokenLiteral(token_literal_2_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 38:
+    ///
+    /// SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;
+    ///
+    #[parol_runtime::function_name::named]
+    fn simple_token(
+        &mut self,
+        _token_literal: &ParseTreeStackEntry<'t>,
         _simple_token_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
-        let string = pop_item!(self, string, String, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let simple_token_built = SimpleTokenBuilder::default()
-            .string(Box::new(string))
+            .token_literal(Box::new(token_literal))
             .simple_token_opt(simple_token_opt)
             .build()
             .into_diagnostic()?;
@@ -2022,11 +2176,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 39:
     ///
     /// SimpleTokenOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_token_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2046,11 +2200,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 40:
     ///
     /// SimpleTokenOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_token_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2058,17 +2212,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 41:
     ///
-    /// TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken String TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken TokenLiteral TokenWithStatesOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states(
         &mut self,
         l_t: &ParseTreeStackEntry<'t>,
         _state_list: &ParseTreeStackEntry<'t>,
         g_t: &ParseTreeStackEntry<'t>,
-        _string: &ParseTreeStackEntry<'t>,
+        _token_literal: &ParseTreeStackEntry<'t>,
         _token_with_states_opt: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
@@ -2078,13 +2232,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let g_t = g_t.token(parse_tree)?.try_into().into_diagnostic()?;
         let token_with_states_opt =
             pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
-        let string = pop_item!(self, string, String, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let state_list = pop_item!(self, state_list, StateList, context);
         let token_with_states_built = TokenWithStatesBuilder::default()
             .l_t(l_t)
             .state_list(Box::new(state_list))
             .g_t(g_t)
-            .string(Box::new(string))
+            .token_literal(Box::new(token_literal))
             .token_with_states_opt(token_with_states_opt)
             .build()
             .into_diagnostic()?;
@@ -2095,11 +2249,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 42:
     ///
     /// TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2119,11 +2273,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 43:
     ///
     /// TokenWithStatesOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2131,11 +2285,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 44:
     ///
     /// Group: "\(" : OwnedToken Alternations "\)" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn group(
         &mut self,
         l_paren: &ParseTreeStackEntry<'t>,
@@ -2160,11 +2314,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 45:
     ///
     /// Optional: "\[" : OwnedToken Alternations "\]" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn optional(
         &mut self,
         l_bracket: &ParseTreeStackEntry<'t>,
@@ -2189,11 +2343,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 46:
     ///
     /// Repeat: "\{" : OwnedToken Alternations "\}" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn repeat(
         &mut self,
         l_brace: &ParseTreeStackEntry<'t>,
@@ -2218,11 +2372,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 47:
     ///
     /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2244,11 +2398,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 48:
     ///
     /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2268,11 +2422,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 49:
     ///
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2280,11 +2434,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 50:
     ///
     /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn identifier(
         &mut self,
         identifier: &ParseTreeStackEntry<'t>,
@@ -2303,11 +2457,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 51:
     ///
-    /// String: "\u{22}([^\\]|\\.)*?\u{22}" : OwnedToken;
+    /// String: "\u{22}(\\.|[^\\])*?\u{22}" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn string(
         &mut self,
         string: &ParseTreeStackEntry<'t>,
@@ -2326,11 +2480,37 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 52:
+    ///
+    /// LiteralString: "'(\\'|[^'])*?'" : OwnedToken;
+    ///
+    #[parol_runtime::function_name::named]
+    fn literal_string(
+        &mut self,
+        literal_string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let literal_string = literal_string
+            .token(parse_tree)?
+            .try_into()
+            .into_diagnostic()?;
+        let literal_string_built = LiteralStringBuilder::default()
+            .literal_string(literal_string)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.literal_string(&literal_string_built)?;
+        self.push(ASTType::LiteralString(literal_string_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 53:
     ///
     /// ScannerState: "%scanner" : OwnedToken Identifier "\{" : OwnedToken ScannerStateList /* Vec */ "\}" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state(
         &mut self,
         percent_scanner: &ParseTreeStackEntry<'t>,
@@ -2365,11 +2545,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 54:
     ///
     /// ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state_list_0(
         &mut self,
         _scanner_directives: &ParseTreeStackEntry<'t>,
@@ -2390,11 +2570,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 55:
     ///
     /// ScannerStateList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2406,11 +2586,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 56:
     ///
     /// StateList: Identifier StateListList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2432,11 +2612,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 57:
     ///
     /// StateListList /* Vec<T>::Push */: "," : OwnedToken Identifier StateListList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list_list_0(
         &mut self,
         comma: &ParseTreeStackEntry<'t>,
@@ -2460,11 +2640,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 58:
     ///
     /// StateListList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2473,11 +2653,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 59:
     ///
     /// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_0(
         &mut self,
         percent_sc: &ParseTreeStackEntry<'t>,
@@ -2506,11 +2686,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 60:
     ///
     /// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_1(
         &mut self,
         percent_push: &ParseTreeStackEntry<'t>,
@@ -2542,11 +2722,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 61:
     ///
     /// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_2(
         &mut self,
         percent_pop: &ParseTreeStackEntry<'t>,
@@ -2575,11 +2755,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 58:
+    /// Semantic action for production 62:
     ///
     /// ScannerSwitchOpt /* Option<T>::Some */: Identifier;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_opt_0(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2599,11 +2779,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 59:
+    /// Semantic action for production 63:
     ///
     /// ScannerSwitchOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2611,11 +2791,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 60:
+    /// Semantic action for production 64:
     ///
     /// ASTControl: CutOperator;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn a_s_t_control_0(
         &mut self,
         _cut_operator: &ParseTreeStackEntry<'t>,
@@ -2635,11 +2815,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 65:
     ///
     /// ASTControl: UserTypeDeclaration;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn a_s_t_control_1(
         &mut self,
         _user_type_declaration: &ParseTreeStackEntry<'t>,
@@ -2660,11 +2840,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 66:
     ///
     /// CutOperator: "\^" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn cut_operator(
         &mut self,
         cut_operator: &ParseTreeStackEntry<'t>,
@@ -2686,11 +2866,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 67:
     ///
     /// UserTypeDeclaration: ":" : OwnedToken UserTypeName;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_declaration(
         &mut self,
         colon: &ParseTreeStackEntry<'t>,
@@ -2716,11 +2896,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 68:
     ///
     /// UserTypeName: Identifier UserTypeNameList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2743,11 +2923,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 69:
     ///
     /// UserTypeNameList /* Vec<T>::Push */: DoubleColon Identifier UserTypeNameList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name_list_0(
         &mut self,
         _double_colon: &ParseTreeStackEntry<'t>,
@@ -2772,11 +2952,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 66:
+    /// Semantic action for production 70:
     ///
     /// UserTypeNameList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2788,11 +2968,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 67:
+    /// Semantic action for production 71:
     ///
     /// Comments: CommentsList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comments(
         &mut self,
         _comments_list: &ParseTreeStackEntry<'t>,
@@ -2811,11 +2991,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 72:
     ///
     /// CommentsList /* Vec<T>::Push */: CommentsListGroup CommentsList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comments_list_0(
         &mut self,
         _comments_list_group: &ParseTreeStackEntry<'t>,
@@ -2836,11 +3016,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 73:
     ///
     /// CommentsListGroup: LineComment;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comments_list_group_0(
         &mut self,
         _line_comment: &ParseTreeStackEntry<'t>,
@@ -2862,11 +3042,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 74:
     ///
     /// CommentsListGroup: BlockComment;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comments_list_group_1(
         &mut self,
         _block_comment: &ParseTreeStackEntry<'t>,
@@ -2888,11 +3068,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 75:
     ///
     /// CommentsList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comments_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2901,11 +3081,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 72:
+    /// Semantic action for production 76:
     ///
     /// LineComment: "//.*(:?\r\n|\r|\n|$)" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn line_comment(
         &mut self,
         line_comment: &ParseTreeStackEntry<'t>,
@@ -2927,11 +3107,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 73:
+    /// Semantic action for production 77:
     ///
     /// BlockComment: "(?ms)/\u{2a}.*?\u{2a}/" : OwnedToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn block_comment(
         &mut self,
         block_comment: &ParseTreeStackEntry<'t>,
@@ -2950,6 +3130,29 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         // Calling user action here
         self.user_grammar.block_comment(&block_comment_built)?;
         self.push(ASTType::BlockComment(block_comment_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 78:
+    ///
+    /// Regex: "/(\\/|[^/]|)*?/" : OwnedToken;
+    ///
+    #[parol_runtime::function_name::named]
+    fn regex(
+        &mut self,
+        regex: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = regex.token(parse_tree)?.try_into().into_diagnostic()?;
+        let regex_built = RegexBuilder::default()
+            .regex(regex)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.regex(&regex_built)?;
+        self.push(ASTType::Regex(regex_built), context);
         Ok(())
     }
 }
@@ -3031,10 +3234,13 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             32 => self.symbol_1(&children[0], parse_tree),
             33 => self.symbol_2(&children[0], parse_tree),
             34 => self.symbol_3(&children[0], parse_tree),
-            35 => self.simple_token(&children[0], &children[1], parse_tree),
-            36 => self.simple_token_opt_0(&children[0], parse_tree),
-            37 => self.simple_token_opt_1(parse_tree),
-            38 => self.token_with_states(
+            35 => self.token_literal_0(&children[0], parse_tree),
+            36 => self.token_literal_1(&children[0], parse_tree),
+            37 => self.token_literal_2(&children[0], parse_tree),
+            38 => self.simple_token(&children[0], &children[1], parse_tree),
+            39 => self.simple_token_opt_0(&children[0], parse_tree),
+            40 => self.simple_token_opt_1(parse_tree),
+            41 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -3042,17 +3248,18 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            39 => self.token_with_states_opt_0(&children[0], parse_tree),
-            40 => self.token_with_states_opt_1(parse_tree),
-            41 => self.group(&children[0], &children[1], &children[2], parse_tree),
-            42 => self.optional(&children[0], &children[1], &children[2], parse_tree),
-            43 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
-            44 => self.non_terminal(&children[0], &children[1], parse_tree),
-            45 => self.non_terminal_opt_0(&children[0], parse_tree),
-            46 => self.non_terminal_opt_1(parse_tree),
-            47 => self.identifier(&children[0], parse_tree),
-            48 => self.string(&children[0], parse_tree),
-            49 => self.scanner_state(
+            42 => self.token_with_states_opt_0(&children[0], parse_tree),
+            43 => self.token_with_states_opt_1(parse_tree),
+            44 => self.group(&children[0], &children[1], &children[2], parse_tree),
+            45 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            46 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            47 => self.non_terminal(&children[0], &children[1], parse_tree),
+            48 => self.non_terminal_opt_0(&children[0], parse_tree),
+            49 => self.non_terminal_opt_1(parse_tree),
+            50 => self.identifier(&children[0], parse_tree),
+            51 => self.string(&children[0], parse_tree),
+            52 => self.literal_string(&children[0], parse_tree),
+            53 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
@@ -3060,42 +3267,43 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
                 &children[4],
                 parse_tree,
             ),
-            50 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
-            51 => self.scanner_state_list_1(parse_tree),
-            52 => self.state_list(&children[0], &children[1], parse_tree),
-            53 => self.state_list_list_0(&children[0], &children[1], &children[2], parse_tree),
-            54 => self.state_list_list_1(parse_tree),
-            55 => self.scanner_switch_0(
+            54 => self.scanner_state_list_0(&children[0], &children[1], parse_tree),
+            55 => self.scanner_state_list_1(parse_tree),
+            56 => self.state_list(&children[0], &children[1], parse_tree),
+            57 => self.state_list_list_0(&children[0], &children[1], &children[2], parse_tree),
+            58 => self.state_list_list_1(parse_tree),
+            59 => self.scanner_switch_0(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            56 => self.scanner_switch_1(
+            60 => self.scanner_switch_1(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 parse_tree,
             ),
-            57 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
-            58 => self.scanner_switch_opt_0(&children[0], parse_tree),
-            59 => self.scanner_switch_opt_1(parse_tree),
-            60 => self.a_s_t_control_0(&children[0], parse_tree),
-            61 => self.a_s_t_control_1(&children[0], parse_tree),
-            62 => self.cut_operator(&children[0], parse_tree),
-            63 => self.user_type_declaration(&children[0], &children[1], parse_tree),
-            64 => self.user_type_name(&children[0], &children[1], parse_tree),
-            65 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
-            66 => self.user_type_name_list_1(parse_tree),
-            67 => self.comments(&children[0], parse_tree),
-            68 => self.comments_list_0(&children[0], &children[1], parse_tree),
-            69 => self.comments_list_group_0(&children[0], parse_tree),
-            70 => self.comments_list_group_1(&children[0], parse_tree),
-            71 => self.comments_list_1(parse_tree),
-            72 => self.line_comment(&children[0], parse_tree),
-            73 => self.block_comment(&children[0], parse_tree),
+            61 => self.scanner_switch_2(&children[0], &children[1], &children[2], parse_tree),
+            62 => self.scanner_switch_opt_0(&children[0], parse_tree),
+            63 => self.scanner_switch_opt_1(parse_tree),
+            64 => self.a_s_t_control_0(&children[0], parse_tree),
+            65 => self.a_s_t_control_1(&children[0], parse_tree),
+            66 => self.cut_operator(&children[0], parse_tree),
+            67 => self.user_type_declaration(&children[0], &children[1], parse_tree),
+            68 => self.user_type_name(&children[0], &children[1], parse_tree),
+            69 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
+            70 => self.user_type_name_list_1(parse_tree),
+            71 => self.comments(&children[0], parse_tree),
+            72 => self.comments_list_0(&children[0], &children[1], parse_tree),
+            73 => self.comments_list_group_0(&children[0], parse_tree),
+            74 => self.comments_list_group_1(&children[0], parse_tree),
+            75 => self.comments_list_1(parse_tree),
+            76 => self.line_comment(&children[0], parse_tree),
+            77 => self.block_comment(&children[0], parse_tree),
+            78 => self.regex(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

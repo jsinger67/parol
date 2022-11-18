@@ -4,12 +4,12 @@ use crate::{
     parol_ls_grammar_trait::{
         ASTControl, Alternation, AlternationList, Alternations, AlternationsList, BlockComment,
         Comments, CommentsList, CommentsListGroup, CutOperator, Declaration, DoubleColon, Factor,
-        GrammarDefinition, GrammarDefinitionList, Group, Identifier, LineComment, NonTerminal,
-        NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog, PrologList,
-        PrologList0, Repeat, ScannerDirectives, ScannerState, ScannerStateList, ScannerSwitch,
-        ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, StateList, StateListList,
-        Symbol, TokenWithStates, TokenWithStatesOpt, UserTypeDeclaration, UserTypeName,
-        UserTypeNameList,
+        GrammarDefinition, GrammarDefinitionList, Group, Identifier, LineComment, LiteralString,
+        NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
+        PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
+        ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, StateList,
+        StateListList, Symbol, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
+        UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
 };
@@ -33,10 +33,21 @@ enum LineEnd {
     ForceRemove,
 }
 
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[allow(dead_code)]
+enum Trimming {
+    #[default]
+    Unchanged,
+    TrimLeft,
+    TrimRight,
+    Trim,
+}
+
 #[derive(Debug, Default, Clone)]
 struct FmtOptions {
     padding: Padding,
     line_end: LineEnd,
+    trimming: Trimming,
 }
 
 impl FmtOptions {
@@ -46,6 +57,10 @@ impl FmtOptions {
     }
     fn with_line_end(mut self, line_end: LineEnd) -> Self {
         self.line_end = line_end;
+        self
+    }
+    fn with_trimming(mut self, trimming: Trimming) -> Self {
+        self.trimming = trimming;
         self
     }
 }
@@ -96,7 +111,8 @@ impl Fmt for AlternationList {
         let comment_options = options
             .clone()
             .with_line_end(LineEnd::ForceRemove)
-            .with_padding(Padding::Left);
+            .with_padding(Padding::Left)
+            .with_trimming(Trimming::TrimRight);
         format!(
             "{}{}",
             self.factor.txt(options),
@@ -154,7 +170,10 @@ impl Fmt for CutOperator {
 }
 impl Fmt for Declaration {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options = options.clone().with_padding(Padding::Left);
+        let comment_options = options
+            .clone()
+            .with_padding(Padding::Left)
+            .with_trimming(Trimming::TrimRight);
         match self {
             Declaration::Declaration0(title) => format!(
                 "{} {}{}\n",
@@ -238,6 +257,11 @@ impl Fmt for LineComment {
         self.line_comment.text().to_string()
     }
 }
+impl Fmt for LiteralString {
+    fn txt(&self, _options: &FmtOptions) -> String {
+        self.literal_string.text().to_string()
+    }
+}
 impl Fmt for NonTerminal {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
@@ -276,7 +300,7 @@ impl Fmt for ParolLs {
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "\n{}{}\n    {}",
+            "\n{} {}\n    {}",
             self.production_l_h_s.txt(options),
             self.alternations.txt(options).trim(),
             self.semicolon,
@@ -285,10 +309,16 @@ impl Fmt for Production {
 }
 impl Fmt for ProductionLHS {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options_both = options.clone().with_padding(Padding::Both);
-        let comment_options_right = options.clone().with_padding(Padding::Right);
+        let comment_options_both = options
+            .clone()
+            .with_padding(Padding::Both)
+            .with_trimming(Trimming::TrimRight);
+        let comment_options_right = options
+            .clone()
+            .with_line_end(LineEnd::ForceAdd)
+            .with_trimming(Trimming::TrimRight);
         format!(
-            "\n{}{}{}\n    {} ",
+            "\n{}{}{}\n    {}",
             handle_comments(&self.comments, &comment_options_right),
             self.identifier.identifier,
             handle_comments(&self.comments0, &comment_options_both),
@@ -320,6 +350,11 @@ impl Fmt for PrologList {
 impl Fmt for PrologList0 {
     fn txt(&self, options: &FmtOptions) -> String {
         self.scanner_state.txt(options)
+    }
+}
+impl Fmt for Regex {
+    fn txt(&self, _options: &FmtOptions) -> String {
+        self.regex.text().to_string()
     }
 }
 impl Fmt for Repeat {
@@ -394,7 +429,7 @@ impl Fmt for SimpleToken {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
             "{}{}",
-            self.string.string,
+            self.token_literal.txt(options),
             self.simple_token_opt
                 .as_ref()
                 .map_or(String::default(), |s| { s.txt(options) })
@@ -448,6 +483,15 @@ impl Fmt for Symbol {
         handle_symbol(self, options)
     }
 }
+impl Fmt for TokenLiteral {
+    fn txt(&self, options: &FmtOptions) -> String {
+        match self {
+            TokenLiteral::TokenLiteral0(s) => s.string.txt(options),
+            TokenLiteral::TokenLiteral1(l) => l.literal_string.txt(options),
+            TokenLiteral::TokenLiteral2(r) => r.regex.txt(options),
+        }
+    }
+}
 impl Fmt for TokenWithStates {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
@@ -455,7 +499,7 @@ impl Fmt for TokenWithStates {
             self.l_t,
             self.state_list.txt(options).trim(),
             self.g_t,
-            self.string.txt(options),
+            self.token_literal.txt(options),
             self.token_with_states_opt
                 .as_ref()
                 .map_or(String::default(), |a| { a.txt(options) }),
@@ -555,9 +599,15 @@ fn handle_comments(comments: &Comments, options: &FmtOptions) -> String {
 }
 
 fn apply_formatting(line: String, options: &FmtOptions) -> String {
+    let line =     match options.trimming {
+        Trimming::Unchanged => line,
+        Trimming::TrimLeft => line.trim_start().to_string(),
+        Trimming::TrimRight => line.trim_end().to_string(),
+        Trimming::Trim => line.trim().to_string(),
+    };
     let line = match options.line_end {
         LineEnd::Unchanged => line,
-        LineEnd::ForceAdd => line + "\n",
+        LineEnd::ForceAdd => if line.is_empty() { line } else { line + "\n" },
         LineEnd::ForceRemove => line
             .trim_end_matches(|c| c == '\r' || c == '\n')
             .to_string(),

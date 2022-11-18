@@ -555,9 +555,9 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-version = "0.13.0"
+version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afebbce20bb5ecae86a9ad56d02ad1ff8702ad7c74f15dca802dfa60d644d5c3"
+checksum = "9b4a1a6c7cf0f4945ed68fb78a9ad113411f8f4c801c881d824b32c05cd46d6e"
 dependencies = [
  "bart",
  "bart_derive",
@@ -578,14 +578,13 @@ dependencies = [
  "rand_regex",
  "regex",
  "regex-syntax",
- "semver",
  "syn 1.0.98",
  "thiserror",
 ]
 
 [[package]]
 name = "parol-ls"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "clap",
  "derive-new",
@@ -615,15 +614,18 @@ checksum = "e050a66a0efd1a8a62f51ec99383cbabf00f7c557747591383c5f02c16cdce5b"
 
 [[package]]
 name = "parol_runtime"
-version = "0.8.1"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "505ab5721b9eae065d02be179b3f95817cfc532832355cebbc7db2a9cdd85fb1"
+checksum = "6c36eea394b079a78580d35fb3cfbf226a4c46ac26ff6f0d81a3abb29d41690b"
 dependencies = [
+ "derive_builder",
+ "function_name",
  "id_tree",
  "id_tree_layout",
  "lazy_static",
  "log",
  "miette",
+ "parol-macros",
  "regex",
  "thiserror",
 ]
@@ -756,12 +758,6 @@ name = "ryu"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3f6f92acf49d1b98f7a81226834412ada05458b7364277387724a237f062695"
-
-[[package]]
-name = "semver"
-version = "1.0.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93f6841e709003d68bb2deee8c343572bf446003ec20a583e76f7b15cebf3711"
 
 [[package]]
 name = "serde"
