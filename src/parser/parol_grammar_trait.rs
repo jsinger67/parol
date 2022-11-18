@@ -97,6 +97,11 @@ pub trait ParolGrammarTrait<'t> {
         Ok(())
     }
 
+    /// Semantic action for non-terminal 'Regex'
+    fn regex(&mut self, _arg: &Regex<'t>) -> Result<()> {
+        Ok(())
+    }
+
     /// Semantic action for non-terminal 'Optional'
     fn optional(&mut self, _arg: &Optional<'t>) -> Result<()> {
         Ok(())
@@ -124,11 +129,6 @@ pub trait ParolGrammarTrait<'t> {
 
     /// Semantic action for non-terminal 'RawString'
     fn raw_string(&mut self, _arg: &RawString<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'Regex'
-    fn regex(&mut self, _arg: &Regex<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -176,7 +176,7 @@ pub trait ParolGrammarTrait<'t> {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: "%title"^ /* Clipped */ String;
+/// Declaration: '%title'^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -187,7 +187,7 @@ pub struct Declaration0<'t> {
 ///
 /// Type derived for production 8
 ///
-/// Declaration: "%comment"^ /* Clipped */ String;
+/// Declaration: '%comment'^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -198,7 +198,7 @@ pub struct Declaration1<'t> {
 ///
 /// Type derived for production 9
 ///
-/// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
+/// Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -221,7 +221,7 @@ pub struct Declaration3<'t> {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
+/// ScannerDirectives: '%line_comment'^ /* Clipped */ String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -232,7 +232,7 @@ pub struct ScannerDirectives0<'t> {
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
+/// ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -244,7 +244,7 @@ pub struct ScannerDirectives1<'t> {
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
+/// ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -253,7 +253,7 @@ pub struct ScannerDirectives2 {}
 ///
 /// Type derived for production 14
 ///
-/// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
+/// ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -383,7 +383,7 @@ pub struct TokenLiteral2<'t> {
 ///
 /// Type derived for production 59
 ///
-/// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
+/// ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -394,7 +394,7 @@ pub struct ScannerSwitch0<'t> {
 ///
 /// Type derived for production 60
 ///
-/// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
+/// ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -405,7 +405,7 @@ pub struct ScannerSwitch1<'t> {
 ///
 /// Type derived for production 61
 ///
-/// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
+/// ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -654,7 +654,7 @@ pub struct RawString<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Regex<'t> {
-    pub regex: Token<'t>, /* /(\\/|[^/]|)*?/ */
+    pub regex: Token<'t>, /* \u{2F}(\\/|[^/]|)*?\u{2F} */
 }
 
 ///
@@ -770,7 +770,7 @@ pub struct StateListList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct String<'t> {
-    pub string: Token<'t>, /* \u{22}(\\.|[^\\])*?\u{22} */
+    pub string: Token<'t>, /* "(\\.|[^\\])*?" */
 }
 
 ///
@@ -1092,7 +1092,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: "%start"^ /* Clipped */ Identifier;
+    /// StartDeclaration: '%start'^ /* Clipped */ Identifier;
     ///
     #[parol_runtime::function_name::named]
     fn start_declaration(
@@ -1118,7 +1118,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: "%title"^ /* Clipped */ String;
+    /// Declaration: '%title'^ /* Clipped */ String;
     ///
     #[parol_runtime::function_name::named]
     fn declaration_0(
@@ -1144,7 +1144,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: "%comment"^ /* Clipped */ String;
+    /// Declaration: '%comment'^ /* Clipped */ String;
     ///
     #[parol_runtime::function_name::named]
     fn declaration_1(
@@ -1170,7 +1170,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
+    /// Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;
     ///
     #[parol_runtime::function_name::named]
     fn declaration_2(
@@ -1225,7 +1225,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
+    /// ScannerDirectives: '%line_comment'^ /* Clipped */ String;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_0(
@@ -1256,7 +1256,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
+    /// ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_1(
@@ -1290,7 +1290,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
+    /// ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_2(
@@ -1318,7 +1318,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
+    /// ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_3(
@@ -1346,7 +1346,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinition: "%%"^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
+    /// GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition(
@@ -1432,7 +1432,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// DoubleColon: "::";
+    /// DoubleColon: '::';
     ///
     #[parol_runtime::function_name::named]
     fn double_colon(
@@ -1455,7 +1455,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
+    /// Production: Identifier ':'^ /* Clipped */ Alternations ';'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn production(
@@ -1512,7 +1512,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList /* Vec<T>::Push */: "\|"^ /* Clipped */ Alternation AlternationsList;
+    /// AlternationsList /* Vec<T>::Push */: '|'^ /* Clipped */ Alternation AlternationsList;
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_0(
@@ -1943,7 +1943,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
+    /// TokenWithStates: '<'^ /* Clipped */ StateList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states(
@@ -2014,7 +2014,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
+    /// Group: '('^ /* Clipped */ Alternations ')'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn group(
@@ -2041,7 +2041,30 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
+    /// Regex: "\u{2F}(\\/|[^/]|)*?\u{2F}";
+    ///
+    #[parol_runtime::function_name::named]
+    fn regex(
+        &mut self,
+        regex: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = regex.token(parse_tree)?.clone();
+        let regex_built = RegexBuilder::default()
+            .regex(regex)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.regex(&regex_built)?;
+        self.push(ASTType::Regex(regex_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 45:
+    ///
+    /// Optional: '['^ /* Clipped */ Alternations ']'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn optional(
@@ -2066,9 +2089,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 46:
     ///
-    /// Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
+    /// Repeat: '{'^ /* Clipped */ Alternations '}'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn repeat(
@@ -2093,7 +2116,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 47:
     ///
     /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
@@ -2119,7 +2142,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 48:
     ///
     /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
@@ -2143,7 +2166,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 49:
     ///
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
@@ -2155,9 +2178,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 50:
     ///
-    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    /// Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     ///
     #[parol_runtime::function_name::named]
     fn identifier(
@@ -2178,9 +2201,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 51:
     ///
-    /// String: "\u{22}(\\.|[^\\])*?\u{22}";
+    /// String: /"(\\.|[^\\])*?"/;
     ///
     #[parol_runtime::function_name::named]
     fn string(
@@ -2201,9 +2224,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 52:
     ///
-    /// RawString: "'(\\'|[^'])*?'";
+    /// RawString: /'(\\'|[^'])*?'/;
     ///
     #[parol_runtime::function_name::named]
     fn raw_string(
@@ -2224,32 +2247,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
-    ///
-    /// Regex: "/(\\/|[^/]|)*?/";
-    ///
-    #[parol_runtime::function_name::named]
-    fn regex(
-        &mut self,
-        regex: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let regex = regex.token(parse_tree)?.clone();
-        let regex_built = RegexBuilder::default()
-            .regex(regex)
-            .build()
-            .into_diagnostic()?;
-        // Calling user action here
-        self.user_grammar.regex(&regex_built)?;
-        self.push(ASTType::Regex(regex_built), context);
-        Ok(())
-    }
-
     /// Semantic action for production 53:
     ///
-    /// ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
+    /// ScannerState: '%scanner'^ /* Clipped */ Identifier '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state(
@@ -2349,7 +2349,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// StateListList /* Vec<T>::Push */: ","^ /* Clipped */ Identifier StateListList;
+    /// StateListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier StateListList;
     ///
     #[parol_runtime::function_name::named]
     fn state_list_list_0(
@@ -2389,7 +2389,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
+    /// ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_0(
@@ -2419,7 +2419,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
+    /// ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_1(
@@ -2449,7 +2449,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
+    /// ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_2(
@@ -2561,7 +2561,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// CutOperator: "\^"^ /* Clipped */;
+    /// CutOperator: '^'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn cut_operator(
@@ -2583,7 +2583,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : UserType;
+    /// UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : UserType;
     ///
     #[parol_runtime::function_name::named]
     fn user_type_declaration(
@@ -2758,15 +2758,15 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             41 => self.token_with_states_opt_0(&children[0], parse_tree),
             42 => self.token_with_states_opt_1(parse_tree),
             43 => self.group(&children[0], &children[1], &children[2], parse_tree),
-            44 => self.optional(&children[0], &children[1], &children[2], parse_tree),
-            45 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
-            46 => self.non_terminal(&children[0], &children[1], parse_tree),
-            47 => self.non_terminal_opt_0(&children[0], parse_tree),
-            48 => self.non_terminal_opt_1(parse_tree),
-            49 => self.identifier(&children[0], parse_tree),
-            50 => self.string(&children[0], parse_tree),
-            51 => self.raw_string(&children[0], parse_tree),
-            52 => self.regex(&children[0], parse_tree),
+            44 => self.regex(&children[0], parse_tree),
+            45 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            46 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            47 => self.non_terminal(&children[0], &children[1], parse_tree),
+            48 => self.non_terminal_opt_0(&children[0], parse_tree),
+            49 => self.non_terminal_opt_1(parse_tree),
+            50 => self.identifier(&children[0], parse_tree),
+            51 => self.string(&children[0], parse_tree),
+            52 => self.raw_string(&children[0], parse_tree),
             53 => self.scanner_state(
                 &children[0],
                 &children[1],

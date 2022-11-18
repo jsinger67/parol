@@ -17,37 +17,37 @@ Prolog
     ;
 
 StartDeclaration
-    : "%start"^ Identifier
+    : '%start'^ Identifier
     ;
 
 Declaration
-    : "%title"^ String
-    | "%comment"^ String
-    | "%user_type"^ Identifier "="^ UserTypeName : UserType
+    : '%title'^ String
+    | '%comment'^ String
+    | '%user_type'^ Identifier '='^ UserTypeName : UserType
     | ScannerDirectives
     ;
 
 ScannerDirectives
-    : "%line_comment"^ String
-    | "%block_comment"^ String String
-    | "%auto_newline_off"^
-    | "%auto_ws_off"^
+    : '%line_comment'^ String
+    | '%block_comment'^ String String
+    | '%auto_newline_off'^
+    | '%auto_ws_off'^
     ;
 
 GrammarDefinition
-    : "%%"^ Production { Production }
+    : '%%'^ Production { Production }
     ;
 
 DoubleColon
-    : "::"
+    : '::'
     ;
 
 Production
-    : Identifier ":"^ Alternations ";"^
+    : Identifier ':'^ Alternations ';'^
     ;
 
 Alternations
-    : Alternation { "\|"^ Alternation }
+    : Alternation { '|'^ Alternation }
     ;
 
 Alternation
@@ -79,19 +79,23 @@ SimpleToken
     ;
 
 TokenWithStates
-    :  "<"^ StateList ">"^ TokenLiteral [ASTControl]
+    :  '<'^ StateList '>'^ TokenLiteral [ASTControl]
     ;
 
 Group
-    : "\("^ Alternations "\)"^
+    : '('^ Alternations ')'^
+    ;
+
+Regex
+    : "\u{2F}(\\/|[^/]|)*?\u{2F}"   // \u{2F} is /
     ;
 
 Optional
-    : "\["^ Alternations "\]"^
+    : '['^ Alternations ']'^
     ;
 
 Repeat
-    : "\{"^ Alternations "\}"^
+    : '{'^ Alternations '}'^
     ;
 
 NonTerminal
@@ -99,33 +103,29 @@ NonTerminal
     ;
 
 Identifier
-    : "[a-zA-Z_][a-zA-Z0-9_]*"
+    : /[a-zA-Z_][a-zA-Z0-9_]*/
     ;
 
 String
-    : "\u{22}(\\.|[^\\])*?\u{22}"
+    : /"(\\.|[^\\])*?"/
     ;
 
 RawString
-    : "'(\\'|[^'])*?'"
-    ;
-
-Regex
-    : "/(\\/|[^/]|)*?/"
+    : /'(\\'|[^'])*?'/
     ;
 
 ScannerState
-    : "%scanner"^ Identifier "\{"^ { ScannerDirectives } "\}"^
+    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^
     ;
 
 StateList
-    : Identifier { ","^ Identifier }
+    : Identifier { ','^ Identifier }
     ;
 
 ScannerSwitch
-    : "%sc"^ "\("^ [Identifier] "\)"^
-    | "%push"^ "\("^ Identifier "\)"^
-    | "%pop"^ "\("^ "\)"^
+    : '%sc'^ '('^ [Identifier] ')'^
+    | '%push'^ '('^ Identifier ')'^
+    | '%pop'^ '('^ ')'^
     ;
 
 ASTControl
@@ -133,11 +133,11 @@ ASTControl
     ;
 
 CutOperator
-    : "\^"^
+    : '^'^
     ;
 
 UserTypeDeclaration
-    : ":"^ UserTypeName : UserType
+    : ':'^ UserTypeName : UserType
     ;
 
 UserTypeName
