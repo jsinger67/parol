@@ -441,9 +441,9 @@ impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
         };
         for scanner_directive in &scanner_state.scanner_state_list {
             match &*scanner_directive.scanner_directives {
-                ScannerDirectives::ScannerDirectives0(line_comment) => me.line_comments.push(
-                    ParolGrammar::trim_quotes(line_comment.string.string.text()),
-                ),
+                ScannerDirectives::ScannerDirectives0(line_comment) => me
+                    .line_comments
+                    .push(ParolGrammar::trim_quotes(line_comment.string.string.text())),
                 ScannerDirectives::ScannerDirectives1(block_comment) => me.block_comments.push((
                     ParolGrammar::trim_quotes(block_comment.string.string.text()),
                     ParolGrammar::trim_quotes(block_comment.string0.string.text()),
@@ -748,9 +748,8 @@ impl ParolGrammar<'_> {
                         ASTControlKind::UserTyped(u) => user_type_name = Some(u),
                     }
                 }
-                let (content, kind) = Self::measure_token_literal(
-                    &token_with_states.token_with_states.token_literal,
-                );
+                let (content, kind) =
+                    Self::measure_token_literal(&token_with_states.token_with_states.token_literal);
                 Ok(Factor::Terminal(
                     Self::trim_quotes(content),
                     kind,

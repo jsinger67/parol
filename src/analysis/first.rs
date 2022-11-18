@@ -58,7 +58,11 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
     let terminal_index = |t: &str, k: TerminalKind| -> usize {
-        terminals.iter().position(|(trm, kind, _)| *trm == t && kind.behaves_like(k)).unwrap() + FIRST_USER_TOKEN
+        terminals
+            .iter()
+            .position(|(trm, kind, _)| *trm == t && kind.behaves_like(k))
+            .unwrap()
+            + FIRST_USER_TOKEN
     };
 
     let nt_for_production: Vec<usize> =

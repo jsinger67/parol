@@ -128,15 +128,16 @@ impl ScannerConfig {
 
         let terminals = cfg.get_ordered_terminals();
 
-        let term_indices = terminals
-            .iter()
-            .enumerate()
-            .fold(Vec::new(), |mut acc, (i, (_, _, s))| {
-                if s.contains(&self.scanner_state) {
-                    acc.push(i + FIRST_USER_TOKEN);
-                }
-                acc
-            });
+        let term_indices =
+            terminals
+                .iter()
+                .enumerate()
+                .fold(Vec::new(), |mut acc, (i, (_, _, s))| {
+                    if s.contains(&self.scanner_state) {
+                        acc.push(i + FIRST_USER_TOKEN);
+                    }
+                    acc
+                });
 
         (scanner_specific, term_indices, self.scanner_name.clone())
     }

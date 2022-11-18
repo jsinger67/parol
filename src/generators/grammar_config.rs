@@ -128,14 +128,9 @@ impl GrammarConfig {
         let mut terminals =
             self.cfg
                 .get_ordered_terminals()
-                .iter()
+                .into_iter()
                 .fold(terminals, |mut acc, (t, k, _)| {
-                    acc.push(
-                        match k {
-                            crate::TerminalKind::Legacy | crate::TerminalKind::Raw => t.to_string(),
-                            crate::TerminalKind::Regex => regex::escape(&t),
-                        }
-                        );
+                    acc.push(k.expand(t));
                     acc
                 });
         terminals.push("ERROR_TOKEN".to_owned());
@@ -225,7 +220,9 @@ impl TryFrom<ParolGrammar<'_>> for GrammarConfig {
 #[cfg(test)]
 mod test {
     use crate::generators::{GrammarConfig, ScannerConfig};
-    use crate::{Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind};
+    use crate::{
+        obtain_grammar_config_from_string, Cfg, Pr, Symbol, SymbolAttribute, Terminal, TerminalKind,
+    };
 
     macro_rules! terminal {
         ($term:literal) => {
@@ -236,6 +233,20 @@ mod test {
                 SymbolAttribute::None,
                 None,
             ))
+        };
+    }
+
+    macro_rules! augmented_terminals {
+        ($($term:literal),+) => {
+            &[
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                "UNMATCHABLE_TOKEN",
+                $($term,)*
+                "ERROR_TOKEN",
+            ]
         };
     }
 
@@ -312,5 +323,66 @@ mod test {
         assert_eq!(vec![5, 6], terminal_indices);
 
         assert_eq!("INITIAL", scanner_name);
+    }
+
+    #[derive(Debug)]
+    struct TestData {
+        input: &'static str,
+        augment_terminals: &'static [&'static str],
+    }
+
+    const TESTS: &[TestData] = &[
+        TestData {
+            input: r#"%start A %% A: B "r"; B: C "d"; C: A "t";"#,
+            augment_terminals: augmented_terminals!["r", "d", "t"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C "d"; C: A 't';"#,
+            augment_terminals: augmented_terminals!["r", "d", "t"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C "d"; C: A 'd';"#,
+            augment_terminals: augmented_terminals!["r", "d", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C "d"; C: A "d";"#,
+            augment_terminals: augmented_terminals!["r", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C "d"; C: A /d/;"#,
+            augment_terminals: augmented_terminals!["r", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C 'd'; C: A 'd';"#,
+            augment_terminals: augmented_terminals!["r", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C /d/; C: A /d/;"#,
+            augment_terminals: augmented_terminals!["r", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C /\d/; C: A /d/;"#,
+            augment_terminals: augmented_terminals!["r", r"\d", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C /\s/; C: A /d/;"#,
+            augment_terminals: augmented_terminals!["r", r"\s", "d"],
+        },
+        TestData {
+            input: r#"%start A %% A: B /r/; B: C '\s'; C: A /d/;"#,
+            augment_terminals: augmented_terminals!["r", r"\\s", "d"],
+        },
+    ];
+
+    #[test]
+    fn check_generate_augmented_terminals_generic() {
+        for (i, test) in TESTS.iter().enumerate() {
+            let grammar_config = obtain_grammar_config_from_string(test.input, false).unwrap();
+            let augment_terminals = grammar_config.generate_augmented_terminals();
+            assert_eq!(
+                test.augment_terminals, augment_terminals,
+                "Error at test #{i}"
+            );
+        }
     }
 }

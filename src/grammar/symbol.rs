@@ -35,20 +35,40 @@ impl TerminalKind {
     }
 
     /// Behavioral equivalence
+    /// ```
+    /// use parol::{TerminalKind};
+    ///
+    /// assert!(TerminalKind::Legacy.behaves_like(TerminalKind::Legacy));
+    /// assert!(TerminalKind::Legacy.behaves_like(TerminalKind::Regex));
+    /// assert!(!TerminalKind::Legacy.behaves_like(TerminalKind::Raw));
+    /// assert!(TerminalKind::Regex.behaves_like(TerminalKind::Regex));
+    /// assert!(TerminalKind::Regex.behaves_like(TerminalKind::Legacy));
+    /// assert!(!TerminalKind::Regex.behaves_like(TerminalKind::Raw));
+    /// assert!(TerminalKind::Raw.behaves_like(TerminalKind::Raw));
+    /// assert!(!TerminalKind::Raw.behaves_like(TerminalKind::Regex));
+    /// assert!(!TerminalKind::Raw.behaves_like(TerminalKind::Legacy));
+    /// ```
+    ///
     pub fn behaves_like(&self, other: TerminalKind) -> bool {
         match self {
-            TerminalKind::Legacy |TerminalKind::Raw => {
-                match other {
-                    TerminalKind::Legacy | TerminalKind::Raw => true,
-                    TerminalKind::Regex => false,
-                }
+            TerminalKind::Legacy | TerminalKind::Regex => match other {
+                TerminalKind::Legacy | TerminalKind::Regex => true,
+                TerminalKind::Raw => false,
             },
-            TerminalKind::Regex => {
-                match other {
-                    TerminalKind::Legacy | TerminalKind::Raw => false,
-                    TerminalKind::Regex => true,
-                }
+            TerminalKind::Raw => match other {
+                TerminalKind::Legacy | TerminalKind::Regex => false,
+                TerminalKind::Raw => true,
             },
+        }
+    }
+
+    /// The actual preparation for scanner regex generation
+    /// * Raw strings and legacy strings are not specially treaded
+    /// * Regex strings are escaped using regex::escape
+    pub fn expand(&self, term: &str) -> String {
+        match self {
+            crate::TerminalKind::Legacy | crate::TerminalKind::Regex => term.to_string(),
+            crate::TerminalKind::Raw => regex::escape(&term),
         }
     }
 }
@@ -235,19 +255,6 @@ pub enum Symbol {
 }
 
 impl Symbol {
-    // /// Creates a terminal symbol
-    // pub fn t(t: &str, s: Vec<usize>, a: SymbolAttribute) -> Self {
-    //     Self::T(Terminal::Trm(t.to_owned(), s, a, None))
-    // }
-    // /// Creates a terminal symbol with default symbol attribute
-    // pub fn t_n(t: &str, s: Vec<usize>) -> Self {
-    //     Self::T(Terminal::Trm(
-    //         t.to_owned(),
-    //         s,
-    //         SymbolAttribute::default(),
-    //         None,
-    //     ))
-    // }
     /// Creates a non-terminal symbol
     pub fn n(n: &str) -> Self {
         Self::N(n.to_owned(), SymbolAttribute::default(), None)
