@@ -1,50 +1,6 @@
 # The syntax of `parol`'s Grammar description
 
-Here I provide the definition of the PAR grammar in EBNF (PAR grammar in PAR is [here](https://github.com/jsinger67/parol/blob/main/src/parser/parol-grammar.par)).
-
-```ebnf
-(* PAR Grammar defined in EBNF *)
-Parol               = Prolog GrammarDefinition.         (* The start symbol of the PAR grammar *)
-Prolog              = StartDeclaration {Declaration} {ScannerState}.
-StartDeclaration    = '%start' Identifier.
-Declaration         = '%title' String
-                    | '%comment' String
-                    | "%user_type" Identifier '=' UserTypeName  (* User type alias definition *)
-                    | ScannerDirectives.
-ScannerDirectives   = '%line_comment' String
-                    | '%block_comment' String String
-                    | '%auto_newline_off'
-                    | '%auto_ws_off'.
-GrammarDefinition   = '%%' Production {Production}.     (* There must be at least one production - with the start symbol *)
-Production          = Identifier ':' Alternations ';'.
-Alternations        = Alternation {'|' Alternation}.
-Alternation         = {Factor}.
-Factor              = Group
-                    | Repeat
-                    | Optional
-                    | Symbol.
-Symbol              = NonTerminal                       (* EBNF: Meta-identifier *)
-                    | SimpleToken
-                    | TokenWithStates
-                    | ScannerSwitch.                    (* Instruction to switch to new scanner state *)
-SimpleToken         = String [ASTControl].              (* EBNF: Terminal-string, always treated as a regular expression! *)
-TokenWithStates     = "<" StateList ">" String [ASTControl].
-Group               = '(' Alternations ')'.             (* A non-empty grouping *)
-Optional            = '[' Alternations ']'.             (* A non-empty optional expression *)
-Repeat              = '{' Alternations '}'.             (* A non-empty repetition *)
-NonTerminal         = Identifier [ASTControl].
-Identifier          = '[a-zA-Z_]\w*'.
-String              = '\u{0022}([^\\]|\\.)*?\u{0022}'.
-ScannerState        = '%scanner' Identifier '{' {ScannerDirectives} '}'.
-StateList           = Identifier { ',' Identifier }.    (* Scanner states a terminal symbol is associated with *)
-ScannerSwitch       = '%sc' '(' [Identifier] ')'        (* Missing identifier implies INITIAL state *)
-                    | '%push' '(' Identifier ')'        (* Identifier of scanner state is mandatory *)
-                    | '%pop' '(' ')'.                   (* Parentheses are also mandatory *)
-ASTControl          = CutOperator | UserTypeDeclaration.
-CutOperator         = '^'.                              (* Prevents the symbol from being propagated to the AST in auto-gen *)
-UserTypeDeclaration = ':' UserTypeName.                 (* Assigns the user type to a symbol *)
-UserTypeName        = Identifier { '::' Identifier }.   (* A valid Rust qualified name *)
-```
+I provide the definition of the PAR grammar in PAR grammar [itself](https://github.com/jsinger67/parol/blob/main/src/parser/parol-grammar.par).
 
 This grammar is quite concise and most programmers should be familiar with it. But there are several
 specialties which will be described here. First please notice the built-in support for language
@@ -123,18 +79,28 @@ Assign: ":=";
 With this trick you define a so called "primary non-terminal for a terminal" (I coined it this way)
 that instructs the name generation to name the terminal "Assign".
 
-### Terminal conflicts
+### Terminal representation
 
-Since `parol` creates a scanner on the basis of the Rust regex crate all terminals are treated as if
-they were regular expressions.
-Thus you have to consider the following caveats.
+As of version 0.14.0 `parol` supports three different styles of terminal representations.
 
-* If you want to use a character that is a regex meta-character you have to escape it, like the '+'
-in the following example:
+* The legacy syntax (`"..."`). These terminals are treated as if they were regular expressions.
+* New single quoted string literals (`'..'`) are literal or raw strings. The user doesn't need to
+escape any regex meta character. This is used when you don't want to deal with regexes and only use
+plain text. E.g.: `BlockBegin: '{'`
+* New regular expression strings (`/../`), behaves exactly like the old double quoted string but
+better conveys the intent. E.g.: `Digits: /[\d]+/`
+
+Internally `parol` creates scanners on the basis of the Rust regex crate and all terminals are
+embedded in a regular expression eventually. You should be aware of this if you get strange errors
+from regex generation and want to understand the problem.
+
+Here is an example for a terminal in regular expression form:
 
 ```parol
-AddOperator: "\+|-";
+AddOperator: /+|-/;
 ```
+
+### Terminal conflicts
 
 * In case of conflicts between different terminals _the first seen will win_
 
@@ -144,7 +110,7 @@ Say you have two terminals "-" and "--", _minus_ and _decrement_. The generated 
 based on the following regular expression:
 
 ```parol
-    "-|--"
+    /-|--/
 ```
 
 The Rust regex will now match two times _minus_ when actually a _decrement_ operator should be
@@ -156,7 +122,7 @@ Fortunately there is a simple way to achieve what we want. We just need a result
 expression with a different order:
 
 ```parol
-    "--|-"
+    /--|-/
 ```
 
 This will perfectly do the job.
@@ -165,10 +131,10 @@ To get such an order the _decrement_ terminal has to be defined __before__ the _
 in the following snippet.
 
 ```parol
-decrement: "--"
+decrement: /--/
 ;
 ...
-minus: "-"
+minus: /-/
 ;
 ```
 
@@ -182,7 +148,7 @@ Please note that terminals should always match non-empty text portions. This mea
 avoid terminals like this:
 
 ```parol
-"a?", "a*", "\b"
+/a?/, /a*/, /\b/
 ```
 
 Internally the tokenizer will enter a loop and match the empty string over and over again without
@@ -237,7 +203,7 @@ in angle brackets. Like this:
 
 ```parol
 StringDelimiter
-    : <String, INITIAL>"\u{22}"
+    : <String, INITIAL>/"/
     ;
 ```
 
@@ -298,7 +264,7 @@ You can suffix grammar symbols (terminals and non-terminals) with a cut operator
 `parol` to not propagate them to the AST in auto-gen modus.
 
 ```parol
-Group: "\("^ Alternations "\)"^;
+Group: '('^ Alternations ')'^;
 ```
 
 The AST type for the symbol `Group` will then only contain a member for the non-terminal
