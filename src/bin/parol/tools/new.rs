@@ -1,6 +1,6 @@
 use clap::ArgGroup;
 use derive_builder::Builder;
-use miette::{bail, miette, Context, IntoDiagnostic, Result};
+use miette::{miette, Context, IntoDiagnostic, Result};
 use owo_colors::OwoColorize;
 use parol::generators::NamingHelper as NmHlp;
 use std::fs;

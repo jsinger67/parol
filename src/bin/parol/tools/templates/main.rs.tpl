@@ -1,5 +1,10 @@
 extern crate parol_runtime;
 
+// auto generation needs derive_builder
+mod derive_builder {
+    pub use parol_runtime::derive_builder::*;
+}
+
 mod {{crate_name}}_grammar;
 // The output is version controlled
 mod {{crate_name}}_grammar_trait;
