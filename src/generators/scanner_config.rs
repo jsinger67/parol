@@ -131,7 +131,7 @@ impl ScannerConfig {
         let term_indices = terminals
             .iter()
             .enumerate()
-            .fold(Vec::new(), |mut acc, (i, (_, s))| {
+            .fold(Vec::new(), |mut acc, (i, (_, _, s))| {
                 if s.contains(&self.scanner_state) {
                     acc.push(i + FIRST_USER_TOKEN);
                 }

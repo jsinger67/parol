@@ -129,8 +129,13 @@ impl GrammarConfig {
             self.cfg
                 .get_ordered_terminals()
                 .iter()
-                .fold(terminals, |mut acc, (t, _)| {
-                    acc.push(t.to_string());
+                .fold(terminals, |mut acc, (t, k, _)| {
+                    acc.push(
+                        match k {
+                            crate::TerminalKind::Legacy | crate::TerminalKind::Raw => t.to_string(),
+                            crate::TerminalKind::Regex => regex::escape(&t),
+                        }
+                        );
                     acc
                 });
         terminals.push("ERROR_TOKEN".to_owned());

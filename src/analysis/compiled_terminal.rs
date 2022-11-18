@@ -1,6 +1,6 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::k_tuple::TerminalMappings;
-use crate::{Symbol, Terminal};
+use crate::{Symbol, Terminal, TerminalKind};
 use parol_runtime::lexer::EOI;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -24,10 +24,10 @@ impl CompiledTerminal {
     /// Creates a new item from a Symbol
     pub fn create<R>(s: &Symbol, terminal_index_resolver: R) -> Self
     where
-        R: Fn(&str) -> TerminalIndex,
+        R: Fn(&str, TerminalKind) -> TerminalIndex,
     {
         match s {
-            Symbol::T(Terminal::Trm(t, ..)) => Self(terminal_index_resolver(t)),
+            Symbol::T(Terminal::Trm(t, k, ..)) => Self(terminal_index_resolver(t, *k)),
             Symbol::T(Terminal::End) => Self(EOI),
             _ => panic!("Unexpected symbol type: {:?}", s),
         }

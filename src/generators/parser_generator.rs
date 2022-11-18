@@ -152,7 +152,7 @@ pub fn generate_parser_source(
         .cfg
         .get_ordered_terminals()
         .iter()
-        .map(|(t, _)| *t)
+        .map(|(t, _, _)| *t)
         .collect::<Vec<&str>>();
     let original_non_terminals = grammar_config.cfg.get_non_terminal_set();
     let non_terminal_count = original_non_terminals.len();

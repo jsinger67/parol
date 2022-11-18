@@ -181,7 +181,7 @@ impl GrammarTypeInfo {
         self.terminals = cfg
             .get_ordered_terminals()
             .iter()
-            .map(|(t, _)| t.to_string())
+            .map(|(t, _, _)| t.to_string())
             .collect::<Vec<String>>();
 
         self.terminal_names = self.terminals.iter().fold(Vec::new(), |mut acc, e| {

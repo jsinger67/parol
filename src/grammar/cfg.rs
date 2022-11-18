@@ -1,5 +1,5 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
-use crate::{Pos, Pr, Symbol, Terminal};
+use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
 use regex::Regex;
 use std::collections::HashSet;
 use std::collections::{BTreeMap, BTreeSet};
@@ -104,18 +104,18 @@ impl Cfg {
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///
-    pub fn get_ordered_terminals(&self) -> Vec<(&str, Vec<usize>)> {
+    pub fn get_ordered_terminals(&self) -> Vec<(&str, TerminalKind, Vec<usize>)> {
         self.pr.iter().fold(Vec::new(), |mut acc, p| {
             acc = p.get_r().iter().fold(acc, |mut acc, s| {
-                if let Symbol::T(Terminal::Trm(t, _, s, ..)) = s {
-                    if let Some(pos) = acc.iter_mut().position(|(trm, _)| trm == t) {
+                if let Symbol::T(Terminal::Trm(t, k, s, ..)) = s {
+                    if let Some(pos) = acc.iter_mut().position(|(trm, _, _)| trm == t) {
                         for st in s {
-                            if !acc[pos].1.contains(st) {
-                                acc[pos].1.push(*st);
+                            if !acc[pos].2.contains(st) {
+                                acc[pos].2.push(*st);
                             }
                         }
                     } else {
-                        acc.push((t, s.to_vec()));
+                        acc.push((t, *k, s.to_vec()));
                     }
                 }
                 acc

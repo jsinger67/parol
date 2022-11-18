@@ -33,6 +33,24 @@ impl TerminalKind {
             TerminalKind::Raw => '\'',
         }
     }
+
+    /// Behavioral equivalence
+    pub fn behaves_like(&self, other: TerminalKind) -> bool {
+        match self {
+            TerminalKind::Legacy |TerminalKind::Raw => {
+                match other {
+                    TerminalKind::Legacy | TerminalKind::Raw => true,
+                    TerminalKind::Regex => false,
+                }
+            },
+            TerminalKind::Regex => {
+                match other {
+                    TerminalKind::Legacy | TerminalKind::Raw => false,
+                    TerminalKind::Regex => true,
+                }
+            },
+        }
+    }
 }
 
 // ---------------------------------------------------

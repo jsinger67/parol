@@ -7,7 +7,7 @@ use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
-use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol};
+use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
 use log::trace;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use std::cell::RefCell;
@@ -50,8 +50,8 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let terminals = grammar_config.cfg.get_ordered_terminals();
 
-    let terminal_index = |t: &str| -> usize {
-        terminals.iter().position(|(trm, _)| *trm == t).unwrap() + FIRST_USER_TOKEN
+    let terminal_index = |t: &str, k: TerminalKind| -> usize {
+        terminals.iter().position(|(trm, kind, _)| *trm == t && kind.behaves_like(k)).unwrap() + FIRST_USER_TOKEN
     };
 
     let (_, first_k_of_nt) = first_cache.get(k, grammar_config);
@@ -152,7 +152,7 @@ fn update_production_equations<'a, 'c: 'a>(
     prod_num: usize,
     pr: &'c Pr,
     first_k_of_nt: &'a HashMap<String, DomainType>,
-    terminal_index: &'a (impl Fn(&str) -> TerminalIndex + Clone),
+    terminal_index: &'a (impl Fn(&str, TerminalKind) -> TerminalIndex + Clone),
     k: usize,
 ) -> EquationSystem<'a> {
     let parts = pr.get_r().iter().enumerate().fold(
