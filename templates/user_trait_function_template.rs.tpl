@@ -2,7 +2,7 @@
     ///
     /// {{{prod_string}}}
     ///{{/inner}}{{#named?}}
-    #[named]{{/named}}
+    #[parol_runtime::function_name::named]{{/named}}
     fn {{fn_name}}(&mut self, {{{fn_arguments}}}) -> Result<()> {
         {{{code}}}Ok(())
     }

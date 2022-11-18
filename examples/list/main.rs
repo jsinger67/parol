@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
-
 extern crate parol_runtime;
 
 mod list_grammar;

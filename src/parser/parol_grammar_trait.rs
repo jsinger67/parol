@@ -4,12 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::parser::parol_grammar::ParolGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 /// Semantic actions trait generated for the user grammar
@@ -961,7 +963,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Parol: Prolog GrammarDefinition;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn parol(
         &mut self,
         _prolog: &ParseTreeStackEntry<'t>,
@@ -970,17 +972,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let grammar_definition =
-            if let Some(ASTType::GrammarDefinition(grammar_definition)) = self.pop(context) {
-                grammar_definition
-            } else {
-                bail!("{}: Expecting ASTType::GrammarDefinition", context);
-            };
-        let prolog = if let Some(ASTType::Prolog(prolog)) = self.pop(context) {
-            prolog
-        } else {
-            bail!("{}: Expecting ASTType::Prolog", context);
-        };
+        let grammar_definition = pop_item!(self, grammar_definition, GrammarDefinition, context);
+        let prolog = pop_item!(self, prolog, Prolog, context);
         let parol_built = ParolBuilder::default()
             .prolog(Box::new(prolog))
             .grammar_definition(Box::new(grammar_definition))
@@ -996,7 +989,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog(
         &mut self,
         _start_declaration: &ParseTreeStackEntry<'t>,
@@ -1006,24 +999,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let prolog_list0 = if let Some(ASTType::PrologList0(mut prolog_list0)) = self.pop(context) {
-            prolog_list0.reverse();
-            prolog_list0
-        } else {
-            bail!("{}: Expecting ASTType::PrologList0", context);
-        };
-        let prolog_list = if let Some(ASTType::PrologList(mut prolog_list)) = self.pop(context) {
-            prolog_list.reverse();
-            prolog_list
-        } else {
-            bail!("{}: Expecting ASTType::PrologList", context);
-        };
-        let start_declaration =
-            if let Some(ASTType::StartDeclaration(start_declaration)) = self.pop(context) {
-                start_declaration
-            } else {
-                bail!("{}: Expecting ASTType::StartDeclaration", context);
-            };
+        let prolog_list0 = pop_and_reverse_item!(self, prolog_list0, PrologList0, context);
+        let prolog_list = pop_and_reverse_item!(self, prolog_list, PrologList, context);
+        let start_declaration = pop_item!(self, start_declaration, StartDeclaration, context);
         let prolog_built = PrologBuilder::default()
             .start_declaration(Box::new(start_declaration))
             .prolog_list(prolog_list)
@@ -1040,7 +1018,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// PrologList0 /* Vec<T>::Push */: ScannerState : ScannerConfig PrologList0;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list0_0(
         &mut self,
         _scanner_state: &ParseTreeStackEntry<'t>,
@@ -1049,16 +1027,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut prolog_list0 = if let Some(ASTType::PrologList0(prolog_list0)) = self.pop(context) {
-            prolog_list0
-        } else {
-            bail!("{}: Expecting ASTType::PrologList0", context);
-        };
-        let scanner_state = if let Some(ASTType::ScannerState(scanner_state)) = self.pop(context) {
-            scanner_state
-        } else {
-            bail!("{}: Expecting ASTType::ScannerState", context);
-        };
+        let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
+        let scanner_state = pop_item!(self, scanner_state, ScannerState, context);
         let prolog_list0_0_built = PrologList0Builder::default()
             .scanner_state((&scanner_state).try_into().into_diagnostic()?)
             .build()
@@ -1073,7 +1043,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// PrologList0 /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1086,7 +1056,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// PrologList /* Vec<T>::Push */: Declaration PrologList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list_0(
         &mut self,
         _declaration: &ParseTreeStackEntry<'t>,
@@ -1095,16 +1065,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut prolog_list = if let Some(ASTType::PrologList(prolog_list)) = self.pop(context) {
-            prolog_list
-        } else {
-            bail!("{}: Expecting ASTType::PrologList", context);
-        };
-        let declaration = if let Some(ASTType::Declaration(declaration)) = self.pop(context) {
-            declaration
-        } else {
-            bail!("{}: Expecting ASTType::Declaration", context);
-        };
+        let mut prolog_list = pop_item!(self, prolog_list, PrologList, context);
+        let declaration = pop_item!(self, declaration, Declaration, context);
         let prolog_list_0_built = PrologListBuilder::default()
             .declaration(Box::new(declaration))
             .build()
@@ -1119,7 +1081,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// PrologList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1132,7 +1094,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// StartDeclaration: "%start"^ /* Clipped */ Identifier;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn start_declaration(
         &mut self,
         _percent_start: &ParseTreeStackEntry<'t>,
@@ -1141,11 +1103,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let start_declaration_built = StartDeclarationBuilder::default()
             // Ignore clipped member 'percent_start'
             .identifier(Box::new(identifier))
@@ -1162,7 +1120,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%title"^ /* Clipped */ String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_0(
         &mut self,
         _percent_title: &ParseTreeStackEntry<'t>,
@@ -1171,11 +1129,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let declaration_0_built = Declaration0Builder::default()
             // Ignore clipped member 'percent_title'
             .string(Box::new(string))
@@ -1192,7 +1146,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%comment"^ /* Clipped */ String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_1(
         &mut self,
         _percent_comment: &ParseTreeStackEntry<'t>,
@@ -1201,11 +1155,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let declaration_1_built = Declaration1Builder::default()
             // Ignore clipped member 'percent_comment'
             .string(Box::new(string))
@@ -1222,7 +1172,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Declaration: "%user_type"^ /* Clipped */ Identifier "="^ /* Clipped */ UserTypeName : UserType;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_2(
         &mut self,
         _percent_user_underscore_type: &ParseTreeStackEntry<'t>,
@@ -1233,17 +1183,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
-        {
-            user_type_name
-        } else {
-            bail!("{}: Expecting ASTType::UserTypeName", context);
-        };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let declaration_2_built = Declaration2Builder::default()
             // Ignore clipped member 'percent_user_underscore_type'
             .identifier(Box::new(identifier))
@@ -1262,7 +1203,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Declaration: ScannerDirectives;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn declaration_3(
         &mut self,
         _scanner_directives: &ParseTreeStackEntry<'t>,
@@ -1270,12 +1211,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_directives =
-            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
-                scanner_directives
-            } else {
-                bail!("{}: Expecting ASTType::ScannerDirectives", context);
-            };
+        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
         let declaration_3_built = Declaration3Builder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
@@ -1291,7 +1227,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%line_comment"^ /* Clipped */ String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_0(
         &mut self,
         _percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
@@ -1300,11 +1236,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let scanner_directives_0_built = ScannerDirectives0Builder::default()
             // Ignore clipped member 'percent_line_underscore_comment'
             .string(Box::new(string))
@@ -1326,7 +1258,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%block_comment"^ /* Clipped */ String String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_1(
         &mut self,
         _percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
@@ -1336,16 +1268,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string0 = if let Some(ASTType::String(string0)) = self.pop(context) {
-            string0
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string0 = pop_item!(self, string0, String, context);
+        let string = pop_item!(self, string, String, context);
         let scanner_directives_1_built = ScannerDirectives1Builder::default()
             // Ignore clipped member 'percent_block_underscore_comment'
             .string(Box::new(string))
@@ -1368,7 +1292,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%auto_newline_off"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_2(
         &mut self,
         _percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
@@ -1396,7 +1320,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerDirectives: "%auto_ws_off"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_directives_3(
         &mut self,
         _percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
@@ -1424,7 +1348,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinition: "%%"^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition(
         &mut self,
         _percent_percent: &ParseTreeStackEntry<'t>,
@@ -1434,20 +1358,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let grammar_definition_list =
-            if let Some(ASTType::GrammarDefinitionList(mut grammar_definition_list)) =
-                self.pop(context)
-            {
-                grammar_definition_list.reverse();
-                grammar_definition_list
-            } else {
-                bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
-            };
-        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
-            production
-        } else {
-            bail!("{}: Expecting ASTType::Production", context);
-        };
+        let grammar_definition_list = pop_and_reverse_item!(
+            self,
+            grammar_definition_list,
+            GrammarDefinitionList,
+            context
+        );
+        let production = pop_item!(self, production, Production, context);
         let grammar_definition_built = GrammarDefinitionBuilder::default()
             // Ignore clipped member 'percent_percent'
             .production(Box::new(production))
@@ -1468,7 +1385,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition_list_0(
         &mut self,
         _production: &ParseTreeStackEntry<'t>,
@@ -1477,19 +1394,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut grammar_definition_list = if let Some(ASTType::GrammarDefinitionList(
+        let mut grammar_definition_list = pop_item!(
+            self,
             grammar_definition_list,
-        )) = self.pop(context)
-        {
-            grammar_definition_list
-        } else {
-            bail!("{}: Expecting ASTType::GrammarDefinitionList", context);
-        };
-        let production = if let Some(ASTType::Production(production)) = self.pop(context) {
-            production
-        } else {
-            bail!("{}: Expecting ASTType::Production", context);
-        };
+            GrammarDefinitionList,
+            context
+        );
+        let production = pop_item!(self, production, Production, context);
         let grammar_definition_list_0_built = GrammarDefinitionListBuilder::default()
             .production(Box::new(production))
             .build()
@@ -1507,7 +1418,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// GrammarDefinitionList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1523,7 +1434,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// DoubleColon: "::";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn double_colon(
         &mut self,
         double_colon: &ParseTreeStackEntry<'t>,
@@ -1546,7 +1457,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Production: Identifier ":"^ /* Clipped */ Alternations ";"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn production(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -1557,16 +1468,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
-            alternations
-        } else {
-            bail!("{}: Expecting ASTType::Alternations", context);
-        };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let alternations = pop_item!(self, alternations, Alternations, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let production_built = ProductionBuilder::default()
             .identifier(Box::new(identifier))
             // Ignore clipped member 'colon'
@@ -1584,7 +1487,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Alternations: Alternation AlternationsList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations(
         &mut self,
         _alternation: &ParseTreeStackEntry<'t>,
@@ -1594,17 +1497,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternations_list =
-            if let Some(ASTType::AlternationsList(mut alternations_list)) = self.pop(context) {
-                alternations_list.reverse();
-                alternations_list
-            } else {
-                bail!("{}: Expecting ASTType::AlternationsList", context);
-            };
-        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
-            alternation
-        } else {
-            bail!("{}: Expecting ASTType::Alternation", context);
-        };
+            pop_and_reverse_item!(self, alternations_list, AlternationsList, context);
+        let alternation = pop_item!(self, alternation, Alternation, context);
         let alternations_built = AlternationsBuilder::default()
             .alternation(Box::new(alternation))
             .alternations_list(alternations_list)
@@ -1620,7 +1514,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// AlternationsList /* Vec<T>::Push */: "\|"^ /* Clipped */ Alternation AlternationsList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations_list_0(
         &mut self,
         _or: &ParseTreeStackEntry<'t>,
@@ -1630,17 +1524,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut alternations_list =
-            if let Some(ASTType::AlternationsList(alternations_list)) = self.pop(context) {
-                alternations_list
-            } else {
-                bail!("{}: Expecting ASTType::AlternationsList", context);
-            };
-        let alternation = if let Some(ASTType::Alternation(alternation)) = self.pop(context) {
-            alternation
-        } else {
-            bail!("{}: Expecting ASTType::Alternation", context);
-        };
+        let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
+        let alternation = pop_item!(self, alternation, Alternation, context);
         let alternations_list_0_built = AlternationsListBuilder::default()
             .alternation(Box::new(alternation))
             // Ignore clipped member 'or'
@@ -1656,7 +1541,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// AlternationsList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1672,7 +1557,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Alternation: AlternationList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation(
         &mut self,
         _alternation_list: &ParseTreeStackEntry<'t>,
@@ -1681,12 +1566,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternation_list =
-            if let Some(ASTType::AlternationList(mut alternation_list)) = self.pop(context) {
-                alternation_list.reverse();
-                alternation_list
-            } else {
-                bail!("{}: Expecting ASTType::AlternationList", context);
-            };
+            pop_and_reverse_item!(self, alternation_list, AlternationList, context);
         let alternation_built = AlternationBuilder::default()
             .alternation_list(alternation_list)
             .build()
@@ -1701,7 +1581,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// AlternationList /* Vec<T>::Push */: Factor AlternationList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation_list_0(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
@@ -1710,17 +1590,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut alternation_list =
-            if let Some(ASTType::AlternationList(alternation_list)) = self.pop(context) {
-                alternation_list
-            } else {
-                bail!("{}: Expecting ASTType::AlternationList", context);
-            };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
+        let mut alternation_list = pop_item!(self, alternation_list, AlternationList, context);
+        let factor = pop_item!(self, factor, Factor, context);
         let alternation_list_0_built = AlternationListBuilder::default()
             .factor(Box::new(factor))
             .build()
@@ -1735,7 +1606,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// AlternationList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1748,7 +1619,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Factor: Group;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_0(
         &mut self,
         _group: &ParseTreeStackEntry<'t>,
@@ -1756,11 +1627,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let group = if let Some(ASTType::Group(group)) = self.pop(context) {
-            group
-        } else {
-            bail!("{}: Expecting ASTType::Group", context);
-        };
+        let group = pop_item!(self, group, Group, context);
         let factor_0_built = Factor0Builder::default()
             .group(Box::new(group))
             .build()
@@ -1776,7 +1643,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Factor: Repeat;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_1(
         &mut self,
         _repeat: &ParseTreeStackEntry<'t>,
@@ -1784,11 +1651,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let repeat = if let Some(ASTType::Repeat(repeat)) = self.pop(context) {
-            repeat
-        } else {
-            bail!("{}: Expecting ASTType::Repeat", context);
-        };
+        let repeat = pop_item!(self, repeat, Repeat, context);
         let factor_1_built = Factor1Builder::default()
             .repeat(Box::new(repeat))
             .build()
@@ -1804,7 +1667,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Factor: Optional;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
         _optional: &ParseTreeStackEntry<'t>,
@@ -1812,11 +1675,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let optional = if let Some(ASTType::Optional(optional)) = self.pop(context) {
-            optional
-        } else {
-            bail!("{}: Expecting ASTType::Optional", context);
-        };
+        let optional = pop_item!(self, optional, Optional, context);
         let factor_2_built = Factor2Builder::default()
             .optional(Box::new(optional))
             .build()
@@ -1832,7 +1691,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Factor: Symbol;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
         _symbol: &ParseTreeStackEntry<'t>,
@@ -1840,11 +1699,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let symbol = if let Some(ASTType::Symbol(symbol)) = self.pop(context) {
-            symbol
-        } else {
-            bail!("{}: Expecting ASTType::Symbol", context);
-        };
+        let symbol = pop_item!(self, symbol, Symbol, context);
         let factor_3_built = Factor3Builder::default()
             .symbol(Box::new(symbol))
             .build()
@@ -1860,7 +1715,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Symbol: NonTerminal;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_0(
         &mut self,
         _non_terminal: &ParseTreeStackEntry<'t>,
@@ -1868,11 +1723,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_terminal = if let Some(ASTType::NonTerminal(non_terminal)) = self.pop(context) {
-            non_terminal
-        } else {
-            bail!("{}: Expecting ASTType::NonTerminal", context);
-        };
+        let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
         let symbol_0_built = Symbol0Builder::default()
             .non_terminal(Box::new(non_terminal))
             .build()
@@ -1888,7 +1739,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Symbol: SimpleToken;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_1(
         &mut self,
         _simple_token: &ParseTreeStackEntry<'t>,
@@ -1896,11 +1747,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let simple_token = if let Some(ASTType::SimpleToken(simple_token)) = self.pop(context) {
-            simple_token
-        } else {
-            bail!("{}: Expecting ASTType::SimpleToken", context);
-        };
+        let simple_token = pop_item!(self, simple_token, SimpleToken, context);
         let symbol_1_built = Symbol1Builder::default()
             .simple_token(Box::new(simple_token))
             .build()
@@ -1916,7 +1763,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Symbol: TokenWithStates;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_2(
         &mut self,
         _token_with_states: &ParseTreeStackEntry<'t>,
@@ -1924,12 +1771,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let token_with_states =
-            if let Some(ASTType::TokenWithStates(token_with_states)) = self.pop(context) {
-                token_with_states
-            } else {
-                bail!("{}: Expecting ASTType::TokenWithStates", context);
-            };
+        let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
         let symbol_2_built = Symbol2Builder::default()
             .token_with_states(Box::new(token_with_states))
             .build()
@@ -1945,7 +1787,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Symbol: ScannerSwitch;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn symbol_3(
         &mut self,
         _scanner_switch: &ParseTreeStackEntry<'t>,
@@ -1953,12 +1795,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch = if let Some(ASTType::ScannerSwitch(scanner_switch)) = self.pop(context)
-        {
-            scanner_switch
-        } else {
-            bail!("{}: Expecting ASTType::ScannerSwitch", context);
-        };
+        let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
         let symbol_3_built = Symbol3Builder::default()
             .scanner_switch(Box::new(scanner_switch))
             .build()
@@ -1974,7 +1811,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenLiteral: String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_literal_0(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
@@ -1982,11 +1819,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = if let Some(ASTType::String(string)) = self.pop(context) {
-            string
-        } else {
-            bail!("{}: Expecting ASTType::String", context);
-        };
+        let string = pop_item!(self, string, String, context);
         let token_literal_0_built = TokenLiteral0Builder::default()
             .string(Box::new(string))
             .build()
@@ -2002,7 +1835,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenLiteral: RawString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_literal_1(
         &mut self,
         _raw_string: &ParseTreeStackEntry<'t>,
@@ -2010,11 +1843,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let raw_string = if let Some(ASTType::RawString(raw_string)) = self.pop(context) {
-            raw_string
-        } else {
-            bail!("{}: Expecting ASTType::RawString", context);
-        };
+        let raw_string = pop_item!(self, raw_string, RawString, context);
         let token_literal_1_built = TokenLiteral1Builder::default()
             .raw_string(Box::new(raw_string))
             .build()
@@ -2030,7 +1859,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenLiteral: Regex;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_literal_2(
         &mut self,
         _regex: &ParseTreeStackEntry<'t>,
@@ -2038,11 +1867,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let regex = if let Some(ASTType::Regex(regex)) = self.pop(context) {
-            regex
-        } else {
-            bail!("{}: Expecting ASTType::Regex", context);
-        };
+        let regex = pop_item!(self, regex, Regex, context);
         let token_literal_2_built = TokenLiteral2Builder::default()
             .regex(Box::new(regex))
             .build()
@@ -2058,7 +1883,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_token(
         &mut self,
         _token_literal: &ParseTreeStackEntry<'t>,
@@ -2067,17 +1892,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let simple_token_opt =
-            if let Some(ASTType::SimpleTokenOpt(simple_token_opt)) = self.pop(context) {
-                simple_token_opt
-            } else {
-                bail!("{}: Expecting ASTType::SimpleTokenOpt", context);
-            };
-        let token_literal = if let Some(ASTType::TokenLiteral(token_literal)) = self.pop(context) {
-            token_literal
-        } else {
-            bail!("{}: Expecting ASTType::TokenLiteral", context);
-        };
+        let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let simple_token_built = SimpleTokenBuilder::default()
             .token_literal(Box::new(token_literal))
             .simple_token_opt(simple_token_opt)
@@ -2093,7 +1909,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// SimpleTokenOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_token_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2101,11 +1917,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
-            a_s_t_control
-        } else {
-            bail!("{}: Expecting ASTType::ASTControl", context);
-        };
+        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let simple_token_opt_0_built = SimpleTokenOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -2121,7 +1933,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// SimpleTokenOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_token_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2133,7 +1945,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenWithStates: "<"^ /* Clipped */ StateList ">"^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states(
         &mut self,
         _l_t: &ParseTreeStackEntry<'t>,
@@ -2146,21 +1958,9 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states_opt =
-            if let Some(ASTType::TokenWithStatesOpt(token_with_states_opt)) = self.pop(context) {
-                token_with_states_opt
-            } else {
-                bail!("{}: Expecting ASTType::TokenWithStatesOpt", context);
-            };
-        let token_literal = if let Some(ASTType::TokenLiteral(token_literal)) = self.pop(context) {
-            token_literal
-        } else {
-            bail!("{}: Expecting ASTType::TokenLiteral", context);
-        };
-        let state_list = if let Some(ASTType::StateList(state_list)) = self.pop(context) {
-            state_list
-        } else {
-            bail!("{}: Expecting ASTType::StateList", context);
-        };
+            pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
+        let state_list = pop_item!(self, state_list, StateList, context);
         let token_with_states_built = TokenWithStatesBuilder::default()
             // Ignore clipped member 'l_t'
             .state_list(Box::new(state_list))
@@ -2180,7 +1980,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2188,11 +1988,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
-            a_s_t_control
-        } else {
-            bail!("{}: Expecting ASTType::ASTControl", context);
-        };
+        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let token_with_states_opt_0_built = TokenWithStatesOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -2208,7 +2004,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// TokenWithStatesOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn token_with_states_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2220,7 +2016,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Group: "\("^ /* Clipped */ Alternations "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn group(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -2230,11 +2026,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
-            alternations
-        } else {
-            bail!("{}: Expecting ASTType::Alternations", context);
-        };
+        let alternations = pop_item!(self, alternations, Alternations, context);
         let group_built = GroupBuilder::default()
             // Ignore clipped member 'l_paren'
             .alternations(Box::new(alternations))
@@ -2251,7 +2043,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Optional: "\["^ /* Clipped */ Alternations "\]"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn optional(
         &mut self,
         _l_bracket: &ParseTreeStackEntry<'t>,
@@ -2261,11 +2053,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
-            alternations
-        } else {
-            bail!("{}: Expecting ASTType::Alternations", context);
-        };
+        let alternations = pop_item!(self, alternations, Alternations, context);
         let optional_built = OptionalBuilder::default()
             // Ignore clipped member 'l_bracket'
             .alternations(Box::new(alternations))
@@ -2282,7 +2070,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Repeat: "\{"^ /* Clipped */ Alternations "\}"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn repeat(
         &mut self,
         _l_brace: &ParseTreeStackEntry<'t>,
@@ -2292,11 +2080,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let alternations = if let Some(ASTType::Alternations(alternations)) = self.pop(context) {
-            alternations
-        } else {
-            bail!("{}: Expecting ASTType::Alternations", context);
-        };
+        let alternations = pop_item!(self, alternations, Alternations, context);
         let repeat_built = RepeatBuilder::default()
             // Ignore clipped member 'l_brace'
             .alternations(Box::new(alternations))
@@ -2313,7 +2097,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2322,17 +2106,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let non_terminal_opt =
-            if let Some(ASTType::NonTerminalOpt(non_terminal_opt)) = self.pop(context) {
-                non_terminal_opt
-            } else {
-                bail!("{}: Expecting ASTType::NonTerminalOpt", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let non_terminal_opt = pop_item!(self, non_terminal_opt, NonTerminalOpt, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let non_terminal_built = NonTerminalBuilder::default()
             .identifier(Box::new(identifier))
             .non_terminal_opt(non_terminal_opt)
@@ -2348,7 +2123,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal_opt_0(
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
@@ -2356,11 +2131,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let a_s_t_control = if let Some(ASTType::ASTControl(a_s_t_control)) = self.pop(context) {
-            a_s_t_control
-        } else {
-            bail!("{}: Expecting ASTType::ASTControl", context);
-        };
+        let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
@@ -2376,7 +2147,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_terminal_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2388,7 +2159,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn identifier(
         &mut self,
         identifier: &ParseTreeStackEntry<'t>,
@@ -2411,7 +2182,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// String: "\u{22}(\\.|[^\\])*?\u{22}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn string(
         &mut self,
         string: &ParseTreeStackEntry<'t>,
@@ -2434,7 +2205,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// RawString: "'(\\'|[^'])*?'";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn raw_string(
         &mut self,
         raw_string: &ParseTreeStackEntry<'t>,
@@ -2457,7 +2228,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// Regex: "/(\\/|[^/]|)*?/";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn regex(
         &mut self,
         regex: &ParseTreeStackEntry<'t>,
@@ -2480,7 +2251,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerState: "%scanner"^ /* Clipped */ Identifier "\{"^ /* Clipped */ ScannerStateList /* Vec */ "\}"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state(
         &mut self,
         _percent_scanner: &ParseTreeStackEntry<'t>,
@@ -2493,17 +2264,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_state_list =
-            if let Some(ASTType::ScannerStateList(mut scanner_state_list)) = self.pop(context) {
-                scanner_state_list.reverse();
-                scanner_state_list
-            } else {
-                bail!("{}: Expecting ASTType::ScannerStateList", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+            pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_state_built = ScannerStateBuilder::default()
             // Ignore clipped member 'percent_scanner'
             .identifier(Box::new(identifier))
@@ -2522,7 +2284,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state_list_0(
         &mut self,
         _scanner_directives: &ParseTreeStackEntry<'t>,
@@ -2531,18 +2293,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut scanner_state_list =
-            if let Some(ASTType::ScannerStateList(scanner_state_list)) = self.pop(context) {
-                scanner_state_list
-            } else {
-                bail!("{}: Expecting ASTType::ScannerStateList", context);
-            };
-        let scanner_directives =
-            if let Some(ASTType::ScannerDirectives(scanner_directives)) = self.pop(context) {
-                scanner_directives
-            } else {
-                bail!("{}: Expecting ASTType::ScannerDirectives", context);
-            };
+        let mut scanner_state_list = pop_item!(self, scanner_state_list, ScannerStateList, context);
+        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
         let scanner_state_list_0_built = ScannerStateListBuilder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
@@ -2557,7 +2309,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerStateList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2573,7 +2325,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// StateList: Identifier StateListList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2582,18 +2334,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let state_list_list =
-            if let Some(ASTType::StateListList(mut state_list_list)) = self.pop(context) {
-                state_list_list.reverse();
-                state_list_list
-            } else {
-                bail!("{}: Expecting ASTType::StateListList", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_built = StateListBuilder::default()
             .identifier(Box::new(identifier))
             .state_list_list(state_list_list)
@@ -2609,7 +2351,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// StateListList /* Vec<T>::Push */: ","^ /* Clipped */ Identifier StateListList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -2619,17 +2361,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut state_list_list =
-            if let Some(ASTType::StateListList(state_list_list)) = self.pop(context) {
-                state_list_list
-            } else {
-                bail!("{}: Expecting ASTType::StateListList", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_list_0_built = StateListListBuilder::default()
             .identifier(Box::new(identifier))
             // Ignore clipped member 'comma'
@@ -2645,7 +2378,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// StateListList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn state_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2658,7 +2391,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerSwitch: "%sc"^ /* Clipped */ "\("^ /* Clipped */ ScannerSwitchOpt /* Option */ "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_0(
         &mut self,
         _percent_sc: &ParseTreeStackEntry<'t>,
@@ -2669,12 +2402,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch_opt =
-            if let Some(ASTType::ScannerSwitchOpt(scanner_switch_opt)) = self.pop(context) {
-                scanner_switch_opt
-            } else {
-                bail!("{}: Expecting ASTType::ScannerSwitchOpt", context);
-            };
+        let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
         let scanner_switch_0_built = ScannerSwitch0Builder::default()
             // Ignore clipped member 'percent_sc'
             // Ignore clipped member 'l_paren'
@@ -2693,7 +2421,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerSwitch: "%push"^ /* Clipped */ "\("^ /* Clipped */ Identifier "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_1(
         &mut self,
         _percent_push: &ParseTreeStackEntry<'t>,
@@ -2704,11 +2432,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_1_built = ScannerSwitch1Builder::default()
             // Ignore clipped member 'percent_push'
             // Ignore clipped member 'l_paren'
@@ -2727,7 +2451,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerSwitch: "%pop"^ /* Clipped */ "\("^ /* Clipped */ "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_2(
         &mut self,
         _percent_pop: &ParseTreeStackEntry<'t>,
@@ -2754,7 +2478,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerSwitchOpt /* Option<T>::Some */: Identifier;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_opt_0(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2762,11 +2486,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
             .identifier(Box::new(identifier))
             .build()
@@ -2782,7 +2502,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ScannerSwitchOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2794,7 +2514,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ASTControl: CutOperator;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn a_s_t_control_0(
         &mut self,
         _cut_operator: &ParseTreeStackEntry<'t>,
@@ -2802,11 +2522,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator = if let Some(ASTType::CutOperator(cut_operator)) = self.pop(context) {
-            cut_operator
-        } else {
-            bail!("{}: Expecting ASTType::CutOperator", context);
-        };
+        let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
         let a_s_t_control_0_built = ASTControl0Builder::default()
             .cut_operator(Box::new(cut_operator))
             .build()
@@ -2822,7 +2538,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// ASTControl: UserTypeDeclaration;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn a_s_t_control_1(
         &mut self,
         _user_type_declaration: &ParseTreeStackEntry<'t>,
@@ -2831,11 +2547,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_declaration =
-            if let Some(ASTType::UserTypeDeclaration(user_type_declaration)) = self.pop(context) {
-                user_type_declaration
-            } else {
-                bail!("{}: Expecting ASTType::UserTypeDeclaration", context);
-            };
+            pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
         let a_s_t_control_1_built = ASTControl1Builder::default()
             .user_type_declaration(Box::new(user_type_declaration))
             .build()
@@ -2851,7 +2563,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// CutOperator: "\^"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn cut_operator(
         &mut self,
         _cut_operator: &ParseTreeStackEntry<'t>,
@@ -2873,7 +2585,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// UserTypeDeclaration: ":"^ /* Clipped */ UserTypeName : UserType;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_declaration(
         &mut self,
         _colon: &ParseTreeStackEntry<'t>,
@@ -2882,12 +2594,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let user_type_name = if let Some(ASTType::UserTypeName(user_type_name)) = self.pop(context)
-        {
-            user_type_name
-        } else {
-            bail!("{}: Expecting ASTType::UserTypeName", context);
-        };
+        let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclarationBuilder::default()
             // Ignore clipped member 'colon'
             .user_type_name((&user_type_name).try_into().into_diagnostic()?)
@@ -2907,7 +2614,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// UserTypeName: Identifier UserTypeNameList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name(
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
@@ -2917,17 +2624,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_name_list =
-            if let Some(ASTType::UserTypeNameList(mut user_type_name_list)) = self.pop(context) {
-                user_type_name_list.reverse();
-                user_type_name_list
-            } else {
-                bail!("{}: Expecting ASTType::UserTypeNameList", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+            pop_and_reverse_item!(self, user_type_name_list, UserTypeNameList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         let user_type_name_built = UserTypeNameBuilder::default()
             .identifier(Box::new(identifier))
             .user_type_name_list(user_type_name_list)
@@ -2943,7 +2641,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name_list_0(
         &mut self,
         _double_colon: &ParseTreeStackEntry<'t>,
@@ -2954,16 +2652,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut user_type_name_list =
-            if let Some(ASTType::UserTypeNameList(user_type_name_list)) = self.pop(context) {
-                user_type_name_list
-            } else {
-                bail!("{}: Expecting ASTType::UserTypeNameList", context);
-            };
-        let identifier = if let Some(ASTType::Identifier(identifier)) = self.pop(context) {
-            identifier
-        } else {
-            bail!("{}: Expecting ASTType::Identifier", context);
-        };
+            pop_item!(self, user_type_name_list, UserTypeNameList, context);
+        let identifier = pop_item!(self, identifier, Identifier, context);
         // Ignore clipped member 'double_colon'
         self.pop(context);
         let user_type_name_list_0_built = UserTypeNameListBuilder::default()
@@ -2981,7 +2671,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ///
     /// UserTypeNameList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn user_type_name_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));

@@ -4,14 +4,16 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::list_grammar::ListGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::lexer::Token;
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
+
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -197,7 +199,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// List: ListOpt /* Option */ TrailingComma^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn list(
         &mut self,
         _list_opt: &ParseTreeStackEntry<'t>,
@@ -224,7 +226,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ListOpt /* Option<T>::Some */: Items : Numbers;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn list_opt_0(
         &mut self,
         _items: &ParseTreeStackEntry<'t>,
@@ -245,7 +247,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ListOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -257,7 +259,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// Items: Num ItemsList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn items(
         &mut self,
         _num: &ParseTreeStackEntry<'t>,
@@ -283,7 +285,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ItemsList /* Vec<T>::Push */: ","^ /* Clipped */ Num ItemsList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn items_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -310,7 +312,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// ItemsList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn items_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -323,7 +325,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// Num: "0|[1-9][0-9]*" : Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn num(
         &mut self,
         num: &ParseTreeStackEntry<'t>,
@@ -343,7 +345,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// TrailingComma: TrailingCommaOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn trailing_comma(
         &mut self,
         _trailing_comma_opt: &ParseTreeStackEntry<'t>,
@@ -366,7 +368,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// TrailingCommaOpt /* Option<T>::Some */: ","^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn trailing_comma_opt_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -389,7 +391,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ///
     /// TrailingCommaOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn trailing_comma_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));

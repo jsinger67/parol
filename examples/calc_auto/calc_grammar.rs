@@ -3,7 +3,7 @@ use crate::{
     errors::CalcError,
 };
 use log::trace;
-use miette::{miette, Result};
+use miette::{bail, miette, Result};
 use parol_runtime::{errors::FileSource, lexer::Token};
 use std::{
     collections::BTreeMap,

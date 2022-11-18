@@ -4,9 +4,9 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use id_tree::Tree;
-use miette::Result;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
+use parol_runtime::miette::Result;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
@@ -235,16 +235,11 @@ pub const PRODUCTIONS: &[Production; 13] = &[
     },
 ];
 
-lazy_static! {
+parol_runtime::lazy_static::lazy_static! {
     static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
-        (
-            "INITIAL",
-            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
-        ),
-        (
-            "Identifier",
-            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap()
-        ),
+        ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
+        ("Identifier", Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap()),
+
     ];
 }
 

@@ -4,14 +4,16 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-{{#auto_generate?}}#![allow(unused_imports)]{{/auto_generate}}
-use id_tree::Tree;
-{{#auto_generate?}}use parol_macros::{pop_item, pop_and_reverse_item};{{/auto_generate}}
-{{#auto_generate?}}use parol_runtime::lexer::Token;{{/auto_generate}}
+use parol_runtime::id_tree::Tree;
+{{#auto_generate?}}use parol_runtime::derive_builder::Builder;{{/auto_generate}}
+{{#auto_generate?}}#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_item, pop_and_reverse_item};{{/auto_generate}}
+{{#auto_generate?}}{{#ast_type_has_lifetime?}}use parol_runtime::lexer::Token;{{/ast_type_has_lifetime}}{{/auto_generate}}
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-{{#auto_generate?}}use log::trace;
-{{/auto_generate}}use miette::{miette, {{#auto_generate?}}bail, IntoDiagnostic, {{/auto_generate}}Result};
-use crate::{{module_name}}::{{user_type_name}};{{^ast_type_has_lifetime?}}
+{{#auto_generate?}}use parol_runtime::log::trace;
+{{/auto_generate}}#[allow(unused_imports)]
+use parol_runtime::miette::{miette, {{#auto_generate?}}bail, IntoDiagnostic, {{/auto_generate}}Result};
+{{^auto_generate?}}use crate::{{module_name}}::{{user_type_name}};{{/auto_generate}}{{^ast_type_has_lifetime?}}
 use std::marker::PhantomData;{{/ast_type_has_lifetime}}
 
 {{#auto_generate?}}

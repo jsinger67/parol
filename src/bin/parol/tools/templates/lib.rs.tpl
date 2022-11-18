@@ -1,12 +1,9 @@
-#[macro_use]
-extern crate derive_builder;
-#[macro_use]
-extern crate function_name;
-#[macro_use]
-extern crate lazy_static;
-
-{{#tree_gen?}}use id_tree::Tree;
-use id_tree_layout::Layouter;
+// auto generation needs derive_builder
+mod derive_builder {
+    pub use parol_runtime::derive_builder::*;
+}
+{{#tree_gen?}}use parol_runtime::id_tree::Tree;
+use parol_runtime::id_tree_layout::Layouter;
 use parol_runtime::parser::ParseTreeType;{{/tree_gen}}
 
 extern crate parol_runtime;
