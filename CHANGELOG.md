@@ -21,6 +21,14 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.14.0 - Not released yet
+
+* Incorporated contributions from [ryo33](https://github.com/ryo33) in both `parol` and
+`parol_runtime` crates
+  * Reducing dependencies in user crates by utilizing re-exports in `parol_runtime`
+  * Reducing dependencies when user crates don't use aut-generation. This was achieved by
+  introducing a new feature `auto_generation` in `parol_runtime`
+
 ## v0.13.1 - 2022-11-17
 
 * Looked after new clippy warnings (from Rust 1.65)
