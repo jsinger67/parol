@@ -28,6 +28,15 @@ new minor version numbers. Please note that this is no version handling covered 
   * Reducing dependencies in user crates by utilizing re-exports in `parol_runtime`
   * Reducing dependencies when user crates don't use aut-generation. This was achieved by
   introducing a new feature `auto_generation` in `parol_runtime`
+* Realized enhancement from issue [#19](https://github.com/jsinger67/parol/issues/19)
+  * `parol` now understands different styles of terminal representations.
+    * The current syntax (`"..."`) stays intact. It will behave like it was defined until now - so
+    there is no need to update existing grammars.
+    * New single quoted string literals (`'..'`) as literal or raw strings. `parol` will escape any
+    regex meta character automatically. This is used when you don't want to deal with regexes and
+    only use plain text. E.g.: `BlockBegin: '{'`
+    * New regular expression strings (`/../`), behaves exactly like the old double quoted string but
+    better conveys the intent. E.g.: `Digits: /[\d]+/`
 
 ## v0.13.1 - 2022-11-17
 

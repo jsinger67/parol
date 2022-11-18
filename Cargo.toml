@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.14.0-alpah.1"
+version = "0.14.0-alpah.2"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
