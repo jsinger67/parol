@@ -36,7 +36,7 @@ impl TerminalKind {
 
     /// Behavioral equivalence
     /// ```
-    /// use parol::{TerminalKind};
+    /// use parol::TerminalKind;
     ///
     /// assert!(TerminalKind::Legacy.behaves_like(TerminalKind::Legacy));
     /// assert!(TerminalKind::Legacy.behaves_like(TerminalKind::Regex));
@@ -60,6 +60,33 @@ impl TerminalKind {
                 TerminalKind::Raw => true,
             },
         }
+    }
+
+    /// Equivalence regarding expansion result
+    /// ```
+    /// use parol::TerminalKind;
+    ///
+    /// assert!(TerminalKind::expands_like(
+    ///     "\n", TerminalKind::Legacy,
+    ///     "\n", TerminalKind::Regex));
+    /// assert!(TerminalKind::expands_like(
+    ///     "{", TerminalKind::Raw,
+    ///     r"\{", TerminalKind::Regex));
+    /// assert!(TerminalKind::expands_like(
+    ///     "{", TerminalKind::Raw,
+    ///     r"\{", TerminalKind::Legacy));
+    /// assert!(!TerminalKind::expands_like(
+    ///     r"\{", TerminalKind::Raw,
+    ///     r"\{", TerminalKind::Legacy));
+    /// ```
+    ///
+    pub fn expands_like(
+        this_term: &str,
+        this_kind: TerminalKind,
+        other_term: &str,
+        other_kind: TerminalKind,
+    ) -> bool {
+        this_kind.expand(this_term) == other_kind.expand(other_term)
     }
 
     /// The actual preparation for scanner regex generation

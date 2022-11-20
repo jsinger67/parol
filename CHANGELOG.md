@@ -21,7 +21,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.14.0 - Not released yet
+## v0.14.1 - Not released yet
+
+* Fixed issue [#22](https://github.com/jsinger67/parol/issues/22)
+  * The parser detects conflicting token aliases pairwise and issues a dedicated error message
+
+## v0.14.0 - 2022-11-18
 
 * Incorporated contributions from [ryo33](https://github.com/ryo33) in both `parol` and
 `parol_runtime` crates

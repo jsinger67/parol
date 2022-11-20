@@ -92,13 +92,23 @@ pub trait ParolGrammarTrait<'t> {
         Ok(())
     }
 
-    /// Semantic action for non-terminal 'Group'
-    fn group(&mut self, _arg: &Group<'t>) -> Result<()> {
+    /// Semantic action for non-terminal 'String'
+    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'RawString'
+    fn raw_string(&mut self, _arg: &RawString<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Regex'
     fn regex(&mut self, _arg: &Regex<'t>) -> Result<()> {
+        Ok(())
+    }
+
+    /// Semantic action for non-terminal 'Group'
+    fn group(&mut self, _arg: &Group<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -119,16 +129,6 @@ pub trait ParolGrammarTrait<'t> {
 
     /// Semantic action for non-terminal 'Identifier'
     fn identifier(&mut self, _arg: &Identifier<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
-        Ok(())
-    }
-
-    /// Semantic action for non-terminal 'RawString'
-    fn raw_string(&mut self, _arg: &RawString<'t>) -> Result<()> {
         Ok(())
     }
 
@@ -2014,6 +2014,75 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
+    /// String: /"(\\.|[^\\])*?"/;
+    ///
+    #[parol_runtime::function_name::named]
+    fn string(
+        &mut self,
+        string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let string = string.token(parse_tree)?.clone();
+        let string_built = StringBuilder::default()
+            .string(string)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.string(&string_built)?;
+        self.push(ASTType::String(string_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 44:
+    ///
+    /// RawString: /'(\\'|[^'])*?'/;
+    ///
+    #[parol_runtime::function_name::named]
+    fn raw_string(
+        &mut self,
+        raw_string: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let raw_string = raw_string.token(parse_tree)?.clone();
+        let raw_string_built = RawStringBuilder::default()
+            .raw_string(raw_string)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.raw_string(&raw_string_built)?;
+        self.push(ASTType::RawString(raw_string_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 45:
+    ///
+    /// Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
+    ///
+    #[parol_runtime::function_name::named]
+    fn regex(
+        &mut self,
+        regex: &ParseTreeStackEntry<'t>,
+        parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let regex = regex.token(parse_tree)?.clone();
+        let regex_built = RegexBuilder::default()
+            .regex(regex)
+            .build()
+            .into_diagnostic()?;
+        // Calling user action here
+        self.user_grammar.regex(&regex_built)?;
+        self.push(ASTType::Regex(regex_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 46:
+    ///
     /// Group: '('^ /* Clipped */ Alternations ')'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
@@ -2039,30 +2108,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
-    ///
-    /// Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
-    ///
-    #[parol_runtime::function_name::named]
-    fn regex(
-        &mut self,
-        regex: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let regex = regex.token(parse_tree)?.clone();
-        let regex_built = RegexBuilder::default()
-            .regex(regex)
-            .build()
-            .into_diagnostic()?;
-        // Calling user action here
-        self.user_grammar.regex(&regex_built)?;
-        self.push(ASTType::Regex(regex_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 45:
+    /// Semantic action for production 47:
     ///
     /// Optional: '['^ /* Clipped */ Alternations ']'^ /* Clipped */;
     ///
@@ -2089,7 +2135,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 48:
     ///
     /// Repeat: '{'^ /* Clipped */ Alternations '}'^ /* Clipped */;
     ///
@@ -2116,7 +2162,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 49:
     ///
     /// NonTerminal: Identifier NonTerminalOpt /* Option */;
     ///
@@ -2142,7 +2188,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 50:
     ///
     /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
     ///
@@ -2166,7 +2212,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 51:
     ///
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
@@ -2178,7 +2224,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 52:
     ///
     /// Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     ///
@@ -2198,52 +2244,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         // Calling user action here
         self.user_grammar.identifier(&identifier_built)?;
         self.push(ASTType::Identifier(identifier_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 51:
-    ///
-    /// String: /"(\\.|[^\\])*?"/;
-    ///
-    #[parol_runtime::function_name::named]
-    fn string(
-        &mut self,
-        string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let string = string.token(parse_tree)?.clone();
-        let string_built = StringBuilder::default()
-            .string(string)
-            .build()
-            .into_diagnostic()?;
-        // Calling user action here
-        self.user_grammar.string(&string_built)?;
-        self.push(ASTType::String(string_built), context);
-        Ok(())
-    }
-
-    /// Semantic action for production 52:
-    ///
-    /// RawString: /'(\\'|[^'])*?'/;
-    ///
-    #[parol_runtime::function_name::named]
-    fn raw_string(
-        &mut self,
-        raw_string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
-        let context = function_name!();
-        trace!("{}", self.trace_item_stack(context));
-        let raw_string = raw_string.token(parse_tree)?.clone();
-        let raw_string_built = RawStringBuilder::default()
-            .raw_string(raw_string)
-            .build()
-            .into_diagnostic()?;
-        // Calling user action here
-        self.user_grammar.raw_string(&raw_string_built)?;
-        self.push(ASTType::RawString(raw_string_built), context);
         Ok(())
     }
 
@@ -2757,16 +2757,16 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             ),
             41 => self.token_with_states_opt_0(&children[0], parse_tree),
             42 => self.token_with_states_opt_1(parse_tree),
-            43 => self.group(&children[0], &children[1], &children[2], parse_tree),
-            44 => self.regex(&children[0], parse_tree),
-            45 => self.optional(&children[0], &children[1], &children[2], parse_tree),
-            46 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
-            47 => self.non_terminal(&children[0], &children[1], parse_tree),
-            48 => self.non_terminal_opt_0(&children[0], parse_tree),
-            49 => self.non_terminal_opt_1(parse_tree),
-            50 => self.identifier(&children[0], parse_tree),
-            51 => self.string(&children[0], parse_tree),
-            52 => self.raw_string(&children[0], parse_tree),
+            43 => self.string(&children[0], parse_tree),
+            44 => self.raw_string(&children[0], parse_tree),
+            45 => self.regex(&children[0], parse_tree),
+            46 => self.group(&children[0], &children[1], &children[2], parse_tree),
+            47 => self.optional(&children[0], &children[1], &children[2], parse_tree),
+            48 => self.repeat(&children[0], &children[1], &children[2], parse_tree),
+            49 => self.non_terminal(&children[0], &children[1], parse_tree),
+            50 => self.non_terminal_opt_0(&children[0], parse_tree),
+            51 => self.non_terminal_opt_1(parse_tree),
+            52 => self.identifier(&children[0], parse_tree),
             53 => self.scanner_state(
                 &children[0],
                 &children[1],

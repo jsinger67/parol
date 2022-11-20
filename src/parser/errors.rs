@@ -82,4 +82,34 @@ pub enum ParolParserError {
         #[label("End")]
         end: SourceSpan,
     },
+
+    /// Multiple token aliases that expand to the same text will produce a terminal conflict.
+    #[error(
+        r"Multiple token aliases that expand to the same text:
+'{first_alias}' and '{second_alias}' expand both to '{expanded}'."
+    )]
+    #[diagnostic(
+        help(
+            r"Multiple token aliases that expand to the same text will produce a terminal conflict.
+Consider using only one single terminal instead of two."
+        ),
+        code(parol::parser::conflicting_token_aliases)
+    )]
+    ConflictingTokenAliases {
+        /// First
+        first_alias: String,
+        /// Second
+        second_alias: String,
+        /// Expanded
+        expanded: String,
+        /// Source
+        #[source_code]
+        input: NamedSource,
+        /// First alias
+        #[label("First alias")]
+        first: SourceSpan,
+        /// Second alias
+        #[label("Second alias")]
+        second: SourceSpan,
+    },
 }

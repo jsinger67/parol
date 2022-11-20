@@ -6,7 +6,6 @@
 I: S;
 S: "a" A "a";
 S: "b" A "b";
-S: "a" B "b";
-S: "b" B "a";
+S: "a" A "b";
+S: "b" A "a";
 A: "c";
-B: "c";
