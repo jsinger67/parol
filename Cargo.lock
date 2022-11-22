@@ -121,8 +121,8 @@ dependencies = [
  "lazy_static",
  "log",
  "miette 5.4.1",
- "parol 0.10.7",
- "parol_runtime 0.7.2",
+ "parol 0.14.1-alpha.1",
+ "parol_runtime 0.9.0",
  "regex",
  "thiserror",
 ]
@@ -517,7 +517,7 @@ dependencies = [
  "log",
  "miette 5.4.1",
  "parol 0.14.1-alpha.1",
- "parol-macros 0.1.0",
+ "parol-macros",
  "parol_runtime 0.9.0",
  "thiserror",
 ]
@@ -703,8 +703,8 @@ dependencies = [
  "lazy_static",
  "log",
  "miette 5.4.1",
- "parol 0.13.1",
- "parol-macros 0.1.0",
+ "parol 0.14.1-alpha.1",
+ "parol-macros",
  "parol_runtime 0.9.0",
  "thiserror",
 ]
@@ -769,66 +769,6 @@ dependencies = [
 
 [[package]]
 name = "parol"
-version = "0.10.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bef84a0533ecd4094a8d3cf6d4b74cddc2122ddc0bcb32f96b90d012d735a3f4"
-dependencies = [
- "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "cfg-if",
- "clap 3.2.23",
- "derive_builder",
- "env_logger",
- "function_name",
- "id_tree",
- "id_tree_layout",
- "lazy_static",
- "log",
- "miette 5.4.1",
- "owo-colors",
- "parol_runtime 0.7.2",
- "petgraph",
- "rand",
- "rand_regex",
- "regex",
- "regex-syntax",
- "semver",
- "syn 1.0.103",
- "thiserror",
-]
-
-[[package]]
-name = "parol"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8405851a87987b3aca953b82513de45690bf162d44674dedab6adfae9871fcb0"
-dependencies = [
- "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "cfg-if",
- "clap 4.0.26",
- "derive_builder",
- "env_logger",
- "function_name",
- "id_tree",
- "id_tree_layout",
- "lazy_static",
- "log",
- "miette 5.4.1",
- "owo-colors",
- "parol-macros 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "parol_runtime 0.8.1",
- "rand",
- "rand_regex",
- "regex",
- "regex-syntax",
- "semver",
- "syn 1.0.103",
- "thiserror",
-]
-
-[[package]]
-name = "parol"
 version = "0.14.1-alpha.1"
 dependencies = [
  "bart 0.1.4 (git+https://github.com/ryo33/bart?rev=5a6046b386aced0bdf0a5d7a23ea96accefade09)",
@@ -844,7 +784,7 @@ dependencies = [
  "log",
  "miette 5.4.1",
  "owo-colors",
- "parol-macros 0.1.0",
+ "parol-macros",
  "parol_runtime 0.9.0",
  "rand",
  "rand_regex",
@@ -870,7 +810,7 @@ dependencies = [
  "lsp-types",
  "miette 5.4.1",
  "parol 0.14.1-alpha.1",
- "parol-macros 0.1.0",
+ "parol-macros",
  "parol_runtime 0.9.0",
  "regex",
  "serde",
@@ -881,12 +821,6 @@ dependencies = [
 [[package]]
 name = "parol-macros"
 version = "0.1.0"
-
-[[package]]
-name = "parol-macros"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e050a66a0efd1a8a62f51ec99383cbabf00f7c557747591383c5f02c16cdce5b"
 
 [[package]]
 name = "parol_runtime"
@@ -905,36 +839,6 @@ dependencies = [
 
 [[package]]
 name = "parol_runtime"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "837773bbff07209a331079c0448b33ed0380ca75be135e0a675263c6d140f571"
-dependencies = [
- "id_tree",
- "id_tree_layout",
- "lazy_static",
- "log",
- "miette 5.4.1",
- "regex",
- "thiserror",
-]
-
-[[package]]
-name = "parol_runtime"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "505ab5721b9eae065d02be179b3f95817cfc532832355cebbc7db2a9cdd85fb1"
-dependencies = [
- "id_tree",
- "id_tree_layout",
- "lazy_static",
- "log",
- "miette 5.4.1",
- "regex",
- "thiserror",
-]
-
-[[package]]
-name = "parol_runtime"
 version = "0.9.0"
 dependencies = [
  "derive_builder",
@@ -944,7 +848,7 @@ dependencies = [
  "lazy_static",
  "log",
  "miette 5.4.1",
- "parol-macros 0.1.0",
+ "parol-macros",
  "regex",
  "thiserror",
 ]
@@ -962,7 +866,7 @@ dependencies = [
  "log",
  "miette 5.4.1",
  "parol 0.14.1-alpha.1",
- "parol-macros 0.1.0",
+ "parol-macros",
  "parol_runtime 0.9.0",
  "thiserror",
 ]
@@ -1105,12 +1009,6 @@ name = "ryu"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4501abdff3ae82a1c1b477a17252eb69cee9e66eb915c1abaa4f44d873df9f09"
-
-[[package]]
-name = "semver"
-version = "1.0.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e25dfac463d778e353db5be2449d1cce89bd6fd23c9f1ea21310ce6e5a1b29c4"
 
 [[package]]
 name = "serde"

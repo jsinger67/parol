@@ -4,13 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::oberon2_grammar::Oberon2Grammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 /// Semantic actions trait generated for the user grammar
@@ -2468,7 +2469,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwBegin: "BEGIN"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_begin(
         &mut self,
         _kw_begin: &ParseTreeStackEntry<'t>,
@@ -2490,7 +2491,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwCase: "CASE"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_case(
         &mut self,
         _kw_case: &ParseTreeStackEntry<'t>,
@@ -2512,7 +2513,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwDo: "DO"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_do(
         &mut self,
         _kw_do: &ParseTreeStackEntry<'t>,
@@ -2534,7 +2535,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwElse: "ELSE"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_else(
         &mut self,
         _kw_else: &ParseTreeStackEntry<'t>,
@@ -2556,7 +2557,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwElsif: "ELSIF"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_elsif(
         &mut self,
         _kw_elsif: &ParseTreeStackEntry<'t>,
@@ -2578,7 +2579,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwEnd: "END"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_end(
         &mut self,
         _kw_end: &ParseTreeStackEntry<'t>,
@@ -2600,7 +2601,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwIf: "IF"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_if(
         &mut self,
         _kw_if: &ParseTreeStackEntry<'t>,
@@ -2622,7 +2623,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwOf: "OF"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_of(
         &mut self,
         _kw_of: &ParseTreeStackEntry<'t>,
@@ -2644,7 +2645,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwProcedure: "PROCEDURE"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_procedure(
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
@@ -2666,7 +2667,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwThen: "THEN"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_then(
         &mut self,
         _kw_then: &ParseTreeStackEntry<'t>,
@@ -2688,7 +2689,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwTo: "TO"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_to(
         &mut self,
         _kw_to: &ParseTreeStackEntry<'t>,
@@ -2710,7 +2711,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// KwVar: "VAR"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn kw_var(
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
@@ -2732,7 +2733,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Oberon2: ModuleHead Oberon2Opt /* Option */ DeclSeq ModuleBody;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oberon2(
         &mut self,
         _module_head: &ParseTreeStackEntry<'t>,
@@ -2764,7 +2765,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Oberon2Opt /* Option<T>::Some */: ImportList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oberon2_opt_0(
         &mut self,
         _import_list: &ParseTreeStackEntry<'t>,
@@ -2788,7 +2789,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Oberon2Opt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2800,7 +2801,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ModuleHead: "MODULE"^ /* Clipped */ Ident ";"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn module_head(
         &mut self,
         _m_o_d_u_l_e: &ParseTreeStackEntry<'t>,
@@ -2827,7 +2828,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ModuleBody: StatementBlock "\."^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn module_body(
         &mut self,
         _statement_block: &ParseTreeStackEntry<'t>,
@@ -2852,7 +2853,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportList: "IMPORT"^ /* Clipped */ ImportListOpt /* Option */ Ident ImportListList /* Vec */ ";"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list(
         &mut self,
         _i_m_p_o_r_t: &ParseTreeStackEntry<'t>,
@@ -2886,7 +2887,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListList /* Vec<T>::Push */: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -2916,7 +2917,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2929,7 +2930,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListOpt0 /* Option<T>::Some */: Ident ":="^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_opt0_0(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -2955,7 +2956,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2967,7 +2968,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListOpt /* Option<T>::Some */: Ident ":="^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_opt_0(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -2993,7 +2994,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ImportListOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn import_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3005,7 +3006,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeq: DeclSeqList /* Vec */ DeclSeqList0 /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq(
         &mut self,
         _decl_seq_list: &ParseTreeStackEntry<'t>,
@@ -3031,7 +3032,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList0 /* Vec<T>::Push */: DeclSeqList0Group DeclSeqList0;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list0_0(
         &mut self,
         _decl_seq_list0_group: &ParseTreeStackEntry<'t>,
@@ -3057,7 +3058,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList0Group: ProcDecl ";"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list0_group_0(
         &mut self,
         _proc_decl: &ParseTreeStackEntry<'t>,
@@ -3085,7 +3086,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList0Group: ForwardDecl ";"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list0_group_1(
         &mut self,
         _forward_decl: &ParseTreeStackEntry<'t>,
@@ -3113,7 +3114,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList0 /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3126,7 +3127,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList /* Vec<T>::Push */: DeclBlock DeclSeqList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list_0(
         &mut self,
         _decl_block: &ParseTreeStackEntry<'t>,
@@ -3151,7 +3152,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclSeqList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3164,7 +3165,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclBlock: ConstDeclBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_block_0(
         &mut self,
         _const_decl_block: &ParseTreeStackEntry<'t>,
@@ -3188,7 +3189,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclBlock: TypeDeclBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_block_1(
         &mut self,
         _type_decl_block: &ParseTreeStackEntry<'t>,
@@ -3212,7 +3213,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DeclBlock: VarDeclBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn decl_block_2(
         &mut self,
         _var_decl_block: &ParseTreeStackEntry<'t>,
@@ -3236,7 +3237,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ConstDeclBlock: "CONST"^ /* Clipped */ ConstDeclBlockList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn const_decl_block(
         &mut self,
         _c_o_n_s_t: &ParseTreeStackEntry<'t>,
@@ -3263,7 +3264,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ConstDeclBlockList /* Vec<T>::Push */: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn const_decl_block_list_0(
         &mut self,
         _const_decl: &ParseTreeStackEntry<'t>,
@@ -3291,7 +3292,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ConstDeclBlockList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn const_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3307,7 +3308,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDeclBlock: "TYPE"^ /* Clipped */ TypeDeclBlockList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_decl_block(
         &mut self,
         _t_y_p_e: &ParseTreeStackEntry<'t>,
@@ -3333,7 +3334,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDeclBlockList /* Vec<T>::Push */: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_decl_block_list_0(
         &mut self,
         _type_decl: &ParseTreeStackEntry<'t>,
@@ -3361,7 +3362,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDeclBlockList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3377,7 +3378,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// VarDeclBlock: KwVar^ /* Clipped */ VarDeclBlockList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn var_decl_block(
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
@@ -3405,7 +3406,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// VarDeclBlockList /* Vec<T>::Push */: VarDecl ";"^ /* Clipped */ VarDeclBlockList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn var_decl_block_list_0(
         &mut self,
         _var_decl: &ParseTreeStackEntry<'t>,
@@ -3433,7 +3434,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// VarDeclBlockList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn var_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3449,7 +3450,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ConstDecl: IdentDef "="^ /* Clipped */ ConstExpr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn const_decl(
         &mut self,
         _ident_def: &ParseTreeStackEntry<'t>,
@@ -3477,7 +3478,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDecl: IdentDef "="^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_decl(
         &mut self,
         _ident_def: &ParseTreeStackEntry<'t>,
@@ -3505,7 +3506,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// VarDecl: IdentList ":"^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn var_decl(
         &mut self,
         _ident_list: &ParseTreeStackEntry<'t>,
@@ -3533,7 +3534,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcDecl: ProcedureHeading ";"^ /* Clipped */ ProcedureBody;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn proc_decl(
         &mut self,
         _procedure_heading: &ParseTreeStackEntry<'t>,
@@ -3561,7 +3562,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureHeading: KwProcedure^ /* Clipped */ ProcedureHeadingOpt /* Option */ IdentDef ProcedureHeadingOpt0 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_heading(
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
@@ -3597,7 +3598,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureHeadingOpt0 /* Option<T>::Some */: FormalPars;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_heading_opt0_0(
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
@@ -3621,7 +3622,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureHeadingOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_heading_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3633,7 +3634,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureHeadingOpt /* Option<T>::Some */: Receiver;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_heading_opt_0(
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
@@ -3657,7 +3658,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureHeadingOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_heading_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3669,7 +3670,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ProcedureBody: DeclSeq StatementBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn procedure_body(
         &mut self,
         _decl_seq: &ParseTreeStackEntry<'t>,
@@ -3695,7 +3696,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementBlock: StatementBlockOpt /* Option */ KwEnd^ /* Clipped */ Ident;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_block(
         &mut self,
         _statement_block_opt: &ParseTreeStackEntry<'t>,
@@ -3725,7 +3726,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementBlockOpt /* Option<T>::Some */: KwBegin^ /* Clipped */ StatementSeq;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_block_opt_0(
         &mut self,
         _kw_begin: &ParseTreeStackEntry<'t>,
@@ -3753,7 +3754,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementBlockOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_block_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3765,7 +3766,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForwardDecl: KwProcedure^ /* Clipped */ "\^" ForwardDeclOpt /* Option */ IdentDef ForwardDeclOpt0 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn forward_decl(
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
@@ -3801,7 +3802,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForwardDeclOpt0 /* Option<T>::Some */: FormalPars;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn forward_decl_opt0_0(
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
@@ -3825,7 +3826,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForwardDeclOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn forward_decl_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3837,7 +3838,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForwardDeclOpt /* Option<T>::Some */: Receiver;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn forward_decl_opt_0(
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
@@ -3861,7 +3862,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForwardDeclOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn forward_decl_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3873,7 +3874,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalPars: "\("^ /* Clipped */ FormalParsOpt /* Option */ "\)"^ /* Clipped */ FormalParsOpt0 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -3903,7 +3904,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOpt0 /* Option<T>::Some */: ":"^ /* Clipped */ QualIdent;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt0_0(
         &mut self,
         _colon: &ParseTreeStackEntry<'t>,
@@ -3929,7 +3930,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3941,7 +3942,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOpt /* Option<T>::Some */: FPSection FormalParsOptList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt_0(
         &mut self,
         _f_p_section: &ParseTreeStackEntry<'t>,
@@ -3969,7 +3970,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOptList /* Vec<T>::Push */: ";"^ /* Clipped */ FPSection FormalParsOptList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt_list_0(
         &mut self,
         _semicolon: &ParseTreeStackEntry<'t>,
@@ -3997,7 +3998,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOptList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4013,7 +4014,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FormalParsOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn formal_pars_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4025,7 +4026,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FPSection: FPSectionOpt /* Option */ Ident FPSectionList /* Vec */ ":"^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn f_p_section(
         &mut self,
         _f_p_section_opt: &ParseTreeStackEntry<'t>,
@@ -4060,7 +4061,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FPSectionList /* Vec<T>::Push */: ","^ /* Clipped */ Ident FPSectionList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn f_p_section_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -4087,7 +4088,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FPSectionList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn f_p_section_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4100,7 +4101,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FPSectionOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn f_p_section_opt_0(
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
@@ -4125,7 +4126,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FPSectionOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn f_p_section_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4137,7 +4138,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Receiver: "\("^ /* Clipped */ ReceiverOpt /* Option */ ReceiverVarDecl "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn receiver(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -4167,7 +4168,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ReceiverOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn receiver_opt_0(
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
@@ -4192,7 +4193,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ReceiverOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4204,7 +4205,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ReceiverVarDecl: Ident ":"^ /* Clipped */ Ident;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn receiver_var_decl(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -4233,7 +4234,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDef: QualIdent;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_0(
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
@@ -4257,7 +4258,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDef: "ARRAY"^ /* Clipped */ TypeDefOpt /* Option */ KwOf^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_1(
         &mut self,
         _a_r_r_a_y: &ParseTreeStackEntry<'t>,
@@ -4290,7 +4291,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDef: "RECORD"^ /* Clipped */ TypeDefOpt0 /* Option */ FieldList TypeDefList /* Vec */ KwEnd^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_2(
         &mut self,
         _r_e_c_o_r_d: &ParseTreeStackEntry<'t>,
@@ -4326,7 +4327,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefList /* Vec<T>::Push */: ";"^ /* Clipped */ FieldList TypeDefList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_list_0(
         &mut self,
         _semicolon: &ParseTreeStackEntry<'t>,
@@ -4353,7 +4354,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4366,7 +4367,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDef: "POINTER"^ /* Clipped */ KwTo^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_3(
         &mut self,
         _p_o_i_n_t_e_r: &ParseTreeStackEntry<'t>,
@@ -4396,7 +4397,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDef: KwProcedure^ /* Clipped */ TypeDefOpt1 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_4(
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
@@ -4424,7 +4425,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt1 /* Option<T>::Some */: FormalPars;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt1_0(
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
@@ -4448,7 +4449,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt1 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4460,7 +4461,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt0_0(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -4488,7 +4489,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4500,7 +4501,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt /* Option<T>::Some */: ConstExpr TypeDefOptList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt_0(
         &mut self,
         _const_expr: &ParseTreeStackEntry<'t>,
@@ -4528,7 +4529,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOptList /* Vec<T>::Push */: ","^ /* Clipped */ ConstExpr TypeDefOptList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -4555,7 +4556,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOptList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4568,7 +4569,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TypeDefOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4580,7 +4581,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FieldList: FieldListOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn field_list(
         &mut self,
         _field_list_opt: &ParseTreeStackEntry<'t>,
@@ -4603,7 +4604,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FieldListOpt /* Option<T>::Some */: IdentList ":"^ /* Clipped */ TypeDef;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn field_list_opt_0(
         &mut self,
         _ident_list: &ParseTreeStackEntry<'t>,
@@ -4632,7 +4633,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FieldListOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn field_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4644,7 +4645,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementSeq: Statement StatementSeqList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_seq(
         &mut self,
         _statement: &ParseTreeStackEntry<'t>,
@@ -4671,7 +4672,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementSeqList /* Vec<T>::Push */: ";"^ /* Clipped */ Statement StatementSeqList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_seq_list_0(
         &mut self,
         _semicolon: &ParseTreeStackEntry<'t>,
@@ -4698,7 +4699,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementSeqList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4714,7 +4715,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Statement: StatementOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement(
         &mut self,
         _statement_opt: &ParseTreeStackEntry<'t>,
@@ -4737,7 +4738,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt /* Option<T>::Some */: StatementOptGroup;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_0(
         &mut self,
         _statement_opt_group: &ParseTreeStackEntry<'t>,
@@ -4761,7 +4762,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: Designator StatementOptGroupSuffix;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_0(
         &mut self,
         _designator: &ParseTreeStackEntry<'t>,
@@ -4795,7 +4796,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupSuffix: ":="^ /* Clipped */ Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_suffix_0(
         &mut self,
         _colon_equ: &ParseTreeStackEntry<'t>,
@@ -4823,7 +4824,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupSuffix: StatementOpt0 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_suffix_1(
         &mut self,
         _statement_opt0: &ParseTreeStackEntry<'t>,
@@ -4849,7 +4850,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: KwIf^ /* Clipped */ Expr ThenBlock StatementOptGroupList /* Vec */ OptElsePartEnd;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_1(
         &mut self,
         _kw_if: &ParseTreeStackEntry<'t>,
@@ -4893,7 +4894,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: KwCase^ /* Clipped */ Expr KwOf^ /* Clipped */ Cases OptElsePartEnd;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_2(
         &mut self,
         _kw_case: &ParseTreeStackEntry<'t>,
@@ -4933,7 +4934,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "WHILE"^ /* Clipped */ Expr DoBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_3(
         &mut self,
         _w_h_i_l_e: &ParseTreeStackEntry<'t>,
@@ -4964,7 +4965,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "REPEAT"^ /* Clipped */ StatementSeq "UNTIL"^ /* Clipped */ Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_4(
         &mut self,
         _r_e_p_e_a_t: &ParseTreeStackEntry<'t>,
@@ -4997,7 +4998,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "FOR"^ /* Clipped */ ForInit StatementOpt1 /* Option */ DoBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_5(
         &mut self,
         _f_o_r: &ParseTreeStackEntry<'t>,
@@ -5031,7 +5032,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "LOOP"^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_6(
         &mut self,
         _l_o_o_p: &ParseTreeStackEntry<'t>,
@@ -5063,7 +5064,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "WITH"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0 /* Vec */ OptElsePartEnd;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_7(
         &mut self,
         _w_i_t_h: &ParseTreeStackEntry<'t>,
@@ -5102,7 +5103,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "EXIT"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_8(
         &mut self,
         _e_x_i_t: &ParseTreeStackEntry<'t>,
@@ -5127,7 +5128,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroup: "RETURN"^ /* Clipped */ StatementOpt2 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_9(
         &mut self,
         _r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
@@ -5155,7 +5156,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupList /* Vec<T>::Push */: ElsifPart StatementOptGroupList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_list_0(
         &mut self,
         _elsif_part: &ParseTreeStackEntry<'t>,
@@ -5188,7 +5189,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5204,7 +5205,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupList0 /* Vec<T>::Push */: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_list0_0(
         &mut self,
         _or: &ParseTreeStackEntry<'t>,
@@ -5239,7 +5240,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOptGroupList0 /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_group_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5255,7 +5256,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt2 /* Option<T>::Some */: Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt2_0(
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
@@ -5279,7 +5280,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt2 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt2_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5291,7 +5292,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt1 /* Option<T>::Some */: ForStep;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt1_0(
         &mut self,
         _for_step: &ParseTreeStackEntry<'t>,
@@ -5315,7 +5316,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt1 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5327,7 +5328,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt0_0(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -5355,7 +5356,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt3 /* Option<T>::Some */: ExprList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt3_0(
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
@@ -5379,7 +5380,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt3 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5391,7 +5392,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5403,7 +5404,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// StatementOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5415,7 +5416,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ThenBlock: KwThen^ /* Clipped */ StatementSeq;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn then_block(
         &mut self,
         _kw_then: &ParseTreeStackEntry<'t>,
@@ -5442,7 +5443,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Cases: Case CasesList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn cases(
         &mut self,
         _case: &ParseTreeStackEntry<'t>,
@@ -5468,7 +5469,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CasesList /* Vec<T>::Push */: "\|"^ /* Clipped */ Case CasesList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn cases_list_0(
         &mut self,
         _or: &ParseTreeStackEntry<'t>,
@@ -5495,7 +5496,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CasesList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5508,7 +5509,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ElsifPart: KwElsif^ /* Clipped */ Expr ThenBlock;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn elsif_part(
         &mut self,
         _kw_elsif: &ParseTreeStackEntry<'t>,
@@ -5538,7 +5539,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ElsePart: KwElse^ /* Clipped */ StatementSeq;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn else_part(
         &mut self,
         _kw_else: &ParseTreeStackEntry<'t>,
@@ -5565,7 +5566,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// OptElsePartEnd: OptElsePartEndOpt /* Option */ KwEnd^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn opt_else_part_end(
         &mut self,
         _opt_else_part_end_opt: &ParseTreeStackEntry<'t>,
@@ -5594,7 +5595,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// OptElsePartEndOpt /* Option<T>::Some */: ElsePart;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn opt_else_part_end_opt_0(
         &mut self,
         _else_part: &ParseTreeStackEntry<'t>,
@@ -5618,7 +5619,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// OptElsePartEndOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn opt_else_part_end_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5630,7 +5631,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DoBlock: KwDo^ /* Clipped */ StatementSeq KwEnd^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn do_block(
         &mut self,
         _kw_do: &ParseTreeStackEntry<'t>,
@@ -5661,7 +5662,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// GuardedDoBlock: Guard KwDo^ /* Clipped */ StatementSeq;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn guarded_do_block(
         &mut self,
         _guard: &ParseTreeStackEntry<'t>,
@@ -5692,7 +5693,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForInit: Ident ":="^ /* Clipped */ Expr KwTo^ /* Clipped */ Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn for_init(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -5727,7 +5728,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ForStep: "BY"^ /* Clipped */ ConstExpr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn for_step(
         &mut self,
         _b_y: &ParseTreeStackEntry<'t>,
@@ -5752,7 +5753,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Case: CaseOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case(
         &mut self,
         _case_opt: &ParseTreeStackEntry<'t>,
@@ -5775,7 +5776,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseOpt /* Option<T>::Some */: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_opt_0(
         &mut self,
         _case_labels: &ParseTreeStackEntry<'t>,
@@ -5804,7 +5805,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseOptList /* Vec<T>::Push */: ","^ /* Clipped */ CaseLabels CaseOptList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_opt_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -5831,7 +5832,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseOptList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5844,7 +5845,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5856,7 +5857,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseLabels: ConstExpr CaseLabelsOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_labels(
         &mut self,
         _const_expr: &ParseTreeStackEntry<'t>,
@@ -5882,7 +5883,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseLabelsOpt /* Option<T>::Some */: "\.\." ConstExpr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_labels_opt_0(
         &mut self,
         dot_dot: &ParseTreeStackEntry<'t>,
@@ -5909,7 +5910,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// CaseLabelsOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn case_labels_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5921,7 +5922,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Guard: QualIdent ":"^ /* Clipped */ QualIdent;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn guard(
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
@@ -5949,7 +5950,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ConstExpr: Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn const_expr(
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
@@ -5972,7 +5973,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Expr: SimpleExpr ExprOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr(
         &mut self,
         _simple_expr: &ParseTreeStackEntry<'t>,
@@ -5998,7 +5999,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ExprOpt /* Option<T>::Some */: Relation SimpleExpr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr_opt_0(
         &mut self,
         _relation: &ParseTreeStackEntry<'t>,
@@ -6022,7 +6023,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ExprOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6034,7 +6035,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExpr: SimpleExprOpt /* Option */ Term SimpleExprList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr(
         &mut self,
         _simple_expr_opt: &ParseTreeStackEntry<'t>,
@@ -6064,7 +6065,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprList /* Vec<T>::Push */: AddOp Term SimpleExprList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_list_0(
         &mut self,
         _add_op: &ParseTreeStackEntry<'t>,
@@ -6092,7 +6093,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6105,7 +6106,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprOpt /* Option<T>::Some */: SimpleExprOptGroup;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_opt_0(
         &mut self,
         _simple_expr_opt_group: &ParseTreeStackEntry<'t>,
@@ -6130,7 +6131,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprOptGroup: "\+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_opt_group_0(
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
@@ -6156,7 +6157,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprOptGroup: "-";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_opt_group_1(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -6182,7 +6183,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SimpleExprOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6194,7 +6195,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Term: Factor TermList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn term(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
@@ -6220,7 +6221,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TermList /* Vec<T>::Push */: MulOp Factor TermList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn term_list_0(
         &mut self,
         _mul_op: &ParseTreeStackEntry<'t>,
@@ -6248,7 +6249,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// TermList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6261,7 +6262,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: Designator FactorOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_0(
         &mut self,
         _designator: &ParseTreeStackEntry<'t>,
@@ -6288,7 +6289,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_1(
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
@@ -6312,7 +6313,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: Character;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
         _character: &ParseTreeStackEntry<'t>,
@@ -6336,7 +6337,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
@@ -6360,7 +6361,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: "NIL"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_4(
         &mut self,
         _n_i_l: &ParseTreeStackEntry<'t>,
@@ -6383,7 +6384,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: Set;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_5(
         &mut self,
         _set: &ParseTreeStackEntry<'t>,
@@ -6407,7 +6408,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: "\("^ /* Clipped */ Expr "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_6(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -6435,7 +6436,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Factor: "~"^ /* Clipped */ Factor;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_7(
         &mut self,
         _tilde: &ParseTreeStackEntry<'t>,
@@ -6461,7 +6462,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FactorOpt /* Option<T>::Some */: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_opt_0(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -6489,7 +6490,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FactorOpt0 /* Option<T>::Some */: ExprList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_opt0_0(
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
@@ -6513,7 +6514,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FactorOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6525,7 +6526,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// FactorOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6537,7 +6538,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Set: "\{"^ /* Clipped */ SetOpt /* Option */ "\}"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn set(
         &mut self,
         _l_brace: &ParseTreeStackEntry<'t>,
@@ -6564,7 +6565,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SetOpt /* Option<T>::Some */: Element SetOptList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn set_opt_0(
         &mut self,
         _element: &ParseTreeStackEntry<'t>,
@@ -6588,7 +6589,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SetOptList /* Vec<T>::Push */: ","^ /* Clipped */ Element SetOptList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn set_opt_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -6615,7 +6616,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SetOptList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6628,7 +6629,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// SetOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6640,7 +6641,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Element: Expr ElementOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn element(
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
@@ -6666,7 +6667,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ElementOpt /* Option<T>::Some */: "\.\."^ /* Clipped */ Expr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn element_opt_0(
         &mut self,
         _dot_dot: &ParseTreeStackEntry<'t>,
@@ -6692,7 +6693,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ElementOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -6704,7 +6705,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: "="^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_0(
         &mut self,
         _equ: &ParseTreeStackEntry<'t>,
@@ -6727,7 +6728,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: "#";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_1(
         &mut self,
         hash: &ParseTreeStackEntry<'t>,
@@ -6751,7 +6752,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: "<";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_2(
         &mut self,
         l_t: &ParseTreeStackEntry<'t>,
@@ -6775,7 +6776,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: "<=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_3(
         &mut self,
         l_t_equ: &ParseTreeStackEntry<'t>,
@@ -6799,7 +6800,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: ">";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_4(
         &mut self,
         g_t: &ParseTreeStackEntry<'t>,
@@ -6823,7 +6824,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: ">=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_5(
         &mut self,
         g_t_equ: &ParseTreeStackEntry<'t>,
@@ -6847,7 +6848,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: InOp;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_6(
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,
@@ -6871,7 +6872,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Relation: "IS";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relation_7(
         &mut self,
         i_s: &ParseTreeStackEntry<'t>,
@@ -6895,7 +6896,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// AddOp: "\+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn add_op_0(
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
@@ -6919,7 +6920,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// AddOp: "-";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn add_op_1(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -6943,7 +6944,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// AddOp: "OR";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn add_op_2(
         &mut self,
         o_r: &ParseTreeStackEntry<'t>,
@@ -6967,7 +6968,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// MulOp: "\*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op_0(
         &mut self,
         star: &ParseTreeStackEntry<'t>,
@@ -6991,7 +6992,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// MulOp: "/";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op_1(
         &mut self,
         slash: &ParseTreeStackEntry<'t>,
@@ -7015,7 +7016,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// MulOp: "DIV";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op_2(
         &mut self,
         d_i_v: &ParseTreeStackEntry<'t>,
@@ -7039,7 +7040,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// MulOp: "MOD";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op_3(
         &mut self,
         m_o_d: &ParseTreeStackEntry<'t>,
@@ -7063,7 +7064,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// MulOp: "&";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op_4(
         &mut self,
         amp: &ParseTreeStackEntry<'t>,
@@ -7087,7 +7088,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Designator: QualIdent DesignatorList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator(
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
@@ -7113,7 +7114,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DesignatorList /* Vec<T>::Push */: DesignatorSuffix DesignatorList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator_list_0(
         &mut self,
         _designator_suffix: &ParseTreeStackEntry<'t>,
@@ -7138,7 +7139,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DesignatorList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -7151,7 +7152,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DesignatorSuffix: "\."^ /* Clipped */ Ident;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator_suffix_0(
         &mut self,
         _dot: &ParseTreeStackEntry<'t>,
@@ -7182,7 +7183,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DesignatorSuffix: "\["^ /* Clipped */ ExprList "\]"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator_suffix_1(
         &mut self,
         _l_bracket: &ParseTreeStackEntry<'t>,
@@ -7215,7 +7216,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// DesignatorSuffix: "\^"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn designator_suffix_2(
         &mut self,
         _circumflex: &ParseTreeStackEntry<'t>,
@@ -7243,7 +7244,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ExprList: Expr ExprListList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr_list(
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
@@ -7269,7 +7270,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ExprListList /* Vec<T>::Push */: ","^ /* Clipped */ Expr ExprListList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr_list_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -7296,7 +7297,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// ExprListList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expr_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -7309,7 +7310,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentList: IdentDef IdentListList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_list(
         &mut self,
         _ident_def: &ParseTreeStackEntry<'t>,
@@ -7335,7 +7336,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentListList /* Vec<T>::Push */: ","^ /* Clipped */ IdentDef IdentListList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_list_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -7362,7 +7363,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentListList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -7375,7 +7376,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// QualIdent: Ident;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn qual_ident_0(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -7399,7 +7400,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// QualIdent: QIdent;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn qual_ident_1(
         &mut self,
         _q_ident: &ParseTreeStackEntry<'t>,
@@ -7423,7 +7424,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentDef: Ident IdentDefOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_def(
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
@@ -7449,7 +7450,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentDefOpt /* Option<T>::Some */: IdentDefOptGroup;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_def_opt_0(
         &mut self,
         _ident_def_opt_group: &ParseTreeStackEntry<'t>,
@@ -7473,7 +7474,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentDefOptGroup: "\*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_def_opt_group_0(
         &mut self,
         star: &ParseTreeStackEntry<'t>,
@@ -7499,7 +7500,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentDefOptGroup: "-";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_def_opt_group_1(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -7525,7 +7526,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// IdentDefOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -7537,7 +7538,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Number: Integer;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number_0(
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
@@ -7561,7 +7562,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Number: Real;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number_1(
         &mut self,
         _real: &ParseTreeStackEntry<'t>,
@@ -7585,7 +7586,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Real: "[0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)?";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn real(
         &mut self,
         real: &ParseTreeStackEntry<'t>,
@@ -7608,7 +7609,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Character: "[0-9][0-9A-F]*X";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn character(
         &mut self,
         character: &ParseTreeStackEntry<'t>,
@@ -7631,7 +7632,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Integer: "[0-9][0-9]*|[0-9][0-9A-F]*H";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer(
         &mut self,
         integer: &ParseTreeStackEntry<'t>,
@@ -7654,7 +7655,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// QIdent: "[a-zA-Z_]\w*\.[a-zA-Z_]\w*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn q_ident(
         &mut self,
         q_ident: &ParseTreeStackEntry<'t>,
@@ -7677,7 +7678,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// Ident: "[a-zA-Z_]\w*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ident(
         &mut self,
         ident: &ParseTreeStackEntry<'t>,
@@ -7700,7 +7701,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// String: "\u{0022}[^\u{0022}]*\u{0022}|'[^']*'";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn string(
         &mut self,
         string: &ParseTreeStackEntry<'t>,
@@ -7723,7 +7724,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ///
     /// InOp: "IN"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn in_op(
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,

@@ -18,4 +18,4 @@ parol-macros = { path = "../../crates/parol-macros" }
 thiserror = "^1.0"
 
 [build-dependencies]
-parol ="0.13.0"
+parol = { path = "../../crates/parol" }

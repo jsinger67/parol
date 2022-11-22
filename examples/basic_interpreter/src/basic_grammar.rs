@@ -36,7 +36,7 @@ impl<'t> TryFrom<&Token<'t>> for BasicNumber {
     type Error = <DefinitionRange as FromStr>::Err;
 
     fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
-        let symbol = basic_line_number.symbol.replace(' ', "").replace('E', "e");
+        let symbol = basic_line_number.text().replace(' ', "").replace('E', "e");
         Ok(Self(symbol.parse::<DefinitionRange>()?))
     }
 }
@@ -48,7 +48,7 @@ impl<'t> TryFrom<&Token<'t>> for BasicLineNumber {
     type Error = <LineNumberRange as FromStr>::Err;
 
     fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
-        let symbol = basic_line_number.symbol.replace(' ', "");
+        let symbol = basic_line_number.text().replace(' ', "");
         Ok(Self(
             symbol.parse::<LineNumberRange>()?,
             basic_line_number.location.clone(),
@@ -87,10 +87,10 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn value(&self, context: &str, id: &Token<'t>) -> Result<DefinitionRange> {
-        let name: &str = if id.symbol.len() < 2 {
-            id.symbol
+        let name: &str = if id.text().len() < 2 {
+            id.text()
         } else {
-            &id.symbol[..2]
+            &id.text()[..2]
         };
         let value = self.env.get(name).cloned().unwrap_or_default();
         trace!("value @ {context}: {name} = {value}");
@@ -299,7 +299,7 @@ impl<'t> BasicGrammar<'t> {
     fn process_assign(&mut self, assign: &Statement3) -> Result<()> {
         let context = "process_assign";
         let value = self.process_expression(&*assign.assignment.expression)?;
-        let symbol = assign.assignment.variable.variable.symbol;
+        let symbol = assign.assignment.variable.variable.text();
         trace!("{context}: {symbol} = {value}");
         self.set_value(symbol, context, value);
         Ok(())
@@ -330,7 +330,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_logical_or";
         let mut result = self.process_logical_and(&logical_or.logical_and)?;
         for item in &logical_or.logical_or_list {
-            let op: BinaryOperator = item.logical_or_op.logical_or_op.symbol.try_into()?;
+            let op: BinaryOperator = item.logical_or_op.logical_or_op.text().try_into()?;
             let next_operand = self.process_logical_and(&item.logical_and)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -341,7 +341,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_logical_and";
         let mut result = self.process_logical_not(&logical_and.logical_not)?;
         for item in &logical_and.logical_and_list {
-            let op: BinaryOperator = item.logical_and_op.logical_and_op.symbol.try_into()?;
+            let op: BinaryOperator = item.logical_and_op.logical_and_op.text().try_into()?;
             let next_operand = self.process_logical_not(&item.logical_not)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -352,7 +352,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_logical_not";
         if let Some(not) = &logical_not.logical_not_opt {
             let result = self.process_relational(&*logical_not.relational)?;
-            let op: UnaryOperator = not.logical_not_op.logical_not_op.symbol.try_into()?;
+            let op: UnaryOperator = not.logical_not_op.logical_not_op.text().try_into()?;
             UnaryOperator::apply_unary_operation(&op, result, context)
         } else {
             self.process_relational(&*logical_not.relational)
@@ -363,7 +363,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_relational";
         let mut result = self.process_summation(&*relational.summation)?;
         for item in &relational.relational_list {
-            let op: BinaryOperator = item.relational_op.relational_op.symbol.try_into()?;
+            let op: BinaryOperator = item.relational_op.relational_op.text().try_into()?;
             let next_operand = self.process_summation(&*item.summation)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
@@ -375,9 +375,9 @@ impl<'t> BasicGrammar<'t> {
         let mut result = self.process_multiplication(&*summation.multiplication)?;
         for item in &summation.summation_list {
             let op: BinaryOperator = match &*item.summation_list_group {
-                SummationListGroup::SummationListGroup0(plus) => plus.plus.plus.symbol.try_into(),
+                SummationListGroup::SummationListGroup0(plus) => plus.plus.plus.text().try_into(),
                 SummationListGroup::SummationListGroup1(minus) => {
-                    minus.minus.minus.symbol.try_into()
+                    minus.minus.minus.text().try_into()
                 }
             }?;
             let next_operand = self.process_multiplication(&*item.multiplication)?;
@@ -393,7 +393,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_multiplication";
         let mut result = self.process_factor(&*multiplication.factor)?;
         for item in &multiplication.multiplication_list {
-            let op: BinaryOperator = item.mul_op.mul_op.symbol.try_into()?;
+            let op: BinaryOperator = item.mul_op.mul_op.text().try_into()?;
             let next_operand = self.process_factor(&*item.factor)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }

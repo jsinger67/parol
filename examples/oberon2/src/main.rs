@@ -1,10 +1,3 @@
-#[macro_use]
-extern crate derive_builder;
-#[macro_use]
-extern crate function_name;
-#[macro_use]
-extern crate lazy_static;
-
 extern crate parol_runtime;
 
 mod oberon2_grammar;

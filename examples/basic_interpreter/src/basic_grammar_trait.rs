@@ -4,12 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::basic_grammar::BasicGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 /// Semantic actions trait generated for the user grammar
@@ -1127,7 +1129,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Basic: BasicOpt /* Option */ Line BasicList /* Vec */ BasicOpt0 /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic(
         &mut self,
         _basic_opt: &ParseTreeStackEntry<'t>,
@@ -1138,27 +1140,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let basic_opt0 = if let Some(ASTType::BasicOpt0(basic_opt0)) = self.pop(context) {
-            basic_opt0
-        } else {
-            bail!("{}: Expecting ASTType::BasicOpt0", context);
-        };
-        let basic_list = if let Some(ASTType::BasicList(mut basic_list)) = self.pop(context) {
-            basic_list.reverse();
-            basic_list
-        } else {
-            bail!("{}: Expecting ASTType::BasicList", context);
-        };
-        let line = if let Some(ASTType::Line(line)) = self.pop(context) {
-            line
-        } else {
-            bail!("{}: Expecting ASTType::Line", context);
-        };
-        let basic_opt = if let Some(ASTType::BasicOpt(basic_opt)) = self.pop(context) {
-            basic_opt
-        } else {
-            bail!("{}: Expecting ASTType::BasicOpt", context);
-        };
+        let basic_opt0 = pop_item!(self, basic_opt0, BasicOpt0, context);
+        let basic_list = pop_and_reverse_item!(self, basic_list, BasicList, context);
+        let line = pop_item!(self, line, Line, context);
+        let basic_opt = pop_item!(self, basic_opt, BasicOpt, context);
         let basic_built = BasicBuilder::default()
             .basic_opt(basic_opt)
             .line(Box::new(line))
@@ -1176,7 +1161,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicList /* Vec<T>::Push */: EndOfLine Line BasicList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_list_0(
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
@@ -1186,21 +1171,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut basic_list = if let Some(ASTType::BasicList(basic_list)) = self.pop(context) {
-            basic_list
-        } else {
-            bail!("{}: Expecting ASTType::BasicList", context);
-        };
-        let line = if let Some(ASTType::Line(line)) = self.pop(context) {
-            line
-        } else {
-            bail!("{}: Expecting ASTType::Line", context);
-        };
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
-        } else {
-            bail!("{}: Expecting ASTType::EndOfLine", context);
-        };
+        let mut basic_list = pop_item!(self, basic_list, BasicList, context);
+        let line = pop_item!(self, line, Line, context);
+        let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
         let basic_list_0_built = BasicListBuilder::default()
             .line(Box::new(line))
             .end_of_line(Box::new(end_of_line))
@@ -1216,7 +1189,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1229,7 +1202,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicOpt0 /* Option<T>::Some */: EndOfLine;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_opt0_0(
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
@@ -1237,11 +1210,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
-        } else {
-            bail!("{}: Expecting ASTType::EndOfLine", context);
-        };
+        let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
         let basic_opt0_0_built = BasicOpt0Builder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
@@ -1257,7 +1226,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicOpt0 /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1269,7 +1238,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicOpt /* Option<T>::Some */: EndOfLine;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_opt_0(
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
@@ -1277,11 +1246,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_of_line = if let Some(ASTType::EndOfLine(end_of_line)) = self.pop(context) {
-            end_of_line
-        } else {
-            bail!("{}: Expecting ASTType::EndOfLine", context);
-        };
+        let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
         let basic_opt_0_built = BasicOptBuilder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
@@ -1297,7 +1262,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// BasicOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1309,7 +1274,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Line: LineNumber Statement LineList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn line(
         &mut self,
         _line_number: &ParseTreeStackEntry<'t>,
@@ -1319,22 +1284,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_list = if let Some(ASTType::LineList(mut line_list)) = self.pop(context) {
-            line_list.reverse();
-            line_list
-        } else {
-            bail!("{}: Expecting ASTType::LineList", context);
-        };
-        let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
-            statement
-        } else {
-            bail!("{}: Expecting ASTType::Statement", context);
-        };
-        let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
-            line_number
-        } else {
-            bail!("{}: Expecting ASTType::LineNumber", context);
-        };
+        let line_list = pop_and_reverse_item!(self, line_list, LineList, context);
+        let statement = pop_item!(self, statement, Statement, context);
+        let line_number = pop_item!(self, line_number, LineNumber, context);
         let line_built = LineBuilder::default()
             .line_number(Box::new(line_number))
             .statement(Box::new(statement))
@@ -1351,7 +1303,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LineList /* Vec<T>::Push */: <INITIAL, Expr>":"^ /* Clipped */ Statement LineList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn line_list_0(
         &mut self,
         _colon: &ParseTreeStackEntry<'t>,
@@ -1361,16 +1313,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut line_list = if let Some(ASTType::LineList(line_list)) = self.pop(context) {
-            line_list
-        } else {
-            bail!("{}: Expecting ASTType::LineList", context);
-        };
-        let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
-            statement
-        } else {
-            bail!("{}: Expecting ASTType::Statement", context);
-        };
+        let mut line_list = pop_item!(self, line_list, LineList, context);
+        let statement = pop_item!(self, statement, Statement, context);
         let line_list_0_built = LineListBuilder::default()
             .statement(Box::new(statement))
             // Ignore clipped member 'colon'
@@ -1386,7 +1330,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LineList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn line_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1399,7 +1343,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : BasicLineNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn line_number(
         &mut self,
         line_number: &ParseTreeStackEntry<'t>,
@@ -1425,7 +1369,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: Remark;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_0(
         &mut self,
         _remark: &ParseTreeStackEntry<'t>,
@@ -1433,11 +1377,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let remark = if let Some(ASTType::Remark(remark)) = self.pop(context) {
-            remark
-        } else {
-            bail!("{}: Expecting ASTType::Remark", context);
-        };
+        let remark = pop_item!(self, remark, Remark, context);
         let statement_0_built = Statement0Builder::default()
             .remark(Box::new(remark))
             .build()
@@ -1453,7 +1393,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: GotoStatement;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_1(
         &mut self,
         _goto_statement: &ParseTreeStackEntry<'t>,
@@ -1461,12 +1401,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let goto_statement = if let Some(ASTType::GotoStatement(goto_statement)) = self.pop(context)
-        {
-            goto_statement
-        } else {
-            bail!("{}: Expecting ASTType::GotoStatement", context);
-        };
+        let goto_statement = pop_item!(self, goto_statement, GotoStatement, context);
         let statement_1_built = Statement1Builder::default()
             .goto_statement(Box::new(goto_statement))
             .build()
@@ -1482,7 +1417,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: IfStatement;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_2(
         &mut self,
         _if_statement: &ParseTreeStackEntry<'t>,
@@ -1490,11 +1425,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let if_statement = if let Some(ASTType::IfStatement(if_statement)) = self.pop(context) {
-            if_statement
-        } else {
-            bail!("{}: Expecting ASTType::IfStatement", context);
-        };
+        let if_statement = pop_item!(self, if_statement, IfStatement, context);
         let statement_2_built = Statement2Builder::default()
             .if_statement(Box::new(if_statement))
             .build()
@@ -1510,7 +1441,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: Assignment;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_3(
         &mut self,
         _assignment: &ParseTreeStackEntry<'t>,
@@ -1518,11 +1449,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assignment = if let Some(ASTType::Assignment(assignment)) = self.pop(context) {
-            assignment
-        } else {
-            bail!("{}: Expecting ASTType::Assignment", context);
-        };
+        let assignment = pop_item!(self, assignment, Assignment, context);
         let statement_3_built = Statement3Builder::default()
             .assignment(Box::new(assignment))
             .build()
@@ -1538,7 +1465,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: PrintStatement;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_4(
         &mut self,
         _print_statement: &ParseTreeStackEntry<'t>,
@@ -1546,12 +1473,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let print_statement =
-            if let Some(ASTType::PrintStatement(print_statement)) = self.pop(context) {
-                print_statement
-            } else {
-                bail!("{}: Expecting ASTType::PrintStatement", context);
-            };
+        let print_statement = pop_item!(self, print_statement, PrintStatement, context);
         let statement_4_built = Statement4Builder::default()
             .print_statement(Box::new(print_statement))
             .build()
@@ -1567,7 +1489,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Statement: EndStatement;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn statement_5(
         &mut self,
         _end_statement: &ParseTreeStackEntry<'t>,
@@ -1575,11 +1497,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_statement = if let Some(ASTType::EndStatement(end_statement)) = self.pop(context) {
-            end_statement
-        } else {
-            bail!("{}: Expecting ASTType::EndStatement", context);
-        };
+        let end_statement = pop_item!(self, end_statement, EndStatement, context);
         let statement_5_built = Statement5Builder::default()
             .end_statement(Box::new(end_statement))
             .build()
@@ -1595,7 +1513,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Remark: "REM"^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn remark(
         &mut self,
         _r_e_m: &ParseTreeStackEntry<'t>,
@@ -1604,11 +1522,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let remark_opt = if let Some(ASTType::RemarkOpt(remark_opt)) = self.pop(context) {
-            remark_opt
-        } else {
-            bail!("{}: Expecting ASTType::RemarkOpt", context);
-        };
+        let remark_opt = pop_item!(self, remark_opt, RemarkOpt, context);
         let remark_built = RemarkBuilder::default()
             // Ignore clipped member 'r_e_m'
             .remark_opt(remark_opt)
@@ -1624,7 +1538,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RemarkOpt /* Option<T>::Some */: Comment;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn remark_opt_0(
         &mut self,
         _comment: &ParseTreeStackEntry<'t>,
@@ -1632,11 +1546,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comment = if let Some(ASTType::Comment(comment)) = self.pop(context) {
-            comment
-        } else {
-            bail!("{}: Expecting ASTType::Comment", context);
-        };
+        let comment = pop_item!(self, comment, Comment, context);
         let remark_opt_0_built = RemarkOptBuilder::default()
             .comment(Box::new(comment))
             .build()
@@ -1652,7 +1562,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RemarkOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1664,7 +1574,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// GotoStatement: Goto LineNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn goto_statement(
         &mut self,
         _goto: &ParseTreeStackEntry<'t>,
@@ -1673,16 +1583,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
-            line_number
-        } else {
-            bail!("{}: Expecting ASTType::LineNumber", context);
-        };
-        let goto = if let Some(ASTType::Goto(goto)) = self.pop(context) {
-            goto
-        } else {
-            bail!("{}: Expecting ASTType::Goto", context);
-        };
+        let line_number = pop_item!(self, line_number, LineNumber, context);
+        let goto = pop_item!(self, goto, Goto, context);
         let goto_statement_built = GotoStatementBuilder::default()
             .goto(Box::new(goto))
             .line_number(Box::new(line_number))
@@ -1698,7 +1600,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// IfStatement: If %push(Expr) Expression %pop() IfBody;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn if_statement(
         &mut self,
         _if: &ParseTreeStackEntry<'t>,
@@ -1708,21 +1610,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let if_body = if let Some(ASTType::IfBody(if_body)) = self.pop(context) {
-            if_body
-        } else {
-            bail!("{}: Expecting ASTType::IfBody", context);
-        };
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
-        let r#if = if let Some(ASTType::If(r#if)) = self.pop(context) {
-            r#if
-        } else {
-            bail!("{}: Expecting ASTType::If", context);
-        };
+        let if_body = pop_item!(self, if_body, IfBody, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let r#if = pop_item!(self, r#if, If, context);
         let if_statement_built = IfStatementBuilder::default()
             .r#if(Box::new(r#if))
             .expression(Box::new(expression))
@@ -1739,7 +1629,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Assignment: AssignmentOpt /* Option */ Variable AssignOp %push(Expr) Expression %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment(
         &mut self,
         _assignment_opt: &ParseTreeStackEntry<'t>,
@@ -1750,27 +1640,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
-        let assign_op = if let Some(ASTType::AssignOp(assign_op)) = self.pop(context) {
-            assign_op
-        } else {
-            bail!("{}: Expecting ASTType::AssignOp", context);
-        };
-        let variable = if let Some(ASTType::Variable(variable)) = self.pop(context) {
-            variable
-        } else {
-            bail!("{}: Expecting ASTType::Variable", context);
-        };
-        let assignment_opt = if let Some(ASTType::AssignmentOpt(assignment_opt)) = self.pop(context)
-        {
-            assignment_opt
-        } else {
-            bail!("{}: Expecting ASTType::AssignmentOpt", context);
-        };
+        let expression = pop_item!(self, expression, Expression, context);
+        let assign_op = pop_item!(self, assign_op, AssignOp, context);
+        let variable = pop_item!(self, variable, Variable, context);
+        let assignment_opt = pop_item!(self, assignment_opt, AssignmentOpt, context);
         let assignment_built = AssignmentBuilder::default()
             .assignment_opt(assignment_opt)
             .variable(Box::new(variable))
@@ -1788,7 +1661,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// AssignmentOpt /* Option<T>::Some */: Let;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment_opt_0(
         &mut self,
         _let: &ParseTreeStackEntry<'t>,
@@ -1796,11 +1669,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#let = if let Some(ASTType::Let(r#let)) = self.pop(context) {
-            r#let
-        } else {
-            bail!("{}: Expecting ASTType::Let", context);
-        };
+        let r#let = pop_item!(self, r#let, Let, context);
         let assignment_opt_0_built = AssignmentOptBuilder::default()
             .r#let(Box::new(r#let))
             .build()
@@ -1816,7 +1685,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// AssignmentOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1828,7 +1697,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// IfBody: Then Statement;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn if_body_0(
         &mut self,
         _then: &ParseTreeStackEntry<'t>,
@@ -1837,16 +1706,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement = if let Some(ASTType::Statement(statement)) = self.pop(context) {
-            statement
-        } else {
-            bail!("{}: Expecting ASTType::Statement", context);
-        };
-        let then = if let Some(ASTType::Then(then)) = self.pop(context) {
-            then
-        } else {
-            bail!("{}: Expecting ASTType::Then", context);
-        };
+        let statement = pop_item!(self, statement, Statement, context);
+        let then = pop_item!(self, then, Then, context);
         let if_body_0_built = IfBody0Builder::default()
             .then(Box::new(then))
             .statement(Box::new(statement))
@@ -1863,7 +1724,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// IfBody: Goto LineNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn if_body_1(
         &mut self,
         _goto: &ParseTreeStackEntry<'t>,
@@ -1872,16 +1733,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_number = if let Some(ASTType::LineNumber(line_number)) = self.pop(context) {
-            line_number
-        } else {
-            bail!("{}: Expecting ASTType::LineNumber", context);
-        };
-        let goto = if let Some(ASTType::Goto(goto)) = self.pop(context) {
-            goto
-        } else {
-            bail!("{}: Expecting ASTType::Goto", context);
-        };
+        let line_number = pop_item!(self, line_number, LineNumber, context);
+        let goto = pop_item!(self, goto, Goto, context);
         let if_body_1_built = IfBody1Builder::default()
             .goto(Box::new(goto))
             .line_number(Box::new(line_number))
@@ -1898,7 +1751,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// PrintStatement: Print %push(Expr) Expression PrintStatementList /* Vec */ %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn print_statement(
         &mut self,
         _print: &ParseTreeStackEntry<'t>,
@@ -1908,25 +1761,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let print_statement_list = if let Some(ASTType::PrintStatementList(
-            mut print_statement_list,
-        )) = self.pop(context)
-        {
-            print_statement_list.reverse();
-            print_statement_list
-        } else {
-            bail!("{}: Expecting ASTType::PrintStatementList", context);
-        };
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
-        let print = if let Some(ASTType::Print(print)) = self.pop(context) {
-            print
-        } else {
-            bail!("{}: Expecting ASTType::Print", context);
-        };
+        let print_statement_list =
+            pop_and_reverse_item!(self, print_statement_list, PrintStatementList, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let print = pop_item!(self, print, Print, context);
         let print_statement_built = PrintStatementBuilder::default()
             .print(Box::new(print))
             .expression(Box::new(expression))
@@ -1943,7 +1781,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// PrintStatementList /* Vec<T>::Push */: <INITIAL, Expr>","^ /* Clipped */ Expression PrintStatementList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn print_statement_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -1954,16 +1792,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut print_statement_list =
-            if let Some(ASTType::PrintStatementList(print_statement_list)) = self.pop(context) {
-                print_statement_list
-            } else {
-                bail!("{}: Expecting ASTType::PrintStatementList", context);
-            };
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
+            pop_item!(self, print_statement_list, PrintStatementList, context);
+        let expression = pop_item!(self, expression, Expression, context);
         let print_statement_list_0_built = PrintStatementListBuilder::default()
             .expression(Box::new(expression))
             // Ignore clipped member 'comma'
@@ -1979,7 +1809,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// PrintStatementList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn print_statement_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1995,7 +1825,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// EndStatement: End;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn end_statement(
         &mut self,
         _end: &ParseTreeStackEntry<'t>,
@@ -2003,11 +1833,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end = if let Some(ASTType::End(end)) = self.pop(context) {
-            end
-        } else {
-            bail!("{}: Expecting ASTType::End", context);
-        };
+        let end = pop_item!(self, end, End, context);
         let end_statement_built = EndStatementBuilder::default()
             .end(Box::new(end))
             .build()
@@ -2022,7 +1848,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn end_of_line(
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
@@ -2044,7 +1870,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Literal: Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal(
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
@@ -2052,11 +1878,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = if let Some(ASTType::Number(number)) = self.pop(context) {
-            number
-        } else {
-            bail!("{}: Expecting ASTType::Number", context);
-        };
+        let number = pop_item!(self, number, Number, context);
         let literal_built = LiteralBuilder::default()
             .number(Box::new(number))
             .build()
@@ -2071,7 +1893,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Number: Float;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number_0(
         &mut self,
         _float: &ParseTreeStackEntry<'t>,
@@ -2079,11 +1901,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float = if let Some(ASTType::Float(float)) = self.pop(context) {
-            float
-        } else {
-            bail!("{}: Expecting ASTType::Float", context);
-        };
+        let float = pop_item!(self, float, Float, context);
         let number_0_built = Number0Builder::default()
             .float(Box::new(float))
             .build()
@@ -2099,7 +1917,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Number: Integer;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number_1(
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
@@ -2107,11 +1925,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = if let Some(ASTType::Integer(integer)) = self.pop(context) {
-            integer
-        } else {
-            bail!("{}: Expecting ASTType::Integer", context);
-        };
+        let integer = pop_item!(self, integer, Integer, context);
         let number_1_built = Number1Builder::default()
             .integer(Box::new(integer))
             .build()
@@ -2127,7 +1941,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Float: Float1;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float_0(
         &mut self,
         _float1: &ParseTreeStackEntry<'t>,
@@ -2135,11 +1949,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float1 = if let Some(ASTType::Float1(float1)) = self.pop(context) {
-            float1
-        } else {
-            bail!("{}: Expecting ASTType::Float1", context);
-        };
+        let float1 = pop_item!(self, float1, Float1, context);
         let float_0_built = Float0Builder::default()
             .float1(Box::new(float1))
             .build()
@@ -2155,7 +1965,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Float: Float2;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float_1(
         &mut self,
         _float2: &ParseTreeStackEntry<'t>,
@@ -2163,11 +1973,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float2 = if let Some(ASTType::Float2(float2)) = self.pop(context) {
-            float2
-        } else {
-            bail!("{}: Expecting ASTType::Float2", context);
-        };
+        let float2 = pop_item!(self, float2, Float2, context);
         let float_1_built = Float3Builder::default()
             .float2(Box::new(float2))
             .build()
@@ -2183,7 +1989,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" : BasicNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float1(
         &mut self,
         float1: &ParseTreeStackEntry<'t>,
@@ -2206,7 +2012,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" : BasicNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float2(
         &mut self,
         float2: &ParseTreeStackEntry<'t>,
@@ -2229,7 +2035,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Integer: <Expr>"(?:[0-9] *)+" : BasicNumber;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer(
         &mut self,
         integer: &ParseTreeStackEntry<'t>,
@@ -2252,7 +2058,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// If: "IF"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn r#if(
         &mut self,
         _if: &ParseTreeStackEntry<'t>,
@@ -2274,7 +2080,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Then: <INITIAL, Expr>"THEN"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn then(
         &mut self,
         _then: &ParseTreeStackEntry<'t>,
@@ -2296,7 +2102,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Goto: <INITIAL, Expr>"GOTO"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn goto(
         &mut self,
         _goto: &ParseTreeStackEntry<'t>,
@@ -2318,7 +2124,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Let: "LET"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn r#let(
         &mut self,
         _let: &ParseTreeStackEntry<'t>,
@@ -2340,7 +2146,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Print: "PRINT|\?"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn print(
         &mut self,
         _print: &ParseTreeStackEntry<'t>,
@@ -2362,7 +2168,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// End: "END"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn end(
         &mut self,
         _end: &ParseTreeStackEntry<'t>,
@@ -2384,7 +2190,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// AssignOp: "="^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn assign_op(
         &mut self,
         _assign_op: &ParseTreeStackEntry<'t>,
@@ -2406,7 +2212,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrOp: <Expr>"N?OR";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_op(
         &mut self,
         logical_or_op: &ParseTreeStackEntry<'t>,
@@ -2429,7 +2235,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndOp: <Expr>"AND";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_op(
         &mut self,
         logical_and_op: &ParseTreeStackEntry<'t>,
@@ -2452,7 +2258,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalNotOp: <Expr>"NOT";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_not_op(
         &mut self,
         logical_not_op: &ParseTreeStackEntry<'t>,
@@ -2475,7 +2281,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RelationalOp: <Expr>"<\s*>|<\s*=|<|>\s*=|>|=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_op(
         &mut self,
         relational_op: &ParseTreeStackEntry<'t>,
@@ -2498,7 +2304,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Plus: <Expr>"\+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn plus(
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
@@ -2521,7 +2327,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Minus: <Expr>"-";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn minus(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -2544,7 +2350,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// MulOp: <Expr>"\*|/";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn mul_op(
         &mut self,
         mul_op: &ParseTreeStackEntry<'t>,
@@ -2567,7 +2373,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LParen: <Expr>"\(";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn l_paren(
         &mut self,
         l_paren: &ParseTreeStackEntry<'t>,
@@ -2590,7 +2396,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RParen: <Expr>"\)";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn r_paren(
         &mut self,
         r_paren: &ParseTreeStackEntry<'t>,
@@ -2613,7 +2419,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Comment: <Cmnt>"[^\r\n]+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn comment(
         &mut self,
         comment: &ParseTreeStackEntry<'t>,
@@ -2636,7 +2442,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn variable(
         &mut self,
         variable: &ParseTreeStackEntry<'t>,
@@ -2659,7 +2465,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Expression: LogicalOr;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expression(
         &mut self,
         _logical_or: &ParseTreeStackEntry<'t>,
@@ -2667,11 +2473,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or = if let Some(ASTType::LogicalOr(logical_or)) = self.pop(context) {
-            logical_or
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOr", context);
-        };
+        let logical_or = pop_item!(self, logical_or, LogicalOr, context);
         let expression_built = ExpressionBuilder::default()
             .logical_or(Box::new(logical_or))
             .build()
@@ -2686,7 +2488,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalOr: LogicalAnd LogicalOrList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or(
         &mut self,
         _logical_and: &ParseTreeStackEntry<'t>,
@@ -2695,18 +2497,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_list =
-            if let Some(ASTType::LogicalOrList(mut logical_or_list)) = self.pop(context) {
-                logical_or_list.reverse();
-                logical_or_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalOrList", context);
-            };
-        let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
-            logical_and
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAnd", context);
-        };
+        let logical_or_list = pop_and_reverse_item!(self, logical_or_list, LogicalOrList, context);
+        let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
         let logical_or_built = LogicalOrBuilder::default()
             .logical_and(Box::new(logical_and))
             .logical_or_list(logical_or_list)
@@ -2722,7 +2514,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_list_0(
         &mut self,
         _logical_or_op: &ParseTreeStackEntry<'t>,
@@ -2732,22 +2524,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut logical_or_list =
-            if let Some(ASTType::LogicalOrList(logical_or_list)) = self.pop(context) {
-                logical_or_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalOrList", context);
-            };
-        let logical_and = if let Some(ASTType::LogicalAnd(logical_and)) = self.pop(context) {
-            logical_and
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAnd", context);
-        };
-        let logical_or_op = if let Some(ASTType::LogicalOrOp(logical_or_op)) = self.pop(context) {
-            logical_or_op
-        } else {
-            bail!("{}: Expecting ASTType::LogicalOrOp", context);
-        };
+        let mut logical_or_list = pop_item!(self, logical_or_list, LogicalOrList, context);
+        let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
+        let logical_or_op = pop_item!(self, logical_or_op, LogicalOrOp, context);
         let logical_or_list_0_built = LogicalOrListBuilder::default()
             .logical_and(Box::new(logical_and))
             .logical_or_op(Box::new(logical_or_op))
@@ -2763,7 +2542,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalOrList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2776,7 +2555,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalAnd: LogicalNot LogicalAndList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and(
         &mut self,
         _logical_not: &ParseTreeStackEntry<'t>,
@@ -2786,17 +2565,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list =
-            if let Some(ASTType::LogicalAndList(mut logical_and_list)) = self.pop(context) {
-                logical_and_list.reverse();
-                logical_and_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalAndList", context);
-            };
-        let logical_not = if let Some(ASTType::LogicalNot(logical_not)) = self.pop(context) {
-            logical_not
-        } else {
-            bail!("{}: Expecting ASTType::LogicalNot", context);
-        };
+            pop_and_reverse_item!(self, logical_and_list, LogicalAndList, context);
+        let logical_not = pop_item!(self, logical_not, LogicalNot, context);
         let logical_and_built = LogicalAndBuilder::default()
             .logical_not(Box::new(logical_not))
             .logical_and_list(logical_and_list)
@@ -2812,7 +2582,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp LogicalNot LogicalAndList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_list_0(
         &mut self,
         _logical_and_op: &ParseTreeStackEntry<'t>,
@@ -2822,23 +2592,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut logical_and_list =
-            if let Some(ASTType::LogicalAndList(logical_and_list)) = self.pop(context) {
-                logical_and_list
-            } else {
-                bail!("{}: Expecting ASTType::LogicalAndList", context);
-            };
-        let logical_not = if let Some(ASTType::LogicalNot(logical_not)) = self.pop(context) {
-            logical_not
-        } else {
-            bail!("{}: Expecting ASTType::LogicalNot", context);
-        };
-        let logical_and_op = if let Some(ASTType::LogicalAndOp(logical_and_op)) = self.pop(context)
-        {
-            logical_and_op
-        } else {
-            bail!("{}: Expecting ASTType::LogicalAndOp", context);
-        };
+        let mut logical_and_list = pop_item!(self, logical_and_list, LogicalAndList, context);
+        let logical_not = pop_item!(self, logical_not, LogicalNot, context);
+        let logical_and_op = pop_item!(self, logical_and_op, LogicalAndOp, context);
         let logical_and_list_0_built = LogicalAndListBuilder::default()
             .logical_not(Box::new(logical_not))
             .logical_and_op(Box::new(logical_and_op))
@@ -2854,7 +2610,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalAndList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2867,7 +2623,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalNot: LogicalNotOpt /* Option */ Relational;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_not(
         &mut self,
         _logical_not_opt: &ParseTreeStackEntry<'t>,
@@ -2876,17 +2632,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational = if let Some(ASTType::Relational(relational)) = self.pop(context) {
-            relational
-        } else {
-            bail!("{}: Expecting ASTType::Relational", context);
-        };
-        let logical_not_opt =
-            if let Some(ASTType::LogicalNotOpt(logical_not_opt)) = self.pop(context) {
-                logical_not_opt
-            } else {
-                bail!("{}: Expecting ASTType::LogicalNotOpt", context);
-            };
+        let relational = pop_item!(self, relational, Relational, context);
+        let logical_not_opt = pop_item!(self, logical_not_opt, LogicalNotOpt, context);
         let logical_not_built = LogicalNotBuilder::default()
             .logical_not_opt(logical_not_opt)
             .relational(Box::new(relational))
@@ -2902,7 +2649,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalNotOpt /* Option<T>::Some */: LogicalNotOp;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_not_opt_0(
         &mut self,
         _logical_not_op: &ParseTreeStackEntry<'t>,
@@ -2910,12 +2657,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_not_op = if let Some(ASTType::LogicalNotOp(logical_not_op)) = self.pop(context)
-        {
-            logical_not_op
-        } else {
-            bail!("{}: Expecting ASTType::LogicalNotOp", context);
-        };
+        let logical_not_op = pop_item!(self, logical_not_op, LogicalNotOp, context);
         let logical_not_opt_0_built = LogicalNotOptBuilder::default()
             .logical_not_op(Box::new(logical_not_op))
             .build()
@@ -2931,7 +2673,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// LogicalNotOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2943,7 +2685,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Relational: Summation RelationalList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational(
         &mut self,
         _summation: &ParseTreeStackEntry<'t>,
@@ -2952,18 +2694,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational_list =
-            if let Some(ASTType::RelationalList(mut relational_list)) = self.pop(context) {
-                relational_list.reverse();
-                relational_list
-            } else {
-                bail!("{}: Expecting ASTType::RelationalList", context);
-            };
-        let summation = if let Some(ASTType::Summation(summation)) = self.pop(context) {
-            summation
-        } else {
-            bail!("{}: Expecting ASTType::Summation", context);
-        };
+        let relational_list = pop_and_reverse_item!(self, relational_list, RelationalList, context);
+        let summation = pop_item!(self, summation, Summation, context);
         let relational_built = RelationalBuilder::default()
             .summation(Box::new(summation))
             .relational_list(relational_list)
@@ -2979,7 +2711,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RelationalList /* Vec<T>::Push */: RelationalOp Summation RelationalList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_list_0(
         &mut self,
         _relational_op: &ParseTreeStackEntry<'t>,
@@ -2989,22 +2721,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut relational_list =
-            if let Some(ASTType::RelationalList(relational_list)) = self.pop(context) {
-                relational_list
-            } else {
-                bail!("{}: Expecting ASTType::RelationalList", context);
-            };
-        let summation = if let Some(ASTType::Summation(summation)) = self.pop(context) {
-            summation
-        } else {
-            bail!("{}: Expecting ASTType::Summation", context);
-        };
-        let relational_op = if let Some(ASTType::RelationalOp(relational_op)) = self.pop(context) {
-            relational_op
-        } else {
-            bail!("{}: Expecting ASTType::RelationalOp", context);
-        };
+        let mut relational_list = pop_item!(self, relational_list, RelationalList, context);
+        let summation = pop_item!(self, summation, Summation, context);
+        let relational_op = pop_item!(self, relational_op, RelationalOp, context);
         let relational_list_0_built = RelationalListBuilder::default()
             .summation(Box::new(summation))
             .relational_op(Box::new(relational_op))
@@ -3020,7 +2739,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// RelationalList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3033,7 +2752,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Summation: Multiplication SummationList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summation(
         &mut self,
         _multiplication: &ParseTreeStackEntry<'t>,
@@ -3042,19 +2761,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let summation_list =
-            if let Some(ASTType::SummationList(mut summation_list)) = self.pop(context) {
-                summation_list.reverse();
-                summation_list
-            } else {
-                bail!("{}: Expecting ASTType::SummationList", context);
-            };
-        let multiplication =
-            if let Some(ASTType::Multiplication(multiplication)) = self.pop(context) {
-                multiplication
-            } else {
-                bail!("{}: Expecting ASTType::Multiplication", context);
-            };
+        let summation_list = pop_and_reverse_item!(self, summation_list, SummationList, context);
+        let multiplication = pop_item!(self, multiplication, Multiplication, context);
         let summation_built = SummationBuilder::default()
             .multiplication(Box::new(multiplication))
             .summation_list(summation_list)
@@ -3070,7 +2778,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// SummationList /* Vec<T>::Push */: SummationListGroup Multiplication SummationList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summation_list_0(
         &mut self,
         _summation_list_group: &ParseTreeStackEntry<'t>,
@@ -3080,24 +2788,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mut summation_list =
-            if let Some(ASTType::SummationList(summation_list)) = self.pop(context) {
-                summation_list
-            } else {
-                bail!("{}: Expecting ASTType::SummationList", context);
-            };
-        let multiplication =
-            if let Some(ASTType::Multiplication(multiplication)) = self.pop(context) {
-                multiplication
-            } else {
-                bail!("{}: Expecting ASTType::Multiplication", context);
-            };
+        let mut summation_list = pop_item!(self, summation_list, SummationList, context);
+        let multiplication = pop_item!(self, multiplication, Multiplication, context);
         let summation_list_group =
-            if let Some(ASTType::SummationListGroup(summation_list_group)) = self.pop(context) {
-                summation_list_group
-            } else {
-                bail!("{}: Expecting ASTType::SummationListGroup", context);
-            };
+            pop_item!(self, summation_list_group, SummationListGroup, context);
         let summation_list_0_built = SummationListBuilder::default()
             .multiplication(Box::new(multiplication))
             .summation_list_group(Box::new(summation_list_group))
@@ -3113,7 +2807,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// SummationListGroup: Plus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summation_list_group_0(
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
@@ -3121,11 +2815,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = if let Some(ASTType::Plus(plus)) = self.pop(context) {
-            plus
-        } else {
-            bail!("{}: Expecting ASTType::Plus", context);
-        };
+        let plus = pop_item!(self, plus, Plus, context);
         let summation_list_group_0_built = SummationListGroup0Builder::default()
             .plus(Box::new(plus))
             .build()
@@ -3143,7 +2833,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// SummationListGroup: Minus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summation_list_group_1(
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
@@ -3151,11 +2841,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
-            minus
-        } else {
-            bail!("{}: Expecting ASTType::Minus", context);
-        };
+        let minus = pop_item!(self, minus, Minus, context);
         let summation_list_group_1_built = SummationListGroup1Builder::default()
             .minus(Box::new(minus))
             .build()
@@ -3173,7 +2859,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// SummationList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn summation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3186,7 +2872,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Multiplication: Factor MultiplicationList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn multiplication(
         &mut self,
         _factor: &ParseTreeStackEntry<'t>,
@@ -3196,17 +2882,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let multiplication_list =
-            if let Some(ASTType::MultiplicationList(mut multiplication_list)) = self.pop(context) {
-                multiplication_list.reverse();
-                multiplication_list
-            } else {
-                bail!("{}: Expecting ASTType::MultiplicationList", context);
-            };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
+            pop_and_reverse_item!(self, multiplication_list, MultiplicationList, context);
+        let factor = pop_item!(self, factor, Factor, context);
         let multiplication_built = MultiplicationBuilder::default()
             .factor(Box::new(factor))
             .multiplication_list(multiplication_list)
@@ -3222,7 +2899,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// MultiplicationList /* Vec<T>::Push */: MulOp Factor MultiplicationList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn multiplication_list_0(
         &mut self,
         _mul_op: &ParseTreeStackEntry<'t>,
@@ -3233,21 +2910,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut multiplication_list =
-            if let Some(ASTType::MultiplicationList(multiplication_list)) = self.pop(context) {
-                multiplication_list
-            } else {
-                bail!("{}: Expecting ASTType::MultiplicationList", context);
-            };
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
-        let mul_op = if let Some(ASTType::MulOp(mul_op)) = self.pop(context) {
-            mul_op
-        } else {
-            bail!("{}: Expecting ASTType::MulOp", context);
-        };
+            pop_item!(self, multiplication_list, MultiplicationList, context);
+        let factor = pop_item!(self, factor, Factor, context);
+        let mul_op = pop_item!(self, mul_op, MulOp, context);
         let multiplication_list_0_built = MultiplicationListBuilder::default()
             .factor(Box::new(factor))
             .mul_op(Box::new(mul_op))
@@ -3263,7 +2928,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// MultiplicationList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn multiplication_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3279,7 +2944,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Factor: Literal;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_0(
         &mut self,
         _literal: &ParseTreeStackEntry<'t>,
@@ -3287,11 +2952,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal = if let Some(ASTType::Literal(literal)) = self.pop(context) {
-            literal
-        } else {
-            bail!("{}: Expecting ASTType::Literal", context);
-        };
+        let literal = pop_item!(self, literal, Literal, context);
         let factor_0_built = Factor0Builder::default()
             .literal(Box::new(literal))
             .build()
@@ -3307,7 +2968,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Factor: Variable;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_1(
         &mut self,
         _variable: &ParseTreeStackEntry<'t>,
@@ -3315,11 +2976,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let variable = if let Some(ASTType::Variable(variable)) = self.pop(context) {
-            variable
-        } else {
-            bail!("{}: Expecting ASTType::Variable", context);
-        };
+        let variable = pop_item!(self, variable, Variable, context);
         let factor_1_built = Factor1Builder::default()
             .variable(Box::new(variable))
             .build()
@@ -3335,7 +2992,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Factor: Minus Factor;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_2(
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
@@ -3344,16 +3001,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor = if let Some(ASTType::Factor(factor)) = self.pop(context) {
-            factor
-        } else {
-            bail!("{}: Expecting ASTType::Factor", context);
-        };
-        let minus = if let Some(ASTType::Minus(minus)) = self.pop(context) {
-            minus
-        } else {
-            bail!("{}: Expecting ASTType::Minus", context);
-        };
+        let factor = pop_item!(self, factor, Factor, context);
+        let minus = pop_item!(self, minus, Minus, context);
         let factor_2_built = Factor2Builder::default()
             .minus(Box::new(minus))
             .factor(Box::new(factor))
@@ -3370,7 +3019,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ///
     /// Factor: LParen Expression RParen;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
         _l_paren: &ParseTreeStackEntry<'t>,
@@ -3380,21 +3029,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_paren = if let Some(ASTType::RParen(r_paren)) = self.pop(context) {
-            r_paren
-        } else {
-            bail!("{}: Expecting ASTType::RParen", context);
-        };
-        let expression = if let Some(ASTType::Expression(expression)) = self.pop(context) {
-            expression
-        } else {
-            bail!("{}: Expecting ASTType::Expression", context);
-        };
-        let l_paren = if let Some(ASTType::LParen(l_paren)) = self.pop(context) {
-            l_paren
-        } else {
-            bail!("{}: Expecting ASTType::LParen", context);
-        };
+        let r_paren = pop_item!(self, r_paren, RParen, context);
+        let expression = pop_item!(self, expression, Expression, context);
+        let l_paren = pop_item!(self, l_paren, LParen, context);
         let factor_3_built = Factor3Builder::default()
             .l_paren(Box::new(l_paren))
             .expression(Box::new(expression))
