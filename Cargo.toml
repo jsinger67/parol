@@ -19,3 +19,26 @@ exclude = [
   "examples/oberon_0",
   "examples/scanner_states",
 ]
+
+[profile.release.package.parol]
+debug = true
+opt-level = 3
+
+[profile.release.package.parol-ls]
+debug = true
+
+[profile.release.package.json_parser]
+debug = true
+
+[profile.release.package.json_parser_auto]
+debug = true
+opt-level = 3
+
+[profile.release.package.oberon2]
+debug = true
+opt-level = 3
+
+# Currently cargo does not support lto setting per crate
+# https://github.com/rust-lang/cargo/issues/9330
+[profile.release]
+lto = true

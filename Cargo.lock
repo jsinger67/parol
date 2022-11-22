@@ -79,10 +79,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "bart"
+version = "0.1.4"
+source = "git+https://github.com/ryo33/bart?rev=5a6046b386aced0bdf0a5d7a23ea96accefade09#5a6046b386aced0bdf0a5d7a23ea96accefade09"
+dependencies = [
+ "nom",
+]
+
+[[package]]
 name = "bart_derive"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39fdc9035ac29aeb14993e2cdae217de7ccc9f9960eae0c5a12d541ca11c6af1"
+dependencies = [
+ "itertools",
+ "num",
+ "quote 0.3.15",
+ "syn 0.10.8",
+]
+
+[[package]]
+name = "bart_derive"
+version = "0.1.4"
+source = "git+https://github.com/ryo33/bart?rev=5a6046b386aced0bdf0a5d7a23ea96accefade09#5a6046b386aced0bdf0a5d7a23ea96accefade09"
 dependencies = [
  "itertools",
  "num",
@@ -723,8 +742,8 @@ version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "261f291d9271cd07f5a3627ec9dceca180f63cf4f25e90423d0aef3287d27e6b"
 dependencies = [
- "bart",
- "bart_derive",
+ "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cfg-if",
  "clap 3.2.23",
  "derive_builder",
@@ -754,8 +773,8 @@ version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef84a0533ecd4094a8d3cf6d4b74cddc2122ddc0bcb32f96b90d012d735a3f4"
 dependencies = [
- "bart",
- "bart_derive",
+ "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cfg-if",
  "clap 3.2.23",
  "derive_builder",
@@ -784,8 +803,8 @@ version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8405851a87987b3aca953b82513de45690bf162d44674dedab6adfae9871fcb0"
 dependencies = [
- "bart",
- "bart_derive",
+ "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cfg-if",
  "clap 4.0.26",
  "derive_builder",
@@ -814,8 +833,8 @@ version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b4a1a6c7cf0f4945ed68fb78a9ad113411f8f4c801c881d824b32c05cd46d6e"
 dependencies = [
- "bart",
- "bart_derive",
+ "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cfg-if",
  "clap 4.0.26",
  "derive_builder",
@@ -841,8 +860,8 @@ dependencies = [
 name = "parol"
 version = "0.14.1-alpha.1"
 dependencies = [
- "bart",
- "bart_derive",
+ "bart 0.1.4 (git+https://github.com/ryo33/bart?rev=5a6046b386aced0bdf0a5d7a23ea96accefade09)",
+ "bart_derive 0.1.4 (git+https://github.com/ryo33/bart?rev=5a6046b386aced0bdf0a5d7a23ea96accefade09)",
  "cfg-if",
  "clap 4.0.26",
  "derive_builder",

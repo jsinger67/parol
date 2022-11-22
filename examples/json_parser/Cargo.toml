@@ -17,5 +17,3 @@ thiserror = "1.0.30"
 [build-dependencies]
 parol = "0.6.1"
 
-[profile.release]
-debug = true

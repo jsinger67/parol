@@ -18,8 +18,3 @@ thiserror = "^1.0"
 
 [build-dependencies]
 parol = "0.13.0"
-
-[profile.release]
-debug = true
-lto = true
-opt-level = 3
