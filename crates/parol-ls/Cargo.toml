@@ -1,0 +1,39 @@
+[package]
+name = "parol-ls"
+version = "0.3.3"
+authors = ["Jörg Singer <singer.joerg@gmx.de>"]
+description = "Language server for parol parser generator"
+documentation = "https://docs.rs/parol-ls"
+repository = "https://github.com/jsinger67/parol-ls"
+readme = "README.md"
+keywords = ["language-server", "parsing", "parser-generator"]
+categories = ["algorithms", "parsing", "text-editors"]
+license = "MIT"
+edition = "2021"
+default-run = "parol-ls"
+
+[dependencies]
+clap = { version = "4.0.25", features = [ "derive", "cargo" ] }
+derive_builder = "0.11.2"
+derive-new = "0.5.9"
+env_logger = "0.9.3"
+function_name = "0.3.0"
+id_tree = "^1.8"
+lazy_static = "^1.4"
+log = "0.4.17"
+lsp-server = "0.6.0"
+lsp-types = "0.93.2"
+miette = "5.4.1"
+parol = "0.14.0"
+parol_runtime = { version = "0.9.0", features = ["trim_parse_tree", "auto_generation"] }
+parol-macros = "0.1.0"
+regex = "1.7.0"
+serde = "1.0.147"
+serde_json = "^1.0.83"
+thiserror = "1.0.37"
+
+[build-dependencies]
+parol = "0.14.0"
+
+[profile.release]
+debug = true
