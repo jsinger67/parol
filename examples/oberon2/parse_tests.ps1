@@ -14,12 +14,15 @@ if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
+$target = "./../../target/$Config/oberon2"
+
+
 # --------------------------------------------------------------------------------------------------
 Write-Host "Running oberon2 on some example files..." -ForegroundColor Cyan
 Get-ChildItem ./Oberon2Source/*.mod |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
-    &"./target/$Config/oberon2" $_.FullName -q
+    &$target $_.FullName -q
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }
