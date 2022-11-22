@@ -1,0 +1,5 @@
+10 A = 1
+20 PRINT A
+30 A = A + 1
+40 IF A >= 10 THEN END
+50 GOTO 20
