@@ -1,0 +1,217 @@
+%start Basic
+%title "Basic grammar"
+%comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
+%auto_newline_off
+%user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
+%user_type BasicNumber = crate::basic_grammar::BasicNumber
+%scanner Cmnt {
+    %auto_newline_off
+ }
+%scanner Expr {
+    %auto_newline_off
+ }
+
+%%
+
+Basic
+    : [ EndOfLine ] Line { EndOfLine Line } [ EndOfLine ]
+    ;
+
+Line
+    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
+    ;
+
+LineNumber
+    : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+": BasicLineNumber
+    ;
+
+Statement
+    : Remark 
+    | GotoStatement
+    | IfStatement
+    | Assignment
+    | PrintStatement
+    | EndStatement
+    ;
+
+Remark
+    : "REM"^ %push(Cmnt) [ Comment ] %pop()
+    ;
+
+GotoStatement
+    : Goto LineNumber
+    ;
+
+IfStatement
+    : If %push(Expr) Expression %pop() IfBody
+    ;
+
+Assignment
+    : [ Let ] Variable AssignOp %push(Expr) Expression %pop()
+    ;
+
+IfBody
+    : Then Statement 
+    | Goto LineNumber
+    ;
+
+PrintStatement
+    : Print %push(Expr) Expression { <INITIAL, Expr>","^ Expression } %pop()
+    ;
+
+EndStatement
+    : End
+    ;
+
+EndOfLine
+    : <INITIAL, Expr>"(?:\r?\n|\r)+"^
+    ;
+
+Literal
+    : Number
+    ;
+
+Number
+    : Float 
+    | Integer
+    ;
+
+Float
+    : Float1 
+    | Float2
+    ;
+
+// [Integer] DecimalDot [Integer] [Exponent]
+ Float1
+    : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?": BasicNumber
+    ;
+
+// Integer Exponent
+ Float2
+    : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": BasicNumber
+    ;
+
+Integer
+    : <Expr>"(?:[0-9] *)+": BasicNumber
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// KEYWORDS
+ If
+    : "IF"^
+    ;
+
+Then
+    : <INITIAL, Expr>"THEN"^
+    ;
+
+Goto
+    : <INITIAL, Expr>"GOTO"^
+    ;
+
+Let
+    : "LET"^
+    ;
+
+Print
+    : "PRINT|\?"^
+    ;
+
+End
+    : "END"^
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// OPERATOR SYMBOLS
+ AssignOp
+    : "="^
+    ;
+
+LogicalOrOp
+    : <Expr>"N?OR"
+    ;
+
+LogicalAndOp
+    : <Expr>"AND"
+    ;
+
+LogicalNotOp
+    : <Expr>"NOT"
+    ;
+
+RelationalOp
+    : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
+    ;
+
+Plus
+    : <Expr>"\+"
+    ;
+
+Minus
+    : <Expr>"-"
+    ;
+
+MulOp
+    : <Expr>"\*|/"
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// PARENTHESIS
+ LParen
+    : <Expr>"\("
+    ;
+
+RParen
+    : <Expr>"\)"
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// COMMENT
+ Comment
+    : <Cmnt>"[^\r\n]+"
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// VARIABLE
+ Variable
+    : <INITIAL, Expr>"[A-Z][0-9A-Z]*"
+    ;
+
+// -------------------------------------------------------------------------------------------------
+// EXPRESSIONS
+ Expression
+    : LogicalOr
+    ;
+
+LogicalOr
+    : LogicalAnd { LogicalOrOp LogicalAnd }
+    ;
+
+LogicalAnd
+    : LogicalNot { LogicalAndOp LogicalNot }
+    ;
+
+LogicalNot
+    : [ LogicalNotOp ] Relational
+    ;
+
+Relational
+    : Summation { RelationalOp Summation }
+    ;
+
+Summation
+    : Multiplication { ( Plus 
+    | Minus)
+ Multiplication }
+    ;
+
+Multiplication
+    : Factor { MulOp Factor }
+    ;
+
+Factor
+    : Literal 
+    | Variable
+    | Minus Factor
+    | LParen Expression RParen
+    ;
