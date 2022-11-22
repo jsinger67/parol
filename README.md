@@ -159,7 +159,7 @@ crate to your dependencies if you use  `parol`'s *auto-generation mode*.
 
 ## Further readings
 
-* [CHANGELOG](CHANGELOG.md)
+* [CHANGELOG](crates/parol/CHANGELOG.md)
 * [The book](book/README.md)
 
 ## Contributors

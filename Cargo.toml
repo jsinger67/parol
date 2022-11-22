@@ -1,51 +1,21 @@
-[package]
-name = "parol"
-version = "0.14.1-alpha.1"
-authors = ["Jörg Singer <singer.joerg@gmx.de>"]
-description = "LL(k) parser generator for Rust"
-default-run = "parol"
-documentation = "https://docs.rs/parol"
-repository = "https://github.com/jsinger67/parol"
-readme = "README.md"
-keywords = ["parser", "parsing", "parser-generator", "LLk"]
-categories = ["algorithms", "parsing", "Parsing tools"]
-license = "MIT"
-edition = "2021"
+[workspace]
 
-[dependencies]
-bart = "0.1.4"
-bart_derive = "0.1.4"
-cfg-if = "1.0.0"
-clap = { version = "4.0", features = [ "derive", "cargo" ] }
-derive_builder = "0.11.2"
-env_logger = "0.9.1"
-function_name = "0.3.0"
-id_tree = "1.8"
-id_tree_layout = "2.0"
-lazy_static = "1.4"
-log = "0.4.17"
-miette = { version = "5.2.0", features = ["fancy"] }
-owo-colors = "3.5.0"
-parol-macros = "0.1.0"
-parol_runtime = { version = "0.9.0", features = ["auto_generation"] }
-rand = "0.8.5"
-rand_regex = "0.15.1"
-regex = "1.6"
-regex-syntax = "0.6.27"
-syn = { version = "1", default-features = false, features = ["full", "parsing"] }
-thiserror = "1.0"
+resolver = "2"
 
-[profile.release]
-debug = true
-lto = true
-opt-level = 3
+members = [
+  "crates/*",
+  "examples/*",
+]
 
-[features]
-default = ["build"]
-# Includes logic for invoking from build.rs script
-build = []
-
-[[bin]]
-name = "parol"
-# Much of the logic formerly in the main binary has been refactored into the library
-required-features = ["build"]
+exclude = [
+  "examples/boolean_parser",
+  "examples/calc",
+  "examples/calc_auto",
+  "examples/json",
+  "examples/keywords",
+  "examples/keywords2",
+  "examples/list",
+  "examples/list_auto",
+  "examples/oberon_0",
+  "examples/scanner_states",
+]
