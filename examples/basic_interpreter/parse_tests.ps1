@@ -1,6 +1,6 @@
 $ErrorCount = 0
 $Config = "release"
-$CargoConfig = if ($Config -eq "release") { "--release" } else { "" }
+$CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 $env:RUST_LOG = ""
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
