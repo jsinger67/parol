@@ -97,7 +97,7 @@ from regex generation and want to understand the problem.
 Here is an example for a terminal in regular expression form:
 
 ```parol
-AddOperator: /+|-/;
+AddOperator: /\+|-/;
 ```
 
 ### Terminal conflicts
