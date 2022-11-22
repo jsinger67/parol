@@ -23,7 +23,7 @@ lazy_static = "1.4"
 log = "0.4.17"
 miette = { version = "5.3", features = ["fancy"] }
 parol-macros = { path = "../../crates/parol-macros" }
-parol_runtime = { path = "../../crates/parol_runtime" }
+parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
 thiserror = "1.0"
 
 [build-dependencies]

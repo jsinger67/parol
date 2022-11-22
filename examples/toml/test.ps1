@@ -1,17 +1,17 @@
 # The following example invocations assume that you have cloned
 # [toml-test](https://github.com/BurntSushi/toml-test.git) parallel to this crate.
 #
-# ./test.ps1 -Verbose -Path ../toml-test/tests/invalid/ -NegativeTests
-# ./test.ps1 -Verbose -Path ../toml-test/tests/valid/ -StopAtFirstError
+# ./test.ps1 -Verbose -Path ../../../toml-test/tests/invalid/ -NegativeTests
+# ./test.ps1 -Verbose -Path ../../../toml-test/tests/valid/ -StopAtFirstError
 
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)][string] $Path = "../toml-test/tests/valid/",
-    [string][ValidatePattern("debug|release")] $Config = "debug",
+    [string][ValidatePattern("debug|release")] $Config = "release",
     [switch] $NegativeTests,
     [switch] $StopAtFirstError)
 
-$CargoConfig = if ($Config -eq "release") { "--release" } else { "" }
+$CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 $Verbose = $VerbosePreference -eq "continue"
 
 $ErrorCount = 0
@@ -25,6 +25,7 @@ if ($LASTEXITCODE -ne 0) {
     Exit 1
 }
 
+$target = "./../../target/$Config/parol_toml"
 
 function  Invoke-SingleFile {
     param (
@@ -35,9 +36,9 @@ function  Invoke-SingleFile {
     }
     $Script:FileCount++
     if ($Script:Verbose) {
-        Write-Host "./target/$Config/parol_toml.exe $fileName -q" -ForegroundColor Yellow
+        Write-Host "$target $fileName -q" -ForegroundColor Yellow
     }
-    &"./target/$Config/parol_toml.exe" $fileName -q
+    &$target $fileName -q
     if (-not $?) {
         # Failed
         if (-not $NegativeTests) {
