@@ -1,0 +1,87 @@
+{     "name": "parol-vscode",
+    "displayName": "parol-vscode",
+    "author": {
+        "name": "Jörg Singer",
+        "email": "singer.joerg@gmx.de"
+    },
+    "license": "MIT",
+    "publisher": "jsinger67",
+    "description": "Language extension for `parol`",
+    "version": "0.1.11",
+    "repository": {
+        "url": "https://github.com/jsinger67/parol-vscode.git",
+        "type": "git"
+    },
+    "icon": "icons/parol-vscode.png",
+    "engines": {
+        "vscode": "^1.69.0"
+    },
+    "keywords": ["Parol", "Parser generator", "Rust", "Language tool"],
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "configuration": {
+            "title": "Parol Language Server",
+            "properties": {
+                "parol-vscode.max_k": {
+                    "type": "integer",
+                    "markdownDescription": "#### Maximum lookahead size\n\nused for language analysis\n\n* Keep in mind that large *numbers can slow down language analysis significantly*",
+                    "default": 3,
+                    "minimum": 1,
+                    "maximum": 10
+                }
+            }
+        },
+        "languages": [
+            {
+                "id": "parol",
+                "extensions": [
+                    ".par"
+                ],
+                "aliases": [
+                    "Parol",
+                    "par"
+                ],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "./icons/parol-light.png",
+                    "dark": "./icons/parol-dark.png"
+                }
+            }
+        ],
+        "grammars": [
+            {
+                "language": "parol",
+                "scopeName": "source.parol",
+                "path": "./syntaxes/parol.tmLanguage.json"
+            }
+        ]
+    },
+    "dependencies": {
+        "systemjs": "6.12.1",
+        "vscode-languageclient": "^8.0.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.5",
+        "@types/vscode": "^1.69.0",
+        "@vscode/test-electron": "^2.1.5",
+        "esbuild": "^0.14.49",
+        "eslint": "^8.20.0",
+        "prettier": "^2.7.1",
+        "vsce": "^2.9.3"
+    },
+    "activationEvents": [
+        "onLanguage:parol"
+    ],
+    "main": "./out/extension",
+    "scripts": {
+        "vscode:prepublish": "npm run build-base -- --minify",
+        "package": "vsce package -o parol-vscode.vsix",
+        "build-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node16",
+        "build": "npm run build-base -- --sourcemap",
+        "watch": "npm run build-base -- --sourcemap --watch",
+        "lint": "prettier --check . && eslint -c .eslintrc.js --ext ts ./src ./tests",
+        "fix": "prettier --write . && eslint -c .eslintrc.js --ext ts ./src ./tests --fix"
+    }
+}
