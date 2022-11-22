@@ -19,7 +19,7 @@ id_tree_layout = "2.0.3"
 lazy_static = "1.4"
 log = "0.4.17"
 miette = "5.2"
-parol-macros = { version = "0.1.0", optional = true }
+parol-macros = { path = "../parol-macros", optional = true }
 regex = "1.6"
 thiserror = "1.0"
 

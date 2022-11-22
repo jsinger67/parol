@@ -12,9 +12,9 @@ id_tree = "^1.8"
 lazy_static = "^1.4"
 log = "0.4.17"
 miette = { version = "^5.3", features = ["fancy"] }
-parol_runtime = { version = "0.8.1", features = ["trim_parse_tree"] }
-parol-macros = "0.1.0"
+parol_runtime = { path = "../../crates/parol_runtime", features = ["trim_parse_tree"] }
+parol-macros = { path = "../../crates/parol-macros" }
 thiserror = "^1.0"
 
 [build-dependencies]
-parol = "0.13.0"
+parol = { path = "../../crates/parol" }

@@ -4,13 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::json_grammar::JsonGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 /// Semantic actions trait generated for the user grammar
@@ -371,7 +372,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Json: Value;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn json(
         &mut self,
         _value: &ParseTreeStackEntry<'t>,
@@ -394,7 +395,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Object: "\{"^ /* Clipped */ ObjectSuffix;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn object(
         &mut self,
         _l_brace: &ParseTreeStackEntry<'t>,
@@ -419,7 +420,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn object_suffix_0(
         &mut self,
         _pair: &ParseTreeStackEntry<'t>,
@@ -446,7 +447,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectSuffix: "\}"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn object_suffix_1(
         &mut self,
         _r_brace: &ParseTreeStackEntry<'t>,
@@ -467,7 +468,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn object_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -494,7 +495,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ObjectList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -507,7 +508,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Pair: String ":"^ /* Clipped */ Value;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn pair(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
@@ -535,7 +536,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Array: "\["^ /* Clipped */ ArraySuffix;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array(
         &mut self,
         _l_bracket: &ParseTreeStackEntry<'t>,
@@ -560,7 +561,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_suffix_0(
         &mut self,
         _value: &ParseTreeStackEntry<'t>,
@@ -587,7 +588,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArraySuffix: "\]"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_suffix_1(
         &mut self,
         _r_bracket: &ParseTreeStackEntry<'t>,
@@ -608,7 +609,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_list_0(
         &mut self,
         _comma: &ParseTreeStackEntry<'t>,
@@ -635,7 +636,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// ArrayList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -648,7 +649,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: String;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_0(
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
@@ -672,7 +673,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Number;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_1(
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
@@ -696,7 +697,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Object;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_2(
         &mut self,
         _object: &ParseTreeStackEntry<'t>,
@@ -720,7 +721,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: Array;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_3(
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
@@ -744,7 +745,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "true"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_4(
         &mut self,
         _true: &ParseTreeStackEntry<'t>,
@@ -767,7 +768,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "false"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_5(
         &mut self,
         _false: &ParseTreeStackEntry<'t>,
@@ -790,7 +791,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Value: "null"^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn value_6(
         &mut self,
         _null: &ParseTreeStackEntry<'t>,
@@ -813,7 +814,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn string(
         &mut self,
         string: &ParseTreeStackEntry<'t>,
@@ -836,7 +837,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ///
     /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn number(
         &mut self,
         number: &ParseTreeStackEntry<'t>,

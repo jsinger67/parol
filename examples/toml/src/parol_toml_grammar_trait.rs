@@ -4,13 +4,14 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-#![allow(unused_imports)]
-use crate::parol_toml_grammar::ParolTomlGrammar;
-use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
-use parol_macros::{pop_and_reverse_item, pop_item};
+use parol_runtime::derive_builder::Builder;
+use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
+use parol_runtime::log::trace;
+#[allow(unused_imports)]
+use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 /// Semantic actions trait generated for the user grammar
@@ -2365,7 +2366,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ParolToml: ParolTomlList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn parol_toml(
         &mut self,
         _parol_toml_list: &ParseTreeStackEntry<'t>,
@@ -2388,7 +2389,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ParolTomlList /* Vec<T>::Push */: Expression ParolTomlList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn parol_toml_list_0(
         &mut self,
         _expression: &ParseTreeStackEntry<'t>,
@@ -2413,7 +2414,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ParolTomlList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn parol_toml_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2426,7 +2427,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Expression: KeyVal;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expression_0(
         &mut self,
         _key_val: &ParseTreeStackEntry<'t>,
@@ -2450,7 +2451,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Expression: Table;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn expression_1(
         &mut self,
         _table: &ParseTreeStackEntry<'t>,
@@ -2474,7 +2475,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Newline: <MLBString, MLLString>"\r?\n";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn newline(
         &mut self,
         newline: &ParseTreeStackEntry<'t>,
@@ -2497,7 +2498,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// WsNewline: <Esc>"[ \t]*\r?\n";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ws_newline(
         &mut self,
         ws_newline: &ParseTreeStackEntry<'t>,
@@ -2520,7 +2521,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// NonAscii: <BString, MLBString, LString, MLLString>"[\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}]";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn non_ascii(
         &mut self,
         non_ascii: &ParseTreeStackEntry<'t>,
@@ -2543,7 +2544,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeyVal: Key KeyValSep %push(Val) Val %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_val(
         &mut self,
         _key: &ParseTreeStackEntry<'t>,
@@ -2572,7 +2573,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Key: SimpleKey KeySuffix;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key(
         &mut self,
         _simple_key: &ParseTreeStackEntry<'t>,
@@ -2598,7 +2599,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeySuffix: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2612,7 +2613,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeySuffix: DotSep SimpleKey KeyList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_suffix_1(
         &mut self,
         _dot_sep: &ParseTreeStackEntry<'t>,
@@ -2640,7 +2641,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeyList /* Vec<T>::Push */: DotSep SimpleKey KeyList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_list_0(
         &mut self,
         _dot_sep: &ParseTreeStackEntry<'t>,
@@ -2668,7 +2669,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeyList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2681,7 +2682,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// SimpleKey: QuotedKey;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_key_0(
         &mut self,
         _quoted_key: &ParseTreeStackEntry<'t>,
@@ -2705,7 +2706,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// SimpleKey: UnquotedKey;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn simple_key_1(
         &mut self,
         _unquoted_key: &ParseTreeStackEntry<'t>,
@@ -2729,7 +2730,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// QuotedKey: BasicString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn quoted_key_0(
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
@@ -2753,7 +2754,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// QuotedKey: LiteralString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn quoted_key_1(
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
@@ -2777,7 +2778,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// KeyValSep: <INITIAL, Val>"=";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn key_val_sep(
         &mut self,
         key_val_sep: &ParseTreeStackEntry<'t>,
@@ -2800,7 +2801,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: Boolean;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_0(
         &mut self,
         _boolean: &ParseTreeStackEntry<'t>,
@@ -2824,7 +2825,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: Array;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_1(
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
@@ -2848,7 +2849,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: InlineTable;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_2(
         &mut self,
         _inline_table: &ParseTreeStackEntry<'t>,
@@ -2872,7 +2873,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: DateTime;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_3(
         &mut self,
         _date_time: &ParseTreeStackEntry<'t>,
@@ -2896,7 +2897,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: Numeric;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_4(
         &mut self,
         _numeric: &ParseTreeStackEntry<'t>,
@@ -2920,7 +2921,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: BasicString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_5(
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
@@ -2944,7 +2945,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: MLBasicString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_6(
         &mut self,
         _m_l_basic_string: &ParseTreeStackEntry<'t>,
@@ -2968,7 +2969,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: LiteralString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_7(
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
@@ -2992,7 +2993,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Val: MLLiteralString;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn val_8(
         &mut self,
         _m_l_literal_string: &ParseTreeStackEntry<'t>,
@@ -3016,7 +3017,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Numeric: Float;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn numeric_0(
         &mut self,
         _float: &ParseTreeStackEntry<'t>,
@@ -3040,7 +3041,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Numeric: Integer;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn numeric_1(
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
@@ -3064,7 +3065,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicString: QuotationMark %push(BString) BasicStringList /* Vec */ %pop() QuotationMark;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_string(
         &mut self,
         _quotation_mark: &ParseTreeStackEntry<'t>,
@@ -3094,7 +3095,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicStringList /* Vec<T>::Push */: BasicChar BasicStringList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_string_list_0(
         &mut self,
         _basic_char: &ParseTreeStackEntry<'t>,
@@ -3119,7 +3120,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicStringList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3132,7 +3133,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicChar: BasicUnescaped;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_char_0(
         &mut self,
         _basic_unescaped: &ParseTreeStackEntry<'t>,
@@ -3156,7 +3157,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicChar: %push(Esc) Escaped %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_char_1(
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
@@ -3180,7 +3181,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicUnescaped: AsciiNoEscape;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_unescaped_0(
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
@@ -3205,7 +3206,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BasicUnescaped: NonAscii;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn basic_unescaped_1(
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
@@ -3230,7 +3231,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Escaped: Escape EscapeSeqChar;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escaped(
         &mut self,
         _escape: &ParseTreeStackEntry<'t>,
@@ -3256,7 +3257,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Escape: <Esc, BString, MLBString>"\u{5C}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape(
         &mut self,
         escape: &ParseTreeStackEntry<'t>,
@@ -3279,7 +3280,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: QuotationMark;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_0(
         &mut self,
         _quotation_mark: &ParseTreeStackEntry<'t>,
@@ -3304,7 +3305,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: Escape;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_1(
         &mut self,
         _escape: &ParseTreeStackEntry<'t>,
@@ -3329,7 +3330,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: <Esc>"b";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_2(
         &mut self,
         b: &ParseTreeStackEntry<'t>,
@@ -3354,7 +3355,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: <Esc>"f";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_3(
         &mut self,
         f: &ParseTreeStackEntry<'t>,
@@ -3379,7 +3380,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: <Esc>"n";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_4(
         &mut self,
         n: &ParseTreeStackEntry<'t>,
@@ -3404,7 +3405,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: <Esc>"r";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_5(
         &mut self,
         r: &ParseTreeStackEntry<'t>,
@@ -3429,7 +3430,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: <Esc>"t";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_6(
         &mut self,
         t: &ParseTreeStackEntry<'t>,
@@ -3454,7 +3455,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: Unicode4;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_7(
         &mut self,
         _unicode4: &ParseTreeStackEntry<'t>,
@@ -3479,7 +3480,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: Unicode8;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_8(
         &mut self,
         _unicode8: &ParseTreeStackEntry<'t>,
@@ -3504,7 +3505,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: WsNewline;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_9(
         &mut self,
         _ws_newline: &ParseTreeStackEntry<'t>,
@@ -3529,7 +3530,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// EscapeSeqChar: AsciiNoEscape;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn escape_seq_char_10(
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
@@ -3554,7 +3555,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Unicode4: <Esc>"u[0-9a-fA-F]{4}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn unicode4(
         &mut self,
         unicode4: &ParseTreeStackEntry<'t>,
@@ -3577,7 +3578,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Unicode8: <Esc>"U[0-9a-fA-F]{8}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn unicode8(
         &mut self,
         unicode8: &ParseTreeStackEntry<'t>,
@@ -3600,7 +3601,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicString: MLBasicStringStart %push(MLBString) MLBasicBody MLBasicStringEnd %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_string(
         &mut self,
         _m_l_basic_string_start: &ParseTreeStackEntry<'t>,
@@ -3631,7 +3632,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicBody: MLBContentList MLBasicBodyList /* Vec */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_body(
         &mut self,
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
@@ -3658,7 +3659,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicBodyList /* Vec<T>::Push */: MLBQuotes MLBContentList1 MLBasicBodyList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_body_list_0(
         &mut self,
         _m_l_b_quotes: &ParseTreeStackEntry<'t>,
@@ -3687,7 +3688,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicBodyList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3703,7 +3704,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContentList: MLBContent MLBContentList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_list_0(
         &mut self,
         _m_l_b_content: &ParseTreeStackEntry<'t>,
@@ -3732,7 +3733,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContentList: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3752,7 +3753,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContentList1: MLBContent MLBContentList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_list1(
         &mut self,
         _m_l_b_content: &ParseTreeStackEntry<'t>,
@@ -3779,7 +3780,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContent: MLBChar;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_0(
         &mut self,
         _m_l_b_char: &ParseTreeStackEntry<'t>,
@@ -3803,7 +3804,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContent: Newline;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_1(
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
@@ -3827,7 +3828,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBContent: MLBEscapedNL;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_content_2(
         &mut self,
         _m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
@@ -3851,7 +3852,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBChar: MLBUnescaped;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_char_0(
         &mut self,
         _m_l_b_unescaped: &ParseTreeStackEntry<'t>,
@@ -3875,7 +3876,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBChar: %push(Esc) Escaped %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_char_1(
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
@@ -3899,7 +3900,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBUnescaped: AsciiNoEscape;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_unescaped_0(
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
@@ -3924,7 +3925,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBUnescaped: NonAscii;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_unescaped_1(
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
@@ -3949,7 +3950,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBEscapedNL: <MLBString>"\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_escaped_n_l(
         &mut self,
         m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
@@ -3973,7 +3974,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralString: Apostrophe^ /* Clipped */ %push(LString) LiteralStringList /* Vec */ %pop() Apostrophe^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_string(
         &mut self,
         _apostrophe: &ParseTreeStackEntry<'t>,
@@ -4005,7 +4006,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralStringList /* Vec<T>::Push */: LiteralChar LiteralStringList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_string_list_0(
         &mut self,
         _literal_char: &ParseTreeStackEntry<'t>,
@@ -4031,7 +4032,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralStringList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4047,7 +4048,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralChar: LiteralCharNoApostrophe;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_char_0(
         &mut self,
         _literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
@@ -4076,7 +4077,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralChar: NonAscii;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_char_1(
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
@@ -4100,7 +4101,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LiteralCharNoApostrophe: <LString, MLLString>"[\t\u{20}-\u{26}\u{28}-\u{7E}]+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn literal_char_no_apostrophe(
         &mut self,
         literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
@@ -4127,7 +4128,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralString: MLLiteralStringStart^ /* Clipped */ %push(MLLString) MLLiteralBody %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_string(
         &mut self,
         _m_l_literal_string_start: &ParseTreeStackEntry<'t>,
@@ -4155,7 +4156,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralBody: MLLContentList MLLiteralBodyList /* Vec */ MLLiteralStringEnd^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_body(
         &mut self,
         _m_l_l_content_list: &ParseTreeStackEntry<'t>,
@@ -4187,7 +4188,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralBodyList /* Vec<T>::Push */: MLLQuotes MLLContentList1 MLLiteralBodyList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_body_list_0(
         &mut self,
         _m_l_l_quotes: &ParseTreeStackEntry<'t>,
@@ -4216,7 +4217,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralBodyList /* Vec<T>::New */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4232,7 +4233,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLContentList: MLLContent MLLContentList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_content_list_0(
         &mut self,
         _m_l_l_content: &ParseTreeStackEntry<'t>,
@@ -4261,7 +4262,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLContentList: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4281,7 +4282,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLContentList1: MLLContent MLLContentList;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_content_list1(
         &mut self,
         _m_l_l_content: &ParseTreeStackEntry<'t>,
@@ -4308,7 +4309,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLContent: LiteralChar;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_content_0(
         &mut self,
         _literal_char: &ParseTreeStackEntry<'t>,
@@ -4332,7 +4333,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLContent: Newline;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_content_1(
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
@@ -4356,7 +4357,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Integer: DecInt;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer_0(
         &mut self,
         _dec_int: &ParseTreeStackEntry<'t>,
@@ -4380,7 +4381,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Integer: HexInt;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer_1(
         &mut self,
         _hex_int: &ParseTreeStackEntry<'t>,
@@ -4404,7 +4405,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Integer: OctInt;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer_2(
         &mut self,
         _oct_int: &ParseTreeStackEntry<'t>,
@@ -4428,7 +4429,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Integer: BinInt;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn integer_3(
         &mut self,
         _bin_int: &ParseTreeStackEntry<'t>,
@@ -4452,7 +4453,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// HexPrefix: <Val>"0x";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn hex_prefix(
         &mut self,
         hex_prefix: &ParseTreeStackEntry<'t>,
@@ -4475,7 +4476,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// OctPrefix: <Val>"0o";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oct_prefix(
         &mut self,
         oct_prefix: &ParseTreeStackEntry<'t>,
@@ -4498,7 +4499,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BinPrefix: <Val>"0b";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bin_prefix(
         &mut self,
         bin_prefix: &ParseTreeStackEntry<'t>,
@@ -4521,7 +4522,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DecInt: DecIntOpt /* Option */ UnsignedDecInt;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dec_int(
         &mut self,
         _dec_int_opt: &ParseTreeStackEntry<'t>,
@@ -4547,7 +4548,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DecIntOpt /* Option<T>::Some */: DecIntOptGroup;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dec_int_opt_0(
         &mut self,
         _dec_int_opt_group: &ParseTreeStackEntry<'t>,
@@ -4571,7 +4572,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DecIntOptGroup: Plus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dec_int_opt_group_0(
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
@@ -4593,7 +4594,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DecIntOptGroup: Minus;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dec_int_opt_group_1(
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
@@ -4615,7 +4616,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DecIntOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -4627,7 +4628,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// HexInt: HexPrefix^ /* Clipped */ %push(HexInt) HexIntContent %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn hex_int(
         &mut self,
         _hex_prefix: &ParseTreeStackEntry<'t>,
@@ -4654,7 +4655,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// HexIntContent: <HexInt>"[0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn hex_int_content(
         &mut self,
         hex_int_content: &ParseTreeStackEntry<'t>,
@@ -4677,7 +4678,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// OctInt: OctPrefix^ /* Clipped */ %push(OctInt) OctIntContent %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oct_int(
         &mut self,
         _oct_prefix: &ParseTreeStackEntry<'t>,
@@ -4704,7 +4705,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// OctIntContent: <OctInt>"[0-7]([0-7]|_[0-7])*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn oct_int_content(
         &mut self,
         oct_int_content: &ParseTreeStackEntry<'t>,
@@ -4727,7 +4728,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BinInt: BinPrefix^ /* Clipped */ %push(BinInt) BinIntContent %pop();
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bin_int(
         &mut self,
         _bin_prefix: &ParseTreeStackEntry<'t>,
@@ -4754,7 +4755,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// BinIntContent: <BinInt>"[01]([01]|_[01])*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn bin_int_content(
         &mut self,
         bin_int_content: &ParseTreeStackEntry<'t>,
@@ -4777,7 +4778,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Boolean: <Val>"true";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn boolean_0(
         &mut self,
         r#true: &ParseTreeStackEntry<'t>,
@@ -4801,7 +4802,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Boolean: <Val>"false";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn boolean_1(
         &mut self,
         r#false: &ParseTreeStackEntry<'t>,
@@ -4825,7 +4826,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Float: NormalFloat;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float_0(
         &mut self,
         _normal_float: &ParseTreeStackEntry<'t>,
@@ -4849,7 +4850,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Float: SpecialFloat;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn float_1(
         &mut self,
         _special_float: &ParseTreeStackEntry<'t>,
@@ -4873,7 +4874,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// NormalFloat: <Val>"[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn normal_float(
         &mut self,
         normal_float: &ParseTreeStackEntry<'t>,
@@ -4896,7 +4897,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// SpecialFloat: <Val>"[-+]?(nan|inf)";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn special_float(
         &mut self,
         special_float: &ParseTreeStackEntry<'t>,
@@ -4919,7 +4920,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DateTime: OffsetDateTime;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn date_time_0(
         &mut self,
         _offset_date_time: &ParseTreeStackEntry<'t>,
@@ -4943,7 +4944,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DateTime: LocalDateTime;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn date_time_1(
         &mut self,
         _local_date_time: &ParseTreeStackEntry<'t>,
@@ -4967,7 +4968,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DateTime: LocalDate;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn date_time_2(
         &mut self,
         _local_date: &ParseTreeStackEntry<'t>,
@@ -4991,7 +4992,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DateTime: LocalTime;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn date_time_3(
         &mut self,
         _local_time: &ParseTreeStackEntry<'t>,
@@ -5015,7 +5016,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// OffsetDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn offset_date_time(
         &mut self,
         offset_date_time: &ParseTreeStackEntry<'t>,
@@ -5039,7 +5040,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LocalDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn local_date_time(
         &mut self,
         local_date_time: &ParseTreeStackEntry<'t>,
@@ -5062,7 +5063,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LocalDate: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn local_date(
         &mut self,
         local_date: &ParseTreeStackEntry<'t>,
@@ -5085,7 +5086,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// LocalTime: <Val>"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn local_time(
         &mut self,
         local_time: &ParseTreeStackEntry<'t>,
@@ -5108,7 +5109,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Array: ArrayOpen^ /* Clipped */ %push(Val) ArrayOpt /* Option */ %pop() ArrayClose^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array(
         &mut self,
         _array_open: &ParseTreeStackEntry<'t>,
@@ -5139,7 +5140,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayOpt /* Option<T>::Some */: ArrayValues;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_opt_0(
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
@@ -5163,7 +5164,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5175,7 +5176,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayValues: Val ArrayValuesSuffix0;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_values(
         &mut self,
         _val: &ParseTreeStackEntry<'t>,
@@ -5202,7 +5203,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_values_suffix0_0(
         &mut self,
         _array_sep: &ParseTreeStackEntry<'t>,
@@ -5232,7 +5233,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayValuesSuffix0: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_values_suffix0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5252,7 +5253,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayValuesSuffix: ArrayValues;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_values_suffix_0(
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
@@ -5278,7 +5279,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayValuesSuffix: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_values_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5298,7 +5299,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArraySep: <INITIAL, Val>",";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_sep(
         &mut self,
         array_sep: &ParseTreeStackEntry<'t>,
@@ -5321,7 +5322,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Table: StdTable;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn table_0(
         &mut self,
         _std_table: &ParseTreeStackEntry<'t>,
@@ -5345,7 +5346,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Table: ArrayTable;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn table_1(
         &mut self,
         _array_table: &ParseTreeStackEntry<'t>,
@@ -5369,7 +5370,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// StdTable: StdTableOpen^ /* Clipped */ Key StdTableClose^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn std_table(
         &mut self,
         _std_table_open: &ParseTreeStackEntry<'t>,
@@ -5400,7 +5401,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayTableOpen: "\u{5B}\u{5B}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_table_open(
         &mut self,
         array_table_open: &ParseTreeStackEntry<'t>,
@@ -5424,7 +5425,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayTableClose: "\u{5D}\u{5D}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_table_close(
         &mut self,
         array_table_close: &ParseTreeStackEntry<'t>,
@@ -5448,7 +5449,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayOpen: <INITIAL, Val>"\u{5B}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_open(
         &mut self,
         array_open: &ParseTreeStackEntry<'t>,
@@ -5471,7 +5472,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayClose: <INITIAL, Val>"\u{5D}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_close(
         &mut self,
         array_close: &ParseTreeStackEntry<'t>,
@@ -5494,7 +5495,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// StdTableOpen: ArrayOpen;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn std_table_open(
         &mut self,
         _array_open: &ParseTreeStackEntry<'t>,
@@ -5517,7 +5518,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// StdTableClose: ArrayClose;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn std_table_close(
         &mut self,
         _array_close: &ParseTreeStackEntry<'t>,
@@ -5540,7 +5541,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableClose^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table(
         &mut self,
         _inline_table_open: &ParseTreeStackEntry<'t>,
@@ -5571,7 +5572,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableOpt /* Option<T>::Some */: InlineTableKeyVals;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_opt_0(
         &mut self,
         _inline_table_key_vals: &ParseTreeStackEntry<'t>,
@@ -5596,7 +5597,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5608,7 +5609,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableOpen: <INITIAL, Val>"\u{7B}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_open(
         &mut self,
         inline_table_open: &ParseTreeStackEntry<'t>,
@@ -5632,7 +5633,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableClose: <INITIAL, Val>"\u{7D}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_close(
         &mut self,
         inline_table_close: &ParseTreeStackEntry<'t>,
@@ -5656,7 +5657,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableSep: ArraySep;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_sep(
         &mut self,
         _array_sep: &ParseTreeStackEntry<'t>,
@@ -5680,7 +5681,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_key_vals(
         &mut self,
         _key_val: &ParseTreeStackEntry<'t>,
@@ -5715,7 +5716,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableKeyValsOpt /* Option<T>::Some */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_key_vals_opt_0(
         &mut self,
         _inline_table_sep: &ParseTreeStackEntry<'t>,
@@ -5744,7 +5745,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// InlineTableKeyValsOpt /* Option<T>::None */: ;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn inline_table_key_vals_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -5756,7 +5757,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn array_table(
         &mut self,
         _array_table_open: &ParseTreeStackEntry<'t>,
@@ -5787,7 +5788,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// UnsignedDecInt: <Val>"0|[1-9]([0-9]|_[0-9])*";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn unsigned_dec_int(
         &mut self,
         unsigned_dec_int: &ParseTreeStackEntry<'t>,
@@ -5811,7 +5812,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// UnquotedKey: "[-_A-Za-z0-9]+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn unquoted_key(
         &mut self,
         unquoted_key: &ParseTreeStackEntry<'t>,
@@ -5834,7 +5835,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// DotSep: <INITIAL, Val>"\.";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn dot_sep(
         &mut self,
         dot_sep: &ParseTreeStackEntry<'t>,
@@ -5857,7 +5858,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicStringStart: <INITIAL, Val>"\u{22}{3}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_string_start(
         &mut self,
         m_l_basic_string_start: &ParseTreeStackEntry<'t>,
@@ -5884,7 +5885,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBasicStringEnd: <MLBString>"\u{22}{3,5}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_basic_string_end(
         &mut self,
         m_l_basic_string_end: &ParseTreeStackEntry<'t>,
@@ -5911,7 +5912,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLBQuotes: <MLBString>"\u{22}{1,2}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_b_quotes(
         &mut self,
         m_l_b_quotes: &ParseTreeStackEntry<'t>,
@@ -5934,7 +5935,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// QuotationMark: <INITIAL, Esc, Val, BString>"\u{22}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn quotation_mark(
         &mut self,
         quotation_mark: &ParseTreeStackEntry<'t>,
@@ -5957,7 +5958,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralStringStart: <INITIAL, Val>"\u{27}{3}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_string_start(
         &mut self,
         m_l_literal_string_start: &ParseTreeStackEntry<'t>,
@@ -5984,7 +5985,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLiteralStringEnd: <MLLString>"\u{27}{3,5}(?:\r?\n)?";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_literal_string_end(
         &mut self,
         m_l_literal_string_end: &ParseTreeStackEntry<'t>,
@@ -6011,7 +6012,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// MLLQuotes: <MLLString>"\u{27}{1,2}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn m_l_l_quotes(
         &mut self,
         m_l_l_quotes: &ParseTreeStackEntry<'t>,
@@ -6034,7 +6035,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Apostrophe: <INITIAL, Val, LString>"\u{27}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn apostrophe(
         &mut self,
         apostrophe: &ParseTreeStackEntry<'t>,
@@ -6057,7 +6058,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// AsciiNoEscape: <Esc, BString, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn ascii_no_escape(
         &mut self,
         ascii_no_escape: &ParseTreeStackEntry<'t>,
@@ -6080,7 +6081,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Minus: <Val>"\u{2D}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn minus(
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
@@ -6103,7 +6104,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ///
     /// Plus: <Val>"\u{2B}";
     ///
-    #[named]
+    #[parol_runtime::function_name::named]
     fn plus(
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
