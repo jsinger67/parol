@@ -9,6 +9,8 @@ if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
+$target = "./../../target/$Config/basic"
+
 
 # --------------------------------------------------------------------------------------------------
 # Negative tests
@@ -16,7 +18,7 @@ if ($LASTEXITCODE -ne 0) {
 Get-ChildItem ./tests/data/invalid/*.bas |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName) should fail..." -ForegroundColor Magenta
-    &"./target/$Config/basic" $_.FullName -q
+    &$target $_.FullName -q
     if ($?) {
         ++$ErrorCount    
     }
@@ -28,7 +30,7 @@ ForEach-Object {
 Get-ChildItem ./tests/data/valid/*.bas |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
-    &"./target/$Config/basic" $_.FullName -q | Tee-Object -Variable output
+    &$target $_.FullName -q | Tee-Object -Variable output
     if (-not $?) {
         ++$ErrorCount    
     } else {
