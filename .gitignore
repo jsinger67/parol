@@ -1,1 +1,28 @@
+# Rust
 /target
+Cargo.lock
+
+# Visual Studio Code
+.vscode/*.*
+
+# Visual Studio
+.vs/**
+
+# Ionide
+.ionide/**
+
+# Parol
+/data/**/*.svg
+/data/**/*.png
+/data/**/*.dot
+
+/examples/**/*.svg
+/examples/**/*.png
+/examples/**/*.dot
+/examples/**/*.txt
+
+/src/**/*.svg
+*.svg
+
+# mdbook
+/book/book/**
