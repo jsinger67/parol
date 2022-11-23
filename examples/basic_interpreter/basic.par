@@ -18,11 +18,11 @@ Basic
     ;
 
 Line
-    : LineNumber Statement { <INITIAL, Expr>":"^ Statement }
+    : LineNumber Statement { <INITIAL, Expr>':'^ Statement }
     ;
 
 LineNumber
-    : "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+": BasicLineNumber
+    : /[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+/: BasicLineNumber
     ;
 
 Statement
@@ -35,7 +35,7 @@ Statement
     ;
 
 Remark
-    : "REM"^ %push(Cmnt) [ Comment ] %pop()
+    : 'REM'^ %push(Cmnt) [ Comment ] %pop()
     ;
 
 GotoStatement
@@ -56,7 +56,7 @@ IfBody
     ;
 
 PrintStatement
-    : Print %push(Expr) Expression { <INITIAL, Expr>","^ Expression } %pop()
+    : Print %push(Expr) Expression { <INITIAL, Expr>','^ Expression } %pop()
     ;
 
 EndStatement
@@ -64,7 +64,7 @@ EndStatement
     ;
 
 EndOfLine
-    : <INITIAL, Expr>"(?:\r?\n|\r)+"^
+    : <INITIAL, Expr>/(?:\r?\n|\r)+/^
     ;
 
 Literal
@@ -83,98 +83,98 @@ Float
 
 // [Integer] DecimalDot [Integer] [Exponent]
  Float1
-    : <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?": BasicNumber
+    : <Expr>/(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?/: BasicNumber
     ;
 
 // Integer Exponent
  Float2
-    : <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+": BasicNumber
+    : <Expr>/(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+/: BasicNumber
     ;
 
 Integer
-    : <Expr>"(?:[0-9] *)+": BasicNumber
+    : <Expr>/(?:[0-9] *)+/: BasicNumber
     ;
 
 // -------------------------------------------------------------------------------------------------
 // KEYWORDS
  If
-    : "IF"^
+    : 'IF'^
     ;
 
 Then
-    : <INITIAL, Expr>"THEN"^
+    : <INITIAL, Expr>'THEN'^
     ;
 
 Goto
-    : <INITIAL, Expr>"GOTO"^
+    : <INITIAL, Expr>'GOTO'^
     ;
 
 Let
-    : "LET"^
+    : 'LET'^
     ;
 
 Print
-    : "PRINT|\?"^
+    : /PRINT|\?/^
     ;
 
 End
-    : "END"^
+    : 'END'^
     ;
 
 // -------------------------------------------------------------------------------------------------
 // OPERATOR SYMBOLS
  AssignOp
-    : "="^
+    : '='^
     ;
 
 LogicalOrOp
-    : <Expr>"N?OR"
+    : <Expr>/N?OR/
     ;
 
 LogicalAndOp
-    : <Expr>"AND"
+    : <Expr>'AND'
     ;
 
 LogicalNotOp
-    : <Expr>"NOT"
+    : <Expr>'NOT'
     ;
 
 RelationalOp
-    : <Expr>"<\s*>|<\s*=|<|>\s*=|>|="
+    : <Expr>/<\s*>|<\s*=|<|>\s*=|>|=/
     ;
 
 Plus
-    : <Expr>"\+"
+    : <Expr>'+'
     ;
 
 Minus
-    : <Expr>"-"
+    : <Expr>'-'
     ;
 
 MulOp
-    : <Expr>"\*|/"
+    : <Expr>/\*|\u{2F}/
     ;
 
 // -------------------------------------------------------------------------------------------------
 // PARENTHESIS
  LParen
-    : <Expr>"\("
+    : <Expr>'('
     ;
 
 RParen
-    : <Expr>"\)"
+    : <Expr>')'
     ;
 
 // -------------------------------------------------------------------------------------------------
 // COMMENT
  Comment
-    : <Cmnt>"[^\r\n]+"
+    : <Cmnt>/[^\r\n]+/
     ;
 
 // -------------------------------------------------------------------------------------------------
 // VARIABLE
  Variable
-    : <INITIAL, Expr>"[A-Z][0-9A-Z]*"
+    : <INITIAL, Expr>/[A-Z][0-9A-Z]*/
     ;
 
 // -------------------------------------------------------------------------------------------------

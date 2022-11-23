@@ -45,8 +45,8 @@ pub const TERMINALS: &[&str; 32] = &[
     /* 22 */ r###"NOT"###,
     /* 23 */ r###"<\s*>|<\s*=|<|>\s*=|>|="###,
     /* 24 */ r###"\+"###,
-    /* 25 */ r###"-"###,
-    /* 26 */ r###"\*|/"###,
+    /* 25 */ r###"\-"###,
+    /* 26 */ r###"\*|\u{2F}"###,
     /* 27 */ r###"\("###,
     /* 28 */ r###"\)"###,
     /* 29 */ r###"[^\r\n]+"###,
@@ -729,7 +729,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 24,
         production: &[ParseType::N(25), ParseType::N(52), ParseType::N(26)],
     },
-    // 8 - LineList: ":"^ /* Clipped */ Statement LineList;
+    // 8 - LineList: ':'^ /* Clipped */ Statement LineList;
     Production {
         lhs: 25,
         production: &[ParseType::N(25), ParseType::N(52), ParseType::T(5)],
@@ -739,7 +739,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 25,
         production: &[],
     },
-    // 10 - LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+";
+    // 10 - LineNumber: /[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+/;
     Production {
         lhs: 26,
         production: &[ParseType::T(6)],
@@ -774,7 +774,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 52,
         production: &[ParseType::N(10)],
     },
-    // 17 - Remark: "REM"^ /* Clipped */ Push(1) RemarkOpt /* Option */ Pop;
+    // 17 - Remark: 'REM'^ /* Clipped */ Push(1) RemarkOpt /* Option */ Pop;
     Production {
         lhs: 50,
         production: &[
@@ -853,7 +853,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
             ParseType::N(43),
         ],
     },
-    // 28 - PrintStatementList: ","^ /* Clipped */ Expression PrintStatementList;
+    // 28 - PrintStatementList: ','^ /* Clipped */ Expression PrintStatementList;
     Production {
         lhs: 45,
         production: &[ParseType::N(45), ParseType::N(11), ParseType::T(8)],
@@ -868,7 +868,7 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 10,
         production: &[ParseType::N(8)],
     },
-    // 31 - EndOfLine: "(?:\r?\n|\r)+"^ /* Clipped */;
+    // 31 - EndOfLine: /(?:\r?\n|\r)+/^ /* Clipped */;
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
@@ -898,107 +898,107 @@ pub const PRODUCTIONS: &[Production; 83] = &[
         lhs: 13,
         production: &[ParseType::N(15)],
     },
-    // 37 - Float1: "(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?";
+    // 37 - Float1: /(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?/;
     Production {
         lhs: 14,
         production: &[ParseType::T(10)],
     },
-    // 38 - Float2: "(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+";
+    // 38 - Float2: /(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+/;
     Production {
         lhs: 15,
         production: &[ParseType::T(11)],
     },
-    // 39 - Integer: "(?:[0-9] *)+";
+    // 39 - Integer: /(?:[0-9] *)+/;
     Production {
         lhs: 21,
         production: &[ParseType::T(12)],
     },
-    // 40 - If: "IF"^ /* Clipped */;
+    // 40 - If: 'IF'^ /* Clipped */;
     Production {
         lhs: 18,
         production: &[ParseType::T(13)],
     },
-    // 41 - Then: "THEN"^ /* Clipped */;
+    // 41 - Then: 'THEN'^ /* Clipped */;
     Production {
         lhs: 56,
         production: &[ParseType::T(14)],
     },
-    // 42 - Goto: "GOTO"^ /* Clipped */;
+    // 42 - Goto: 'GOTO'^ /* Clipped */;
     Production {
         lhs: 16,
         production: &[ParseType::T(15)],
     },
-    // 43 - Let: "LET"^ /* Clipped */;
+    // 43 - Let: 'LET'^ /* Clipped */;
     Production {
         lhs: 23,
         production: &[ParseType::T(16)],
     },
-    // 44 - Print: "PRINT|\?"^ /* Clipped */;
+    // 44 - Print: /PRINT|\?/^ /* Clipped */;
     Production {
         lhs: 43,
         production: &[ParseType::T(17)],
     },
-    // 45 - End: "END"^ /* Clipped */;
+    // 45 - End: 'END'^ /* Clipped */;
     Production {
         lhs: 8,
         production: &[ParseType::T(18)],
     },
-    // 46 - AssignOp: "="^ /* Clipped */;
+    // 46 - AssignOp: '='^ /* Clipped */;
     Production {
         lhs: 0,
         production: &[ParseType::T(19)],
     },
-    // 47 - LogicalOrOp: "N?OR";
+    // 47 - LogicalOrOp: /N?OR/;
     Production {
         lhs: 36,
         production: &[ParseType::T(20)],
     },
-    // 48 - LogicalAndOp: "AND";
+    // 48 - LogicalAndOp: 'AND';
     Production {
         lhs: 30,
         production: &[ParseType::T(21)],
     },
-    // 49 - LogicalNotOp: "NOT";
+    // 49 - LogicalNotOp: 'NOT';
     Production {
         lhs: 32,
         production: &[ParseType::T(22)],
     },
-    // 50 - RelationalOp: "<\s*>|<\s*=|<|>\s*=|>|=";
+    // 50 - RelationalOp: /<\s*>|<\s*=|<|>\s*=|>|=/;
     Production {
         lhs: 49,
         production: &[ParseType::T(23)],
     },
-    // 51 - Plus: "\+";
+    // 51 - Plus: '+';
     Production {
         lhs: 42,
         production: &[ParseType::T(24)],
     },
-    // 52 - Minus: "-";
+    // 52 - Minus: '-';
     Production {
         lhs: 37,
         production: &[ParseType::T(25)],
     },
-    // 53 - MulOp: "\*|/";
+    // 53 - MulOp: /\*|\u{2F}/;
     Production {
         lhs: 38,
         production: &[ParseType::T(26)],
     },
-    // 54 - LParen: "\(";
+    // 54 - LParen: '(';
     Production {
         lhs: 22,
         production: &[ParseType::T(27)],
     },
-    // 55 - RParen: "\)";
+    // 55 - RParen: ')';
     Production {
         lhs: 46,
         production: &[ParseType::T(28)],
     },
-    // 56 - Comment: "[^\r\n]+";
+    // 56 - Comment: /[^\r\n]+/;
     Production {
         lhs: 7,
         production: &[ParseType::T(29)],
     },
-    // 57 - Variable: "[A-Z][0-9A-Z]*";
+    // 57 - Variable: /[A-Z][0-9A-Z]*/;
     Production {
         lhs: 57,
         production: &[ParseType::T(30)],

@@ -44,6 +44,9 @@ ForEach-Object {
                 Write-Host "Received  '$output'"
                 ++$ErrorCount
             }
+        } else {
+            Write-Host "$expected_file not found" -ForegroundColor Red
+            ++$ErrorCount
         }
     }
 }

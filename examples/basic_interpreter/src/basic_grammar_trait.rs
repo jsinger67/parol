@@ -660,7 +660,7 @@ pub struct Integer {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct LParen<'t> {
-    pub l_paren: Token<'t>, /* \( */
+    pub l_paren: Token<'t>, /* ( */
 }
 
 ///
@@ -809,7 +809,7 @@ pub struct Minus<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct MulOp<'t> {
-    pub mul_op: Token<'t>, /* \*|/ */
+    pub mul_op: Token<'t>, /* \*|\u{2F} */
 }
 
 ///
@@ -848,7 +848,7 @@ pub enum Number {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct Plus<'t> {
-    pub plus: Token<'t>, /* \+ */
+    pub plus: Token<'t>, /* + */
 }
 
 ///
@@ -884,7 +884,7 @@ pub struct PrintStatementList<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct RParen<'t> {
-    pub r_paren: Token<'t>, /* \) */
+    pub r_paren: Token<'t>, /* ) */
 }
 
 ///
@@ -1301,7 +1301,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// LineList /* Vec<T>::Push */: <INITIAL, Expr>":"^ /* Clipped */ Statement LineList;
+    /// LineList /* Vec<T>::Push */: <INITIAL, Expr>':'^ /* Clipped */ Statement LineList;
     ///
     #[parol_runtime::function_name::named]
     fn line_list_0(
@@ -1341,7 +1341,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// LineNumber: "[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+" : BasicLineNumber;
+    /// LineNumber: /[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+/ : BasicLineNumber;
     ///
     #[parol_runtime::function_name::named]
     fn line_number(
@@ -1511,7 +1511,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Remark: "REM"^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();
+    /// Remark: 'REM'^ /* Clipped */ %push(Cmnt) RemarkOpt /* Option */ %pop();
     ///
     #[parol_runtime::function_name::named]
     fn remark(
@@ -1779,7 +1779,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// PrintStatementList /* Vec<T>::Push */: <INITIAL, Expr>","^ /* Clipped */ Expression PrintStatementList;
+    /// PrintStatementList /* Vec<T>::Push */: <INITIAL, Expr>','^ /* Clipped */ Expression PrintStatementList;
     ///
     #[parol_runtime::function_name::named]
     fn print_statement_list_0(
@@ -1846,7 +1846,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// EndOfLine: <INITIAL, Expr>"(?:\r?\n|\r)+"^ /* Clipped */;
+    /// EndOfLine: <INITIAL, Expr>/(?:\r?\n|\r)+/^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn end_of_line(
@@ -1987,7 +1987,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// Float1: <Expr>"(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?" : BasicNumber;
+    /// Float1: <Expr>/(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
     fn float1(
@@ -2010,7 +2010,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Float2: <Expr>"(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+" : BasicNumber;
+    /// Float2: <Expr>/(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
     fn float2(
@@ -2033,7 +2033,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// Integer: <Expr>"(?:[0-9] *)+" : BasicNumber;
+    /// Integer: <Expr>/(?:[0-9] *)+/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
     fn integer(
@@ -2056,7 +2056,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// If: "IF"^ /* Clipped */;
+    /// If: 'IF'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn r#if(
@@ -2078,7 +2078,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// Then: <INITIAL, Expr>"THEN"^ /* Clipped */;
+    /// Then: <INITIAL, Expr>'THEN'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn then(
@@ -2100,7 +2100,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// Goto: <INITIAL, Expr>"GOTO"^ /* Clipped */;
+    /// Goto: <INITIAL, Expr>'GOTO'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn goto(
@@ -2122,7 +2122,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// Let: "LET"^ /* Clipped */;
+    /// Let: 'LET'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn r#let(
@@ -2144,7 +2144,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// Print: "PRINT|\?"^ /* Clipped */;
+    /// Print: /PRINT|\?/^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn print(
@@ -2166,7 +2166,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// End: "END"^ /* Clipped */;
+    /// End: 'END'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn end(
@@ -2188,7 +2188,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// AssignOp: "="^ /* Clipped */;
+    /// AssignOp: '='^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn assign_op(
@@ -2210,7 +2210,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// LogicalOrOp: <Expr>"N?OR";
+    /// LogicalOrOp: <Expr>/N?OR/;
     ///
     #[parol_runtime::function_name::named]
     fn logical_or_op(
@@ -2233,7 +2233,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// LogicalAndOp: <Expr>"AND";
+    /// LogicalAndOp: <Expr>'AND';
     ///
     #[parol_runtime::function_name::named]
     fn logical_and_op(
@@ -2256,7 +2256,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// LogicalNotOp: <Expr>"NOT";
+    /// LogicalNotOp: <Expr>'NOT';
     ///
     #[parol_runtime::function_name::named]
     fn logical_not_op(
@@ -2279,7 +2279,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// RelationalOp: <Expr>"<\s*>|<\s*=|<|>\s*=|>|=";
+    /// RelationalOp: <Expr>/<\s*>|<\s*=|<|>\s*=|>|=/;
     ///
     #[parol_runtime::function_name::named]
     fn relational_op(
@@ -2302,7 +2302,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// Plus: <Expr>"\+";
+    /// Plus: <Expr>'+';
     ///
     #[parol_runtime::function_name::named]
     fn plus(
@@ -2325,7 +2325,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// Minus: <Expr>"-";
+    /// Minus: <Expr>'-';
     ///
     #[parol_runtime::function_name::named]
     fn minus(
@@ -2348,7 +2348,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// MulOp: <Expr>"\*|/";
+    /// MulOp: <Expr>/\*|\u{2F}/;
     ///
     #[parol_runtime::function_name::named]
     fn mul_op(
@@ -2371,7 +2371,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// LParen: <Expr>"\(";
+    /// LParen: <Expr>'(';
     ///
     #[parol_runtime::function_name::named]
     fn l_paren(
@@ -2394,7 +2394,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// RParen: <Expr>"\)";
+    /// RParen: <Expr>')';
     ///
     #[parol_runtime::function_name::named]
     fn r_paren(
@@ -2417,7 +2417,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// Comment: <Cmnt>"[^\r\n]+";
+    /// Comment: <Cmnt>/[^\r\n]+/;
     ///
     #[parol_runtime::function_name::named]
     fn comment(
@@ -2440,7 +2440,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// Variable: <INITIAL, Expr>"[A-Z][0-9A-Z]*";
+    /// Variable: <INITIAL, Expr>/[A-Z][0-9A-Z]*/;
     ///
     #[parol_runtime::function_name::named]
     fn variable(
