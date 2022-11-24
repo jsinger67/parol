@@ -19,8 +19,8 @@
 /*  8 */ Declaration: '%comment'^ /* Clipped */ String;
 /*  9 */ Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;
 /* 10 */ Declaration: ScannerDirectives;
-/* 11 */ ScannerDirectives: '%line_comment'^ /* Clipped */ String;
-/* 12 */ ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
+/* 11 */ ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
+/* 12 */ ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
 /* 13 */ ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
 /* 14 */ ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
 /* 15 */ GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;

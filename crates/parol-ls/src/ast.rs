@@ -209,12 +209,12 @@ impl From<&ScannerDirectives> for Rng {
         match val {
             ScannerDirectives::ScannerDirectives0(lc) => {
                 Self::from(&lc.percent_line_underscore_comment)
-                    .extend(Self::from(&lc.string.string))
+                    .extend(Self::from(&*lc.token_literal))
                     .extend(Self::from(&*lc.comments))
             }
             ScannerDirectives::ScannerDirectives1(bc) => {
                 Self::from(&bc.percent_block_underscore_comment)
-                    .extend(Self::from(&bc.string0.string))
+                    .extend(Self::from(&*bc.token_literal0))
                     .extend(Self::from(&*bc.comments))
             }
             ScannerDirectives::ScannerDirectives2(auto_nl) => {

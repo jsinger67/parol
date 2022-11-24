@@ -26,8 +26,8 @@ Declaration
     ;
 
 ScannerDirectives
-    : "%line_comment": OwnedToken String Comments
-    | "%block_comment": OwnedToken String String Comments
+    : "%line_comment": OwnedToken TokenLiteral Comments
+    | "%block_comment": OwnedToken TokenLiteral TokenLiteral Comments
     | "%auto_newline_off": OwnedToken Comments
     | "%auto_ws_off": OwnedToken Comments
     ;

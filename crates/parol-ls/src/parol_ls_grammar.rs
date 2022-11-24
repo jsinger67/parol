@@ -1,7 +1,7 @@
 use crate::{
     parol_ls_grammar_trait::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
-        ScannerDirectives, ScannerState, StartDeclaration, UserTypeDeclaration,
+        ScannerDirectives, ScannerState, StartDeclaration, UserTypeDeclaration, TokenLiteral,
     },
     recursion::RecursionDetection,
     rng::Rng,
@@ -16,6 +16,7 @@ use lsp_types::{
 };
 #[allow(unused_imports)]
 use miette::Result;
+use parol::TerminalKind;
 use parol_runtime::lexer::Token;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write as _};
@@ -133,13 +134,13 @@ impl ParolLsGrammar {
                     )
                     .0,
                     children: Some(vec![DocumentSymbol {
-                        name: line_comment.string.string.text().to_string(),
+                        name: Self::expanded_token_literal(&line_comment.token_literal),
                         detail: Some("Text".to_string()),
                         kind: SymbolKind::STRING,
                         tags: None,
                         deprecated: None,
                         range: Into::<Rng>::into(arg).0,
-                        selection_range: Into::<Rng>::into(&line_comment.string.string).0,
+                        selection_range: Into::<Rng>::into(&*line_comment.token_literal).0,
                         children: None,
                     }]),
                 });
@@ -162,23 +163,23 @@ impl ParolLsGrammar {
                     .0,
                     children: Some(vec![
                         DocumentSymbol {
-                            name: block_comment.string.string.text().to_string(),
+                            name: Self::expanded_token_literal(&block_comment.token_literal),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,
                             deprecated: None,
                             range: Into::<Rng>::into(arg).0,
-                            selection_range: Into::<Rng>::into(&block_comment.string.string).0,
+                            selection_range: Into::<Rng>::into(&*block_comment.token_literal).0,
                             children: None,
                         },
                         DocumentSymbol {
-                            name: block_comment.string0.string.text().to_string(),
+                            name: Self::expanded_token_literal(&block_comment.token_literal0),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,
                             deprecated: None,
                             range: Into::<Rng>::into(arg).0,
-                            selection_range: Into::<Rng>::into(&block_comment.string0.string).0,
+                            selection_range: Into::<Rng>::into(&*block_comment.token_literal0).0,
                             children: None,
                         },
                     ]),
@@ -344,6 +345,28 @@ impl ParolLsGrammar {
             )
         } else {
             None
+        }
+    }
+
+    fn trim_quotes(string: &str) -> String {
+        let delimiters: &[_] = &['"', '\'', '/'];
+        string
+            .strip_prefix(delimiters)
+            .unwrap()
+            .strip_suffix(delimiters)
+            .unwrap()
+            .to_string()
+    }
+
+    fn expanded_token_literal(token_literal: &TokenLiteral) -> String {
+        match token_literal {
+            TokenLiteral::TokenLiteral0(s) => TerminalKind::Legacy
+                .expand(Self::trim_quotes(s.string.string.text()).as_str()),
+            TokenLiteral::TokenLiteral1(l) => TerminalKind::Raw
+                .expand(Self::trim_quotes(l.literal_string.literal_string.text()).as_str()),
+            TokenLiteral::TokenLiteral2(r) => {
+                TerminalKind::Regex.expand(Self::trim_quotes(r.regex.regex.text()).as_str())
+            }
         }
     }
 }

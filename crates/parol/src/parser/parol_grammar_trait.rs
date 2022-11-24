@@ -221,24 +221,24 @@ pub struct Declaration3<'t> {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: '%line_comment'^ /* Clipped */ String;
+/// ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives0<'t> {
-    pub string: Box<String<'t>>,
+    pub token_literal: Box<TokenLiteral<'t>>,
 }
 
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
+/// ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 pub struct ScannerDirectives1<'t> {
-    pub string: Box<String<'t>>,
-    pub string0: Box<String<'t>>,
+    pub token_literal: Box<TokenLiteral<'t>>,
+    pub token_literal0: Box<TokenLiteral<'t>>,
 }
 
 ///
@@ -1225,21 +1225,21 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: '%line_comment'^ /* Clipped */ String;
+    /// ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_0(
         &mut self,
         _percent_line_underscore_comment: &ParseTreeStackEntry<'t>,
-        _string: &ParseTreeStackEntry<'t>,
+        _token_literal: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = pop_item!(self, string, String, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_0_built = ScannerDirectives0Builder::default()
             // Ignore clipped member 'percent_line_underscore_comment'
-            .string(Box::new(string))
+            .token_literal(Box::new(token_literal))
             .build()
             .into_diagnostic()?;
         let scanner_directives_0_built =
@@ -1256,24 +1256,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
+    /// ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_1(
         &mut self,
         _percent_block_underscore_comment: &ParseTreeStackEntry<'t>,
-        _string: &ParseTreeStackEntry<'t>,
-        _string0: &ParseTreeStackEntry<'t>,
+        _token_literal: &ParseTreeStackEntry<'t>,
+        _token_literal0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string0 = pop_item!(self, string0, String, context);
-        let string = pop_item!(self, string, String, context);
+        let token_literal0 = pop_item!(self, token_literal0, TokenLiteral, context);
+        let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_1_built = ScannerDirectives1Builder::default()
             // Ignore clipped member 'percent_block_underscore_comment'
-            .string(Box::new(string))
-            .string0(Box::new(string0))
+            .token_literal(Box::new(token_literal))
+            .token_literal0(Box::new(token_literal0))
             .build()
             .into_diagnostic()?;
         let scanner_directives_1_built =

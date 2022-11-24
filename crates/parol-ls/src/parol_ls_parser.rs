@@ -773,18 +773,18 @@ pub const PRODUCTIONS: &[Production; 79] = &[
         lhs: 10,
         production: &[ParseType::N(30)],
     },
-    // 11 - ScannerDirectives: "%line_comment" String Comments;
+    // 11 - ScannerDirectives: "%line_comment" TokenLiteral Comments;
     Production {
         lhs: 30,
-        production: &[ParseType::N(6), ParseType::N(40), ParseType::T(10)],
+        production: &[ParseType::N(6), ParseType::N(42), ParseType::T(10)],
     },
-    // 12 - ScannerDirectives: "%block_comment" String String Comments;
+    // 12 - ScannerDirectives: "%block_comment" TokenLiteral TokenLiteral Comments;
     Production {
         lhs: 30,
         production: &[
             ParseType::N(6),
-            ParseType::N(40),
-            ParseType::N(40),
+            ParseType::N(42),
+            ParseType::N(42),
             ParseType::T(11),
         ],
     },

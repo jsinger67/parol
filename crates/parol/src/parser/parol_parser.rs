@@ -676,15 +676,15 @@ pub const PRODUCTIONS: &[Production; 71] = &[
         lhs: 6,
         production: &[ParseType::N(24)],
     },
-    // 11 - ScannerDirectives: '%line_comment'^ /* Clipped */ String;
+    // 11 - ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
     Production {
         lhs: 24,
-        production: &[ParseType::N(34), ParseType::T(10)],
+        production: &[ParseType::N(36), ParseType::T(10)],
     },
-    // 12 - ScannerDirectives: '%block_comment'^ /* Clipped */ String String;
+    // 12 - ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
     Production {
         lhs: 24,
-        production: &[ParseType::N(34), ParseType::N(34), ParseType::T(11)],
+        production: &[ParseType::N(36), ParseType::N(36), ParseType::T(11)],
     },
     // 13 - ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
     Production {

@@ -25,6 +25,8 @@ new minor version numbers. Please note that this is no version handling covered 
 
 * Fixed issue [#22](https://github.com/jsinger67/parol/issues/22)
   * The parser detects conflicting token aliases pairwise and issues a dedicated error message
+* Extended enhancement from issue [#19](https://github.com/jsinger67/parol/issues/19) to
+line_comment and block_comment directives
 
 ## v0.14.0 - 2022-11-18
 

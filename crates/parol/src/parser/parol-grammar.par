@@ -1,8 +1,8 @@
 %start Parol
 %title "Parol grammar"
 %comment "Parol's own grammar"
-%line_comment "//"
-%block_comment "/\*" "\*/"
+%line_comment '//'
+%block_comment '/*' '*/'
 %user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
 %user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
 
@@ -29,8 +29,8 @@ Declaration
     ;
 
 ScannerDirectives
-    : '%line_comment'^ String 
-    | '%block_comment'^ String String
+    : '%line_comment'^ TokenLiteral 
+    | '%block_comment'^ TokenLiteral TokenLiteral
     | '%auto_newline_off'^
     | '%auto_ws_off'^
     ;

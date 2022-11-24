@@ -16,8 +16,8 @@
 /*  8 */ Declaration: "%comment" : OwnedToken String Comments;
 /*  9 */ Declaration: "%user_type" : OwnedToken Identifier "=" : OwnedToken UserTypeName Comments;
 /* 10 */ Declaration: ScannerDirectives;
-/* 11 */ ScannerDirectives: "%line_comment" : OwnedToken String Comments;
-/* 12 */ ScannerDirectives: "%block_comment" : OwnedToken String String Comments;
+/* 11 */ ScannerDirectives: "%line_comment" : OwnedToken TokenLiteral Comments;
+/* 12 */ ScannerDirectives: "%block_comment" : OwnedToken TokenLiteral TokenLiteral Comments;
 /* 13 */ ScannerDirectives: "%auto_newline_off" : OwnedToken Comments;
 /* 14 */ ScannerDirectives: "%auto_ws_off" : OwnedToken Comments;
 /* 15 */ GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;

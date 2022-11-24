@@ -442,10 +442,10 @@ impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
             match &*scanner_directive.scanner_directives {
                 ScannerDirectives::ScannerDirectives0(line_comment) => me
                     .line_comments
-                    .push(ParolGrammar::trim_quotes(line_comment.string.string.text())),
+                    .push(ParolGrammar::expanded_token_literal(&line_comment.token_literal)),
                 ScannerDirectives::ScannerDirectives1(block_comment) => me.block_comments.push((
-                    ParolGrammar::trim_quotes(block_comment.string.string.text()),
-                    ParolGrammar::trim_quotes(block_comment.string0.string.text()),
+                    ParolGrammar::expanded_token_literal(&block_comment.token_literal),
+                    ParolGrammar::expanded_token_literal(&block_comment.token_literal0),
                 )),
                 ScannerDirectives::ScannerDirectives2(_) => me.auto_newline_off = true,
                 ScannerDirectives::ScannerDirectives3(_) => me.auto_ws_off = true,
@@ -552,13 +552,13 @@ impl ParolGrammar<'_> {
             ScannerDirectives::ScannerDirectives0(line_comment) => self.scanner_configurations
                 [INITIAL_STATE]
                 .line_comments
-                .push(Self::trim_quotes(line_comment.string.string.text())),
+                .push(Self::expanded_token_literal(&line_comment.token_literal)),
             ScannerDirectives::ScannerDirectives1(block_comment) => self.scanner_configurations
                 [INITIAL_STATE]
                 .block_comments
                 .push((
-                    Self::trim_quotes(block_comment.string.string.text()),
-                    Self::trim_quotes(block_comment.string0.string.text()),
+                    Self::expanded_token_literal(&block_comment.token_literal),
+                    Self::expanded_token_literal(&block_comment.token_literal0),
                 )),
             ScannerDirectives::ScannerDirectives2(_) => {
                 self.scanner_configurations[INITIAL_STATE].auto_newline_off = true
@@ -843,6 +843,18 @@ impl ParolGrammar<'_> {
         self.token_aliases.push((lhs_non_terminal, expanded));
         Ok(())
     }
+
+    fn expanded_token_literal(token_literal: &super::parol_grammar_trait::TokenLiteral) -> String {
+        match token_literal {
+            TokenLiteral::TokenLiteral0(s) => TerminalKind::Legacy
+                .expand(ParolGrammar::trim_quotes(s.string.string.text()).as_str()),
+            TokenLiteral::TokenLiteral1(l) => TerminalKind::Raw
+                .expand(ParolGrammar::trim_quotes(l.raw_string.raw_string.text()).as_str()),
+            TokenLiteral::TokenLiteral2(r) => {
+                TerminalKind::Regex.expand(ParolGrammar::trim_quotes(r.regex.regex.text()).as_str())
+            }
+        }
+    }
 }
 
 impl Display for ParolGrammar<'_> {
@@ -889,18 +901,8 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
                     Factor::Factor3(symbol) => match &*symbol.symbol {
                         // Only applicable for SimpleToken ...
                         Symbol::Symbol1(Symbol1 { simple_token }) => {
-                            let expanded = match &*simple_token.token_literal {
-                                TokenLiteral::TokenLiteral0(s) => TerminalKind::Legacy.expand(
-                                    ParolGrammar::trim_quotes(s.string.string.text()).as_str(),
-                                ),
-                                TokenLiteral::TokenLiteral1(l) => TerminalKind::Raw.expand(
-                                    ParolGrammar::trim_quotes(l.raw_string.raw_string.text())
-                                        .as_str(),
-                                ),
-                                TokenLiteral::TokenLiteral2(r) => TerminalKind::Regex.expand(
-                                    ParolGrammar::trim_quotes(r.regex.regex.text()).as_str(),
-                                ),
-                            };
+                            let expanded =
+                                ParolGrammar::expanded_token_literal(&simple_token.token_literal);
                             self.handle_token_alias(
                                 arg.identifier.identifier.to_owned(),
                                 expanded,
@@ -908,17 +910,9 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
                         }
                         // .. and TokenWithStates!
                         Symbol::Symbol2(Symbol2 { token_with_states }) => {
-                            let expanded = match &*token_with_states.token_literal {
-                                TokenLiteral::TokenLiteral0(s) => {
-                                    TerminalKind::Legacy.expand(s.string.string.text())
-                                }
-                                TokenLiteral::TokenLiteral1(l) => {
-                                    TerminalKind::Raw.expand(l.raw_string.raw_string.text())
-                                }
-                                TokenLiteral::TokenLiteral2(r) => {
-                                    TerminalKind::Regex.expand(r.regex.regex.text())
-                                }
-                            };
+                            let expanded = ParolGrammar::expanded_token_literal(
+                                &token_with_states.token_literal,
+                            );
                             self.handle_token_alias(
                                 arg.identifier.identifier.to_owned(),
                                 expanded,

@@ -549,14 +549,14 @@ fn handle_scanner_directives(
         ScannerDirectives::ScannerDirectives0(l) => format!(
             "{} {}{}\n",
             l.percent_line_underscore_comment,
-            l.string.txt(options),
+            l.token_literal.txt(options),
             handle_comments(&l.comments, &comment_options),
         ),
         ScannerDirectives::ScannerDirectives1(b) => format!(
             "{} {} {}{}\n",
             b.percent_block_underscore_comment,
-            b.string.txt(options),
-            b.string0.txt(options),
+            b.token_literal.txt(options),
+            b.token_literal0.txt(options),
             handle_comments(&b.comments, &comment_options),
         ),
 
