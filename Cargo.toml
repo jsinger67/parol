@@ -4,7 +4,9 @@ resolver = "2"
 
 members = [
   "crates/*",
-  "examples/*",
+  "examples/basic_interpreter",
+  "examples/json_parser_auto",
+  "examples/oberon2"
 ]
 
 exclude = [

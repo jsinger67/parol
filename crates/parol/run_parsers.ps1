@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $target = "../../target/$Config/parol"
-$target_dir = "../../target/$Config"
+$target_dir = "../../target/$Config/examples"
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Running parol on its own parol-grammar..." -ForegroundColor Cyan

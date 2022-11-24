@@ -44,3 +44,39 @@ build = []
 name = "parol"
 # Much of the logic formerly in the main binary has been refactored into the library
 required-features = ["build"]
+
+[[example]]
+name = "boolean_parser"
+path = "../../examples/boolean_parser/main.rs"
+
+[[example]]
+name = "calc"
+path = "../../examples/calc/main.rs"
+
+[[example]]
+name = "calc_auto"
+path = "../../examples/calc_auto/main.rs"
+
+[[example]]
+name = "keywords"
+path = "../../examples/keywords/main.rs"
+
+[[example]]
+name = "keywords2"
+path = "../../examples/keywords2/main.rs"
+
+[[example]]
+name = "list"
+path = "../../examples/list/main.rs"
+
+[[example]]
+name = "list_auto"
+path = "../../examples/list_auto/main.rs"
+
+[[example]]
+name = "oberon_0"
+path = "../../examples/oberon_0/main.rs"
+
+[[example]]
+name = "scanner_states"
+path = "../../examples/scanner_states/main.rs"
