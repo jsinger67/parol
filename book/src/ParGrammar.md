@@ -1,6 +1,6 @@
 # The syntax of `parol`'s Grammar description
 
-I provide the definition of the PAR grammar in PAR grammar [itself](https://github.com/jsinger67/parol/blob/main/src/parser/parol-grammar.par).
+I provide the definition of the PAR grammar in PAR grammar [itself](https://github.com/jsinger67/parol/blob/main/crates/parol/src/parser/parol-grammar.par).
 
 This grammar is quite concise and most programmers should be familiar with it. But there are several
 specialties which will be described here. First please notice the built-in support for language
