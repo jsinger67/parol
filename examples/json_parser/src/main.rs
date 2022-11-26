@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
-
 mod errors;
 mod json_grammar;
 // The output is in the $OUT_DIR directory,

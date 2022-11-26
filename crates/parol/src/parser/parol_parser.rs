@@ -4,6 +4,7 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+use once_cell::sync::Lazy;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::miette::Result;
@@ -1005,12 +1006,12 @@ pub const PRODUCTIONS: &[Production; 71] = &[
     },
 ];
 
-parol_runtime::lazy_static::lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
-        ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
-
-    ];
-}
+static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+    vec![(
+        "INITIAL",
+        Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+    )]
+});
 
 pub fn parse<'t, T>(
     input: &'t str,

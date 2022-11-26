@@ -2,10 +2,8 @@
 //! Scanner switching is tested and consistence of [miette::NamedSource] which is produced from
 //! token stream and token spans is checked.
 
-#[macro_use]
-extern crate lazy_static;
-
 use miette::{NamedSource, SourceCode, SourceSpan};
+use once_cell::sync::Lazy;
 use parol_runtime::errors::FileSource;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -68,18 +66,18 @@ const SCANNER_1: (&[&str; 5], &[usize; 4]) = (
 
 const MAX_K: usize = 1;
 
-lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
+static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+    vec![
         (
             "INITIAL",
-            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()
+            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
         ),
         (
             "String",
-            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap()
+            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
         ),
-    ];
-}
+    ]
+});
 
 #[test]
 fn scanner_switch_and_named_source() {

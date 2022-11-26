@@ -1,14 +1,13 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::collections::HashSet;
 use std::collections::{BTreeMap, BTreeSet};
 use std::ops::Index;
 
-lazy_static! {
-    pub(crate) static ref RX_NUM_SUFFIX: Regex =
-        Regex::new(r"[0-9]+$").expect("error parsing regex");
-}
+pub(crate) static RX_NUM_SUFFIX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"[0-9]+$").expect("error parsing regex"));
 
 // ---------------------------------------------------
 // Part of the Public API

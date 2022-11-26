@@ -7,6 +7,7 @@
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::miette::Result;
+use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production,{{^auto_generate?}} UserActionsTrait,{{/auto_generate}}
@@ -26,12 +27,10 @@ pub const NON_TERMINALS: &[&str; {{non_terminal_count}}] = &[
 
 {{{dfa_source}}}
 {{{productions}}}
-parol_runtime::lazy_static::lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
-        ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
+static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| vec![
+    ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
 {{{scanner_builds}}}
-    ];
-}
+]);
 
 pub fn parse<'t, T>(
     input: &'t str,

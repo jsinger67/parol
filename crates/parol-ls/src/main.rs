@@ -21,8 +21,6 @@ mod server;
 mod utils;
 
 #[macro_use]
-extern crate lazy_static;
-#[macro_use]
 extern crate thiserror;
 
 extern crate clap;
