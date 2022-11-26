@@ -35,10 +35,6 @@ regex-syntax = "0.6.27"
 syn = { version = "1", default-features = false, features = ["full", "parsing"] }
 thiserror = "1.0"
 
-[dev-dependencies]
-# TODO: remove this after examples are updated.
-lazy_static = "1.4"
-
 [features]
 default = ["build"]
 # Includes logic for invoking from build.rs script
