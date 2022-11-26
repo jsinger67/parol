@@ -1464,7 +1464,7 @@ pub const PRODUCTIONS: &[Production; 105] = &[
     },
 ];
 
-parol_runtime::lazy_static::lazy_static! {
+lazy_static::lazy_static! {
     static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
         ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
 

@@ -1,13 +1,13 @@
 use lsp_types::{Position, Range};
 use miette::SourceSpan;
+use once_cell::sync::Lazy;
 use parol_runtime::lexer::Location;
 use regex::Regex;
 
 use crate::rng::Rng;
 
-lazy_static! {
-    static ref RX_NEW_LINE: Regex = Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE");
-}
+static RX_NEW_LINE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE"));
 
 ///
 /// Converts parol_runtime::lexer::Location to a lsp_types::Range.

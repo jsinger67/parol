@@ -6,6 +6,7 @@ use super::ParolParserError;
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 
 use miette::{bail, miette, Result};
+use once_cell::sync::Lazy;
 use parol_runtime::errors::FileSource;
 use parol_runtime::lexer::Token;
 
@@ -13,11 +14,8 @@ use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 use std::marker::PhantomData;
 
-lazy_static! {
-    /// Used for implementation of trait `Default` for `&ParolGrammar`.
-    static ref DEFAULT_PAROL_GRAMMAR: ParolGrammar<'static> =
-        ParolGrammar::default();
-}
+/// Used for implementation of trait `Default` for `&ParolGrammar`.
+static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(|| ParolGrammar::default());
 
 const INITIAL_STATE: usize = 0;
 
@@ -440,9 +438,9 @@ impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
         };
         for scanner_directive in &scanner_state.scanner_state_list {
             match &*scanner_directive.scanner_directives {
-                ScannerDirectives::ScannerDirectives0(line_comment) => me
-                    .line_comments
-                    .push(ParolGrammar::expanded_token_literal(&line_comment.token_literal)),
+                ScannerDirectives::ScannerDirectives0(line_comment) => me.line_comments.push(
+                    ParolGrammar::expanded_token_literal(&line_comment.token_literal),
+                ),
                 ScannerDirectives::ScannerDirectives1(block_comment) => me.block_comments.push((
                     ParolGrammar::expanded_token_literal(&block_comment.token_literal),
                     ParolGrammar::expanded_token_literal(&block_comment.token_literal0),

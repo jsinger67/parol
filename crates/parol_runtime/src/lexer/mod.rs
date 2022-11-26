@@ -1,5 +1,6 @@
 #![forbid(missing_docs)]
 
+use once_cell::sync::Lazy;
 use regex::Regex;
 
 ///
@@ -42,6 +43,5 @@ pub use token_iter::TokenIter;
 pub mod token_stream;
 pub use token_stream::TokenStream;
 
-lazy_static! {
-    static ref RX_NEW_LINE: Regex = Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE");
-}
+static RX_NEW_LINE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE"));

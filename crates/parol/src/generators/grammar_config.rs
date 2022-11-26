@@ -1,3 +1,5 @@
+use once_cell::sync::Lazy;
+
 use super::ScannerConfig;
 use crate::parser::{try_to_convert, ParolGrammar};
 use crate::Cfg;
@@ -5,11 +7,8 @@ use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 
-lazy_static! {
-    /// Used for implementation of trait `Default` for `&GrammarConfig`.
-    static ref DEFAULT_GRAMMAR_CONFIG: GrammarConfig =
-        GrammarConfig::default();
-}
+/// Used for implementation of trait `Default` for `&GrammarConfig`.
+static DEFAULT_GRAMMAR_CONFIG: Lazy<GrammarConfig> = Lazy::new(|| GrammarConfig::default());
 
 // ---------------------------------------------------
 // Part of the Public API

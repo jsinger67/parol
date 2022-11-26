@@ -1,7 +1,4 @@
 #[macro_use]
-pub extern crate lazy_static;
-
-#[macro_use]
 extern crate thiserror;
 
 ///
@@ -27,5 +24,6 @@ pub use id_tree;
 pub use id_tree_layout;
 pub use log;
 pub use miette;
+pub use once_cell;
 #[cfg(feature = "auto_generation")]
 pub use parol_macros;

@@ -231,7 +231,6 @@ env_logger = "0.9.0"
 miette = { version = "3.2.0", features = ["fancy"] }
 id_tree = "1.8.0"
 id_tree_layout = "2.0.2"
-lazy_static = "1.4.0"
 log = "0.4.14"
 parol_runtime = { path = "../../crates/parol_runtime" }
 ```
@@ -300,11 +299,6 @@ impl JsonGrammarTrait for JsonGrammar {}
 Next open the main.rs of your crate and replace its contents with the following code.
 
 ```rust
-#[macro_use]
-extern crate lazy_static;
-
-extern crate parol_runtime;
-
 mod json_grammar;
 mod json_grammar_trait;
 mod json_parser;
@@ -433,7 +427,7 @@ The next datum is another const slice LOOKAHEAD_AUTOMATA that contains the DFAs 
 
 Then the PRODUCTIONS follows up, a slice of productions with their right hand side in reversed order. They are pushed onto the parse stack during the process of parsing.
 
-Then comes a lazy_static! macro that provides the pre-compiled tokenizers as a global constant. It is actually a vector of named tokenizers which are build up lazily on first access.
+Then comes a once_cell that provides the pre-compiled tokenizers as a global constant. It is actually a vector of named tokenizers which are build up lazily on first access.
 
 At last there comes the `parse` function that wraps the call to the `llk_parser` that comes with the `parol_runtime` crate.
 

@@ -248,12 +248,12 @@ We can build a little error in our `test.bas` to test the error detection:
 
 ```basic
 10 REM
-20 
+20
 30 REM World!
 ```
 
 ```shell
-cargo run  -- .\test.bas 
+cargo run  -- .\test.bas
 ```
 
 You should see errors reported by `parol` now.
@@ -579,7 +579,7 @@ line will activate the logging for the scanner/lexer module of `parol_runtime`.
 >In my tutorial I use Powershell, but it should be easy to transfer it to your shell's syntax:
 >
 >```powershell
->$env:RUST_LOG="parol_runtime::lexer::token_iter=trace"  
+>$env:RUST_LOG="parol_runtime::lexer::token_iter=trace"
 >```
 >
 >```shell
@@ -888,14 +888,6 @@ Delete the `Ok(())` in the success branch.
 Finally `main.rs` should look like this:
 
 ```rust
-#[macro_use]
-extern crate derive_builder;
-
-#[macro_use]
-extern crate lazy_static;
-
-extern crate parol_runtime;
-
 mod basic_grammar;
 // The output is version controlled
 mod basic_grammar_trait;

@@ -1,6 +1,4 @@
-#[macro_use]
-extern crate lazy_static;
-
+use once_cell::sync::Lazy;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
@@ -55,12 +53,12 @@ const SCANNER_0: &[&str; 5] = &[
     /*  4 */ r###"(?m)(/\*(.|[\r\n])*?\*/)(?-m)"###, // token::BLOCK_COMMENT
 ];
 
-lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![(
+static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+    vec![(
         "INITIAL",
-        Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap()
-    ),];
-}
+        Tokenizer::build(TERMINALS, SCANNER_0, &[5, 6, 7, 8, 9, 10]).unwrap(),
+    )]
+});
 
 #[test]
 fn tokenizer_test() {

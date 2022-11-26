@@ -10,7 +10,6 @@ derive_builder = "^0.11"
 env_logger = "0.9.0"
 function_name = "0.3.0"
 id_tree = "^1.8"
-lazy_static = "^1.4"
 log = "^0.4"
 miette = { version = "^5.3", features = ["fancy"] }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["trim_parse_tree", "auto_generation"] }

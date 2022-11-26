@@ -7,13 +7,12 @@ use crate::{Pr, Symbol};
 // $env:RUST_LOG="parol::transformation::canonicalization=trace"
 use log::trace;
 use miette::{bail, Result};
+use once_cell::sync::Lazy;
 use regex::Regex;
 use std::convert::TryFrom;
 
-lazy_static! {
-    pub(crate) static ref RX_OPT_WITH_NUM_SUFFIX: Regex =
-        Regex::new(r"Opt[0-9]*$").expect("error parsing regex");
-}
+pub(crate) static RX_OPT_WITH_NUM_SUFFIX: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"Opt[0-9]*$").expect("error parsing regex"));
 
 struct TransformationOperand {
     modified: bool,
