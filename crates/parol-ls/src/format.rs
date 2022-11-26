@@ -599,7 +599,7 @@ fn handle_comments(comments: &Comments, options: &FmtOptions) -> String {
 }
 
 fn apply_formatting(line: String, options: &FmtOptions) -> String {
-    let line =     match options.trimming {
+    let line = match options.trimming {
         Trimming::Unchanged => line,
         Trimming::TrimLeft => line.trim_start().to_string(),
         Trimming::TrimRight => line.trim_end().to_string(),
@@ -607,7 +607,13 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
     };
     let line = match options.line_end {
         LineEnd::Unchanged => line,
-        LineEnd::ForceAdd => if line.is_empty() { line } else { line + "\n" },
+        LineEnd::ForceAdd => {
+            if line.is_empty() {
+                line
+            } else {
+                line + "\n"
+            }
+        }
         LineEnd::ForceRemove => line
             .trim_end_matches(|c| c == '\r' || c == '\n')
             .to_string(),

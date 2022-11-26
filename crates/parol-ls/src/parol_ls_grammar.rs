@@ -1,7 +1,7 @@
 use crate::{
     parol_ls_grammar_trait::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
-        ScannerDirectives, ScannerState, StartDeclaration, UserTypeDeclaration, TokenLiteral,
+        ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, UserTypeDeclaration,
     },
     recursion::RecursionDetection,
     rng::Rng,
@@ -360,8 +360,9 @@ impl ParolLsGrammar {
 
     fn expanded_token_literal(token_literal: &TokenLiteral) -> String {
         match token_literal {
-            TokenLiteral::TokenLiteral0(s) => TerminalKind::Legacy
-                .expand(Self::trim_quotes(s.string.string.text()).as_str()),
+            TokenLiteral::TokenLiteral0(s) => {
+                TerminalKind::Legacy.expand(Self::trim_quotes(s.string.string.text()).as_str())
+            }
             TokenLiteral::TokenLiteral1(l) => TerminalKind::Raw
                 .expand(Self::trim_quotes(l.literal_string.literal_string.text()).as_str()),
             TokenLiteral::TokenLiteral2(r) => {
