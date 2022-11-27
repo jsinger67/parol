@@ -128,8 +128,8 @@ strives to mimic a small part of C64 Basic.
 
 ### The book
 
-A [mdBook](https://jsinger67.github.io/) explains some internals and the practical use of `parol` in detail. It is
-still a work in progress but should be considered as the central documentation.
+A [book](https://jsinger67.github.io/) explains some internals and the practical use of `parol` in
+detail. It is still a work in progress but should be considered as the central documentation.
 
 ## State of the project
 
@@ -156,6 +156,26 @@ implementations needed. The parol_runtime crate is very lightweight.
 
 As of version 0.13.0 you have to add the [parol-macros](https://github.com/jsinger67/parol-macros)
 crate to your dependencies if you use  `parol`'s *auto-generation mode*.
+
+## License
+
+`parol` and its accompanied tools included in this workspace are free, open source and permissively
+licensed! Except where noted (below and/or in individual files), all code in this repository is
+dual-licensed under either:
+
+* MIT License ([LICENSE-MIT](LICENSE-MIT) or
+[http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT))
+* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0))
+
+at your option.
+This means you can select the license you prefer!
+
+### Your contributions
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the
+work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
 
 ## Further readings
 

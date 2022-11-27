@@ -9,7 +9,7 @@ repository = "https://github.com/jsinger67/parol"
 readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [dependencies]
@@ -42,7 +42,6 @@ build = []
 
 [[bin]]
 name = "parol"
-# Much of the logic formerly in the main binary has been refactored into the library
 required-features = ["build"]
 
 [[example]]

@@ -8,7 +8,7 @@ repository = "https://github.com/jsinger67/parol_runtime"
 readme = "README.md"
 keywords = ["parser", "runtime"]
 categories = ["algorithms", "parsing"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [dependencies]

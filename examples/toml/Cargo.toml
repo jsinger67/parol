@@ -8,10 +8,8 @@ repository = "https://github.com/jsinger67/parol_toml"
 readme = "README.md"
 keywords = ["toml", "parser", "parsing"]
 categories = ["algorithms", "parsing"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 derive_builder = "0.11.2"

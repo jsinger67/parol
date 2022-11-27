@@ -8,7 +8,7 @@ repository = "https://github.com/jsinger67/parol-ls"
 readme = "README.md"
 keywords = ["language-server", "parsing", "parser-generator"]
 categories = ["algorithms", "parsing", "text-editors"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 edition = "2021"
 default-run = "parol-ls"
 
