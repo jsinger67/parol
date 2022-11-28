@@ -268,7 +268,7 @@ impl GrammarTypeInfo {
 
     fn finish_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
         for nt in cfg.get_non_terminal_set() {
-            self.finish_non_terminal_type(&nt)?;
+            self.finish_non_terminal_type(&nt, cfg)?;
         }
         Ok(())
     }
@@ -278,7 +278,7 @@ impl GrammarTypeInfo {
         Ok(self.symbol_table.scope(action_scope).symbols.clone())
     }
 
-    fn finish_non_terminal_type(&mut self, nt: &str) -> Result<()> {
+    fn finish_non_terminal_type(&mut self, nt: &str, cfg: &Cfg) -> Result<()> {
         let mut vector_typed_non_terminal_opt = None;
         let mut option_typed_non_terminal_opt = None;
 
@@ -335,15 +335,11 @@ impl GrammarTypeInfo {
             self.arguments_to_struct_members(&arguments, non_terminal_type)?;
         } else {
             // This is the "enum case". We generate an enum variant for each production with a name
-            // built from the nt name plus the relative number and the variant's content is the
-            // actions production type.
+            // built from the right-hand side of the corresponding production.
             let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             for (action_id, _) in actions {
                 let function = self.symbol_table.symbol_as_function(action_id)?;
-                let variant_name = NmHlp::to_upper_camel_case(&format!(
-                    "{}{}",
-                    function.non_terminal, function.rel_idx
-                ));
+                let variant_name = self.generate_production_rhs_name(function.prod_num, cfg);
                 let entrails = TypeEntrails::EnumVariant(
                     *self.production_types.get(&function.prod_num).unwrap(),
                 );
@@ -408,14 +404,17 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
+    fn get_terminal_index(&self, tr: &str) -> usize {
+        self.terminals.iter().position(|t| *t == tr).unwrap()
+    }
+
     /// Generates a member name from a symbol that stems from a production's right-hand side
     /// The second string in the returned tuple is used as description, here the terminal's content.
     pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
-        let get_terminal_index = |tr: &str| self.terminals.iter().position(|t| *t == tr).unwrap();
         match s {
             Symbol::N(n, ..) => (NmHlp::to_lower_snake_case(n), String::default()),
             Symbol::T(Terminal::Trm(t, ..)) => {
-                let terminal_name = &self.terminal_names[get_terminal_index(t)];
+                let terminal_name = &self.terminal_names[self.get_terminal_index(t)];
                 (NmHlp::to_lower_snake_case(terminal_name), t.to_string())
             }
             _ => panic!("Invalid symbol type {}", s),
@@ -616,6 +615,27 @@ impl GrammarTypeInfo {
         }
 
         Ok(())
+    }
+
+    // Generates an enum variant name for the given production from its right-hand side. If the
+    // production has an empty RHS we simple name this enum variant "<NonTerminal>Empty".
+    fn generate_production_rhs_name(&self, prod_num: usize, cfg: &Cfg) -> String {
+        let pr = &cfg[prod_num];
+        let lhs = pr.get_r();
+        if lhs.is_empty() {
+            format!("{}Empty", NmHlp::to_upper_camel_case(pr.get_n_str()))
+        } else {
+            lhs.iter().fold(String::new(), |mut acc, s| {
+                match s {
+                    Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(&n)),
+                    Symbol::T(Terminal::Trm(t, ..)) => acc.push_str(&NmHlp::to_upper_camel_case(
+                        &self.terminal_names[self.get_terminal_index(t)],
+                    )),
+                    _ => (),
+                }
+                acc
+            })
+        }
     }
 }
 

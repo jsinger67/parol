@@ -276,7 +276,8 @@ impl<'a> UserTraitGenerator<'a> {
             };
             code.push(format!(
                 "let {}_built = {}Builder::default()",
-                fn_name, builder_prefix
+                fn_name,
+                builder_prefix
             ));
             for member_id in symbol_table.members(action_id)? {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
@@ -375,7 +376,7 @@ impl<'a> UserTraitGenerator<'a> {
                 code.push(format!(
                     "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
                     NmHlp::to_upper_camel_case(&function.non_terminal),
-                    fn_name
+                    fn_name,
                 ));
             } else {
                 // The output type of the action is the type generated for the action's non-terminal
@@ -383,7 +384,7 @@ impl<'a> UserTraitGenerator<'a> {
                 code.push(format!(
                     "self.push(ASTType::{}({}_built), context);",
                     NmHlp::to_upper_camel_case(&function.non_terminal),
-                    fn_name
+                    fn_name,
                 ));
             }
         }
