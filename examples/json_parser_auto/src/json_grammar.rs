@@ -11,13 +11,13 @@ impl Display for Json<'_> {
 impl Display for Value<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            Value::Value0(v) => write!(f, "{}", v.string.string.text()),
-            Value::Value1(v) => write!(f, "{}", v.number.number.text()),
-            Value::Value2(v) => write!(f, "{{{}}}", v.object.object_suffix),
-            Value::Value3(v) => write!(f, "[{}]", v.array.array_suffix),
-            Value::Value4(_) => write!(f, "true"),
-            Value::Value5(_) => write!(f, "false"),
-            Value::Value6(_) => write!(f, "null"),
+            Value::String(v) => write!(f, "{}", v.string.string.text()),
+            Value::Number(v) => write!(f, "{}", v.number.number.text()),
+            Value::Object(v) => write!(f, "{{{}}}", v.object.object_suffix),
+            Value::Array(v) => write!(f, "[{}]", v.array.array_suffix),
+            Value::True(_) => write!(f, "true"),
+            Value::False(_) => write!(f, "false"),
+            Value::Null(_) => write!(f, "null"),
         }
     }
 }
@@ -25,7 +25,7 @@ impl Display for Value<'_> {
 impl Display for ObjectSuffix<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            ObjectSuffix::ObjectSuffix0(o) => write!(
+            ObjectSuffix::PairObjectListRBrace(o) => write!(
                 f,
                 "{}{}",
                 o.pair,
@@ -35,7 +35,7 @@ impl Display for ObjectSuffix<'_> {
                     .collect::<Vec<std::string::String>>()
                     .join("")
             ),
-            ObjectSuffix::ObjectSuffix1(_) => Ok(()),
+            ObjectSuffix::RBrace(_) => Ok(()),
         }
     }
 }
@@ -49,7 +49,7 @@ impl Display for ObjectList<'_> {
 impl Display for ArraySuffix<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
-            ArraySuffix::ArraySuffix0(a) => write!(
+            ArraySuffix::ValueArrayListRBracket(a) => write!(
                 f,
                 "{}{}",
                 a.value,
@@ -59,7 +59,7 @@ impl Display for ArraySuffix<'_> {
                     .collect::<Vec<std::string::String>>()
                     .join("")
             ),
-            ArraySuffix::ArraySuffix1(_) => Ok(()),
+            ArraySuffix::RBracket(_) => Ok(()),
         }
     }
 }

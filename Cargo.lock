@@ -98,7 +98,7 @@ dependencies = [
  "id_tree",
  "id_tree_layout",
  "log",
- "miette 5.4.1",
+ "miette",
  "parol",
  "parol-macros",
  "parol_runtime",
@@ -487,7 +487,7 @@ dependencies = [
  "id_tree",
  "id_tree_layout",
  "log",
- "miette 4.7.1",
+ "miette",
  "parol",
  "parol_runtime",
  "thiserror",
@@ -502,7 +502,7 @@ dependencies = [
  "function_name",
  "id_tree",
  "log",
- "miette 5.4.1",
+ "miette",
  "parol",
  "parol-macros",
  "parol_runtime",
@@ -563,33 +563,13 @@ checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
 
 [[package]]
 name = "miette"
-version = "4.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c90329e44f9208b55f45711f9558cec15d7ef8295cc65ecd6d4188ae8edc58c"
-dependencies = [
- "atty",
- "backtrace",
- "miette-derive 4.7.1",
- "once_cell",
- "owo-colors",
- "supports-color",
- "supports-hyperlinks",
- "supports-unicode",
- "terminal_size",
- "textwrap",
- "thiserror",
- "unicode-width",
-]
-
-[[package]]
-name = "miette"
 version = "5.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a24c4b4063c21e037dffb4de388ee85e400bff299803aba9513d9c52de8116b"
 dependencies = [
  "atty",
  "backtrace",
- "miette-derive 5.4.1",
+ "miette-derive",
  "once_cell",
  "owo-colors",
  "supports-color",
@@ -599,17 +579,6 @@ dependencies = [
  "textwrap",
  "thiserror",
  "unicode-width",
-]
-
-[[package]]
-name = "miette-derive"
-version = "4.7.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b5bc45b761bcf1b5e6e6c4128cd93b84c218721a8d9b894aa0aff4ed180174c"
-dependencies = [
- "proc-macro2",
- "quote 1.0.21",
- "syn 1.0.103",
 ]
 
 [[package]]
@@ -688,7 +657,7 @@ dependencies = [
  "function_name",
  "id_tree",
  "log",
- "miette 5.4.1",
+ "miette",
  "parol",
  "parol-macros",
  "parol_runtime",
@@ -736,7 +705,7 @@ dependencies = [
  "id_tree",
  "id_tree_layout",
  "log",
- "miette 5.4.1",
+ "miette",
  "once_cell",
  "owo-colors",
  "parol-macros",
@@ -762,7 +731,7 @@ dependencies = [
  "log",
  "lsp-server",
  "lsp-types",
- "miette 5.4.1",
+ "miette",
  "once_cell",
  "parol",
  "parol-macros",
@@ -786,7 +755,7 @@ dependencies = [
  "id_tree",
  "id_tree_layout",
  "log",
- "miette 5.4.1",
+ "miette",
  "once_cell",
  "parol-macros",
  "regex",

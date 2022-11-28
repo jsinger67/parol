@@ -223,24 +223,26 @@ impl<'t> BasicGrammar<'t> {
     ) -> Result<()> {
         *continue_statements = true;
         match statement {
-            Statement::Statement0(remark) => self.process_remark(remark),
-            Statement::Statement1(goto) => {
+            Statement::Remark(remark) => self.process_remark(remark),
+            Statement::GotoStatement(goto) => {
                 *continue_statements = false;
                 self.process_goto(&goto.goto_statement.line_number.line_number, lines)
             }
-            Statement::Statement2(if_statement) => {
+            Statement::IfStatement(if_statement) => {
                 self.process_if_statement(if_statement, continue_statements, lines)
             }
-            Statement::Statement3(assign) => self.process_assign(assign),
-            Statement::Statement4(print_statement) => self.process_print_statement(print_statement),
-            Statement::Statement5(end_statement) => {
+            Statement::Assignment(assign) => self.process_assign(assign),
+            Statement::PrintStatement(print_statement) => {
+                self.process_print_statement(print_statement)
+            }
+            Statement::EndStatement(end_statement) => {
                 *continue_statements = false;
                 self.process_end_statement(end_statement)
             }
         }
     }
 
-    fn process_remark(&self, _remark: &Statement0) -> Result<()> {
+    fn process_remark(&self, _remark: &StatementRemark) -> Result<()> {
         Ok(())
     }
 
@@ -276,7 +278,7 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_if_statement<'a>(
         &mut self,
-        if_statement: &'a Statement2<'t>,
+        if_statement: &'a StatementIfStatement<'t>,
         continue_statements: &mut bool,
         lines: &BasicLines<'a, 't>,
     ) -> Result<()> {
@@ -286,17 +288,19 @@ impl<'t> BasicGrammar<'t> {
         trace!("{context}: condition: {condition}");
         if condition != 0.0 {
             match &*if_statement.if_statement.if_body {
-                IfBody::IfBody0(then) => {
+                IfBody::ThenStatement(then) => {
                     self.interpret_statement(&*then.statement, lines, continue_statements)
                 }
-                IfBody::IfBody1(goto) => self.process_goto(&goto.line_number.line_number, lines),
+                IfBody::GotoLineNumber(goto) => {
+                    self.process_goto(&goto.line_number.line_number, lines)
+                }
             }
         } else {
             Ok(())
         }
     }
 
-    fn process_assign(&mut self, assign: &Statement3) -> Result<()> {
+    fn process_assign(&mut self, assign: &StatementAssignment) -> Result<()> {
         let context = "process_assign";
         let value = self.process_expression(&*assign.assignment.expression)?;
         let symbol = assign.assignment.variable.variable.text();
@@ -305,7 +309,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(())
     }
 
-    fn process_print_statement(&mut self, print_statement: &Statement4) -> Result<()> {
+    fn process_print_statement(&mut self, print_statement: &StatementPrintStatement) -> Result<()> {
         let value = self.process_expression(&*print_statement.print_statement.expression)?;
         print!("{value} ");
         for elem in &print_statement.print_statement.print_statement_list {
@@ -315,7 +319,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(())
     }
 
-    fn process_end_statement(&mut self, _end_statement: &Statement5) -> Result<()> {
+    fn process_end_statement(&mut self, _end_statement: &StatementEndStatement) -> Result<()> {
         let context = "process_end_statement";
         trace!("{context}: setting next line to None");
         self.next_line = None;
@@ -375,10 +379,8 @@ impl<'t> BasicGrammar<'t> {
         let mut result = self.process_multiplication(&*summation.multiplication)?;
         for item in &summation.summation_list {
             let op: BinaryOperator = match &*item.summation_list_group {
-                SummationListGroup::SummationListGroup0(plus) => plus.plus.plus.text().try_into(),
-                SummationListGroup::SummationListGroup1(minus) => {
-                    minus.minus.minus.text().try_into()
-                }
+                SummationListGroup::Plus(plus) => plus.plus.plus.text().try_into(),
+                SummationListGroup::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
             let next_operand = self.process_multiplication(&*item.multiplication)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
@@ -403,16 +405,22 @@ impl<'t> BasicGrammar<'t> {
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
-            Factor::Factor0(Factor0 { literal }) => match &*literal.number {
-                Number::Number0(flt) => match &*flt.float {
-                    Float::Float0(float) => Ok(float.float1.float1.0),
-                    Float::Float1(float) => Ok(float.float2.float2.0),
+            Factor::Literal(FactorLiteral { literal }) => match &*literal.number {
+                Number::Float(flt) => match &*flt.float {
+                    Float::Float1(float) => Ok(float.float1.float1.0),
+                    Float::Float2(float) => Ok(float.float2.float2.0),
                 },
-                Number::Number1(int) => Ok(int.integer.integer.0),
+                Number::Integer(int) => Ok(int.integer.integer.0),
             },
-            Factor::Factor1(Factor1 { variable }) => self.value(context, &variable.variable),
-            Factor::Factor2(Factor2 { factor, .. }) => Ok(-(self.process_factor(factor)?)),
-            Factor::Factor3(Factor3 { expression, .. }) => self.process_expression(expression),
+            Factor::Variable(FactorVariable { variable }) => {
+                self.value(context, &variable.variable)
+            }
+            Factor::MinusFactor(FactorMinusFactor { factor, .. }) => {
+                Ok(-(self.process_factor(factor)?))
+            }
+            Factor::LParenExpressionRParen(FactorLParenExpressionRParen { expression, .. }) => {
+                self.process_expression(expression)
+            }
         }
     }
 }

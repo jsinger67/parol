@@ -117,7 +117,7 @@ impl ParolLsGrammar {
 
     fn add_scanner_symbols(symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
         match arg {
-            ScannerDirectives::ScannerDirectives0(line_comment) => {
+            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(line_comment) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: line_comment
@@ -145,7 +145,9 @@ impl ParolLsGrammar {
                     }]),
                 });
             }
-            ScannerDirectives::ScannerDirectives1(block_comment) => {
+            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
+                block_comment,
+            ) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: block_comment
@@ -185,7 +187,7 @@ impl ParolLsGrammar {
                     ]),
                 });
             }
-            ScannerDirectives::ScannerDirectives2(auto_newline) => {
+            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(auto_newline) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: auto_newline
@@ -204,7 +206,7 @@ impl ParolLsGrammar {
                     children: None,
                 });
             }
-            ScannerDirectives::ScannerDirectives3(auto_ws) => {
+            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(auto_ws) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: auto_ws
@@ -360,12 +362,12 @@ impl ParolLsGrammar {
 
     fn expanded_token_literal(token_literal: &TokenLiteral) -> String {
         match token_literal {
-            TokenLiteral::TokenLiteral0(s) => {
+            TokenLiteral::String(s) => {
                 TerminalKind::Legacy.expand(Self::trim_quotes(s.string.string.text()).as_str())
             }
-            TokenLiteral::TokenLiteral1(l) => TerminalKind::Raw
+            TokenLiteral::LiteralString(l) => TerminalKind::Raw
                 .expand(Self::trim_quotes(l.literal_string.literal_string.text()).as_str()),
-            TokenLiteral::TokenLiteral2(r) => {
+            TokenLiteral::Regex(r) => {
                 TerminalKind::Regex.expand(Self::trim_quotes(r.regex.regex.text()).as_str())
             }
         }
@@ -413,7 +415,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     /// Semantic action for non-terminal 'Declaration'
     fn declaration(&mut self, arg: &Declaration) -> Result<()> {
         match arg {
-            Declaration::Declaration0(title) => {
+            Declaration::PercentTitleStringComments(title) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
                     name: title.percent_title.text().to_string(),
@@ -435,7 +437,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::Declaration1(comment) => {
+            Declaration::PercentCommentStringComments(comment) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
                     name: comment.percent_comment.text().to_string(),
@@ -457,7 +459,9 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::Declaration2(user_type_def) => {
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(
+                user_type_def,
+            ) => {
                 let token = &user_type_def.identifier.identifier;
                 let range: Rng = arg.into();
                 let range = self.add_user_type_definition(token, range.into());
@@ -489,7 +493,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::Declaration3(scanner) => {
+            Declaration::ScannerDirectives(scanner) => {
                 Self::add_scanner_symbols(&mut self.symbols, &scanner.scanner_directives);
             }
         }

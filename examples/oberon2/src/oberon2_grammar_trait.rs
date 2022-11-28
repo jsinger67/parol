@@ -395,7 +395,7 @@ pub trait Oberon2GrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DeclSeqList0Group0<'t> {
+pub struct DeclSeqList0GroupProcDeclSemicolon<'t> {
     pub proc_decl: Box<ProcDecl<'t>>,
 }
 
@@ -406,7 +406,7 @@ pub struct DeclSeqList0Group0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DeclSeqList0Group1<'t> {
+pub struct DeclSeqList0GroupForwardDeclSemicolon<'t> {
     pub forward_decl: Box<ForwardDecl<'t>>,
 }
 
@@ -417,7 +417,7 @@ pub struct DeclSeqList0Group1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DeclBlock0<'t> {
+pub struct DeclBlockConstDeclBlock<'t> {
     pub const_decl_block: Box<ConstDeclBlock<'t>>,
 }
 
@@ -428,7 +428,7 @@ pub struct DeclBlock0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DeclBlock1<'t> {
+pub struct DeclBlockTypeDeclBlock<'t> {
     pub type_decl_block: Box<TypeDeclBlock<'t>>,
 }
 
@@ -439,7 +439,7 @@ pub struct DeclBlock1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DeclBlock2<'t> {
+pub struct DeclBlockVarDeclBlock<'t> {
     pub var_decl_block: Box<VarDeclBlock<'t>>,
 }
 
@@ -450,7 +450,7 @@ pub struct DeclBlock2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TypeDef0<'t> {
+pub struct TypeDefQualIdent<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
 }
 
@@ -461,7 +461,7 @@ pub struct TypeDef0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TypeDef1<'t> {
+pub struct TypeDefARRAYTypeDefOptKwOfTypeDef<'t> {
     pub type_def_opt: Option<Box<TypeDefOpt<'t>>>,
     pub type_def: Box<TypeDef<'t>>,
 }
@@ -473,7 +473,7 @@ pub struct TypeDef1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TypeDef2<'t> {
+pub struct TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd<'t> {
     pub type_def_opt0: Option<Box<TypeDefOpt0<'t>>>,
     pub field_list: Box<FieldList<'t>>,
     pub type_def_list: Vec<TypeDefList<'t>>,
@@ -486,7 +486,7 @@ pub struct TypeDef2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TypeDef3<'t> {
+pub struct TypeDefPOINTERKwToTypeDef<'t> {
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -497,7 +497,7 @@ pub struct TypeDef3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TypeDef4<'t> {
+pub struct TypeDefKwProcedureTypeDefOpt1<'t> {
     pub type_def_opt1: Option<Box<TypeDefOpt1<'t>>>,
 }
 
@@ -508,7 +508,7 @@ pub struct TypeDef4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup0<'t> {
+pub struct StatementOptGroupDesignatorStatementOptGroupSuffix<'t> {
     pub designator: Box<Designator<'t>>,
     pub statement_opt_group_suffix: Box<StatementOptGroupSuffix<'t>>,
 }
@@ -520,7 +520,7 @@ pub struct StatementOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroupSuffix0<'t> {
+pub struct StatementOptGroupSuffixColonEquExpr<'t> {
     pub expr: Box<Expr<'t>>,
 }
 
@@ -531,7 +531,7 @@ pub struct StatementOptGroupSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroupSuffix1<'t> {
+pub struct StatementOptGroupSuffixStatementOpt0<'t> {
     pub statement_opt0: Option<Box<StatementOpt0<'t>>>,
 }
 
@@ -542,7 +542,7 @@ pub struct StatementOptGroupSuffix1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup1<'t> {
+pub struct StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd<'t> {
     pub expr: Box<Expr<'t>>,
     pub then_block: Box<ThenBlock<'t>>,
     pub statement_opt_group_list: Vec<StatementOptGroupList<'t>>,
@@ -556,7 +556,7 @@ pub struct StatementOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup2<'t> {
+pub struct StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t> {
     pub expr: Box<Expr<'t>>,
     pub cases: Box<Cases<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
@@ -569,7 +569,7 @@ pub struct StatementOptGroup2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup3<'t> {
+pub struct StatementOptGroupWHILEExprDoBlock<'t> {
     pub expr: Box<Expr<'t>>,
     pub do_block: Box<DoBlock<'t>>,
 }
@@ -581,7 +581,7 @@ pub struct StatementOptGroup3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup4<'t> {
+pub struct StatementOptGroupREPEATStatementSeqUNTILExpr<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
     pub expr: Box<Expr<'t>>,
 }
@@ -593,7 +593,7 @@ pub struct StatementOptGroup4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup5<'t> {
+pub struct StatementOptGroupFORForInitStatementOpt1DoBlock<'t> {
     pub for_init: Box<ForInit<'t>>,
     pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
     pub do_block: Box<DoBlock<'t>>,
@@ -606,7 +606,7 @@ pub struct StatementOptGroup5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup6<'t> {
+pub struct StatementOptGroupLOOPStatementSeqKwEnd<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
 
@@ -617,7 +617,7 @@ pub struct StatementOptGroup6<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup7<'t> {
+pub struct StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd<'t> {
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
     pub statement_opt_group_list0: Vec<StatementOptGroupList0<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
@@ -630,7 +630,7 @@ pub struct StatementOptGroup7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup8 {}
+pub struct StatementOptGroupEXIT {}
 
 ///
 /// Type derived for production 111
@@ -639,7 +639,7 @@ pub struct StatementOptGroup8 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct StatementOptGroup9<'t> {
+pub struct StatementOptGroupRETURNStatementOpt2<'t> {
     pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
 }
 
@@ -650,7 +650,7 @@ pub struct StatementOptGroup9<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleExprOptGroup0<'t> {
+pub struct SimpleExprOptGroupPlus<'t> {
     pub plus: Token<'t>, /* \+ */
 }
 
@@ -661,7 +661,7 @@ pub struct SimpleExprOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SimpleExprOptGroup1<'t> {
+pub struct SimpleExprOptGroupMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
 
@@ -672,7 +672,7 @@ pub struct SimpleExprOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0<'t> {
+pub struct FactorDesignatorFactorOpt<'t> {
     pub designator: Box<Designator<'t>>,
     pub factor_opt: Option<Box<FactorOpt<'t>>>,
 }
@@ -684,7 +684,7 @@ pub struct Factor0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor1<'t> {
+pub struct FactorNumber<'t> {
     pub number: Box<Number<'t>>,
 }
 
@@ -695,7 +695,7 @@ pub struct Factor1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor2<'t> {
+pub struct FactorCharacter<'t> {
     pub character: Box<Character<'t>>,
 }
 
@@ -706,7 +706,7 @@ pub struct Factor2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor3<'t> {
+pub struct FactorString<'t> {
     pub string: Box<String<'t>>,
 }
 
@@ -717,7 +717,7 @@ pub struct Factor3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor4 {}
+pub struct FactorNIL {}
 
 ///
 /// Type derived for production 166
@@ -726,7 +726,7 @@ pub struct Factor4 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor5<'t> {
+pub struct FactorSet<'t> {
     pub set: Box<Set<'t>>,
 }
 
@@ -737,7 +737,7 @@ pub struct Factor5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor6<'t> {
+pub struct FactorLParenExprRParen<'t> {
     pub expr: Box<Expr<'t>>,
 }
 
@@ -748,7 +748,7 @@ pub struct Factor6<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor7<'t> {
+pub struct FactorTildeFactor<'t> {
     pub factor: Box<Factor<'t>>,
 }
 
@@ -759,7 +759,7 @@ pub struct Factor7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation0 {}
+pub struct RelationEqu {}
 
 ///
 /// Type derived for production 182
@@ -768,7 +768,7 @@ pub struct Relation0 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation1<'t> {
+pub struct RelationHash<'t> {
     pub hash: Token<'t>, /* # */
 }
 
@@ -779,7 +779,7 @@ pub struct Relation1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation2<'t> {
+pub struct RelationLT<'t> {
     pub l_t: Token<'t>, /* < */
 }
 
@@ -790,7 +790,7 @@ pub struct Relation2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation3<'t> {
+pub struct RelationLTEqu<'t> {
     pub l_t_equ: Token<'t>, /* <= */
 }
 
@@ -801,7 +801,7 @@ pub struct Relation3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation4<'t> {
+pub struct RelationGT<'t> {
     pub g_t: Token<'t>, /* > */
 }
 
@@ -812,7 +812,7 @@ pub struct Relation4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation5<'t> {
+pub struct RelationGTEqu<'t> {
     pub g_t_equ: Token<'t>, /* >= */
 }
 
@@ -823,7 +823,7 @@ pub struct Relation5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation6 {
+pub struct RelationInOp {
     pub in_op: Box<InOp>,
 }
 
@@ -834,7 +834,7 @@ pub struct Relation6 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Relation7<'t> {
+pub struct RelationIS<'t> {
     pub i_s: Token<'t>, /* IS */
 }
 
@@ -845,7 +845,7 @@ pub struct Relation7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp0<'t> {
+pub struct AddOpPlus<'t> {
     pub plus: Token<'t>, /* \+ */
 }
 
@@ -856,7 +856,7 @@ pub struct AddOp0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp1<'t> {
+pub struct AddOpMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
 
@@ -867,7 +867,7 @@ pub struct AddOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp2<'t> {
+pub struct AddOpOR<'t> {
     pub o_r: Token<'t>, /* OR */
 }
 
@@ -878,7 +878,7 @@ pub struct AddOp2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MulOp0<'t> {
+pub struct MulOpStar<'t> {
     pub star: Token<'t>, /* \* */
 }
 
@@ -889,7 +889,7 @@ pub struct MulOp0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MulOp1<'t> {
+pub struct MulOpSlash<'t> {
     pub slash: Token<'t>, /* / */
 }
 
@@ -900,7 +900,7 @@ pub struct MulOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MulOp2<'t> {
+pub struct MulOpDIV<'t> {
     pub d_i_v: Token<'t>, /* DIV */
 }
 
@@ -911,7 +911,7 @@ pub struct MulOp2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MulOp3<'t> {
+pub struct MulOpMOD<'t> {
     pub m_o_d: Token<'t>, /* MOD */
 }
 
@@ -922,7 +922,7 @@ pub struct MulOp3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct MulOp4<'t> {
+pub struct MulOpAmp<'t> {
     pub amp: Token<'t>, /* & */
 }
 
@@ -933,7 +933,7 @@ pub struct MulOp4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DesignatorSuffix0<'t> {
+pub struct DesignatorSuffixDotIdent<'t> {
     pub ident: Box<Ident<'t>>,
 }
 
@@ -944,7 +944,7 @@ pub struct DesignatorSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DesignatorSuffix1<'t> {
+pub struct DesignatorSuffixLBracketExprListRBracket<'t> {
     pub expr_list: Box<ExprList<'t>>,
 }
 
@@ -955,7 +955,7 @@ pub struct DesignatorSuffix1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct DesignatorSuffix2 {}
+pub struct DesignatorSuffixCircumflex {}
 
 ///
 /// Type derived for production 209
@@ -964,7 +964,7 @@ pub struct DesignatorSuffix2 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct QualIdent0<'t> {
+pub struct QualIdentIdent<'t> {
     pub ident: Box<Ident<'t>>,
 }
 
@@ -975,7 +975,7 @@ pub struct QualIdent0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct QualIdent1<'t> {
+pub struct QualIdentQIdent<'t> {
     pub q_ident: Box<QIdent<'t>>,
 }
 
@@ -986,7 +986,7 @@ pub struct QualIdent1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct IdentDefOptGroup0<'t> {
+pub struct IdentDefOptGroupStar<'t> {
     pub star: Token<'t>, /* \* */
 }
 
@@ -997,7 +997,7 @@ pub struct IdentDefOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct IdentDefOptGroup1<'t> {
+pub struct IdentDefOptGroupMinus<'t> {
     pub minus: Token<'t>, /* - */
 }
 
@@ -1008,7 +1008,7 @@ pub struct IdentDefOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number0<'t> {
+pub struct NumberInteger<'t> {
     pub integer: Box<Integer<'t>>,
 }
 
@@ -1019,7 +1019,7 @@ pub struct Number0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number1<'t> {
+pub struct NumberReal<'t> {
     pub real: Box<Real<'t>>,
 }
 
@@ -1034,9 +1034,9 @@ pub struct Number1<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum AddOp<'t> {
-    AddOp0(AddOp0<'t>),
-    AddOp1(AddOp1<'t>),
-    AddOp2(AddOp2<'t>),
+    Plus(AddOpPlus<'t>),
+    Minus(AddOpMinus<'t>),
+    OR(AddOpOR<'t>),
 }
 
 ///
@@ -1159,9 +1159,9 @@ pub struct ConstExpr<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum DeclBlock<'t> {
-    DeclBlock0(DeclBlock0<'t>),
-    DeclBlock1(DeclBlock1<'t>),
-    DeclBlock2(DeclBlock2<'t>),
+    ConstDeclBlock(DeclBlockConstDeclBlock<'t>),
+    TypeDeclBlock(DeclBlockTypeDeclBlock<'t>),
+    VarDeclBlock(DeclBlockVarDeclBlock<'t>),
 }
 
 ///
@@ -1198,8 +1198,8 @@ pub struct DeclSeqList0<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum DeclSeqList0Group<'t> {
-    DeclSeqList0Group0(DeclSeqList0Group0<'t>),
-    DeclSeqList0Group1(DeclSeqList0Group1<'t>),
+    ProcDeclSemicolon(DeclSeqList0GroupProcDeclSemicolon<'t>),
+    ForwardDeclSemicolon(DeclSeqList0GroupForwardDeclSemicolon<'t>),
 }
 
 ///
@@ -1227,9 +1227,9 @@ pub struct DesignatorList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum DesignatorSuffix<'t> {
-    DesignatorSuffix0(DesignatorSuffix0<'t>),
-    DesignatorSuffix1(DesignatorSuffix1<'t>),
-    DesignatorSuffix2(DesignatorSuffix2),
+    DotIdent(DesignatorSuffixDotIdent<'t>),
+    LBracketExprListRBracket(DesignatorSuffixLBracketExprListRBracket<'t>),
+    Circumflex(DesignatorSuffixCircumflex),
 }
 
 ///
@@ -1352,14 +1352,14 @@ pub struct FPSectionOpt {}
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    Factor0(Factor0<'t>),
-    Factor1(Factor1<'t>),
-    Factor2(Factor2<'t>),
-    Factor3(Factor3<'t>),
-    Factor4(Factor4),
-    Factor5(Factor5<'t>),
-    Factor6(Factor6<'t>),
-    Factor7(Factor7<'t>),
+    DesignatorFactorOpt(FactorDesignatorFactorOpt<'t>),
+    Number(FactorNumber<'t>),
+    Character(FactorCharacter<'t>),
+    String(FactorString<'t>),
+    NIL(FactorNIL),
+    Set(FactorSet<'t>),
+    LParenExprRParen(FactorLParenExprRParen<'t>),
+    TildeFactor(FactorTildeFactor<'t>),
 }
 
 ///
@@ -1541,8 +1541,8 @@ pub struct IdentDefOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum IdentDefOptGroup<'t> {
-    IdentDefOptGroup0(IdentDefOptGroup0<'t>),
-    IdentDefOptGroup1(IdentDefOptGroup1<'t>),
+    Star(IdentDefOptGroupStar<'t>),
+    Minus(IdentDefOptGroupMinus<'t>),
 }
 
 ///
@@ -1727,11 +1727,11 @@ pub struct ModuleHead<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MulOp<'t> {
-    MulOp0(MulOp0<'t>),
-    MulOp1(MulOp1<'t>),
-    MulOp2(MulOp2<'t>),
-    MulOp3(MulOp3<'t>),
-    MulOp4(MulOp4<'t>),
+    Star(MulOpStar<'t>),
+    Slash(MulOpSlash<'t>),
+    DIV(MulOpDIV<'t>),
+    MOD(MulOpMOD<'t>),
+    Amp(MulOpAmp<'t>),
 }
 
 ///
@@ -1740,8 +1740,8 @@ pub enum MulOp<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Number<'t> {
-    Number0(Number0<'t>),
-    Number1(Number1<'t>),
+    Integer(NumberInteger<'t>),
+    Real(NumberReal<'t>),
 }
 
 ///
@@ -1847,8 +1847,8 @@ pub struct QIdent<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum QualIdent<'t> {
-    QualIdent0(QualIdent0<'t>),
-    QualIdent1(QualIdent1<'t>),
+    Ident(QualIdentIdent<'t>),
+    QIdent(QualIdentQIdent<'t>),
 }
 
 ///
@@ -1893,14 +1893,14 @@ pub struct ReceiverVarDecl<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Relation<'t> {
-    Relation0(Relation0),
-    Relation1(Relation1<'t>),
-    Relation2(Relation2<'t>),
-    Relation3(Relation3<'t>),
-    Relation4(Relation4<'t>),
-    Relation5(Relation5<'t>),
-    Relation6(Relation6),
-    Relation7(Relation7<'t>),
+    Equ(RelationEqu),
+    Hash(RelationHash<'t>),
+    LT(RelationLT<'t>),
+    LTEqu(RelationLTEqu<'t>),
+    GT(RelationGT<'t>),
+    GTEqu(RelationGTEqu<'t>),
+    InOp(RelationInOp),
+    IS(RelationIS<'t>),
 }
 
 ///
@@ -1967,8 +1967,8 @@ pub struct SimpleExprOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum SimpleExprOptGroup<'t> {
-    SimpleExprOptGroup0(SimpleExprOptGroup0<'t>),
-    SimpleExprOptGroup1(SimpleExprOptGroup1<'t>),
+    Plus(SimpleExprOptGroupPlus<'t>),
+    Minus(SimpleExprOptGroupMinus<'t>),
 }
 
 ///
@@ -2050,16 +2050,20 @@ pub struct StatementOpt3<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum StatementOptGroup<'t> {
-    StatementOptGroup0(StatementOptGroup0<'t>),
-    StatementOptGroup1(StatementOptGroup1<'t>),
-    StatementOptGroup2(StatementOptGroup2<'t>),
-    StatementOptGroup3(StatementOptGroup3<'t>),
-    StatementOptGroup4(StatementOptGroup4<'t>),
-    StatementOptGroup5(StatementOptGroup5<'t>),
-    StatementOptGroup6(StatementOptGroup6<'t>),
-    StatementOptGroup7(StatementOptGroup7<'t>),
-    StatementOptGroup8(StatementOptGroup8),
-    StatementOptGroup9(StatementOptGroup9<'t>),
+    DesignatorStatementOptGroupSuffix(StatementOptGroupDesignatorStatementOptGroupSuffix<'t>),
+    KwIfExprThenBlockStatementOptGroupListOptElsePartEnd(
+        StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd<'t>,
+    ),
+    KwCaseExprKwOfCasesOptElsePartEnd(StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t>),
+    WHILEExprDoBlock(StatementOptGroupWHILEExprDoBlock<'t>),
+    REPEATStatementSeqUNTILExpr(StatementOptGroupREPEATStatementSeqUNTILExpr<'t>),
+    FORForInitStatementOpt1DoBlock(StatementOptGroupFORForInitStatementOpt1DoBlock<'t>),
+    LOOPStatementSeqKwEnd(StatementOptGroupLOOPStatementSeqKwEnd<'t>),
+    WITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd(
+        StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd<'t>,
+    ),
+    EXIT(StatementOptGroupEXIT),
+    RETURNStatementOpt2(StatementOptGroupRETURNStatementOpt2<'t>),
 }
 
 ///
@@ -2086,8 +2090,8 @@ pub struct StatementOptGroupList0<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum StatementOptGroupSuffix<'t> {
-    StatementOptGroupSuffix0(StatementOptGroupSuffix0<'t>),
-    StatementOptGroupSuffix1(StatementOptGroupSuffix1<'t>),
+    ColonEquExpr(StatementOptGroupSuffixColonEquExpr<'t>),
+    StatementOpt0(StatementOptGroupSuffixStatementOpt0<'t>),
 }
 
 ///
@@ -2181,11 +2185,13 @@ pub struct TypeDeclBlockList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum TypeDef<'t> {
-    TypeDef0(TypeDef0<'t>),
-    TypeDef1(TypeDef1<'t>),
-    TypeDef2(TypeDef2<'t>),
-    TypeDef3(TypeDef3<'t>),
-    TypeDef4(TypeDef4<'t>),
+    QualIdent(TypeDefQualIdent<'t>),
+    ARRAYTypeDefOptKwOfTypeDef(TypeDefARRAYTypeDefOptKwOfTypeDef<'t>),
+    RECORDTypeDefOpt0FieldListTypeDefListKwEnd(
+        TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd<'t>,
+    ),
+    POINTERKwToTypeDef(TypeDefPOINTERKwToTypeDef<'t>),
+    KwProcedureTypeDefOpt1(TypeDefKwProcedureTypeDefOpt1<'t>),
 }
 
 ///
@@ -3068,13 +3074,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let proc_decl = pop_item!(self, proc_decl, ProcDecl, context);
-        let decl_seq_list0_group_0_built = DeclSeqList0Group0Builder::default()
+        let decl_seq_list0_group_0_built = DeclSeqList0GroupProcDeclSemicolonBuilder::default()
             .proc_decl(Box::new(proc_decl))
             // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         let decl_seq_list0_group_0_built =
-            DeclSeqList0Group::DeclSeqList0Group0(decl_seq_list0_group_0_built);
+            DeclSeqList0Group::ProcDeclSemicolon(decl_seq_list0_group_0_built);
         self.push(
             ASTType::DeclSeqList0Group(decl_seq_list0_group_0_built),
             context,
@@ -3096,13 +3102,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let forward_decl = pop_item!(self, forward_decl, ForwardDecl, context);
-        let decl_seq_list0_group_1_built = DeclSeqList0Group1Builder::default()
+        let decl_seq_list0_group_1_built = DeclSeqList0GroupForwardDeclSemicolonBuilder::default()
             .forward_decl(Box::new(forward_decl))
             // Ignore clipped member 'semicolon'
             .build()
             .into_diagnostic()?;
         let decl_seq_list0_group_1_built =
-            DeclSeqList0Group::DeclSeqList0Group1(decl_seq_list0_group_1_built);
+            DeclSeqList0Group::ForwardDeclSemicolon(decl_seq_list0_group_1_built);
         self.push(
             ASTType::DeclSeqList0Group(decl_seq_list0_group_1_built),
             context,
@@ -3174,11 +3180,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block = pop_item!(self, const_decl_block, ConstDeclBlock, context);
-        let decl_block_0_built = DeclBlock0Builder::default()
+        let decl_block_0_built = DeclBlockConstDeclBlockBuilder::default()
             .const_decl_block(Box::new(const_decl_block))
             .build()
             .into_diagnostic()?;
-        let decl_block_0_built = DeclBlock::DeclBlock0(decl_block_0_built);
+        let decl_block_0_built = DeclBlock::ConstDeclBlock(decl_block_0_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_0_built)?;
         self.push(ASTType::DeclBlock(decl_block_0_built), context);
@@ -3198,11 +3204,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block = pop_item!(self, type_decl_block, TypeDeclBlock, context);
-        let decl_block_1_built = DeclBlock1Builder::default()
+        let decl_block_1_built = DeclBlockTypeDeclBlockBuilder::default()
             .type_decl_block(Box::new(type_decl_block))
             .build()
             .into_diagnostic()?;
-        let decl_block_1_built = DeclBlock::DeclBlock1(decl_block_1_built);
+        let decl_block_1_built = DeclBlock::TypeDeclBlock(decl_block_1_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_1_built)?;
         self.push(ASTType::DeclBlock(decl_block_1_built), context);
@@ -3222,11 +3228,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block = pop_item!(self, var_decl_block, VarDeclBlock, context);
-        let decl_block_2_built = DeclBlock2Builder::default()
+        let decl_block_2_built = DeclBlockVarDeclBlockBuilder::default()
             .var_decl_block(Box::new(var_decl_block))
             .build()
             .into_diagnostic()?;
-        let decl_block_2_built = DeclBlock::DeclBlock2(decl_block_2_built);
+        let decl_block_2_built = DeclBlock::VarDeclBlock(decl_block_2_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_2_built)?;
         self.push(ASTType::DeclBlock(decl_block_2_built), context);
@@ -4243,11 +4249,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let type_def_0_built = TypeDef0Builder::default()
+        let type_def_0_built = TypeDefQualIdentBuilder::default()
             .qual_ident(Box::new(qual_ident))
             .build()
             .into_diagnostic()?;
-        let type_def_0_built = TypeDef::TypeDef0(type_def_0_built);
+        let type_def_0_built = TypeDef::QualIdent(type_def_0_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_0_built)?;
         self.push(ASTType::TypeDef(type_def_0_built), context);
@@ -4273,14 +4279,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_of'
         self.pop(context);
         let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
-        let type_def_1_built = TypeDef1Builder::default()
+        let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDefBuilder::default()
             // Ignore clipped member 'a_r_r_a_y'
             .type_def_opt(type_def_opt)
             // Ignore clipped member 'kw_of'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
-        let type_def_1_built = TypeDef::TypeDef1(type_def_1_built);
+        let type_def_1_built = TypeDef::ARRAYTypeDefOptKwOfTypeDef(type_def_1_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_1_built)?;
         self.push(ASTType::TypeDef(type_def_1_built), context);
@@ -4308,7 +4314,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_list = pop_and_reverse_item!(self, type_def_list, TypeDefList, context);
         let field_list = pop_item!(self, field_list, FieldList, context);
         let type_def_opt0 = pop_item!(self, type_def_opt0, TypeDefOpt0, context);
-        let type_def_2_built = TypeDef2Builder::default()
+        let type_def_2_built = TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEndBuilder::default()
             // Ignore clipped member 'r_e_c_o_r_d'
             .type_def_opt0(type_def_opt0)
             .field_list(Box::new(field_list))
@@ -4316,7 +4322,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
-        let type_def_2_built = TypeDef::TypeDef2(type_def_2_built);
+        let type_def_2_built =
+            TypeDef::RECORDTypeDefOpt0FieldListTypeDefListKwEnd(type_def_2_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_2_built)?;
         self.push(ASTType::TypeDef(type_def_2_built), context);
@@ -4380,13 +4387,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def = pop_item!(self, type_def, TypeDef, context);
         // Ignore clipped member 'kw_to'
         self.pop(context);
-        let type_def_3_built = TypeDef3Builder::default()
+        let type_def_3_built = TypeDefPOINTERKwToTypeDefBuilder::default()
             // Ignore clipped member 'p_o_i_n_t_e_r'
             // Ignore clipped member 'kw_to'
             .type_def(Box::new(type_def))
             .build()
             .into_diagnostic()?;
-        let type_def_3_built = TypeDef::TypeDef3(type_def_3_built);
+        let type_def_3_built = TypeDef::POINTERKwToTypeDef(type_def_3_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_3_built)?;
         self.push(ASTType::TypeDef(type_def_3_built), context);
@@ -4409,12 +4416,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_opt1 = pop_item!(self, type_def_opt1, TypeDefOpt1, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
-        let type_def_4_built = TypeDef4Builder::default()
+        let type_def_4_built = TypeDefKwProcedureTypeDefOpt1Builder::default()
             // Ignore clipped member 'kw_procedure'
             .type_def_opt1(type_def_opt1)
             .build()
             .into_diagnostic()?;
-        let type_def_4_built = TypeDef::TypeDef4(type_def_4_built);
+        let type_def_4_built = TypeDef::KwProcedureTypeDefOpt1(type_def_4_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_4_built)?;
         self.push(ASTType::TypeDef(type_def_4_built), context);
@@ -4778,13 +4785,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let designator = pop_item!(self, designator, Designator, context);
-        let statement_opt_group_0_built = StatementOptGroup0Builder::default()
-            .designator(Box::new(designator))
-            .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_0_built =
-            StatementOptGroup::StatementOptGroup0(statement_opt_group_0_built);
+            StatementOptGroupDesignatorStatementOptGroupSuffixBuilder::default()
+                .designator(Box::new(designator))
+                .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_0_built =
+            StatementOptGroup::DesignatorStatementOptGroupSuffix(statement_opt_group_0_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_0_built),
             context,
@@ -4806,13 +4814,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt_group_suffix_0_built = StatementOptGroupSuffix0Builder::default()
-            // Ignore clipped member 'colon_equ'
-            .expr(Box::new(expr))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_suffix_0_built =
-            StatementOptGroupSuffix::StatementOptGroupSuffix0(statement_opt_group_suffix_0_built);
+            StatementOptGroupSuffixColonEquExprBuilder::default()
+                // Ignore clipped member 'colon_equ'
+                .expr(Box::new(expr))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_suffix_0_built =
+            StatementOptGroupSuffix::ColonEquExpr(statement_opt_group_suffix_0_built);
         self.push(
             ASTType::StatementOptGroupSuffix(statement_opt_group_suffix_0_built),
             context,
@@ -4833,12 +4842,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt0 = pop_item!(self, statement_opt0, StatementOpt0, context);
-        let statement_opt_group_suffix_1_built = StatementOptGroupSuffix1Builder::default()
-            .statement_opt0(statement_opt0)
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_suffix_1_built =
-            StatementOptGroupSuffix::StatementOptGroupSuffix1(statement_opt_group_suffix_1_built);
+            StatementOptGroupSuffixStatementOpt0Builder::default()
+                .statement_opt0(statement_opt0)
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_suffix_1_built =
+            StatementOptGroupSuffix::StatementOpt0(statement_opt_group_suffix_1_built);
         self.push(
             ASTType::StatementOptGroupSuffix(statement_opt_group_suffix_1_built),
             context,
@@ -4873,16 +4883,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_if'
         self.pop(context);
-        let statement_opt_group_1_built = StatementOptGroup1Builder::default()
-            // Ignore clipped member 'kw_if'
-            .expr(Box::new(expr))
-            .then_block(Box::new(then_block))
-            .statement_opt_group_list(statement_opt_group_list)
-            .opt_else_part_end(Box::new(opt_else_part_end))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_1_built =
-            StatementOptGroup::StatementOptGroup1(statement_opt_group_1_built);
+            StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEndBuilder::default()
+                // Ignore clipped member 'kw_if'
+                .expr(Box::new(expr))
+                .then_block(Box::new(then_block))
+                .statement_opt_group_list(statement_opt_group_list)
+                .opt_else_part_end(Box::new(opt_else_part_end))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_1_built =
+            StatementOptGroup::KwIfExprThenBlockStatementOptGroupListOptElsePartEnd(
+                statement_opt_group_1_built,
+            );
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_1_built),
             context,
@@ -4913,16 +4926,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_case'
         self.pop(context);
-        let statement_opt_group_2_built = StatementOptGroup2Builder::default()
-            // Ignore clipped member 'kw_case'
-            .expr(Box::new(expr))
-            // Ignore clipped member 'kw_of'
-            .cases(Box::new(cases))
-            .opt_else_part_end(Box::new(opt_else_part_end))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_2_built =
-            StatementOptGroup::StatementOptGroup2(statement_opt_group_2_built);
+            StatementOptGroupKwCaseExprKwOfCasesOptElsePartEndBuilder::default()
+                // Ignore clipped member 'kw_case'
+                .expr(Box::new(expr))
+                // Ignore clipped member 'kw_of'
+                .cases(Box::new(cases))
+                .opt_else_part_end(Box::new(opt_else_part_end))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_2_built =
+            StatementOptGroup::KwCaseExprKwOfCasesOptElsePartEnd(statement_opt_group_2_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_2_built),
             context,
@@ -4946,14 +4960,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let do_block = pop_item!(self, do_block, DoBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt_group_3_built = StatementOptGroup3Builder::default()
+        let statement_opt_group_3_built = StatementOptGroupWHILEExprDoBlockBuilder::default()
             // Ignore clipped member 'w_h_i_l_e'
             .expr(Box::new(expr))
             .do_block(Box::new(do_block))
             .build()
             .into_diagnostic()?;
         let statement_opt_group_3_built =
-            StatementOptGroup::StatementOptGroup3(statement_opt_group_3_built);
+            StatementOptGroup::WHILEExprDoBlock(statement_opt_group_3_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_3_built),
             context,
@@ -4978,15 +4992,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        let statement_opt_group_4_built = StatementOptGroup4Builder::default()
-            // Ignore clipped member 'r_e_p_e_a_t'
-            .statement_seq(Box::new(statement_seq))
-            // Ignore clipped member 'u_n_t_i_l'
-            .expr(Box::new(expr))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_4_built =
-            StatementOptGroup::StatementOptGroup4(statement_opt_group_4_built);
+            StatementOptGroupREPEATStatementSeqUNTILExprBuilder::default()
+                // Ignore clipped member 'r_e_p_e_a_t'
+                .statement_seq(Box::new(statement_seq))
+                // Ignore clipped member 'u_n_t_i_l'
+                .expr(Box::new(expr))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_4_built =
+            StatementOptGroup::REPEATStatementSeqUNTILExpr(statement_opt_group_4_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_4_built),
             context,
@@ -5012,15 +5027,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let do_block = pop_item!(self, do_block, DoBlock, context);
         let statement_opt1 = pop_item!(self, statement_opt1, StatementOpt1, context);
         let for_init = pop_item!(self, for_init, ForInit, context);
-        let statement_opt_group_5_built = StatementOptGroup5Builder::default()
-            // Ignore clipped member 'f_o_r'
-            .for_init(Box::new(for_init))
-            .statement_opt1(statement_opt1)
-            .do_block(Box::new(do_block))
-            .build()
-            .into_diagnostic()?;
         let statement_opt_group_5_built =
-            StatementOptGroup::StatementOptGroup5(statement_opt_group_5_built);
+            StatementOptGroupFORForInitStatementOpt1DoBlockBuilder::default()
+                // Ignore clipped member 'f_o_r'
+                .for_init(Box::new(for_init))
+                .statement_opt1(statement_opt1)
+                .do_block(Box::new(do_block))
+                .build()
+                .into_diagnostic()?;
+        let statement_opt_group_5_built =
+            StatementOptGroup::FORForInitStatementOpt1DoBlock(statement_opt_group_5_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_5_built),
             context,
@@ -5045,14 +5061,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        let statement_opt_group_6_built = StatementOptGroup6Builder::default()
+        let statement_opt_group_6_built = StatementOptGroupLOOPStatementSeqKwEndBuilder::default()
             // Ignore clipped member 'l_o_o_p'
             .statement_seq(Box::new(statement_seq))
             // Ignore clipped member 'kw_end'
             .build()
             .into_diagnostic()?;
         let statement_opt_group_6_built =
-            StatementOptGroup::StatementOptGroup6(statement_opt_group_6_built);
+            StatementOptGroup::LOOPStatementSeqKwEnd(statement_opt_group_6_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_6_built),
             context,
@@ -5083,15 +5099,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
-        let statement_opt_group_7_built = StatementOptGroup7Builder::default()
-            // Ignore clipped member 'w_i_t_h'
+        let statement_opt_group_7_built = StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEndBuilder::default()
+        // Ignore clipped member 'w_i_t_h'
             .guarded_do_block(Box::new(guarded_do_block))
             .statement_opt_group_list0(statement_opt_group_list0)
             .opt_else_part_end(Box::new(opt_else_part_end))
             .build()
             .into_diagnostic()?;
         let statement_opt_group_7_built =
-            StatementOptGroup::StatementOptGroup7(statement_opt_group_7_built);
+            StatementOptGroup::WITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd(
+                statement_opt_group_7_built,
+            );
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_7_built),
             context,
@@ -5111,12 +5129,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt_group_8_built = StatementOptGroup8Builder::default()
+        let statement_opt_group_8_built = StatementOptGroupEXITBuilder::default()
             // Ignore clipped member 'e_x_i_t'
             .build()
             .into_diagnostic()?;
-        let statement_opt_group_8_built =
-            StatementOptGroup::StatementOptGroup8(statement_opt_group_8_built);
+        let statement_opt_group_8_built = StatementOptGroup::EXIT(statement_opt_group_8_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_8_built),
             context,
@@ -5138,13 +5155,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
-        let statement_opt_group_9_built = StatementOptGroup9Builder::default()
+        let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2Builder::default()
             // Ignore clipped member 'r_e_t_u_r_n'
             .statement_opt2(statement_opt2)
             .build()
             .into_diagnostic()?;
         let statement_opt_group_9_built =
-            StatementOptGroup::StatementOptGroup9(statement_opt_group_9_built);
+            StatementOptGroup::RETURNStatementOpt2(statement_opt_group_9_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_9_built),
             context,
@@ -6140,12 +6157,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_0_built = SimpleExprOptGroup0Builder::default()
+        let simple_expr_opt_group_0_built = SimpleExprOptGroupPlusBuilder::default()
             .plus(plus)
             .build()
             .into_diagnostic()?;
-        let simple_expr_opt_group_0_built =
-            SimpleExprOptGroup::SimpleExprOptGroup0(simple_expr_opt_group_0_built);
+        let simple_expr_opt_group_0_built = SimpleExprOptGroup::Plus(simple_expr_opt_group_0_built);
         self.push(
             ASTType::SimpleExprOptGroup(simple_expr_opt_group_0_built),
             context,
@@ -6166,12 +6182,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_1_built = SimpleExprOptGroup1Builder::default()
+        let simple_expr_opt_group_1_built = SimpleExprOptGroupMinusBuilder::default()
             .minus(minus)
             .build()
             .into_diagnostic()?;
         let simple_expr_opt_group_1_built =
-            SimpleExprOptGroup::SimpleExprOptGroup1(simple_expr_opt_group_1_built);
+            SimpleExprOptGroup::Minus(simple_expr_opt_group_1_built);
         self.push(
             ASTType::SimpleExprOptGroup(simple_expr_opt_group_1_built),
             context,
@@ -6273,12 +6289,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor_opt = pop_item!(self, factor_opt, FactorOpt, context);
         let designator = pop_item!(self, designator, Designator, context);
-        let factor_0_built = Factor0Builder::default()
+        let factor_0_built = FactorDesignatorFactorOptBuilder::default()
             .designator(Box::new(designator))
             .factor_opt(factor_opt)
             .build()
             .into_diagnostic()?;
-        let factor_0_built = Factor::Factor0(factor_0_built);
+        let factor_0_built = Factor::DesignatorFactorOpt(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
         self.push(ASTType::Factor(factor_0_built), context);
@@ -6298,11 +6314,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_1_built = Factor1Builder::default()
+        let factor_1_built = FactorNumberBuilder::default()
             .number(Box::new(number))
             .build()
             .into_diagnostic()?;
-        let factor_1_built = Factor::Factor1(factor_1_built);
+        let factor_1_built = Factor::Number(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
         self.push(ASTType::Factor(factor_1_built), context);
@@ -6322,11 +6338,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = pop_item!(self, character, Character, context);
-        let factor_2_built = Factor2Builder::default()
+        let factor_2_built = FactorCharacterBuilder::default()
             .character(Box::new(character))
             .build()
             .into_diagnostic()?;
-        let factor_2_built = Factor::Factor2(factor_2_built);
+        let factor_2_built = Factor::Character(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
         self.push(ASTType::Factor(factor_2_built), context);
@@ -6346,11 +6362,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let factor_3_built = Factor3Builder::default()
+        let factor_3_built = FactorStringBuilder::default()
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
-        let factor_3_built = Factor::Factor3(factor_3_built);
+        let factor_3_built = Factor::String(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
         self.push(ASTType::Factor(factor_3_built), context);
@@ -6369,11 +6385,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor_4_built = Factor4Builder::default()
+        let factor_4_built = FactorNILBuilder::default()
             // Ignore clipped member 'n_i_l'
             .build()
             .into_diagnostic()?;
-        let factor_4_built = Factor::Factor4(factor_4_built);
+        let factor_4_built = Factor::NIL(factor_4_built);
         // Calling user action here
         self.user_grammar.factor(&factor_4_built)?;
         self.push(ASTType::Factor(factor_4_built), context);
@@ -6393,11 +6409,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set = pop_item!(self, set, Set, context);
-        let factor_5_built = Factor5Builder::default()
+        let factor_5_built = FactorSetBuilder::default()
             .set(Box::new(set))
             .build()
             .into_diagnostic()?;
-        let factor_5_built = Factor::Factor5(factor_5_built);
+        let factor_5_built = Factor::Set(factor_5_built);
         // Calling user action here
         self.user_grammar.factor(&factor_5_built)?;
         self.push(ASTType::Factor(factor_5_built), context);
@@ -6419,13 +6435,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let factor_6_built = Factor6Builder::default()
+        let factor_6_built = FactorLParenExprRParenBuilder::default()
             // Ignore clipped member 'l_paren'
             .expr(Box::new(expr))
             // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
-        let factor_6_built = Factor::Factor6(factor_6_built);
+        let factor_6_built = Factor::LParenExprRParen(factor_6_built);
         // Calling user action here
         self.user_grammar.factor(&factor_6_built)?;
         self.push(ASTType::Factor(factor_6_built), context);
@@ -6446,12 +6462,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
-        let factor_7_built = Factor7Builder::default()
+        let factor_7_built = FactorTildeFactorBuilder::default()
             // Ignore clipped member 'tilde'
             .factor(Box::new(factor))
             .build()
             .into_diagnostic()?;
-        let factor_7_built = Factor::Factor7(factor_7_built);
+        let factor_7_built = Factor::TildeFactor(factor_7_built);
         // Calling user action here
         self.user_grammar.factor(&factor_7_built)?;
         self.push(ASTType::Factor(factor_7_built), context);
@@ -6713,11 +6729,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relation_0_built = Relation0Builder::default()
+        let relation_0_built = RelationEquBuilder::default()
             // Ignore clipped member 'equ'
             .build()
             .into_diagnostic()?;
-        let relation_0_built = Relation::Relation0(relation_0_built);
+        let relation_0_built = Relation::Equ(relation_0_built);
         // Calling user action here
         self.user_grammar.relation(&relation_0_built)?;
         self.push(ASTType::Relation(relation_0_built), context);
@@ -6737,11 +6753,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hash = hash.token(parse_tree)?.clone();
-        let relation_1_built = Relation1Builder::default()
+        let relation_1_built = RelationHashBuilder::default()
             .hash(hash)
             .build()
             .into_diagnostic()?;
-        let relation_1_built = Relation::Relation1(relation_1_built);
+        let relation_1_built = Relation::Hash(relation_1_built);
         // Calling user action here
         self.user_grammar.relation(&relation_1_built)?;
         self.push(ASTType::Relation(relation_1_built), context);
@@ -6761,11 +6777,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t = l_t.token(parse_tree)?.clone();
-        let relation_2_built = Relation2Builder::default()
+        let relation_2_built = RelationLTBuilder::default()
             .l_t(l_t)
             .build()
             .into_diagnostic()?;
-        let relation_2_built = Relation::Relation2(relation_2_built);
+        let relation_2_built = Relation::LT(relation_2_built);
         // Calling user action here
         self.user_grammar.relation(&relation_2_built)?;
         self.push(ASTType::Relation(relation_2_built), context);
@@ -6785,11 +6801,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t_equ = l_t_equ.token(parse_tree)?.clone();
-        let relation_3_built = Relation3Builder::default()
+        let relation_3_built = RelationLTEquBuilder::default()
             .l_t_equ(l_t_equ)
             .build()
             .into_diagnostic()?;
-        let relation_3_built = Relation::Relation3(relation_3_built);
+        let relation_3_built = Relation::LTEqu(relation_3_built);
         // Calling user action here
         self.user_grammar.relation(&relation_3_built)?;
         self.push(ASTType::Relation(relation_3_built), context);
@@ -6809,11 +6825,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t = g_t.token(parse_tree)?.clone();
-        let relation_4_built = Relation4Builder::default()
+        let relation_4_built = RelationGTBuilder::default()
             .g_t(g_t)
             .build()
             .into_diagnostic()?;
-        let relation_4_built = Relation::Relation4(relation_4_built);
+        let relation_4_built = Relation::GT(relation_4_built);
         // Calling user action here
         self.user_grammar.relation(&relation_4_built)?;
         self.push(ASTType::Relation(relation_4_built), context);
@@ -6833,11 +6849,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t_equ = g_t_equ.token(parse_tree)?.clone();
-        let relation_5_built = Relation5Builder::default()
+        let relation_5_built = RelationGTEquBuilder::default()
             .g_t_equ(g_t_equ)
             .build()
             .into_diagnostic()?;
-        let relation_5_built = Relation::Relation5(relation_5_built);
+        let relation_5_built = Relation::GTEqu(relation_5_built);
         // Calling user action here
         self.user_grammar.relation(&relation_5_built)?;
         self.push(ASTType::Relation(relation_5_built), context);
@@ -6857,11 +6873,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let in_op = pop_item!(self, in_op, InOp, context);
-        let relation_6_built = Relation6Builder::default()
+        let relation_6_built = RelationInOpBuilder::default()
             .in_op(Box::new(in_op))
             .build()
             .into_diagnostic()?;
-        let relation_6_built = Relation::Relation6(relation_6_built);
+        let relation_6_built = Relation::InOp(relation_6_built);
         // Calling user action here
         self.user_grammar.relation(&relation_6_built)?;
         self.push(ASTType::Relation(relation_6_built), context);
@@ -6881,11 +6897,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let i_s = i_s.token(parse_tree)?.clone();
-        let relation_7_built = Relation7Builder::default()
+        let relation_7_built = RelationISBuilder::default()
             .i_s(i_s)
             .build()
             .into_diagnostic()?;
-        let relation_7_built = Relation::Relation7(relation_7_built);
+        let relation_7_built = Relation::IS(relation_7_built);
         // Calling user action here
         self.user_grammar.relation(&relation_7_built)?;
         self.push(ASTType::Relation(relation_7_built), context);
@@ -6905,11 +6921,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let add_op_0_built = AddOp0Builder::default()
+        let add_op_0_built = AddOpPlusBuilder::default()
             .plus(plus)
             .build()
             .into_diagnostic()?;
-        let add_op_0_built = AddOp::AddOp0(add_op_0_built);
+        let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
         self.push(ASTType::AddOp(add_op_0_built), context);
@@ -6929,11 +6945,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let add_op_1_built = AddOp1Builder::default()
+        let add_op_1_built = AddOpMinusBuilder::default()
             .minus(minus)
             .build()
             .into_diagnostic()?;
-        let add_op_1_built = AddOp::AddOp1(add_op_1_built);
+        let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
         self.push(ASTType::AddOp(add_op_1_built), context);
@@ -6953,11 +6969,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let o_r = o_r.token(parse_tree)?.clone();
-        let add_op_2_built = AddOp2Builder::default()
+        let add_op_2_built = AddOpORBuilder::default()
             .o_r(o_r)
             .build()
             .into_diagnostic()?;
-        let add_op_2_built = AddOp::AddOp2(add_op_2_built);
+        let add_op_2_built = AddOp::OR(add_op_2_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_2_built)?;
         self.push(ASTType::AddOp(add_op_2_built), context);
@@ -6977,11 +6993,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let mul_op_0_built = MulOp0Builder::default()
+        let mul_op_0_built = MulOpStarBuilder::default()
             .star(star)
             .build()
             .into_diagnostic()?;
-        let mul_op_0_built = MulOp::MulOp0(mul_op_0_built);
+        let mul_op_0_built = MulOp::Star(mul_op_0_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_0_built)?;
         self.push(ASTType::MulOp(mul_op_0_built), context);
@@ -7001,11 +7017,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let slash = slash.token(parse_tree)?.clone();
-        let mul_op_1_built = MulOp1Builder::default()
+        let mul_op_1_built = MulOpSlashBuilder::default()
             .slash(slash)
             .build()
             .into_diagnostic()?;
-        let mul_op_1_built = MulOp::MulOp1(mul_op_1_built);
+        let mul_op_1_built = MulOp::Slash(mul_op_1_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_1_built)?;
         self.push(ASTType::MulOp(mul_op_1_built), context);
@@ -7025,11 +7041,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let d_i_v = d_i_v.token(parse_tree)?.clone();
-        let mul_op_2_built = MulOp2Builder::default()
+        let mul_op_2_built = MulOpDIVBuilder::default()
             .d_i_v(d_i_v)
             .build()
             .into_diagnostic()?;
-        let mul_op_2_built = MulOp::MulOp2(mul_op_2_built);
+        let mul_op_2_built = MulOp::DIV(mul_op_2_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_2_built)?;
         self.push(ASTType::MulOp(mul_op_2_built), context);
@@ -7049,11 +7065,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_o_d = m_o_d.token(parse_tree)?.clone();
-        let mul_op_3_built = MulOp3Builder::default()
+        let mul_op_3_built = MulOpMODBuilder::default()
             .m_o_d(m_o_d)
             .build()
             .into_diagnostic()?;
-        let mul_op_3_built = MulOp::MulOp3(mul_op_3_built);
+        let mul_op_3_built = MulOp::MOD(mul_op_3_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_3_built)?;
         self.push(ASTType::MulOp(mul_op_3_built), context);
@@ -7073,11 +7089,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let amp = amp.token(parse_tree)?.clone();
-        let mul_op_4_built = MulOp4Builder::default()
+        let mul_op_4_built = MulOpAmpBuilder::default()
             .amp(amp)
             .build()
             .into_diagnostic()?;
-        let mul_op_4_built = MulOp::MulOp4(mul_op_4_built);
+        let mul_op_4_built = MulOp::Amp(mul_op_4_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_4_built)?;
         self.push(ASTType::MulOp(mul_op_4_built), context);
@@ -7162,13 +7178,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let designator_suffix_0_built = DesignatorSuffix0Builder::default()
+        let designator_suffix_0_built = DesignatorSuffixDotIdentBuilder::default()
             // Ignore clipped member 'dot'
             .ident(Box::new(ident))
             .build()
             .into_diagnostic()?;
-        let designator_suffix_0_built =
-            DesignatorSuffix::DesignatorSuffix0(designator_suffix_0_built);
+        let designator_suffix_0_built = DesignatorSuffix::DotIdent(designator_suffix_0_built);
         // Calling user action here
         self.user_grammar
             .designator_suffix(&designator_suffix_0_built)?;
@@ -7194,14 +7209,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let designator_suffix_1_built = DesignatorSuffix1Builder::default()
+        let designator_suffix_1_built = DesignatorSuffixLBracketExprListRBracketBuilder::default()
             // Ignore clipped member 'l_bracket'
             .expr_list(Box::new(expr_list))
             // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
         let designator_suffix_1_built =
-            DesignatorSuffix::DesignatorSuffix1(designator_suffix_1_built);
+            DesignatorSuffix::LBracketExprListRBracket(designator_suffix_1_built);
         // Calling user action here
         self.user_grammar
             .designator_suffix(&designator_suffix_1_built)?;
@@ -7224,12 +7239,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let designator_suffix_2_built = DesignatorSuffix2Builder::default()
+        let designator_suffix_2_built = DesignatorSuffixCircumflexBuilder::default()
             // Ignore clipped member 'circumflex'
             .build()
             .into_diagnostic()?;
-        let designator_suffix_2_built =
-            DesignatorSuffix::DesignatorSuffix2(designator_suffix_2_built);
+        let designator_suffix_2_built = DesignatorSuffix::Circumflex(designator_suffix_2_built);
         // Calling user action here
         self.user_grammar
             .designator_suffix(&designator_suffix_2_built)?;
@@ -7385,11 +7399,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let qual_ident_0_built = QualIdent0Builder::default()
+        let qual_ident_0_built = QualIdentIdentBuilder::default()
             .ident(Box::new(ident))
             .build()
             .into_diagnostic()?;
-        let qual_ident_0_built = QualIdent::QualIdent0(qual_ident_0_built);
+        let qual_ident_0_built = QualIdent::Ident(qual_ident_0_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_0_built)?;
         self.push(ASTType::QualIdent(qual_ident_0_built), context);
@@ -7409,11 +7423,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = pop_item!(self, q_ident, QIdent, context);
-        let qual_ident_1_built = QualIdent1Builder::default()
+        let qual_ident_1_built = QualIdentQIdentBuilder::default()
             .q_ident(Box::new(q_ident))
             .build()
             .into_diagnostic()?;
-        let qual_ident_1_built = QualIdent::QualIdent1(qual_ident_1_built);
+        let qual_ident_1_built = QualIdent::QIdent(qual_ident_1_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_1_built)?;
         self.push(ASTType::QualIdent(qual_ident_1_built), context);
@@ -7483,12 +7497,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let ident_def_opt_group_0_built = IdentDefOptGroup0Builder::default()
+        let ident_def_opt_group_0_built = IdentDefOptGroupStarBuilder::default()
             .star(star)
             .build()
             .into_diagnostic()?;
-        let ident_def_opt_group_0_built =
-            IdentDefOptGroup::IdentDefOptGroup0(ident_def_opt_group_0_built);
+        let ident_def_opt_group_0_built = IdentDefOptGroup::Star(ident_def_opt_group_0_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_0_built),
             context,
@@ -7509,12 +7522,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let ident_def_opt_group_1_built = IdentDefOptGroup1Builder::default()
+        let ident_def_opt_group_1_built = IdentDefOptGroupMinusBuilder::default()
             .minus(minus)
             .build()
             .into_diagnostic()?;
-        let ident_def_opt_group_1_built =
-            IdentDefOptGroup::IdentDefOptGroup1(ident_def_opt_group_1_built);
+        let ident_def_opt_group_1_built = IdentDefOptGroup::Minus(ident_def_opt_group_1_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_1_built),
             context,
@@ -7547,11 +7559,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let number_0_built = Number0Builder::default()
+        let number_0_built = NumberIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
             .into_diagnostic()?;
-        let number_0_built = Number::Number0(number_0_built);
+        let number_0_built = Number::Integer(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
         self.push(ASTType::Number(number_0_built), context);
@@ -7571,11 +7583,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = pop_item!(self, real, Real, context);
-        let number_1_built = Number1Builder::default()
+        let number_1_built = NumberRealBuilder::default()
             .real(Box::new(real))
             .build()
             .into_diagnostic()?;
-        let number_1_built = Number::Number1(number_1_built);
+        let number_1_built = Number::Real(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
         self.push(ASTType::Number(number_1_built), context);

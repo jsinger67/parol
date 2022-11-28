@@ -1,14 +1,18 @@
 $ErrorCount = 0
+$Config = "release"
+$CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 
-Write-Host "Building release. Please wait..." -ForegroundColor Cyan
-cargo build --release
+Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
+cargo build $CargoConfig
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
+$target = "./../../target/$Config/json_parser"
+
 Get-ChildItem .\json\*.json | ForEach-Object {
     Write-Host "Parsing example $($_.FullName)..." -ForegroundColor Cyan
-    ./target/release/json_parser $_.FullName
+    &$target $_.FullName
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }

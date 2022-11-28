@@ -399,7 +399,7 @@ impl GrammarTypeInfo {
 
             self.adapter_actions.insert(i, function_id);
 
-            self.build_production_type(function_id, i)?;
+            self.build_production_type(function_id, i, &grammar_config.cfg)?;
         }
         Ok(())
     }
@@ -537,14 +537,17 @@ impl GrammarTypeInfo {
         &mut self,
         function_id: SymbolId,
         prod_num: ProductionIndex,
+        cfg: &Cfg,
     ) -> Result<()> {
         let non_terminal = self
             .symbol_table
             .symbol_as_function(function_id)?
             .non_terminal;
+        let rhs_name = self.generate_production_rhs_name(prod_num, cfg);
+        let struct_name = NmHlp::to_upper_camel_case(&format!("{}_{}", non_terminal, rhs_name));
         let production_type = self
             .symbol_table
-            .insert_global_type(&non_terminal, TypeEntrails::Struct)?;
+            .insert_global_type(&struct_name, TypeEntrails::Struct)?;
 
         let arguments = self.arguments(function_id)?;
         // Copy the arguments as struct members

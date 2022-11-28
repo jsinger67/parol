@@ -143,8 +143,8 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_instruction(&mut self, insn: &Instruction) -> Result<()> {
         match insn {
-            Instruction::Instruction0(ins) => self.process_assignment(&ins.assignment),
-            Instruction::Instruction1(ins) => self
+            Instruction::Assignment(ins) => self.process_assignment(&ins.assignment),
+            Instruction::LogicalOr(ins) => self
                 .process_logical_or(&ins.logical_or)
                 .map(|r| self.calc_results.push(r)),
         }
@@ -270,8 +270,8 @@ impl<'t> CalcGrammar<'t> {
         let mut result = self.process_mult(&summ.mult)?;
         for item in &summ.summ_list {
             let op: BinaryOperator = match &*item.add_op {
-                AddOp::AddOp0(plus) => plus.plus.plus.text().try_into(),
-                AddOp::AddOp1(minus) => minus.minus.minus.text().try_into(),
+                AddOp::Plus(plus) => plus.plus.plus.text().try_into(),
+                AddOp::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
             let next_operand = self.process_mult(&item.mult)?;
             result = Self::apply_binary_operation(result, &op, next_operand, context)?;
@@ -310,10 +310,14 @@ impl<'t> CalcGrammar<'t> {
 
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         match factor {
-            Factor::Factor0(Factor0 { number }) => Ok(number.number.0),
-            Factor::Factor1(Factor1 { id_ref }) => self.value(&id_ref.id.id),
-            Factor::Factor2(Factor2 { factor, .. }) => Ok(-(self.process_factor(factor)?)),
-            Factor::Factor3(Factor3 { logical_or, .. }) => self.process_logical_or(logical_or),
+            Factor::Number(FactorNumber { number }) => Ok(number.number.0),
+            Factor::IdRef(FactorIdRef { id_ref }) => self.value(&id_ref.id.id),
+            Factor::NegateFactor(FactorNegateFactor { factor, .. }) => {
+                Ok(-(self.process_factor(factor)?))
+            }
+            Factor::LParenLogicalOrRParen(FactorLParenLogicalOrRParen { logical_or, .. }) => {
+                self.process_logical_or(logical_or)
+            }
         }
     }
 }

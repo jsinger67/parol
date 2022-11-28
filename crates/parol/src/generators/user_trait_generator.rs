@@ -276,8 +276,7 @@ impl<'a> UserTraitGenerator<'a> {
             };
             code.push(format!(
                 "let {}_built = {}Builder::default()",
-                fn_name,
-                builder_prefix
+                fn_name, builder_prefix
             ));
             for member_id in symbol_table.members(action_id)? {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;

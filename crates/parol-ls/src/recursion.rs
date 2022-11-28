@@ -88,10 +88,10 @@ impl RecurseFor for Alternations {
 impl RecurseFor for Factor {
     fn recurse_for(&self, non_terminal: &str, productions: &[&Production]) -> Vec<Range> {
         match self {
-            Factor::Factor0(group) => group.group.recurse_for(non_terminal, productions),
-            Factor::Factor1(repeat) => repeat.repeat.recurse_for(non_terminal, productions),
-            Factor::Factor2(optional) => optional.optional.recurse_for(non_terminal, productions),
-            Factor::Factor3(symbol) => symbol.symbol.recurse_for(non_terminal, productions),
+            Factor::Group(group) => group.group.recurse_for(non_terminal, productions),
+            Factor::Repeat(repeat) => repeat.repeat.recurse_for(non_terminal, productions),
+            Factor::Optional(optional) => optional.optional.recurse_for(non_terminal, productions),
+            Factor::Symbol(symbol) => symbol.symbol.recurse_for(non_terminal, productions),
         }
     }
 }
@@ -121,7 +121,7 @@ impl RecurseFor for Group {
 //     }
 // }
 impl RecurseFor for Optional {
-    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productions: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }
@@ -146,7 +146,7 @@ impl RecurseFor for Optional {
 //     }
 // }
 impl RecurseFor for Repeat {
-    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productions: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }
@@ -186,7 +186,7 @@ impl RecurseFor for Repeat {
 //     }
 // }
 impl RecurseFor for Symbol {
-    fn recurse_for(&self, _non_terminal: &str, _productionss: &[&Production]) -> Vec<Range> {
+    fn recurse_for(&self, _non_terminal: &str, _productions: &[&Production]) -> Vec<Range> {
         todo!()
     }
 }

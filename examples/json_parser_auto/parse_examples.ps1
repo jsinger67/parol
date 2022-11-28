@@ -12,7 +12,7 @@ $target = "./../../target/$Config/json_parser_auto"
 
 Get-ChildItem .\json\*.json | ForEach-Object {
     Write-Host "Parsing example $($_.FullName)..." -ForegroundColor Cyan
-    &$target  $_.FullName
+    &$target $_.FullName
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }

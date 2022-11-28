@@ -117,24 +117,17 @@ impl Display for JsonGrammar {
 }
 
 impl JsonGrammarTrait for JsonGrammar {
-    ///
-    /// Information provided by parser
-    ///
-    fn init(&mut self, file_name: &std::path::Path) {
-        self.file_name = file_name.into();
-    }
-
     /// Semantic action for production 1:
     ///
-    /// Object: "\{" ObjectSuffix1;
+    /// Object: "\{" ObjectSuffix;
     ///
-    fn object_1(
+    fn object(
         &mut self,
-        _l_brace_0: &ParseTreeStackEntry,
-        _object_suffix1_1: &ParseTreeStackEntry,
+        _l_brace: &ParseTreeStackEntry,
+        _object_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_1";
+        let context = "object";
         match self.pop(context) {
             Some(JsonGrammarItem::Object(mut pairs)) => {
                 pairs.reverse();
@@ -147,16 +140,16 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix: Pair ObjectList "\}";
+    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
     ///
-    fn object_suffix_2(
+    fn object_suffix_0(
         &mut self,
-        _pair_0: &ParseTreeStackEntry,
-        _object_list_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
+        _pair: &ParseTreeStackEntry,
+        _object_list: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_suffix_2";
+        let context = "object_suffix_0";
         match (self.pop(context), self.pop(context)) {
             (Some(JsonGrammarItem::Object(mut pairs)), Some(pair)) => {
                 pairs.push(pair);
@@ -174,28 +167,28 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// ObjectSuffix: "\}";
     ///
-    fn object_suffix_3(
+    fn object_suffix_1(
         &mut self,
-        _r_brace_0: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_suffix_3";
+        let context = "object_suffix_1";
         self.push(JsonGrammarItem::Object(Vec::new()), context);
         Ok(())
     }
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList: "," Pair ObjectList;
+    /// ObjectList /* Vec<T>::Push */: "," Pair ObjectList;
     ///
-    fn object_list_4(
+    fn object_list_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _pair_1: &ParseTreeStackEntry,
-        _object_list_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _pair: &ParseTreeStackEntry,
+        _object_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "object_list_4";
+        let context = "object_list_0";
         match (self.pop(context), self.pop(context)) {
             (Some(JsonGrammarItem::Object(mut pairs)), Some(pair)) => {
                 pairs.push(pair);
@@ -211,10 +204,10 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList: ;
+    /// ObjectList /* Vec<T>::New */: ;
     ///
-    fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let context = "object_list_5";
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+        let context = "object_list_1";
         self.push(JsonGrammarItem::Object(Vec::new()), context);
         Ok(())
     }
@@ -223,14 +216,14 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// Pair: String ":" Value;
     ///
-    fn pair_6(
+    fn pair(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
-        _colon_1: &ParseTreeStackEntry,
-        _value_2: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
+        _colon: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "pair_6";
+        let context = "pair";
         match (self.pop(context), self.pop(context)) {
             (Some(value), Some(JsonGrammarItem::String(string))) => {
                 self.push(JsonGrammarItem::Pair((string, Box::new(value))), context);
@@ -244,13 +237,13 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// Array: "\[" ArraySuffix;
     ///
-    fn array_7(
+    fn array(
         &mut self,
-        _l_bracket_0: &ParseTreeStackEntry,
-        _array_suffix_1: &ParseTreeStackEntry,
+        _l_bracket: &ParseTreeStackEntry,
+        _array_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_7";
+        let context = "array";
         match self.pop(context) {
             Some(JsonGrammarItem::Array(mut list)) => {
                 list.reverse();
@@ -263,16 +256,16 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 8:
     ///
-    /// ArraySuffix: Value ArrayList "\]";
+    /// ArraySuffix: Value ArrayList /* Vec */ "\]";
     ///
-    fn array_suffix_8(
+    fn array_suffix_0(
         &mut self,
-        _value_0: &ParseTreeStackEntry,
-        _array_list_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
+        _array_list: &ParseTreeStackEntry,
+        _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_suffix_8";
+        let context = "array_suffix_0";
         match (self.pop(context), self.pop(context)) {
             (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
                 array.push(elem);
@@ -290,28 +283,28 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// ArraySuffix: "\]";
     ///
-    fn array_suffix_9(
+    fn array_suffix_1(
         &mut self,
-        _r_bracket_0: &ParseTreeStackEntry,
+        _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_suffix_9";
+        let context = "array_suffix_1";
         self.push(JsonGrammarItem::Array(Vec::new()), context);
         Ok(())
     }
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList: "," Value ArrayList;
+    /// ArrayList /* Vec<T>::Push */: "," Value ArrayList;
     ///
-    fn array_list_10(
+    fn array_list_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _value_1: &ParseTreeStackEntry,
-        _array_list_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
+        _array_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "array_list_10";
+        let context = "array_list_0";
         match (self.pop(context), self.pop(context)) {
             (Some(JsonGrammarItem::Array(mut array)), Some(elem)) => {
                 array.push(elem);
@@ -327,9 +320,9 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList: ;
+    /// ArrayList /* Vec<T>::New */: ;
     ///
-    fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         let context = "array_list_11";
         self.push(JsonGrammarItem::Array(Vec::new()), context);
         Ok(())
@@ -339,12 +332,12 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// Value: "true";
     ///
-    fn value_16(
+    fn value_4(
         &mut self,
-        _true_0: &ParseTreeStackEntry,
+        _true: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_16";
+        let context = "value_4";
         self.push(JsonGrammarItem::True, context);
         Ok(())
     }
@@ -353,12 +346,12 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// Value: "false";
     ///
-    fn value_17(
+    fn value_5(
         &mut self,
-        _false_0: &ParseTreeStackEntry,
+        _false: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_17";
+        let context = "value_5";
         self.push(JsonGrammarItem::False, context);
         Ok(())
     }
@@ -367,47 +360,47 @@ impl JsonGrammarTrait for JsonGrammar {
     ///
     /// Value: "null";
     ///
-    fn value_18(
+    fn value_6(
         &mut self,
-        _null_0: &ParseTreeStackEntry,
+        _null: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "value_18";
+        let context = "value_6";
         self.push(JsonGrammarItem::Null, context);
         Ok(())
     }
 
     /// Semantic action for production 19:
     ///
-    /// String: "\u{0022}(\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
+    /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_19(
+    fn string(
         &mut self,
-        string_0: &ParseTreeStackEntry,
+        string: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
-        let context = "string_19";
-        let string = string_0.symbol(parse_tree)?;
+        let context = "string";
+        let string = string.text(parse_tree)?;
         self.push(JsonGrammarItem::String(string.to_string()), context);
         Ok(())
     }
 
     /// Semantic action for production 20:
     ///
-    /// Number: "-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][-+]?(0|[1-9][0-9]*)?)?";
+    /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
-    fn number_20(
+    fn number(
         &mut self,
-        number_0: &ParseTreeStackEntry,
+        number: &ParseTreeStackEntry,
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "number_20";
-        let number = match number_0.symbol(parse_tree)?.parse::<f64>() {
+        let number = match number.text(parse_tree)?.parse::<f64>() {
             Ok(number) => number,
             Err(error) => {
                 return Err(miette!(JsonError::ParseF64Failed {
                     input: FileSource::try_new(self.file_name.clone())?.into(),
-                    token: number_0.token(parse_tree)?.into()
+                    token: number.token(parse_tree)?.into()
                 }))
                 .wrap_err(miette!(error))
             }

@@ -4,8 +4,8 @@ use crate::rng::Rng;
 impl From<&ASTControl> for Rng {
     fn from(val: &ASTControl) -> Self {
         match val {
-            ASTControl::ASTControl0(cut) => Self::from(&*cut.cut_operator),
-            ASTControl::ASTControl1(ut) => Self::from(&*ut.user_type_declaration),
+            ASTControl::CutOperator(cut) => Self::from(&*cut.cut_operator),
+            ASTControl::UserTypeDeclaration(ut) => Self::from(&*ut.user_type_declaration),
         }
     }
 }
@@ -55,8 +55,8 @@ impl From<&CommentsList> for Rng {
 impl From<&CommentsListGroup> for Rng {
     fn from(val: &CommentsListGroup) -> Self {
         match val {
-            CommentsListGroup::CommentsListGroup0(lc) => Self::from(&*lc.line_comment),
-            CommentsListGroup::CommentsListGroup1(bc) => Self::from(&*bc.block_comment),
+            CommentsListGroup::LineComment(lc) => Self::from(&*lc.line_comment),
+            CommentsListGroup::BlockComment(bc) => Self::from(&*bc.block_comment),
         }
     }
 }
@@ -70,18 +70,20 @@ impl From<&CutOperator> for Rng {
 impl From<&Declaration> for Rng {
     fn from(val: &Declaration) -> Self {
         match val {
-            Declaration::Declaration0(title) => Self::from(&title.percent_title)
+            Declaration::PercentTitleStringComments(title) => Self::from(&title.percent_title)
                 .extend(Self::from(&*title.string))
                 .extend(Self::from(&*title.comments)),
-            Declaration::Declaration1(comment) => Self::from(&comment.percent_comment)
-                .extend(Self::from(&*comment.string))
-                .extend(Self::from(&*comment.comments)),
-            Declaration::Declaration2(user_type) => {
+            Declaration::PercentCommentStringComments(comment) => {
+                Self::from(&comment.percent_comment)
+                    .extend(Self::from(&*comment.string))
+                    .extend(Self::from(&*comment.comments))
+            }
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
                 Self::from(&user_type.percent_user_underscore_type)
                     .extend(Self::from(&*user_type.user_type_name))
                     .extend(Self::from(&*user_type.comments))
             }
-            Declaration::Declaration3(scanner) => Self::from(&*scanner.scanner_directives),
+            Declaration::ScannerDirectives(scanner) => Self::from(&*scanner.scanner_directives),
         }
     }
 }
@@ -95,10 +97,10 @@ impl From<&DoubleColon> for Rng {
 impl From<&Factor> for Rng {
     fn from(val: &Factor) -> Self {
         match val {
-            Factor::Factor0(grp) => Self::from(&*grp.group),
-            Factor::Factor1(rpt) => Self::from(&*rpt.repeat),
-            Factor::Factor2(opt) => Self::from(&*opt.optional),
-            Factor::Factor3(sym) => Self::from(&*sym.symbol),
+            Factor::Group(grp) => Self::from(&*grp.group),
+            Factor::Repeat(rpt) => Self::from(&*rpt.repeat),
+            Factor::Optional(opt) => Self::from(&*opt.optional),
+            Factor::Symbol(sym) => Self::from(&*sym.symbol),
         }
     }
 }
@@ -207,21 +209,21 @@ impl From<&Repeat> for Rng {
 impl From<&ScannerDirectives> for Rng {
     fn from(val: &ScannerDirectives) -> Self {
         match val {
-            ScannerDirectives::ScannerDirectives0(lc) => {
+            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(lc) => {
                 Self::from(&lc.percent_line_underscore_comment)
                     .extend(Self::from(&*lc.token_literal))
                     .extend(Self::from(&*lc.comments))
             }
-            ScannerDirectives::ScannerDirectives1(bc) => {
-                Self::from(&bc.percent_block_underscore_comment)
-                    .extend(Self::from(&*bc.token_literal0))
-                    .extend(Self::from(&*bc.comments))
-            }
-            ScannerDirectives::ScannerDirectives2(auto_nl) => {
+            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
+                bc,
+            ) => Self::from(&bc.percent_block_underscore_comment)
+                .extend(Self::from(&*bc.token_literal0))
+                .extend(Self::from(&*bc.comments)),
+            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(auto_nl) => {
                 Self::from(&auto_nl.percent_auto_underscore_newline_underscore_off)
                     .extend(Self::from(&*auto_nl.comments))
             }
-            ScannerDirectives::ScannerDirectives3(auto_ws) => {
+            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(auto_ws) => {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
                     .extend(Self::from(&*auto_ws.comments))
             }
@@ -244,13 +246,13 @@ impl From<&ScannerStateList> for Rng {
 impl From<&ScannerSwitch> for Rng {
     fn from(val: &ScannerSwitch) -> Self {
         match val {
-            ScannerSwitch::ScannerSwitch0(sc) => {
+            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => {
                 Self::from(&sc.percent_sc).extend(Self::from(&sc.r_paren))
             }
-            ScannerSwitch::ScannerSwitch1(push) => {
+            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => {
                 Self::from(&push.percent_push).extend(Self::from(&push.r_paren))
             }
-            ScannerSwitch::ScannerSwitch2(pop) => {
+            ScannerSwitch::PercentPopLParenRParen(pop) => {
                 Self::from(&pop.percent_pop).extend(Self::from(&pop.r_paren))
             }
         }
@@ -313,10 +315,10 @@ impl From<&String> for Rng {
 impl From<&Symbol> for Rng {
     fn from(val: &Symbol) -> Self {
         match val {
-            Symbol::Symbol0(nt) => Self::from(&nt.non_terminal.identifier.identifier),
-            Symbol::Symbol1(to) => Self::from(&*to.simple_token),
-            Symbol::Symbol2(ts) => Self::from(&*ts.token_with_states),
-            Symbol::Symbol3(sw) => Self::from(&*sw.scanner_switch),
+            Symbol::NonTerminal(nt) => Self::from(&nt.non_terminal.identifier.identifier),
+            Symbol::SimpleToken(to) => Self::from(&*to.simple_token),
+            Symbol::TokenWithStates(ts) => Self::from(&*ts.token_with_states),
+            Symbol::ScannerSwitch(sw) => Self::from(&*sw.scanner_switch),
         }
     }
 }
@@ -324,9 +326,9 @@ impl From<&Symbol> for Rng {
 impl From<&TokenLiteral> for Rng {
     fn from(val: &TokenLiteral) -> Self {
         match val {
-            TokenLiteral::TokenLiteral0(s) => Self::from(&s.string.string),
-            TokenLiteral::TokenLiteral1(l) => Self::from(&l.literal_string.literal_string),
-            TokenLiteral::TokenLiteral2(r) => Self::from(&r.regex.regex),
+            TokenLiteral::String(s) => Self::from(&s.string.string),
+            TokenLiteral::LiteralString(l) => Self::from(&l.literal_string.literal_string),
+            TokenLiteral::Regex(r) => Self::from(&r.regex.regex),
         }
     }
 }

@@ -190,7 +190,7 @@ pub trait CalcGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction0<'t> {
+pub struct InstructionAssignment<'t> {
     pub assignment: Box<Assignment<'t>>,
 }
 
@@ -201,7 +201,7 @@ pub struct Instruction0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Instruction1<'t> {
+pub struct InstructionLogicalOr<'t> {
     pub logical_or: Box<LogicalOr<'t>>,
 }
 
@@ -212,7 +212,7 @@ pub struct Instruction1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp0<'t> {
+pub struct AddOpPlus<'t> {
     pub plus: Box<Plus<'t>>,
 }
 
@@ -223,7 +223,7 @@ pub struct AddOp0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct AddOp1<'t> {
+pub struct AddOpMinus<'t> {
     pub minus: Box<Minus<'t>>,
 }
 
@@ -234,7 +234,7 @@ pub struct AddOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0 {
+pub struct FactorNumber {
     pub number: Box<Number>,
 }
 
@@ -245,7 +245,7 @@ pub struct Factor0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor1<'t> {
+pub struct FactorIdRef<'t> {
     pub id_ref: Box<IdRef<'t>>,
 }
 
@@ -256,7 +256,7 @@ pub struct Factor1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor2<'t> {
+pub struct FactorNegateFactor<'t> {
     pub negate: Box<Negate<'t>>,
     pub factor: Box<Factor<'t>>,
 }
@@ -268,7 +268,7 @@ pub struct Factor2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor3<'t> {
+pub struct FactorLParenLogicalOrRParen<'t> {
     pub logical_or: Box<LogicalOr<'t>>,
 }
 
@@ -283,8 +283,8 @@ pub struct Factor3<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum AddOp<'t> {
-    AddOp0(AddOp0<'t>),
-    AddOp1(AddOp1<'t>),
+    Plus(AddOpPlus<'t>),
+    Minus(AddOpMinus<'t>),
 }
 
 ///
@@ -466,10 +466,10 @@ pub struct EqualityOp<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    Factor0(Factor0),
-    Factor1(Factor1<'t>),
-    Factor2(Factor2<'t>),
-    Factor3(Factor3<'t>),
+    Number(FactorNumber),
+    IdRef(FactorIdRef<'t>),
+    NegateFactor(FactorNegateFactor<'t>),
+    LParenLogicalOrRParen(FactorLParenLogicalOrRParen<'t>),
 }
 
 ///
@@ -496,8 +496,8 @@ pub struct IdRef<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Instruction<'t> {
-    Instruction0(Instruction0<'t>),
-    Instruction1(Instruction1<'t>),
+    Assignment(InstructionAssignment<'t>),
+    LogicalOr(InstructionLogicalOr<'t>),
 }
 
 ///
@@ -1171,11 +1171,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
-        let instruction_0_built = Instruction0Builder::default()
+        let instruction_0_built = InstructionAssignmentBuilder::default()
             .assignment(Box::new(assignment))
             .build()
             .into_diagnostic()?;
-        let instruction_0_built = Instruction::Instruction0(instruction_0_built);
+        let instruction_0_built = Instruction::Assignment(instruction_0_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_0_built)?;
         self.push(ASTType::Instruction(instruction_0_built), context);
@@ -1195,11 +1195,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
-        let instruction_1_built = Instruction1Builder::default()
+        let instruction_1_built = InstructionLogicalOrBuilder::default()
             .logical_or(Box::new(logical_or))
             .build()
             .into_diagnostic()?;
-        let instruction_1_built = Instruction::Instruction1(instruction_1_built);
+        let instruction_1_built = Instruction::LogicalOr(instruction_1_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_1_built)?;
         self.push(ASTType::Instruction(instruction_1_built), context);
@@ -1787,11 +1787,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let add_op_0_built = AddOp0Builder::default()
+        let add_op_0_built = AddOpPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
             .into_diagnostic()?;
-        let add_op_0_built = AddOp::AddOp0(add_op_0_built);
+        let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
         self.push(ASTType::AddOp(add_op_0_built), context);
@@ -1811,11 +1811,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let add_op_1_built = AddOp1Builder::default()
+        let add_op_1_built = AddOpMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
             .into_diagnostic()?;
-        let add_op_1_built = AddOp::AddOp1(add_op_1_built);
+        let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
         self.push(ASTType::AddOp(add_op_1_built), context);
@@ -2059,11 +2059,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_0_built = Factor0Builder::default()
+        let factor_0_built = FactorNumberBuilder::default()
             .number(Box::new(number))
             .build()
             .into_diagnostic()?;
-        let factor_0_built = Factor::Factor0(factor_0_built);
+        let factor_0_built = Factor::Number(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
         self.push(ASTType::Factor(factor_0_built), context);
@@ -2083,11 +2083,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id_ref = pop_item!(self, id_ref, IdRef, context);
-        let factor_1_built = Factor1Builder::default()
+        let factor_1_built = FactorIdRefBuilder::default()
             .id_ref(Box::new(id_ref))
             .build()
             .into_diagnostic()?;
-        let factor_1_built = Factor::Factor1(factor_1_built);
+        let factor_1_built = Factor::IdRef(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
         self.push(ASTType::Factor(factor_1_built), context);
@@ -2109,12 +2109,12 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
         let negate = pop_item!(self, negate, Negate, context);
-        let factor_2_built = Factor2Builder::default()
+        let factor_2_built = FactorNegateFactorBuilder::default()
             .negate(Box::new(negate))
             .factor(Box::new(factor))
             .build()
             .into_diagnostic()?;
-        let factor_2_built = Factor::Factor2(factor_2_built);
+        let factor_2_built = Factor::NegateFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
         self.push(ASTType::Factor(factor_2_built), context);
@@ -2136,13 +2136,13 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
-        let factor_3_built = Factor3Builder::default()
+        let factor_3_built = FactorLParenLogicalOrRParenBuilder::default()
             // Ignore clipped member 'l_paren'
             .logical_or(Box::new(logical_or))
             // Ignore clipped member 'r_paren'
             .build()
             .into_diagnostic()?;
-        let factor_3_built = Factor::Factor3(factor_3_built);
+        let factor_3_built = Factor::LParenLogicalOrRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
         self.push(ASTType::Factor(factor_3_built), context);

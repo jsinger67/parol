@@ -250,7 +250,7 @@ pub trait BasicGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement0<'t> {
+pub struct StatementRemark<'t> {
     pub remark: Box<Remark<'t>>,
 }
 
@@ -261,7 +261,7 @@ pub struct Statement0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement1 {
+pub struct StatementGotoStatement {
     pub goto_statement: Box<GotoStatement>,
 }
 
@@ -272,7 +272,7 @@ pub struct Statement1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement2<'t> {
+pub struct StatementIfStatement<'t> {
     pub if_statement: Box<IfStatement<'t>>,
 }
 
@@ -283,7 +283,7 @@ pub struct Statement2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement3<'t> {
+pub struct StatementAssignment<'t> {
     pub assignment: Box<Assignment<'t>>,
 }
 
@@ -294,7 +294,7 @@ pub struct Statement3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement4<'t> {
+pub struct StatementPrintStatement<'t> {
     pub print_statement: Box<PrintStatement<'t>>,
 }
 
@@ -305,7 +305,7 @@ pub struct Statement4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Statement5 {
+pub struct StatementEndStatement {
     pub end_statement: Box<EndStatement>,
 }
 
@@ -316,7 +316,7 @@ pub struct Statement5 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct IfBody0<'t> {
+pub struct IfBodyThenStatement<'t> {
     pub then: Box<Then>,
     pub statement: Box<Statement<'t>>,
 }
@@ -328,7 +328,7 @@ pub struct IfBody0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct IfBody1 {
+pub struct IfBodyGotoLineNumber {
     pub goto: Box<Goto>,
     pub line_number: Box<LineNumber>,
 }
@@ -340,7 +340,7 @@ pub struct IfBody1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number0 {
+pub struct NumberFloat {
     pub float: Box<Float>,
 }
 
@@ -351,7 +351,7 @@ pub struct Number0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Number1 {
+pub struct NumberInteger {
     pub integer: Box<Integer>,
 }
 
@@ -362,7 +362,7 @@ pub struct Number1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Float0 {
+pub struct FloatFloat1 {
     pub float1: Box<Float1>,
 }
 
@@ -373,7 +373,7 @@ pub struct Float0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Float3 {
+pub struct FloatFloat2 {
     pub float2: Box<Float2>,
 }
 
@@ -384,7 +384,7 @@ pub struct Float3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SummationListGroup0<'t> {
+pub struct SummationListGroupPlus<'t> {
     pub plus: Box<Plus<'t>>,
 }
 
@@ -395,7 +395,7 @@ pub struct SummationListGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct SummationListGroup1<'t> {
+pub struct SummationListGroupMinus<'t> {
     pub minus: Box<Minus<'t>>,
 }
 
@@ -406,7 +406,7 @@ pub struct SummationListGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0 {
+pub struct FactorLiteral {
     pub literal: Box<Literal>,
 }
 
@@ -417,7 +417,7 @@ pub struct Factor0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor1<'t> {
+pub struct FactorVariable<'t> {
     pub variable: Box<Variable<'t>>,
 }
 
@@ -428,7 +428,7 @@ pub struct Factor1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor2<'t> {
+pub struct FactorMinusFactor<'t> {
     pub minus: Box<Minus<'t>>,
     pub factor: Box<Factor<'t>>,
 }
@@ -440,7 +440,7 @@ pub struct Factor2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor3<'t> {
+pub struct FactorLParenExpressionRParen<'t> {
     pub l_paren: Box<LParen<'t>>,
     pub expression: Box<Expression<'t>>,
     pub r_paren: Box<RParen<'t>>,
@@ -566,10 +566,10 @@ pub struct Expression<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor<'t> {
-    Factor0(Factor0),
-    Factor1(Factor1<'t>),
-    Factor2(Factor2<'t>),
-    Factor3(Factor3<'t>),
+    Literal(FactorLiteral),
+    Variable(FactorVariable<'t>),
+    MinusFactor(FactorMinusFactor<'t>),
+    LParenExpressionRParen(FactorLParenExpressionRParen<'t>),
 }
 
 ///
@@ -578,8 +578,8 @@ pub enum Factor<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Float {
-    Float0(Float0),
-    Float1(Float3),
+    Float1(FloatFloat1),
+    Float2(FloatFloat2),
 }
 
 ///
@@ -630,8 +630,8 @@ pub struct If {}
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum IfBody<'t> {
-    IfBody0(IfBody0<'t>),
-    IfBody1(IfBody1),
+    ThenStatement(IfBodyThenStatement<'t>),
+    GotoLineNumber(IfBodyGotoLineNumber),
 }
 
 ///
@@ -838,8 +838,8 @@ pub struct MultiplicationList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Number {
-    Number0(Number0),
-    Number1(Number1),
+    Float(NumberFloat),
+    Integer(NumberInteger),
 }
 
 ///
@@ -940,12 +940,12 @@ pub struct RemarkOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Statement<'t> {
-    Statement0(Statement0<'t>),
-    Statement1(Statement1),
-    Statement2(Statement2<'t>),
-    Statement3(Statement3<'t>),
-    Statement4(Statement4<'t>),
-    Statement5(Statement5),
+    Remark(StatementRemark<'t>),
+    GotoStatement(StatementGotoStatement),
+    IfStatement(StatementIfStatement<'t>),
+    Assignment(StatementAssignment<'t>),
+    PrintStatement(StatementPrintStatement<'t>),
+    EndStatement(StatementEndStatement),
 }
 
 ///
@@ -974,8 +974,8 @@ pub struct SummationList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum SummationListGroup<'t> {
-    SummationListGroup0(SummationListGroup0<'t>),
-    SummationListGroup1(SummationListGroup1<'t>),
+    Plus(SummationListGroupPlus<'t>),
+    Minus(SummationListGroupMinus<'t>),
 }
 
 ///
@@ -1378,11 +1378,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark = pop_item!(self, remark, Remark, context);
-        let statement_0_built = Statement0Builder::default()
+        let statement_0_built = StatementRemarkBuilder::default()
             .remark(Box::new(remark))
             .build()
             .into_diagnostic()?;
-        let statement_0_built = Statement::Statement0(statement_0_built);
+        let statement_0_built = Statement::Remark(statement_0_built);
         // Calling user action here
         self.user_grammar.statement(&statement_0_built)?;
         self.push(ASTType::Statement(statement_0_built), context);
@@ -1402,11 +1402,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_statement = pop_item!(self, goto_statement, GotoStatement, context);
-        let statement_1_built = Statement1Builder::default()
+        let statement_1_built = StatementGotoStatementBuilder::default()
             .goto_statement(Box::new(goto_statement))
             .build()
             .into_diagnostic()?;
-        let statement_1_built = Statement::Statement1(statement_1_built);
+        let statement_1_built = Statement::GotoStatement(statement_1_built);
         // Calling user action here
         self.user_grammar.statement(&statement_1_built)?;
         self.push(ASTType::Statement(statement_1_built), context);
@@ -1426,11 +1426,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let if_statement = pop_item!(self, if_statement, IfStatement, context);
-        let statement_2_built = Statement2Builder::default()
+        let statement_2_built = StatementIfStatementBuilder::default()
             .if_statement(Box::new(if_statement))
             .build()
             .into_diagnostic()?;
-        let statement_2_built = Statement::Statement2(statement_2_built);
+        let statement_2_built = Statement::IfStatement(statement_2_built);
         // Calling user action here
         self.user_grammar.statement(&statement_2_built)?;
         self.push(ASTType::Statement(statement_2_built), context);
@@ -1450,11 +1450,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
-        let statement_3_built = Statement3Builder::default()
+        let statement_3_built = StatementAssignmentBuilder::default()
             .assignment(Box::new(assignment))
             .build()
             .into_diagnostic()?;
-        let statement_3_built = Statement::Statement3(statement_3_built);
+        let statement_3_built = Statement::Assignment(statement_3_built);
         // Calling user action here
         self.user_grammar.statement(&statement_3_built)?;
         self.push(ASTType::Statement(statement_3_built), context);
@@ -1474,11 +1474,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement = pop_item!(self, print_statement, PrintStatement, context);
-        let statement_4_built = Statement4Builder::default()
+        let statement_4_built = StatementPrintStatementBuilder::default()
             .print_statement(Box::new(print_statement))
             .build()
             .into_diagnostic()?;
-        let statement_4_built = Statement::Statement4(statement_4_built);
+        let statement_4_built = Statement::PrintStatement(statement_4_built);
         // Calling user action here
         self.user_grammar.statement(&statement_4_built)?;
         self.push(ASTType::Statement(statement_4_built), context);
@@ -1498,11 +1498,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_statement = pop_item!(self, end_statement, EndStatement, context);
-        let statement_5_built = Statement5Builder::default()
+        let statement_5_built = StatementEndStatementBuilder::default()
             .end_statement(Box::new(end_statement))
             .build()
             .into_diagnostic()?;
-        let statement_5_built = Statement::Statement5(statement_5_built);
+        let statement_5_built = Statement::EndStatement(statement_5_built);
         // Calling user action here
         self.user_grammar.statement(&statement_5_built)?;
         self.push(ASTType::Statement(statement_5_built), context);
@@ -1708,12 +1708,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let statement = pop_item!(self, statement, Statement, context);
         let then = pop_item!(self, then, Then, context);
-        let if_body_0_built = IfBody0Builder::default()
+        let if_body_0_built = IfBodyThenStatementBuilder::default()
             .then(Box::new(then))
             .statement(Box::new(statement))
             .build()
             .into_diagnostic()?;
-        let if_body_0_built = IfBody::IfBody0(if_body_0_built);
+        let if_body_0_built = IfBody::ThenStatement(if_body_0_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_0_built)?;
         self.push(ASTType::IfBody(if_body_0_built), context);
@@ -1735,12 +1735,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let line_number = pop_item!(self, line_number, LineNumber, context);
         let goto = pop_item!(self, goto, Goto, context);
-        let if_body_1_built = IfBody1Builder::default()
+        let if_body_1_built = IfBodyGotoLineNumberBuilder::default()
             .goto(Box::new(goto))
             .line_number(Box::new(line_number))
             .build()
             .into_diagnostic()?;
-        let if_body_1_built = IfBody::IfBody1(if_body_1_built);
+        let if_body_1_built = IfBody::GotoLineNumber(if_body_1_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_1_built)?;
         self.push(ASTType::IfBody(if_body_1_built), context);
@@ -1902,11 +1902,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
-        let number_0_built = Number0Builder::default()
+        let number_0_built = NumberFloatBuilder::default()
             .float(Box::new(float))
             .build()
             .into_diagnostic()?;
-        let number_0_built = Number::Number0(number_0_built);
+        let number_0_built = Number::Float(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
         self.push(ASTType::Number(number_0_built), context);
@@ -1926,11 +1926,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let number_1_built = Number1Builder::default()
+        let number_1_built = NumberIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
             .into_diagnostic()?;
-        let number_1_built = Number::Number1(number_1_built);
+        let number_1_built = Number::Integer(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
         self.push(ASTType::Number(number_1_built), context);
@@ -1950,11 +1950,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = pop_item!(self, float1, Float1, context);
-        let float_0_built = Float0Builder::default()
+        let float_0_built = FloatFloat1Builder::default()
             .float1(Box::new(float1))
             .build()
             .into_diagnostic()?;
-        let float_0_built = Float::Float0(float_0_built);
+        let float_0_built = Float::Float1(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
         self.push(ASTType::Float(float_0_built), context);
@@ -1974,11 +1974,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = pop_item!(self, float2, Float2, context);
-        let float_1_built = Float3Builder::default()
+        let float_1_built = FloatFloat2Builder::default()
             .float2(Box::new(float2))
             .build()
             .into_diagnostic()?;
-        let float_1_built = Float::Float1(float_1_built);
+        let float_1_built = Float::Float2(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
         self.push(ASTType::Float(float_1_built), context);
@@ -2816,12 +2816,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let summation_list_group_0_built = SummationListGroup0Builder::default()
+        let summation_list_group_0_built = SummationListGroupPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
             .into_diagnostic()?;
-        let summation_list_group_0_built =
-            SummationListGroup::SummationListGroup0(summation_list_group_0_built);
+        let summation_list_group_0_built = SummationListGroup::Plus(summation_list_group_0_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_0_built),
             context,
@@ -2842,12 +2841,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let summation_list_group_1_built = SummationListGroup1Builder::default()
+        let summation_list_group_1_built = SummationListGroupMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
             .into_diagnostic()?;
-        let summation_list_group_1_built =
-            SummationListGroup::SummationListGroup1(summation_list_group_1_built);
+        let summation_list_group_1_built = SummationListGroup::Minus(summation_list_group_1_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_1_built),
             context,
@@ -2953,11 +2951,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal = pop_item!(self, literal, Literal, context);
-        let factor_0_built = Factor0Builder::default()
+        let factor_0_built = FactorLiteralBuilder::default()
             .literal(Box::new(literal))
             .build()
             .into_diagnostic()?;
-        let factor_0_built = Factor::Factor0(factor_0_built);
+        let factor_0_built = Factor::Literal(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
         self.push(ASTType::Factor(factor_0_built), context);
@@ -2977,11 +2975,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = pop_item!(self, variable, Variable, context);
-        let factor_1_built = Factor1Builder::default()
+        let factor_1_built = FactorVariableBuilder::default()
             .variable(Box::new(variable))
             .build()
             .into_diagnostic()?;
-        let factor_1_built = Factor::Factor1(factor_1_built);
+        let factor_1_built = Factor::Variable(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
         self.push(ASTType::Factor(factor_1_built), context);
@@ -3003,12 +3001,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
         let minus = pop_item!(self, minus, Minus, context);
-        let factor_2_built = Factor2Builder::default()
+        let factor_2_built = FactorMinusFactorBuilder::default()
             .minus(Box::new(minus))
             .factor(Box::new(factor))
             .build()
             .into_diagnostic()?;
-        let factor_2_built = Factor::Factor2(factor_2_built);
+        let factor_2_built = Factor::MinusFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
         self.push(ASTType::Factor(factor_2_built), context);
@@ -3032,13 +3030,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r_paren = pop_item!(self, r_paren, RParen, context);
         let expression = pop_item!(self, expression, Expression, context);
         let l_paren = pop_item!(self, l_paren, LParen, context);
-        let factor_3_built = Factor3Builder::default()
+        let factor_3_built = FactorLParenExpressionRParenBuilder::default()
             .l_paren(Box::new(l_paren))
             .expression(Box::new(expression))
             .r_paren(Box::new(r_paren))
             .build()
             .into_diagnostic()?;
-        let factor_3_built = Factor::Factor3(factor_3_built);
+        let factor_3_built = Factor::LParenExpressionRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
         self.push(ASTType::Factor(factor_3_built), context);

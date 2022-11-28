@@ -65,7 +65,7 @@ pub trait JsonGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ObjectSuffix0<'t> {
+pub struct ObjectSuffixPairObjectListRBrace<'t> {
     pub pair: Box<Pair<'t>>,
     pub object_list: Vec<ObjectList<'t>>,
 }
@@ -77,7 +77,7 @@ pub struct ObjectSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ObjectSuffix1 {}
+pub struct ObjectSuffixRBrace {}
 
 ///
 /// Type derived for production 8
@@ -86,7 +86,7 @@ pub struct ObjectSuffix1 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ArraySuffix0<'t> {
+pub struct ArraySuffixValueArrayListRBracket<'t> {
     pub value: Box<Value<'t>>,
     pub array_list: Vec<ArrayList<'t>>,
 }
@@ -98,7 +98,7 @@ pub struct ArraySuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ArraySuffix1 {}
+pub struct ArraySuffixRBracket {}
 
 ///
 /// Type derived for production 12
@@ -107,7 +107,7 @@ pub struct ArraySuffix1 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value0<'t> {
+pub struct ValueString<'t> {
     pub string: Box<String<'t>>,
 }
 
@@ -118,7 +118,7 @@ pub struct Value0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value1<'t> {
+pub struct ValueNumber<'t> {
     pub number: Box<Number<'t>>,
 }
 
@@ -129,7 +129,7 @@ pub struct Value1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value2<'t> {
+pub struct ValueObject<'t> {
     pub object: Box<Object<'t>>,
 }
 
@@ -140,7 +140,7 @@ pub struct Value2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value3<'t> {
+pub struct ValueArray<'t> {
     pub array: Box<Array<'t>>,
 }
 
@@ -151,7 +151,7 @@ pub struct Value3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value4 {}
+pub struct ValueTrue {}
 
 ///
 /// Type derived for production 17
@@ -160,7 +160,7 @@ pub struct Value4 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value5 {}
+pub struct ValueFalse {}
 
 ///
 /// Type derived for production 18
@@ -169,7 +169,7 @@ pub struct Value5 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Value6 {}
+pub struct ValueNull {}
 
 // -------------------------------------------------------------------------------------------------
 //
@@ -200,8 +200,8 @@ pub struct ArrayList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ArraySuffix<'t> {
-    ArraySuffix0(ArraySuffix0<'t>),
-    ArraySuffix1(ArraySuffix1),
+    ValueArrayListRBracket(ArraySuffixValueArrayListRBracket<'t>),
+    RBracket(ArraySuffixRBracket),
 }
 
 ///
@@ -246,8 +246,8 @@ pub struct ObjectList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ObjectSuffix<'t> {
-    ObjectSuffix0(ObjectSuffix0<'t>),
-    ObjectSuffix1(ObjectSuffix1),
+    PairObjectListRBrace(ObjectSuffixPairObjectListRBrace<'t>),
+    RBrace(ObjectSuffixRBrace),
 }
 
 ///
@@ -275,13 +275,13 @@ pub struct String<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Value<'t> {
-    Value0(Value0<'t>),
-    Value1(Value1<'t>),
-    Value2(Value2<'t>),
-    Value3(Value3<'t>),
-    Value4(Value4),
-    Value5(Value5),
-    Value6(Value6),
+    String(ValueString<'t>),
+    Number(ValueNumber<'t>),
+    Object(ValueObject<'t>),
+    Array(ValueArray<'t>),
+    True(ValueTrue),
+    False(ValueFalse),
+    Null(ValueNull),
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -432,13 +432,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let object_list = pop_and_reverse_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_suffix_0_built = ObjectSuffix0Builder::default()
+        let object_suffix_0_built = ObjectSuffixPairObjectListRBraceBuilder::default()
             .pair(Box::new(pair))
             .object_list(object_list)
             // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
-        let object_suffix_0_built = ObjectSuffix::ObjectSuffix0(object_suffix_0_built);
+        let object_suffix_0_built = ObjectSuffix::PairObjectListRBrace(object_suffix_0_built);
         self.push(ASTType::ObjectSuffix(object_suffix_0_built), context);
         Ok(())
     }
@@ -455,11 +455,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_suffix_1_built = ObjectSuffix1Builder::default()
+        let object_suffix_1_built = ObjectSuffixRBraceBuilder::default()
             // Ignore clipped member 'r_brace'
             .build()
             .into_diagnostic()?;
-        let object_suffix_1_built = ObjectSuffix::ObjectSuffix1(object_suffix_1_built);
+        let object_suffix_1_built = ObjectSuffix::RBrace(object_suffix_1_built);
         self.push(ASTType::ObjectSuffix(object_suffix_1_built), context);
         Ok(())
     }
@@ -573,13 +573,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let array_list = pop_and_reverse_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_suffix_0_built = ArraySuffix0Builder::default()
+        let array_suffix_0_built = ArraySuffixValueArrayListRBracketBuilder::default()
             .value(Box::new(value))
             .array_list(array_list)
             // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
-        let array_suffix_0_built = ArraySuffix::ArraySuffix0(array_suffix_0_built);
+        let array_suffix_0_built = ArraySuffix::ValueArrayListRBracket(array_suffix_0_built);
         self.push(ASTType::ArraySuffix(array_suffix_0_built), context);
         Ok(())
     }
@@ -596,11 +596,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_suffix_1_built = ArraySuffix1Builder::default()
+        let array_suffix_1_built = ArraySuffixRBracketBuilder::default()
             // Ignore clipped member 'r_bracket'
             .build()
             .into_diagnostic()?;
-        let array_suffix_1_built = ArraySuffix::ArraySuffix1(array_suffix_1_built);
+        let array_suffix_1_built = ArraySuffix::RBracket(array_suffix_1_built);
         self.push(ASTType::ArraySuffix(array_suffix_1_built), context);
         Ok(())
     }
@@ -658,11 +658,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let value_0_built = Value0Builder::default()
+        let value_0_built = ValueStringBuilder::default()
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
-        let value_0_built = Value::Value0(value_0_built);
+        let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
         self.push(ASTType::Value(value_0_built), context);
@@ -682,11 +682,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let value_1_built = Value1Builder::default()
+        let value_1_built = ValueNumberBuilder::default()
             .number(Box::new(number))
             .build()
             .into_diagnostic()?;
-        let value_1_built = Value::Value1(value_1_built);
+        let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;
         self.push(ASTType::Value(value_1_built), context);
@@ -706,11 +706,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
-        let value_2_built = Value2Builder::default()
+        let value_2_built = ValueObjectBuilder::default()
             .object(Box::new(object))
             .build()
             .into_diagnostic()?;
-        let value_2_built = Value::Value2(value_2_built);
+        let value_2_built = Value::Object(value_2_built);
         // Calling user action here
         self.user_grammar.value(&value_2_built)?;
         self.push(ASTType::Value(value_2_built), context);
@@ -730,11 +730,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let value_3_built = Value3Builder::default()
+        let value_3_built = ValueArrayBuilder::default()
             .array(Box::new(array))
             .build()
             .into_diagnostic()?;
-        let value_3_built = Value::Value3(value_3_built);
+        let value_3_built = Value::Array(value_3_built);
         // Calling user action here
         self.user_grammar.value(&value_3_built)?;
         self.push(ASTType::Value(value_3_built), context);
@@ -753,11 +753,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_4_built = Value4Builder::default()
+        let value_4_built = ValueTrueBuilder::default()
             // Ignore clipped member 'r#true'
             .build()
             .into_diagnostic()?;
-        let value_4_built = Value::Value4(value_4_built);
+        let value_4_built = Value::True(value_4_built);
         // Calling user action here
         self.user_grammar.value(&value_4_built)?;
         self.push(ASTType::Value(value_4_built), context);
@@ -776,11 +776,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_5_built = Value5Builder::default()
+        let value_5_built = ValueFalseBuilder::default()
             // Ignore clipped member 'r#false'
             .build()
             .into_diagnostic()?;
-        let value_5_built = Value::Value5(value_5_built);
+        let value_5_built = Value::False(value_5_built);
         // Calling user action here
         self.user_grammar.value(&value_5_built)?;
         self.push(ASTType::Value(value_5_built), context);
@@ -799,11 +799,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_6_built = Value6Builder::default()
+        let value_6_built = ValueNullBuilder::default()
             // Ignore clipped member 'null'
             .build()
             .into_diagnostic()?;
-        let value_6_built = Value::Value6(value_6_built);
+        let value_6_built = Value::Null(value_6_built);
         // Calling user action here
         self.user_grammar.value(&value_6_built)?;
         self.push(ASTType::Value(value_6_built), context);

@@ -92,8 +92,8 @@ trait Fmt {
 impl Fmt for ASTControl {
     fn txt(&self, options: &FmtOptions) -> String {
         match self {
-            ASTControl::ASTControl0(_) => "^".to_string(),
-            ASTControl::ASTControl1(ut) => ut.user_type_declaration.txt(options),
+            ASTControl::CutOperator(_) => "^".to_string(),
+            ASTControl::UserTypeDeclaration(ut) => ut.user_type_declaration.txt(options),
         }
     }
 }
@@ -158,8 +158,8 @@ impl Fmt for CommentsList {
 impl Fmt for CommentsListGroup {
     fn txt(&self, options: &FmtOptions) -> String {
         match self {
-            CommentsListGroup::CommentsListGroup0(l) => l.line_comment.txt(options),
-            CommentsListGroup::CommentsListGroup1(b) => b.block_comment.txt(options),
+            CommentsListGroup::LineComment(l) => l.line_comment.txt(options),
+            CommentsListGroup::BlockComment(b) => b.block_comment.txt(options),
         }
     }
 }
@@ -175,27 +175,29 @@ impl Fmt for Declaration {
             .with_padding(Padding::Left)
             .with_trimming(Trimming::TrimRight);
         match self {
-            Declaration::Declaration0(title) => format!(
+            Declaration::PercentTitleStringComments(title) => format!(
                 "{} {}{}\n",
                 title.percent_title,
                 title.string.txt(options),
                 handle_comments(&title.comments, &comment_options),
             ),
-            Declaration::Declaration1(comment) => format!(
+            Declaration::PercentCommentStringComments(comment) => format!(
                 "{} {}{}\n",
                 comment.percent_comment,
                 comment.string.txt(options),
                 handle_comments(&comment.comments, &comment_options),
             ),
-            Declaration::Declaration2(user_type) => format!(
-                "{} {} {} {}{}\n",
-                user_type.percent_user_underscore_type,
-                user_type.identifier.txt(options),
-                user_type.equ,
-                user_type.user_type_name.txt(options),
-                handle_comments(&user_type.comments, &comment_options),
-            ),
-            Declaration::Declaration3(scanner_directives) => {
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
+                format!(
+                    "{} {} {} {}{}\n",
+                    user_type.percent_user_underscore_type,
+                    user_type.identifier.txt(options),
+                    user_type.equ,
+                    user_type.user_type_name.txt(options),
+                    handle_comments(&user_type.comments, &comment_options),
+                )
+            }
+            Declaration::ScannerDirectives(scanner_directives) => {
                 handle_scanner_directives(&scanner_directives.scanner_directives, options)
             }
         }
@@ -210,10 +212,10 @@ impl Fmt for DoubleColon {
 impl Fmt for Factor {
     fn txt(&self, options: &FmtOptions) -> String {
         match self {
-            Factor::Factor0(g) => g.group.txt(options),
-            Factor::Factor1(r) => r.repeat.txt(options),
-            Factor::Factor2(o) => o.optional.txt(options),
-            Factor::Factor3(s) => handle_symbol(&s.symbol, options),
+            Factor::Group(g) => g.group.txt(options),
+            Factor::Repeat(r) => r.repeat.txt(options),
+            Factor::Optional(o) => o.optional.txt(options),
+            Factor::Symbol(s) => handle_symbol(&s.symbol, options),
         }
     }
 }
@@ -398,7 +400,7 @@ impl Fmt for ScannerStateList {
 impl Fmt for ScannerSwitch {
     fn txt(&self, options: &FmtOptions) -> String {
         match self {
-            ScannerSwitch::ScannerSwitch0(sc) => format!(
+            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => format!(
                 "{}{}{}{}",
                 sc.percent_sc,
                 sc.l_paren,
@@ -407,14 +409,14 @@ impl Fmt for ScannerSwitch {
                     .map_or(String::default(), |s| { s.txt(options) }),
                 sc.r_paren,
             ),
-            ScannerSwitch::ScannerSwitch1(push) => format!(
+            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => format!(
                 "{}{}{}{}",
                 push.percent_push,
                 push.l_paren,
                 push.identifier.txt(options),
                 push.r_paren,
             ),
-            ScannerSwitch::ScannerSwitch2(pop) => {
+            ScannerSwitch::PercentPopLParenRParen(pop) => {
                 format!("{}{}{}", pop.percent_pop, pop.l_paren, pop.r_paren,)
             }
         }
@@ -486,9 +488,9 @@ impl Fmt for Symbol {
 impl Fmt for TokenLiteral {
     fn txt(&self, options: &FmtOptions) -> String {
         match self {
-            TokenLiteral::TokenLiteral0(s) => s.string.txt(options),
-            TokenLiteral::TokenLiteral1(l) => l.literal_string.txt(options),
-            TokenLiteral::TokenLiteral2(r) => r.regex.txt(options),
+            TokenLiteral::String(s) => s.string.txt(options),
+            TokenLiteral::LiteralString(l) => l.literal_string.txt(options),
+            TokenLiteral::Regex(r) => r.regex.txt(options),
         }
     }
 }
@@ -546,27 +548,29 @@ fn handle_scanner_directives(
 ) -> String {
     let comment_options = options.clone().with_padding(Padding::Left);
     match scanner_directives {
-        ScannerDirectives::ScannerDirectives0(l) => format!(
+        ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => format!(
             "{} {}{}\n",
             l.percent_line_underscore_comment,
             l.token_literal.txt(options),
             handle_comments(&l.comments, &comment_options),
         ),
-        ScannerDirectives::ScannerDirectives1(b) => format!(
-            "{} {} {}{}\n",
-            b.percent_block_underscore_comment,
-            b.token_literal.txt(options),
-            b.token_literal0.txt(options),
-            handle_comments(&b.comments, &comment_options),
-        ),
+        ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
+            format!(
+                "{} {} {}{}\n",
+                b.percent_block_underscore_comment,
+                b.token_literal.txt(options),
+                b.token_literal0.txt(options),
+                handle_comments(&b.comments, &comment_options),
+            )
+        }
 
-        ScannerDirectives::ScannerDirectives2(n) => format!(
+        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => format!(
             "{}{}\n",
             n.percent_auto_underscore_newline_underscore_off,
             handle_comments(&n.comments, &comment_options),
         ),
 
-        ScannerDirectives::ScannerDirectives3(w) => format!(
+        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => format!(
             "{}{}\n",
             w.percent_auto_underscore_ws_underscore_off,
             handle_comments(&w.comments, &comment_options),
@@ -576,10 +580,10 @@ fn handle_scanner_directives(
 
 fn handle_symbol(symbol: &Symbol, options: &FmtOptions) -> String {
     match symbol {
-        Symbol::Symbol0(n) => n.non_terminal.txt(options),
-        Symbol::Symbol1(t) => t.simple_token.txt(options),
-        Symbol::Symbol2(t) => t.token_with_states.txt(options),
-        Symbol::Symbol3(s) => s.scanner_switch.txt(options),
+        Symbol::NonTerminal(n) => n.non_terminal.txt(options),
+        Symbol::SimpleToken(t) => t.simple_token.txt(options),
+        Symbol::TokenWithStates(t) => t.token_with_states.txt(options),
+        Symbol::ScannerSwitch(s) => s.scanner_switch.txt(options),
     }
 }
 

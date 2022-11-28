@@ -4,13 +4,12 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use id_tree::Tree;
-
-use miette::{miette, Result};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::id_tree::Tree;
 
 use crate::json_grammar::JsonGrammar;
-use std::path::Path;
+#[allow(unused_imports)]
+use parol_runtime::miette::{miette, Result};
+use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
@@ -18,18 +17,13 @@ use std::path::Path;
 /// All functions have default implementations.
 ///
 pub trait JsonGrammarTrait {
-    ///
-    /// Implement this method if you need the provided information
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     /// Semantic action for production 0:
     ///
     /// Json: Value;
     ///
-    fn json_0(
+    fn json(
         &mut self,
-        _value_0: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -39,10 +33,10 @@ pub trait JsonGrammarTrait {
     ///
     /// Object: "\{" ObjectSuffix;
     ///
-    fn object_1(
+    fn object(
         &mut self,
-        _l_brace_0: &ParseTreeStackEntry,
-        _object_suffix_1: &ParseTreeStackEntry,
+        _l_brace: &ParseTreeStackEntry,
+        _object_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -52,11 +46,11 @@ pub trait JsonGrammarTrait {
     ///
     /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
     ///
-    fn object_suffix_2(
+    fn object_suffix_0(
         &mut self,
-        _pair_0: &ParseTreeStackEntry,
-        _object_list_1: &ParseTreeStackEntry,
-        _r_brace_2: &ParseTreeStackEntry,
+        _pair: &ParseTreeStackEntry,
+        _object_list: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -66,9 +60,9 @@ pub trait JsonGrammarTrait {
     ///
     /// ObjectSuffix: "\}";
     ///
-    fn object_suffix_3(
+    fn object_suffix_1(
         &mut self,
-        _r_brace_0: &ParseTreeStackEntry,
+        _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -76,13 +70,13 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList: "," Pair ObjectList; // Vec<T>::Push
+    /// ObjectList /* Vec<T>::Push */: "," Pair ObjectList;
     ///
-    fn object_list_4(
+    fn object_list_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _pair_1: &ParseTreeStackEntry,
-        _object_list_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _pair: &ParseTreeStackEntry,
+        _object_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -90,9 +84,9 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList: ; // Vec<T>::New
+    /// ObjectList /* Vec<T>::New */: ;
     ///
-    fn object_list_5(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -100,11 +94,11 @@ pub trait JsonGrammarTrait {
     ///
     /// Pair: String ":" Value;
     ///
-    fn pair_6(
+    fn pair(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
-        _colon_1: &ParseTreeStackEntry,
-        _value_2: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
+        _colon: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -114,10 +108,10 @@ pub trait JsonGrammarTrait {
     ///
     /// Array: "\[" ArraySuffix;
     ///
-    fn array_7(
+    fn array(
         &mut self,
-        _l_bracket_0: &ParseTreeStackEntry,
-        _array_suffix_1: &ParseTreeStackEntry,
+        _l_bracket: &ParseTreeStackEntry,
+        _array_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -127,11 +121,11 @@ pub trait JsonGrammarTrait {
     ///
     /// ArraySuffix: Value ArrayList /* Vec */ "\]";
     ///
-    fn array_suffix_8(
+    fn array_suffix_0(
         &mut self,
-        _value_0: &ParseTreeStackEntry,
-        _array_list_1: &ParseTreeStackEntry,
-        _r_bracket_2: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
+        _array_list: &ParseTreeStackEntry,
+        _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -141,9 +135,9 @@ pub trait JsonGrammarTrait {
     ///
     /// ArraySuffix: "\]";
     ///
-    fn array_suffix_9(
+    fn array_suffix_1(
         &mut self,
-        _r_bracket_0: &ParseTreeStackEntry,
+        _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -151,13 +145,13 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList: "," Value ArrayList; // Vec<T>::Push
+    /// ArrayList /* Vec<T>::Push */: "," Value ArrayList;
     ///
-    fn array_list_10(
+    fn array_list_0(
         &mut self,
-        _comma_0: &ParseTreeStackEntry,
-        _value_1: &ParseTreeStackEntry,
-        _array_list_2: &ParseTreeStackEntry,
+        _comma: &ParseTreeStackEntry,
+        _value: &ParseTreeStackEntry,
+        _array_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -165,9 +159,9 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList: ; // Vec<T>::New
+    /// ArrayList /* Vec<T>::New */: ;
     ///
-    fn array_list_11(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
         Ok(())
     }
 
@@ -175,9 +169,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: String;
     ///
-    fn value_12(
+    fn value_0(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -187,9 +181,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Number;
     ///
-    fn value_13(
+    fn value_1(
         &mut self,
-        _number_0: &ParseTreeStackEntry,
+        _number: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -199,9 +193,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Object;
     ///
-    fn value_14(
+    fn value_2(
         &mut self,
-        _object_0: &ParseTreeStackEntry,
+        _object: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -211,9 +205,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: Array;
     ///
-    fn value_15(
+    fn value_3(
         &mut self,
-        _array_0: &ParseTreeStackEntry,
+        _array: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -223,9 +217,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "true";
     ///
-    fn value_16(
+    fn value_4(
         &mut self,
-        _true_0: &ParseTreeStackEntry,
+        _true: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -235,9 +229,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "false";
     ///
-    fn value_17(
+    fn value_5(
         &mut self,
-        _false_0: &ParseTreeStackEntry,
+        _false: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -247,9 +241,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Value: "null";
     ///
-    fn value_18(
+    fn value_6(
         &mut self,
-        _null_0: &ParseTreeStackEntry,
+        _null: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -259,9 +253,9 @@ pub trait JsonGrammarTrait {
     ///
     /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
-    fn string_19(
+    fn string(
         &mut self,
-        _string_0: &ParseTreeStackEntry,
+        _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -271,9 +265,9 @@ pub trait JsonGrammarTrait {
     ///
     /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
-    fn number_20(
+    fn number(
         &mut self,
-        _number_0: &ParseTreeStackEntry,
+        _number: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         Ok(())
@@ -281,13 +275,6 @@ pub trait JsonGrammarTrait {
 }
 
 impl UserActionsTrait<'_> for JsonGrammar {
-    ///
-    /// Initialize the user with additional information.
-    /// This function is called by the parser before parsing starts.
-    /// Is is used to transport necessary data from parser to user.
-    ///
-    fn init(&mut self, _file_name: &Path) {}
-
     ///
     /// This function is implemented automatically for the user's item JsonGrammar.
     ///
@@ -298,27 +285,27 @@ impl UserActionsTrait<'_> for JsonGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         match prod_num {
-            0 => self.json_0(&children[0], parse_tree),
-            1 => self.object_1(&children[0], &children[1], parse_tree),
-            2 => self.object_suffix_2(&children[0], &children[1], &children[2], parse_tree),
-            3 => self.object_suffix_3(&children[0], parse_tree),
-            4 => self.object_list_4(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.object_list_5(parse_tree),
-            6 => self.pair_6(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.array_7(&children[0], &children[1], parse_tree),
-            8 => self.array_suffix_8(&children[0], &children[1], &children[2], parse_tree),
-            9 => self.array_suffix_9(&children[0], parse_tree),
-            10 => self.array_list_10(&children[0], &children[1], &children[2], parse_tree),
-            11 => self.array_list_11(parse_tree),
-            12 => self.value_12(&children[0], parse_tree),
-            13 => self.value_13(&children[0], parse_tree),
-            14 => self.value_14(&children[0], parse_tree),
-            15 => self.value_15(&children[0], parse_tree),
-            16 => self.value_16(&children[0], parse_tree),
-            17 => self.value_17(&children[0], parse_tree),
-            18 => self.value_18(&children[0], parse_tree),
-            19 => self.string_19(&children[0], parse_tree),
-            20 => self.number_20(&children[0], parse_tree),
+            0 => self.json(&children[0], parse_tree),
+            1 => self.object(&children[0], &children[1], parse_tree),
+            2 => self.object_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            3 => self.object_suffix_1(&children[0], parse_tree),
+            4 => self.object_list_0(&children[0], &children[1], &children[2], parse_tree),
+            5 => self.object_list_1(parse_tree),
+            6 => self.pair(&children[0], &children[1], &children[2], parse_tree),
+            7 => self.array(&children[0], &children[1], parse_tree),
+            8 => self.array_suffix_0(&children[0], &children[1], &children[2], parse_tree),
+            9 => self.array_suffix_1(&children[0], parse_tree),
+            10 => self.array_list_0(&children[0], &children[1], &children[2], parse_tree),
+            11 => self.array_list_1(parse_tree),
+            12 => self.value_0(&children[0], parse_tree),
+            13 => self.value_1(&children[0], parse_tree),
+            14 => self.value_2(&children[0], parse_tree),
+            15 => self.value_3(&children[0], parse_tree),
+            16 => self.value_4(&children[0], parse_tree),
+            17 => self.value_5(&children[0], parse_tree),
+            18 => self.value_6(&children[0], parse_tree),
+            19 => self.string(&children[0], parse_tree),
+            20 => self.number(&children[0], parse_tree),
             _ => Err(miette!("Unhandled production number: {}", prod_num)),
         }
     }

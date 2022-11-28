@@ -202,7 +202,7 @@ pub trait ParolLsGrammarTrait {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration0 {
+pub struct DeclarationPercentTitleStringComments {
     pub percent_title: crate::parol_ls_grammar::OwnedToken, /* %title */
     pub string: Box<String>,
     pub comments: Box<Comments>,
@@ -215,7 +215,7 @@ pub struct Declaration0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration1 {
+pub struct DeclarationPercentCommentStringComments {
     pub percent_comment: crate::parol_ls_grammar::OwnedToken, /* %comment */
     pub string: Box<String>,
     pub comments: Box<Comments>,
@@ -228,7 +228,7 @@ pub struct Declaration1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration2 {
+pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameComments {
     pub percent_user_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %user_type */
     pub identifier: Box<Identifier>,
     pub equ: crate::parol_ls_grammar::OwnedToken, /* = */
@@ -243,7 +243,7 @@ pub struct Declaration2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Declaration3 {
+pub struct DeclarationScannerDirectives {
     pub scanner_directives: Box<ScannerDirectives>,
 }
 
@@ -254,7 +254,7 @@ pub struct Declaration3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives0 {
+pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralComments {
     pub percent_line_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %line_comment */
     pub token_literal: Box<TokenLiteral>,
     pub comments: Box<Comments>,
@@ -267,7 +267,7 @@ pub struct ScannerDirectives0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives1 {
+pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments {
     pub percent_block_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %block_comment */
     pub token_literal: Box<TokenLiteral>,
     pub token_literal0: Box<TokenLiteral>,
@@ -281,7 +281,7 @@ pub struct ScannerDirectives1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives2 {
+pub struct ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffComments {
     pub percent_auto_underscore_newline_underscore_off: crate::parol_ls_grammar::OwnedToken, /* %auto_newline_off */
     pub comments: Box<Comments>,
 }
@@ -293,7 +293,7 @@ pub struct ScannerDirectives2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerDirectives3 {
+pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffComments {
     pub percent_auto_underscore_ws_underscore_off: crate::parol_ls_grammar::OwnedToken, /* %auto_ws_off */
     pub comments: Box<Comments>,
 }
@@ -305,7 +305,7 @@ pub struct ScannerDirectives3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor0 {
+pub struct FactorGroup {
     pub group: Box<Group>,
 }
 
@@ -316,7 +316,7 @@ pub struct Factor0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor1 {
+pub struct FactorRepeat {
     pub repeat: Box<Repeat>,
 }
 
@@ -327,7 +327,7 @@ pub struct Factor1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor2 {
+pub struct FactorOptional {
     pub optional: Box<Optional>,
 }
 
@@ -338,7 +338,7 @@ pub struct Factor2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Factor3 {
+pub struct FactorSymbol {
     pub symbol: Box<Symbol>,
 }
 
@@ -349,7 +349,7 @@ pub struct Factor3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol0 {
+pub struct SymbolNonTerminal {
     pub non_terminal: Box<NonTerminal>,
 }
 
@@ -360,7 +360,7 @@ pub struct Symbol0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol1 {
+pub struct SymbolSimpleToken {
     pub simple_token: Box<SimpleToken>,
 }
 
@@ -371,7 +371,7 @@ pub struct Symbol1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol2 {
+pub struct SymbolTokenWithStates {
     pub token_with_states: Box<TokenWithStates>,
 }
 
@@ -382,7 +382,7 @@ pub struct Symbol2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct Symbol3 {
+pub struct SymbolScannerSwitch {
     pub scanner_switch: Box<ScannerSwitch>,
 }
 
@@ -393,7 +393,7 @@ pub struct Symbol3 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenLiteral0 {
+pub struct TokenLiteralString {
     pub string: Box<String>,
 }
 
@@ -404,7 +404,7 @@ pub struct TokenLiteral0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenLiteral1 {
+pub struct TokenLiteralLiteralString {
     pub literal_string: Box<LiteralString>,
 }
 
@@ -415,7 +415,7 @@ pub struct TokenLiteral1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct TokenLiteral2 {
+pub struct TokenLiteralRegex {
     pub regex: Box<Regex>,
 }
 
@@ -426,7 +426,7 @@ pub struct TokenLiteral2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch0 {
+pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
     pub percent_sc: crate::parol_ls_grammar::OwnedToken, /* %sc */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* \( */
     pub scanner_switch_opt: Option<Box<ScannerSwitchOpt>>,
@@ -440,7 +440,7 @@ pub struct ScannerSwitch0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch1 {
+pub struct ScannerSwitchPercentPushLParenIdentifierRParen {
     pub percent_push: crate::parol_ls_grammar::OwnedToken, /* %push */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* \( */
     pub identifier: Box<Identifier>,
@@ -454,7 +454,7 @@ pub struct ScannerSwitch1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ScannerSwitch2 {
+pub struct ScannerSwitchPercentPopLParenRParen {
     pub percent_pop: crate::parol_ls_grammar::OwnedToken, /* %pop */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,     /* \( */
     pub r_paren: crate::parol_ls_grammar::OwnedToken,     /* \) */
@@ -467,7 +467,7 @@ pub struct ScannerSwitch2 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ASTControl0 {
+pub struct ASTControlCutOperator {
     pub cut_operator: Box<CutOperator>,
 }
 
@@ -478,7 +478,7 @@ pub struct ASTControl0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct ASTControl1 {
+pub struct ASTControlUserTypeDeclaration {
     pub user_type_declaration: Box<UserTypeDeclaration>,
 }
 
@@ -489,7 +489,7 @@ pub struct ASTControl1 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CommentsListGroup0 {
+pub struct CommentsListGroupLineComment {
     pub line_comment: Box<LineComment>,
 }
 
@@ -500,7 +500,7 @@ pub struct CommentsListGroup0 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
-pub struct CommentsListGroup1 {
+pub struct CommentsListGroupBlockComment {
     pub block_comment: Box<BlockComment>,
 }
 
@@ -515,8 +515,8 @@ pub struct CommentsListGroup1 {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ASTControl {
-    ASTControl0(ASTControl0),
-    ASTControl1(ASTControl1),
+    CutOperator(ASTControlCutOperator),
+    UserTypeDeclaration(ASTControlUserTypeDeclaration),
 }
 
 ///
@@ -592,8 +592,8 @@ pub struct CommentsList {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum CommentsListGroup {
-    CommentsListGroup0(CommentsListGroup0),
-    CommentsListGroup1(CommentsListGroup1),
+    LineComment(CommentsListGroupLineComment),
+    BlockComment(CommentsListGroupBlockComment),
 }
 
 ///
@@ -611,10 +611,12 @@ pub struct CutOperator {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Declaration {
-    Declaration0(Declaration0),
-    Declaration1(Declaration1),
-    Declaration2(Declaration2),
-    Declaration3(Declaration3),
+    PercentTitleStringComments(DeclarationPercentTitleStringComments),
+    PercentCommentStringComments(DeclarationPercentCommentStringComments),
+    PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(
+        DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameComments,
+    ),
+    ScannerDirectives(DeclarationScannerDirectives),
 }
 
 ///
@@ -632,10 +634,10 @@ pub struct DoubleColon {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Factor {
-    Factor0(Factor0),
-    Factor1(Factor1),
-    Factor2(Factor2),
-    Factor3(Factor3),
+    Group(FactorGroup),
+    Repeat(FactorRepeat),
+    Optional(FactorOptional),
+    Symbol(FactorSymbol),
 }
 
 ///
@@ -814,10 +816,18 @@ pub struct Repeat {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ScannerDirectives {
-    ScannerDirectives0(ScannerDirectives0),
-    ScannerDirectives1(ScannerDirectives1),
-    ScannerDirectives2(ScannerDirectives2),
-    ScannerDirectives3(ScannerDirectives3),
+    PercentLineUnderscoreCommentTokenLiteralComments(
+        ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralComments,
+    ),
+    PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
+        ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments,
+    ),
+    PercentAutoUnderscoreNewlineUnderscoreOffComments(
+        ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffComments,
+    ),
+    PercentAutoUnderscoreWsUnderscoreOffComments(
+        ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffComments,
+    ),
 }
 
 ///
@@ -848,9 +858,9 @@ pub struct ScannerStateList {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ScannerSwitch {
-    ScannerSwitch0(ScannerSwitch0),
-    ScannerSwitch1(ScannerSwitch1),
-    ScannerSwitch2(ScannerSwitch2),
+    PercentScLParenScannerSwitchOptRParen(ScannerSwitchPercentScLParenScannerSwitchOptRParen),
+    PercentPushLParenIdentifierRParen(ScannerSwitchPercentPushLParenIdentifierRParen),
+    PercentPopLParenRParen(ScannerSwitchPercentPopLParenRParen),
 }
 
 ///
@@ -928,10 +938,10 @@ pub struct String {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Symbol {
-    Symbol0(Symbol0),
-    Symbol1(Symbol1),
-    Symbol2(Symbol2),
-    Symbol3(Symbol3),
+    NonTerminal(SymbolNonTerminal),
+    SimpleToken(SymbolSimpleToken),
+    TokenWithStates(SymbolTokenWithStates),
+    ScannerSwitch(SymbolScannerSwitch),
 }
 
 ///
@@ -940,9 +950,9 @@ pub enum Symbol {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum TokenLiteral {
-    TokenLiteral0(TokenLiteral0),
-    TokenLiteral1(TokenLiteral1),
-    TokenLiteral2(TokenLiteral2),
+    String(TokenLiteralString),
+    LiteralString(TokenLiteralLiteralString),
+    Regex(TokenLiteralRegex),
 }
 
 ///
@@ -1308,13 +1318,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .into_diagnostic()?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
-        let declaration_0_built = Declaration0Builder::default()
+        let declaration_0_built = DeclarationPercentTitleStringCommentsBuilder::default()
             .percent_title(percent_title)
             .string(Box::new(string))
             .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
-        let declaration_0_built = Declaration::Declaration0(declaration_0_built);
+        let declaration_0_built = Declaration::PercentTitleStringComments(declaration_0_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_0_built)?;
         self.push(ASTType::Declaration(declaration_0_built), context);
@@ -1341,13 +1351,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .into_diagnostic()?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
-        let declaration_1_built = Declaration1Builder::default()
+        let declaration_1_built = DeclarationPercentCommentStringCommentsBuilder::default()
             .percent_comment(percent_comment)
             .string(Box::new(string))
             .comments(Box::new(comments))
             .build()
             .into_diagnostic()?;
-        let declaration_1_built = Declaration::Declaration1(declaration_1_built);
+        let declaration_1_built = Declaration::PercentCommentStringComments(declaration_1_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_1_built)?;
         self.push(ASTType::Declaration(declaration_1_built), context);
@@ -1378,15 +1388,19 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let declaration_2_built = Declaration2Builder::default()
-            .percent_user_underscore_type(percent_user_underscore_type)
-            .identifier(Box::new(identifier))
-            .equ(equ)
-            .user_type_name(Box::new(user_type_name))
-            .comments(Box::new(comments))
-            .build()
-            .into_diagnostic()?;
-        let declaration_2_built = Declaration::Declaration2(declaration_2_built);
+        let declaration_2_built =
+            DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameCommentsBuilder::default()
+                .percent_user_underscore_type(percent_user_underscore_type)
+                .identifier(Box::new(identifier))
+                .equ(equ)
+                .user_type_name(Box::new(user_type_name))
+                .comments(Box::new(comments))
+                .build()
+                .into_diagnostic()?;
+        let declaration_2_built =
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(
+                declaration_2_built,
+            );
         // Calling user action here
         self.user_grammar.declaration(&declaration_2_built)?;
         self.push(ASTType::Declaration(declaration_2_built), context);
@@ -1406,11 +1420,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let declaration_3_built = Declaration3Builder::default()
+        let declaration_3_built = DeclarationScannerDirectivesBuilder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
             .into_diagnostic()?;
-        let declaration_3_built = Declaration::Declaration3(declaration_3_built);
+        let declaration_3_built = Declaration::ScannerDirectives(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
         self.push(ASTType::Declaration(declaration_3_built), context);
@@ -1437,14 +1451,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .into_diagnostic()?;
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
-        let scanner_directives_0_built = ScannerDirectives0Builder::default()
-            .percent_line_underscore_comment(percent_line_underscore_comment)
-            .token_literal(Box::new(token_literal))
-            .comments(Box::new(comments))
-            .build()
-            .into_diagnostic()?;
         let scanner_directives_0_built =
-            ScannerDirectives::ScannerDirectives0(scanner_directives_0_built);
+            ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralCommentsBuilder::default()
+                .percent_line_underscore_comment(percent_line_underscore_comment)
+                .token_literal(Box::new(token_literal))
+                .comments(Box::new(comments))
+                .build()
+                .into_diagnostic()?;
+        let scanner_directives_0_built =
+            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(
+                scanner_directives_0_built,
+            );
         // Calling user action here
         self.user_grammar
             .scanner_directives(&scanner_directives_0_built)?;
@@ -1477,7 +1494,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal0 = pop_item!(self, token_literal0, TokenLiteral, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
-        let scanner_directives_1_built = ScannerDirectives1Builder::default()
+        let scanner_directives_1_built = ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralCommentsBuilder::default()
             .percent_block_underscore_comment(percent_block_underscore_comment)
             .token_literal(Box::new(token_literal))
             .token_literal0(Box::new(token_literal0))
@@ -1485,7 +1502,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .build()
             .into_diagnostic()?;
         let scanner_directives_1_built =
-            ScannerDirectives::ScannerDirectives1(scanner_directives_1_built);
+            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
+                scanner_directives_1_built,
+            );
         // Calling user action here
         self.user_grammar
             .scanner_directives(&scanner_directives_1_built)?;
@@ -1515,15 +1534,18 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
                 .try_into()
                 .into_diagnostic()?;
         let comments = pop_item!(self, comments, Comments, context);
-        let scanner_directives_2_built = ScannerDirectives2Builder::default()
-            .percent_auto_underscore_newline_underscore_off(
-                percent_auto_underscore_newline_underscore_off,
-            )
-            .comments(Box::new(comments))
-            .build()
-            .into_diagnostic()?;
         let scanner_directives_2_built =
-            ScannerDirectives::ScannerDirectives2(scanner_directives_2_built);
+            ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffCommentsBuilder::default()
+                .percent_auto_underscore_newline_underscore_off(
+                    percent_auto_underscore_newline_underscore_off,
+                )
+                .comments(Box::new(comments))
+                .build()
+                .into_diagnostic()?;
+        let scanner_directives_2_built =
+            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(
+                scanner_directives_2_built,
+            );
         // Calling user action here
         self.user_grammar
             .scanner_directives(&scanner_directives_2_built)?;
@@ -1552,13 +1574,18 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .try_into()
             .into_diagnostic()?;
         let comments = pop_item!(self, comments, Comments, context);
-        let scanner_directives_3_built = ScannerDirectives3Builder::default()
-            .percent_auto_underscore_ws_underscore_off(percent_auto_underscore_ws_underscore_off)
-            .comments(Box::new(comments))
-            .build()
-            .into_diagnostic()?;
         let scanner_directives_3_built =
-            ScannerDirectives::ScannerDirectives3(scanner_directives_3_built);
+            ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffCommentsBuilder::default()
+                .percent_auto_underscore_ws_underscore_off(
+                    percent_auto_underscore_ws_underscore_off,
+                )
+                .comments(Box::new(comments))
+                .build()
+                .into_diagnostic()?;
+        let scanner_directives_3_built =
+            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(
+                scanner_directives_3_built,
+            );
         // Calling user action here
         self.user_grammar
             .scanner_directives(&scanner_directives_3_built)?;
@@ -1899,11 +1926,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let group = pop_item!(self, group, Group, context);
-        let factor_0_built = Factor0Builder::default()
+        let factor_0_built = FactorGroupBuilder::default()
             .group(Box::new(group))
             .build()
             .into_diagnostic()?;
-        let factor_0_built = Factor::Factor0(factor_0_built);
+        let factor_0_built = Factor::Group(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
         self.push(ASTType::Factor(factor_0_built), context);
@@ -1923,11 +1950,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let repeat = pop_item!(self, repeat, Repeat, context);
-        let factor_1_built = Factor1Builder::default()
+        let factor_1_built = FactorRepeatBuilder::default()
             .repeat(Box::new(repeat))
             .build()
             .into_diagnostic()?;
-        let factor_1_built = Factor::Factor1(factor_1_built);
+        let factor_1_built = Factor::Repeat(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
         self.push(ASTType::Factor(factor_1_built), context);
@@ -1947,11 +1974,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let optional = pop_item!(self, optional, Optional, context);
-        let factor_2_built = Factor2Builder::default()
+        let factor_2_built = FactorOptionalBuilder::default()
             .optional(Box::new(optional))
             .build()
             .into_diagnostic()?;
-        let factor_2_built = Factor::Factor2(factor_2_built);
+        let factor_2_built = Factor::Optional(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
         self.push(ASTType::Factor(factor_2_built), context);
@@ -1971,11 +1998,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let symbol = pop_item!(self, symbol, Symbol, context);
-        let factor_3_built = Factor3Builder::default()
+        let factor_3_built = FactorSymbolBuilder::default()
             .symbol(Box::new(symbol))
             .build()
             .into_diagnostic()?;
-        let factor_3_built = Factor::Factor3(factor_3_built);
+        let factor_3_built = Factor::Symbol(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
         self.push(ASTType::Factor(factor_3_built), context);
@@ -1995,11 +2022,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
-        let symbol_0_built = Symbol0Builder::default()
+        let symbol_0_built = SymbolNonTerminalBuilder::default()
             .non_terminal(Box::new(non_terminal))
             .build()
             .into_diagnostic()?;
-        let symbol_0_built = Symbol::Symbol0(symbol_0_built);
+        let symbol_0_built = Symbol::NonTerminal(symbol_0_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_0_built)?;
         self.push(ASTType::Symbol(symbol_0_built), context);
@@ -2019,11 +2046,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token = pop_item!(self, simple_token, SimpleToken, context);
-        let symbol_1_built = Symbol1Builder::default()
+        let symbol_1_built = SymbolSimpleTokenBuilder::default()
             .simple_token(Box::new(simple_token))
             .build()
             .into_diagnostic()?;
-        let symbol_1_built = Symbol::Symbol1(symbol_1_built);
+        let symbol_1_built = Symbol::SimpleToken(symbol_1_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_1_built)?;
         self.push(ASTType::Symbol(symbol_1_built), context);
@@ -2043,11 +2070,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
-        let symbol_2_built = Symbol2Builder::default()
+        let symbol_2_built = SymbolTokenWithStatesBuilder::default()
             .token_with_states(Box::new(token_with_states))
             .build()
             .into_diagnostic()?;
-        let symbol_2_built = Symbol::Symbol2(symbol_2_built);
+        let symbol_2_built = Symbol::TokenWithStates(symbol_2_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_2_built)?;
         self.push(ASTType::Symbol(symbol_2_built), context);
@@ -2067,11 +2094,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
-        let symbol_3_built = Symbol3Builder::default()
+        let symbol_3_built = SymbolScannerSwitchBuilder::default()
             .scanner_switch(Box::new(scanner_switch))
             .build()
             .into_diagnostic()?;
-        let symbol_3_built = Symbol::Symbol3(symbol_3_built);
+        let symbol_3_built = Symbol::ScannerSwitch(symbol_3_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_3_built)?;
         self.push(ASTType::Symbol(symbol_3_built), context);
@@ -2091,11 +2118,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let token_literal_0_built = TokenLiteral0Builder::default()
+        let token_literal_0_built = TokenLiteralStringBuilder::default()
             .string(Box::new(string))
             .build()
             .into_diagnostic()?;
-        let token_literal_0_built = TokenLiteral::TokenLiteral0(token_literal_0_built);
+        let token_literal_0_built = TokenLiteral::String(token_literal_0_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_0_built)?;
         self.push(ASTType::TokenLiteral(token_literal_0_built), context);
@@ -2115,11 +2142,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let token_literal_1_built = TokenLiteral1Builder::default()
+        let token_literal_1_built = TokenLiteralLiteralStringBuilder::default()
             .literal_string(Box::new(literal_string))
             .build()
             .into_diagnostic()?;
-        let token_literal_1_built = TokenLiteral::TokenLiteral1(token_literal_1_built);
+        let token_literal_1_built = TokenLiteral::LiteralString(token_literal_1_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_1_built)?;
         self.push(ASTType::TokenLiteral(token_literal_1_built), context);
@@ -2139,11 +2166,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let regex = pop_item!(self, regex, Regex, context);
-        let token_literal_2_built = TokenLiteral2Builder::default()
+        let token_literal_2_built = TokenLiteralRegexBuilder::default()
             .regex(Box::new(regex))
             .build()
             .into_diagnostic()?;
-        let token_literal_2_built = TokenLiteral::TokenLiteral2(token_literal_2_built);
+        let token_literal_2_built = TokenLiteral::Regex(token_literal_2_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_2_built)?;
         self.push(ASTType::TokenLiteral(token_literal_2_built), context);
@@ -2672,14 +2699,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
-        let scanner_switch_0_built = ScannerSwitch0Builder::default()
-            .percent_sc(percent_sc)
-            .l_paren(l_paren)
-            .scanner_switch_opt(scanner_switch_opt)
-            .r_paren(r_paren)
-            .build()
-            .into_diagnostic()?;
-        let scanner_switch_0_built = ScannerSwitch::ScannerSwitch0(scanner_switch_0_built);
+        let scanner_switch_0_built =
+            ScannerSwitchPercentScLParenScannerSwitchOptRParenBuilder::default()
+                .percent_sc(percent_sc)
+                .l_paren(l_paren)
+                .scanner_switch_opt(scanner_switch_opt)
+                .r_paren(r_paren)
+                .build()
+                .into_diagnostic()?;
+        let scanner_switch_0_built =
+            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_0_built)?;
         self.push(ASTType::ScannerSwitch(scanner_switch_0_built), context);
@@ -2708,14 +2737,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_1_built = ScannerSwitch1Builder::default()
-            .percent_push(percent_push)
-            .l_paren(l_paren)
-            .identifier(Box::new(identifier))
-            .r_paren(r_paren)
-            .build()
-            .into_diagnostic()?;
-        let scanner_switch_1_built = ScannerSwitch::ScannerSwitch1(scanner_switch_1_built);
+        let scanner_switch_1_built =
+            ScannerSwitchPercentPushLParenIdentifierRParenBuilder::default()
+                .percent_push(percent_push)
+                .l_paren(l_paren)
+                .identifier(Box::new(identifier))
+                .r_paren(r_paren)
+                .build()
+                .into_diagnostic()?;
+        let scanner_switch_1_built =
+            ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_1_built)?;
         self.push(ASTType::ScannerSwitch(scanner_switch_1_built), context);
@@ -2742,13 +2773,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .into_diagnostic()?;
         let l_paren = l_paren.token(parse_tree)?.try_into().into_diagnostic()?;
         let r_paren = r_paren.token(parse_tree)?.try_into().into_diagnostic()?;
-        let scanner_switch_2_built = ScannerSwitch2Builder::default()
+        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParenBuilder::default()
             .percent_pop(percent_pop)
             .l_paren(l_paren)
             .r_paren(r_paren)
             .build()
             .into_diagnostic()?;
-        let scanner_switch_2_built = ScannerSwitch::ScannerSwitch2(scanner_switch_2_built);
+        let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_2_built)?;
         self.push(ASTType::ScannerSwitch(scanner_switch_2_built), context);
@@ -2804,11 +2835,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
-        let a_s_t_control_0_built = ASTControl0Builder::default()
+        let a_s_t_control_0_built = ASTControlCutOperatorBuilder::default()
             .cut_operator(Box::new(cut_operator))
             .build()
             .into_diagnostic()?;
-        let a_s_t_control_0_built = ASTControl::ASTControl0(a_s_t_control_0_built);
+        let a_s_t_control_0_built = ASTControl::CutOperator(a_s_t_control_0_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_0_built)?;
         self.push(ASTType::ASTControl(a_s_t_control_0_built), context);
@@ -2829,11 +2860,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let user_type_declaration =
             pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
-        let a_s_t_control_1_built = ASTControl1Builder::default()
+        let a_s_t_control_1_built = ASTControlUserTypeDeclarationBuilder::default()
             .user_type_declaration(Box::new(user_type_declaration))
             .build()
             .into_diagnostic()?;
-        let a_s_t_control_1_built = ASTControl::ASTControl1(a_s_t_control_1_built);
+        let a_s_t_control_1_built = ASTControl::UserTypeDeclaration(a_s_t_control_1_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_1_built)?;
         self.push(ASTType::ASTControl(a_s_t_control_1_built), context);
@@ -3029,12 +3060,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_comment = pop_item!(self, line_comment, LineComment, context);
-        let comments_list_group_0_built = CommentsListGroup0Builder::default()
+        let comments_list_group_0_built = CommentsListGroupLineCommentBuilder::default()
             .line_comment(Box::new(line_comment))
             .build()
             .into_diagnostic()?;
         let comments_list_group_0_built =
-            CommentsListGroup::CommentsListGroup0(comments_list_group_0_built);
+            CommentsListGroup::LineComment(comments_list_group_0_built);
         self.push(
             ASTType::CommentsListGroup(comments_list_group_0_built),
             context,
@@ -3055,12 +3086,12 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let block_comment = pop_item!(self, block_comment, BlockComment, context);
-        let comments_list_group_1_built = CommentsListGroup1Builder::default()
+        let comments_list_group_1_built = CommentsListGroupBlockCommentBuilder::default()
             .block_comment(Box::new(block_comment))
             .build()
             .into_diagnostic()?;
         let comments_list_group_1_built =
-            CommentsListGroup::CommentsListGroup1(comments_list_group_1_built);
+            CommentsListGroup::BlockComment(comments_list_group_1_built);
         self.push(
             ASTType::CommentsListGroup(comments_list_group_1_built),
             context,
