@@ -638,52 +638,13 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-<<<<<<< HEAD
-=======
-version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "261f291d9271cd07f5a3627ec9dceca180f63cf4f25e90423d0aef3287d27e6b"
-dependencies = [
- "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "cfg-if",
- "clap 3.2.23",
- "derive_builder 0.11.2",
- "env_logger",
- "id_tree",
- "id_tree_layout",
- "lazy_static",
- "log",
- "miette 4.7.1",
- "owo-colors",
- "parol_runtime 0.5.9",
- "petgraph",
- "rand",
- "rand_regex",
- "regex",
- "regex-syntax",
- "serde",
- "serde_derive",
- "serde_json",
- "syn 1.0.103",
- "thiserror",
-]
-
-[[package]]
-name = "parol"
->>>>>>> c6f1ee2 (Use the latest derive_builder)
 version = "0.14.1-alpha.1"
 dependencies = [
  "bart",
  "bart_derive",
  "cfg-if",
-<<<<<<< HEAD
  "clap",
- "derive_builder 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
-=======
- "clap 4.0.26",
  "derive_builder 0.11.2",
->>>>>>> c6f1ee2 (Use the latest derive_builder)
  "env_logger",
  "function_name",
  "id_tree",
