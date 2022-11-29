@@ -395,6 +395,7 @@ pub trait Oberon2GrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0Group0<'t> {
     pub proc_decl: Box<ProcDecl<'t>>,
 }
@@ -406,6 +407,7 @@ pub struct DeclSeqList0Group0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0Group1<'t> {
     pub forward_decl: Box<ForwardDecl<'t>>,
 }
@@ -417,6 +419,7 @@ pub struct DeclSeqList0Group1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlock0<'t> {
     pub const_decl_block: Box<ConstDeclBlock<'t>>,
 }
@@ -428,6 +431,7 @@ pub struct DeclBlock0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlock1<'t> {
     pub type_decl_block: Box<TypeDeclBlock<'t>>,
 }
@@ -439,6 +443,7 @@ pub struct DeclBlock1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlock2<'t> {
     pub var_decl_block: Box<VarDeclBlock<'t>>,
 }
@@ -450,6 +455,7 @@ pub struct DeclBlock2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDef0<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
 }
@@ -461,6 +467,7 @@ pub struct TypeDef0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDef1<'t> {
     pub type_def_opt: Option<Box<TypeDefOpt<'t>>>,
     pub type_def: Box<TypeDef<'t>>,
@@ -473,6 +480,7 @@ pub struct TypeDef1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDef2<'t> {
     pub type_def_opt0: Option<Box<TypeDefOpt0<'t>>>,
     pub field_list: Box<FieldList<'t>>,
@@ -486,6 +494,7 @@ pub struct TypeDef2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDef3<'t> {
     pub type_def: Box<TypeDef<'t>>,
 }
@@ -497,6 +506,7 @@ pub struct TypeDef3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDef4<'t> {
     pub type_def_opt1: Option<Box<TypeDefOpt1<'t>>>,
 }
@@ -508,6 +518,7 @@ pub struct TypeDef4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup0<'t> {
     pub designator: Box<Designator<'t>>,
     pub statement_opt_group_suffix: Box<StatementOptGroupSuffix<'t>>,
@@ -520,6 +531,7 @@ pub struct StatementOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupSuffix0<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -531,6 +543,7 @@ pub struct StatementOptGroupSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupSuffix1<'t> {
     pub statement_opt0: Option<Box<StatementOpt0<'t>>>,
 }
@@ -542,6 +555,7 @@ pub struct StatementOptGroupSuffix1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup1<'t> {
     pub expr: Box<Expr<'t>>,
     pub then_block: Box<ThenBlock<'t>>,
@@ -556,6 +570,7 @@ pub struct StatementOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup2<'t> {
     pub expr: Box<Expr<'t>>,
     pub cases: Box<Cases<'t>>,
@@ -569,6 +584,7 @@ pub struct StatementOptGroup2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup3<'t> {
     pub expr: Box<Expr<'t>>,
     pub do_block: Box<DoBlock<'t>>,
@@ -581,6 +597,7 @@ pub struct StatementOptGroup3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup4<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
     pub expr: Box<Expr<'t>>,
@@ -593,6 +610,7 @@ pub struct StatementOptGroup4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup5<'t> {
     pub for_init: Box<ForInit<'t>>,
     pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
@@ -606,6 +624,7 @@ pub struct StatementOptGroup5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup6<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -617,6 +636,7 @@ pub struct StatementOptGroup6<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup7<'t> {
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
     pub statement_opt_group_list0: Vec<StatementOptGroupList0<'t>>,
@@ -630,6 +650,7 @@ pub struct StatementOptGroup7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup8 {}
 
 ///
@@ -639,6 +660,7 @@ pub struct StatementOptGroup8 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroup9<'t> {
     pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
 }
@@ -650,6 +672,7 @@ pub struct StatementOptGroup9<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprOptGroup0<'t> {
     pub plus: Token<'t>, /* \+ */
 }
@@ -661,6 +684,7 @@ pub struct SimpleExprOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprOptGroup1<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -672,6 +696,7 @@ pub struct SimpleExprOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor0<'t> {
     pub designator: Box<Designator<'t>>,
     pub factor_opt: Option<Box<FactorOpt<'t>>>,
@@ -684,6 +709,7 @@ pub struct Factor0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor1<'t> {
     pub number: Box<Number<'t>>,
 }
@@ -695,6 +721,7 @@ pub struct Factor1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor2<'t> {
     pub character: Box<Character<'t>>,
 }
@@ -706,6 +733,7 @@ pub struct Factor2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor3<'t> {
     pub string: Box<String<'t>>,
 }
@@ -717,6 +745,7 @@ pub struct Factor3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor4 {}
 
 ///
@@ -726,6 +755,7 @@ pub struct Factor4 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor5<'t> {
     pub set: Box<Set<'t>>,
 }
@@ -737,6 +767,7 @@ pub struct Factor5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor6<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -748,6 +779,7 @@ pub struct Factor6<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Factor7<'t> {
     pub factor: Box<Factor<'t>>,
 }
@@ -759,6 +791,7 @@ pub struct Factor7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation0 {}
 
 ///
@@ -768,6 +801,7 @@ pub struct Relation0 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation1<'t> {
     pub hash: Token<'t>, /* # */
 }
@@ -779,6 +813,7 @@ pub struct Relation1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation2<'t> {
     pub l_t: Token<'t>, /* < */
 }
@@ -790,6 +825,7 @@ pub struct Relation2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation3<'t> {
     pub l_t_equ: Token<'t>, /* <= */
 }
@@ -801,6 +837,7 @@ pub struct Relation3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation4<'t> {
     pub g_t: Token<'t>, /* > */
 }
@@ -812,6 +849,7 @@ pub struct Relation4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation5<'t> {
     pub g_t_equ: Token<'t>, /* >= */
 }
@@ -823,6 +861,7 @@ pub struct Relation5<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation6 {
     pub in_op: Box<InOp>,
 }
@@ -834,6 +873,7 @@ pub struct Relation6 {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Relation7<'t> {
     pub i_s: Token<'t>, /* IS */
 }
@@ -845,6 +885,7 @@ pub struct Relation7<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOp0<'t> {
     pub plus: Token<'t>, /* \+ */
 }
@@ -856,6 +897,7 @@ pub struct AddOp0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOp1<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -867,6 +909,7 @@ pub struct AddOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOp2<'t> {
     pub o_r: Token<'t>, /* OR */
 }
@@ -878,6 +921,7 @@ pub struct AddOp2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulOp0<'t> {
     pub star: Token<'t>, /* \* */
 }
@@ -889,6 +933,7 @@ pub struct MulOp0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulOp1<'t> {
     pub slash: Token<'t>, /* / */
 }
@@ -900,6 +945,7 @@ pub struct MulOp1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulOp2<'t> {
     pub d_i_v: Token<'t>, /* DIV */
 }
@@ -911,6 +957,7 @@ pub struct MulOp2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulOp3<'t> {
     pub m_o_d: Token<'t>, /* MOD */
 }
@@ -922,6 +969,7 @@ pub struct MulOp3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct MulOp4<'t> {
     pub amp: Token<'t>, /* & */
 }
@@ -933,6 +981,7 @@ pub struct MulOp4<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorSuffix0<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -944,6 +993,7 @@ pub struct DesignatorSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorSuffix1<'t> {
     pub expr_list: Box<ExprList<'t>>,
 }
@@ -955,6 +1005,7 @@ pub struct DesignatorSuffix1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorSuffix2 {}
 
 ///
@@ -964,6 +1015,7 @@ pub struct DesignatorSuffix2 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct QualIdent0<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -975,6 +1027,7 @@ pub struct QualIdent0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct QualIdent1<'t> {
     pub q_ident: Box<QIdent<'t>>,
 }
@@ -986,6 +1039,7 @@ pub struct QualIdent1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDefOptGroup0<'t> {
     pub star: Token<'t>, /* \* */
 }
@@ -997,6 +1051,7 @@ pub struct IdentDefOptGroup0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDefOptGroup1<'t> {
     pub minus: Token<'t>, /* - */
 }
@@ -1008,6 +1063,7 @@ pub struct IdentDefOptGroup1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Number0<'t> {
     pub integer: Box<Integer<'t>>,
 }
@@ -1019,6 +1075,7 @@ pub struct Number0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Number1<'t> {
     pub real: Box<Real<'t>>,
 }
@@ -1044,6 +1101,7 @@ pub enum AddOp<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Case<'t> {
     pub case_opt: Option<Box<CaseOpt<'t>>>,
 }
@@ -1053,6 +1111,7 @@ pub struct Case<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseLabels<'t> {
     pub const_expr: Box<ConstExpr<'t>>,
     pub case_labels_opt: Option<Box<CaseLabelsOpt<'t>>>,
@@ -1063,6 +1122,7 @@ pub struct CaseLabels<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseLabelsOpt<'t> {
     pub dot_dot: Token<'t>, /* \.\. */
     pub const_expr: Box<ConstExpr<'t>>,
@@ -1073,6 +1133,7 @@ pub struct CaseLabelsOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseOpt<'t> {
     pub case_labels: Box<CaseLabels<'t>>,
     pub case_opt_list: Vec<CaseOptList<'t>>,
@@ -1084,6 +1145,7 @@ pub struct CaseOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseOptList<'t> {
     pub case_labels: Box<CaseLabels<'t>>,
 }
@@ -1093,6 +1155,7 @@ pub struct CaseOptList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Cases<'t> {
     pub case: Box<Case<'t>>,
     pub cases_list: Vec<CasesList<'t>>,
@@ -1103,6 +1166,7 @@ pub struct Cases<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct CasesList<'t> {
     pub case: Box<Case<'t>>,
 }
@@ -1112,6 +1176,7 @@ pub struct CasesList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Character<'t> {
     pub character: Token<'t>, /* [0-9][0-9A-F]*X */
 }
@@ -1121,6 +1186,7 @@ pub struct Character<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDecl<'t> {
     pub ident_def: Box<IdentDef<'t>>,
     pub const_expr: Box<ConstExpr<'t>>,
@@ -1131,6 +1197,7 @@ pub struct ConstDecl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDeclBlock<'t> {
     pub const_decl_block_list: Vec<ConstDeclBlockList<'t>>,
 }
@@ -1140,6 +1207,7 @@ pub struct ConstDeclBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDeclBlockList<'t> {
     pub const_decl: Box<ConstDecl<'t>>,
 }
@@ -1149,6 +1217,7 @@ pub struct ConstDeclBlockList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstExpr<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -1169,6 +1238,7 @@ pub enum DeclBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeq<'t> {
     pub decl_seq_list: Vec<DeclSeqList<'t>>,
     pub decl_seq_list0: Vec<DeclSeqList0<'t>>,
@@ -1179,6 +1249,7 @@ pub struct DeclSeq<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList<'t> {
     pub decl_block: Box<DeclBlock<'t>>,
 }
@@ -1188,6 +1259,7 @@ pub struct DeclSeqList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0<'t> {
     pub decl_seq_list0_group: Box<DeclSeqList0Group<'t>>,
 }
@@ -1207,6 +1279,7 @@ pub enum DeclSeqList0Group<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Designator<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
     pub designator_list: Vec<DesignatorList<'t>>,
@@ -1217,6 +1290,7 @@ pub struct Designator<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorList<'t> {
     pub designator_suffix: Box<DesignatorSuffix<'t>>,
 }
@@ -1237,6 +1311,7 @@ pub enum DesignatorSuffix<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct DoBlock<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -1246,6 +1321,7 @@ pub struct DoBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Element<'t> {
     pub expr: Box<Expr<'t>>,
     pub element_opt: Option<Box<ElementOpt<'t>>>,
@@ -1256,6 +1332,7 @@ pub struct Element<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElementOpt<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -1265,6 +1342,7 @@ pub struct ElementOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElsePart<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -1274,6 +1352,7 @@ pub struct ElsePart<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElsifPart<'t> {
     pub expr: Box<Expr<'t>>,
     pub then_block: Box<ThenBlock<'t>>,
@@ -1284,6 +1363,7 @@ pub struct ElsifPart<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expr<'t> {
     pub simple_expr: Box<SimpleExpr<'t>>,
     pub expr_opt: Option<Box<ExprOpt<'t>>>,
@@ -1294,6 +1374,7 @@ pub struct Expr<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprList<'t> {
     pub expr: Box<Expr<'t>>,
     pub expr_list_list: Vec<ExprListList<'t>>,
@@ -1304,6 +1385,7 @@ pub struct ExprList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprListList<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -1313,6 +1395,7 @@ pub struct ExprListList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprOpt<'t> {
     pub relation: Box<Relation<'t>>,
     pub simple_expr: Box<SimpleExpr<'t>>,
@@ -1323,6 +1406,7 @@ pub struct ExprOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSection<'t> {
     pub f_p_section_opt: Option<Box<FPSectionOpt>>,
     pub ident: Box<Ident<'t>>,
@@ -1335,6 +1419,7 @@ pub struct FPSection<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionList<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -1344,6 +1429,7 @@ pub struct FPSectionList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionOpt {}
 
 ///
@@ -1367,6 +1453,7 @@ pub enum Factor<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOpt<'t> {
     pub factor_opt0: Option<Box<FactorOpt0<'t>>>,
 }
@@ -1376,6 +1463,7 @@ pub struct FactorOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOpt0<'t> {
     pub expr_list: Box<ExprList<'t>>,
 }
@@ -1385,6 +1473,7 @@ pub struct FactorOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldList<'t> {
     pub field_list_opt: Option<Box<FieldListOpt<'t>>>,
 }
@@ -1394,6 +1483,7 @@ pub struct FieldList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldListOpt<'t> {
     pub ident_list: Box<IdentList<'t>>,
     pub type_def: Box<TypeDef<'t>>,
@@ -1404,6 +1494,7 @@ pub struct FieldListOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForInit<'t> {
     pub ident: Box<Ident<'t>>,
     pub expr: Box<Expr<'t>>,
@@ -1415,6 +1506,7 @@ pub struct ForInit<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForStep<'t> {
     pub const_expr: Box<ConstExpr<'t>>,
 }
@@ -1424,6 +1516,7 @@ pub struct ForStep<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalPars<'t> {
     pub formal_pars_opt: Option<Box<FormalParsOpt<'t>>>,
     pub formal_pars_opt0: Option<Box<FormalParsOpt0<'t>>>,
@@ -1434,6 +1527,7 @@ pub struct FormalPars<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOpt<'t> {
     pub f_p_section: Box<FPSection<'t>>,
     pub formal_pars_opt_list: Vec<FormalParsOptList<'t>>,
@@ -1444,6 +1538,7 @@ pub struct FormalParsOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOpt0<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
 }
@@ -1453,6 +1548,7 @@ pub struct FormalParsOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOptList<'t> {
     pub f_p_section: Box<FPSection<'t>>,
 }
@@ -1462,6 +1558,7 @@ pub struct FormalParsOptList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDecl<'t> {
     pub circumflex: Token<'t>, /* \^ */
     pub forward_decl_opt: Option<Box<ForwardDeclOpt<'t>>>,
@@ -1474,6 +1571,7 @@ pub struct ForwardDecl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDeclOpt<'t> {
     pub receiver: Box<Receiver<'t>>,
 }
@@ -1483,6 +1581,7 @@ pub struct ForwardDeclOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDeclOpt0<'t> {
     pub formal_pars: Box<FormalPars<'t>>,
 }
@@ -1492,6 +1591,7 @@ pub struct ForwardDeclOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Guard<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
     pub qual_ident0: Box<QualIdent<'t>>,
@@ -1502,6 +1602,7 @@ pub struct Guard<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct GuardedDoBlock<'t> {
     pub guard: Box<Guard<'t>>,
     pub statement_seq: Box<StatementSeq<'t>>,
@@ -1512,6 +1613,7 @@ pub struct GuardedDoBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Ident<'t> {
     pub ident: Token<'t>, /* [a-zA-Z_]\w* */
 }
@@ -1521,6 +1623,7 @@ pub struct Ident<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDef<'t> {
     pub ident: Box<Ident<'t>>,
     pub ident_def_opt: Option<Box<IdentDefOpt<'t>>>,
@@ -1531,6 +1634,7 @@ pub struct IdentDef<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDefOpt<'t> {
     pub ident_def_opt_group: Box<IdentDefOptGroup<'t>>,
 }
@@ -1550,6 +1654,7 @@ pub enum IdentDefOptGroup<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentList<'t> {
     pub ident_def: Box<IdentDef<'t>>,
     pub ident_list_list: Vec<IdentListList<'t>>,
@@ -1560,6 +1665,7 @@ pub struct IdentList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentListList<'t> {
     pub ident_def: Box<IdentDef<'t>>,
 }
@@ -1569,6 +1675,7 @@ pub struct IdentListList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportList<'t> {
     pub import_list_opt: Option<Box<ImportListOpt<'t>>>,
     pub ident: Box<Ident<'t>>,
@@ -1580,6 +1687,7 @@ pub struct ImportList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListList<'t> {
     pub import_list_opt0: Option<Box<ImportListOpt0<'t>>>,
     pub ident: Box<Ident<'t>>,
@@ -1590,6 +1698,7 @@ pub struct ImportListList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListOpt<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -1599,6 +1708,7 @@ pub struct ImportListOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListOpt0<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -1608,6 +1718,7 @@ pub struct ImportListOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct InOp {}
 
 ///
@@ -1615,6 +1726,7 @@ pub struct InOp {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Integer<'t> {
     pub integer: Token<'t>, /* [0-9][0-9]*|[0-9][0-9A-F]*H */
 }
@@ -1624,6 +1736,7 @@ pub struct Integer<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwBegin {}
 
 ///
@@ -1631,6 +1744,7 @@ pub struct KwBegin {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwCase {}
 
 ///
@@ -1638,6 +1752,7 @@ pub struct KwCase {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwDo {}
 
 ///
@@ -1645,6 +1760,7 @@ pub struct KwDo {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwElse {}
 
 ///
@@ -1652,6 +1768,7 @@ pub struct KwElse {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwElsif {}
 
 ///
@@ -1659,6 +1776,7 @@ pub struct KwElsif {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwEnd {}
 
 ///
@@ -1666,6 +1784,7 @@ pub struct KwEnd {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwIf {}
 
 ///
@@ -1673,6 +1792,7 @@ pub struct KwIf {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwOf {}
 
 ///
@@ -1680,6 +1800,7 @@ pub struct KwOf {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwProcedure {}
 
 ///
@@ -1687,6 +1808,7 @@ pub struct KwProcedure {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwThen {}
 
 ///
@@ -1694,6 +1816,7 @@ pub struct KwThen {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwTo {}
 
 ///
@@ -1701,6 +1824,7 @@ pub struct KwTo {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct KwVar {}
 
 ///
@@ -1708,6 +1832,7 @@ pub struct KwVar {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleBody<'t> {
     pub statement_block: Box<StatementBlock<'t>>,
 }
@@ -1717,6 +1842,7 @@ pub struct ModuleBody<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleHead<'t> {
     pub ident: Box<Ident<'t>>,
 }
@@ -1749,6 +1875,7 @@ pub enum Number<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Oberon2<'t> {
     pub module_head: Box<ModuleHead<'t>>,
     pub oberon2_opt: Option<Box<Oberon2Opt<'t>>>,
@@ -1761,6 +1888,7 @@ pub struct Oberon2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Oberon2Opt<'t> {
     pub import_list: Box<ImportList<'t>>,
 }
@@ -1770,6 +1898,7 @@ pub struct Oberon2Opt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct OptElsePartEnd<'t> {
     pub opt_else_part_end_opt: Option<Box<OptElsePartEndOpt<'t>>>,
 }
@@ -1779,6 +1908,7 @@ pub struct OptElsePartEnd<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct OptElsePartEndOpt<'t> {
     pub else_part: Box<ElsePart<'t>>,
 }
@@ -1788,6 +1918,7 @@ pub struct OptElsePartEndOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcDecl<'t> {
     pub procedure_heading: Box<ProcedureHeading<'t>>,
     pub procedure_body: Box<ProcedureBody<'t>>,
@@ -1798,6 +1929,7 @@ pub struct ProcDecl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBody<'t> {
     pub decl_seq: Box<DeclSeq<'t>>,
     pub statement_block: Box<StatementBlock<'t>>,
@@ -1808,6 +1940,7 @@ pub struct ProcedureBody<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeading<'t> {
     pub procedure_heading_opt: Option<Box<ProcedureHeadingOpt<'t>>>,
     pub ident_def: Box<IdentDef<'t>>,
@@ -1819,6 +1952,7 @@ pub struct ProcedureHeading<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeadingOpt<'t> {
     pub receiver: Box<Receiver<'t>>,
 }
@@ -1828,6 +1962,7 @@ pub struct ProcedureHeadingOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeadingOpt0<'t> {
     pub formal_pars: Box<FormalPars<'t>>,
 }
@@ -1837,6 +1972,7 @@ pub struct ProcedureHeadingOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct QIdent<'t> {
     pub q_ident: Token<'t>, /* [a-zA-Z_]\w*\.[a-zA-Z_]\w* */
 }
@@ -1856,6 +1992,7 @@ pub enum QualIdent<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Real<'t> {
     pub real: Token<'t>, /* [0-9][0-9]*\.[0-9]*(ED[+-]?[0-9][0-9]*)? */
 }
@@ -1865,6 +2002,7 @@ pub struct Real<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Receiver<'t> {
     pub receiver_opt: Option<Box<ReceiverOpt>>,
     pub receiver_var_decl: Box<ReceiverVarDecl<'t>>,
@@ -1875,6 +2013,7 @@ pub struct Receiver<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ReceiverOpt {}
 
 ///
@@ -1882,6 +2021,7 @@ pub struct ReceiverOpt {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ReceiverVarDecl<'t> {
     pub ident: Box<Ident<'t>>,
     pub ident0: Box<Ident<'t>>,
@@ -1908,6 +2048,7 @@ pub enum Relation<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Set<'t> {
     pub set_opt: Option<Box<SetOpt<'t>>>,
 }
@@ -1917,6 +2058,7 @@ pub struct Set<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SetOpt<'t> {
     pub element: Box<Element<'t>>,
     pub set_opt_list: Vec<SetOptList<'t>>,
@@ -1927,6 +2069,7 @@ pub struct SetOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SetOptList<'t> {
     pub element: Box<Element<'t>>,
 }
@@ -1936,6 +2079,7 @@ pub struct SetOptList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExpr<'t> {
     pub simple_expr_opt: Option<Box<SimpleExprOpt<'t>>>,
     pub term: Box<Term<'t>>,
@@ -1947,6 +2091,7 @@ pub struct SimpleExpr<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprList<'t> {
     pub add_op: Box<AddOp<'t>>,
     pub term: Box<Term<'t>>,
@@ -1957,6 +2102,7 @@ pub struct SimpleExprList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprOpt<'t> {
     pub simple_expr_opt_group: Box<SimpleExprOptGroup<'t>>,
 }
@@ -1976,6 +2122,7 @@ pub enum SimpleExprOptGroup<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Statement<'t> {
     pub statement_opt: Option<Box<StatementOpt<'t>>>,
 }
@@ -1985,6 +2132,7 @@ pub struct Statement<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementBlock<'t> {
     pub statement_block_opt: Option<Box<StatementBlockOpt<'t>>>,
     pub ident: Box<Ident<'t>>,
@@ -1995,6 +2143,7 @@ pub struct StatementBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementBlockOpt<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -2004,6 +2153,7 @@ pub struct StatementBlockOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt<'t> {
     pub statement_opt_group: Box<StatementOptGroup<'t>>,
 }
@@ -2013,6 +2163,7 @@ pub struct StatementOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt0<'t> {
     pub statement_opt3: Option<Box<StatementOpt3<'t>>>,
 }
@@ -2022,6 +2173,7 @@ pub struct StatementOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt1<'t> {
     pub for_step: Box<ForStep<'t>>,
 }
@@ -2031,6 +2183,7 @@ pub struct StatementOpt1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt2<'t> {
     pub expr: Box<Expr<'t>>,
 }
@@ -2040,6 +2193,7 @@ pub struct StatementOpt2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt3<'t> {
     pub expr_list: Box<ExprList<'t>>,
 }
@@ -2067,6 +2221,7 @@ pub enum StatementOptGroup<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupList<'t> {
     pub elsif_part: Box<ElsifPart<'t>>,
 }
@@ -2076,6 +2231,7 @@ pub struct StatementOptGroupList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupList0<'t> {
     pub guarded_do_block: Box<GuardedDoBlock<'t>>,
 }
@@ -2095,6 +2251,7 @@ pub enum StatementOptGroupSuffix<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSeq<'t> {
     pub statement: Box<Statement<'t>>,
     pub statement_seq_list: Vec<StatementSeqList<'t>>,
@@ -2105,6 +2262,7 @@ pub struct StatementSeq<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSeqList<'t> {
     pub statement: Box<Statement<'t>>,
 }
@@ -2114,6 +2272,7 @@ pub struct StatementSeqList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct String<'t> {
     pub string: Token<'t>, /* \u{0022}[^\u{0022}]*\u{0022}|'[^']*' */
 }
@@ -2123,6 +2282,7 @@ pub struct String<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Term<'t> {
     pub factor: Box<Factor<'t>>,
     pub term_list: Vec<TermList<'t>>,
@@ -2133,6 +2293,7 @@ pub struct Term<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TermList<'t> {
     pub mul_op: Box<MulOp<'t>>,
     pub factor: Box<Factor<'t>>,
@@ -2143,6 +2304,7 @@ pub struct TermList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ThenBlock<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
 }
@@ -2152,6 +2314,7 @@ pub struct ThenBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDecl<'t> {
     pub ident_def: Box<IdentDef<'t>>,
     pub type_def: Box<TypeDef<'t>>,
@@ -2162,6 +2325,7 @@ pub struct TypeDecl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDeclBlock<'t> {
     pub type_decl_block_list: Vec<TypeDeclBlockList<'t>>,
 }
@@ -2171,6 +2335,7 @@ pub struct TypeDeclBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDeclBlockList<'t> {
     pub type_decl: Box<TypeDecl<'t>>,
 }
@@ -2193,6 +2358,7 @@ pub enum TypeDef<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefList<'t> {
     pub field_list: Box<FieldList<'t>>,
 }
@@ -2202,6 +2368,7 @@ pub struct TypeDefList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt<'t> {
     pub const_expr: Box<ConstExpr<'t>>,
     pub type_def_opt_list: Vec<TypeDefOptList<'t>>,
@@ -2212,6 +2379,7 @@ pub struct TypeDefOpt<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt0<'t> {
     pub qual_ident: Box<QualIdent<'t>>,
 }
@@ -2221,6 +2389,7 @@ pub struct TypeDefOpt0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt1<'t> {
     pub formal_pars: Box<FormalPars<'t>>,
 }
@@ -2230,6 +2399,7 @@ pub struct TypeDefOpt1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOptList<'t> {
     pub const_expr: Box<ConstExpr<'t>>,
 }
@@ -2239,6 +2409,7 @@ pub struct TypeDefOptList<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDecl<'t> {
     pub ident_list: Box<IdentList<'t>>,
     pub type_def: Box<TypeDef<'t>>,
@@ -2249,6 +2420,7 @@ pub struct VarDecl<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDeclBlock<'t> {
     pub var_decl_block_list: Vec<VarDeclBlockList<'t>>,
 }
@@ -2258,6 +2430,7 @@ pub struct VarDeclBlock<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDeclBlockList<'t> {
     pub var_decl: Box<VarDecl<'t>>,
 }
