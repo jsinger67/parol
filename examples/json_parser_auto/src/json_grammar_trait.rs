@@ -65,6 +65,7 @@ pub trait JsonGrammarTrait<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectSuffix0<'t> {
     pub pair: Box<Pair<'t>>,
     pub object_list: Vec<ObjectList<'t>>,
@@ -77,6 +78,7 @@ pub struct ObjectSuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectSuffix1 {}
 
 ///
@@ -86,6 +88,7 @@ pub struct ObjectSuffix1 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArraySuffix0<'t> {
     pub value: Box<Value<'t>>,
     pub array_list: Vec<ArrayList<'t>>,
@@ -98,6 +101,7 @@ pub struct ArraySuffix0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArraySuffix1 {}
 
 ///
@@ -107,6 +111,7 @@ pub struct ArraySuffix1 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value0<'t> {
     pub string: Box<String<'t>>,
 }
@@ -118,6 +123,7 @@ pub struct Value0<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value1<'t> {
     pub number: Box<Number<'t>>,
 }
@@ -129,6 +135,7 @@ pub struct Value1<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value2<'t> {
     pub object: Box<Object<'t>>,
 }
@@ -140,6 +147,7 @@ pub struct Value2<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value3<'t> {
     pub array: Box<Array<'t>>,
 }
@@ -151,6 +159,7 @@ pub struct Value3<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value4 {}
 
 ///
@@ -160,6 +169,7 @@ pub struct Value4 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value5 {}
 
 ///
@@ -169,6 +179,7 @@ pub struct Value5 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Value6 {}
 
 // -------------------------------------------------------------------------------------------------
@@ -181,6 +192,7 @@ pub struct Value6 {}
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Array<'t> {
     pub array_suffix: Box<ArraySuffix<'t>>,
 }
@@ -190,6 +202,7 @@ pub struct Array<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayList<'t> {
     pub value: Box<Value<'t>>,
 }
@@ -209,6 +222,7 @@ pub enum ArraySuffix<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Json<'t> {
     pub value: Box<Value<'t>>,
 }
@@ -218,6 +232,7 @@ pub struct Json<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Number<'t> {
     pub number: Token<'t>, /* -?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)? */
 }
@@ -227,6 +242,7 @@ pub struct Number<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Object<'t> {
     pub object_suffix: Box<ObjectSuffix<'t>>,
 }
@@ -236,6 +252,7 @@ pub struct Object<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ObjectList<'t> {
     pub pair: Box<Pair<'t>>,
 }
@@ -255,6 +272,7 @@ pub enum ObjectSuffix<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Pair<'t> {
     pub string: Box<String<'t>>,
     pub value: Box<Value<'t>>,
@@ -265,6 +283,7 @@ pub struct Pair<'t> {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct String<'t> {
     pub string: Token<'t>, /* \u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022} */
 }
