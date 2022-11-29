@@ -92,7 +92,7 @@ dependencies = [
 name = "basic"
 version = "0.5.0"
 dependencies = [
- "derive_builder 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_builder 0.11.2",
  "env_logger",
  "function_name",
  "id_tree",
@@ -232,15 +232,16 @@ version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d07adf7be193b71cc36b193d0f5fe60b918a3a9db4dad0449f57bcfd519704a3"
 dependencies = [
- "derive_builder_macro 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_builder_macro 0.11.2",
 ]
 
 [[package]]
 name = "derive_builder"
-version = "0.11.2"
-source = "git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field#c6211f8ea45e563716854f1cb39de431dd6a53a6"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d67778784b508018359cbc8696edb3db78160bab2c2a28ba7f56ef6932997f8"
 dependencies = [
- "derive_builder_macro 0.11.2 (git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field)",
+ "derive_builder_macro 0.12.0",
 ]
 
 [[package]]
@@ -257,8 +258,9 @@ dependencies = [
 
 [[package]]
 name = "derive_builder_core"
-version = "0.11.2"
-source = "git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field#c6211f8ea45e563716854f1cb39de431dd6a53a6"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c11bdc11a0c47bc7d37d582b5285da6849c96681023680b906673c5707af7b0f"
 dependencies = [
  "darling",
  "proc-macro2",
@@ -272,16 +274,17 @@ version = "0.11.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f0314b72bed045f3a68671b3c86328386762c93f82d98c65c3cb5e5f573dd68"
 dependencies = [
- "derive_builder_core 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_builder_core 0.11.2",
  "syn 1.0.103",
 ]
 
 [[package]]
 name = "derive_builder_macro"
-version = "0.11.2"
-source = "git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field#c6211f8ea45e563716854f1cb39de431dd6a53a6"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebcda35c7a396850a55ffeac740804b40ffec779b98fffbb1738f4033f0ee79e"
 dependencies = [
- "derive_builder_core 0.11.2 (git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field)",
+ "derive_builder_core 0.12.0",
  "syn 1.0.103",
 ]
 
@@ -446,7 +449,7 @@ checksum = "4217ad341ebadf8d8e724e264f13e593e0648f5b3e94b3896a5df283be015ecc"
 name = "json_parser_auto"
 version = "0.4.0"
 dependencies = [
- "derive_builder 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_builder 0.11.2",
  "env_logger",
  "function_name",
  "id_tree",
@@ -635,13 +638,52 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
+<<<<<<< HEAD
+=======
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "261f291d9271cd07f5a3627ec9dceca180f63cf4f25e90423d0aef3287d27e6b"
+dependencies = [
+ "bart 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bart_derive 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cfg-if",
+ "clap 3.2.23",
+ "derive_builder 0.11.2",
+ "env_logger",
+ "id_tree",
+ "id_tree_layout",
+ "lazy_static",
+ "log",
+ "miette 4.7.1",
+ "owo-colors",
+ "parol_runtime 0.5.9",
+ "petgraph",
+ "rand",
+ "rand_regex",
+ "regex",
+ "regex-syntax",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "syn 1.0.103",
+ "thiserror",
+]
+
+[[package]]
+name = "parol"
+>>>>>>> c6f1ee2 (Use the latest derive_builder)
 version = "0.14.1-alpha.1"
 dependencies = [
  "bart",
  "bart_derive",
  "cfg-if",
+<<<<<<< HEAD
  "clap",
  "derive_builder 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+=======
+ "clap 4.0.26",
+ "derive_builder 0.11.2",
+>>>>>>> c6f1ee2 (Use the latest derive_builder)
  "env_logger",
  "function_name",
  "id_tree",
@@ -666,7 +708,7 @@ version = "0.3.4-alpha.1"
 dependencies = [
  "clap",
  "derive-new",
- "derive_builder 0.11.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_builder 0.11.2",
  "env_logger",
  "function_name",
  "id_tree",
@@ -692,7 +734,7 @@ version = "0.1.0"
 name = "parol_runtime"
 version = "0.10.0"
 dependencies = [
- "derive_builder 0.11.2 (git+https://github.com/colin-kiegel/rust-derive-builder?branch=crate-field)",
+ "derive_builder 0.12.0",
  "function_name",
  "id_tree",
  "id_tree_layout",
