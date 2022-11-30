@@ -55,6 +55,7 @@ pub trait ListGrammarTrait {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Items {
     pub num: Box<Num>,
     pub items_list: Vec<ItemsList>,
@@ -65,6 +66,7 @@ pub struct Items {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsList {
     pub num: Box<Num>,
 }
@@ -74,6 +76,7 @@ pub struct ItemsList {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct List {
     pub list_opt: Option<Box<ListOpt>>,
 }
@@ -83,6 +86,7 @@ pub struct List {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct ListOpt {
     pub items: crate::list_grammar::Numbers,
 }
@@ -92,6 +96,7 @@ pub struct ListOpt {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct Num {
     pub num: crate::list_grammar::Number, /* 0|[1-9][0-9]* */
 }
@@ -101,6 +106,7 @@ pub struct Num {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TrailingComma {
     pub trailing_comma_opt: Option<Box<TrailingCommaOpt>>,
 }
@@ -110,6 +116,7 @@ pub struct TrailingComma {
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
 pub struct TrailingCommaOpt {}
 
 // -------------------------------------------------------------------------------------------------
