@@ -95,7 +95,7 @@ impl TerminalKind {
     pub fn expand(&self, term: &str) -> String {
         match self {
             crate::TerminalKind::Legacy | crate::TerminalKind::Regex => term.to_string(),
-            crate::TerminalKind::Raw => regex::escape(&term),
+            crate::TerminalKind::Raw => regex::escape(term),
         }
     }
 }
