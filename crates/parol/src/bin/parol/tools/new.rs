@@ -31,6 +31,10 @@ pub struct Args {
     /// Add support for generating visualized parse trees
     #[clap(short, long)]
     tree: bool,
+
+    /// Track the generated files in git
+    #[clap(long)]
+    track_generated_files: bool,
 }
 
 #[derive(Debug, Builder)]
@@ -40,6 +44,7 @@ struct CreationData<'a> {
     path: PathBuf,
     is_bin: bool,
     tree_gen: bool,
+    track_generated_files: bool,
 }
 
 pub fn main(args: &Args) -> Result<()> {
@@ -61,6 +66,7 @@ pub fn main(args: &Args) -> Result<()> {
         .path(args.path.clone())
         .is_bin(args.bin)
         .tree_gen(args.tree)
+        .track_generated_files(args.track_generated_files)
         .build()
         .into_diagnostic()?;
 
@@ -165,6 +171,10 @@ fn generate_crate(creation_data: CreationData) -> Result<()> {
     }
     generate_grammar_rs(&creation_data)?;
     generate_test_txt(&creation_data)?;
+    // Generate the .gitignore file
+    if !creation_data.track_generated_files {
+        generate_gitignore(&creation_data)?;
+    }
 
     Ok(())
 }
@@ -306,6 +316,25 @@ fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
     fs::write(test_file, test_content)
         .into_diagnostic()
         .wrap_err("Error writing test file!")?;
+
+    Ok(())
+}
+
+#[derive(BartDisplay, Builder, Debug, Default)]
+#[template = "src/bin/parol/tools/templates/.gitignore.tpl"]
+struct GitIgnoreData<'a> {
+    crate_name: &'a str,
+}
+
+fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
+    let path = creation_data.path.clone().join(".gitignore");
+    let gitignore_data = GitIgnoreDataBuilder::default()
+        .crate_name(creation_data.crate_name)
+        .build()
+        .into_diagnostic()?;
+    fs::write(path, gitignore_data.to_string())
+        .into_diagnostic()
+        .wrap_err("Error writing .gitignore file!")?;
 
     Ok(())
 }
