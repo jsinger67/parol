@@ -1,4 +1,3 @@
-/target
 
 {{crate_name}}-exp.par
 src/{{crate_name}}_parser.rs

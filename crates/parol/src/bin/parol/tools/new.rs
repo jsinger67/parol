@@ -4,6 +4,7 @@ use miette::{miette, Context, IntoDiagnostic, Result};
 use owo_colors::OwoColorize;
 use parol::generators::NamingHelper as NmHlp;
 use std::fs;
+use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -332,9 +333,16 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
         .crate_name(creation_data.crate_name)
         .build()
         .into_diagnostic()?;
-    fs::write(path, gitignore_data.to_string())
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .append(true)
+        .open(path)
         .into_diagnostic()
-        .wrap_err("Error writing .gitignore file!")?;
+        .wrap_err("Error opening .gitignore file!")?;
+
+    writeln!(file, "{}", gitignore_data)
+        .into_diagnostic()
+        .wrap_err("Error writing to .gitignore file!")?;
 
     Ok(())
 }
