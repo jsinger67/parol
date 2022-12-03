@@ -21,12 +21,27 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.14.1 - Not released yet
+## v0.15.0 - Not released yet
 
+* Merged PR [#34](https://github.com/jsinger67/parol/pull/34) from [ryo33](https://github.com/ryo33)
+which closes issue [#33](https://github.com/jsinger67/parol/issues/33)
+  * Opt out for tracking generated parser files by git
+* Merged PR [#31](https://github.com/jsinger67/parol/pull/31) from [ryo33](https://github.com/ryo33)
+which closes issue [#20](https://github.com/jsinger67/parol/issues/20)
+  * Use once_cell instead of lazy_static
+* Merged PR [#27](https://github.com/jsinger67/parol/pull/27) from [ryo33](https://github.com/ryo33)
+* Merged PR [#25](https://github.com/jsinger67/parol/pull/25) from [ryo33](https://github.com/ryo33)
+which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
+  * This repository is now a Cargo Workspace - great infrastructural changes
+  * Many supplementary tools and examples are now included in this repository
+    * Still existing repositories will be marked as obsolete soon
+* Fixed issue [#28](https://github.com/jsinger67/parol/issues/28)
+  * Smarter type generation in auto generation - Part 1 Deduce the variant name from its right-hand
+  side.
 * Fixed issue [#22](https://github.com/jsinger67/parol/issues/22)
   * The parser detects conflicting token aliases pairwise and issues a dedicated error message
 * Extended enhancement from issue [#19](https://github.com/jsinger67/parol/issues/19) to
-line_comment and block_comment directives
+`line_comment` and `block_comment` directives
 
 ## v0.14.0 - 2022-11-18
 

@@ -7,7 +7,8 @@ members = [
   "examples/basic_interpreter",
   "examples/json_parser",
   "examples/json_parser_auto",
-  "examples/oberon2"
+  "examples/oberon2",
+  "examples/toml"
 ]
 
 exclude = [

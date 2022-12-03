@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.14.1-alpha.2"
+version = "0.15.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -17,7 +17,7 @@ bart = { git = "https://github.com/ryo33/bart", rev = "5a6046b386aced0bdf0a5d7a2
 bart_derive = { git = "https://github.com/ryo33/bart", rev = "5a6046b386aced0bdf0a5d7a23ea96accefade09" }
 cfg-if = "1.0.0"
 clap = { version = "4.0", features = [ "derive", "cargo" ] }
-derive_builder = "0.11.2"
+derive_builder = "0.12.0"
 env_logger = "0.10.0"
 function_name = "0.3.0"
 id_tree = "1.8"

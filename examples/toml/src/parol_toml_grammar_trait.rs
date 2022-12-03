@@ -466,7 +466,7 @@ pub trait ParolTomlGrammarTrait<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Expression0<'t> {
+pub struct ExpressionKeyVal<'t> {
     pub key_val: Box<KeyVal<'t>>,
 }
 
@@ -478,7 +478,7 @@ pub struct Expression0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Expression1<'t> {
+pub struct ExpressionTable<'t> {
     pub table: Box<Table<'t>>,
 }
 
@@ -490,7 +490,7 @@ pub struct Expression1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct KeySuffix0 {}
+pub struct KeySuffixKeySuffixEmpty {}
 
 ///
 /// Type derived for production 11
@@ -500,7 +500,7 @@ pub struct KeySuffix0 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct KeySuffix1<'t> {
+pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
     pub dot_sep: Box<DotSep<'t>>,
     pub simple_key: Box<SimpleKey<'t>>,
     pub key_list: Vec<KeyList<'t>>,
@@ -514,7 +514,7 @@ pub struct KeySuffix1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct SimpleKey0<'t> {
+pub struct SimpleKeyQuotedKey<'t> {
     pub quoted_key: Box<QuotedKey<'t>>,
 }
 
@@ -526,7 +526,7 @@ pub struct SimpleKey0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct SimpleKey1<'t> {
+pub struct SimpleKeyUnquotedKey<'t> {
     pub unquoted_key: Box<UnquotedKey<'t>>,
 }
 
@@ -538,7 +538,7 @@ pub struct SimpleKey1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct QuotedKey0<'t> {
+pub struct QuotedKeyBasicString<'t> {
     pub basic_string: Box<BasicString<'t>>,
 }
 
@@ -550,7 +550,7 @@ pub struct QuotedKey0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct QuotedKey1<'t> {
+pub struct QuotedKeyLiteralString<'t> {
     pub literal_string: Box<LiteralString<'t>>,
 }
 
@@ -562,7 +562,7 @@ pub struct QuotedKey1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val0<'t> {
+pub struct ValBoolean<'t> {
     pub boolean: Box<Boolean<'t>>,
 }
 
@@ -574,7 +574,7 @@ pub struct Val0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val1<'t> {
+pub struct ValArray<'t> {
     pub array: Box<Array<'t>>,
 }
 
@@ -586,7 +586,7 @@ pub struct Val1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val2<'t> {
+pub struct ValInlineTable<'t> {
     pub inline_table: Box<InlineTable<'t>>,
 }
 
@@ -598,7 +598,7 @@ pub struct Val2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val3<'t> {
+pub struct ValDateTime<'t> {
     pub date_time: Box<DateTime<'t>>,
 }
 
@@ -610,7 +610,7 @@ pub struct Val3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val4<'t> {
+pub struct ValNumeric<'t> {
     pub numeric: Box<Numeric<'t>>,
 }
 
@@ -622,7 +622,7 @@ pub struct Val4<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val5<'t> {
+pub struct ValBasicString<'t> {
     pub basic_string: Box<BasicString<'t>>,
 }
 
@@ -634,7 +634,7 @@ pub struct Val5<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val6<'t> {
+pub struct ValMLBasicString<'t> {
     pub m_l_basic_string: Box<MLBasicString<'t>>,
 }
 
@@ -646,7 +646,7 @@ pub struct Val6<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val7<'t> {
+pub struct ValLiteralString<'t> {
     pub literal_string: Box<LiteralString<'t>>,
 }
 
@@ -658,7 +658,7 @@ pub struct Val7<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Val8<'t> {
+pub struct ValMLLiteralString<'t> {
     pub m_l_literal_string: Box<MLLiteralString<'t>>,
 }
 
@@ -670,7 +670,7 @@ pub struct Val8<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Numeric0<'t> {
+pub struct NumericFloat<'t> {
     pub float: Box<Float<'t>>,
 }
 
@@ -682,7 +682,7 @@ pub struct Numeric0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Numeric1<'t> {
+pub struct NumericInteger<'t> {
     pub integer: Box<Integer<'t>>,
 }
 
@@ -694,7 +694,7 @@ pub struct Numeric1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct BasicChar0<'t> {
+pub struct BasicCharBasicUnescaped<'t> {
     pub basic_unescaped: Box<BasicUnescaped<'t>>,
 }
 
@@ -706,7 +706,7 @@ pub struct BasicChar0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct BasicChar1<'t> {
+pub struct BasicCharEscaped<'t> {
     pub escaped: Box<Escaped<'t>>,
 }
 
@@ -718,7 +718,7 @@ pub struct BasicChar1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct BasicUnescaped0<'t> {
+pub struct BasicUnescapedAsciiNoEscape<'t> {
     pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
@@ -730,7 +730,7 @@ pub struct BasicUnescaped0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct BasicUnescaped1<'t> {
+pub struct BasicUnescapedNonAscii<'t> {
     pub non_ascii: Box<NonAscii<'t>>,
 }
 
@@ -742,7 +742,7 @@ pub struct BasicUnescaped1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar0<'t> {
+pub struct EscapeSeqCharQuotationMark<'t> {
     pub quotation_mark: Box<QuotationMark<'t>>,
 }
 
@@ -754,7 +754,7 @@ pub struct EscapeSeqChar0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar1<'t> {
+pub struct EscapeSeqCharEscape<'t> {
     pub escape: Box<Escape<'t>>,
 }
 
@@ -766,7 +766,7 @@ pub struct EscapeSeqChar1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar2<'t> {
+pub struct EscapeSeqCharB<'t> {
     pub b: Token<'t>, /* b */
 }
 
@@ -778,7 +778,7 @@ pub struct EscapeSeqChar2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar3<'t> {
+pub struct EscapeSeqCharF<'t> {
     pub f: Token<'t>, /* f */
 }
 
@@ -790,7 +790,7 @@ pub struct EscapeSeqChar3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar4<'t> {
+pub struct EscapeSeqCharN<'t> {
     pub n: Token<'t>, /* n */
 }
 
@@ -802,7 +802,7 @@ pub struct EscapeSeqChar4<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar5<'t> {
+pub struct EscapeSeqCharR<'t> {
     pub r: Token<'t>, /* r */
 }
 
@@ -814,7 +814,7 @@ pub struct EscapeSeqChar5<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar6<'t> {
+pub struct EscapeSeqCharT<'t> {
     pub t: Token<'t>, /* t */
 }
 
@@ -826,7 +826,7 @@ pub struct EscapeSeqChar6<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar7<'t> {
+pub struct EscapeSeqCharUnicode4<'t> {
     pub unicode4: Box<Unicode4<'t>>,
 }
 
@@ -838,7 +838,7 @@ pub struct EscapeSeqChar7<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar8<'t> {
+pub struct EscapeSeqCharUnicode8<'t> {
     pub unicode8: Box<Unicode8<'t>>,
 }
 
@@ -850,7 +850,7 @@ pub struct EscapeSeqChar8<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar9<'t> {
+pub struct EscapeSeqCharWsNewline<'t> {
     pub ws_newline: Box<WsNewline<'t>>,
 }
 
@@ -862,7 +862,7 @@ pub struct EscapeSeqChar9<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct EscapeSeqChar10<'t> {
+pub struct EscapeSeqCharAsciiNoEscape<'t> {
     pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
@@ -874,7 +874,7 @@ pub struct EscapeSeqChar10<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBContentList0<'t> {
+pub struct MLBContentListMLBContentMLBContentList<'t> {
     pub m_l_b_content: Box<MLBContent<'t>>,
     pub m_l_b_content_list: Box<MLBContentList<'t>>,
 }
@@ -887,7 +887,7 @@ pub struct MLBContentList0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBContentList2 {}
+pub struct MLBContentListMLBContentListEmpty {}
 
 ///
 /// Type derived for production 59
@@ -897,7 +897,7 @@ pub struct MLBContentList2 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBContent0<'t> {
+pub struct MLBContentMLBChar<'t> {
     pub m_l_b_char: Box<MLBChar<'t>>,
 }
 
@@ -909,7 +909,7 @@ pub struct MLBContent0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBContent1<'t> {
+pub struct MLBContentNewline<'t> {
     pub newline: Box<Newline<'t>>,
 }
 
@@ -921,7 +921,7 @@ pub struct MLBContent1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBContent2<'t> {
+pub struct MLBContentMLBEscapedNL<'t> {
     pub m_l_b_escaped_n_l: Box<MLBEscapedNL<'t>>,
 }
 
@@ -933,7 +933,7 @@ pub struct MLBContent2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBChar0<'t> {
+pub struct MLBCharMLBUnescaped<'t> {
     pub m_l_b_unescaped: Box<MLBUnescaped<'t>>,
 }
 
@@ -945,7 +945,7 @@ pub struct MLBChar0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBChar1<'t> {
+pub struct MLBCharEscaped<'t> {
     pub escaped: Box<Escaped<'t>>,
 }
 
@@ -957,7 +957,7 @@ pub struct MLBChar1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBUnescaped0<'t> {
+pub struct MLBUnescapedAsciiNoEscape<'t> {
     pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
@@ -969,7 +969,7 @@ pub struct MLBUnescaped0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLBUnescaped1<'t> {
+pub struct MLBUnescapedNonAscii<'t> {
     pub non_ascii: Box<NonAscii<'t>>,
 }
 
@@ -981,7 +981,7 @@ pub struct MLBUnescaped1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct LiteralChar0<'t> {
+pub struct LiteralCharLiteralCharNoApostrophe<'t> {
     pub literal_char_no_apostrophe: Box<LiteralCharNoApostrophe<'t>>,
 }
 
@@ -993,7 +993,7 @@ pub struct LiteralChar0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct LiteralChar1<'t> {
+pub struct LiteralCharNonAscii<'t> {
     pub non_ascii: Box<NonAscii<'t>>,
 }
 
@@ -1005,7 +1005,7 @@ pub struct LiteralChar1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLLContentList0<'t> {
+pub struct MLLContentListMLLContentMLLContentList<'t> {
     pub m_l_l_content: Box<MLLContent<'t>>,
     pub m_l_l_content_list: Box<MLLContentList<'t>>,
 }
@@ -1018,7 +1018,7 @@ pub struct MLLContentList0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLLContentList2 {}
+pub struct MLLContentListMLLContentListEmpty {}
 
 ///
 /// Type derived for production 80
@@ -1028,7 +1028,7 @@ pub struct MLLContentList2 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLLContent0<'t> {
+pub struct MLLContentLiteralChar<'t> {
     pub literal_char: Box<LiteralChar<'t>>,
 }
 
@@ -1040,7 +1040,7 @@ pub struct MLLContent0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct MLLContent1<'t> {
+pub struct MLLContentNewline<'t> {
     pub newline: Box<Newline<'t>>,
 }
 
@@ -1052,7 +1052,7 @@ pub struct MLLContent1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Integer0<'t> {
+pub struct IntegerDecInt<'t> {
     pub dec_int: Box<DecInt<'t>>,
 }
 
@@ -1064,7 +1064,7 @@ pub struct Integer0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Integer1<'t> {
+pub struct IntegerHexInt<'t> {
     pub hex_int: Box<HexInt<'t>>,
 }
 
@@ -1076,7 +1076,7 @@ pub struct Integer1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Integer2<'t> {
+pub struct IntegerOctInt<'t> {
     pub oct_int: Box<OctInt<'t>>,
 }
 
@@ -1088,7 +1088,7 @@ pub struct Integer2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Integer3<'t> {
+pub struct IntegerBinInt<'t> {
     pub bin_int: Box<BinInt<'t>>,
 }
 
@@ -1100,7 +1100,7 @@ pub struct Integer3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DecIntOptGroup0<'t> {
+pub struct DecIntOptGroupPlus<'t> {
     pub plus: Box<Plus<'t>>,
 }
 
@@ -1112,7 +1112,7 @@ pub struct DecIntOptGroup0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DecIntOptGroup1<'t> {
+pub struct DecIntOptGroupMinus<'t> {
     pub minus: Box<Minus<'t>>,
 }
 
@@ -1124,7 +1124,7 @@ pub struct DecIntOptGroup1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Boolean0<'t> {
+pub struct BooleanTrue<'t> {
     pub r#true: Token<'t>, /* true */
 }
 
@@ -1136,7 +1136,7 @@ pub struct Boolean0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Boolean1<'t> {
+pub struct BooleanFalse<'t> {
     pub r#false: Token<'t>, /* false */
 }
 
@@ -1148,7 +1148,7 @@ pub struct Boolean1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Float0<'t> {
+pub struct FloatNormalFloat<'t> {
     pub normal_float: Box<NormalFloat<'t>>,
 }
 
@@ -1160,7 +1160,7 @@ pub struct Float0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Float1<'t> {
+pub struct FloatSpecialFloat<'t> {
     pub special_float: Box<SpecialFloat<'t>>,
 }
 
@@ -1172,7 +1172,7 @@ pub struct Float1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DateTime0<'t> {
+pub struct DateTimeOffsetDateTime<'t> {
     pub offset_date_time: Box<OffsetDateTime<'t>>,
 }
 
@@ -1184,7 +1184,7 @@ pub struct DateTime0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DateTime1<'t> {
+pub struct DateTimeLocalDateTime<'t> {
     pub local_date_time: Box<LocalDateTime<'t>>,
 }
 
@@ -1196,7 +1196,7 @@ pub struct DateTime1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DateTime2<'t> {
+pub struct DateTimeLocalDate<'t> {
     pub local_date: Box<LocalDate<'t>>,
 }
 
@@ -1208,7 +1208,7 @@ pub struct DateTime2<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct DateTime3<'t> {
+pub struct DateTimeLocalTime<'t> {
     pub local_time: Box<LocalTime<'t>>,
 }
 
@@ -1220,7 +1220,7 @@ pub struct DateTime3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct ArrayValuesSuffix1<'t> {
+pub struct ArrayValuesSuffix0ArraySepArrayValuesSuffix<'t> {
     pub array_values_suffix: Box<ArrayValuesSuffix<'t>>,
 }
 
@@ -1232,7 +1232,7 @@ pub struct ArrayValuesSuffix1<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct ArrayValuesSuffix2 {}
+pub struct ArrayValuesSuffix0ArrayValuesSuffix0Empty {}
 
 ///
 /// Type derived for production 120
@@ -1242,7 +1242,7 @@ pub struct ArrayValuesSuffix2 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct ArrayValuesSuffix3<'t> {
+pub struct ArrayValuesSuffixArrayValues<'t> {
     pub array_values: Box<ArrayValues<'t>>,
 }
 
@@ -1254,7 +1254,7 @@ pub struct ArrayValuesSuffix3<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct ArrayValuesSuffix4 {}
+pub struct ArrayValuesSuffixArrayValuesSuffixEmpty {}
 
 ///
 /// Type derived for production 123
@@ -1264,7 +1264,7 @@ pub struct ArrayValuesSuffix4 {}
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Table0<'t> {
+pub struct TableStdTable<'t> {
     pub std_table: Box<StdTable<'t>>,
 }
 
@@ -1276,7 +1276,7 @@ pub struct Table0<'t> {
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct Table1<'t> {
+pub struct TableArrayTable<'t> {
     pub array_table: Box<ArrayTable<'t>>,
 }
 
@@ -1392,8 +1392,8 @@ pub struct ArrayValues<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ArrayValuesSuffix<'t> {
-    ArrayValuesSuffix0(ArrayValuesSuffix3<'t>),
-    ArrayValuesSuffix1(ArrayValuesSuffix4),
+    ArrayValues(ArrayValuesSuffixArrayValues<'t>),
+    ArrayValuesSuffixEmpty(ArrayValuesSuffixArrayValuesSuffixEmpty),
 }
 
 ///
@@ -1402,8 +1402,8 @@ pub enum ArrayValuesSuffix<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum ArrayValuesSuffix0<'t> {
-    ArrayValuesSuffix00(ArrayValuesSuffix1<'t>),
-    ArrayValuesSuffix01(ArrayValuesSuffix2),
+    ArraySepArrayValuesSuffix(ArrayValuesSuffix0ArraySepArrayValuesSuffix<'t>),
+    ArrayValuesSuffix0Empty(ArrayValuesSuffix0ArrayValuesSuffix0Empty),
 }
 
 ///
@@ -1422,8 +1422,8 @@ pub struct AsciiNoEscape<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum BasicChar<'t> {
-    BasicChar0(BasicChar0<'t>),
-    BasicChar1(BasicChar1<'t>),
+    BasicUnescaped(BasicCharBasicUnescaped<'t>),
+    Escaped(BasicCharEscaped<'t>),
 }
 
 ///
@@ -1454,8 +1454,8 @@ pub struct BasicStringList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum BasicUnescaped<'t> {
-    BasicUnescaped0(BasicUnescaped0<'t>),
-    BasicUnescaped1(BasicUnescaped1<'t>),
+    AsciiNoEscape(BasicUnescapedAsciiNoEscape<'t>),
+    NonAscii(BasicUnescapedNonAscii<'t>),
 }
 
 ///
@@ -1494,8 +1494,8 @@ pub struct BinPrefix<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Boolean<'t> {
-    Boolean0(Boolean0<'t>),
-    Boolean1(Boolean1<'t>),
+    True(BooleanTrue<'t>),
+    False(BooleanFalse<'t>),
 }
 
 ///
@@ -1504,10 +1504,10 @@ pub enum Boolean<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum DateTime<'t> {
-    DateTime0(DateTime0<'t>),
-    DateTime1(DateTime1<'t>),
-    DateTime2(DateTime2<'t>),
-    DateTime3(DateTime3<'t>),
+    OffsetDateTime(DateTimeOffsetDateTime<'t>),
+    LocalDateTime(DateTimeLocalDateTime<'t>),
+    LocalDate(DateTimeLocalDate<'t>),
+    LocalTime(DateTimeLocalTime<'t>),
 }
 
 ///
@@ -1537,8 +1537,8 @@ pub struct DecIntOpt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum DecIntOptGroup<'t> {
-    DecIntOptGroup0(DecIntOptGroup0<'t>),
-    DecIntOptGroup1(DecIntOptGroup1<'t>),
+    Plus(DecIntOptGroupPlus<'t>),
+    Minus(DecIntOptGroupMinus<'t>),
 }
 
 ///
@@ -1567,17 +1567,17 @@ pub struct Escape<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum EscapeSeqChar<'t> {
-    EscapeSeqChar0(EscapeSeqChar0<'t>),
-    EscapeSeqChar1(EscapeSeqChar1<'t>),
-    EscapeSeqChar2(EscapeSeqChar2<'t>),
-    EscapeSeqChar3(EscapeSeqChar3<'t>),
-    EscapeSeqChar4(EscapeSeqChar4<'t>),
-    EscapeSeqChar5(EscapeSeqChar5<'t>),
-    EscapeSeqChar6(EscapeSeqChar6<'t>),
-    EscapeSeqChar7(EscapeSeqChar7<'t>),
-    EscapeSeqChar8(EscapeSeqChar8<'t>),
-    EscapeSeqChar9(EscapeSeqChar9<'t>),
-    EscapeSeqChar10(EscapeSeqChar10<'t>),
+    QuotationMark(EscapeSeqCharQuotationMark<'t>),
+    Escape(EscapeSeqCharEscape<'t>),
+    B(EscapeSeqCharB<'t>),
+    F(EscapeSeqCharF<'t>),
+    N(EscapeSeqCharN<'t>),
+    R(EscapeSeqCharR<'t>),
+    T(EscapeSeqCharT<'t>),
+    Unicode4(EscapeSeqCharUnicode4<'t>),
+    Unicode8(EscapeSeqCharUnicode8<'t>),
+    WsNewline(EscapeSeqCharWsNewline<'t>),
+    AsciiNoEscape(EscapeSeqCharAsciiNoEscape<'t>),
 }
 
 ///
@@ -1597,8 +1597,8 @@ pub struct Escaped<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Expression<'t> {
-    Expression0(Expression0<'t>),
-    Expression1(Expression1<'t>),
+    KeyVal(ExpressionKeyVal<'t>),
+    Table(ExpressionTable<'t>),
 }
 
 ///
@@ -1607,8 +1607,8 @@ pub enum Expression<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Float<'t> {
-    Float0(Float0<'t>),
-    Float1(Float1<'t>),
+    NormalFloat(FloatNormalFloat<'t>),
+    SpecialFloat(FloatSpecialFloat<'t>),
 }
 
 ///
@@ -1718,10 +1718,10 @@ pub struct InlineTableSep<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Integer<'t> {
-    Integer0(Integer0<'t>),
-    Integer1(Integer1<'t>),
-    Integer2(Integer2<'t>),
-    Integer3(Integer3<'t>),
+    DecInt(IntegerDecInt<'t>),
+    HexInt(IntegerHexInt<'t>),
+    OctInt(IntegerOctInt<'t>),
+    BinInt(IntegerBinInt<'t>),
 }
 
 ///
@@ -1752,8 +1752,8 @@ pub struct KeyList<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum KeySuffix<'t> {
-    KeySuffix0(KeySuffix0),
-    KeySuffix1(KeySuffix1<'t>),
+    KeySuffixEmpty(KeySuffixKeySuffixEmpty),
+    DotSepSimpleKeyKeyList(KeySuffixDotSepSimpleKeyKeyList<'t>),
 }
 
 ///
@@ -1784,8 +1784,8 @@ pub struct KeyValSep<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum LiteralChar<'t> {
-    LiteralChar0(LiteralChar0<'t>),
-    LiteralChar1(LiteralChar1<'t>),
+    LiteralCharNoApostrophe(LiteralCharLiteralCharNoApostrophe<'t>),
+    NonAscii(LiteralCharNonAscii<'t>),
 }
 
 ///
@@ -1854,8 +1854,8 @@ pub struct LocalTime<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLBChar<'t> {
-    MLBChar0(MLBChar0<'t>),
-    MLBChar1(MLBChar1<'t>),
+    MLBUnescaped(MLBCharMLBUnescaped<'t>),
+    Escaped(MLBCharEscaped<'t>),
 }
 
 ///
@@ -1864,9 +1864,9 @@ pub enum MLBChar<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLBContent<'t> {
-    MLBContent0(MLBContent0<'t>),
-    MLBContent1(MLBContent1<'t>),
-    MLBContent2(MLBContent2<'t>),
+    MLBChar(MLBContentMLBChar<'t>),
+    Newline(MLBContentNewline<'t>),
+    MLBEscapedNL(MLBContentMLBEscapedNL<'t>),
 }
 
 ///
@@ -1875,8 +1875,8 @@ pub enum MLBContent<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLBContentList<'t> {
-    MLBContentList0(MLBContentList0<'t>),
-    MLBContentList1(MLBContentList2),
+    MLBContentMLBContentList(MLBContentListMLBContentMLBContentList<'t>),
+    MLBContentListEmpty(MLBContentListMLBContentListEmpty),
 }
 
 ///
@@ -1916,8 +1916,8 @@ pub struct MLBQuotes<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLBUnescaped<'t> {
-    MLBUnescaped0(MLBUnescaped0<'t>),
-    MLBUnescaped1(MLBUnescaped1<'t>),
+    AsciiNoEscape(MLBUnescapedAsciiNoEscape<'t>),
+    NonAscii(MLBUnescapedNonAscii<'t>),
 }
 
 ///
@@ -1980,8 +1980,8 @@ pub struct MLBasicStringStart<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLLContent<'t> {
-    MLLContent0(MLLContent0<'t>),
-    MLLContent1(MLLContent1<'t>),
+    LiteralChar(MLLContentLiteralChar<'t>),
+    Newline(MLLContentNewline<'t>),
 }
 
 ///
@@ -1990,8 +1990,8 @@ pub enum MLLContent<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum MLLContentList<'t> {
-    MLLContentList0(MLLContentList0<'t>),
-    MLLContentList1(MLLContentList2),
+    MLLContentMLLContentList(MLLContentListMLLContentMLLContentList<'t>),
+    MLLContentListEmpty(MLLContentListMLLContentListEmpty),
 }
 
 ///
@@ -2113,8 +2113,8 @@ pub struct NormalFloat<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Numeric<'t> {
-    Numeric0(Numeric0<'t>),
-    Numeric1(Numeric1<'t>),
+    Float(NumericFloat<'t>),
+    Integer(NumericInteger<'t>),
 }
 
 ///
@@ -2203,8 +2203,8 @@ pub struct QuotationMark<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum QuotedKey<'t> {
-    QuotedKey0(QuotedKey0<'t>),
-    QuotedKey1(QuotedKey1<'t>),
+    BasicString(QuotedKeyBasicString<'t>),
+    LiteralString(QuotedKeyLiteralString<'t>),
 }
 
 ///
@@ -2213,8 +2213,8 @@ pub enum QuotedKey<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum SimpleKey<'t> {
-    SimpleKey0(SimpleKey0<'t>),
-    SimpleKey1(SimpleKey1<'t>),
+    QuotedKey(SimpleKeyQuotedKey<'t>),
+    UnquotedKey(SimpleKeyUnquotedKey<'t>),
 }
 
 ///
@@ -2263,8 +2263,8 @@ pub struct StdTableOpen<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Table<'t> {
-    Table0(Table0<'t>),
-    Table1(Table1<'t>),
+    StdTable(TableStdTable<'t>),
+    ArrayTable(TableArrayTable<'t>),
 }
 
 ///
@@ -2313,15 +2313,15 @@ pub struct UnsignedDecInt<'t> {
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub enum Val<'t> {
-    Val0(Val0<'t>),
-    Val1(Val1<'t>),
-    Val2(Val2<'t>),
-    Val3(Val3<'t>),
-    Val4(Val4<'t>),
-    Val5(Val5<'t>),
-    Val6(Val6<'t>),
-    Val7(Val7<'t>),
-    Val8(Val8<'t>),
+    Boolean(ValBoolean<'t>),
+    Array(ValArray<'t>),
+    InlineTable(ValInlineTable<'t>),
+    DateTime(ValDateTime<'t>),
+    Numeric(ValNumeric<'t>),
+    BasicString(ValBasicString<'t>),
+    MLBasicString(ValMLBasicString<'t>),
+    LiteralString(ValLiteralString<'t>),
+    MLLiteralString(ValMLLiteralString<'t>),
 }
 
 ///
@@ -2582,11 +2582,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val = pop_item!(self, key_val, KeyVal, context);
-        let expression_0_built = Expression0Builder::default()
+        let expression_0_built = ExpressionKeyValBuilder::default()
             .key_val(Box::new(key_val))
             .build()
             .into_diagnostic()?;
-        let expression_0_built = Expression::Expression0(expression_0_built);
+        let expression_0_built = Expression::KeyVal(expression_0_built);
         // Calling user action here
         self.user_grammar.expression(&expression_0_built)?;
         self.push(ASTType::Expression(expression_0_built), context);
@@ -2606,11 +2606,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let table = pop_item!(self, table, Table, context);
-        let expression_1_built = Expression1Builder::default()
+        let expression_1_built = ExpressionTableBuilder::default()
             .table(Box::new(table))
             .build()
             .into_diagnostic()?;
-        let expression_1_built = Expression::Expression1(expression_1_built);
+        let expression_1_built = Expression::Table(expression_1_built);
         // Calling user action here
         self.user_grammar.expression(&expression_1_built)?;
         self.push(ASTType::Expression(expression_1_built), context);
@@ -2749,8 +2749,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let key_suffix_0_built = KeySuffix0Builder::default().build().into_diagnostic()?;
-        let key_suffix_0_built = KeySuffix::KeySuffix0(key_suffix_0_built);
+        let key_suffix_0_built = KeySuffixKeySuffixEmptyBuilder::default()
+            .build()
+            .into_diagnostic()?;
+        let key_suffix_0_built = KeySuffix::KeySuffixEmpty(key_suffix_0_built);
         self.push(ASTType::KeySuffix(key_suffix_0_built), context);
         Ok(())
     }
@@ -2772,13 +2774,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_list = pop_and_reverse_item!(self, key_list, KeyList, context);
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let dot_sep = pop_item!(self, dot_sep, DotSep, context);
-        let key_suffix_1_built = KeySuffix1Builder::default()
+        let key_suffix_1_built = KeySuffixDotSepSimpleKeyKeyListBuilder::default()
             .dot_sep(Box::new(dot_sep))
             .simple_key(Box::new(simple_key))
             .key_list(key_list)
             .build()
             .into_diagnostic()?;
-        let key_suffix_1_built = KeySuffix::KeySuffix1(key_suffix_1_built);
+        let key_suffix_1_built = KeySuffix::DotSepSimpleKeyKeyList(key_suffix_1_built);
         self.push(ASTType::KeySuffix(key_suffix_1_built), context);
         Ok(())
     }
@@ -2837,11 +2839,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quoted_key = pop_item!(self, quoted_key, QuotedKey, context);
-        let simple_key_0_built = SimpleKey0Builder::default()
+        let simple_key_0_built = SimpleKeyQuotedKeyBuilder::default()
             .quoted_key(Box::new(quoted_key))
             .build()
             .into_diagnostic()?;
-        let simple_key_0_built = SimpleKey::SimpleKey0(simple_key_0_built);
+        let simple_key_0_built = SimpleKey::QuotedKey(simple_key_0_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_0_built)?;
         self.push(ASTType::SimpleKey(simple_key_0_built), context);
@@ -2861,11 +2863,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = pop_item!(self, unquoted_key, UnquotedKey, context);
-        let simple_key_1_built = SimpleKey1Builder::default()
+        let simple_key_1_built = SimpleKeyUnquotedKeyBuilder::default()
             .unquoted_key(Box::new(unquoted_key))
             .build()
             .into_diagnostic()?;
-        let simple_key_1_built = SimpleKey::SimpleKey1(simple_key_1_built);
+        let simple_key_1_built = SimpleKey::UnquotedKey(simple_key_1_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_1_built)?;
         self.push(ASTType::SimpleKey(simple_key_1_built), context);
@@ -2885,11 +2887,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let quoted_key_0_built = QuotedKey0Builder::default()
+        let quoted_key_0_built = QuotedKeyBasicStringBuilder::default()
             .basic_string(Box::new(basic_string))
             .build()
             .into_diagnostic()?;
-        let quoted_key_0_built = QuotedKey::QuotedKey0(quoted_key_0_built);
+        let quoted_key_0_built = QuotedKey::BasicString(quoted_key_0_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_0_built)?;
         self.push(ASTType::QuotedKey(quoted_key_0_built), context);
@@ -2909,11 +2911,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let quoted_key_1_built = QuotedKey1Builder::default()
+        let quoted_key_1_built = QuotedKeyLiteralStringBuilder::default()
             .literal_string(Box::new(literal_string))
             .build()
             .into_diagnostic()?;
-        let quoted_key_1_built = QuotedKey::QuotedKey1(quoted_key_1_built);
+        let quoted_key_1_built = QuotedKey::LiteralString(quoted_key_1_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_1_built)?;
         self.push(ASTType::QuotedKey(quoted_key_1_built), context);
@@ -2956,11 +2958,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let boolean = pop_item!(self, boolean, Boolean, context);
-        let val_0_built = Val0Builder::default()
+        let val_0_built = ValBooleanBuilder::default()
             .boolean(Box::new(boolean))
             .build()
             .into_diagnostic()?;
-        let val_0_built = Val::Val0(val_0_built);
+        let val_0_built = Val::Boolean(val_0_built);
         // Calling user action here
         self.user_grammar.val(&val_0_built)?;
         self.push(ASTType::Val(val_0_built), context);
@@ -2980,11 +2982,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let val_1_built = Val1Builder::default()
+        let val_1_built = ValArrayBuilder::default()
             .array(Box::new(array))
             .build()
             .into_diagnostic()?;
-        let val_1_built = Val::Val1(val_1_built);
+        let val_1_built = Val::Array(val_1_built);
         // Calling user action here
         self.user_grammar.val(&val_1_built)?;
         self.push(ASTType::Val(val_1_built), context);
@@ -3004,11 +3006,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table = pop_item!(self, inline_table, InlineTable, context);
-        let val_2_built = Val2Builder::default()
+        let val_2_built = ValInlineTableBuilder::default()
             .inline_table(Box::new(inline_table))
             .build()
             .into_diagnostic()?;
-        let val_2_built = Val::Val2(val_2_built);
+        let val_2_built = Val::InlineTable(val_2_built);
         // Calling user action here
         self.user_grammar.val(&val_2_built)?;
         self.push(ASTType::Val(val_2_built), context);
@@ -3028,11 +3030,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let date_time = pop_item!(self, date_time, DateTime, context);
-        let val_3_built = Val3Builder::default()
+        let val_3_built = ValDateTimeBuilder::default()
             .date_time(Box::new(date_time))
             .build()
             .into_diagnostic()?;
-        let val_3_built = Val::Val3(val_3_built);
+        let val_3_built = Val::DateTime(val_3_built);
         // Calling user action here
         self.user_grammar.val(&val_3_built)?;
         self.push(ASTType::Val(val_3_built), context);
@@ -3052,11 +3054,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let numeric = pop_item!(self, numeric, Numeric, context);
-        let val_4_built = Val4Builder::default()
+        let val_4_built = ValNumericBuilder::default()
             .numeric(Box::new(numeric))
             .build()
             .into_diagnostic()?;
-        let val_4_built = Val::Val4(val_4_built);
+        let val_4_built = Val::Numeric(val_4_built);
         // Calling user action here
         self.user_grammar.val(&val_4_built)?;
         self.push(ASTType::Val(val_4_built), context);
@@ -3076,11 +3078,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let val_5_built = Val5Builder::default()
+        let val_5_built = ValBasicStringBuilder::default()
             .basic_string(Box::new(basic_string))
             .build()
             .into_diagnostic()?;
-        let val_5_built = Val::Val5(val_5_built);
+        let val_5_built = Val::BasicString(val_5_built);
         // Calling user action here
         self.user_grammar.val(&val_5_built)?;
         self.push(ASTType::Val(val_5_built), context);
@@ -3100,11 +3102,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string = pop_item!(self, m_l_basic_string, MLBasicString, context);
-        let val_6_built = Val6Builder::default()
+        let val_6_built = ValMLBasicStringBuilder::default()
             .m_l_basic_string(Box::new(m_l_basic_string))
             .build()
             .into_diagnostic()?;
-        let val_6_built = Val::Val6(val_6_built);
+        let val_6_built = Val::MLBasicString(val_6_built);
         // Calling user action here
         self.user_grammar.val(&val_6_built)?;
         self.push(ASTType::Val(val_6_built), context);
@@ -3124,11 +3126,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let val_7_built = Val7Builder::default()
+        let val_7_built = ValLiteralStringBuilder::default()
             .literal_string(Box::new(literal_string))
             .build()
             .into_diagnostic()?;
-        let val_7_built = Val::Val7(val_7_built);
+        let val_7_built = Val::LiteralString(val_7_built);
         // Calling user action here
         self.user_grammar.val(&val_7_built)?;
         self.push(ASTType::Val(val_7_built), context);
@@ -3148,11 +3150,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string = pop_item!(self, m_l_literal_string, MLLiteralString, context);
-        let val_8_built = Val8Builder::default()
+        let val_8_built = ValMLLiteralStringBuilder::default()
             .m_l_literal_string(Box::new(m_l_literal_string))
             .build()
             .into_diagnostic()?;
-        let val_8_built = Val::Val8(val_8_built);
+        let val_8_built = Val::MLLiteralString(val_8_built);
         // Calling user action here
         self.user_grammar.val(&val_8_built)?;
         self.push(ASTType::Val(val_8_built), context);
@@ -3172,11 +3174,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
-        let numeric_0_built = Numeric0Builder::default()
+        let numeric_0_built = NumericFloatBuilder::default()
             .float(Box::new(float))
             .build()
             .into_diagnostic()?;
-        let numeric_0_built = Numeric::Numeric0(numeric_0_built);
+        let numeric_0_built = Numeric::Float(numeric_0_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_0_built)?;
         self.push(ASTType::Numeric(numeric_0_built), context);
@@ -3196,11 +3198,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let numeric_1_built = Numeric1Builder::default()
+        let numeric_1_built = NumericIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
             .into_diagnostic()?;
-        let numeric_1_built = Numeric::Numeric1(numeric_1_built);
+        let numeric_1_built = Numeric::Integer(numeric_1_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_1_built)?;
         self.push(ASTType::Numeric(numeric_1_built), context);
@@ -3288,11 +3290,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_unescaped = pop_item!(self, basic_unescaped, BasicUnescaped, context);
-        let basic_char_0_built = BasicChar0Builder::default()
+        let basic_char_0_built = BasicCharBasicUnescapedBuilder::default()
             .basic_unescaped(Box::new(basic_unescaped))
             .build()
             .into_diagnostic()?;
-        let basic_char_0_built = BasicChar::BasicChar0(basic_char_0_built);
+        let basic_char_0_built = BasicChar::BasicUnescaped(basic_char_0_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_0_built)?;
         self.push(ASTType::BasicChar(basic_char_0_built), context);
@@ -3312,11 +3314,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let basic_char_1_built = BasicChar1Builder::default()
+        let basic_char_1_built = BasicCharEscapedBuilder::default()
             .escaped(Box::new(escaped))
             .build()
             .into_diagnostic()?;
-        let basic_char_1_built = BasicChar::BasicChar1(basic_char_1_built);
+        let basic_char_1_built = BasicChar::Escaped(basic_char_1_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_1_built)?;
         self.push(ASTType::BasicChar(basic_char_1_built), context);
@@ -3336,11 +3338,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let basic_unescaped_0_built = BasicUnescaped0Builder::default()
+        let basic_unescaped_0_built = BasicUnescapedAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
             .into_diagnostic()?;
-        let basic_unescaped_0_built = BasicUnescaped::BasicUnescaped0(basic_unescaped_0_built);
+        let basic_unescaped_0_built = BasicUnescaped::AsciiNoEscape(basic_unescaped_0_built);
         // Calling user action here
         self.user_grammar
             .basic_unescaped(&basic_unescaped_0_built)?;
@@ -3361,11 +3363,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let basic_unescaped_1_built = BasicUnescaped1Builder::default()
+        let basic_unescaped_1_built = BasicUnescapedNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
             .into_diagnostic()?;
-        let basic_unescaped_1_built = BasicUnescaped::BasicUnescaped1(basic_unescaped_1_built);
+        let basic_unescaped_1_built = BasicUnescaped::NonAscii(basic_unescaped_1_built);
         // Calling user action here
         self.user_grammar
             .basic_unescaped(&basic_unescaped_1_built)?;
@@ -3435,11 +3437,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
-        let escape_seq_char_0_built = EscapeSeqChar0Builder::default()
+        let escape_seq_char_0_built = EscapeSeqCharQuotationMarkBuilder::default()
             .quotation_mark(Box::new(quotation_mark))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_0_built = EscapeSeqChar::EscapeSeqChar0(escape_seq_char_0_built);
+        let escape_seq_char_0_built = EscapeSeqChar::QuotationMark(escape_seq_char_0_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_0_built)?;
@@ -3460,11 +3462,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = pop_item!(self, escape, Escape, context);
-        let escape_seq_char_1_built = EscapeSeqChar1Builder::default()
+        let escape_seq_char_1_built = EscapeSeqCharEscapeBuilder::default()
             .escape(Box::new(escape))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_1_built = EscapeSeqChar::EscapeSeqChar1(escape_seq_char_1_built);
+        let escape_seq_char_1_built = EscapeSeqChar::Escape(escape_seq_char_1_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_1_built)?;
@@ -3485,11 +3487,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let b = b.token(parse_tree)?.clone();
-        let escape_seq_char_2_built = EscapeSeqChar2Builder::default()
+        let escape_seq_char_2_built = EscapeSeqCharBBuilder::default()
             .b(b)
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_2_built = EscapeSeqChar::EscapeSeqChar2(escape_seq_char_2_built);
+        let escape_seq_char_2_built = EscapeSeqChar::B(escape_seq_char_2_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_2_built)?;
@@ -3510,11 +3512,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f = f.token(parse_tree)?.clone();
-        let escape_seq_char_3_built = EscapeSeqChar3Builder::default()
+        let escape_seq_char_3_built = EscapeSeqCharFBuilder::default()
             .f(f)
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_3_built = EscapeSeqChar::EscapeSeqChar3(escape_seq_char_3_built);
+        let escape_seq_char_3_built = EscapeSeqChar::F(escape_seq_char_3_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_3_built)?;
@@ -3535,11 +3537,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let n = n.token(parse_tree)?.clone();
-        let escape_seq_char_4_built = EscapeSeqChar4Builder::default()
+        let escape_seq_char_4_built = EscapeSeqCharNBuilder::default()
             .n(n)
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_4_built = EscapeSeqChar::EscapeSeqChar4(escape_seq_char_4_built);
+        let escape_seq_char_4_built = EscapeSeqChar::N(escape_seq_char_4_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_4_built)?;
@@ -3560,11 +3562,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r = r.token(parse_tree)?.clone();
-        let escape_seq_char_5_built = EscapeSeqChar5Builder::default()
+        let escape_seq_char_5_built = EscapeSeqCharRBuilder::default()
             .r(r)
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_5_built = EscapeSeqChar::EscapeSeqChar5(escape_seq_char_5_built);
+        let escape_seq_char_5_built = EscapeSeqChar::R(escape_seq_char_5_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_5_built)?;
@@ -3585,11 +3587,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let t = t.token(parse_tree)?.clone();
-        let escape_seq_char_6_built = EscapeSeqChar6Builder::default()
+        let escape_seq_char_6_built = EscapeSeqCharTBuilder::default()
             .t(t)
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_6_built = EscapeSeqChar::EscapeSeqChar6(escape_seq_char_6_built);
+        let escape_seq_char_6_built = EscapeSeqChar::T(escape_seq_char_6_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_6_built)?;
@@ -3610,11 +3612,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = pop_item!(self, unicode4, Unicode4, context);
-        let escape_seq_char_7_built = EscapeSeqChar7Builder::default()
+        let escape_seq_char_7_built = EscapeSeqCharUnicode4Builder::default()
             .unicode4(Box::new(unicode4))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_7_built = EscapeSeqChar::EscapeSeqChar7(escape_seq_char_7_built);
+        let escape_seq_char_7_built = EscapeSeqChar::Unicode4(escape_seq_char_7_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_7_built)?;
@@ -3635,11 +3637,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = pop_item!(self, unicode8, Unicode8, context);
-        let escape_seq_char_8_built = EscapeSeqChar8Builder::default()
+        let escape_seq_char_8_built = EscapeSeqCharUnicode8Builder::default()
             .unicode8(Box::new(unicode8))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_8_built = EscapeSeqChar::EscapeSeqChar8(escape_seq_char_8_built);
+        let escape_seq_char_8_built = EscapeSeqChar::Unicode8(escape_seq_char_8_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_8_built)?;
@@ -3660,11 +3662,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = pop_item!(self, ws_newline, WsNewline, context);
-        let escape_seq_char_9_built = EscapeSeqChar9Builder::default()
+        let escape_seq_char_9_built = EscapeSeqCharWsNewlineBuilder::default()
             .ws_newline(Box::new(ws_newline))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_9_built = EscapeSeqChar::EscapeSeqChar9(escape_seq_char_9_built);
+        let escape_seq_char_9_built = EscapeSeqChar::WsNewline(escape_seq_char_9_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_9_built)?;
@@ -3685,11 +3687,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let escape_seq_char_10_built = EscapeSeqChar10Builder::default()
+        let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
             .into_diagnostic()?;
-        let escape_seq_char_10_built = EscapeSeqChar::EscapeSeqChar10(escape_seq_char_10_built);
+        let escape_seq_char_10_built = EscapeSeqChar::AsciiNoEscape(escape_seq_char_10_built);
         // Calling user action here
         self.user_grammar
             .escape_seq_char(&escape_seq_char_10_built)?;
@@ -3861,13 +3863,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
-        let m_l_b_content_list_0_built = MLBContentList0Builder::default()
+        let m_l_b_content_list_0_built = MLBContentListMLBContentMLBContentListBuilder::default()
             .m_l_b_content(Box::new(m_l_b_content))
             .m_l_b_content_list(Box::new(m_l_b_content_list))
             .build()
             .into_diagnostic()?;
         let m_l_b_content_list_0_built =
-            MLBContentList::MLBContentList0(m_l_b_content_list_0_built);
+            MLBContentList::MLBContentMLBContentList(m_l_b_content_list_0_built);
         // Calling user action here
         self.user_grammar
             .m_l_b_content_list(&m_l_b_content_list_0_built)?;
@@ -3883,11 +3885,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     fn m_l_b_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_content_list_1_built = MLBContentList2Builder::default()
+        let m_l_b_content_list_1_built = MLBContentListMLBContentListEmptyBuilder::default()
             .build()
             .into_diagnostic()?;
         let m_l_b_content_list_1_built =
-            MLBContentList::MLBContentList1(m_l_b_content_list_1_built);
+            MLBContentList::MLBContentListEmpty(m_l_b_content_list_1_built);
         // Calling user action here
         self.user_grammar
             .m_l_b_content_list(&m_l_b_content_list_1_built)?;
@@ -3935,11 +3937,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_char = pop_item!(self, m_l_b_char, MLBChar, context);
-        let m_l_b_content_0_built = MLBContent0Builder::default()
+        let m_l_b_content_0_built = MLBContentMLBCharBuilder::default()
             .m_l_b_char(Box::new(m_l_b_char))
             .build()
             .into_diagnostic()?;
-        let m_l_b_content_0_built = MLBContent::MLBContent0(m_l_b_content_0_built);
+        let m_l_b_content_0_built = MLBContent::MLBChar(m_l_b_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_0_built)?;
         self.push(ASTType::MLBContent(m_l_b_content_0_built), context);
@@ -3959,11 +3961,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_b_content_1_built = MLBContent1Builder::default()
+        let m_l_b_content_1_built = MLBContentNewlineBuilder::default()
             .newline(Box::new(newline))
             .build()
             .into_diagnostic()?;
-        let m_l_b_content_1_built = MLBContent::MLBContent1(m_l_b_content_1_built);
+        let m_l_b_content_1_built = MLBContent::Newline(m_l_b_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_1_built)?;
         self.push(ASTType::MLBContent(m_l_b_content_1_built), context);
@@ -3983,11 +3985,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = pop_item!(self, m_l_b_escaped_n_l, MLBEscapedNL, context);
-        let m_l_b_content_2_built = MLBContent2Builder::default()
+        let m_l_b_content_2_built = MLBContentMLBEscapedNLBuilder::default()
             .m_l_b_escaped_n_l(Box::new(m_l_b_escaped_n_l))
             .build()
             .into_diagnostic()?;
-        let m_l_b_content_2_built = MLBContent::MLBContent2(m_l_b_content_2_built);
+        let m_l_b_content_2_built = MLBContent::MLBEscapedNL(m_l_b_content_2_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_2_built)?;
         self.push(ASTType::MLBContent(m_l_b_content_2_built), context);
@@ -4007,11 +4009,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_unescaped = pop_item!(self, m_l_b_unescaped, MLBUnescaped, context);
-        let m_l_b_char_0_built = MLBChar0Builder::default()
+        let m_l_b_char_0_built = MLBCharMLBUnescapedBuilder::default()
             .m_l_b_unescaped(Box::new(m_l_b_unescaped))
             .build()
             .into_diagnostic()?;
-        let m_l_b_char_0_built = MLBChar::MLBChar0(m_l_b_char_0_built);
+        let m_l_b_char_0_built = MLBChar::MLBUnescaped(m_l_b_char_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_0_built)?;
         self.push(ASTType::MLBChar(m_l_b_char_0_built), context);
@@ -4031,11 +4033,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let m_l_b_char_1_built = MLBChar1Builder::default()
+        let m_l_b_char_1_built = MLBCharEscapedBuilder::default()
             .escaped(Box::new(escaped))
             .build()
             .into_diagnostic()?;
-        let m_l_b_char_1_built = MLBChar::MLBChar1(m_l_b_char_1_built);
+        let m_l_b_char_1_built = MLBChar::Escaped(m_l_b_char_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_1_built)?;
         self.push(ASTType::MLBChar(m_l_b_char_1_built), context);
@@ -4055,11 +4057,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let m_l_b_unescaped_0_built = MLBUnescaped0Builder::default()
+        let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
             .into_diagnostic()?;
-        let m_l_b_unescaped_0_built = MLBUnescaped::MLBUnescaped0(m_l_b_unescaped_0_built);
+        let m_l_b_unescaped_0_built = MLBUnescaped::AsciiNoEscape(m_l_b_unescaped_0_built);
         // Calling user action here
         self.user_grammar
             .m_l_b_unescaped(&m_l_b_unescaped_0_built)?;
@@ -4080,11 +4082,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let m_l_b_unescaped_1_built = MLBUnescaped1Builder::default()
+        let m_l_b_unescaped_1_built = MLBUnescapedNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
             .into_diagnostic()?;
-        let m_l_b_unescaped_1_built = MLBUnescaped::MLBUnescaped1(m_l_b_unescaped_1_built);
+        let m_l_b_unescaped_1_built = MLBUnescaped::NonAscii(m_l_b_unescaped_1_built);
         // Calling user action here
         self.user_grammar
             .m_l_b_unescaped(&m_l_b_unescaped_1_built)?;
@@ -4208,11 +4210,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             LiteralCharNoApostrophe,
             context
         );
-        let literal_char_0_built = LiteralChar0Builder::default()
+        let literal_char_0_built = LiteralCharLiteralCharNoApostropheBuilder::default()
             .literal_char_no_apostrophe(Box::new(literal_char_no_apostrophe))
             .build()
             .into_diagnostic()?;
-        let literal_char_0_built = LiteralChar::LiteralChar0(literal_char_0_built);
+        let literal_char_0_built = LiteralChar::LiteralCharNoApostrophe(literal_char_0_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_0_built)?;
         self.push(ASTType::LiteralChar(literal_char_0_built), context);
@@ -4232,11 +4234,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let literal_char_1_built = LiteralChar1Builder::default()
+        let literal_char_1_built = LiteralCharNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
             .into_diagnostic()?;
-        let literal_char_1_built = LiteralChar::LiteralChar1(literal_char_1_built);
+        let literal_char_1_built = LiteralChar::NonAscii(literal_char_1_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_1_built)?;
         self.push(ASTType::LiteralChar(literal_char_1_built), context);
@@ -4390,13 +4392,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
-        let m_l_l_content_list_0_built = MLLContentList0Builder::default()
+        let m_l_l_content_list_0_built = MLLContentListMLLContentMLLContentListBuilder::default()
             .m_l_l_content(Box::new(m_l_l_content))
             .m_l_l_content_list(Box::new(m_l_l_content_list))
             .build()
             .into_diagnostic()?;
         let m_l_l_content_list_0_built =
-            MLLContentList::MLLContentList0(m_l_l_content_list_0_built);
+            MLLContentList::MLLContentMLLContentList(m_l_l_content_list_0_built);
         // Calling user action here
         self.user_grammar
             .m_l_l_content_list(&m_l_l_content_list_0_built)?;
@@ -4412,11 +4414,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     fn m_l_l_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_l_content_list_1_built = MLLContentList2Builder::default()
+        let m_l_l_content_list_1_built = MLLContentListMLLContentListEmptyBuilder::default()
             .build()
             .into_diagnostic()?;
         let m_l_l_content_list_1_built =
-            MLLContentList::MLLContentList1(m_l_l_content_list_1_built);
+            MLLContentList::MLLContentListEmpty(m_l_l_content_list_1_built);
         // Calling user action here
         self.user_grammar
             .m_l_l_content_list(&m_l_l_content_list_1_built)?;
@@ -4464,11 +4466,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
-        let m_l_l_content_0_built = MLLContent0Builder::default()
+        let m_l_l_content_0_built = MLLContentLiteralCharBuilder::default()
             .literal_char(Box::new(literal_char))
             .build()
             .into_diagnostic()?;
-        let m_l_l_content_0_built = MLLContent::MLLContent0(m_l_l_content_0_built);
+        let m_l_l_content_0_built = MLLContent::LiteralChar(m_l_l_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_0_built)?;
         self.push(ASTType::MLLContent(m_l_l_content_0_built), context);
@@ -4488,11 +4490,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_l_content_1_built = MLLContent1Builder::default()
+        let m_l_l_content_1_built = MLLContentNewlineBuilder::default()
             .newline(Box::new(newline))
             .build()
             .into_diagnostic()?;
-        let m_l_l_content_1_built = MLLContent::MLLContent1(m_l_l_content_1_built);
+        let m_l_l_content_1_built = MLLContent::Newline(m_l_l_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_1_built)?;
         self.push(ASTType::MLLContent(m_l_l_content_1_built), context);
@@ -4512,11 +4514,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int = pop_item!(self, dec_int, DecInt, context);
-        let integer_0_built = Integer0Builder::default()
+        let integer_0_built = IntegerDecIntBuilder::default()
             .dec_int(Box::new(dec_int))
             .build()
             .into_diagnostic()?;
-        let integer_0_built = Integer::Integer0(integer_0_built);
+        let integer_0_built = Integer::DecInt(integer_0_built);
         // Calling user action here
         self.user_grammar.integer(&integer_0_built)?;
         self.push(ASTType::Integer(integer_0_built), context);
@@ -4536,11 +4538,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int = pop_item!(self, hex_int, HexInt, context);
-        let integer_1_built = Integer1Builder::default()
+        let integer_1_built = IntegerHexIntBuilder::default()
             .hex_int(Box::new(hex_int))
             .build()
             .into_diagnostic()?;
-        let integer_1_built = Integer::Integer1(integer_1_built);
+        let integer_1_built = Integer::HexInt(integer_1_built);
         // Calling user action here
         self.user_grammar.integer(&integer_1_built)?;
         self.push(ASTType::Integer(integer_1_built), context);
@@ -4560,11 +4562,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int = pop_item!(self, oct_int, OctInt, context);
-        let integer_2_built = Integer2Builder::default()
+        let integer_2_built = IntegerOctIntBuilder::default()
             .oct_int(Box::new(oct_int))
             .build()
             .into_diagnostic()?;
-        let integer_2_built = Integer::Integer2(integer_2_built);
+        let integer_2_built = Integer::OctInt(integer_2_built);
         // Calling user action here
         self.user_grammar.integer(&integer_2_built)?;
         self.push(ASTType::Integer(integer_2_built), context);
@@ -4584,11 +4586,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int = pop_item!(self, bin_int, BinInt, context);
-        let integer_3_built = Integer3Builder::default()
+        let integer_3_built = IntegerBinIntBuilder::default()
             .bin_int(Box::new(bin_int))
             .build()
             .into_diagnostic()?;
-        let integer_3_built = Integer::Integer3(integer_3_built);
+        let integer_3_built = Integer::BinInt(integer_3_built);
         // Calling user action here
         self.user_grammar.integer(&integer_3_built)?;
         self.push(ASTType::Integer(integer_3_built), context);
@@ -4727,11 +4729,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let dec_int_opt_group_0_built = DecIntOptGroup0Builder::default()
+        let dec_int_opt_group_0_built = DecIntOptGroupPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
             .into_diagnostic()?;
-        let dec_int_opt_group_0_built = DecIntOptGroup::DecIntOptGroup0(dec_int_opt_group_0_built);
+        let dec_int_opt_group_0_built = DecIntOptGroup::Plus(dec_int_opt_group_0_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_0_built), context);
         Ok(())
     }
@@ -4749,11 +4751,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let dec_int_opt_group_1_built = DecIntOptGroup1Builder::default()
+        let dec_int_opt_group_1_built = DecIntOptGroupMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
             .into_diagnostic()?;
-        let dec_int_opt_group_1_built = DecIntOptGroup::DecIntOptGroup1(dec_int_opt_group_1_built);
+        let dec_int_opt_group_1_built = DecIntOptGroup::Minus(dec_int_opt_group_1_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_1_built), context);
         Ok(())
     }
@@ -4933,11 +4935,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#true = r#true.token(parse_tree)?.clone();
-        let boolean_0_built = Boolean0Builder::default()
+        let boolean_0_built = BooleanTrueBuilder::default()
             .r#true(r#true)
             .build()
             .into_diagnostic()?;
-        let boolean_0_built = Boolean::Boolean0(boolean_0_built);
+        let boolean_0_built = Boolean::True(boolean_0_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_0_built)?;
         self.push(ASTType::Boolean(boolean_0_built), context);
@@ -4957,11 +4959,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#false = r#false.token(parse_tree)?.clone();
-        let boolean_1_built = Boolean1Builder::default()
+        let boolean_1_built = BooleanFalseBuilder::default()
             .r#false(r#false)
             .build()
             .into_diagnostic()?;
-        let boolean_1_built = Boolean::Boolean1(boolean_1_built);
+        let boolean_1_built = Boolean::False(boolean_1_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_1_built)?;
         self.push(ASTType::Boolean(boolean_1_built), context);
@@ -4981,11 +4983,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = pop_item!(self, normal_float, NormalFloat, context);
-        let float_0_built = Float0Builder::default()
+        let float_0_built = FloatNormalFloatBuilder::default()
             .normal_float(Box::new(normal_float))
             .build()
             .into_diagnostic()?;
-        let float_0_built = Float::Float0(float_0_built);
+        let float_0_built = Float::NormalFloat(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
         self.push(ASTType::Float(float_0_built), context);
@@ -5005,11 +5007,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = pop_item!(self, special_float, SpecialFloat, context);
-        let float_1_built = Float1Builder::default()
+        let float_1_built = FloatSpecialFloatBuilder::default()
             .special_float(Box::new(special_float))
             .build()
             .into_diagnostic()?;
-        let float_1_built = Float::Float1(float_1_built);
+        let float_1_built = Float::SpecialFloat(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
         self.push(ASTType::Float(float_1_built), context);
@@ -5075,11 +5077,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = pop_item!(self, offset_date_time, OffsetDateTime, context);
-        let date_time_0_built = DateTime0Builder::default()
+        let date_time_0_built = DateTimeOffsetDateTimeBuilder::default()
             .offset_date_time(Box::new(offset_date_time))
             .build()
             .into_diagnostic()?;
-        let date_time_0_built = DateTime::DateTime0(date_time_0_built);
+        let date_time_0_built = DateTime::OffsetDateTime(date_time_0_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_0_built)?;
         self.push(ASTType::DateTime(date_time_0_built), context);
@@ -5099,11 +5101,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = pop_item!(self, local_date_time, LocalDateTime, context);
-        let date_time_1_built = DateTime1Builder::default()
+        let date_time_1_built = DateTimeLocalDateTimeBuilder::default()
             .local_date_time(Box::new(local_date_time))
             .build()
             .into_diagnostic()?;
-        let date_time_1_built = DateTime::DateTime1(date_time_1_built);
+        let date_time_1_built = DateTime::LocalDateTime(date_time_1_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_1_built)?;
         self.push(ASTType::DateTime(date_time_1_built), context);
@@ -5123,11 +5125,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = pop_item!(self, local_date, LocalDate, context);
-        let date_time_2_built = DateTime2Builder::default()
+        let date_time_2_built = DateTimeLocalDateBuilder::default()
             .local_date(Box::new(local_date))
             .build()
             .into_diagnostic()?;
-        let date_time_2_built = DateTime::DateTime2(date_time_2_built);
+        let date_time_2_built = DateTime::LocalDate(date_time_2_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_2_built)?;
         self.push(ASTType::DateTime(date_time_2_built), context);
@@ -5147,11 +5149,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = pop_item!(self, local_time, LocalTime, context);
-        let date_time_3_built = DateTime3Builder::default()
+        let date_time_3_built = DateTimeLocalTimeBuilder::default()
             .local_time(Box::new(local_time))
             .build()
             .into_diagnostic()?;
-        let date_time_3_built = DateTime::DateTime3(date_time_3_built);
+        let date_time_3_built = DateTime::LocalTime(date_time_3_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_3_built)?;
         self.push(ASTType::DateTime(date_time_3_built), context);
@@ -5361,13 +5363,14 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_values_suffix = pop_item!(self, array_values_suffix, ArrayValuesSuffix, context);
         // Ignore clipped member 'array_sep'
         self.pop(context);
-        let array_values_suffix0_0_built = ArrayValuesSuffix1Builder::default()
-            // Ignore clipped member 'array_sep'
-            .array_values_suffix(Box::new(array_values_suffix))
-            .build()
-            .into_diagnostic()?;
         let array_values_suffix0_0_built =
-            ArrayValuesSuffix0::ArrayValuesSuffix00(array_values_suffix0_0_built);
+            ArrayValuesSuffix0ArraySepArrayValuesSuffixBuilder::default()
+                // Ignore clipped member 'array_sep'
+                .array_values_suffix(Box::new(array_values_suffix))
+                .build()
+                .into_diagnostic()?;
+        let array_values_suffix0_0_built =
+            ArrayValuesSuffix0::ArraySepArrayValuesSuffix(array_values_suffix0_0_built);
         self.push(
             ASTType::ArrayValuesSuffix0(array_values_suffix0_0_built),
             context,
@@ -5383,11 +5386,12 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     fn array_values_suffix0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values_suffix0_1_built = ArrayValuesSuffix2Builder::default()
-            .build()
-            .into_diagnostic()?;
         let array_values_suffix0_1_built =
-            ArrayValuesSuffix0::ArrayValuesSuffix01(array_values_suffix0_1_built);
+            ArrayValuesSuffix0ArrayValuesSuffix0EmptyBuilder::default()
+                .build()
+                .into_diagnostic()?;
+        let array_values_suffix0_1_built =
+            ArrayValuesSuffix0::ArrayValuesSuffix0Empty(array_values_suffix0_1_built);
         self.push(
             ASTType::ArrayValuesSuffix0(array_values_suffix0_1_built),
             context,
@@ -5408,12 +5412,12 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values = pop_item!(self, array_values, ArrayValues, context);
-        let array_values_suffix_0_built = ArrayValuesSuffix3Builder::default()
+        let array_values_suffix_0_built = ArrayValuesSuffixArrayValuesBuilder::default()
             .array_values(Box::new(array_values))
             .build()
             .into_diagnostic()?;
         let array_values_suffix_0_built =
-            ArrayValuesSuffix::ArrayValuesSuffix0(array_values_suffix_0_built);
+            ArrayValuesSuffix::ArrayValues(array_values_suffix_0_built);
         self.push(
             ASTType::ArrayValuesSuffix(array_values_suffix_0_built),
             context,
@@ -5429,11 +5433,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     fn array_values_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values_suffix_1_built = ArrayValuesSuffix4Builder::default()
+        let array_values_suffix_1_built = ArrayValuesSuffixArrayValuesSuffixEmptyBuilder::default()
             .build()
             .into_diagnostic()?;
         let array_values_suffix_1_built =
-            ArrayValuesSuffix::ArrayValuesSuffix1(array_values_suffix_1_built);
+            ArrayValuesSuffix::ArrayValuesSuffixEmpty(array_values_suffix_1_built);
         self.push(
             ASTType::ArrayValuesSuffix(array_values_suffix_1_built),
             context,
@@ -5477,11 +5481,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let std_table = pop_item!(self, std_table, StdTable, context);
-        let table_0_built = Table0Builder::default()
+        let table_0_built = TableStdTableBuilder::default()
             .std_table(Box::new(std_table))
             .build()
             .into_diagnostic()?;
-        let table_0_built = Table::Table0(table_0_built);
+        let table_0_built = Table::StdTable(table_0_built);
         // Calling user action here
         self.user_grammar.table(&table_0_built)?;
         self.push(ASTType::Table(table_0_built), context);
@@ -5501,11 +5505,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table = pop_item!(self, array_table, ArrayTable, context);
-        let table_1_built = Table1Builder::default()
+        let table_1_built = TableArrayTableBuilder::default()
             .array_table(Box::new(array_table))
             .build()
             .into_diagnostic()?;
-        let table_1_built = Table::Table1(table_1_built);
+        let table_1_built = Table::ArrayTable(table_1_built);
         // Calling user action here
         self.user_grammar.table(&table_1_built)?;
         self.push(ASTType::Table(table_1_built), context);

@@ -7,6 +7,7 @@
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::miette::Result;
+use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
@@ -2088,21 +2089,50 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
 ];
 
-lazy_static::lazy_static! {
-    static ref TOKENIZERS: Vec<(&'static str, Tokenizer)> = vec![
-        ("INITIAL", Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap()),
-        ("Esc", Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap()),
-        ("Val", Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap()),
-        ("BString", Tokenizer::build(TERMINALS, SCANNER_3.0, SCANNER_3.1).unwrap()),
-        ("MLBString", Tokenizer::build(TERMINALS, SCANNER_4.0, SCANNER_4.1).unwrap()),
-        ("LString", Tokenizer::build(TERMINALS, SCANNER_5.0, SCANNER_5.1).unwrap()),
-        ("MLLString", Tokenizer::build(TERMINALS, SCANNER_6.0, SCANNER_6.1).unwrap()),
-        ("HexInt", Tokenizer::build(TERMINALS, SCANNER_7.0, SCANNER_7.1).unwrap()),
-        ("OctInt", Tokenizer::build(TERMINALS, SCANNER_8.0, SCANNER_8.1).unwrap()),
-        ("BinInt", Tokenizer::build(TERMINALS, SCANNER_9.0, SCANNER_9.1).unwrap()),
-
-    ];
-}
+static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
+    vec![
+        (
+            "INITIAL",
+            Tokenizer::build(TERMINALS, SCANNER_0.0, SCANNER_0.1).unwrap(),
+        ),
+        (
+            "Esc",
+            Tokenizer::build(TERMINALS, SCANNER_1.0, SCANNER_1.1).unwrap(),
+        ),
+        (
+            "Val",
+            Tokenizer::build(TERMINALS, SCANNER_2.0, SCANNER_2.1).unwrap(),
+        ),
+        (
+            "BString",
+            Tokenizer::build(TERMINALS, SCANNER_3.0, SCANNER_3.1).unwrap(),
+        ),
+        (
+            "MLBString",
+            Tokenizer::build(TERMINALS, SCANNER_4.0, SCANNER_4.1).unwrap(),
+        ),
+        (
+            "LString",
+            Tokenizer::build(TERMINALS, SCANNER_5.0, SCANNER_5.1).unwrap(),
+        ),
+        (
+            "MLLString",
+            Tokenizer::build(TERMINALS, SCANNER_6.0, SCANNER_6.1).unwrap(),
+        ),
+        (
+            "HexInt",
+            Tokenizer::build(TERMINALS, SCANNER_7.0, SCANNER_7.1).unwrap(),
+        ),
+        (
+            "OctInt",
+            Tokenizer::build(TERMINALS, SCANNER_8.0, SCANNER_8.1).unwrap(),
+        ),
+        (
+            "BinInt",
+            Tokenizer::build(TERMINALS, SCANNER_9.0, SCANNER_9.1).unwrap(),
+        ),
+    ]
+});
 
 pub fn parse<'t, T>(
     input: &'t str,

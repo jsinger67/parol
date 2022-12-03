@@ -79,6 +79,8 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.10.0"],
+    // Workaround until https://github.com/jsinger67/parol/pull/23#issuecomment-1330908591 is clear
+    &["add", "miette@5.2.0", "--features", "fancy"],
     &[
         "add",
         "parol_runtime@0.11.0",

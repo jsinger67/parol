@@ -1,5 +1,5 @@
 # The following example invocations assume that you have cloned
-# [toml-test](https://github.com/BurntSushi/toml-test.git) parallel to this crate.
+# [toml-test](https://github.com/BurntSushi/toml-test.git) parallel to this repository.
 #
 # ./test.ps1 -Verbose -Path ../../../toml-test/tests/invalid/ -NegativeTests
 # ./test.ps1 -Verbose -Path ../../../toml-test/tests/valid/ -StopAtFirstError
