@@ -86,8 +86,6 @@ pub fn main(args: &Args) -> Result<()> {
 
 const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.10.0"],
-    // Workaround until https://github.com/jsinger67/parol/pull/23#issuecomment-1330908591 is clear
-    &["add", "miette@5.2.0", "--features", "fancy"],
     &[
         "add",
         "parol_runtime@0.11.0",
@@ -151,6 +149,18 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
                     .into_diagnostic()
             }
         })?;
+
+    if creation_data.is_bin {
+        // Workaround until https://github.com/jsinger67/parol/pull/23#issuecomment-1330908591 is clear
+        let cargo_args = &["add", "miette@5.2.0", "--features", "fancy"];
+        Command::new("cargo")
+            .current_dir(&creation_data.path)
+            .args(*cargo_args)
+            .status()
+            .map(|_| ())
+            .into_diagnostic()
+            .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")?
+    }
 
     // Add dependency to id_tree_layout
     if creation_data.tree_gen {
