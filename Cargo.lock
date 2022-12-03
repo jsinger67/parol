@@ -679,7 +679,7 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-version = "0.15.0"
+version = "0.15.0-alpha.1"
 dependencies = [
  "bart",
  "bart_derive",
