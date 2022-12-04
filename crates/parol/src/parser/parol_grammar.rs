@@ -506,7 +506,8 @@ impl ParolGrammar<'_> {
 
     fn process_parol(&mut self, parol: &Parol<'_>) -> Result<()> {
         self.process_prolog(&parol.prolog)?;
-        self.process_grammar_definition(&parol.grammar_definition)
+        self.process_grammar_definition(&parol.grammar_definition)?;
+        self.check()
     }
 
     fn process_prolog(&mut self, prolog: &Prolog) -> Result<()> {
@@ -859,6 +860,36 @@ impl ParolGrammar<'_> {
                 TerminalKind::Regex.expand(ParolGrammar::trim_quotes(r.regex.regex.text()).as_str())
             }
         }
+    }
+
+    fn check(&self) -> Result<()> {
+        let empty_scanners =
+            self.scanner_configurations
+                .iter()
+                .enumerate()
+                .skip(1)    // Allow INITIAL to be empty to avoid annoyance
+                .fold(Vec::new(), |mut acc, (i, e)| {
+                    if !self.is_used_scanner(i) {
+                        acc.push(e.name.clone());
+                    }
+                    acc
+                });
+        if !empty_scanners.is_empty() {
+            bail!(ParolParserError::EmptyScanners { empty_scanners })
+        } else {
+            Ok(())
+        }
+    }
+
+    fn is_used_scanner(&self, scanner_index: usize) -> bool {
+        self.productions.iter().any(|p| {
+            p.rhs.0.iter().any(|a| {
+                a.0.iter().any(|f| match f {
+                    Factor::Terminal(_, _, s, _, _) => s.contains(&scanner_index),
+                    _ => false,
+                })
+            })
+        })
     }
 }
 

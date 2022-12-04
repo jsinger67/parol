@@ -112,4 +112,15 @@ Consider using only one single terminal instead of two."
         #[label("Second alias")]
         second: SourceSpan,
     },
+
+    /// Empty Scanner states are not allowed.
+    #[error("Empty scanner states ({empty_scanners:?}) found")]
+    #[diagnostic(
+        help("Assign at least one terminal or remove it!"),
+        code(parol::parser::empty_scanner_states)
+    )]
+    EmptyScanners {
+        /// Names of the empty scanner states
+        empty_scanners: Vec<String>,
+    },
 }
