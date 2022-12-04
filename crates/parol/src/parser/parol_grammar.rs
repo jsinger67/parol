@@ -174,6 +174,16 @@ impl Factor {
             Self::ScannerSwitchPop => "%pop()".to_string(),
         }
     }
+
+    fn is_used_scanner(&self, scanner_index: usize) -> bool {
+        match self {
+            Factor::Terminal(_, _, s, _, _) => s.contains(&scanner_index),
+            Factor::Group(a) | Factor::Repeat(a) | Factor::Optional(a) => {
+                a.is_used_scanner(scanner_index)
+            }
+            _ => false,
+        }
+    }
 }
 
 impl Display for Factor {
@@ -253,6 +263,10 @@ impl Alternation {
             .collect::<Vec<String>>()
             .join(" ")
     }
+
+    fn is_used_scanner(&self, scanner_index: usize) -> bool {
+        self.0.iter().any(|f| f.is_used_scanner(scanner_index))
+    }
 }
 
 impl Display for Alternation {
@@ -296,6 +310,10 @@ impl Alternations {
             .map(|a| a.to_par())
             .collect::<Vec<String>>()
             .join(" | ")
+    }
+
+    fn is_used_scanner(&self, scanner_index: usize) -> bool {
+        self.0.iter().any(|a| a.is_used_scanner(scanner_index))
     }
 }
 
@@ -863,17 +881,17 @@ impl ParolGrammar<'_> {
     }
 
     fn check(&self) -> Result<()> {
-        let empty_scanners =
-            self.scanner_configurations
-                .iter()
-                .enumerate()
-                .skip(1)    // Allow INITIAL to be empty to avoid annoyance
-                .fold(Vec::new(), |mut acc, (i, e)| {
-                    if !self.is_used_scanner(i) {
-                        acc.push(e.name.clone());
-                    }
-                    acc
-                });
+        let empty_scanners = self
+            .scanner_configurations
+            .iter()
+            .enumerate()
+            .skip(1) // Allow INITIAL to be empty to avoid annoyance
+            .fold(Vec::new(), |mut acc, (i, e)| {
+                if !self.is_used_scanner(i) {
+                    acc.push(e.name.clone());
+                }
+                acc
+            });
         if !empty_scanners.is_empty() {
             bail!(ParolParserError::EmptyScanners { empty_scanners })
         } else {
@@ -882,14 +900,9 @@ impl ParolGrammar<'_> {
     }
 
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
-        self.productions.iter().any(|p| {
-            p.rhs.0.iter().any(|a| {
-                a.0.iter().any(|f| match f {
-                    Factor::Terminal(_, _, s, _, _) => s.contains(&scanner_index),
-                    _ => false,
-                })
-            })
-        })
+        self.productions
+            .iter()
+            .any(|p| p.rhs.0.iter().any(|a| a.is_used_scanner(scanner_index)))
     }
 }
 
