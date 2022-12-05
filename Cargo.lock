@@ -734,7 +734,7 @@ version = "0.1.0"
 
 [[package]]
 name = "parol_runtime"
-version = "0.11.0"
+version = "0.11.1"
 dependencies = [
  "derive_builder",
  "function_name",
