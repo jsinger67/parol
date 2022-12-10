@@ -1,5 +1,6 @@
 use std::borrow::Cow;
 use std::fmt::{Debug, Display, Error, Formatter};
+use std::ops::Range;
 use std::path::Path;
 
 use miette::SourceSpan;
@@ -79,5 +80,15 @@ impl From<&Location> for SourceSpan {
             location.length,
         )
             .into()
+    }
+}
+
+impl From<&Location> for Range<usize> {
+    fn from(location: &Location) -> Self {
+        let start = location.start_pos + location.pos;
+        Range {
+            start,
+            end: start + location.length,
+        }
     }
 }

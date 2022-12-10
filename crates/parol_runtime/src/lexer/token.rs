@@ -3,6 +3,7 @@ use miette::SourceSpan;
 use std::borrow::Cow;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
+use std::ops::Range;
 
 use super::Location;
 
@@ -136,6 +137,12 @@ impl FormatToken for Token<'_> {
 }
 
 impl From<&Token<'_>> for SourceSpan {
+    fn from(token: &Token<'_>) -> Self {
+        (&token.location).into()
+    }
+}
+
+impl From<&Token<'_>> for Range<usize> {
     fn from(token: &Token<'_>) -> Self {
         (&token.location).into()
     }
