@@ -3,7 +3,6 @@ use miette::SourceSpan;
 use std::borrow::Cow;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
-use std::ops::Range;
 
 use super::Location;
 
@@ -142,7 +141,7 @@ impl From<&Token<'_>> for SourceSpan {
     }
 }
 
-impl From<&Token<'_>> for Range<usize> {
+impl From<&Token<'_>> for std::ops::Range<usize> {
     fn from(token: &Token<'_>) -> Self {
         (&token.location).into()
     }

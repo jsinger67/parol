@@ -19,6 +19,7 @@ pub use format_token::FormatToken;
 ///
 pub mod location;
 pub use location::Location;
+
 ///
 /// Module that provides basic token implementation.
 ///
