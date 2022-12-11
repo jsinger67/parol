@@ -66,6 +66,9 @@ fn main() -> Result<()> {
     if config.auto_generate {
         builder.enable_auto_generation();
     }
+    if config.range {
+        builder.range();
+    }
     if let Some(expanded_grammar_file) = &config.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)

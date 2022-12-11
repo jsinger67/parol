@@ -4,8 +4,9 @@ use super::grammar_type_generator::GrammarTypeInfo;
 use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 use super::template_data::{
-    NonTerminalTypeEnum, NonTerminalTypeStruct, UserTraitCallerFunctionDataBuilder,
-    UserTraitDataBuilder, UserTraitFunctionDataBuilder, UserTraitFunctionStackPopDataBuilder,
+    NonTerminalTypeEnum, NonTerminalTypeStruct, RangeCalculationBuilder,
+    UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
+    UserTraitFunctionStackPopDataBuilder,
 };
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
@@ -26,6 +27,8 @@ pub struct UserTraitGenerator<'a> {
     module_name: &'a str,
     /// Enable feature auto-generation for expanded grammar's semantic actions
     auto_generate: bool,
+    /// Generate range information for AST types
+    range: bool,
     /// Parsed original user grammar
     productions: Vec<Production>,
     /// Compiled grammar configuration
@@ -474,6 +477,18 @@ impl<'a> UserTraitGenerator<'a> {
         }
     }
 
+    fn generate_range_calculation(t: SymbolId, symbol_table: &SymbolTable) -> Result<String> {
+        let type_name = symbol_table.symbol_as_type(t).name();
+        let lifetime = symbol_table.lifetime(t);
+        let mut range_calc = RangeCalculationBuilder::default()
+            .type_name(type_name)
+            .lifetime(lifetime)
+            .build()
+            .into_diagnostic()?;
+        range_calc.code.push("todo!();".to_string());
+        Ok(format!("{}", range_calc))
+    }
+
     // ---------------------------------------------------
     // Part of the Public API
     // *Changes will affect crate's version according to semver*
@@ -482,6 +497,9 @@ impl<'a> UserTraitGenerator<'a> {
     /// Generates the file with the user actions trait.
     ///
     pub fn generate_user_trait_source(&self, type_info: &mut GrammarTypeInfo) -> Result<String> {
+        if self.range && !self.auto_generate {
+            bail!("Range information can only be generated in auto-generation mode!");
+        }
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(self.auto_generate)?;
 
@@ -543,6 +561,12 @@ impl<'a> UserTraitGenerator<'a> {
                         Self::format_type(*t, &type_info.symbol_table, comment)?
                             .into_iter()
                             .for_each(|s| acc.push(s));
+                        if self.range {
+                            acc.push(Self::generate_range_calculation(
+                                *t,
+                                &type_info.symbol_table,
+                            )?);
+                        }
                         Ok(acc)
                     } else {
                         acc
@@ -658,6 +682,7 @@ impl<'a> UserTraitGenerator<'a> {
         let user_trait_data = UserTraitDataBuilder::default()
             .user_type_name(&self.user_type_name)
             .auto_generate(self.auto_generate)
+            .range(self.range)
             .production_output_types(production_output_types)
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
@@ -681,6 +706,7 @@ impl<'a> UserTraitGenerator<'a> {
         user_type_name: &'a str,
         module_name: &'a str,
         auto_generate: bool,
+        range: bool,
         productions: Vec<Production>,
         grammar_config: &'a GrammarConfig,
     ) -> Result<Self> {
@@ -689,6 +715,7 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(user_type_name)
             .module_name(module_name)
             .auto_generate(auto_generate)
+            .range(range)
             .grammar_config(grammar_config)
             .productions(productions)
             .build()

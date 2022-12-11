@@ -178,6 +178,8 @@ pub struct Builder {
     auto_generate: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
+    /// Generate range information for AST types
+    range: bool,
     /// Used for auto generation of user's grammar semantic action trait
     productions: Vec<Production>,
 }
@@ -241,6 +243,7 @@ impl Builder {
             grammar_file: None,
             cargo_integration: is_build_script(),
             debug_verbose: false,
+            range: false,
             max_lookahead: DEFAULT_MAX_LOOKAHEAD,
             module_name: String::from(DEFAULT_MODULE_NAME),
             user_type_name: String::from(DEFAULT_USER_TYPE_NAME),
@@ -341,6 +344,14 @@ impl Builder {
     #[doc(hidden)]
     pub fn debug_verbose(&mut self) -> &mut Self {
         self.debug_verbose = true;
+        self
+    }
+    /// Generate range information for AST types
+    ///
+    /// This is an internal method, and is only intended for the CLI.
+    #[doc(hidden)]
+    pub fn range(&mut self) -> &mut Self {
+        self.range = true;
         self
     }
     /// Enables the auto-generation of expanded grammar's semantic actions - experimental
@@ -538,6 +549,7 @@ impl GrammarGenerator<'_> {
             &self.builder.user_type_name,
             &self.builder.module_name,
             self.builder.auto_generate,
+            self.builder.range,
             self.builder.productions.clone(),
             grammar_config,
         )?;

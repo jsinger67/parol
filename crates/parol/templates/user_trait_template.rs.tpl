@@ -4,7 +4,7 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::id_tree::Tree;
+{{#range?}}use parol_runtime::{Span, ToSpan};{{/range}}use parol_runtime::id_tree::Tree;
 {{#auto_generate?}}use parol_runtime::derive_builder::Builder;{{/auto_generate}}
 {{#auto_generate?}}#[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_item, pop_and_reverse_item};{{/auto_generate}}

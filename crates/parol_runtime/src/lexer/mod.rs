@@ -21,6 +21,12 @@ pub mod location;
 pub use location::Location;
 
 ///
+/// Module to support handling of std::ops::Range
+///
+pub mod rng;
+pub use rng::{Span, ToSpan};
+
+///
 /// Module that provides basic token implementation.
 ///
 pub mod token;

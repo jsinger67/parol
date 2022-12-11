@@ -58,6 +58,10 @@ pub(crate) struct ClapApp {
     #[clap(short = 'v', long = "verbose")]
     pub verbose: bool,
 
+    /// Generate range information for AST types
+    #[clap(short = 'r', long = "range")]
+    pub range: bool,
+
     #[clap(subcommand)]
     pub subcommand: Option<super::tools::ToolsSubcommands>,
 }

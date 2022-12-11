@@ -44,6 +44,7 @@ pub(crate) struct UserTraitFunctionStackPopData {
 pub(crate) struct UserTraitData<'a> {
     pub user_type_name: &'a str,
     pub auto_generate: bool,
+    pub range: bool,
     pub production_output_types: StrVec,
     pub non_terminal_types: StrVec,
     pub ast_type_decl: String,
@@ -79,4 +80,13 @@ pub(crate) struct NonTerminalTypeVec {
     pub non_terminal: String,
     pub lifetime: String,
     pub type_ref: String,
+}
+
+#[derive(BartDisplay, Builder, Debug, Default)]
+#[template = "templates/range_calculation.rs.tpl"]
+pub(crate) struct RangeCalculation {
+    pub type_name: String,
+    pub lifetime: String,
+    #[builder(default)]
+    pub code: StrVec,
 }

@@ -1,7 +1,13 @@
 use std::ops::{Add, Deref, Range};
 
+/// This trait should be implemented by generated AST data types
+pub trait ToSpan {
+    /// Calculates the span of the implementing item
+    fn span(&self) -> Span;
+}
+
 /// The Span type is a customized Range that can handle extension of ranges.
-/// Span and std::ops::::Range are convertible into each other.
+/// Span and std::ops::Range are convertible into each other.
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Span(Range<usize>);
 
@@ -13,7 +19,7 @@ impl Span {
 
     /// Generates a union of both ranges.
     /// It handles the special empty range.
-    /// Empty ranges are null elements for extend operations:
+    /// Empty ranges are null elements for `extend` operations:
     ///
     /// R1 + Empty = R1
     /// Empty + R1 = R1
@@ -40,20 +46,20 @@ impl Span {
         }
     }
 
-    pub fn from_slice<'a, T>(slc: &'a [T]) -> Self
-    where
-        &'a T: Into<Span>,
-    {
-        if slc.is_empty() {
-            Span::default()
-        } else {
-            let first: &T = slc.first().unwrap();
-            let rng: Span = first.into();
-            let last: &T = slc.last().unwrap();
-            let span = last.into();
-            rng.extend(&span)
-        }
-    }
+    // pub fn from_slice<'a, T>(slc: &'a [T]) -> Self
+    // where
+    //     &'a T: Into<Span>,
+    // {
+    //     if slc.is_empty() {
+    //         Span::default()
+    //     } else {
+    //         let first: &T = slc.first().unwrap();
+    //         let rng: Span = first.into();
+    //         let last: &T = slc.last().unwrap();
+    //         let span = last.into();
+    //         rng.extend(&span)
+    //     }
+    // }
 }
 
 impl Deref for Span {

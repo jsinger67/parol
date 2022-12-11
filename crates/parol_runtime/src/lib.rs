@@ -5,6 +5,7 @@ extern crate thiserror;
 /// Module that provides types for lexical analysis.
 ///
 pub mod lexer;
+pub use lexer::{Span, ToSpan};
 
 ///
 /// Module that provides types for syntactical analysis.
