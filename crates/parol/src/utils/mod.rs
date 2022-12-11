@@ -13,6 +13,11 @@ use std::fs;
 use std::hash::Hash;
 use std::path::Path;
 
+///
+/// Module to support handling of std::ops::Range
+///
+pub mod rng;
+
 pub mod str_vec;
 
 /// Applies a key-generating function to each element of a vector and yields a vector of
