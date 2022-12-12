@@ -20,6 +20,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 * Merged PR [#43](https://github.com/jsinger67/parol/pull/43) from [ryo33](https://github.com/ryo33)
   * Use \s for WHITESPACE_TOKEN
+* Supporting Span information for `parol`'s new feature to generate span calculation
 
 ## v0.11.0 - 2022-11-29
 

@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.15.0 - 2022-12-03
+## v0.15.0 - Not released yet
 
 * Merged PR [#34](https://github.com/jsinger67/parol/pull/34) from [ryo33](https://github.com/ryo33)
 which closes issue [#33](https://github.com/jsinger67/parol/issues/33)
@@ -44,6 +44,13 @@ which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
 `line_comment` and `block_comment` directives
 * Fixed [#39](https://github.com/jsinger67/parol/issues/39)
   * Empty scanner states are detected at the end of the parse process
+* Fixed issue [#44](https://github.com/jsinger67/parol/issues/44)
+  * Add a field for span data in generated types
+    * `parol` can now optionally generate the `ToSpan` trait automatically for all generated AST
+    types
+    * Can be enabled by -r or builder configuration
+
+       Needs to be evaluated thoroughly!
 
 ## v0.14.0 - 2022-11-18
 
