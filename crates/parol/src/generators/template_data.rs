@@ -90,3 +90,10 @@ pub(crate) struct RangeCalculation {
     #[builder(default)]
     pub code: StrVec,
 }
+
+#[derive(BartDisplay, Builder, Debug, Default)]
+#[template = "templates/enum_range_calc.rs.tpl"]
+pub(crate) struct EnumRangeCalc {
+    #[builder(default)]
+    pub enum_variants: StrVec,
+}

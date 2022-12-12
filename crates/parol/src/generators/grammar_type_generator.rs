@@ -630,7 +630,7 @@ impl GrammarTypeInfo {
         } else {
             lhs.iter().fold(String::new(), |mut acc, s| {
                 match s {
-                    Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(&n)),
+                    Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(n)),
                     Symbol::T(Terminal::Trm(t, ..)) => acc.push_str(&NmHlp::to_upper_camel_case(
                         &self.terminal_names[self.get_terminal_index(t)],
                     )),

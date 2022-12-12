@@ -1,4 +1,6 @@
 use crate::grammar::SymbolAttribute;
+use crate::{generators::template_data::EnumRangeCalcBuilder, utils::str_vec::StrVec};
+use miette::{bail, IntoDiagnostic, Result};
 
 use super::symbol_table::{
     Instance, ScopeId, ScopedNameId, Symbol, SymbolId, SymbolKind, SymbolTable, Type, TypeEntrails,
@@ -25,6 +27,7 @@ pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
     fn member_scope(&self) -> ScopeId;
     fn entrails(&self) -> &TypeEntrails;
     fn is_container(&self) -> bool;
+    fn generate_range_calculation(&self) -> Result<String>;
 }
 
 pub(crate) struct SymbolItem<'a> {
@@ -187,5 +190,104 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
 
     fn is_container(&self) -> bool {
         self.my_type.is_container()
+    }
+
+    fn generate_range_calculation(&self) -> Result<String> {
+        let symbol_table = self.symbol_item.symbol_table;
+        match self.entrails() {
+            TypeEntrails::Struct => {
+                let relevant_symbols = symbol_table
+                    .scope(self.member_scope())
+                    .symbols
+                    .iter()
+                    .filter(|s| {
+                        let member = symbol_table.symbol_as_instance(**s);
+                        member.sem() != SymbolAttribute::Clipped
+                    })
+                    .cloned()
+                    .collect::<Vec<SymbolId>>();
+
+                if relevant_symbols.is_empty() {
+                    Ok("        Span::default()".to_string())
+                } else {
+                    Ok(format!(
+                        "{}",
+                        relevant_symbols.iter().enumerate().fold(
+                            StrVec::new(8),
+                            |mut acc, (i, m)| {
+                                let addition = if i > 0 { "+ " } else { "" };
+                                let member = symbol_table.symbol_as_instance(*m);
+                                let member_type = symbol_table.symbol_as_type(member.type_id());
+                                match member_type.entrails() {
+                                    TypeEntrails::Vec(_) => {
+                                        acc.push(format!(
+                                            "{}self.{}.first().map_or(Span::default(), |f| f.span())",
+                                            addition,
+                                            member.name()
+                                        ));
+                                        acc.push(format!(
+                                            "+ self.{}.last().map_or(Span::default(), |l| l.span())",
+                                            member.name()
+                                        ));
+                                    }
+                                    TypeEntrails::Option(_) => acc.push(format!(
+                                        "{}self.{}.as_ref().map_or(Span::default(), |o| o.span())",
+                                        addition,
+                                        member.name()
+                                    )),
+                                    _ => acc.push(format!(
+                                        "{}self.{}.span()",
+                                        addition,
+                                        member.name()
+                                    )),
+                                }
+                                acc
+                            }
+                        )
+                    ))
+                }
+            }
+            TypeEntrails::Enum => {
+                let mut enum_data = EnumRangeCalcBuilder::default().build().into_diagnostic()?;
+                enum_data.enum_variants = self
+                    .symbol_item
+                    .symbol_table
+                    .scope(self.member_scope())
+                    .symbols
+                    .iter()
+                    .fold(StrVec::new(8), |mut acc, v| {
+                        let v = self.symbol_item.symbol_table.symbol_as_type(*v);
+                        if let TypeEntrails::EnumVariant(a) = v.entrails() {
+                            let enum_variant_type = self.symbol_item.symbol_table.symbol_as_type(*a);
+                            match enum_variant_type.entrails() {
+                                TypeEntrails::Vec(_) => {
+                                    acc.push(format!(
+                                        "{}::{}(v) => v.first().map_or(Span::default(), |f| f.span())",
+                                        self.name(),
+                                        v.name()
+                                    ));
+                                    acc.push(
+                                        "+ v.last().map_or(Span::default(), |l| l.span()),".to_string(),
+                                    );
+                                }
+                                TypeEntrails::Option(_) => acc.push(format!(
+                                    "{}::{}(o) => o.as_ref().map_or(Span::default(), |o| o.span()),",
+                                    self.name(),
+                                    v.name()
+                                )),
+                                _ => {
+                                    // Expr::CommentExpr(v) => v.span(),
+                                    acc.push(format!("{}::{}(v) => v.span(),", self.name(), v.name()))
+                                }
+                            }
+                        } else {
+                            panic!("Expecting enum variant here!")
+                        }
+                        acc
+                    });
+                Ok(format!("{}", enum_data))
+            }
+            _ => bail!("Unexpected type for range calculation!"),
+        }
     }
 }

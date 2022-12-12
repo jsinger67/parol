@@ -478,14 +478,17 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     fn generate_range_calculation(t: SymbolId, symbol_table: &SymbolTable) -> Result<String> {
-        let type_name = symbol_table.symbol_as_type(t).name();
+        let type_symbol = symbol_table.symbol_as_type(t);
+        let type_name = type_symbol.name();
         let lifetime = symbol_table.lifetime(t);
         let mut range_calc = RangeCalculationBuilder::default()
             .type_name(type_name)
             .lifetime(lifetime)
             .build()
             .into_diagnostic()?;
-        range_calc.code.push("todo!();".to_string());
+        range_calc
+            .code
+            .push(type_symbol.generate_range_calculation()?);
         Ok(format!("{}", range_calc))
     }
 
@@ -540,6 +543,12 @@ impl<'a> UserTraitGenerator<'a> {
                         Self::format_type(*t, &type_info.symbol_table, comment)?
                             .into_iter()
                             .for_each(|s| acc.push(s));
+                        if self.range {
+                            acc.push(Self::generate_range_calculation(
+                                *t,
+                                &type_info.symbol_table,
+                            )?);
+                        }
                         Ok(acc)
                     } else {
                         acc
@@ -577,7 +586,7 @@ impl<'a> UserTraitGenerator<'a> {
             StrVec::new(0)
         };
 
-        let ast_type_decl = if self.auto_generate {
+        let mut ast_type_decl = if self.auto_generate {
             let mut comment = StrVec::new(0);
             comment.push(String::default());
             comment.push("Deduced ASTType of expanded grammar".to_string());
@@ -586,6 +595,13 @@ impl<'a> UserTraitGenerator<'a> {
         } else {
             String::default()
         };
+
+        if self.range {
+            ast_type_decl += &Self::generate_range_calculation(
+                type_info.ast_enum_type,
+                &type_info.symbol_table,
+            )?;
+        }
 
         let trait_functions = type_info.adapter_actions.iter().fold(
             Ok(StrVec::new(0).first_line_no_indent()),

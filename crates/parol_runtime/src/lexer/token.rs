@@ -1,4 +1,5 @@
 use crate::lexer::{FormatToken, TerminalIndex};
+use crate::{Span, ToSpan};
 use miette::SourceSpan;
 use std::borrow::Cow;
 use std::convert::From;
@@ -144,5 +145,17 @@ impl From<&Token<'_>> for SourceSpan {
 impl From<&Token<'_>> for std::ops::Range<usize> {
     fn from(token: &Token<'_>) -> Self {
         (&token.location).into()
+    }
+}
+
+impl From<&Token<'_>> for Span {
+    fn from(token: &Token<'_>) -> Self {
+        (Into::<std::ops::Range<usize>>::into(&token.location)).into()
+    }
+}
+
+impl ToSpan for Token<'_> {
+    fn span(&self) -> Span {
+        self.into()
     }
 }
