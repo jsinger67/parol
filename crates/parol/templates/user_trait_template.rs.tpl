@@ -4,6 +4,11 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+// Specifically disable clippy warnings that result in the way parol generates names.
+// The user can't influence this in its grammar definition.
+#![allow(clippy::enum_variant_names)]
+#![allow(clippy::upper_case_acronyms)]
+
 {{#range?}}use parol_runtime::{Span, ToSpan};{{/range}}use parol_runtime::id_tree::Tree;
 {{#auto_generate?}}use parol_runtime::derive_builder::Builder;{{/auto_generate}}
 {{#auto_generate?}}#[allow(unused_imports)]

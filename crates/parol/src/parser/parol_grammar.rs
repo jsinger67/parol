@@ -15,7 +15,7 @@ use std::fmt::{Debug, Display, Error, Formatter, Write};
 use std::marker::PhantomData;
 
 /// Used for implementation of trait `Default` for `&ParolGrammar`.
-static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(|| ParolGrammar::default());
+static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGrammar::default);
 
 const INITIAL_STATE: usize = 0;
 
@@ -948,8 +948,10 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
         if arg.alternations.alternations_list.is_empty() {
             // Only one factor in the single alternation
             if arg.alternations.alternation.alternation_list.len() == 1 {
-                match &*arg.alternations.alternation.alternation_list[0].factor {
-                    Factor::Symbol(symbol) => match &*symbol.symbol {
+                if let Factor::Symbol(symbol) =
+                    &*arg.alternations.alternation.alternation_list[0].factor
+                {
+                    match &*symbol.symbol {
                         // Only applicable for SimpleToken ...
                         Symbol::SimpleToken(SymbolSimpleToken { simple_token }) => {
                             let expanded =
@@ -970,8 +972,7 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
                             )?;
                         }
                         _ => (),
-                    },
-                    _ => (),
+                    }
                 }
             }
         }

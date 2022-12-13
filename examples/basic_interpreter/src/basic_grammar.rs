@@ -284,12 +284,12 @@ impl<'t> BasicGrammar<'t> {
     ) -> Result<()> {
         let context = "process_if_statement";
         *continue_statements = true;
-        let condition = self.process_expression(&*if_statement.if_statement.expression)?;
+        let condition = self.process_expression(&if_statement.if_statement.expression)?;
         trace!("{context}: condition: {condition}");
         if condition != 0.0 {
             match &*if_statement.if_statement.if_body {
                 IfBody::ThenStatement(then) => {
-                    self.interpret_statement(&*then.statement, lines, continue_statements)
+                    self.interpret_statement(&then.statement, lines, continue_statements)
                 }
                 IfBody::GotoLineNumber(goto) => {
                     self.process_goto(&goto.line_number.line_number, lines)
@@ -302,7 +302,7 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_assign(&mut self, assign: &StatementAssignment) -> Result<()> {
         let context = "process_assign";
-        let value = self.process_expression(&*assign.assignment.expression)?;
+        let value = self.process_expression(&assign.assignment.expression)?;
         let symbol = assign.assignment.variable.variable.text();
         trace!("{context}: {symbol} = {value}");
         self.set_value(symbol, context, value);
@@ -310,10 +310,10 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn process_print_statement(&mut self, print_statement: &StatementPrintStatement) -> Result<()> {
-        let value = self.process_expression(&*print_statement.print_statement.expression)?;
+        let value = self.process_expression(&print_statement.print_statement.expression)?;
         print!("{value} ");
         for elem in &print_statement.print_statement.print_statement_list {
-            let value = self.process_expression(&*elem.expression)?;
+            let value = self.process_expression(&elem.expression)?;
             print!("{value} ");
         }
         Ok(())
@@ -327,7 +327,7 @@ impl<'t> BasicGrammar<'t> {
     }
 
     fn process_expression(&mut self, expression: &Expression) -> Result<DefinitionRange> {
-        self.process_logical_or(&*expression.logical_or)
+        self.process_logical_or(&expression.logical_or)
     }
 
     fn process_logical_or(&mut self, logical_or: &LogicalOr) -> Result<DefinitionRange> {
@@ -355,20 +355,20 @@ impl<'t> BasicGrammar<'t> {
     fn process_logical_not(&mut self, logical_not: &LogicalNot) -> Result<DefinitionRange> {
         let context = "process_logical_not";
         if let Some(not) = &logical_not.logical_not_opt {
-            let result = self.process_relational(&*logical_not.relational)?;
+            let result = self.process_relational(&logical_not.relational)?;
             let op: UnaryOperator = not.logical_not_op.logical_not_op.text().try_into()?;
             UnaryOperator::apply_unary_operation(&op, result, context)
         } else {
-            self.process_relational(&*logical_not.relational)
+            self.process_relational(&logical_not.relational)
         }
     }
 
     fn process_relational(&mut self, relational: &Relational) -> Result<DefinitionRange> {
         let context = "process_relational";
-        let mut result = self.process_summation(&*relational.summation)?;
+        let mut result = self.process_summation(&relational.summation)?;
         for item in &relational.relational_list {
             let op: BinaryOperator = item.relational_op.relational_op.text().try_into()?;
-            let next_operand = self.process_summation(&*item.summation)?;
+            let next_operand = self.process_summation(&item.summation)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -376,13 +376,13 @@ impl<'t> BasicGrammar<'t> {
 
     fn process_summation(&mut self, summation: &Summation) -> Result<DefinitionRange> {
         let context = "process_summation";
-        let mut result = self.process_multiplication(&*summation.multiplication)?;
+        let mut result = self.process_multiplication(&summation.multiplication)?;
         for item in &summation.summation_list {
             let op: BinaryOperator = match &*item.summation_list_group {
                 SummationListGroup::Plus(plus) => plus.plus.plus.text().try_into(),
                 SummationListGroup::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
-            let next_operand = self.process_multiplication(&*item.multiplication)?;
+            let next_operand = self.process_multiplication(&item.multiplication)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)
@@ -393,10 +393,10 @@ impl<'t> BasicGrammar<'t> {
         multiplication: &Multiplication,
     ) -> Result<DefinitionRange> {
         let context = "process_multiplication";
-        let mut result = self.process_factor(&*multiplication.factor)?;
-        for item in &multiplication.multiplication_list {
+        let mut result = self.process_factor(&multiplication.factor)?;
+        for item in &*multiplication.multiplication_list {
             let op: BinaryOperator = item.mul_op.mul_op.text().try_into()?;
-            let next_operand = self.process_factor(&*item.factor)?;
+            let next_operand = self.process_factor(&item.factor)?;
             result = BinaryOperator::apply_binary_operation(result, &op, next_operand, context)?;
         }
         Ok(result)

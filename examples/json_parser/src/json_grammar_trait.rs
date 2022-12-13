@@ -4,6 +4,11 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+// Specifically disable clippy warnings that result in the way parol generates names.
+// The user can't influence this in its grammar definition.
+#![allow(clippy::enum_variant_names)]
+#![allow(clippy::upper_case_acronyms)]
+
 use parol_runtime::id_tree::Tree;
 
 use crate::json_grammar::JsonGrammar;
