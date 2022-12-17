@@ -4,6 +4,11 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+// Disable clippy warnings that can result in the way how parol generates code.
+#![allow(clippy::enum_variant_names)]
+#![allow(clippy::large_enum_variant)]
+#![allow(clippy::upper_case_acronyms)]
+
 use parol_runtime::id_tree::Tree;
 
 use crate::boolean_grammar::BooleanGrammar;

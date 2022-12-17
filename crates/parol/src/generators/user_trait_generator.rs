@@ -12,7 +12,7 @@ use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::Production;
-use crate::{Pr, StrVec};
+use crate::{Pr, StrVec, InnerAttributes};
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 
@@ -29,6 +29,8 @@ pub struct UserTraitGenerator<'a> {
     auto_generate: bool,
     /// Generate range information for AST types
     range: bool,
+    /// Inner attributes to insert at the top of the generated trait source.
+    inner_attributes: Vec<InnerAttributes>,
     /// Parsed original user grammar
     productions: Vec<Production>,
     /// Compiled grammar configuration
@@ -699,6 +701,10 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(&self.user_type_name)
             .auto_generate(self.auto_generate)
             .range(self.range)
+            .user_provided_attributes(self.inner_attributes.iter().fold(StrVec::new(0), |mut acc, e| {
+                acc.push(e.to_string());
+                acc
+            }))
             .production_output_types(production_output_types)
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)
@@ -723,6 +729,7 @@ impl<'a> UserTraitGenerator<'a> {
         module_name: &'a str,
         auto_generate: bool,
         range: bool,
+        inner_attributes: Vec<InnerAttributes>,
         productions: Vec<Production>,
         grammar_config: &'a GrammarConfig,
     ) -> Result<Self> {
@@ -732,6 +739,7 @@ impl<'a> UserTraitGenerator<'a> {
             .module_name(module_name)
             .auto_generate(auto_generate)
             .range(range)
+            .inner_attributes(inner_attributes)
             .grammar_config(grammar_config)
             .productions(productions)
             .build()

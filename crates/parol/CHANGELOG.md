@@ -48,9 +48,14 @@ which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
   * Add a field for span data in generated types
     * `parol` can now optionally generate the `ToSpan` trait automatically for all generated AST
     types
-    * Can be enabled by -r or builder configuration
+    * Can be enabled by -r or builder configuration `range()`
 
        Needs to be evaluated thoroughly!
+* Fixed issue [#47](https://github.com/jsinger67/parol/issues/47)
+  * `parol` can now optionally insert [inner attribute](https://doc.rust-lang.org/reference/attributes.html)
+  `#![allow(clippy::too_many_arguments)]` at the top of the generated trait source.
+  * Can be enabled by `--inner-attributes  allow-too-many-arguments` or builder configuration
+    `inner_attributes(vec![InnerAttributes::AllowTooManyArguments])`
 
 ## v0.14.0 - 2022-11-18
 

@@ -45,6 +45,7 @@ pub(crate) struct UserTraitData<'a> {
     pub user_type_name: &'a str,
     pub auto_generate: bool,
     pub range: bool,
+    pub user_provided_attributes: StrVec,
     pub production_output_types: StrVec,
     pub non_terminal_types: StrVec,
     pub ast_type_decl: String,

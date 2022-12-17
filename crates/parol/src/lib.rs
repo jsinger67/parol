@@ -19,6 +19,7 @@ extern crate rand_regex;
 
 #[cfg(feature = "build")]
 pub mod build;
+pub use build::InnerAttributes;
 
 ///
 /// Basic grammar data structures and algorithms

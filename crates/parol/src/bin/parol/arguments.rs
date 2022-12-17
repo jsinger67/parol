@@ -1,67 +1,74 @@
+
+
 use crate::PathBuf;
 
 use clap::Parser;
+use parol::InnerAttributes;
 
 // LL(k) Parser Generator written in Rust
 #[derive(Parser)]
-#[clap(author, version, about)]
-pub(crate) struct ClapApp {
+#[command(author, version, about)]
+pub(crate) struct CliArgs {
     /// Input grammar file
-    #[clap(short = 'f', long = "file")]
+    #[arg(short = 'f', long = "file")]
     pub grammar: Option<PathBuf>,
 
     /// Lookahead limit for Lookahead DFA calculation
-    #[clap(short = 'k', long = "lookahead", default_value = "5")]
+    #[arg(short = 'k', long, default_value = "5")]
     pub lookahead: usize,
 
     /// Output file for the generated parser source
-    #[clap(short = 'p', long = "parser")]
+    #[arg(short = 'p', long = "parser")]
     pub parser: Option<PathBuf>,
 
     /// Output file for the expanded grammar. Use -e-- to output to stdout
-    #[clap(short = 'e', long = "expanded")]
+    #[arg(short, long)]
     pub expanded: Option<PathBuf>,
 
     /// Writes the internal parsed grammar (ParolGrammar)
-    #[clap(short = 'i', long = "write_internal")]
+    #[arg(short = 'i', long)]
     pub write_internal: Option<PathBuf>,
 
     /// Writes the untransformed parsed grammar
-    #[clap(short = 'u', long = "write_untransformed")]
+    #[arg(short = 'u', long)]
     pub write_untransformed: Option<PathBuf>,
 
     /// Writes the transformed parsed grammar
-    #[clap(short = 'w', long = "write_transformed")]
+    #[arg(short, long)]
     pub write_transformed: Option<PathBuf>,
 
     /// Output file for the generated trait with semantic actions
-    #[clap(short = 'a', long = "actions")]
+    #[arg(short, long)]
     pub actions: Option<PathBuf>,
 
     /// User type that implements the language processing
-    #[clap(short = 't', long = "user_type")]
+    #[arg(short = 't', long)]
     pub user_type: Option<String>,
 
     /// User type's module name
-    #[clap(short = 'm', long = "module")]
+    #[arg(short, long)]
     pub module: Option<String>,
 
     /// Activates the auto-generation of semantic actions in expanded grammar - recommended
-    #[clap(short = 'g', long = "auto_generate")]
+    #[arg(short = 'g', long)]
     pub auto_generate: bool,
 
     /// Activates the generation of a SVG file with the parse tree of the given grammar
-    #[clap(short = 's', long = "svg")]
+    #[arg(short = 's', long = "svg")]
     pub generate_tree_graph: bool,
 
     /// Increased verbosity
-    #[clap(short = 'v', long = "verbose")]
+    #[arg(short, long)]
     pub verbose: bool,
 
     /// Generate range information for AST types
-    #[clap(short = 'r', long = "range")]
+    #[arg(short, long)]
     pub range: bool,
 
-    #[clap(subcommand)]
+    /// Inserts the given inner attributes at the top of the generated trait source.
+    #[arg(long, value_enum)]
+    pub inner_attributes: Vec<InnerAttributes>,
+
+    #[command(subcommand)]
     pub subcommand: Option<super::tools::ToolsSubcommands>,
 }

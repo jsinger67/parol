@@ -10,7 +10,7 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use arguments::ClapApp;
+use arguments::CliArgs;
 use clap::Parser;
 use log::trace;
 use miette::{miette, IntoDiagnostic, Result, WrapErr};
@@ -28,9 +28,9 @@ fn main() -> Result<()> {
     env_logger::try_init().into_diagnostic()?;
     trace!("env logger started");
 
-    let config = ClapApp::parse();
+    let args = CliArgs::parse();
 
-    if let Some(subcommand) = config.subcommand {
+    if let Some(subcommand) = args.subcommand {
         return subcommand.invoke_main();
     }
 
@@ -44,32 +44,33 @@ fn main() -> Result<()> {
     builder.set_cargo_integration(false);
 
     // NOTE: Grammar file is required option
-    let grammar_file = config
+    let grammar_file = args
         .grammar
         .as_ref()
         .ok_or_else(|| miette!("Missing input grammar file (Specify with `-f`)"))?;
     builder.grammar_file(grammar_file);
 
-    builder.max_lookahead(config.lookahead)?;
-    if let Some(module) = &config.module {
+    builder.max_lookahead(args.lookahead)?;
+    if let Some(module) = &args.module {
         builder.user_trait_module_name(module);
     }
-    if let Some(user_type) = &config.user_type {
+    if let Some(user_type) = &args.user_type {
         builder.user_type_name(user_type);
     }
-    if let Some(actions_file) = &config.actions {
+    if let Some(actions_file) = &args.actions {
         builder.actions_output_file(actions_file);
     }
-    if let Some(parser_file) = &config.parser {
+    if let Some(parser_file) = &args.parser {
         builder.parser_output_file(parser_file);
     }
-    if config.auto_generate {
+    if args.auto_generate {
         builder.enable_auto_generation();
     }
-    if config.range {
+    if args.range {
         builder.range();
     }
-    if let Some(expanded_grammar_file) = &config.expanded {
+    builder.inner_attributes(args.inner_attributes.clone());
+    if let Some(expanded_grammar_file) = &args.expanded {
         if expanded_grammar_file == OsStr::new("--") {
             // We special case this in our listener (see below)
         } else {
@@ -79,7 +80,7 @@ fn main() -> Result<()> {
 
     let mut listener = CLIListener {
         grammar_file,
-        config: &config,
+        config: &args,
     };
     let mut generator = builder.begin_generation_with(Some(&mut listener))?;
 
@@ -92,7 +93,7 @@ fn main() -> Result<()> {
 }
 
 pub struct CLIListener<'a> {
-    config: &'a ClapApp,
+    config: &'a CliArgs,
     grammar_file: &'a Path,
 }
 impl CLIListener<'_> {

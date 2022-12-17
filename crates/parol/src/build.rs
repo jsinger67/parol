@@ -124,14 +124,34 @@ use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use clap::{Parser, ValueEnum};
 use id_tree::Tree;
 use miette::{Context, IntoDiagnostic};
 use parol_runtime::parser::ParseTreeType;
 
 use crate::analysis::LookaheadDFA;
 use crate::generators::grammar_type_generator::GrammarTypeInfo;
+use crate::generators::user_trait_generator::UserTraitGeneratorBuilder;
 use crate::parser::parol_grammar::Production;
-use crate::{GrammarConfig, ParolGrammar, UserTraitGenerator, MAX_K};
+use crate::{GrammarConfig, ParolGrammar, MAX_K};
+
+/// Contains all attributes that should be inserted optionally on top of the generated trait source.
+/// * Used in the Builder API. Therefore it mus be public
+#[derive(Clone, Debug, Parser, ValueEnum)]
+pub enum InnerAttributes {
+    /// Suppresses clippy warnings like these: `warning: this function has too many arguments (9/7)`
+    AllowTooManyArguments,
+}
+
+impl std::fmt::Display for InnerAttributes {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            InnerAttributes::AllowTooManyArguments => {
+                write!(f, "#![allow(clippy::too_many_arguments)]")
+            }
+        }
+    }
+}
 
 /// The default maximum lookahead
 ///
@@ -180,6 +200,8 @@ pub struct Builder {
     debug_verbose: bool,
     /// Generate range information for AST types
     range: bool,
+    /// Inner attributes to insert at the top of the generated trait source.
+    inner_attributes: Vec<InnerAttributes>,
     /// Used for auto generation of user's grammar semantic action trait
     productions: Vec<Production>,
 }
@@ -253,6 +275,7 @@ impl Builder {
             actions_output_file: None,
             expanded_grammar_output_file: None,
             auto_generate: false,
+            inner_attributes: Vec::new(),
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
             productions: Vec::new(),
@@ -354,6 +377,12 @@ impl Builder {
         self.range = true;
         self
     }
+    /// Inserts the given inner attributes at the top of the generated trait source.
+    #[doc(hidden)]
+    pub fn inner_attributes(&mut self, inner_attributes: Vec<InnerAttributes>) -> &mut Self {
+        self.inner_attributes = inner_attributes;
+        self
+    }
     /// Enables the auto-generation of expanded grammar's semantic actions - experimental
     ///
     /// This is an internal method, and is only intended for the CLI.
@@ -362,7 +391,6 @@ impl Builder {
         self.auto_generate = true;
         self
     }
-
     /// Begin the process of generating the grammar
     /// using the specified listener (or None if no listener is desired).
     ///
@@ -545,14 +573,16 @@ impl GrammarGenerator<'_> {
         let lexer_source = crate::generate_lexer_source(grammar_config)
             .wrap_err("Failed to generate lexer source!")?;
 
-        let user_trait_generator = UserTraitGenerator::try_new(
-            &self.builder.user_type_name,
-            &self.builder.module_name,
-            self.builder.auto_generate,
-            self.builder.range,
-            self.builder.productions.clone(),
-            grammar_config,
-        )?;
+        let user_trait_generator = UserTraitGeneratorBuilder::default()
+            .user_type_name(self.builder.user_type_name.clone())
+            .module_name(&self.builder.module_name)
+            .auto_generate(self.builder.auto_generate)
+            .range(self.builder.range)
+            .inner_attributes(self.builder.inner_attributes.clone())
+            .productions(self.builder.productions.clone())
+            .grammar_config(grammar_config)
+            .build()
+            .into_diagnostic()?;
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
         let user_trait_source = user_trait_generator
