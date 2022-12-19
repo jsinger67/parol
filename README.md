@@ -190,3 +190,4 @@ Thanks to all the contributors for improving this project!
 * [oaleaf](https://github.com/oaleaf)
 * [mobotsar](https://github.com/mobotsar)
 * [ryo33](https://github.com/ryo33)
+* [dalance](https://github.com/dalance)

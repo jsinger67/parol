@@ -42,6 +42,13 @@ opt-level = 3
 debug = true
 opt-level = 3
 
+# Optimized build performance
+[profile.dev.build-override]
+opt-level = 3
+
+[profile.release.build-override]
+opt-level = 3
+
 # Currently cargo does not support lto setting per crate
 # https://github.com/rust-lang/cargo/issues/9330
 [profile.release]
