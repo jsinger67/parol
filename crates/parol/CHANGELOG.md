@@ -56,6 +56,10 @@ which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
   `#![allow(clippy::too_many_arguments)]` at the top of the generated trait source.
   * Can be enabled by `--inner-attributes  allow-too-many-arguments` or builder configuration
     `inner_attributes(vec![InnerAttributes::AllowTooManyArguments])`
+* Fixed issue [#49](https://github.com/jsinger67/parol/issues/49)
+  * Changed `parols`'s Cargo.toml in the suggested way
+  * Added a new chapter [Useful tips](https://jsinger67.github.io/UsefulTips.html) that contains a
+  appropriate advices
 
 ## v0.14.0 - 2022-11-18
 
