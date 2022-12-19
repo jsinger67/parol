@@ -9,4 +9,4 @@
 - [AST generation](./AstGeneration.md)
 - [Vanilla mode](./VanillaMode.md)
 - [Semantic actions](./SemanticActions.md)
-- [Useful hints](./UsefulTips.md)
+- [Useful tips](./UsefulTips.md)
