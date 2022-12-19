@@ -12,7 +12,7 @@ use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::Production;
-use crate::{Pr, StrVec, InnerAttributes};
+use crate::{InnerAttributes, Pr, StrVec};
 use log::trace;
 use miette::{bail, miette, IntoDiagnostic, Result};
 
@@ -701,10 +701,13 @@ impl<'a> UserTraitGenerator<'a> {
             .user_type_name(&self.user_type_name)
             .auto_generate(self.auto_generate)
             .range(self.range)
-            .user_provided_attributes(self.inner_attributes.iter().fold(StrVec::new(0), |mut acc, e| {
-                acc.push(e.to_string());
-                acc
-            }))
+            .user_provided_attributes(self.inner_attributes.iter().fold(
+                StrVec::new(0),
+                |mut acc, e| {
+                    acc.push(e.to_string());
+                    acc
+                },
+            ))
             .production_output_types(production_output_types)
             .non_terminal_types(non_terminal_types)
             .ast_type_decl(ast_type_decl)

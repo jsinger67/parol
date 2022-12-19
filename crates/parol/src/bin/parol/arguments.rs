@@ -1,5 +1,3 @@
-
-
 use crate::PathBuf;
 
 use clap::Parser;
