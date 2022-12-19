@@ -371,22 +371,17 @@ impl Builder {
     }
     /// Generate range information for AST types
     ///
-    /// This is an internal method, and is only intended for the CLI.
-    #[doc(hidden)]
     pub fn range(&mut self) -> &mut Self {
         self.range = true;
         self
     }
     /// Inserts the given inner attributes at the top of the generated trait source.
-    #[doc(hidden)]
     pub fn inner_attributes(&mut self, inner_attributes: Vec<InnerAttributes>) -> &mut Self {
         self.inner_attributes = inner_attributes;
         self
     }
     /// Enables the auto-generation of expanded grammar's semantic actions - experimental
     ///
-    /// This is an internal method, and is only intended for the CLI.
-    #[doc(hidden)]
     pub fn enable_auto_generation(&mut self) -> &mut Self {
         self.auto_generate = true;
         self
