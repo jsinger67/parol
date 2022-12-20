@@ -60,6 +60,14 @@ which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
   * Changed `parols`'s Cargo.toml in the suggested way
   * Added a new chapter [Useful tips](https://jsinger67.github.io/UsefulTips.html) that contains a
   appropriate advices
+* Working on issue
+[#33 - Automate tasks like generation of derived sources i.e. in examples and run example related tests scripts](https://github.com/jsinger67/parol/issues/33)
+  1. Using cargo-make for example generation
+
+      ```shell
+      cargo install cargo-make
+      cargo make generate_examples
+      ```
 
 ## v0.14.0 - 2022-11-18
 
