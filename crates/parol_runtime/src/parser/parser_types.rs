@@ -22,7 +22,7 @@ pub struct Production {
     pub lhs: NonTerminalIndex,
 
     ///
-    /// The left-hand side of the production in reversed order.
+    /// The right-hand side of the production in *reversed order*.
     /// Is pushed onto the parse stack when a production has been chosen for
     /// parsing.
     ///
@@ -86,7 +86,7 @@ pub struct LLKParser<'t> {
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     /// This stack is also used to provide arguments to semantic user actions.
-    ///  
+    ///
     parse_tree_stack: Vec<ParseTreeStackEntry<'t>>,
 
     ///
@@ -96,6 +96,7 @@ pub struct LLKParser<'t> {
 
     ///
     /// The array of generated grammar productions.
+    ///
     productions: &'static [Production],
 
     ///
