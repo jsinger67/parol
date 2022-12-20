@@ -702,6 +702,7 @@ dependencies = [
  "regex-syntax",
  "syn 1.0.103",
  "thiserror",
+ "ume",
 ]
 
 [[package]]
@@ -1084,6 +1085,11 @@ name = "tinyvec_macros"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "ume"
+version = "0.1.0"
+source = "git+https://github.com/ryo33/ume#fcd148f5f4839c27a55f0bd91263f32cc0b28f67"
 
 [[package]]
 name = "unicode-bidi"
