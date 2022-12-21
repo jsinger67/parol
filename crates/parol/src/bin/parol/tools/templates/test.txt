@@ -1,6 +1,0 @@
-// To run the test please issue:
-// cargo run --bin {{crate_name}} -- ./test.txt
-
-    Hello world!
-
-// End
