@@ -69,6 +69,13 @@ which closes issue [#21](https://github.com/jsinger67/parol/issues/21)
       cargo make generate_examples
       ```
 
+* Using [ume](https://github.com/ryo33/ume) as substitute for `bart` and `bart_derive`
+  * This fixes issues [#46](https://github.com/jsinger67/parol/issues/46) and
+  [#50](https://github.com/jsinger67/parol/issues/50)
+
+    `parol` becomes more independent in the fields of code generation.
+    A big *Thank you* goes to [ryo33](https://github.com/ryo33) 👑
+
 ## v0.14.0 - 2022-11-18
 
 * Incorporated contributions from [ryo33](https://github.com/ryo33) in both `parol` and
