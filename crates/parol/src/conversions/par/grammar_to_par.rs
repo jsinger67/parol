@@ -3,29 +3,6 @@
 //!
 use crate::{GrammarConfig, ScannerConfig, StrVec};
 use miette::Result;
-use std::fmt::Debug;
-
-#[derive(BartDisplay, Debug, Default)]
-#[template = "templates/par_template.par"]
-struct YaccElements {
-    start_symbol: String,
-    title: String,
-    comment: String,
-    line_comments: String,
-    block_comments: String,
-    auto_newline_off: String,
-    auto_ws_off: String,
-    user_types: String,
-    scanner_states: StrVec,
-    productions: StrVec,
-}
-
-#[derive(BartDisplay, Debug, Default)]
-#[template = "templates/scanner_config_template.par"]
-struct ScannerConfigElements {
-    scanner_name: String,
-    scanner_directives: String,
-}
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -137,19 +114,14 @@ pub fn render_par_string(
         acc
     });
 
-    let elements = YaccElements {
-        start_symbol: grammar_config.cfg.st.clone(),
-        title,
-        comment,
-        line_comments,
-        block_comments,
-        auto_newline_off,
-        auto_ws_off,
-        user_types,
-        scanner_states,
-        productions,
-    };
-    Ok(format!("{}", elements))
+    let start_symbol = grammar_config.cfg.st.clone();
+    Ok(format!(
+        "%start {start_symbol}{title}{comment}{line_comments}{block_comments}{auto_newline_off}{auto_ws_off}{user_types}
+
+{scanner_states}%%
+
+{productions}"
+    ))
 }
 
 fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
@@ -187,12 +159,9 @@ fn render_scanner_config_string(scanner_config: &ScannerConfig) -> String {
         scanner_directives.push("%auto_ws_off".to_owned());
     }
 
-    let elements = ScannerConfigElements {
-        scanner_name,
-        scanner_directives: scanner_directives.join(" "),
-    };
+    let scanner_directives = scanner_directives.join(" ");
 
-    format!("{}", elements)
+    format!("%scanner {scanner_name} {{ {scanner_directives} }}")
 }
 
 #[cfg(test)]
@@ -201,6 +170,7 @@ mod test {
     use crate::{
         Cfg, GrammarConfig, Pr, ScannerConfig, Symbol, SymbolAttribute, Terminal, TerminalKind,
     };
+    use pretty_assertions::assert_eq;
 
     macro_rules! terminal {
         ($term:literal) => {

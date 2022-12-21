@@ -1,5 +1,5 @@
 use crate::grammar::SymbolAttribute;
-use crate::{generators::template_data::EnumRangeCalcBuilder, utils::str_vec::StrVec};
+use crate::utils::str_vec::StrVec;
 use miette::{bail, IntoDiagnostic, Result};
 
 use super::symbol_table::{
@@ -289,5 +289,22 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
             }
             _ => bail!("Unexpected type for range calculation!"),
         }
+    }
+}
+
+#[derive(Builder, Debug, Default)]
+pub(crate) struct EnumRangeCalc {
+    #[builder(default)]
+    pub enum_variants: StrVec,
+}
+
+impl std::fmt::Display for EnumRangeCalc {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let EnumRangeCalc { enum_variants } = self;
+        f.write_fmt(ume::ume! {
+            match self {
+                #enum_variants
+            }
+        })
     }
 }

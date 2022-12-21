@@ -1,19 +1,4 @@
 use crate::{GrammarConfig, StrVec, Symbol, Terminal};
-use std::fmt::Debug;
-
-#[derive(BartDisplay, Debug, Default)]
-#[template = "templates/nt_grammar_graph.dot"]
-struct NtDotElements<'a> {
-    title: &'a str,
-    start_symbol: &'a str,
-    productions: StrVec,
-    terminals: StrVec,
-    non_terminal_types: StrVec,
-    non_terminal_instances: StrVec,
-    non_terminal_to_production_edges: StrVec,
-    inside_production_edges: StrVec,
-    instances_to_types_edges: StrVec,
-}
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -99,18 +84,42 @@ pub fn render_nt_dot_string(grammar_config: &GrammarConfig) -> String {
         });
     });
 
-    let elements = NtDotElements {
-        title: &grammar_config.title.clone().unwrap_or_default(),
-        start_symbol,
-        productions,
-        terminals,
-        non_terminal_types,
-        non_terminal_instances,
-        non_terminal_to_production_edges,
-        inside_production_edges,
-        instances_to_types_edges,
-    };
-    format!("{}", elements)
+    let title = grammar_config.title.clone().unwrap_or_default();
+    format!(
+        r#"digraph G {{
+    rankdir=LR;
+    label="{title}";
+
+    // S T A R T   S Y M B O L
+    node [shape=point, style=invis]; ""
+    node [shape=ellipse, color=cyan, style=solid];
+    "" -> "{start_symbol}"
+
+    // P R O D U C T I O N S
+    node [shape=rectangle, color=green];
+{productions}
+    // T E R M I N A L S
+    node [shape=diamond, color=blue];
+{terminals}
+    // N O N - T E R M I N A L S
+    // TYPES
+    node [shape=ellipse, color=cyan];
+{non_terminal_types}
+    // INSTANCES
+    node [color=red];
+{non_terminal_instances}
+    // E D G E S
+    // Nt TO PRODUCTIONS
+    edge [color=blue];
+{non_terminal_to_production_edges}
+    // INSIDE PRODUCTIONS
+    edge [color=green, fontcolor=green];
+{inside_production_edges}
+    // Nt INSTANCES <=> Nt TYPES
+    edge [color=cyan, label=""];
+{instances_to_types_edges}}}
+"#
+    )
 }
 
 #[cfg(test)]

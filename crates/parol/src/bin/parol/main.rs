@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate bart_derive;
-
 extern crate clap;
 
 mod arguments;
