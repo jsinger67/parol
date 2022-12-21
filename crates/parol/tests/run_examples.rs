@@ -195,18 +195,5 @@ fn run_keywords2_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("../../examples/keywords2/testfiles/invalid")
-        .read_dir()
-        .into_diagnostic()?
-    {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-                println!("Parsing {} should fail...", entry.path().display());
-                let failed =
-                    run_example_should_fail(&parser, &["-f", entry.path().to_str().unwrap()]);
-                assert!(failed.ok().unwrap());
-            }
-        }
-    }
     Ok(())
 }
