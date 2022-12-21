@@ -79,7 +79,9 @@ pub fn main(args: &Args) -> Result<()> {
         creation_data.grammar_name.green()
     );
 
-    generate_crate(creation_data)?;
+    generate_crate(&creation_data)?;
+
+    finalize(&creation_data)?;
 
     Ok(())
 }
@@ -174,7 +176,7 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     Ok(())
 }
 
-fn generate_crate(creation_data: CreationData) -> Result<()> {
+fn generate_crate(creation_data: &CreationData) -> Result<()> {
     generate_build_rs(&creation_data)?;
     generate_grammar_par(&creation_data)?;
     if creation_data.is_bin {
@@ -359,4 +361,13 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
     .wrap_err("Error writing to .gitignore file!")?;
 
     Ok(())
+}
+
+fn finalize(_creation_data: &CreationData) -> Result<()> {
+    // Call the `cargo fmt` command
+    Command::new("cargo")
+        .arg("fmt")
+        .status()
+        .map(|_| ())
+        .into_diagnostic()
 }
