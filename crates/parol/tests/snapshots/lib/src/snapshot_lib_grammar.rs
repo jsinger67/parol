@@ -1,4 +1,4 @@
-use crate::snapshot_lib_grammar_trait::{ SnapshotLib, SnapshotLibGrammarTrait};
+use crate::snapshot_lib_grammar_trait::{SnapshotLib, SnapshotLibGrammarTrait};
 #[allow(unused_imports)]
 use parol_runtime::miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};

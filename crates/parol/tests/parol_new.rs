@@ -21,6 +21,7 @@ where
 {
     let diff = Command::new("diff")
         .arg("-r")
+        .args(["-C", "3"])
         .args(["--exclude", ".git"])
         .args(["--exclude", "Cargo.lock"])
         .arg(left)

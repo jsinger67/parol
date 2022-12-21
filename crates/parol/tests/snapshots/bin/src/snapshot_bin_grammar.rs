@@ -1,4 +1,4 @@
-use crate::snapshot_bin_grammar_trait::{ SnapshotBin, SnapshotBinGrammarTrait};
+use crate::snapshot_bin_grammar_trait::{SnapshotBin, SnapshotBinGrammarTrait};
 #[allow(unused_imports)]
 use parol_runtime::miette::Result;
 use std::fmt::{Debug, Display, Error, Formatter};

@@ -1,3 +1,13 @@
+mod build_rs;
+mod grammar_rs;
+mod lib_rs;
+mod main_rs;
+
+use build_rs::BuildRsDataBuilder;
+use grammar_rs::GrammarRsDataBuilder;
+use lib_rs::LibRsDataBuilder;
+use main_rs::MainRsDataBuilder;
+
 use clap::ArgGroup;
 use derive_builder::Builder;
 use miette::{miette, Context, IntoDiagnostic, Result};
@@ -80,8 +90,6 @@ pub fn main(args: &Args) -> Result<()> {
     );
 
     generate_crate(&creation_data)?;
-
-    finalize(&creation_data)?;
 
     Ok(())
 }
@@ -179,12 +187,13 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
 fn generate_crate(creation_data: &CreationData) -> Result<()> {
     generate_build_rs(&creation_data)?;
     generate_grammar_par(&creation_data)?;
+    touch_modules(&creation_data)?;
+    generate_grammar_rs(&creation_data)?;
     if creation_data.is_bin {
         generate_main_rs(&creation_data)?;
     } else {
         generate_lib_rs(&creation_data)?;
     }
-    generate_grammar_rs(&creation_data)?;
     generate_test_txt(&creation_data)?;
     // Generate the .gitignore file
     if !creation_data.track_generated_files {
@@ -192,13 +201,6 @@ fn generate_crate(creation_data: &CreationData) -> Result<()> {
     }
 
     Ok(())
-}
-
-#[derive(BartDisplay, Builder, Debug, Default)]
-#[template = "src/bin/parol/tools/templates/build.rs.tpl"]
-struct BuildRsData<'a> {
-    crate_name: &'a str,
-    grammar_name: String,
 }
 
 fn generate_build_rs(creation_data: &CreationData) -> Result<()> {
@@ -240,12 +242,29 @@ fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
     Ok(())
 }
 
-#[derive(BartDisplay, Builder, Debug, Default)]
-#[template = "src/bin/parol/tools/templates/main.rs.tpl"]
-struct MainRsData<'a> {
-    crate_name: &'a str,
-    grammar_name: String,
-    tree_gen: bool,
+fn touch_modules(creation_data: &CreationData) -> Result<()> {
+    let parser_file_out = creation_data
+        .path
+        .join("src")
+        .join(format!("{}_parser.rs", creation_data.crate_name));
+    let grammar_trait_file_out = creation_data
+        .path
+        .join("src")
+        .join(format!("{}_grammar_trait.rs", creation_data.crate_name));
+    fs::write(
+        parser_file_out,
+        "// This file will be generated on the first build",
+    )
+    .into_diagnostic()
+    .wrap_err("Error writing generated user trait source!")?;
+    fs::write(
+        grammar_trait_file_out,
+        "// This file will be generated on the first build",
+    )
+    .into_diagnostic()
+    .wrap_err("Error writing generated user trait source!")?;
+
+    Ok(())
 }
 
 fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
@@ -259,19 +278,12 @@ fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
         .build()
         .into_diagnostic()?;
     let main_source = format!("{}", main_data);
-    fs::write(main_file_out, main_source)
+    fs::write(&main_file_out, main_source)
         .into_diagnostic()
         .wrap_err("Error writing generated user trait source!")?;
+    fmt(&main_file_out)?;
 
     Ok(())
-}
-
-#[derive(BartDisplay, Builder, Debug, Default)]
-#[template = "src/bin/parol/tools/templates/lib.rs.tpl"]
-struct LibRsData<'a> {
-    crate_name: &'a str,
-    grammar_name: String,
-    tree_gen: bool,
 }
 
 fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
@@ -285,18 +297,12 @@ fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
         .build()
         .into_diagnostic()?;
     let lib_source = format!("{}", lib_data);
-    fs::write(lib_file_out, lib_source)
+    fs::write(&lib_file_out, lib_source)
         .into_diagnostic()
         .wrap_err("Error writing generated user trait source!")?;
+    fmt(&lib_file_out)?;
 
     Ok(())
-}
-
-#[derive(BartDisplay, Builder, Debug, Default)]
-#[template = "src/bin/parol/tools/templates/grammar.rs.tpl"]
-struct GrammarRsData<'a> {
-    crate_name: &'a str,
-    grammar_name: String,
 }
 
 fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
@@ -309,9 +315,10 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
         .build()
         .into_diagnostic()?;
     let grammar_source = format!("{}", grammar_data);
-    fs::write(grammar_file_out, grammar_source)
+    fs::write(&grammar_file_out, grammar_source)
         .into_diagnostic()
         .wrap_err("Error writing generated user trait source!")?;
+    fmt(&grammar_file_out)?;
 
     Ok(())
 }
@@ -363,11 +370,11 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
     Ok(())
 }
 
-fn finalize(_creation_data: &CreationData) -> Result<()> {
-    // Call the `cargo fmt` command
-    Command::new("cargo")
-        .arg("fmt")
+fn fmt<T: AsRef<std::path::Path>>(path: T) -> Result<()> {
+    Command::new("rustfmt")
+        .arg(path.as_ref().to_str().unwrap())
         .status()
         .map(|_| ())
         .into_diagnostic()
+        .wrap_err("Error running rustfmt")
 }
