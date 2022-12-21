@@ -1,10 +1,10 @@
 [env]
-PAROL_TARGET = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/release/parol"
+PAROL_TARGET = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/debug/parol"
 
 [tasks.build_parol]
 workspace = false
 command = "cargo"
-args = ["build", "--release", "--bin", "parol"]
+args = ["build", "--bin", "parol"]
 
 [tasks.generate_examples]
 workspace = false
