@@ -11,14 +11,12 @@
 
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
-#[allow(unused_imports)]
-use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
-
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
+#[allow(unused_imports)]
+use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
