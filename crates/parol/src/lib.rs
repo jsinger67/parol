@@ -3,9 +3,6 @@
 //!
 
 #[macro_use]
-extern crate bart_derive;
-
-#[macro_use]
 extern crate function_name;
 
 #[macro_use]

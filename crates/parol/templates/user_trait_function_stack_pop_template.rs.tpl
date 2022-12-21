@@ -1,1 +1,0 @@
-        let {{#vec_push_semantic?}}mut {{/vec_push_semantic}}{{arg_name}} = {{#vec_anchor?}}pop_and_reverse_item{{/vec_anchor}}{{^vec_anchor?}}pop_item{{/vec_anchor}}!(self, {{arg_name}}, {{{arg_type}}}, context);

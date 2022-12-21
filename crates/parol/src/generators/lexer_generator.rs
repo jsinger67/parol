@@ -5,8 +5,7 @@ use miette::Result;
 use crate::StrVec;
 use std::fmt::Debug;
 
-#[derive(BartDisplay, Debug, Default)]
-#[template = "templates/scanner_build_info.rs.tpl"]
+#[derive(Debug, Default)]
 struct ScannerBuildInfo {
     scanner_index: usize,
     scanner_name: String,
@@ -51,8 +50,7 @@ impl ScannerBuildInfo {
     }
 }
 
-#[derive(BartDisplay, Debug, Default)]
-#[template = "templates/lexer_template.rs.tpl"]
+#[derive(Debug, Default)]
 struct LexerData {
     augmented_terminals: StrVec,
     used_token_constants: String,
@@ -177,4 +175,52 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
             acc.push(n);
             acc
         })
+}
+
+impl std::fmt::Display for LexerData {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let LexerData {
+            augmented_terminals,
+            used_token_constants,
+            terminal_names,
+            terminal_count,
+            scanner_build_configs,
+        } = self;
+
+        let blank_line = "\n\n";
+        let scanner_build_configs = scanner_build_configs.join("\n\n");
+        f.write_fmt(ume::ume! {
+        use parol_runtime::lexer::tokenizer::{
+            #used_token_constants
+        };
+        #blank_line
+        pub const TERMINALS: &[&str; #terminal_count] = &[
+        #augmented_terminals];
+        #blank_line
+        pub const TERMINAL_NAMES: &[&str; #terminal_count] = &[
+        #terminal_names];
+        #blank_line
+        #scanner_build_configs
+        })
+    }
+}
+
+impl std::fmt::Display for ScannerBuildInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let ScannerBuildInfo {
+            scanner_index,
+            scanner_name,
+            terminal_index_count,
+            special_tokens,
+            terminal_indices,
+        } = self;
+
+        writeln!(f, r#"/* SCANNER_{scanner_index}: "{scanner_name}" */"#)?;
+        let scanner_name = format!("SCANNER_{}", scanner_index);
+        f.write_fmt(ume::ume! {
+            const #scanner_name: (&[&str; 5], &[usize; #terminal_index_count]) = (
+                &[#special_tokens], &[#terminal_indices],
+            );
+        })
+    }
 }
