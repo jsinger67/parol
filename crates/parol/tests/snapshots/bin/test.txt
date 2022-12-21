@@ -1,0 +1,6 @@
+// To run the test please issue:
+// cargo run --bin snapshot_bin -- ./test.txt
+
+    Hello world!
+
+// End

@@ -59,6 +59,10 @@ impl StrVec {
     pub fn pop(&mut self) -> Option<String> {
         self.vec.pop()
     }
+
+    pub(crate) fn join(&self, arg: &str) -> String {
+        self.vec.join(arg)
+    }
 }
 
 pub struct StrVecIterator<'a> {

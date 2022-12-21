@@ -1,5 +1,0 @@
-%start {{{start_symbol}}}{{{title}}}{{{comment}}}{{{line_comments}}}{{{block_comments}}}{{{auto_newline_off}}}{{{auto_ws_off}}}{{user_types}}
-
-{{{scanner_states}}}%%
-
-{{{productions}}}
