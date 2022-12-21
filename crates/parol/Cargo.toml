@@ -82,4 +82,6 @@ name = "scanner_states"
 path = "../../examples/scanner_states/main.rs"
 
 [dev-dependencies]
-pretty_assertions = "1.3.0"
+pretty_assertions = "1.3"
+assert_cmd = "2.0"
+tempfile = "3"

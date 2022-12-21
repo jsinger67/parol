@@ -22,6 +22,8 @@ exclude = [
   "examples/list_auto",
   "examples/oberon_0",
   "examples/scanner_states",
+  "crates/parol/tests/snapshots/bin",
+  "crates/parol/tests/snapshots/lib",
 ]
 
 [profile.release.package.parol]

@@ -346,13 +346,15 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
         .build()
         .into_diagnostic()?;
     let mut file = fs::OpenOptions::new()
+        // Cargo skips to generate .gitignore inside a existing repository.
+        .create(true)
         .write(true)
         .append(true)
         .open(path)
         .into_diagnostic()
         .wrap_err("Error opening .gitignore file!")?;
 
-    writeln!(file, "{}", gitignore_data)
+    write!(file, "{}", gitignore_data)
         .into_diagnostic()
         .wrap_err("Error writing to .gitignore file!")?;
 
