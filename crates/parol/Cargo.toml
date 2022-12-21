@@ -13,7 +13,7 @@ license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [dependencies]
-ume = { git = "https://github.com/ryo33/ume" }
+ume = "0.1"
 cfg-if = "1.0.0"
 clap = { version = "4.0", features = [ "derive", "cargo" ] }
 derive_builder = "0.12.0"
