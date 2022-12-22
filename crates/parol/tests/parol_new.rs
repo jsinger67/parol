@@ -1,4 +1,5 @@
 use std::{
+    fs,
     io::Write,
     path::{Path, PathBuf},
 };
@@ -14,18 +15,16 @@ fn snapshot_path(name: &str) -> PathBuf {
         .join(name)
 }
 
-fn diff<L, R>(left: L, right: R)
+fn diff<L, R>(actual: L, expected: R)
 where
-    L: AsRef<std::ffi::OsStr>,
-    R: AsRef<std::ffi::OsStr>,
+    L: AsRef<Path>,
+    R: AsRef<Path>,
 {
-    let diff = Command::new("diff")
-        .arg("-r")
-        .args(["-C", "3"])
-        .args(["--exclude", ".git"])
-        .args(["--exclude", "Cargo.lock"])
-        .arg(left)
-        .arg(right)
+    fs::remove_file(actual.as_ref().join("Cargo.lock")).unwrap();
+    fs::remove_dir_all(actual.as_ref().join(".git")).unwrap();
+    let diff = Command::new("git")
+        .args(["diff", "--no-index"])
+        .args([actual.as_ref(), expected.as_ref()])
         .assert();
 
     let output = diff.get_output();
@@ -45,10 +44,7 @@ fn snapshot_lib() {
         .assert()
         .success();
 
-    diff(
-        path.path().join("lib").to_str().unwrap(),
-        snapshot_path("lib"),
-    )
+    diff(path.path().join("lib"), snapshot_path("lib"));
 }
 
 #[test]
@@ -61,8 +57,5 @@ fn snapshot_bin() {
         .assert()
         .success();
 
-    diff(
-        path.path().join("bin").to_str().unwrap(),
-        snapshot_path("bin"),
-    )
+    diff(path.path().join("bin"), snapshot_path("bin"));
 }

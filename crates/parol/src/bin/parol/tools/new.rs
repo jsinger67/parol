@@ -181,6 +181,26 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
             .map(|_| ())
             .into_diagnostic()?
     }
+
+    let mut cargo_toml = fs::OpenOptions::new()
+        .append(true)
+        .write(true)
+        .open(creation_data.path.join("Cargo.toml"))
+        .into_diagnostic()
+        .wrap_err("Error opening Cargo.toml file")?;
+    write!(
+        cargo_toml,
+        "
+# For faster builds.
+[profile.dev.build-override]
+opt-level = 3
+[profile.release.build-override]
+opt-level = 3
+"
+    )
+    .into_diagnostic()
+    .wrap_err("Error writing to Cargo.toml file")?;
+
     Ok(())
 }
 
