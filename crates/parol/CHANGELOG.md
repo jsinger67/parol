@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.15.0 - Not released yet
+## v0.15.0 - 2022-12-22
 
 * Merged PR [#34](https://github.com/jsinger67/parol/pull/34) from [ryo33](https://github.com/ryo33)
 which closes issue [#33](https://github.com/jsinger67/parol/issues/33)
