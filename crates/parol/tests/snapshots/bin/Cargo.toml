@@ -13,3 +13,9 @@ thiserror = "1.0"
 
 [build-dependencies]
 parol = { git = "https://github.com/jsinger67/parol.git", version = "0.15.0-alpha.3" }
+
+# For faster builds.
+[profile.dev.build-override]
+opt-level = 3
+[profile.release.build-override]
+opt-level = 3
