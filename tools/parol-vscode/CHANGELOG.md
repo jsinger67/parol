@@ -9,6 +9,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Infrastructural changes
   - Moved repository into parol workspace
   - Changed repository reference in package.json
+- Update license to dual-license either MIT License or Apache License, Version 2.0
 
 ## v0.1.11
 

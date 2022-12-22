@@ -4,7 +4,7 @@
         "name": "Jörg Singer",
         "email": "singer.joerg@gmx.de"
     },
-    "license": "MIT",
+    "license": "(MIT OR Apache-2.0)",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
     "version": "0.1.12",
