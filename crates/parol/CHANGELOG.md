@@ -21,6 +21,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.15.1 - 2022-12-22
+
+* Fixed some problems during publishing process on crates.io like wrong image links and failing
+integration tests.
+
 ## v0.15.0 - 2022-12-22
 
 * Merged PR [#34](https://github.com/jsinger67/parol/pull/34) from [ryo33](https://github.com/ryo33)

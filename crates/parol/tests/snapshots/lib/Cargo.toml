@@ -11,7 +11,7 @@ parol_runtime = { version = "0.11.2", features = ["auto_generation"] }
 thiserror = "1.0"
 
 [build-dependencies]
-parol = "0.15.0"
+parol = "0.15.1"
 
 # For faster builds.
 [profile.dev.build-override]
