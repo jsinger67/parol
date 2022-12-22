@@ -12,7 +12,8 @@ of grammar description files (.par files).
 ## Features
 
 The extension currently supports syntax highlighting, folding and language icons.
-When you install the parol language server you get the best support. See below for instructions.
+When you install the [parol language server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls)
+you get the best support. See below for instructions.
 
 I hope these features are helpful for you and improve your workflow.
 
@@ -29,7 +30,7 @@ using the following command.
 cargo install parol-ls
 ```
 
-Alternatively you can clone the [repository](https://github.com/jsinger67/parol-ls) and build the
+Alternatively you can clone the [repository](https://github.com/jsinger67/parol.git) and build the
 language server from sources.
 
 Please check regularly for updates.

@@ -4,6 +4,12 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.1.12
+
+- Infrastructural changes
+  - Moved repository into parol workspace
+  - Changed repository reference in package.json
+
 ## v0.1.11
 
 - Support for new parol features from 0.14.0 (new terminal representation forms)

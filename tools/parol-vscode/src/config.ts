@@ -40,7 +40,6 @@ export class Config {
 
     constructor() {
         this.configProps.push(new ConfigProperty("max_k", 3));
-        this.configProps.push(new ConfigProperty("dummy", "Peter"));
         this.loadConfiguration();
     }
 
