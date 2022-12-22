@@ -1,13 +1,15 @@
-{     "name": "parol-vscode",
+{
+    "name": "parol-vscode",
     "displayName": "parol-vscode",
     "author": {
         "name": "Jörg Singer",
         "email": "singer.joerg@gmx.de"
     },
-    "license": "(MIT OR Apache-2.0)",
+    "homepage": "https://github.com/jsinger67/parol/blob/main/tools/parol-vscode/README.md",
+    "license": "SEE LICENSE IN LICENSE",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.12",
+    "version": "0.1.13",
     "repository": {
         "url": "https://github.com/jsinger67/parol.git",
         "type": "git",

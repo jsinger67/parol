@@ -2,7 +2,7 @@
 
 <!-- markdownlint-disable Inline HTML -->
 <br>
-<img src="./icons/parol-vscode-300x300.png" alt="Logo" height=300 with=300>
+<img src="https://github.com/jsinger67/parol/blob/main/tools/parol-vscode/icons/parol-vscode-300x300.png?raw=true" alt="Logo" height=300 with=300>
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
