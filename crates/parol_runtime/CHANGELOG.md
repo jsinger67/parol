@@ -16,7 +16,7 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## v0.11.1 - Not released yet
+## v0.11.1 - 2022-12-22
 
 * Merged PR [#43](https://github.com/jsinger67/parol/pull/43) from [ryo33](https://github.com/ryo33)
   * Use \s for WHITESPACE_TOKEN
