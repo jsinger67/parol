@@ -1,6 +1,6 @@
 [package]
 name = "parol-ls"
-version = "0.3.4-alpha.1"
+version = "0.3.4"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Language server for parol parser generator"
 documentation = "https://docs.rs/parol-ls"
@@ -24,13 +24,13 @@ log = "0.4.17"
 lsp-server = "0.6.0"
 lsp-types = "0.93.2"
 miette = "5.4.1"
-parol = { path = "../parol" }
+parol = { path = "../parol", version = "0.15.1" }
 parol_runtime = { path = "../parol_runtime", version = "0.11.2", features = ["trim_parse_tree", "auto_generation"] }
-parol-macros = { path = "../parol-macros" }
+parol-macros = { path = "../parol-macros", version = "0.1.0" }
 regex = "1.7.0"
 serde = "1.0.147"
 serde_json = "^1.0.83"
 thiserror = "1.0.37"
 
 [build-dependencies]
-parol = { path = "../parol" }
+parol = { path = "../parol", version = "0.15.1" }
