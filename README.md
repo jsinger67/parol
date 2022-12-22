@@ -8,7 +8,7 @@
 
 <!-- markdownlint-disable Inline HTML -->
 <br>
-<img src="./logo/Parol.svg" alt="Logo" height=300 with=300>
+<img src="https://github.com/jsinger67/parol/raw/main/logo/Parol.svg" alt="Logo" height=300 with=300>
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
