@@ -69,13 +69,13 @@ automatically if the grammar description file `my_grammar.par` has been changed.
 
 > ## VS Code extension and Language Server
 >
-> I provide a VS Code extension [parol-vscode](https://github.com/jsinger67/parol-vscode.git).
+> I provide a VS Code extension [parol-vscode](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode).
 >
 > Please install this extension from VS Code
 > [marketplace](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode).
 > It provides syntax highlighting, folding and language icons and will surely be useful for you.
 >
-> The extension utilizes a [Language Server](https://github.com/jsinger67/parol-ls) that you have
+> The extension utilizes a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls) that you have
 > to install separately.
 >
 > ```shell

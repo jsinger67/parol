@@ -67,6 +67,6 @@ prototyping** for your language!
 * Scanner states, aka
 [Start conditions](https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex_toc.html#TOC11)
 * Build script integration to invoke `parol` automatically during the build of your own crate
-* An [extension](https://github.com/jsinger67/parol-vscode) for Visual Studio Code and a
-[Language Server](https://github.com/jsinger67/parol-ls)
+* An [extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode) for Visual Studio
+Code and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls)
 * And all those features Lelek never received

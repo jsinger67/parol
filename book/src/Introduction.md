@@ -38,5 +38,5 @@ The parser calls the interface trait's functions via a separately generated adap
 during the process of parsing.
 
 `parol` now provides a whole ecosystem of tools including an
-[Extension](https://github.com/jsinger67/parol-vscode) for Visual Studio Code and a
-[Language Server](https://github.com/jsinger67/parol-ls).
+[Extension](https://github.com/jsinger67/parol/tree/main/tools/parol-vscode) for Visual Studio Code
+and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls).
