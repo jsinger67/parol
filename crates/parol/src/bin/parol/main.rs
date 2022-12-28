@@ -7,10 +7,10 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use anyhow::{anyhow, Context, Result};
 use arguments::CliArgs;
 use clap::Parser;
-use log::trace;
-use miette::{miette, IntoDiagnostic, Result, WrapErr};
+use parol_runtime::log::trace;
 
 use id_tree::Tree;
 use parol::{
@@ -22,7 +22,7 @@ use parol_runtime::parser::ParseTreeType;
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
 fn main() -> Result<()> {
-    env_logger::try_init().into_diagnostic()?;
+    env_logger::try_init()?;
     trace!("env logger started");
 
     let args = CliArgs::parse();
@@ -32,8 +32,7 @@ fn main() -> Result<()> {
     }
 
     // If relative paths are specified, they should be resoled relative to the current directory
-    let mut builder =
-        parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
+    let mut builder = parol::build::Builder::with_explicit_output_dir(env::current_dir()?);
 
     // It's okay if the output doesn't exist;
     builder.disable_output_sanity_checks();
@@ -44,7 +43,7 @@ fn main() -> Result<()> {
     let grammar_file = args
         .grammar
         .as_ref()
-        .ok_or_else(|| miette!("Missing input grammar file (Specify with `-f`)"))?;
+        .ok_or_else(|| anyhow!("Missing input grammar file (Specify with `-f`)"))?;
     builder.grammar_file(grammar_file);
 
     builder.max_lookahead(args.lookahead)?;
@@ -103,21 +102,19 @@ impl BuildListener for CLIListener<'_> {
         &mut self,
         syntax_tree: &Tree<ParseTreeType>,
         parol_grammar: &ParolGrammar,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         if self.verbose() {
             println!("{}", parol_grammar);
         }
 
         if let Some(file_name) = self.config.write_internal.as_ref() {
             let serialized = format!("{}", parol_grammar);
-            fs::write(file_name, serialized)
-                .into_diagnostic()
-                .wrap_err("Error writing left-factored grammar!")?;
+            fs::write(file_name, serialized).context("Error writing left-factored grammar!")?;
         }
 
         if self.config.generate_tree_graph {
             parol::generate_tree_layout(syntax_tree, self.grammar_file)
-                .wrap_err("Error generating tree layout")?;
+                .context("Error generating tree layout")?;
         }
 
         Ok(())
@@ -127,15 +124,14 @@ impl BuildListener for CLIListener<'_> {
         &mut self,
         stage: IntermediateGrammar,
         grammar_config: &GrammarConfig,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         match stage {
             // no passes yet
             IntermediateGrammar::Untransformed => {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
                     let serialized = render_par_string(grammar_config, false)?;
                     fs::write(file_name, serialized)
-                        .into_diagnostic()
-                        .wrap_err("Error writing untransformed grammar!")?;
+                        .context("Error writing untransformed grammar!")?;
                 }
             }
             // final pass

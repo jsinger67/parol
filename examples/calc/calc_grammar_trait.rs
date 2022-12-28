@@ -13,7 +13,7 @@ use parol_runtime::id_tree::Tree;
 
 use crate::calc_grammar::CalcGrammar;
 #[allow(unused_imports)]
-use parol_runtime::miette::{miette, Result};
+use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -1003,7 +1003,7 @@ impl UserActionsTrait<'_> for CalcGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.calc(&children[0], parse_tree),
             1 => self.calc_lst1_0(&children[0], &children[1], parse_tree),
@@ -1087,7 +1087,7 @@ impl UserActionsTrait<'_> for CalcGrammar {
             79 => self.number(&children[0], parse_tree),
             80 => self.id_ref(&children[0], parse_tree),
             81 => self.id(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

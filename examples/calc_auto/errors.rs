@@ -1,17 +1,12 @@
-use miette::{Diagnostic, NamedSource, SourceSpan};
+use parol_runtime::{FileSource, Location};
+use thiserror::Error;
 
-#[derive(Error, Diagnostic, Debug)]
+#[derive(Error, Debug)]
 pub enum CalcError {
     #[error("{context} Undeclared variable")]
-    #[diagnostic(
-        help("Referencing a variable that was not assigned to yet"),
-        code(parol::examples::calc::undeclared_variable)
-    )]
     UndeclaredVariable {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Unknown variable name")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 }

@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -888,7 +888,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let calc_built = CalcBuilder::default()
             .calc_list(calc_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.calc(&calc_built)?;
         self.push(ASTType::Calc(calc_built), context);
@@ -915,7 +915,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             // Ignore clipped member 'semicolon'
             .instruction(Box::new(instruction))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         calc_list.push(calc_list_0_built);
         self.push(ASTType::CalcList(calc_list), context);
@@ -951,7 +951,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let equality_op_built = EqualityOpBuilder::default()
             .equality_op(equality_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.equality_op(&equality_op_built)?;
         self.push(ASTType::EqualityOp(equality_op_built), context);
@@ -974,7 +974,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let assign_op_built = AssignOpBuilder::default()
             .assign_op(assign_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
@@ -997,7 +997,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_or_op_built = LogicalOrOpBuilder::default()
             .logical_or_op(logical_or_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_built), context);
@@ -1020,7 +1020,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_and_op_built = LogicalAndOpBuilder::default()
             .logical_and_op(logical_and_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_built), context);
@@ -1043,7 +1043,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_or_op_built = BitwiseOrOpBuilder::default()
             .bitwise_or_op(bitwise_or_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bitwise_or_op(&bitwise_or_op_built)?;
         self.push(ASTType::BitwiseOrOp(bitwise_or_op_built), context);
@@ -1066,7 +1066,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_and_op_built = BitwiseAndOpBuilder::default()
             .bitwise_and_op(bitwise_and_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bitwise_and_op(&bitwise_and_op_built)?;
         self.push(ASTType::BitwiseAndOp(bitwise_and_op_built), context);
@@ -1089,7 +1089,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_shift_op_built = BitwiseShiftOpBuilder::default()
             .bitwise_shift_op(bitwise_shift_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .bitwise_shift_op(&bitwise_shift_op_built)?;
@@ -1113,7 +1113,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let relational_op_built = RelationalOpBuilder::default()
             .relational_op(relational_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
         self.push(ASTType::RelationalOp(relational_op_built), context);
@@ -1136,7 +1136,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let plus_built = PlusBuilder::default()
             .plus(plus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -1159,7 +1159,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let minus_built = MinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -1182,7 +1182,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let pow_op_built = PowOpBuilder::default()
             .pow_op(pow_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.pow_op(&pow_op_built)?;
         self.push(ASTType::PowOp(pow_op_built), context);
@@ -1205,7 +1205,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mult_op_built = MultOpBuilder::default()
             .mult_op(mult_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.mult_op(&mult_op_built)?;
         self.push(ASTType::MultOp(mult_op_built), context);
@@ -1228,7 +1228,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let instruction_0_built = InstructionAssignmentBuilder::default()
             .assignment(Box::new(assignment))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let instruction_0_built = Instruction::Assignment(instruction_0_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_0_built)?;
@@ -1252,7 +1252,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let instruction_1_built = InstructionLogicalOrBuilder::default()
             .logical_or(Box::new(logical_or))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let instruction_1_built = Instruction::LogicalOr(instruction_1_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_1_built)?;
@@ -1279,7 +1279,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .id(Box::new(id))
             .assign_op(Box::new(assign_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.assign_item(&assign_item_built)?;
         self.push(ASTType::AssignItem(assign_item_built), context);
@@ -1308,7 +1308,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .assignment_list(assignment_list)
             .logical_or(Box::new(logical_or))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.assignment(&assignment_built)?;
         self.push(ASTType::Assignment(assignment_built), context);
@@ -1333,7 +1333,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let assignment_list_0_built = AssignmentListBuilder::default()
             .assign_item(Box::new(assign_item))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         assignment_list.push(assignment_list_0_built);
         self.push(ASTType::AssignmentList(assignment_list), context);
@@ -1372,7 +1372,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .logical_and(Box::new(logical_and))
             .logical_or_list(logical_or_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_or(&logical_or_built)?;
         self.push(ASTType::LogicalOr(logical_or_built), context);
@@ -1400,7 +1400,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .logical_and(Box::new(logical_and))
             .logical_or_op(Box::new(logical_or_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         logical_or_list.push(logical_or_list_0_built);
         self.push(ASTType::LogicalOrList(logical_or_list), context);
@@ -1440,7 +1440,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_or(Box::new(bitwise_or))
             .logical_and_list(logical_and_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_and(&logical_and_built)?;
         self.push(ASTType::LogicalAnd(logical_and_built), context);
@@ -1468,7 +1468,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_or(Box::new(bitwise_or))
             .logical_and_op(Box::new(logical_and_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         logical_and_list.push(logical_and_list_0_built);
         self.push(ASTType::LogicalAndList(logical_and_list), context);
@@ -1507,7 +1507,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_and(Box::new(bitwise_and))
             .bitwise_or_list(bitwise_or_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bitwise_or(&bitwise_or_built)?;
         self.push(ASTType::BitwiseOr(bitwise_or_built), context);
@@ -1535,7 +1535,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_and(Box::new(bitwise_and))
             .bitwise_or_op(Box::new(bitwise_or_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         bitwise_or_list.push(bitwise_or_list_0_built);
         self.push(ASTType::BitwiseOrList(bitwise_or_list), context);
@@ -1575,7 +1575,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .equality(Box::new(equality))
             .bitwise_and_list(bitwise_and_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bitwise_and(&bitwise_and_built)?;
         self.push(ASTType::BitwiseAnd(bitwise_and_built), context);
@@ -1603,7 +1603,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .equality(Box::new(equality))
             .bitwise_and_op(Box::new(bitwise_and_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         bitwise_and_list.push(bitwise_and_list_0_built);
         self.push(ASTType::BitwiseAndList(bitwise_and_list), context);
@@ -1642,7 +1642,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .relational(Box::new(relational))
             .equality_list(equality_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.equality(&equality_built)?;
         self.push(ASTType::Equality(equality_built), context);
@@ -1670,7 +1670,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .relational(Box::new(relational))
             .equality_op(Box::new(equality_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         equality_list.push(equality_list_0_built);
         self.push(ASTType::EqualityList(equality_list), context);
@@ -1709,7 +1709,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_shift(Box::new(bitwise_shift))
             .relational_list(relational_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.relational(&relational_built)?;
         self.push(ASTType::Relational(relational_built), context);
@@ -1737,7 +1737,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .bitwise_shift(Box::new(bitwise_shift))
             .relational_op(Box::new(relational_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         relational_list.push(relational_list_0_built);
         self.push(ASTType::RelationalList(relational_list), context);
@@ -1777,7 +1777,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .summ(Box::new(summ))
             .bitwise_shift_list(bitwise_shift_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bitwise_shift(&bitwise_shift_built)?;
         self.push(ASTType::BitwiseShift(bitwise_shift_built), context);
@@ -1805,7 +1805,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .summ(Box::new(summ))
             .bitwise_shift_op(Box::new(bitwise_shift_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         bitwise_shift_list.push(bitwise_shift_list_0_built);
         self.push(ASTType::BitwiseShiftList(bitwise_shift_list), context);
@@ -1844,7 +1844,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let add_op_0_built = AddOpPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -1868,7 +1868,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let add_op_1_built = AddOpMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -1895,7 +1895,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .mult(Box::new(mult))
             .summ_list(summ_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.summ(&summ_built)?;
         self.push(ASTType::Summ(summ_built), context);
@@ -1923,7 +1923,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .mult(Box::new(mult))
             .add_op(Box::new(add_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         summ_list.push(summ_list_0_built);
         self.push(ASTType::SummList(summ_list), context);
@@ -1962,7 +1962,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .power(Box::new(power))
             .mult_list(mult_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.mult(&mult_built)?;
         self.push(ASTType::Mult(mult_built), context);
@@ -1990,7 +1990,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .power(Box::new(power))
             .mult_op(Box::new(mult_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         mult_list.push(mult_list_0_built);
         self.push(ASTType::MultList(mult_list), context);
@@ -2029,7 +2029,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .power_list(power_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.power(&power_built)?;
         self.push(ASTType::Power(power_built), context);
@@ -2057,7 +2057,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .pow_op(Box::new(pow_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         power_list.push(power_list_0_built);
         self.push(ASTType::PowerList(power_list), context);
@@ -2093,7 +2093,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let negate_built = NegateBuilder::default()
             .minus(Box::new(minus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.negate(&negate_built)?;
         self.push(ASTType::Negate(negate_built), context);
@@ -2116,7 +2116,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let factor_0_built = FactorNumberBuilder::default()
             .number(Box::new(number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_0_built = Factor::Number(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -2140,7 +2140,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let factor_1_built = FactorIdRefBuilder::default()
             .id_ref(Box::new(id_ref))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_1_built = Factor::IdRef(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -2167,7 +2167,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .negate(Box::new(negate))
             .factor(Box::new(factor))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_2_built = Factor::NegateFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -2195,7 +2195,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .logical_or(Box::new(logical_or))
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_3_built = Factor::LParenLogicalOrRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -2215,11 +2215,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = number.token(parse_tree)?.try_into().into_diagnostic()?;
+        let number = number.token(parse_tree)?.try_into()?;
         let number_built = NumberBuilder::default()
             .number(number)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);
@@ -2242,7 +2242,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let id_ref_built = IdRefBuilder::default()
             .id(Box::new(id))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.id_ref(&id_ref_built)?;
         self.push(ASTType::IdRef(id_ref_built), context);
@@ -2262,7 +2262,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = id.token(parse_tree)?.clone();
-        let id_built = IdBuilder::default().id(id).build().into_diagnostic()?;
+        let id_built = IdBuilder::default()
+            .id(id)
+            .build()
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.id(&id_built)?;
         self.push(ASTType::Id(id_built), context);
@@ -2279,7 +2282,7 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.calc(&children[0], parse_tree),
             1 => self.calc_list_0(&children[0], &children[1], &children[2], parse_tree),
@@ -2342,7 +2345,7 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
             58 => self.number(&children[0], parse_tree),
             59 => self.id_ref(&children[0], parse_tree),
             60 => self.id(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

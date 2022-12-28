@@ -1,6 +1,7 @@
 use derive_new::new;
 use std::{collections::HashMap, error::Error, path::Path};
 
+use anyhow::anyhow;
 use lsp_server::Message;
 use lsp_types::{
     notification::{
@@ -13,7 +14,6 @@ use lsp_types::{
     Location, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
     TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
 };
-use miette::miette;
 use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
 
 use crate::{
@@ -50,10 +50,10 @@ impl Server {
         Ok(())
     }
 
-    pub(crate) fn analyze(&mut self, uri: &Url) -> miette::Result<()> {
+    pub(crate) fn analyze(&mut self, uri: &Url) -> anyhow::Result<()> {
         let file_path = uri
             .to_file_path()
-            .map_err(|_| miette!("Failed interpreting file path {}", uri.path()))?;
+            .map_err(|_| anyhow!("Failed interpreting file path {}", uri.path()))?;
         let document_state = self.documents.get_mut(uri.path()).unwrap();
         eprintln!("analyze: step 1 - parse");
         document_state.clear();
@@ -72,13 +72,13 @@ impl Server {
     pub(crate) fn obtain_grammar_config_from_string(
         input: &str,
         file_name: &Path,
-    ) -> miette::Result<GrammarConfig> {
+    ) -> anyhow::Result<GrammarConfig> {
         let mut parol_grammar = ParolGrammar::new();
         parol::parser::parol_parser::parse(input, file_name, &mut parol_grammar)?;
         GrammarConfig::try_from(parol_grammar)
     }
 
-    pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> miette::Result<()> {
+    pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> anyhow::Result<()> {
         let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
         let cfg = check_and_transform_grammar(&grammar_config.cfg)?;
         grammar_config.update_cfg(cfg);
@@ -106,7 +106,7 @@ impl Server {
                     vec![],
                     Some(params.text_document.version),
                 );
-                let params = serde_json::to_value(&result).unwrap();
+                let params = serde_json::to_value(result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 connection
                     .sender
@@ -125,7 +125,7 @@ impl Server {
                     Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
                     Some(params.text_document.version),
                 );
-                let params = serde_json::to_value(&result).unwrap();
+                let params = serde_json::to_value(result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 eprintln!("handle_open_document: sending response\n{:?}", params);
                 connection
@@ -154,7 +154,7 @@ impl Server {
                     vec![],
                     Some(params.text_document.version),
                 );
-                let params = serde_json::to_value(&result).unwrap();
+                let params = serde_json::to_value(result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 connection
                     .sender
@@ -173,7 +173,7 @@ impl Server {
                     Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
                     Some(params.text_document.version),
                 );
-                let params = serde_json::to_value(&result).unwrap();
+                let params = serde_json::to_value(result).unwrap();
                 let method = <PublishDiagnostics as Notification>::METHOD.to_string();
                 eprintln!("handle_change_document: sending response\n{:?}", params);
                 connection

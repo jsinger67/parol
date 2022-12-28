@@ -3,7 +3,7 @@ use crate::analysis::{
     non_productive_non_terminals, unreachable_non_terminals, GrammarAnalysisError,
 };
 use crate::{detect_left_recursive_non_terminals, left_factor, Cfg};
-use miette::{bail, Result};
+use anyhow::{bail, Result};
 
 // ---------------------------------------------------
 // Part of the Public API

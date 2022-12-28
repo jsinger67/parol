@@ -1,4 +1,4 @@
-use miette::{miette, Result};
+use anyhow::{anyhow, Result};
 use parol::generators::grammar_type_generator::GrammarTypeInfo;
 use parol::{left_factor, obtain_grammar_config, obtain_grammar_config_from_string};
 use std::path::PathBuf;
@@ -24,7 +24,7 @@ pub fn main(args: &Args) -> Result<()> {
     } else if let Some(input) = &args.grammar {
         obtain_grammar_config_from_string(input, args.verbose)?
     } else {
-        return Err(miette!("Please provide a valid grammar input!"));
+        return Err(anyhow!("Please provide a valid grammar input!"));
     };
 
     let grammar_name = if let Some(file_name) = &args.grammar_file {

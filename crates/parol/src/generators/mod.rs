@@ -16,6 +16,7 @@ pub use grammar_trans::check_and_transform_grammar;
 
 /// Module that generates type information (AST etc.) for the generated sources
 pub mod grammar_type_generator;
+pub use grammar_type_generator::GrammarTypeInfo;
 
 /// Module with the language generator
 pub mod language_generator;
@@ -31,7 +32,7 @@ pub use parser_generator::generate_parser_source;
 
 /// Module with the user-trait generator
 pub mod user_trait_generator;
-pub use user_trait_generator::UserTraitGenerator;
+pub use user_trait_generator::{UserTraitGenerator, UserTraitGeneratorBuilder};
 
 /// Module with the code formatting function
 pub mod rust_code_formatter;

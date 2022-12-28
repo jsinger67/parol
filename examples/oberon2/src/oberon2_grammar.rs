@@ -1,6 +1,6 @@
 use crate::oberon2_grammar_trait::{Oberon2, Oberon2GrammarTrait};
 #[allow(unused_imports)]
-use miette::Result;
+use anyhow::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

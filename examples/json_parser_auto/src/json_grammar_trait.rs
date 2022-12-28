@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -408,7 +408,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let json_built = JsonBuilder::default()
             .value(Box::new(value))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.json(&json_built)?;
         self.push(ASTType::Json(json_built), context);
@@ -433,7 +433,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             // Ignore clipped member 'l_brace'
             .object_suffix(Box::new(object_suffix))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.object(&object_built)?;
         self.push(ASTType::Object(object_built), context);
@@ -461,7 +461,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             .object_list(object_list)
             // Ignore clipped member 'r_brace'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let object_suffix_0_built = ObjectSuffix::PairObjectListRBrace(object_suffix_0_built);
         self.push(ASTType::ObjectSuffix(object_suffix_0_built), context);
         Ok(())
@@ -482,7 +482,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let object_suffix_1_built = ObjectSuffixRBraceBuilder::default()
             // Ignore clipped member 'r_brace'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let object_suffix_1_built = ObjectSuffix::RBrace(object_suffix_1_built);
         self.push(ASTType::ObjectSuffix(object_suffix_1_built), context);
         Ok(())
@@ -508,7 +508,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             .pair(Box::new(pair))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         object_list.push(object_list_0_built);
         self.push(ASTType::ObjectList(object_list), context);
@@ -549,7 +549,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .value(Box::new(value))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.pair(&pair_built)?;
         self.push(ASTType::Pair(pair_built), context);
@@ -574,7 +574,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             // Ignore clipped member 'l_bracket'
             .array_suffix(Box::new(array_suffix))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -602,7 +602,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             .array_list(array_list)
             // Ignore clipped member 'r_bracket'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_suffix_0_built = ArraySuffix::ValueArrayListRBracket(array_suffix_0_built);
         self.push(ASTType::ArraySuffix(array_suffix_0_built), context);
         Ok(())
@@ -623,7 +623,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let array_suffix_1_built = ArraySuffixRBracketBuilder::default()
             // Ignore clipped member 'r_bracket'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_suffix_1_built = ArraySuffix::RBracket(array_suffix_1_built);
         self.push(ASTType::ArraySuffix(array_suffix_1_built), context);
         Ok(())
@@ -649,7 +649,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
             .value(Box::new(value))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         array_list.push(array_list_0_built);
         self.push(ASTType::ArrayList(array_list), context);
@@ -685,7 +685,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_0_built = ValueStringBuilder::default()
             .string(Box::new(string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
@@ -709,7 +709,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_1_built = ValueNumberBuilder::default()
             .number(Box::new(number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;
@@ -733,7 +733,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_2_built = ValueObjectBuilder::default()
             .object(Box::new(object))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_2_built = Value::Object(value_2_built);
         // Calling user action here
         self.user_grammar.value(&value_2_built)?;
@@ -757,7 +757,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_3_built = ValueArrayBuilder::default()
             .array(Box::new(array))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_3_built = Value::Array(value_3_built);
         // Calling user action here
         self.user_grammar.value(&value_3_built)?;
@@ -780,7 +780,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_4_built = ValueTrueBuilder::default()
             // Ignore clipped member 'r#true'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_4_built = Value::True(value_4_built);
         // Calling user action here
         self.user_grammar.value(&value_4_built)?;
@@ -803,7 +803,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_5_built = ValueFalseBuilder::default()
             // Ignore clipped member 'r#false'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_5_built = Value::False(value_5_built);
         // Calling user action here
         self.user_grammar.value(&value_5_built)?;
@@ -826,7 +826,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value_6_built = ValueNullBuilder::default()
             // Ignore clipped member 'null'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let value_6_built = Value::Null(value_6_built);
         // Calling user action here
         self.user_grammar.value(&value_6_built)?;
@@ -850,7 +850,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let string_built = StringBuilder::default()
             .string(string)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -873,7 +873,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let number_built = NumberBuilder::default()
             .number(number)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);
@@ -890,7 +890,7 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.json(&children[0], parse_tree),
             1 => self.object(&children[0], &children[1], parse_tree),
@@ -913,7 +913,7 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
             18 => self.value_6(&children[0], parse_tree),
             19 => self.string(&children[0], parse_tree),
             20 => self.number(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

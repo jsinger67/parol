@@ -13,8 +13,8 @@ use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::Production;
 use crate::{InnerAttributes, Pr, StrVec};
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
+use anyhow::{anyhow, bail, Result};
+use parol_runtime::log::trace;
 
 /// Generator for user trait code
 /// The lifetime parameter `'a` refers to the lifetime of the contained references.
@@ -106,7 +106,7 @@ impl<'a> UserTraitGenerator<'a> {
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = {}.token(parse_tree)?.try_into().into_diagnostic()?;",
+                    "let {} = {}.token(parse_tree)?.try_into()?;",
                     arg_name, arg_name,
                 ))
             }
@@ -152,7 +152,7 @@ impl<'a> UserTraitGenerator<'a> {
                         function.sem == ProductionAttribute::AddToCollection && i == 0,
                     )
                     .build()
-                    .into_diagnostic()?;
+                    .unwrap();
                 code.push(format!("{}", stack_pop_data));
             }
         }
@@ -174,7 +174,7 @@ impl<'a> UserTraitGenerator<'a> {
                 .members(action_id)?
                 .iter()
                 .last()
-                .ok_or_else(|| miette!("There should be at least one argument!"))?;
+                .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
             let arg_inst = symbol_table.symbol_as_instance(*last_arg);
             let arg_name = symbol_table.name(arg_inst.name_id());
             code.push("// Add an element to the vector".to_string());
@@ -211,7 +211,10 @@ impl<'a> UserTraitGenerator<'a> {
                 *arg_type.entrails(),
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
             ) {
-                format!("(&{}).try_into().into_diagnostic()?", arg_name)
+                format!(
+                    r#"(&{}).try_into().map_err(|e| anyhow!("Conversion error!: {{}}", e))?"#,
+                    arg_name
+                )
             } else {
                 arg_name.to_string()
             };
@@ -238,13 +241,13 @@ impl<'a> UserTraitGenerator<'a> {
             *type_info
                 .production_types
                 .get(&function.prod_num)
-                .ok_or_else(|| miette!("Production output type not accessible!"))?,
+                .ok_or_else(|| anyhow!("Production output type not accessible!"))?,
         );
         let nt_type = symbol_table.symbol_as_type(
             *type_info
                 .non_terminal_types
                 .get(&function.non_terminal)
-                .ok_or_else(|| miette!("Non-terminal type not accessible!"))?,
+                .ok_or_else(|| anyhow!("Non-terminal type not accessible!"))?,
         );
 
         if function.sem == ProductionAttribute::CollectionStart {
@@ -259,7 +262,7 @@ impl<'a> UserTraitGenerator<'a> {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
-            code.push("    .into_diagnostic()?;".to_string());
+            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalSome {
             code.push(format!(
                 "let {}_built = {}Builder::default()",
@@ -270,7 +273,7 @@ impl<'a> UserTraitGenerator<'a> {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
-            code.push("    .into_diagnostic()?;".to_string());
+            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalNone {
             // Don't generate a builder!
         } else {
@@ -287,7 +290,7 @@ impl<'a> UserTraitGenerator<'a> {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("    .build()".to_string());
-            code.push("    .into_diagnostic()?;".to_string());
+            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
             if function.alts > 1 {
                 // Type adjustment to the non-terminal enum
                 // let list_0 = List::List0(list_0);
@@ -307,7 +310,7 @@ impl<'a> UserTraitGenerator<'a> {
                             .symbol(symbol_table.symbol(*enum_variant_id).my_id())
                             .name()
                     })
-                    .ok_or_else(|| miette!("Enum variant not found"))?;
+                    .ok_or_else(|| anyhow!("Enum variant not found"))?;
                 code.push(format!(
                     "let {}_built = {}::{}({}_built);",
                     fn_name,
@@ -362,7 +365,7 @@ impl<'a> UserTraitGenerator<'a> {
                     .members(action_id)?
                     .iter()
                     .last()
-                    .ok_or_else(|| miette!("There should be at least one argument!"))?;
+                    .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
                 let arg_inst = symbol_table.symbol_as_instance(*last_arg);
                 let arg_name = symbol_table.name(arg_inst.name_id());
 
@@ -419,7 +422,7 @@ impl<'a> UserTraitGenerator<'a> {
                 type_info.symbol_table.lifetime(symbol_id)
             ))
         } else {
-            Err(miette!("Can't find type of argument {}", non_terminal))
+            Err(anyhow!("Can't find type of argument {}", non_terminal))
         }
     }
 
@@ -487,7 +490,7 @@ impl<'a> UserTraitGenerator<'a> {
             .type_name(type_name)
             .lifetime(lifetime)
             .build()
-            .into_diagnostic()?;
+            .unwrap();
         range_calc
             .code
             .push(type_symbol.generate_range_calculation()?);
@@ -634,7 +637,7 @@ impl<'a> UserTraitGenerator<'a> {
                         .code(code)
                         .inner(true)
                         .build()
-                        .into_diagnostic()?;
+                        .unwrap();
                     acc.push(format!("{}", user_trait_function_data));
                     Ok(acc)
                 } else {
@@ -657,7 +660,7 @@ impl<'a> UserTraitGenerator<'a> {
                             .non_terminal(nt.to_string())
                             .fn_arguments(fn_arguments)
                             .build()
-                            .into_diagnostic()?;
+                            .unwrap();
                         acc.push(format!("{}", user_trait_function_data));
                         Ok(acc)
                     } else {
@@ -684,7 +687,7 @@ impl<'a> UserTraitGenerator<'a> {
                         .prod_num(i)
                         .fn_arguments(fn_arguments)
                         .build()
-                        .into_diagnostic()?;
+                        .unwrap();
                     acc.push(format!("{}", user_trait_function_data));
                     Ok(acc)
                 } else {
@@ -717,7 +720,7 @@ impl<'a> UserTraitGenerator<'a> {
             .module_name(self.module_name)
             .user_trait_functions(user_trait_functions)
             .build()
-            .into_diagnostic()?;
+            .unwrap();
 
         Ok(format!("{}", user_trait_data))
     }
@@ -746,6 +749,6 @@ impl<'a> UserTraitGenerator<'a> {
             .grammar_config(grammar_config)
             .productions(productions)
             .build()
-            .into_diagnostic()
+            .map_err(|e| anyhow!("Builder error!: {}", e))
     }
 }

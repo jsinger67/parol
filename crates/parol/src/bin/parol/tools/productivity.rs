@@ -1,4 +1,4 @@
-use miette::Result;
+use anyhow::Result;
 use std::path::PathBuf;
 
 use parol::analysis::non_productive_non_terminals;

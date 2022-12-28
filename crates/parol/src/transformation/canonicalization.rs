@@ -5,9 +5,9 @@ use crate::parser::{Alternation, Alternations, Factor, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
 // $env:RUST_LOG="parol::transformation::canonicalization=trace"
-use log::trace;
-use miette::{bail, Result};
-use once_cell::sync::Lazy;
+use anyhow::{bail, Result};
+use parol_runtime::log::trace;
+use parol_runtime::once_cell::sync::Lazy;
 use regex::Regex;
 use std::convert::TryFrom;
 

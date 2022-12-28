@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -2664,7 +2664,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_begin_built = KwBeginBuilder::default()
             // Ignore clipped member 'kw_begin'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_begin(&kw_begin_built)?;
         self.push(ASTType::KwBegin(kw_begin_built), context);
@@ -2686,7 +2686,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_case_built = KwCaseBuilder::default()
             // Ignore clipped member 'kw_case'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_case(&kw_case_built)?;
         self.push(ASTType::KwCase(kw_case_built), context);
@@ -2708,7 +2708,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_do_built = KwDoBuilder::default()
             // Ignore clipped member 'kw_do'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_do(&kw_do_built)?;
         self.push(ASTType::KwDo(kw_do_built), context);
@@ -2730,7 +2730,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_else_built = KwElseBuilder::default()
             // Ignore clipped member 'kw_else'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_else(&kw_else_built)?;
         self.push(ASTType::KwElse(kw_else_built), context);
@@ -2752,7 +2752,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_elsif_built = KwElsifBuilder::default()
             // Ignore clipped member 'kw_elsif'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_elsif(&kw_elsif_built)?;
         self.push(ASTType::KwElsif(kw_elsif_built), context);
@@ -2774,7 +2774,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_end_built = KwEndBuilder::default()
             // Ignore clipped member 'kw_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_end(&kw_end_built)?;
         self.push(ASTType::KwEnd(kw_end_built), context);
@@ -2796,7 +2796,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_if_built = KwIfBuilder::default()
             // Ignore clipped member 'kw_if'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_if(&kw_if_built)?;
         self.push(ASTType::KwIf(kw_if_built), context);
@@ -2818,7 +2818,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_of_built = KwOfBuilder::default()
             // Ignore clipped member 'kw_of'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_of(&kw_of_built)?;
         self.push(ASTType::KwOf(kw_of_built), context);
@@ -2840,7 +2840,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_procedure_built = KwProcedureBuilder::default()
             // Ignore clipped member 'kw_procedure'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_procedure(&kw_procedure_built)?;
         self.push(ASTType::KwProcedure(kw_procedure_built), context);
@@ -2862,7 +2862,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_then_built = KwThenBuilder::default()
             // Ignore clipped member 'kw_then'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_then(&kw_then_built)?;
         self.push(ASTType::KwThen(kw_then_built), context);
@@ -2884,7 +2884,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_to_built = KwToBuilder::default()
             // Ignore clipped member 'kw_to'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_to(&kw_to_built)?;
         self.push(ASTType::KwTo(kw_to_built), context);
@@ -2906,7 +2906,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let kw_var_built = KwVarBuilder::default()
             // Ignore clipped member 'kw_var'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.kw_var(&kw_var_built)?;
         self.push(ASTType::KwVar(kw_var_built), context);
@@ -2938,7 +2938,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .decl_seq(Box::new(decl_seq))
             .module_body(Box::new(module_body))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.oberon2(&oberon2_built)?;
         self.push(ASTType::Oberon2(oberon2_built), context);
@@ -2961,7 +2961,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let oberon2_opt_0_built = Oberon2OptBuilder::default()
             .import_list(Box::new(import_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::Oberon2Opt(Some(Box::new(oberon2_opt_0_built))),
             context,
@@ -3001,7 +3001,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident(Box::new(ident))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.module_head(&module_head_built)?;
         self.push(ASTType::ModuleHead(module_head_built), context);
@@ -3026,7 +3026,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement_block(Box::new(statement_block))
             // Ignore clipped member 'dot'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.module_body(&module_body_built)?;
         self.push(ASTType::ModuleBody(module_body_built), context);
@@ -3060,7 +3060,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .import_list_list(import_list_list)
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.import_list(&import_list_built)?;
         self.push(ASTType::ImportList(import_list_built), context);
@@ -3090,7 +3090,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .import_list_opt0(import_list_opt0)
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         import_list_list.push(import_list_list_0_built);
         self.push(ASTType::ImportListList(import_list_list), context);
@@ -3128,7 +3128,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident(Box::new(ident))
             // Ignore clipped member 'colon_equ'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ImportListOpt0(Some(Box::new(import_list_opt0_0_built))),
             context,
@@ -3166,7 +3166,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident(Box::new(ident))
             // Ignore clipped member 'colon_equ'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ImportListOpt(Some(Box::new(import_list_opt_0_built))),
             context,
@@ -3205,7 +3205,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .decl_seq_list(decl_seq_list)
             .decl_seq_list0(decl_seq_list0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.decl_seq(&decl_seq_built)?;
         self.push(ASTType::DeclSeq(decl_seq_built), context);
@@ -3231,7 +3231,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_seq_list0_0_built = DeclSeqList0Builder::default()
             .decl_seq_list0_group(Box::new(decl_seq_list0_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         decl_seq_list0.push(decl_seq_list0_0_built);
         self.push(ASTType::DeclSeqList0(decl_seq_list0), context);
@@ -3256,7 +3256,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .proc_decl(Box::new(proc_decl))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let decl_seq_list0_group_0_built =
             DeclSeqList0Group::ProcDeclSemicolon(decl_seq_list0_group_0_built);
         self.push(
@@ -3284,7 +3284,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .forward_decl(Box::new(forward_decl))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let decl_seq_list0_group_1_built =
             DeclSeqList0Group::ForwardDeclSemicolon(decl_seq_list0_group_1_built);
         self.push(
@@ -3325,7 +3325,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_seq_list_0_built = DeclSeqListBuilder::default()
             .decl_block(Box::new(decl_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         decl_seq_list.push(decl_seq_list_0_built);
         self.push(ASTType::DeclSeqList(decl_seq_list), context);
@@ -3361,7 +3361,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_block_0_built = DeclBlockConstDeclBlockBuilder::default()
             .const_decl_block(Box::new(const_decl_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let decl_block_0_built = DeclBlock::ConstDeclBlock(decl_block_0_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_0_built)?;
@@ -3385,7 +3385,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_block_1_built = DeclBlockTypeDeclBlockBuilder::default()
             .type_decl_block(Box::new(type_decl_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let decl_block_1_built = DeclBlock::TypeDeclBlock(decl_block_1_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_1_built)?;
@@ -3409,7 +3409,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_block_2_built = DeclBlockVarDeclBlockBuilder::default()
             .var_decl_block(Box::new(var_decl_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let decl_block_2_built = DeclBlock::VarDeclBlock(decl_block_2_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_2_built)?;
@@ -3436,7 +3436,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'c_o_n_s_t'
             .const_decl_block_list(const_decl_block_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .const_decl_block(&const_decl_block_built)?;
@@ -3465,7 +3465,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'semicolon'
             .const_decl(Box::new(const_decl))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         const_decl_block_list.push(const_decl_block_list_0_built);
         self.push(ASTType::ConstDeclBlockList(const_decl_block_list), context);
@@ -3507,7 +3507,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 't_y_p_e'
             .type_decl_block_list(type_decl_block_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.type_decl_block(&type_decl_block_built)?;
         self.push(ASTType::TypeDeclBlock(type_decl_block_built), context);
@@ -3535,7 +3535,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'semicolon'
             .type_decl(Box::new(type_decl))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         type_decl_block_list.push(type_decl_block_list_0_built);
         self.push(ASTType::TypeDeclBlockList(type_decl_block_list), context);
@@ -3579,7 +3579,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_var'
             .var_decl_block_list(var_decl_block_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.var_decl_block(&var_decl_block_built)?;
         self.push(ASTType::VarDeclBlock(var_decl_block_built), context);
@@ -3607,7 +3607,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'semicolon'
             .var_decl(Box::new(var_decl))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         var_decl_block_list.push(var_decl_block_list_0_built);
         self.push(ASTType::VarDeclBlockList(var_decl_block_list), context);
@@ -3651,7 +3651,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'equ'
             .const_expr(Box::new(const_expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.const_decl(&const_decl_built)?;
         self.push(ASTType::ConstDecl(const_decl_built), context);
@@ -3679,7 +3679,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'equ'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.type_decl(&type_decl_built)?;
         self.push(ASTType::TypeDecl(type_decl_built), context);
@@ -3707,7 +3707,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.var_decl(&var_decl_built)?;
         self.push(ASTType::VarDecl(var_decl_built), context);
@@ -3735,7 +3735,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'semicolon'
             .procedure_body(Box::new(procedure_body))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.proc_decl(&proc_decl_built)?;
         self.push(ASTType::ProcDecl(proc_decl_built), context);
@@ -3770,7 +3770,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident_def(Box::new(ident_def))
             .procedure_heading_opt0(procedure_heading_opt0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .procedure_heading(&procedure_heading_built)?;
@@ -3794,7 +3794,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let procedure_heading_opt0_0_built = ProcedureHeadingOpt0Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ProcedureHeadingOpt0(Some(Box::new(procedure_heading_opt0_0_built))),
             context,
@@ -3830,7 +3830,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let procedure_heading_opt_0_built = ProcedureHeadingOptBuilder::default()
             .receiver(Box::new(receiver))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ProcedureHeadingOpt(Some(Box::new(procedure_heading_opt_0_built))),
             context,
@@ -3869,7 +3869,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .decl_seq(Box::new(decl_seq))
             .statement_block(Box::new(statement_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.procedure_body(&procedure_body_built)?;
         self.push(ASTType::ProcedureBody(procedure_body_built), context);
@@ -3899,7 +3899,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_end'
             .ident(Box::new(ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.statement_block(&statement_block_built)?;
         self.push(ASTType::StatementBlock(statement_block_built), context);
@@ -3926,7 +3926,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_begin'
             .statement_seq(Box::new(statement_seq))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementBlockOpt(Some(Box::new(statement_block_opt_0_built))),
             context,
@@ -3975,7 +3975,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident_def(Box::new(ident_def))
             .forward_decl_opt0(forward_decl_opt0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.forward_decl(&forward_decl_built)?;
         self.push(ASTType::ForwardDecl(forward_decl_built), context);
@@ -3998,7 +3998,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let forward_decl_opt0_0_built = ForwardDeclOpt0Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ForwardDeclOpt0(Some(Box::new(forward_decl_opt0_0_built))),
             context,
@@ -4034,7 +4034,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let forward_decl_opt_0_built = ForwardDeclOptBuilder::default()
             .receiver(Box::new(receiver))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ForwardDeclOpt(Some(Box::new(forward_decl_opt_0_built))),
             context,
@@ -4077,7 +4077,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'r_paren'
             .formal_pars_opt0(formal_pars_opt0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.formal_pars(&formal_pars_built)?;
         self.push(ASTType::FormalPars(formal_pars_built), context);
@@ -4102,7 +4102,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .qual_ident(Box::new(qual_ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FormalParsOpt0(Some(Box::new(formal_pars_opt0_0_built))),
             context,
@@ -4142,7 +4142,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .f_p_section(Box::new(f_p_section))
             .formal_pars_opt_list(formal_pars_opt_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FormalParsOpt(Some(Box::new(formal_pars_opt_0_built))),
             context,
@@ -4171,7 +4171,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .f_p_section(Box::new(f_p_section))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         formal_pars_opt_list.push(formal_pars_opt_list_0_built);
         self.push(ASTType::FormalParsOptList(formal_pars_opt_list), context);
@@ -4234,7 +4234,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.f_p_section(&f_p_section_built)?;
         self.push(ASTType::FPSection(f_p_section_built), context);
@@ -4261,7 +4261,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident(Box::new(ident))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         f_p_section_list.push(f_p_section_list_0_built);
         self.push(ASTType::FPSectionList(f_p_section_list), context);
@@ -4298,7 +4298,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let f_p_section_opt_0_built = FPSectionOptBuilder::default()
             // Ignore clipped member 'kw_var'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FPSectionOpt(Some(Box::new(f_p_section_opt_0_built))),
             context,
@@ -4341,7 +4341,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .receiver_var_decl(Box::new(receiver_var_decl))
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.receiver(&receiver_built)?;
         self.push(ASTType::Receiver(receiver_built), context);
@@ -4365,7 +4365,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let receiver_opt_0_built = ReceiverOptBuilder::default()
             // Ignore clipped member 'kw_var'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ReceiverOpt(Some(Box::new(receiver_opt_0_built))),
             context,
@@ -4406,7 +4406,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .ident0(Box::new(ident0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .receiver_var_decl(&receiver_var_decl_built)?;
@@ -4430,7 +4430,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_0_built = TypeDefQualIdentBuilder::default()
             .qual_ident(Box::new(qual_ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let type_def_0_built = TypeDef::QualIdent(type_def_0_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_0_built)?;
@@ -4463,7 +4463,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_of'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let type_def_1_built = TypeDef::ARRAYTypeDefOptKwOfTypeDef(type_def_1_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_1_built)?;
@@ -4499,7 +4499,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .type_def_list(type_def_list)
             // Ignore clipped member 'kw_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let type_def_2_built =
             TypeDef::RECORDTypeDefOpt0FieldListTypeDefListKwEnd(type_def_2_built);
         // Calling user action here
@@ -4528,7 +4528,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .field_list(Box::new(field_list))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         type_def_list.push(type_def_list_0_built);
         self.push(ASTType::TypeDefList(type_def_list), context);
@@ -4570,7 +4570,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_to'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let type_def_3_built = TypeDef::POINTERKwToTypeDef(type_def_3_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_3_built)?;
@@ -4598,7 +4598,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_procedure'
             .type_def_opt1(type_def_opt1)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let type_def_4_built = TypeDef::KwProcedureTypeDefOpt1(type_def_4_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_4_built)?;
@@ -4622,7 +4622,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_opt1_0_built = TypeDefOpt1Builder::default()
             .formal_pars(Box::new(formal_pars))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::TypeDefOpt1(Some(Box::new(type_def_opt1_0_built))),
             context,
@@ -4662,7 +4662,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .qual_ident(Box::new(qual_ident))
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::TypeDefOpt0(Some(Box::new(type_def_opt0_0_built))),
             context,
@@ -4702,7 +4702,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .const_expr(Box::new(const_expr))
             .type_def_opt_list(type_def_opt_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::TypeDefOpt(Some(Box::new(type_def_opt_0_built))),
             context,
@@ -4730,7 +4730,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .const_expr(Box::new(const_expr))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         type_def_opt_list.push(type_def_opt_list_0_built);
         self.push(ASTType::TypeDefOptList(type_def_opt_list), context);
@@ -4778,7 +4778,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let field_list_built = FieldListBuilder::default()
             .field_list_opt(field_list_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.field_list(&field_list_built)?;
         self.push(ASTType::FieldList(field_list_built), context);
@@ -4806,7 +4806,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .type_def(Box::new(type_def))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FieldListOpt(Some(Box::new(field_list_opt_0_built))),
             context,
@@ -4846,7 +4846,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement(Box::new(statement))
             .statement_seq_list(statement_seq_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.statement_seq(&statement_seq_built)?;
         self.push(ASTType::StatementSeq(statement_seq_built), context);
@@ -4873,7 +4873,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement(Box::new(statement))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         statement_seq_list.push(statement_seq_list_0_built);
         self.push(ASTType::StatementSeqList(statement_seq_list), context);
@@ -4912,7 +4912,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_built = StatementBuilder::default()
             .statement_opt(statement_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.statement(&statement_built)?;
         self.push(ASTType::Statement(statement_built), context);
@@ -4935,7 +4935,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt_0_built = StatementOptBuilder::default()
             .statement_opt_group(Box::new(statement_opt_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementOpt(Some(Box::new(statement_opt_0_built))),
             context,
@@ -4968,7 +4968,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 .designator(Box::new(designator))
                 .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_0_built =
             StatementOptGroup::DesignatorStatementOptGroupSuffix(statement_opt_group_0_built);
         self.push(
@@ -4997,7 +4997,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 // Ignore clipped member 'colon_equ'
                 .expr(Box::new(expr))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_suffix_0_built =
             StatementOptGroupSuffix::ColonEquExpr(statement_opt_group_suffix_0_built);
         self.push(
@@ -5024,7 +5024,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             StatementOptGroupSuffixStatementOpt0Builder::default()
                 .statement_opt0(statement_opt0)
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_suffix_1_built =
             StatementOptGroupSuffix::StatementOpt0(statement_opt_group_suffix_1_built);
         self.push(
@@ -5069,7 +5069,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 .statement_opt_group_list(statement_opt_group_list)
                 .opt_else_part_end(Box::new(opt_else_part_end))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_1_built =
             StatementOptGroup::KwIfExprThenBlockStatementOptGroupListOptElsePartEnd(
                 statement_opt_group_1_built,
@@ -5112,7 +5112,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 .cases(Box::new(cases))
                 .opt_else_part_end(Box::new(opt_else_part_end))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_2_built =
             StatementOptGroup::KwCaseExprKwOfCasesOptElsePartEnd(statement_opt_group_2_built);
         self.push(
@@ -5143,7 +5143,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             .do_block(Box::new(do_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_3_built =
             StatementOptGroup::WHILEExprDoBlock(statement_opt_group_3_built);
         self.push(
@@ -5177,7 +5177,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 // Ignore clipped member 'u_n_t_i_l'
                 .expr(Box::new(expr))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_4_built =
             StatementOptGroup::REPEATStatementSeqUNTILExpr(statement_opt_group_4_built);
         self.push(
@@ -5212,7 +5212,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 .statement_opt1(statement_opt1)
                 .do_block(Box::new(do_block))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_5_built =
             StatementOptGroup::FORForInitStatementOpt1DoBlock(statement_opt_group_5_built);
         self.push(
@@ -5244,7 +5244,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement_seq(Box::new(statement_seq))
             // Ignore clipped member 'kw_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_6_built =
             StatementOptGroup::LOOPStatementSeqKwEnd(statement_opt_group_6_built);
         self.push(
@@ -5283,7 +5283,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement_opt_group_list0(statement_opt_group_list0)
             .opt_else_part_end(Box::new(opt_else_part_end))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_7_built =
             StatementOptGroup::WITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd(
                 statement_opt_group_7_built,
@@ -5310,7 +5310,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt_group_8_built = StatementOptGroupEXITBuilder::default()
             // Ignore clipped member 'e_x_i_t'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_8_built = StatementOptGroup::EXIT(statement_opt_group_8_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_8_built),
@@ -5337,7 +5337,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'r_e_t_u_r_n'
             .statement_opt2(statement_opt2)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_opt_group_9_built =
             StatementOptGroup::RETURNStatementOpt2(statement_opt_group_9_built);
         self.push(
@@ -5370,7 +5370,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt_group_list_0_built = StatementOptGroupListBuilder::default()
             .elsif_part(Box::new(elsif_part))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         statement_opt_group_list.push(statement_opt_group_list_0_built);
         self.push(
@@ -5421,7 +5421,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .guarded_do_block(Box::new(guarded_do_block))
             // Ignore clipped member 'or'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         statement_opt_group_list0.push(statement_opt_group_list0_0_built);
         self.push(
@@ -5463,7 +5463,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt2_0_built = StatementOpt2Builder::default()
             .expr(Box::new(expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementOpt2(Some(Box::new(statement_opt2_0_built))),
             context,
@@ -5499,7 +5499,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt1_0_built = StatementOpt1Builder::default()
             .for_step(Box::new(for_step))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementOpt1(Some(Box::new(statement_opt1_0_built))),
             context,
@@ -5539,7 +5539,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement_opt3(statement_opt3)
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementOpt0(Some(Box::new(statement_opt0_0_built))),
             context,
@@ -5563,7 +5563,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt3_0_built = StatementOpt3Builder::default()
             .expr_list(Box::new(expr_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::StatementOpt3(Some(Box::new(statement_opt3_0_built))),
             context,
@@ -5627,7 +5627,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_then'
             .statement_seq(Box::new(statement_seq))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.then_block(&then_block_built)?;
         self.push(ASTType::ThenBlock(then_block_built), context);
@@ -5653,7 +5653,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .case(Box::new(case))
             .cases_list(cases_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.cases(&cases_built)?;
         self.push(ASTType::Cases(cases_built), context);
@@ -5680,7 +5680,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .case(Box::new(case))
             // Ignore clipped member 'or'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         cases_list.push(cases_list_0_built);
         self.push(ASTType::CasesList(cases_list), context);
@@ -5723,7 +5723,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             .then_block(Box::new(then_block))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.elsif_part(&elsif_part_built)?;
         self.push(ASTType::ElsifPart(elsif_part_built), context);
@@ -5750,7 +5750,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_else'
             .statement_seq(Box::new(statement_seq))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.else_part(&else_part_built)?;
         self.push(ASTType::ElsePart(else_part_built), context);
@@ -5778,7 +5778,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .opt_else_part_end_opt(opt_else_part_end_opt)
             // Ignore clipped member 'kw_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .opt_else_part_end(&opt_else_part_end_built)?;
@@ -5802,7 +5802,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let opt_else_part_end_opt_0_built = OptElsePartEndOptBuilder::default()
             .else_part(Box::new(else_part))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::OptElsePartEndOpt(Some(Box::new(opt_else_part_end_opt_0_built))),
             context,
@@ -5846,7 +5846,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .statement_seq(Box::new(statement_seq))
             // Ignore clipped member 'kw_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.do_block(&do_block_built)?;
         self.push(ASTType::DoBlock(do_block_built), context);
@@ -5876,7 +5876,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_do'
             .statement_seq(Box::new(statement_seq))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .guarded_do_block(&guarded_do_block_built)?;
@@ -5912,7 +5912,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'kw_to'
             .expr0(Box::new(expr0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.for_init(&for_init_built)?;
         self.push(ASTType::ForInit(for_init_built), context);
@@ -5937,7 +5937,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'b_y'
             .const_expr(Box::new(const_expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.for_step(&for_step_built)?;
         self.push(ASTType::ForStep(for_step_built), context);
@@ -5960,7 +5960,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case_built = CaseBuilder::default()
             .case_opt(case_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.case(&case_built)?;
         self.push(ASTType::Case(case_built), context);
@@ -5991,7 +5991,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .statement_seq(Box::new(statement_seq))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(ASTType::CaseOpt(Some(Box::new(case_opt_0_built))), context);
         Ok(())
     }
@@ -6016,7 +6016,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .case_labels(Box::new(case_labels))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         case_opt_list.push(case_opt_list_0_built);
         self.push(ASTType::CaseOptList(case_opt_list), context);
@@ -6067,7 +6067,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .const_expr(Box::new(const_expr))
             .case_labels_opt(case_labels_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.case_labels(&case_labels_built)?;
         self.push(ASTType::CaseLabels(case_labels_built), context);
@@ -6093,7 +6093,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .dot_dot(dot_dot)
             .const_expr(Box::new(const_expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::CaseLabelsOpt(Some(Box::new(case_labels_opt_0_built))),
             context,
@@ -6134,7 +6134,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'colon'
             .qual_ident0(Box::new(qual_ident0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.guard(&guard_built)?;
         self.push(ASTType::Guard(guard_built), context);
@@ -6157,7 +6157,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_expr_built = ConstExprBuilder::default()
             .expr(Box::new(expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.const_expr(&const_expr_built)?;
         self.push(ASTType::ConstExpr(const_expr_built), context);
@@ -6183,7 +6183,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .simple_expr(Box::new(simple_expr))
             .expr_opt(expr_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.expr(&expr_built)?;
         self.push(ASTType::Expr(expr_built), context);
@@ -6209,7 +6209,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .relation(Box::new(relation))
             .simple_expr(Box::new(simple_expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(ASTType::ExprOpt(Some(Box::new(expr_opt_0_built))), context);
         Ok(())
     }
@@ -6249,7 +6249,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .term(Box::new(term))
             .simple_expr_list(simple_expr_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.simple_expr(&simple_expr_built)?;
         self.push(ASTType::SimpleExpr(simple_expr_built), context);
@@ -6277,7 +6277,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .term(Box::new(term))
             .add_op(Box::new(add_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         simple_expr_list.push(simple_expr_list_0_built);
         self.push(ASTType::SimpleExprList(simple_expr_list), context);
@@ -6314,7 +6314,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr_opt_0_built = SimpleExprOptBuilder::default()
             .simple_expr_opt_group(Box::new(simple_expr_opt_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::SimpleExprOpt(Some(Box::new(simple_expr_opt_0_built))),
             context,
@@ -6338,7 +6338,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr_opt_group_0_built = SimpleExprOptGroupPlusBuilder::default()
             .plus(plus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let simple_expr_opt_group_0_built = SimpleExprOptGroup::Plus(simple_expr_opt_group_0_built);
         self.push(
             ASTType::SimpleExprOptGroup(simple_expr_opt_group_0_built),
@@ -6363,7 +6363,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr_opt_group_1_built = SimpleExprOptGroupMinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let simple_expr_opt_group_1_built =
             SimpleExprOptGroup::Minus(simple_expr_opt_group_1_built);
         self.push(
@@ -6404,7 +6404,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .term_list(term_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.term(&term_built)?;
         self.push(ASTType::Term(term_built), context);
@@ -6432,7 +6432,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .mul_op(Box::new(mul_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         term_list.push(term_list_0_built);
         self.push(ASTType::TermList(term_list), context);
@@ -6471,7 +6471,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .designator(Box::new(designator))
             .factor_opt(factor_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_0_built = Factor::DesignatorFactorOpt(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -6495,7 +6495,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_1_built = FactorNumberBuilder::default()
             .number(Box::new(number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_1_built = Factor::Number(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -6519,7 +6519,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_2_built = FactorCharacterBuilder::default()
             .character(Box::new(character))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_2_built = Factor::Character(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -6543,7 +6543,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_3_built = FactorStringBuilder::default()
             .string(Box::new(string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_3_built = Factor::String(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -6566,7 +6566,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_4_built = FactorNILBuilder::default()
             // Ignore clipped member 'n_i_l'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_4_built = Factor::NIL(factor_4_built);
         // Calling user action here
         self.user_grammar.factor(&factor_4_built)?;
@@ -6590,7 +6590,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_5_built = FactorSetBuilder::default()
             .set(Box::new(set))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_5_built = Factor::Set(factor_5_built);
         // Calling user action here
         self.user_grammar.factor(&factor_5_built)?;
@@ -6618,7 +6618,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_6_built = Factor::LParenExprRParen(factor_6_built);
         // Calling user action here
         self.user_grammar.factor(&factor_6_built)?;
@@ -6644,7 +6644,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'tilde'
             .factor(Box::new(factor))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_7_built = Factor::TildeFactor(factor_7_built);
         // Calling user action here
         self.user_grammar.factor(&factor_7_built)?;
@@ -6672,7 +6672,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .factor_opt0(factor_opt0)
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FactorOpt(Some(Box::new(factor_opt_0_built))),
             context,
@@ -6696,7 +6696,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_opt0_0_built = FactorOpt0Builder::default()
             .expr_list(Box::new(expr_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::FactorOpt0(Some(Box::new(factor_opt0_0_built))),
             context,
@@ -6748,7 +6748,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .set_opt(set_opt)
             // Ignore clipped member 'r_brace'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.set(&set_built)?;
         self.push(ASTType::Set(set_built), context);
@@ -6774,7 +6774,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .element(Box::new(element))
             .set_opt_list(set_opt_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(ASTType::SetOpt(Some(Box::new(set_opt_0_built))), context);
         Ok(())
     }
@@ -6799,7 +6799,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .element(Box::new(element))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         set_opt_list.push(set_opt_list_0_built);
         self.push(ASTType::SetOptList(set_opt_list), context);
@@ -6850,7 +6850,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             .element_opt(element_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.element(&element_built)?;
         self.push(ASTType::Element(element_built), context);
@@ -6875,7 +6875,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'dot_dot'
             .expr(Box::new(expr))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ElementOpt(Some(Box::new(element_opt_0_built))),
             context,
@@ -6910,7 +6910,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_0_built = RelationEquBuilder::default()
             // Ignore clipped member 'equ'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_0_built = Relation::Equ(relation_0_built);
         // Calling user action here
         self.user_grammar.relation(&relation_0_built)?;
@@ -6934,7 +6934,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_1_built = RelationHashBuilder::default()
             .hash(hash)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_1_built = Relation::Hash(relation_1_built);
         // Calling user action here
         self.user_grammar.relation(&relation_1_built)?;
@@ -6958,7 +6958,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_2_built = RelationLTBuilder::default()
             .l_t(l_t)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_2_built = Relation::LT(relation_2_built);
         // Calling user action here
         self.user_grammar.relation(&relation_2_built)?;
@@ -6982,7 +6982,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_3_built = RelationLTEquBuilder::default()
             .l_t_equ(l_t_equ)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_3_built = Relation::LTEqu(relation_3_built);
         // Calling user action here
         self.user_grammar.relation(&relation_3_built)?;
@@ -7006,7 +7006,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_4_built = RelationGTBuilder::default()
             .g_t(g_t)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_4_built = Relation::GT(relation_4_built);
         // Calling user action here
         self.user_grammar.relation(&relation_4_built)?;
@@ -7030,7 +7030,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_5_built = RelationGTEquBuilder::default()
             .g_t_equ(g_t_equ)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_5_built = Relation::GTEqu(relation_5_built);
         // Calling user action here
         self.user_grammar.relation(&relation_5_built)?;
@@ -7054,7 +7054,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_6_built = RelationInOpBuilder::default()
             .in_op(Box::new(in_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_6_built = Relation::InOp(relation_6_built);
         // Calling user action here
         self.user_grammar.relation(&relation_6_built)?;
@@ -7078,7 +7078,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let relation_7_built = RelationISBuilder::default()
             .i_s(i_s)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let relation_7_built = Relation::IS(relation_7_built);
         // Calling user action here
         self.user_grammar.relation(&relation_7_built)?;
@@ -7102,7 +7102,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let add_op_0_built = AddOpPlusBuilder::default()
             .plus(plus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -7126,7 +7126,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let add_op_1_built = AddOpMinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -7150,7 +7150,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let add_op_2_built = AddOpORBuilder::default()
             .o_r(o_r)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let add_op_2_built = AddOp::OR(add_op_2_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_2_built)?;
@@ -7174,7 +7174,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mul_op_0_built = MulOpStarBuilder::default()
             .star(star)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let mul_op_0_built = MulOp::Star(mul_op_0_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_0_built)?;
@@ -7198,7 +7198,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mul_op_1_built = MulOpSlashBuilder::default()
             .slash(slash)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let mul_op_1_built = MulOp::Slash(mul_op_1_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_1_built)?;
@@ -7222,7 +7222,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mul_op_2_built = MulOpDIVBuilder::default()
             .d_i_v(d_i_v)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let mul_op_2_built = MulOp::DIV(mul_op_2_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_2_built)?;
@@ -7246,7 +7246,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mul_op_3_built = MulOpMODBuilder::default()
             .m_o_d(m_o_d)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let mul_op_3_built = MulOp::MOD(mul_op_3_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_3_built)?;
@@ -7270,7 +7270,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mul_op_4_built = MulOpAmpBuilder::default()
             .amp(amp)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let mul_op_4_built = MulOp::Amp(mul_op_4_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_4_built)?;
@@ -7297,7 +7297,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .qual_ident(Box::new(qual_ident))
             .designator_list(designator_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.designator(&designator_built)?;
         self.push(ASTType::Designator(designator_built), context);
@@ -7322,7 +7322,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let designator_list_0_built = DesignatorListBuilder::default()
             .designator_suffix(Box::new(designator_suffix))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         designator_list.push(designator_list_0_built);
         self.push(ASTType::DesignatorList(designator_list), context);
@@ -7360,7 +7360,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             // Ignore clipped member 'dot'
             .ident(Box::new(ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let designator_suffix_0_built = DesignatorSuffix::DotIdent(designator_suffix_0_built);
         // Calling user action here
         self.user_grammar
@@ -7392,7 +7392,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr_list(Box::new(expr_list))
             // Ignore clipped member 'r_bracket'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let designator_suffix_1_built =
             DesignatorSuffix::LBracketExprListRBracket(designator_suffix_1_built);
         // Calling user action here
@@ -7420,7 +7420,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let designator_suffix_2_built = DesignatorSuffixCircumflexBuilder::default()
             // Ignore clipped member 'circumflex'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let designator_suffix_2_built = DesignatorSuffix::Circumflex(designator_suffix_2_built);
         // Calling user action here
         self.user_grammar
@@ -7451,7 +7451,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             .expr_list_list(expr_list_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.expr_list(&expr_list_built)?;
         self.push(ASTType::ExprList(expr_list_built), context);
@@ -7478,7 +7478,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .expr(Box::new(expr))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         expr_list_list.push(expr_list_list_0_built);
         self.push(ASTType::ExprListList(expr_list_list), context);
@@ -7517,7 +7517,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident_def(Box::new(ident_def))
             .ident_list_list(ident_list_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.ident_list(&ident_list_built)?;
         self.push(ASTType::IdentList(ident_list_built), context);
@@ -7544,7 +7544,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident_def(Box::new(ident_def))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         ident_list_list.push(ident_list_list_0_built);
         self.push(ASTType::IdentListList(ident_list_list), context);
@@ -7580,7 +7580,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let qual_ident_0_built = QualIdentIdentBuilder::default()
             .ident(Box::new(ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let qual_ident_0_built = QualIdent::Ident(qual_ident_0_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_0_built)?;
@@ -7604,7 +7604,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let qual_ident_1_built = QualIdentQIdentBuilder::default()
             .q_ident(Box::new(q_ident))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let qual_ident_1_built = QualIdent::QIdent(qual_ident_1_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_1_built)?;
@@ -7631,7 +7631,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             .ident(Box::new(ident))
             .ident_def_opt(ident_def_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.ident_def(&ident_def_built)?;
         self.push(ASTType::IdentDef(ident_def_built), context);
@@ -7654,7 +7654,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def_opt_0_built = IdentDefOptBuilder::default()
             .ident_def_opt_group(Box::new(ident_def_opt_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::IdentDefOpt(Some(Box::new(ident_def_opt_0_built))),
             context,
@@ -7678,7 +7678,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def_opt_group_0_built = IdentDefOptGroupStarBuilder::default()
             .star(star)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let ident_def_opt_group_0_built = IdentDefOptGroup::Star(ident_def_opt_group_0_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_0_built),
@@ -7703,7 +7703,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def_opt_group_1_built = IdentDefOptGroupMinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let ident_def_opt_group_1_built = IdentDefOptGroup::Minus(ident_def_opt_group_1_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_1_built),
@@ -7740,7 +7740,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let number_0_built = NumberIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let number_0_built = Number::Integer(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
@@ -7764,7 +7764,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let number_1_built = NumberRealBuilder::default()
             .real(Box::new(real))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let number_1_built = Number::Real(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
@@ -7788,7 +7788,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let real_built = RealBuilder::default()
             .real(real)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.real(&real_built)?;
         self.push(ASTType::Real(real_built), context);
@@ -7811,7 +7811,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let character_built = CharacterBuilder::default()
             .character(character)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.character(&character_built)?;
         self.push(ASTType::Character(character_built), context);
@@ -7834,7 +7834,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let integer_built = IntegerBuilder::default()
             .integer(integer)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
         self.push(ASTType::Integer(integer_built), context);
@@ -7857,7 +7857,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let q_ident_built = QIdentBuilder::default()
             .q_ident(q_ident)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.q_ident(&q_ident_built)?;
         self.push(ASTType::QIdent(q_ident_built), context);
@@ -7880,7 +7880,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_built = IdentBuilder::default()
             .ident(ident)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.ident(&ident_built)?;
         self.push(ASTType::Ident(ident_built), context);
@@ -7903,7 +7903,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let string_built = StringBuilder::default()
             .string(string)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -7925,7 +7925,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let in_op_built = InOpBuilder::default()
             // Ignore clipped member 'in_op'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.in_op(&in_op_built)?;
         self.push(ASTType::InOp(in_op_built), context);
@@ -7942,7 +7942,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.kw_begin(&children[0], parse_tree),
             1 => self.kw_case(&children[0], parse_tree),
@@ -8285,7 +8285,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
             222 => self.ident(&children[0], parse_tree),
             223 => self.string(&children[0], parse_tree),
             224 => self.in_op(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

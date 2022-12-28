@@ -18,7 +18,7 @@ pub use format_token::FormatToken;
 /// Module with a location type
 ///
 pub mod location;
-pub use location::Location;
+pub use location::{Location, LocationBuilder};
 
 ///
 /// Module to support handling of std::ops::Range

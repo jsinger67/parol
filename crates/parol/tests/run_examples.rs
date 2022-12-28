@@ -1,4 +1,4 @@
-use miette::{IntoDiagnostic, Result};
+use anyhow::{anyhow, Result};
 use std::process::{Command, ExitStatus};
 
 macro_rules! parol_path {
@@ -88,14 +88,14 @@ fn build_examples() -> Result<()> {
         .args(&["build", "--examples"])
         .status()
         .map(|_| ())
-        .into_diagnostic()
+        .map_err(|e| anyhow!(e))
 }
 
 fn run_parol(args: &[&str]) -> Result<ExitStatus> {
     Command::new(parol_path!())
         .args(args)
         .status()
-        .into_diagnostic()
+        .map_err(|e| anyhow!(e))
 }
 
 fn run_parol_should_fail(args: &[&str]) -> Result<bool> {
@@ -111,7 +111,10 @@ fn run_parol_should_fail(args: &[&str]) -> Result<bool> {
 
 fn run_example(example: &str, args: &[&str]) -> Result<ExitStatus> {
     println!("Running example {}, {:?}", example, args);
-    Command::new(example).args(args).status().into_diagnostic()
+    Command::new(example)
+        .args(args)
+        .status()
+        .map_err(|e| anyhow!(e))
 }
 
 fn run_example_should_fail(example: &str, args: &[&str]) -> Result<bool> {
@@ -127,10 +130,7 @@ fn run_example_should_fail(example: &str, args: &[&str]) -> Result<bool> {
 }
 
 fn run_parol_examples() -> Result<()> {
-    for entry in std::path::Path::new("./data/valid")
-        .read_dir()
-        .into_diagnostic()?
-    {
+    for entry in std::path::Path::new("./data/valid").read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {}...", entry.path().display());
@@ -138,10 +138,7 @@ fn run_parol_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("./data/invalid")
-        .read_dir()
-        .into_diagnostic()?
-    {
+    for entry in std::path::Path::new("./data/invalid").read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {} should fail...", entry.path().display());
@@ -155,10 +152,7 @@ fn run_parol_examples() -> Result<()> {
 
 fn run_keywords_examples() -> Result<()> {
     let parser = example_path!("keywords");
-    for entry in std::path::Path::new("../../examples/keywords/testfiles/valid")
-        .read_dir()
-        .into_diagnostic()?
-    {
+    for entry in std::path::Path::new("../../examples/keywords/testfiles/valid").read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());
@@ -166,10 +160,7 @@ fn run_keywords_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("../../examples/keywords/testfiles/invalid")
-        .read_dir()
-        .into_diagnostic()?
-    {
+    for entry in std::path::Path::new("../../examples/keywords/testfiles/invalid").read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {} should fail...", entry.path().display());
@@ -184,10 +175,7 @@ fn run_keywords_examples() -> Result<()> {
 
 fn run_keywords2_examples() -> Result<()> {
     let parser = example_path!("keywords2");
-    for entry in std::path::Path::new("../../examples/keywords2/testfiles/valid")
-        .read_dir()
-        .into_diagnostic()?
-    {
+    for entry in std::path::Path::new("../../examples/keywords2/testfiles/valid").read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());

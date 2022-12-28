@@ -6,9 +6,6 @@
 extern crate function_name;
 
 #[macro_use]
-extern crate thiserror;
-
-#[macro_use]
 extern crate derive_builder;
 
 extern crate rand;
@@ -33,8 +30,8 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolAttribute, Terminal, Terminal
 pub mod analysis;
 
 pub use analysis::{
-    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal, KTuple,
-    KTuples,
+    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal,
+    GrammarAnalysisError, KTuple, KTuples, LookaheadDFA,
 };
 
 ///
@@ -52,14 +49,15 @@ pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_st
 pub mod generators;
 pub use generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
-    GrammarConfig, LanguageGenerator, ScannerConfig, UserTraitGenerator,
+    GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
+    UserTraitGeneratorBuilder,
 };
 
 ///
 /// Module with parol's parser for input grammars
 ///
 pub mod parser;
-pub use parser::{parse, ParolGrammar};
+pub use parser::{parse, ParolGrammar, ParolParserError};
 
 ///
 /// Module with functionalities for grammar transformation

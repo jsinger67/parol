@@ -1,8 +1,8 @@
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
-use std::result::Result;
 
-use log::trace;
+use anyhow::{anyhow, bail, Result};
+use parol_runtime::log::trace;
 
 use crate::basic_grammar::DefinitionRange;
 
@@ -29,7 +29,7 @@ impl BinaryOperator {
         op: &BinaryOperator,
         rhs: DefinitionRange,
         context: &str,
-    ) -> miette::Result<DefinitionRange> {
+    ) -> Result<DefinitionRange> {
         trace!(
             "apply_binary_operation: {}: {} {} {}",
             context,
@@ -139,7 +139,7 @@ impl Display for BinaryOperator {
 }
 
 impl TryFrom<&str> for BinaryOperator {
-    type Error = miette::Error;
+    type Error = anyhow::Error;
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         let s = s.replace(' ', "");
         match s.as_str() {
@@ -156,7 +156,7 @@ impl TryFrom<&str> for BinaryOperator {
             "AND" => Ok(Self::LogAnd),
             "OR" => Ok(Self::LogOr),
             "NOR" => Ok(Self::LogNor),
-            _ => Err(miette!("Unexpected binary operator {}", s)),
+            _ => Err(anyhow!("Unexpected binary operator {}", s)),
         }
     }
 }
@@ -171,7 +171,7 @@ impl UnaryOperator {
         op: &Self,
         val: DefinitionRange,
         context: &str,
-    ) -> miette::Result<DefinitionRange> {
+    ) -> Result<DefinitionRange> {
         trace!("apply_unary_operation: {}: {} {}", context, op, val);
         let result = match op {
             Self::LogNot => {
@@ -198,12 +198,12 @@ impl Display for UnaryOperator {
 }
 
 impl TryFrom<&str> for UnaryOperator {
-    type Error = miette::Error;
+    type Error = anyhow::Error;
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         let s = s.replace(' ', "");
         match s.as_str() {
             "NOT" => Ok(Self::LogNot),
-            _ => Err(miette!("Unexpected unary operator {}", s)),
+            _ => Err(anyhow!("Unexpected unary operator {}", s)),
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::grammar::SymbolAttribute;
 use crate::utils::str_vec::StrVec;
-use miette::{bail, IntoDiagnostic, Result};
+use anyhow::{bail, Result};
 
 use super::symbol_table::{
     Instance, ScopeId, ScopedNameId, Symbol, SymbolId, SymbolKind, SymbolTable, Type, TypeEntrails,
@@ -248,7 +248,7 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
                 }
             }
             TypeEntrails::Enum => {
-                let mut enum_data = EnumRangeCalcBuilder::default().build().into_diagnostic()?;
+                let mut enum_data = EnumRangeCalcBuilder::default().build().unwrap();
                 enum_data.enum_variants = self
                     .symbol_item
                     .symbol_table

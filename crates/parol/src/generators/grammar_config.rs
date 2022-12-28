@@ -1,8 +1,9 @@
-use once_cell::sync::Lazy;
+use parol_runtime::once_cell::sync::Lazy;
 
 use super::ScannerConfig;
-use crate::parser::{try_to_convert, ParolGrammar};
-use crate::Cfg;
+use crate::parser::try_to_convert;
+use crate::{Cfg, ParolGrammar};
+use anyhow::Result;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -210,8 +211,8 @@ impl Display for GrammarConfig {
 }
 
 impl TryFrom<ParolGrammar<'_>> for GrammarConfig {
-    type Error = miette::Error;
-    fn try_from(grammar: ParolGrammar) -> miette::Result<Self> {
+    type Error = anyhow::Error;
+    fn try_from(grammar: ParolGrammar) -> Result<Self> {
         try_to_convert(grammar)
     }
 }

@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 env_logger = "0.10.0"
-miette = { version = "5.2.0", features = ["fancy"] }
 parol_runtime = { version = "0.11.2", features = ["auto_generation"] }
 thiserror = "1.0"
 

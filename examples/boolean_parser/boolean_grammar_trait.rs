@@ -13,7 +13,7 @@ use parol_runtime::id_tree::Tree;
 
 use crate::boolean_grammar::BooleanGrammar;
 #[allow(unused_imports)]
-use parol_runtime::miette::{miette, Result};
+use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -454,7 +454,7 @@ impl UserActionsTrait<'_> for BooleanGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.expressions(&children[0], &children[1], &children[2], parse_tree),
             1 => self.expressions_list_0(&children[0], &children[1], &children[2], parse_tree),
@@ -492,7 +492,7 @@ impl UserActionsTrait<'_> for BooleanGrammar {
             33 => self.right_parenthesis(&children[0], parse_tree),
             34 => self.factor_0(&children[0], parse_tree),
             35 => self.factor_1(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

@@ -1,4 +1,4 @@
-use miette::{bail, Result};
+use anyhow::{bail, Result};
 use parol::analysis::k_decision::{calculate_k, FirstCache, FollowCache};
 use parol::{obtain_grammar_config, MAX_K};
 use std::path::PathBuf;

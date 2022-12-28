@@ -13,7 +13,7 @@ use parol_runtime::id_tree::Tree;
 
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 #[allow(unused_imports)]
-use parol_runtime::miette::{miette, Result};
+use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -208,7 +208,7 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.start(&children[0], parse_tree),
             1 => self.start_list_0(&children[0], &children[1], parse_tree),
@@ -225,7 +225,7 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
             12 => self.escaped_line_end(&children[0], parse_tree),
             13 => self.none_quote(&children[0], parse_tree),
             14 => self.string_delimiter(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

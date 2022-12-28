@@ -1,9 +1,7 @@
-use crate::errors::LookaheadError;
-use crate::lexer::Token;
-use crate::lexer::{TerminalIndex, TokenIter, Tokenizer, EOI};
 use crate::parser::ScannerIndex;
+use crate::{LexerError, TerminalIndex, Token, TokenIter, Tokenizer};
+use anyhow::{bail, Result};
 use log::trace;
-use miette::{miette, Result};
 use std::borrow::Cow;
 
 use std::path::Path;
@@ -106,12 +104,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>> {
         if n > self.k {
-            Err(miette!("Lookahead exceeds its maximum"))
+            bail!("Lookahead exceeds its maximum");
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err(miette!("Lookahead exceeds token buffer length"))
+                bail!("Lookahead exceeds token buffer length");
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].clone())
@@ -127,12 +125,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex> {
         if n > self.k {
-            Err(miette!("Lookahead exceeds its maximum"))
+            bail!("Lookahead exceeds its maximum");
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                Err(miette!("Lookahead exceeds token buffer length"))
+                bail!("Lookahead exceeds token buffer length");
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -149,18 +147,18 @@ impl<'t> TokenStream<'t> {
     pub fn consume(&mut self) -> Result<()> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
-            Err(miette!("Consume on empty buffer is impossible"))
+            bail!("Consume on empty buffer is impossible");
         } else {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
             let la1 = &self.tokens[0];
             let (new_lines, column) = TokenIter::count_nl(la1.text());
-            self.pos = la1.location.pos;
-            self.line = la1.location.line + new_lines;
+            self.pos = la1.location.offset;
+            self.line = la1.location.start_line + new_lines;
             self.column = if new_lines > 0 {
                 column
             } else {
-                la1.location.column + la1.location.length
+                la1.location.start_column + la1.location.length
             };
             trace!(
                 "Consuming {}, Stream position is {}. Line {}, Column {}",
@@ -179,7 +177,7 @@ impl<'t> TokenStream<'t> {
     /// Test if all input was processed by the parser
     ///
     pub fn all_input_consumed(&self) -> bool {
-        self.tokens.is_empty() || self.tokens[0].token_type == EOI
+        self.tokens.is_empty() || self.tokens[0].token_type == super::EOI
     }
 
     ///
@@ -189,8 +187,8 @@ impl<'t> TokenStream<'t> {
         self.tokens
             .iter()
             .rev()
-            .find(|t| t.token_type != EOI)
-            .ok_or(miette!(LookaheadError::TokenBufferEmptyError))
+            .find(|t| t.token_type != super::EOI)
+            .ok_or_else(|| LexerError::TokenBufferEmptyError.into())
     }
 
     ///
@@ -294,9 +292,7 @@ impl<'t> TokenStream<'t> {
             }
             Ok(())
         } else {
-            Err(miette!(
-                "pop_scanner: Tried to pop from an empty scanner stack!"
-            ))
+            bail!("pop_scanner: Tried to pop from an empty scanner stack!")
         }
     }
 
@@ -314,7 +310,7 @@ impl<'t> TokenStream<'t> {
             if !token.is_skip_token() {
                 tokens_read += 1;
                 trace!("Read {}: {}", self.tokens.len(), token);
-                token.location.start_pos = self.start_pos;
+                token.location.scanner_switch_pos = self.start_pos;
                 self.tokens.push(token);
                 if tokens_read >= n {
                     break;

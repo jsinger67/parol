@@ -1,5 +1,5 @@
 use crate::oberon_0_grammar_trait::Oberon0GrammarTrait;
-use log::trace;
+use parol_runtime::log::trace;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

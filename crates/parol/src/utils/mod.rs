@@ -2,9 +2,9 @@ use crate::grammar::cfg::RX_NUM_SUFFIX;
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
 use crate::GrammarConfig;
+use anyhow::{Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
-use miette::{IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::ParseTreeType;
 use std::collections::HashMap;
 use std::convert::TryFrom;
@@ -133,14 +133,11 @@ where
     T: AsRef<Path> + Debug,
 {
     let input = fs::read_to_string(&file_name)
-        .into_diagnostic()
-        .wrap_err(format!("Can't read file {:?}", file_name))?;
+        .with_context(|| format!("Can't read file {:?}", file_name))?;
 
     let mut parol_grammar = ParolGrammar::new();
-    let _syntax_tree = parse(&input, file_name.as_ref(), &mut parol_grammar).wrap_err(format!(
-        "Failed parsing file {}",
-        file_name.as_ref().display()
-    ))?;
+    let _syntax_tree = parse(&input, file_name.as_ref(), &mut parol_grammar)
+        .with_context(|| format!("Failed parsing file {}", file_name.as_ref().display()))?;
 
     if verbose {
         println!("{}", parol_grammar);
@@ -159,7 +156,7 @@ where
 pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<GrammarConfig> {
     let mut parol_grammar = ParolGrammar::new();
     let _syntax_tree = parse(input, "No file", &mut parol_grammar)
-        .wrap_err(format!("Failed parsing text {}", input.escape_default()))?;
+        .with_context(|| format!("Failed parsing text {}", input.escape_default()))?;
 
     if verbose {
         println!("{}", parol_grammar);
@@ -185,6 +182,5 @@ where
     Layouter::new(syntax_tree)
         .with_file_path(std::path::Path::new(&svg_full_file_name))
         .write()
-        .into_diagnostic()
-        .wrap_err("Failed writing layout")
+        .context("Failed writing layout")
 }

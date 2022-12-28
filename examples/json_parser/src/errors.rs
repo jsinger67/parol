@@ -1,17 +1,14 @@
-use miette::{Diagnostic, NamedSource, SourceSpan};
+use std::num::ParseFloatError;
+
+use parol_runtime::{FileSource, Location};
 use thiserror::Error;
 
-#[derive(Error, Diagnostic, Debug)]
+#[derive(Error, Debug)]
 pub enum JsonError {
     #[error("f64 parse error")]
-    #[diagnostic(
-        help("Error parsing number token as valid f64"),
-        code(json_parser::error::parse_isize)
-    )]
     ParseF64Failed {
-        #[source_code]
-        input: NamedSource,
-        #[label("Wrong f64 value")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
+        source: ParseFloatError,
     },
 }

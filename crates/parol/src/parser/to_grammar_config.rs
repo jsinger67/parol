@@ -1,7 +1,7 @@
 use crate::parser::{Factor, ParolGrammar};
 use crate::transformation::transform_productions;
 use crate::{Cfg, GrammarConfig, ScannerConfig, Symbol, Terminal};
-use miette::{miette, Result};
+use anyhow::{bail, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
@@ -63,6 +63,6 @@ pub(crate) fn try_from_factor(factor: Factor) -> Result<Symbol> {
         Factor::ScannerSwitch(s) => Ok(Symbol::s(s)),
         Factor::ScannerSwitchPush(s) => Ok(Symbol::Push(s)),
         Factor::ScannerSwitchPop => Ok(Symbol::Pop),
-        _ => Err(miette!("Unexpected type of factor: {}", factor)),
+        _ => bail!("Unexpected type of factor: {}", factor),
     }
 }

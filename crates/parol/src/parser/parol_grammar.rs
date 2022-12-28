@@ -2,13 +2,13 @@ use super::parol_grammar_trait::{
     AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog, PrologList,
     PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
-use super::ParolParserError;
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
+use crate::ParolParserError;
 
-use miette::{bail, miette, Result};
-use once_cell::sync::Lazy;
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::errors::FileSource;
 use parol_runtime::lexer::Token;
+use parol_runtime::once_cell::sync::Lazy;
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -807,10 +807,10 @@ impl ParolGrammar<'_> {
         self.scanner_configurations
             .iter()
             .position(|s| s.name == scanner_name.text())
-            .ok_or(miette!(ParolParserError::UnknownScanner {
+            .ok_or(anyhow!(ParolParserError::UnknownScanner {
                 context: context.to_owned(),
                 name: scanner_name.text().to_string(),
-                input: FileSource::try_new(scanner_name.location.file_name.clone())?.into(),
+                input: FileSource::try_new(scanner_name.location.file_name.clone())?,
                 token: scanner_name.into()
             }))
     }
@@ -859,7 +859,7 @@ impl ParolGrammar<'_> {
                 first_alias: conflicting_alias.0.text().to_string(),
                 second_alias: lhs_non_terminal.text().to_string(),
                 expanded,
-                input: FileSource::try_new(lhs_non_terminal.location.file_name.clone())?.into(),
+                input: FileSource::try_new(lhs_non_terminal.location.file_name.clone())?,
                 first: (&conflicting_alias.0).into(),
                 second: (&lhs_non_terminal).into()
             })

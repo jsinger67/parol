@@ -1,4 +1,4 @@
-use miette::{IntoDiagnostic, Result};
+use anyhow::{anyhow, Result};
 use std::path::Path;
 
 use std::process::Command;
@@ -13,5 +13,5 @@ pub fn try_format(path_to_file: &Path) -> Result<()> {
         .args([path_to_file])
         .status()
         .map(|_| ())
-        .into_diagnostic()
+        .map_err(|e| anyhow!("Error during source formatting!: {}", e))
 }

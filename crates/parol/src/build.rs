@@ -124,16 +124,14 @@ use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use crate::parser::parol_grammar::Production;
+use crate::{
+    GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,
+};
+use anyhow::{anyhow, Result};
 use clap::{Parser, ValueEnum};
 use id_tree::Tree;
-use miette::{Context, IntoDiagnostic};
-use parol_runtime::parser::ParseTreeType;
-
-use crate::analysis::LookaheadDFA;
-use crate::generators::grammar_type_generator::GrammarTypeInfo;
-use crate::generators::user_trait_generator::UserTraitGeneratorBuilder;
-use crate::parser::parol_grammar::Production;
-use crate::{GrammarConfig, ParolGrammar, MAX_K};
+use parol_runtime::ParseTreeType;
 
 /// Contains all attributes that should be inserted optionally on top of the generated trait source.
 /// * Used in the Builder API. Therefore it mus be public
@@ -354,7 +352,7 @@ impl Builder {
     /// If nothing is specified, the default lookahead is [DEFAULT_MAX_LOOKAHEAD].
     ///
     /// Returns a [BuilderError] if the lookahead is greater than [crate::MAX_K].
-    pub fn max_lookahead(&mut self, k: usize) -> Result<&mut Self, BuilderError> {
+    pub fn max_lookahead(&mut self, k: usize) -> std::result::Result<&mut Self, BuilderError> {
         if k > MAX_K {
             return Err(BuilderError::LookaheadTooLarge);
         }
@@ -394,7 +392,7 @@ impl Builder {
     pub fn begin_generation_with<'l>(
         &mut self,
         listener: Option<&'l mut dyn BuildListener>,
-    ) -> Result<GrammarGenerator<'l>, BuilderError> {
+    ) -> std::result::Result<GrammarGenerator<'l>, BuilderError> {
         /*
          * For those concerned about performance:
          *
@@ -425,9 +423,9 @@ impl Builder {
         })
     }
     /// Generate the parser, writing it to the pre-configured output files.
-    pub fn generate_parser(&mut self) -> miette::Result<()> {
+    pub fn generate_parser(&mut self) -> Result<()> {
         self.begin_generation_with(None)
-            .wrap_err("Misconfigured parol generation")?
+            .map_err(|e| anyhow!("Misconfigured parol generation: {}", e))?
             .generate_parser()
     }
 }
@@ -452,7 +450,7 @@ pub struct GrammarGenerator<'l> {
 }
 impl GrammarGenerator<'_> {
     /// Generate the parser, writing it to the pre-configured output files.
-    pub fn generate_parser(&mut self) -> miette::Result<()> {
+    pub fn generate_parser(&mut self) -> Result<()> {
         self.parse()?;
         self.expand()?;
         self.post_process()?;
@@ -465,23 +463,20 @@ impl GrammarGenerator<'_> {
     //
 
     #[doc(hidden)]
-    pub fn parse(&mut self) -> miette::Result<()> {
+    pub fn parse(&mut self) -> Result<()> {
         assert_eq!(self.state, None);
-        let input = fs::read_to_string(&self.grammar_file)
-            .into_diagnostic()
-            .wrap_err(format!(
-                "Can't read grammar file {}",
-                self.grammar_file.display()
-            ))?;
+        let input = fs::read_to_string(&self.grammar_file).map_err(|e| {
+            anyhow!(
+                "Can't read grammar file {}: {}",
+                self.grammar_file.display(),
+                e
+            )
+        })?;
         if self.builder.cargo_integration {
             println!("cargo:rerun-if-changed={}", self.grammar_file.display());
         }
         let mut parol_grammar = ParolGrammar::new();
-        let syntax_tree = crate::parser::parse(&input, &self.grammar_file, &mut parol_grammar)
-            .wrap_err(format!(
-                "Failed parsing grammar file {}",
-                self.grammar_file.display()
-            ))?;
+        let syntax_tree = crate::parser::parse(&input, &self.grammar_file, &mut parol_grammar)?;
         self.builder.productions = parol_grammar.productions.clone();
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
@@ -490,14 +485,13 @@ impl GrammarGenerator<'_> {
         Ok(())
     }
     #[doc(hidden)]
-    pub fn expand(&mut self) -> miette::Result<()> {
+    pub fn expand(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::Parsed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
         // NOTE: it's up to the listener to add appropriate error context
         self.listener
             .on_intermediate_grammar(IntermediateGrammar::Untransformed, &*grammar_config)?;
-        let cfg = crate::check_and_transform_grammar(&grammar_config.cfg)
-            .wrap_err("Basic grammar checks and transformations failed!")?;
+        let cfg = crate::check_and_transform_grammar(&grammar_config.cfg)?;
 
         // To have at least a preliminary version of the expanded grammar,
         // even when the next checks fail, we write out the expanded grammar here.
@@ -507,8 +501,7 @@ impl GrammarGenerator<'_> {
                 expanded_file,
                 crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
-            .into_diagnostic()
-            .wrap_err("Error writing left-factored grammar!")?;
+            .map_err(|e| anyhow!("Error writing left-factored grammar! {}", e))?;
         }
 
         // Exchange original grammar with transformed one
@@ -521,19 +514,19 @@ impl GrammarGenerator<'_> {
                 expanded_file,
                 crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
-            .into_diagnostic()
-            .wrap_err("Error writing left-factored grammar!")?;
+            .map_err(|e| anyhow!("Error writing left-factored grammar!: {}", e))?;
         }
         self.state = Some(State::Expanded);
         Ok(())
     }
     #[doc(hidden)]
-    pub fn post_process(&mut self) -> miette::Result<()> {
+    pub fn post_process(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::Expanded));
         let grammar_config = self.grammar_config.as_mut().unwrap();
         self.lookahead_dfa_s = Some(
-            crate::calculate_lookahead_dfas(grammar_config, self.builder.max_lookahead)
-                .wrap_err("Lookahead calculation for the given grammar failed!")?,
+            crate::calculate_lookahead_dfas(grammar_config, self.builder.max_lookahead).map_err(
+                |e| anyhow!("Lookahead calculation for the given grammar failed!: {}", e),
+            )?,
         );
 
         if self.builder.debug_verbose {
@@ -562,11 +555,11 @@ impl GrammarGenerator<'_> {
         Ok(())
     }
     #[doc(hidden)]
-    pub fn write_output(&mut self) -> miette::Result<()> {
+    pub fn write_output(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::PostProcessed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
         let lexer_source = crate::generate_lexer_source(grammar_config)
-            .wrap_err("Failed to generate lexer source!")?;
+            .map_err(|e| anyhow!("Failed to generate lexer source!: {}", e))?;
 
         let user_trait_generator = UserTraitGeneratorBuilder::default()
             .user_type_name(self.builder.user_type_name.clone())
@@ -577,16 +570,13 @@ impl GrammarGenerator<'_> {
             .productions(self.builder.productions.clone())
             .grammar_config(grammar_config)
             .build()
-            .into_diagnostic()?;
+            .unwrap();
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
-        let user_trait_source = user_trait_generator
-            .generate_user_trait_source(&mut type_info)
-            .wrap_err("Failed to generate user trait source!")?;
+        let user_trait_source = user_trait_generator.generate_user_trait_source(&mut type_info)?;
         if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
             fs::write(user_trait_file_out, user_trait_source)
-                .into_diagnostic()
-                .wrap_err("Error writing generated user trait source!")?;
+                .map_err(|e| anyhow!("Error writing generated user trait source!: {}", e))?;
             crate::try_format(user_trait_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nSource for semantic actions:\n{}", user_trait_source);
@@ -602,13 +592,11 @@ impl GrammarGenerator<'_> {
             &self.builder.module_name,
             self.lookahead_dfa_s.as_ref().unwrap(),
             ast_type_has_lifetime,
-        )
-        .wrap_err("Failed to generate parser source!")?;
+        )?;
 
         if let Some(ref parser_file_out) = self.builder.parser_output_file {
             fs::write(parser_file_out, parser_source)
-                .into_diagnostic()
-                .wrap_err("Error writing generated lexer source!")?;
+                .map_err(|e| anyhow!("Error writing generated lexer source!: {}", e))?;
             crate::try_format(parser_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nParser source:\n{}", parser_source);
@@ -641,14 +629,14 @@ pub trait BuildListener {
         &mut self,
         syntax_tree: &Tree<ParseTreeType>,
         grammar: &ParolGrammar,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         Ok(())
     }
     fn on_intermediate_grammar(
         &mut self,
         stage: IntermediateGrammar,
         config: &GrammarConfig,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         Ok(())
     }
 }
@@ -659,7 +647,7 @@ impl<'l> BuildListener for MaybeBuildListener<'l> {
         &mut self,
         syntax_tree: &Tree<ParseTreeType>,
         grammar: &ParolGrammar,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         if let Some(ref mut inner) = self.0 {
             inner.on_initial_grammar_parse(syntax_tree, grammar)
         } else {
@@ -671,7 +659,7 @@ impl<'l> BuildListener for MaybeBuildListener<'l> {
         &mut self,
         stage: IntermediateGrammar,
         config: &GrammarConfig,
-    ) -> miette::Result<()> {
+    ) -> Result<()> {
         if let Some(ref mut inner) = self.0 {
             inner.on_intermediate_grammar(stage, config)
         } else {
@@ -702,7 +690,7 @@ impl IntermediateGrammar {
 }
 
 /// An error that occurs configuring the [struct@Builder].
-#[derive(Debug, thiserror::Error, miette::Diagnostic)]
+#[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum BuilderError {
     /// Indicates that the operation needs a grammar file as input,

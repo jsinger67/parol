@@ -1,20 +1,16 @@
 use crate::{Cfg, Pr, Symbol, Terminal};
-use log::trace;
-use miette::IntoDiagnostic;
-use miette::{miette, Diagnostic, Result};
+use anyhow::{anyhow, Result};
+use parol_runtime::log::trace;
 use rand::Rng;
 use std::collections::HashMap;
+use thiserror::Error;
 
 const MAX_RESULT_SIZE: usize = 100000;
 const MAX_REPEAT: u32 = 8;
 
 /// Error "Generation does not terminate in good time"
-#[derive(Error, Diagnostic, Debug)]
+#[derive(Error, Debug)]
 #[error("Stopping generation to prevent endless recursion at size {len}")]
-#[diagnostic(
-    help("Generation does not terminate in good time"),
-    code("parol::generators::language_generator::source_size_exceeded")
-)]
 pub struct SourceSizeExceeded {
     len: usize,
 }
@@ -104,7 +100,7 @@ impl<'a> LanguageGenerator<'a> {
         result.push(' ');
         let len = result.len();
         if len > max_result_length.unwrap_or(MAX_RESULT_SIZE) {
-            Err(miette!(SourceSizeExceeded { len }))
+            Err(anyhow!(SourceSizeExceeded { len }))
         } else {
             Ok(())
         }
@@ -124,13 +120,12 @@ impl<'a> LanguageGenerator<'a> {
 
         match regex_syntax::ParserBuilder::new().build().parse(&terminal) {
             Ok(utf8_hir) => {
-                let utf8_gen =
-                    rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT).into_diagnostic()?;
+                let utf8_gen = rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT)?;
                 trace!("Caching regex for: {}", terminal);
                 self.cache.insert(terminal.clone(), utf8_gen);
                 self.get_regex(terminal)
             }
-            Err(err) => Err(miette!(err)),
+            Err(err) => Err(anyhow!(err)),
         }
     }
 

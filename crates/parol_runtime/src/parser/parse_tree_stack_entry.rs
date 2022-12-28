@@ -1,7 +1,6 @@
-use crate::lexer::Token;
-use crate::parser::ParseTreeType;
+use crate::{ParseTreeType, ParserError, Token};
+use anyhow::{anyhow, Result};
 use id_tree::{Node, NodeId, Tree};
-use miette::{IntoDiagnostic, Result};
 
 ///
 /// The type of elements in the parser's parse tree stack.
@@ -76,7 +75,9 @@ impl<'t> ParseTreeStackEntry<'t> {
                 Ok(&token.text)
             }
             Self::Id(i) => {
-                let node = parse_tree.get(i).into_diagnostic()?;
+                let node = parse_tree
+                    .get(i)
+                    .map_err(|e| anyhow!(ParserError::IdTreeError { source: e }))?;
                 let token = node.data().token()?;
                 Ok(&token.text)
             }

@@ -2,13 +2,11 @@
 //! Scanner switching is tested and consistence of [miette::NamedSource] which is produced from
 //! token stream and token spans is checked.
 
-use miette::{NamedSource, SourceCode, SourceSpan};
-use once_cell::sync::Lazy;
-use parol_runtime::errors::FileSource;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
-use parol_runtime::lexer::{Token, TokenStream, Tokenizer};
+use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::{FileSource, Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
@@ -91,11 +89,12 @@ fn scanner_switch_and_named_source() {
         let tok = stream.borrow_mut().lookahead(0).unwrap();
         println!("{:?}", tok);
 
-        // Check contents of named source
-        let file_source: NamedSource = FileSource::from_stream(&stream.borrow()).into();
-        let source_span: SourceSpan = (&tok).into();
-        let span_contents = file_source.read_span(&source_span, 0, 0).unwrap();
-        assert_eq!(span_contents.data(), tok.text().as_bytes());
+        // Check contents of file source
+        let file_source = FileSource::from_stream(&stream.borrow());
+        let source_span: std::ops::Range<usize> = (&tok).into();
+        let span_contents: &str = &file_source.input.as_str()[source_span.clone()];
+        assert_eq!(span_contents, tok.text());
+        assert_eq!(span_contents, &INPUT[source_span]);
 
         if tok.token_type == 9
         /* StringDelimiter */
@@ -115,6 +114,6 @@ fn scanner_switch_and_named_source() {
     assert_eq!(stream.borrow().current_scanner_index, 1);
 
     assert_eq!(prev_tok.text(), "\"");
-    assert_eq!(prev_tok.location.line, 7);
-    assert_eq!(prev_tok.location.column, 26);
+    assert_eq!(prev_tok.location.start_line, 7);
+    assert_eq!(prev_tok.location.start_column, 26);
 }

@@ -1,6 +1,6 @@
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute};
 use crate::{Symbol, Terminal};
-use miette::{IntoDiagnostic, Result};
+use anyhow::{anyhow, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::Hash;
 
@@ -50,7 +50,7 @@ impl Display for Pr {
     /// assert_eq!(r#"S: "[0-9]" "e";"#, format!("{}", pr));
     /// ```
     ///
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(
             f,
             "{}: {};",
@@ -147,7 +147,9 @@ impl Pr {
         S: Fn(&str) -> Option<String>,
     {
         let mut s = String::new();
-        self.2.decorate(&mut s, &self.0).into_diagnostic()?;
+        self.2
+            .decorate(&mut s, &self.0)
+            .map_err(|e| anyhow!("Decorate error!: {}", e))?;
         Ok(format!(
             "{}: {};",
             s,

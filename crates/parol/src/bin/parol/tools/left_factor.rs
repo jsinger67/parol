@@ -1,4 +1,4 @@
-use miette::Result;
+use anyhow::Result;
 use std::path::PathBuf;
 
 use parol::{conversions::par::grammar_to_par, left_factor, obtain_grammar_config};

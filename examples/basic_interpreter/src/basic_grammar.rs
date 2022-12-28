@@ -3,9 +3,9 @@ use crate::{
     errors::BasicError,
     operators::{BinaryOperator, UnaryOperator},
 };
-use log::trace;
 #[allow(unused_imports)]
-use miette::{miette, Result, WrapErr};
+use anyhow::{anyhow, bail, Context, Result};
+use parol_runtime::log::trace;
 use parol_runtime::{
     errors::FileSource,
     lexer::{Location, Token},
@@ -103,19 +103,6 @@ impl<'t> BasicGrammar<'t> {
         self.env.insert(name.to_owned(), value);
     }
 
-    // fn parse_line_number(&self, context: &str, basic_line_number: &Token<'t>) -> Result<LineNumberRange> {
-    //     let symbol = basic_line_number.symbol.replace(' ', "");
-    //     match symbol.parse::<LineNumberRange>() {
-    //         Ok(number) => Ok(number),
-    //         Err(error) => Err(miette!(BasicError::ParseLineNumber {
-    //             context: context.to_owned(),
-    //             input: FileSource::try_new(basic_line_number.location.file_name.clone())?.into(),
-    //             basic_line_number: basic_line_number.into()
-    //         }))
-    //         .wrap_err(miette!(error)),
-    //     }
-    // }
-
     fn process_basic(&mut self, basic: &Basic<'t>) -> Result<()> {
         self.process_lines(&basic.line, &basic.basic_list)
     }
@@ -143,11 +130,11 @@ impl<'t> BasicGrammar<'t> {
         for line in other_lines {
             let (k, v) = self.pre_process_line(&line.line)?;
             if lines.lines.insert(k.0, (k.1.clone(), v)).is_some() {
-                return Err(miette!(BasicError::LineNumberDefinedTwice {
+                bail!(BasicError::LineNumberDefinedTwice {
                     context: context.to_owned(),
-                    input: FileSource::try_new(k.1.file_name.clone())?.into(),
-                    token: (&k.1).into()
-                }));
+                    input: FileSource::try_new(k.1.file_name.clone())?,
+                    token: k.1
+                });
             }
         }
 
@@ -171,10 +158,10 @@ impl<'t> BasicGrammar<'t> {
         let context = "pre_process_line";
         let basic_line_number = &line.line_number.line_number;
         if basic_line_number.0 > MAX_LINE_NUMBER {
-            return Err(miette!(BasicError::LineNumberTooLarge {
+            return Err(anyhow!(BasicError::LineNumberTooLarge {
                 context: context.to_owned(),
-                input: FileSource::try_new(basic_line_number.1.file_name.clone())?.into(),
-                token: (&basic_line_number.1).into()
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())?,
+                token: basic_line_number.1.clone()
             }));
         }
 
@@ -264,10 +251,10 @@ impl<'t> BasicGrammar<'t> {
         }
 
         if !lines.lines.contains_key(&line_number) {
-            return Err(miette!(BasicError::LineNumberBeyondLastLine {
+            return Err(anyhow!(BasicError::LineNumberBeyondLastLine {
                 context: context.to_owned(),
-                input: FileSource::try_new(basic_line_number.1.file_name.clone())?.into(),
-                token: (&basic_line_number.1).into()
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())?,
+                token: basic_line_number.1.clone()
             }));
         }
 

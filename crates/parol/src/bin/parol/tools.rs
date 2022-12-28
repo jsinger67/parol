@@ -19,7 +19,7 @@ macro_rules! declare_tools {
         }
 
         impl ToolsSubcommands {
-            pub fn invoke_main(&self) -> miette::Result<()> {
+            pub fn invoke_main(&self) -> anyhow::Result<()> {
                 match self {
                     $(
                         ToolsSubcommands::$tool(args) => {

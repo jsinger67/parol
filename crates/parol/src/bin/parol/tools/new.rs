@@ -8,9 +8,9 @@ use grammar_rs::GrammarRsDataBuilder;
 use lib_rs::LibRsDataBuilder;
 use main_rs::MainRsDataBuilder;
 
+use anyhow::{anyhow, Context, Result};
 use clap::ArgGroup;
 use derive_builder::Builder;
-use miette::{miette, Context, IntoDiagnostic, Result};
 use owo_colors::OwoColorize;
 use parol::generators::NamingHelper as NmHlp;
 use std::fs;
@@ -66,9 +66,9 @@ pub fn main(args: &Args) -> Result<()> {
             args.path
                 .as_path()
                 .file_name()
-                .ok_or_else(|| miette!("Trouble to handle path"))?
+                .ok_or_else(|| anyhow!("Trouble to handle path"))?
                 .to_str()
-                .ok_or_else(|| miette!("Trouble to handle path"))?
+                .ok_or_else(|| anyhow!("Trouble to handle path"))?
         }));
 
     let creation_data = CreationDataBuilder::default()
@@ -78,8 +78,7 @@ pub fn main(args: &Args) -> Result<()> {
         .is_bin(args.bin)
         .tree_gen(args.tree)
         .track_generated_files(args.track_generated_files)
-        .build()
-        .into_diagnostic()?;
+        .build()?;
 
     apply_cargo(&creation_data)?;
 
@@ -126,15 +125,14 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
         creation_data
             .path
             .to_str()
-            .ok_or_else(|| miette!("Please provide a path"))?,
+            .ok_or_else(|| anyhow!("Please provide a path"))?,
     );
 
     // Call the `cargo new` command
     Command::new("cargo")
         .args(&cargo_args)
         .status()
-        .map(|_| ())
-        .into_diagnostic()?;
+        .map(|_| ())?;
 
     // Add dependencies
     DEPENDENCIES
@@ -147,8 +145,7 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
                     .args(*cargo_args)
                     .status()
                     .map(|_| ())
-                    .into_diagnostic()
-                    .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
+                    .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
             } else {
                 let cargo_args = "add parol --build --git https://github.com/jsinger67/parol.git";
                 Command::new("cargo")
@@ -156,21 +153,9 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
                     .args(cargo_args.split(' '))
                     .status()
                     .map(|_| ())
-                    .into_diagnostic()
+                    .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
             }
         })?;
-
-    if creation_data.is_bin {
-        // Workaround until https://github.com/jsinger67/parol/pull/23#issuecomment-1330908591 is clear
-        let cargo_args = &["add", "miette@5.2.0", "--features", "fancy"];
-        Command::new("cargo")
-            .current_dir(&creation_data.path)
-            .args(*cargo_args)
-            .status()
-            .map(|_| ())
-            .into_diagnostic()
-            .wrap_err("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")?
-    }
 
     // Add dependency to id_tree_layout
     if creation_data.tree_gen {
@@ -178,16 +163,14 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
             .current_dir(&creation_data.path)
             .args(TREE_GEN_DEPENDENCY.split(' '))
             .status()
-            .map(|_| ())
-            .into_diagnostic()?
+            .map(|_| ())?
     }
 
     let mut cargo_toml = fs::OpenOptions::new()
         .append(true)
         .write(true)
         .open(creation_data.path.join("Cargo.toml"))
-        .into_diagnostic()
-        .wrap_err("Error opening Cargo.toml file")?;
+        .context("Error opening Cargo.toml file")?;
     write!(
         cargo_toml,
         "
@@ -198,26 +181,25 @@ opt-level = 3
 opt-level = 3
 "
     )
-    .into_diagnostic()
-    .wrap_err("Error writing to Cargo.toml file")?;
+    .context("Error writing to Cargo.toml file")?;
 
     Ok(())
 }
 
 fn generate_crate(creation_data: &CreationData) -> Result<()> {
-    generate_build_rs(&creation_data)?;
-    generate_grammar_par(&creation_data)?;
-    touch_modules(&creation_data)?;
-    generate_grammar_rs(&creation_data)?;
+    generate_build_rs(creation_data)?;
+    generate_grammar_par(creation_data)?;
+    touch_modules(creation_data)?;
+    generate_grammar_rs(creation_data)?;
     if creation_data.is_bin {
-        generate_main_rs(&creation_data)?;
+        generate_main_rs(creation_data)?;
     } else {
-        generate_lib_rs(&creation_data)?;
+        generate_lib_rs(creation_data)?;
     }
-    generate_test_txt(&creation_data)?;
+    generate_test_txt(creation_data)?;
     // Generate the .gitignore file
     if !creation_data.track_generated_files {
-        generate_gitignore(&creation_data)?;
+        generate_gitignore(creation_data)?;
     }
 
     Ok(())
@@ -229,12 +211,10 @@ fn generate_build_rs(creation_data: &CreationData) -> Result<()> {
     let build_data = BuildRsDataBuilder::default()
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
-        .build()
-        .into_diagnostic()?;
+        .build()?;
     let build_source = format!("{}", build_data);
     fs::write(build_file_out, build_source)
-        .into_diagnostic()
-        .wrap_err("Error writing generated user trait source!")?;
+        .context("Error writing generated user trait source!")?;
 
     Ok(())
 }
@@ -256,8 +236,7 @@ fn generate_grammar_par(creation_data: &CreationData) -> Result<()> {
 "#
     );
     fs::write(grammar_file_out, grammar_source)
-        .into_diagnostic()
-        .wrap_err("Error writing generated user trait source!")?;
+        .context("Error writing generated user trait source!")?;
 
     Ok(())
 }
@@ -275,14 +254,12 @@ fn touch_modules(creation_data: &CreationData) -> Result<()> {
         parser_file_out,
         "// This file will be generated on the first build",
     )
-    .into_diagnostic()
-    .wrap_err("Error writing generated user trait source!")?;
+    .context("Error writing generated user trait source!")?;
     fs::write(
         grammar_trait_file_out,
         "// This file will be generated on the first build",
     )
-    .into_diagnostic()
-    .wrap_err("Error writing generated user trait source!")?;
+    .context("Error writing generated user trait source!")?;
 
     Ok(())
 }
@@ -295,12 +272,9 @@ fn generate_main_rs(creation_data: &CreationData) -> Result<()> {
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .tree_gen(creation_data.tree_gen)
-        .build()
-        .into_diagnostic()?;
+        .build()?;
     let main_source = format!("{}", main_data);
-    fs::write(&main_file_out, main_source)
-        .into_diagnostic()
-        .wrap_err("Error writing generated user trait source!")?;
+    fs::write(&main_file_out, main_source).context("Error writing generated user trait source!")?;
     fmt(&main_file_out)?;
 
     Ok(())
@@ -314,12 +288,9 @@ fn generate_lib_rs(creation_data: &CreationData) -> Result<()> {
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
         .tree_gen(creation_data.tree_gen)
-        .build()
-        .into_diagnostic()?;
+        .build()?;
     let lib_source = format!("{}", lib_data);
-    fs::write(&lib_file_out, lib_source)
-        .into_diagnostic()
-        .wrap_err("Error writing generated user trait source!")?;
+    fs::write(&lib_file_out, lib_source).context("Error writing generated user trait source!")?;
     fmt(&lib_file_out)?;
 
     Ok(())
@@ -332,12 +303,10 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
     let grammar_data = GrammarRsDataBuilder::default()
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
-        .build()
-        .into_diagnostic()?;
+        .build()?;
     let grammar_source = format!("{}", grammar_data);
     fs::write(&grammar_file_out, grammar_source)
-        .into_diagnostic()
-        .wrap_err("Error writing generated user trait source!")?;
+        .context("Error writing generated user trait source!")?;
     fmt(&grammar_file_out)?;
 
     Ok(())
@@ -357,9 +326,7 @@ fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
 // End
 "
     );
-    fs::write(test_file, test_content)
-        .into_diagnostic()
-        .wrap_err("Error writing test file!")?;
+    fs::write(test_file, test_content).context("Error writing test file!")?;
 
     Ok(())
 }
@@ -373,8 +340,7 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
         .write(true)
         .append(true)
         .open(path)
-        .into_diagnostic()
-        .wrap_err("Error opening .gitignore file!")?;
+        .context("Error opening .gitignore file!")?;
 
     write!(
         file,
@@ -384,8 +350,7 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
         src/{crate_name}_parser.rs\n\
         src/{crate_name}_grammar_trait.rs\n"
     )
-    .into_diagnostic()
-    .wrap_err("Error writing to .gitignore file!")?;
+    .context("Error writing to .gitignore file!")?;
 
     Ok(())
 }
@@ -395,6 +360,5 @@ fn fmt<T: AsRef<std::path::Path>>(path: T) -> Result<()> {
         .arg(path.as_ref().to_str().unwrap())
         .status()
         .map(|_| ())
-        .into_diagnostic()
-        .wrap_err("Error running rustfmt")
+        .context("Error running rustfmt")
 }

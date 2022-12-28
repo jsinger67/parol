@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -1225,7 +1225,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .basic_list(basic_list)
             .basic_opt0(basic_opt0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.basic(&basic_built)?;
         self.push(ASTType::Basic(basic_built), context);
@@ -1253,7 +1253,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .line(Box::new(line))
             .end_of_line(Box::new(end_of_line))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         basic_list.push(basic_list_0_built);
         self.push(ASTType::BasicList(basic_list), context);
@@ -1289,7 +1289,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let basic_opt0_0_built = BasicOpt0Builder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::BasicOpt0(Some(Box::new(basic_opt0_0_built))),
             context,
@@ -1325,7 +1325,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let basic_opt_0_built = BasicOptBuilder::default()
             .end_of_line(Box::new(end_of_line))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::BasicOpt(Some(Box::new(basic_opt_0_built))),
             context,
@@ -1367,7 +1367,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .statement(Box::new(statement))
             .line_list(line_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.line(&line_built)?;
         self.push(ASTType::Line(line_built), context);
@@ -1394,7 +1394,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .statement(Box::new(statement))
             // Ignore clipped member 'colon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         line_list.push(line_list_0_built);
         self.push(ASTType::LineList(line_list), context);
@@ -1426,14 +1426,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_number = line_number
-            .token(parse_tree)?
-            .try_into()
-            .into_diagnostic()?;
+        let line_number = line_number.token(parse_tree)?.try_into()?;
         let line_number_built = LineNumberBuilder::default()
             .line_number(line_number)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.line_number(&line_number_built)?;
         self.push(ASTType::LineNumber(line_number_built), context);
@@ -1456,7 +1453,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_0_built = StatementRemarkBuilder::default()
             .remark(Box::new(remark))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_0_built = Statement::Remark(statement_0_built);
         // Calling user action here
         self.user_grammar.statement(&statement_0_built)?;
@@ -1480,7 +1477,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_1_built = StatementGotoStatementBuilder::default()
             .goto_statement(Box::new(goto_statement))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_1_built = Statement::GotoStatement(statement_1_built);
         // Calling user action here
         self.user_grammar.statement(&statement_1_built)?;
@@ -1504,7 +1501,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_2_built = StatementIfStatementBuilder::default()
             .if_statement(Box::new(if_statement))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_2_built = Statement::IfStatement(statement_2_built);
         // Calling user action here
         self.user_grammar.statement(&statement_2_built)?;
@@ -1528,7 +1525,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_3_built = StatementAssignmentBuilder::default()
             .assignment(Box::new(assignment))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_3_built = Statement::Assignment(statement_3_built);
         // Calling user action here
         self.user_grammar.statement(&statement_3_built)?;
@@ -1552,7 +1549,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_4_built = StatementPrintStatementBuilder::default()
             .print_statement(Box::new(print_statement))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_4_built = Statement::PrintStatement(statement_4_built);
         // Calling user action here
         self.user_grammar.statement(&statement_4_built)?;
@@ -1576,7 +1573,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let statement_5_built = StatementEndStatementBuilder::default()
             .end_statement(Box::new(end_statement))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let statement_5_built = Statement::EndStatement(statement_5_built);
         // Calling user action here
         self.user_grammar.statement(&statement_5_built)?;
@@ -1602,7 +1599,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             // Ignore clipped member 'r_e_m'
             .remark_opt(remark_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.remark(&remark_built)?;
         self.push(ASTType::Remark(remark_built), context);
@@ -1625,7 +1622,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let remark_opt_0_built = RemarkOptBuilder::default()
             .comment(Box::new(comment))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::RemarkOpt(Some(Box::new(remark_opt_0_built))),
             context,
@@ -1664,7 +1661,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .goto(Box::new(goto))
             .line_number(Box::new(line_number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.goto_statement(&goto_statement_built)?;
         self.push(ASTType::GotoStatement(goto_statement_built), context);
@@ -1693,7 +1690,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .expression(Box::new(expression))
             .if_body(Box::new(if_body))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.if_statement(&if_statement_built)?;
         self.push(ASTType::IfStatement(if_statement_built), context);
@@ -1725,7 +1722,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .assign_op(Box::new(assign_op))
             .expression(Box::new(expression))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.assignment(&assignment_built)?;
         self.push(ASTType::Assignment(assignment_built), context);
@@ -1748,7 +1745,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let assignment_opt_0_built = AssignmentOptBuilder::default()
             .r#let(Box::new(r#let))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::AssignmentOpt(Some(Box::new(assignment_opt_0_built))),
             context,
@@ -1787,7 +1784,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .then(Box::new(then))
             .statement(Box::new(statement))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let if_body_0_built = IfBody::ThenStatement(if_body_0_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_0_built)?;
@@ -1814,7 +1811,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .goto(Box::new(goto))
             .line_number(Box::new(line_number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let if_body_1_built = IfBody::GotoLineNumber(if_body_1_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_1_built)?;
@@ -1845,7 +1842,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .expression(Box::new(expression))
             .print_statement_list(print_statement_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.print_statement(&print_statement_built)?;
         self.push(ASTType::PrintStatement(print_statement_built), context);
@@ -1873,7 +1870,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .expression(Box::new(expression))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         print_statement_list.push(print_statement_list_0_built);
         self.push(ASTType::PrintStatementList(print_statement_list), context);
@@ -1912,7 +1909,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end_statement_built = EndStatementBuilder::default()
             .end(Box::new(end))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.end_statement(&end_statement_built)?;
         self.push(ASTType::EndStatement(end_statement_built), context);
@@ -1934,7 +1931,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end_of_line_built = EndOfLineBuilder::default()
             // Ignore clipped member 'end_of_line'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.end_of_line(&end_of_line_built)?;
         self.push(ASTType::EndOfLine(end_of_line_built), context);
@@ -1957,7 +1954,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let literal_built = LiteralBuilder::default()
             .number(Box::new(number))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.literal(&literal_built)?;
         self.push(ASTType::Literal(literal_built), context);
@@ -1980,7 +1977,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let number_0_built = NumberFloatBuilder::default()
             .float(Box::new(float))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let number_0_built = Number::Float(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
@@ -2004,7 +2001,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let number_1_built = NumberIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let number_1_built = Number::Integer(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
@@ -2028,7 +2025,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let float_0_built = FloatFloat1Builder::default()
             .float1(Box::new(float1))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let float_0_built = Float::Float1(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
@@ -2052,7 +2049,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let float_1_built = FloatFloat2Builder::default()
             .float2(Box::new(float2))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let float_1_built = Float::Float2(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
@@ -2072,11 +2069,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float1 = float1.token(parse_tree)?.try_into().into_diagnostic()?;
+        let float1 = float1.token(parse_tree)?.try_into()?;
         let float1_built = Float1Builder::default()
             .float1(float1)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.float1(&float1_built)?;
         self.push(ASTType::Float1(float1_built), context);
@@ -2095,11 +2092,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float2 = float2.token(parse_tree)?.try_into().into_diagnostic()?;
+        let float2 = float2.token(parse_tree)?.try_into()?;
         let float2_built = Float2Builder::default()
             .float2(float2)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.float2(&float2_built)?;
         self.push(ASTType::Float2(float2_built), context);
@@ -2118,11 +2115,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = integer.token(parse_tree)?.try_into().into_diagnostic()?;
+        let integer = integer.token(parse_tree)?.try_into()?;
         let integer_built = IntegerBuilder::default()
             .integer(integer)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
         self.push(ASTType::Integer(integer_built), context);
@@ -2144,7 +2141,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r#if_built = IfBuilder::default()
             // Ignore clipped member 'r#if'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.r#if(&r#if_built)?;
         self.push(ASTType::If(r#if_built), context);
@@ -2166,7 +2163,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let then_built = ThenBuilder::default()
             // Ignore clipped member 'then'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.then(&then_built)?;
         self.push(ASTType::Then(then_built), context);
@@ -2188,7 +2185,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let goto_built = GotoBuilder::default()
             // Ignore clipped member 'goto'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.goto(&goto_built)?;
         self.push(ASTType::Goto(goto_built), context);
@@ -2210,7 +2207,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r#let_built = LetBuilder::default()
             // Ignore clipped member 'r#let'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.r#let(&r#let_built)?;
         self.push(ASTType::Let(r#let_built), context);
@@ -2232,7 +2229,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let print_built = PrintBuilder::default()
             // Ignore clipped member 'print'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.print(&print_built)?;
         self.push(ASTType::Print(print_built), context);
@@ -2254,7 +2251,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let end_built = EndBuilder::default()
             // Ignore clipped member 'end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.end(&end_built)?;
         self.push(ASTType::End(end_built), context);
@@ -2276,7 +2273,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let assign_op_built = AssignOpBuilder::default()
             // Ignore clipped member 'assign_op'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
@@ -2299,7 +2296,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_or_op_built = LogicalOrOpBuilder::default()
             .logical_or_op(logical_or_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_built), context);
@@ -2322,7 +2319,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_and_op_built = LogicalAndOpBuilder::default()
             .logical_and_op(logical_and_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_built), context);
@@ -2345,7 +2342,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_not_op_built = LogicalNotOpBuilder::default()
             .logical_not_op(logical_not_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_not_op(&logical_not_op_built)?;
         self.push(ASTType::LogicalNotOp(logical_not_op_built), context);
@@ -2368,7 +2365,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let relational_op_built = RelationalOpBuilder::default()
             .relational_op(relational_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
         self.push(ASTType::RelationalOp(relational_op_built), context);
@@ -2391,7 +2388,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let plus_built = PlusBuilder::default()
             .plus(plus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -2414,7 +2411,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let minus_built = MinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -2437,7 +2434,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mul_op_built = MulOpBuilder::default()
             .mul_op(mul_op)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_built)?;
         self.push(ASTType::MulOp(mul_op_built), context);
@@ -2460,7 +2457,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let l_paren_built = LParenBuilder::default()
             .l_paren(l_paren)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.l_paren(&l_paren_built)?;
         self.push(ASTType::LParen(l_paren_built), context);
@@ -2483,7 +2480,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r_paren_built = RParenBuilder::default()
             .r_paren(r_paren)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.r_paren(&r_paren_built)?;
         self.push(ASTType::RParen(r_paren_built), context);
@@ -2506,7 +2503,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let comment_built = CommentBuilder::default()
             .comment(comment)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.comment(&comment_built)?;
         self.push(ASTType::Comment(comment_built), context);
@@ -2529,7 +2526,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let variable_built = VariableBuilder::default()
             .variable(variable)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.variable(&variable_built)?;
         self.push(ASTType::Variable(variable_built), context);
@@ -2552,7 +2549,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let expression_built = ExpressionBuilder::default()
             .logical_or(Box::new(logical_or))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.expression(&expression_built)?;
         self.push(ASTType::Expression(expression_built), context);
@@ -2578,7 +2575,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .logical_and(Box::new(logical_and))
             .logical_or_list(logical_or_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_or(&logical_or_built)?;
         self.push(ASTType::LogicalOr(logical_or_built), context);
@@ -2606,7 +2603,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .logical_and(Box::new(logical_and))
             .logical_or_op(Box::new(logical_or_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         logical_or_list.push(logical_or_list_0_built);
         self.push(ASTType::LogicalOrList(logical_or_list), context);
@@ -2646,7 +2643,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .logical_not(Box::new(logical_not))
             .logical_and_list(logical_and_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_and(&logical_and_built)?;
         self.push(ASTType::LogicalAnd(logical_and_built), context);
@@ -2674,7 +2671,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .logical_not(Box::new(logical_not))
             .logical_and_op(Box::new(logical_and_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         logical_and_list.push(logical_and_list_0_built);
         self.push(ASTType::LogicalAndList(logical_and_list), context);
@@ -2713,7 +2710,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .logical_not_opt(logical_not_opt)
             .relational(Box::new(relational))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.logical_not(&logical_not_built)?;
         self.push(ASTType::LogicalNot(logical_not_built), context);
@@ -2736,7 +2733,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_not_opt_0_built = LogicalNotOptBuilder::default()
             .logical_not_op(Box::new(logical_not_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::LogicalNotOpt(Some(Box::new(logical_not_opt_0_built))),
             context,
@@ -2775,7 +2772,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .summation(Box::new(summation))
             .relational_list(relational_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.relational(&relational_built)?;
         self.push(ASTType::Relational(relational_built), context);
@@ -2803,7 +2800,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .summation(Box::new(summation))
             .relational_op(Box::new(relational_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         relational_list.push(relational_list_0_built);
         self.push(ASTType::RelationalList(relational_list), context);
@@ -2842,7 +2839,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .multiplication(Box::new(multiplication))
             .summation_list(summation_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.summation(&summation_built)?;
         self.push(ASTType::Summation(summation_built), context);
@@ -2871,7 +2868,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .multiplication(Box::new(multiplication))
             .summation_list_group(Box::new(summation_list_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         summation_list.push(summation_list_0_built);
         self.push(ASTType::SummationList(summation_list), context);
@@ -2894,7 +2891,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let summation_list_group_0_built = SummationListGroupPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let summation_list_group_0_built = SummationListGroup::Plus(summation_list_group_0_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_0_built),
@@ -2919,7 +2916,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let summation_list_group_1_built = SummationListGroupMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let summation_list_group_1_built = SummationListGroup::Minus(summation_list_group_1_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_1_built),
@@ -2961,7 +2958,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .multiplication_list(multiplication_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.multiplication(&multiplication_built)?;
         self.push(ASTType::Multiplication(multiplication_built), context);
@@ -2990,7 +2987,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .factor(Box::new(factor))
             .mul_op(Box::new(mul_op))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         multiplication_list.push(multiplication_list_0_built);
         self.push(ASTType::MultiplicationList(multiplication_list), context);
@@ -3029,7 +3026,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let factor_0_built = FactorLiteralBuilder::default()
             .literal(Box::new(literal))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_0_built = Factor::Literal(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -3053,7 +3050,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let factor_1_built = FactorVariableBuilder::default()
             .variable(Box::new(variable))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_1_built = Factor::Variable(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -3080,7 +3077,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .minus(Box::new(minus))
             .factor(Box::new(factor))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_2_built = Factor::MinusFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -3110,7 +3107,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             .expression(Box::new(expression))
             .r_paren(Box::new(r_paren))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_3_built = Factor::LParenExpressionRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -3128,7 +3125,7 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.basic(
                 &children[0],
@@ -3225,7 +3222,7 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             80 => self.factor_1(&children[0], parse_tree),
             81 => self.factor_2(&children[0], &children[1], parse_tree),
             82 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

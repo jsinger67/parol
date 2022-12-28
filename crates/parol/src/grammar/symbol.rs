@@ -2,7 +2,7 @@ use super::{Decorate, SymbolAttribute};
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::parser::parol_grammar::{Factor, UserDefinedTypeName};
 use crate::parser::to_grammar_config::try_from_factor;
-use miette::{IntoDiagnostic, Result};
+use anyhow::{anyhow, Result};
 use parol_runtime::parser::ScannerIndex;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -190,7 +190,7 @@ impl Terminal {
                 let mut d = String::new();
                 let delimiter = k.delimiter();
                 a.decorate(&mut d, &format!("{}{}{}", delimiter, t, delimiter))
-                    .into_diagnostic()?;
+                    .map_err(|e| anyhow!("Decorate error!: {}", e))?;
                 if let Some(ref user_type) = u {
                     let user_type =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
@@ -198,7 +198,7 @@ impl Terminal {
                         } else {
                             user_type.to_string()
                         };
-                    write!(d, " : {}", user_type).into_diagnostic()?;
+                    write!(d, " : {}", user_type).map_err(|e| anyhow!(e))?;
                 }
                 if *s == vec![0] {
                     // Don't print state if terminal is only in state INITIAL (0)
@@ -214,7 +214,7 @@ impl Terminal {
 }
 
 impl Display for Terminal {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
             Self::Trm(t, k, ..) => {
                 let delimiter = k.delimiter();
@@ -360,7 +360,8 @@ impl Symbol {
         match self {
             Self::N(n, a, u) => {
                 let mut s = String::new();
-                a.decorate(&mut s, n).into_diagnostic()?;
+                a.decorate(&mut s, n)
+                    .map_err(|e| anyhow!("Decorate error!: {}", e))?;
                 if let Some(ref user_type) = u {
                     let user_type =
                         if let Some(alias) = user_type_resolver(user_type.to_string().as_str()) {
@@ -368,7 +369,7 @@ impl Symbol {
                         } else {
                             user_type.to_string()
                         };
-                    write!(s, " : {}", user_type).into_diagnostic()?;
+                    write!(s, " : {}", user_type).map_err(|e| anyhow!("IO error!: {}", e))?;
                 }
                 Ok(s)
             }
@@ -387,7 +388,7 @@ impl Symbol {
 }
 
 impl Display for Symbol {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         match self {
             Self::N(n, a, u) => {
                 let mut s = String::new();
@@ -410,8 +411,8 @@ impl Display for Symbol {
 }
 
 impl TryFrom<Factor> for Symbol {
-    type Error = miette::Error;
-    fn try_from(factor: Factor) -> miette::Result<Self> {
+    type Error = anyhow::Error;
+    fn try_from(factor: Factor) -> Result<Self> {
         try_from_factor(factor)
     }
 }

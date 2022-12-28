@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -1050,7 +1050,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .prolog(Box::new(prolog))
             .grammar_definition(Box::new(grammar_definition))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.parol(&parol_built)?;
         self.push(ASTType::Parol(parol_built), context);
@@ -1079,7 +1079,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .prolog_list(prolog_list)
             .prolog_list0(prolog_list0)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.prolog(&prolog_built)?;
         self.push(ASTType::Prolog(prolog_built), context);
@@ -1102,9 +1102,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
         let scanner_state = pop_item!(self, scanner_state, ScannerState, context);
         let prolog_list0_0_built = PrologList0Builder::default()
-            .scanner_state((&scanner_state).try_into().into_diagnostic()?)
+            .scanner_state(
+                (&scanner_state)
+                    .try_into()
+                    .map_err(|e| anyhow!("Conversion error!: {}", e))?,
+            )
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         prolog_list0.push(prolog_list0_0_built);
         self.push(ASTType::PrologList0(prolog_list0), context);
@@ -1142,7 +1146,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let prolog_list_0_built = PrologListBuilder::default()
             .declaration(Box::new(declaration))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         prolog_list.push(prolog_list_0_built);
         self.push(ASTType::PrologList(prolog_list), context);
@@ -1180,7 +1184,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             // Ignore clipped member 'percent_start'
             .identifier(Box::new(identifier))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .start_declaration(&start_declaration_built)?;
@@ -1206,7 +1210,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             // Ignore clipped member 'percent_title'
             .string(Box::new(string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let declaration_0_built = Declaration::PercentTitleString(declaration_0_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_0_built)?;
@@ -1232,7 +1236,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             // Ignore clipped member 'percent_comment'
             .string(Box::new(string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let declaration_1_built = Declaration::PercentCommentString(declaration_1_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_1_built)?;
@@ -1262,9 +1266,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
                 // Ignore clipped member 'percent_user_underscore_type'
                 .identifier(Box::new(identifier))
                 // Ignore clipped member 'equ'
-                .user_type_name((&user_type_name).try_into().into_diagnostic()?)
+                .user_type_name(
+                    (&user_type_name)
+                        .try_into()
+                        .map_err(|e| anyhow!("Conversion error!: {}", e))?,
+                )
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let declaration_2_built =
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(declaration_2_built);
         // Calling user action here
@@ -1289,7 +1297,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let declaration_3_built = DeclarationScannerDirectivesBuilder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let declaration_3_built = Declaration::ScannerDirectives(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
@@ -1316,7 +1324,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
                 // Ignore clipped member 'percent_line_underscore_comment'
                 .token_literal(Box::new(token_literal))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_directives_0_built =
             ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(scanner_directives_0_built);
         // Calling user action here
@@ -1352,7 +1360,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .token_literal(Box::new(token_literal))
             .token_literal0(Box::new(token_literal0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_directives_1_built =
             ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(
                 scanner_directives_1_built,
@@ -1383,7 +1391,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffBuilder::default()
                 // Ignore clipped member 'percent_auto_underscore_newline_underscore_off'
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_directives_2_built =
             ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(
                 scanner_directives_2_built,
@@ -1414,7 +1422,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffBuilder::default()
                 // Ignore clipped member 'percent_auto_underscore_ws_underscore_off'
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_directives_3_built =
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(scanner_directives_3_built);
         // Calling user action here
@@ -1453,7 +1461,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .production(Box::new(production))
             .grammar_definition_list(grammar_definition_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .grammar_definition(&grammar_definition_built)?;
@@ -1487,7 +1495,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let grammar_definition_list_0_built = GrammarDefinitionListBuilder::default()
             .production(Box::new(production))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         grammar_definition_list.push(grammar_definition_list_0_built);
         self.push(
@@ -1529,7 +1537,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let double_colon_built = DoubleColonBuilder::default()
             .double_colon(double_colon)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.double_colon(&double_colon_built)?;
         self.push(ASTType::DoubleColon(double_colon_built), context);
@@ -1559,7 +1567,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternations(Box::new(alternations))
             // Ignore clipped member 'semicolon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.production(&production_built)?;
         self.push(ASTType::Production(production_built), context);
@@ -1586,7 +1594,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternation(Box::new(alternation))
             .alternations_list(alternations_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.alternations(&alternations_built)?;
         self.push(ASTType::Alternations(alternations_built), context);
@@ -1613,7 +1621,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternation(Box::new(alternation))
             // Ignore clipped member 'or'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         alternations_list.push(alternations_list_0_built);
         self.push(ASTType::AlternationsList(alternations_list), context);
@@ -1653,7 +1661,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let alternation_built = AlternationBuilder::default()
             .alternation_list(alternation_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.alternation(&alternation_built)?;
         self.push(ASTType::Alternation(alternation_built), context);
@@ -1678,7 +1686,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let alternation_list_0_built = AlternationListBuilder::default()
             .factor(Box::new(factor))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         alternation_list.push(alternation_list_0_built);
         self.push(ASTType::AlternationList(alternation_list), context);
@@ -1714,7 +1722,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let factor_0_built = FactorGroupBuilder::default()
             .group(Box::new(group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_0_built = Factor::Group(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -1738,7 +1746,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let factor_1_built = FactorRepeatBuilder::default()
             .repeat(Box::new(repeat))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_1_built = Factor::Repeat(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -1762,7 +1770,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let factor_2_built = FactorOptionalBuilder::default()
             .optional(Box::new(optional))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_2_built = Factor::Optional(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -1786,7 +1794,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let factor_3_built = FactorSymbolBuilder::default()
             .symbol(Box::new(symbol))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let factor_3_built = Factor::Symbol(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -1810,7 +1818,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let symbol_0_built = SymbolNonTerminalBuilder::default()
             .non_terminal(Box::new(non_terminal))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let symbol_0_built = Symbol::NonTerminal(symbol_0_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_0_built)?;
@@ -1834,7 +1842,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let symbol_1_built = SymbolSimpleTokenBuilder::default()
             .simple_token(Box::new(simple_token))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let symbol_1_built = Symbol::SimpleToken(symbol_1_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_1_built)?;
@@ -1858,7 +1866,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let symbol_2_built = SymbolTokenWithStatesBuilder::default()
             .token_with_states(Box::new(token_with_states))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let symbol_2_built = Symbol::TokenWithStates(symbol_2_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_2_built)?;
@@ -1882,7 +1890,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let symbol_3_built = SymbolScannerSwitchBuilder::default()
             .scanner_switch(Box::new(scanner_switch))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let symbol_3_built = Symbol::ScannerSwitch(symbol_3_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_3_built)?;
@@ -1906,7 +1914,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_literal_0_built = TokenLiteralStringBuilder::default()
             .string(Box::new(string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let token_literal_0_built = TokenLiteral::String(token_literal_0_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_0_built)?;
@@ -1930,7 +1938,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_literal_1_built = TokenLiteralRawStringBuilder::default()
             .raw_string(Box::new(raw_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let token_literal_1_built = TokenLiteral::RawString(token_literal_1_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_1_built)?;
@@ -1954,7 +1962,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_literal_2_built = TokenLiteralRegexBuilder::default()
             .regex(Box::new(regex))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let token_literal_2_built = TokenLiteral::Regex(token_literal_2_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_2_built)?;
@@ -1981,7 +1989,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .token_literal(Box::new(token_literal))
             .simple_token_opt(simple_token_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.simple_token(&simple_token_built)?;
         self.push(ASTType::SimpleToken(simple_token_built), context);
@@ -2004,7 +2012,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let simple_token_opt_0_built = SimpleTokenOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
             context,
@@ -2051,7 +2059,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .token_literal(Box::new(token_literal))
             .token_with_states_opt(token_with_states_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .token_with_states(&token_with_states_built)?;
@@ -2075,7 +2083,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_with_states_opt_0_built = TokenWithStatesOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::TokenWithStatesOpt(Some(Box::new(token_with_states_opt_0_built))),
             context,
@@ -2111,7 +2119,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let string_built = StringBuilder::default()
             .string(string)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -2134,7 +2142,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let raw_string_built = RawStringBuilder::default()
             .raw_string(raw_string)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.raw_string(&raw_string_built)?;
         self.push(ASTType::RawString(raw_string_built), context);
@@ -2157,7 +2165,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let regex_built = RegexBuilder::default()
             .regex(regex)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.regex(&regex_built)?;
         self.push(ASTType::Regex(regex_built), context);
@@ -2184,7 +2192,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternations(Box::new(alternations))
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.group(&group_built)?;
         self.push(ASTType::Group(group_built), context);
@@ -2211,7 +2219,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternations(Box::new(alternations))
             // Ignore clipped member 'r_bracket'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.optional(&optional_built)?;
         self.push(ASTType::Optional(optional_built), context);
@@ -2238,7 +2246,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .alternations(Box::new(alternations))
             // Ignore clipped member 'r_brace'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.repeat(&repeat_built)?;
         self.push(ASTType::Repeat(repeat_built), context);
@@ -2264,7 +2272,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             .non_terminal_opt(non_terminal_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.non_terminal(&non_terminal_built)?;
         self.push(ASTType::NonTerminal(non_terminal_built), context);
@@ -2287,7 +2295,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
             .a_s_t_control(Box::new(a_s_t_control))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
             context,
@@ -2323,7 +2331,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let identifier_built = IdentifierBuilder::default()
             .identifier(identifier)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.identifier(&identifier_built)?;
         self.push(ASTType::Identifier(identifier_built), context);
@@ -2356,7 +2364,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .scanner_state_list(scanner_state_list)
             // Ignore clipped member 'r_brace'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.scanner_state(&scanner_state_built)?;
         self.push(ASTType::ScannerState(scanner_state_built), context);
@@ -2381,7 +2389,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let scanner_state_list_0_built = ScannerStateListBuilder::default()
             .scanner_directives(Box::new(scanner_directives))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         scanner_state_list.push(scanner_state_list_0_built);
         self.push(ASTType::ScannerStateList(scanner_state_list), context);
@@ -2423,7 +2431,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             .state_list_list(state_list_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.state_list(&state_list_built)?;
         self.push(ASTType::StateList(state_list_built), context);
@@ -2450,7 +2458,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             // Ignore clipped member 'comma'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         state_list_list.push(state_list_list_0_built);
         self.push(ASTType::StateListList(state_list_list), context);
@@ -2493,7 +2501,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
                 .scanner_switch_opt(scanner_switch_opt)
                 // Ignore clipped member 'r_paren'
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_switch_0_built =
             ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
         // Calling user action here
@@ -2525,7 +2533,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
                 .identifier(Box::new(identifier))
                 // Ignore clipped member 'r_paren'
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_switch_1_built =
             ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
         // Calling user action here
@@ -2553,7 +2561,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             // Ignore clipped member 'l_paren'
             // Ignore clipped member 'r_paren'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_2_built)?;
@@ -2577,7 +2585,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
             .identifier(Box::new(identifier))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
             context,
@@ -2613,7 +2621,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let a_s_t_control_0_built = ASTControlCutOperatorBuilder::default()
             .cut_operator(Box::new(cut_operator))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let a_s_t_control_0_built = ASTControl::CutOperator(a_s_t_control_0_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_0_built)?;
@@ -2638,7 +2646,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let a_s_t_control_1_built = ASTControlUserTypeDeclarationBuilder::default()
             .user_type_declaration(Box::new(user_type_declaration))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let a_s_t_control_1_built = ASTControl::UserTypeDeclaration(a_s_t_control_1_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_1_built)?;
@@ -2661,7 +2669,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let cut_operator_built = CutOperatorBuilder::default()
             // Ignore clipped member 'cut_operator'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.cut_operator(&cut_operator_built)?;
         self.push(ASTType::CutOperator(cut_operator_built), context);
@@ -2684,9 +2692,13 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclarationBuilder::default()
             // Ignore clipped member 'colon'
-            .user_type_name((&user_type_name).try_into().into_diagnostic()?)
+            .user_type_name(
+                (&user_type_name)
+                    .try_into()
+                    .map_err(|e| anyhow!("Conversion error!: {}", e))?,
+            )
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .user_type_declaration(&user_type_declaration_built)?;
@@ -2717,7 +2729,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             .user_type_name_list(user_type_name_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.user_type_name(&user_type_name_built)?;
         self.push(ASTType::UserTypeName(user_type_name_built), context);
@@ -2747,7 +2759,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             .identifier(Box::new(identifier))
             // Ignore clipped member 'double_colon'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         user_type_name_list.push(user_type_name_list_0_built);
         self.push(ASTType::UserTypeNameList(user_type_name_list), context);
@@ -2891,7 +2903,7 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             68 => self.user_type_name(&children[0], &children[1], parse_tree),
             69 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
             70 => self.user_type_name_list_1(parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

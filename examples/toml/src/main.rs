@@ -7,11 +7,11 @@ mod parol_toml_parser;
 
 use crate::parol_toml_grammar::ParolTomlGrammar;
 use crate::parol_toml_parser::parse;
+use anyhow::{anyhow, Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
-use log::debug;
-use miette::{miette, IntoDiagnostic, Result, WrapErr};
-use parol_runtime::parser::ParseTreeType;
+use parol_runtime::log::debug;
+use parol_runtime::ParseTreeType;
 use std::env;
 use std::fs;
 use std::time::Instant;
@@ -27,12 +27,11 @@ fn main() -> Result<()> {
     if args.len() >= 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .into_diagnostic()
-            .wrap_err(format!("Can't read file {}", file_name))?;
+            .with_context(|| format!("Can't read file {}", file_name))?;
         let mut parol_toml_grammar = ParolTomlGrammar::new();
         let now = Instant::now();
         let syntax_tree = parse(&input, &file_name, &mut parol_toml_grammar)
-            .wrap_err(format!("Failed parsing file {}", file_name))?;
+            .with_context(|| format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
         if args.len() > 2 && args[2] == "-q" {
@@ -43,7 +42,7 @@ fn main() -> Result<()> {
             Ok(())
         }
     } else {
-        Err(miette!("Please provide a file name as first parameter!"))
+        Err(anyhow!("Please provide a file name as first parameter!"))
     }
 }
 
@@ -54,6 +53,5 @@ fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str
     Layouter::new(syntax_tree)
         .with_file_path(&svg_full_file_name)
         .write()
-        .into_diagnostic()
-        .wrap_err("Failed writing layout")
+        .context("Failed writing layout")
 }

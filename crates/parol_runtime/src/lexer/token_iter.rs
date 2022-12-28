@@ -1,5 +1,5 @@
 use crate::lexer::{location, TerminalIndex, Token, Tokenizer, RX_NEW_LINE};
-use location::Location;
+use location::LocationBuilder;
 use log::trace;
 use regex::CaptureMatches;
 use std::{borrow::Cow, path::Path};
@@ -109,17 +109,24 @@ impl<'t> Iterator for TokenIter<'t> {
                     debug_assert!(column_after_nl == 0);
                     self.col + length
                 };
-                let location = Location::with(
-                    start_line,
-                    start_column,
-                    length,
-                    0,
-                    pos,
-                    self.file_name.clone(),
-                );
-                let token = Token::with(text, token_type, location);
-                trace!("{}, newline count: {}", token, new_lines);
-                Some(token)
+                if let Ok(location) = LocationBuilder::default()
+                    .start_line(start_line)
+                    .start_column(start_column)
+                    .end_line(start_line + new_lines)
+                    .end_column(self.col)
+                    .length(length)
+                    .offset(pos)
+                    .file_name(self.file_name.clone())
+                    .build()
+                {
+                    let token = Token::with(text, token_type, location);
+                    trace!("{}, newline count: {}", token, new_lines);
+                    Some(token)
+                } else {
+                    // Error
+                    trace!("Error: Runtime builder error");
+                    None
+                }
             } else {
                 // Error
                 trace!("Error: End of iteration - no match");

@@ -1,6 +1,6 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::KTuples;
-use miette::{bail, Result};
+use anyhow::{bail, Result};
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};

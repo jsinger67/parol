@@ -1,6 +1,6 @@
 use crate::list_grammar_trait::ListGrammarTrait;
+use anyhow::{Context, Result};
 use id_tree::Tree;
-use miette::{IntoDiagnostic, Result, WrapErr};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -50,8 +50,7 @@ impl ListGrammarTrait for ListGrammar {
         let symbol = num.text(parse_tree)?;
         let number = symbol
             .parse::<DefinitionRange>()
-            .into_diagnostic()
-            .wrap_err("num_6: Error accessing token from ParseTreeStackEntry")?;
+            .context("num_6: Error accessing token from ParseTreeStackEntry")?;
         self.push(number);
         Ok(())
     }

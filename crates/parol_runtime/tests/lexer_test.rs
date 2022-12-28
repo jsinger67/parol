@@ -1,8 +1,9 @@
-use once_cell::sync::Lazy;
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
-use parol_runtime::lexer::{Location, Token, TokenStream, Tokenizer};
+use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::LocationBuilder;
+use parol_runtime::{Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
@@ -85,7 +86,16 @@ fn lexer_token_production() {
         Token::with(
             ";",
             8,
-            Location::with(19, 39, 1, 0, 545, token_stream.borrow().file_name.clone())
+            LocationBuilder::default()
+                .start_line(19)
+                .start_column(39)
+                .end_line(19)
+                .end_column(40)
+                .length(1)
+                .offset(545)
+                .file_name(token_stream.borrow().file_name.clone())
+                .build()
+                .unwrap()
         ),
         tok
     );

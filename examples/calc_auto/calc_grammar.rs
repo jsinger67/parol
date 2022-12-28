@@ -2,9 +2,9 @@ use crate::{
     assign_operator::AssignOperator, binary_operator::BinaryOperator, calc_grammar_trait::*,
     errors::CalcError,
 };
-use log::trace;
-use miette::{bail, miette, Result};
-use parol_runtime::{errors::FileSource, lexer::Token};
+use anyhow::{anyhow, bail, Result};
+use parol_runtime::Token;
+use parol_runtime::{log::trace, FileSource};
 use std::{
     collections::BTreeMap,
     convert::TryInto,
@@ -37,9 +37,9 @@ impl<'t> CalcGrammar<'t> {
         self.env
             .get(id.text())
             .cloned()
-            .ok_or(miette!(CalcError::UndeclaredVariable {
+            .ok_or(anyhow!(CalcError::UndeclaredVariable {
                 context: "value".to_owned(),
-                input: FileSource::try_new(id.location.file_name.clone())?.into(),
+                input: FileSource::try_new(id.location.file_name.clone())?,
                 token: id.into()
             }))
     }
@@ -175,14 +175,13 @@ impl<'t> CalcGrammar<'t> {
                 trace!("assign: to variable {}", id);
                 result = Self::apply_assign_operation(var, &op, result, context)?;
             } else {
-                return Err(miette!(CalcError::UndeclaredVariable {
+                bail!(CalcError::UndeclaredVariable {
                     context: "value".to_owned(),
                     input: FileSource::try_new(
                         assign_item.assign_item.id.id.location.file_name.clone()
-                    )?
-                    .into(),
+                    )?,
                     token: (&assign_item.assign_item.id.id).into()
-                }));
+                });
             }
         }
         Ok(())

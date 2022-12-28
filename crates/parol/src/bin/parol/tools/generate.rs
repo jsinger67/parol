@@ -1,4 +1,4 @@
-use miette::Result;
+use anyhow::Result;
 use parol::{obtain_grammar_config, LanguageGenerator};
 use std::path::PathBuf;
 

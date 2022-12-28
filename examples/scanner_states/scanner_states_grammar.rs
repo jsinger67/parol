@@ -1,7 +1,7 @@
 use crate::scanner_states_grammar_trait::ScannerStatesGrammarTrait;
+use anyhow::{anyhow, bail, Result};
 use id_tree::Tree;
-use log::trace;
-use miette::{bail, miette, Result};
+use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -110,7 +110,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
             self.push(ScannerStatesGrammarItem::String(s), context);
             Ok(())
         } else {
-            Err(miette!("{}: Expected 'String' on TOS.", context))
+            Err(anyhow!("{}: Expected 'String' on TOS.", context))
         }
     }
 
@@ -130,7 +130,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
             self.push(ScannerStatesGrammarItem::String(s), context);
             Ok(())
         } else {
-            Err(miette!("{}: Expected 'String' on TOS.", context))
+            Err(anyhow!("{}: Expected 'String' on TOS.", context))
         }
     }
 

@@ -7,8 +7,8 @@ use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
-use log::trace;
 use parol_runtime::lexer::FIRST_USER_TOKEN;
+use parol_runtime::log::trace;
 use std::collections::HashMap;
 
 /// 0: KTuples for terminals in terminal-index order

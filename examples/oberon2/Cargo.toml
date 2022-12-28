@@ -5,11 +5,11 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+anyhow = "1.0"
 env_logger = "0.10.0"
 function_name = "0.3.0"
 id_tree = "^1.8"
 log = "^0.4"
-miette = { version = "^5.3", features = ["fancy"] }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["trim_parse_tree", "auto_generation"] }
 parol-macros = { path = "../../crates/parol-macros" }
 thiserror = "^1.0"

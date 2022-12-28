@@ -2,7 +2,7 @@
 //! The module contains the conversion to a the PAR format.
 //!
 use crate::{GrammarConfig, ScannerConfig, StrVec};
-use miette::Result;
+use anyhow::Result;
 
 // ---------------------------------------------------
 // Part of the Public API

@@ -1,7 +1,7 @@
 use crate::boolean_grammar_trait::BooleanGrammarTrait;
+use anyhow::{anyhow, Result};
 use id_tree::Tree;
-use log::trace;
-use miette::{miette, Result};
+use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -188,7 +188,7 @@ impl BooleanGrammar {
                 }
                 Ok(())
             }
-            _ => Err(miette!("{}: unexpected ({:?}, {:?}", context, op, value)),
+            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, op, value)),
         }
     }
 

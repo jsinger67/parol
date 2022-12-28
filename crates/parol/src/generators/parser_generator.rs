@@ -3,9 +3,9 @@ use crate::analysis::LookaheadDFA;
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
-use log::trace;
-use miette::{miette, Result};
+use anyhow::{anyhow, Result};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
+use parol_runtime::log::trace;
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::StrVec;
@@ -153,7 +153,7 @@ impl std::fmt::Display for Production {
                 production: &[#production],
             },
         })?;
-        writeln!(f, "")
+        writeln!(f)
     }
 }
 
@@ -226,9 +226,9 @@ impl std::fmt::Display for ParserData<'_> {
             ume::ume!(UserActionsTrait,).to_string()
         };
         f.write_fmt(ume::ume! {
+            use anyhow::Result;
             use parol_runtime::id_tree::Tree;
-            use parol_runtime::lexer::{TokenStream, Tokenizer};
-            use parol_runtime::miette::Result;
+            use parol_runtime::{TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
             #[allow(unused_imports)]
             use parol_runtime::parser::{
@@ -348,10 +348,12 @@ pub fn generate_parser_source(
     let start_symbol_index: usize = non_terminals
         .iter()
         .position(|n| *n == grammar_config.cfg.get_start_symbol())
-        .ok_or(miette!(format!(
-            "Start symbol '{}' is not part of the given grammar!",
-            grammar_config.cfg.get_start_symbol()
-        )))?;
+        .ok_or_else(|| {
+            anyhow!(
+                "Start symbol '{}' is not part of the given grammar!",
+                grammar_config.cfg.get_start_symbol()
+            )
+        })?;
 
     let non_terminals = non_terminals
         .iter()

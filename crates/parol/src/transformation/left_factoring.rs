@@ -1,7 +1,7 @@
 use crate::generators::grammar_config::{FnScannerStateResolver, FnUserTypeResolver};
 use crate::{generate_name, group_by, Cfg, GrammarConfig, Pr, Rhs, Symbol};
-use log::trace;
-use miette::Result;
+use anyhow::Result;
+use parol_runtime::log::trace;
 use std::collections::hash_map::HashMap;
 use std::hash::Hash;
 

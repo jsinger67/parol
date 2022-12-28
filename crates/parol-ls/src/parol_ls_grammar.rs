@@ -7,6 +7,8 @@ use crate::{
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
+#[allow(unused_imports)]
+use anyhow::Result;
 use lsp_types::{
     DocumentChanges, DocumentFormattingParams, DocumentSymbol, DocumentSymbolParams,
     DocumentSymbolResponse, Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind,
@@ -14,8 +16,6 @@ use lsp_types::{
     RenameParams, SymbolKind, TextDocumentEdit, TextDocumentPositionParams, TextEdit,
     WorkspaceEdit,
 };
-#[allow(unused_imports)]
-use miette::Result;
 use parol::TerminalKind;
 use parol_runtime::lexer::Token;
 use std::collections::HashMap;

@@ -4,9 +4,9 @@
 // lost after next build.
 // ---------------------------------------------------------
 
+use anyhow::Result;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
-use parol_runtime::miette::Result;
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{

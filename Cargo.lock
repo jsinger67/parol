@@ -38,6 +38,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.68"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
+
+[[package]]
 name = "assert_cmd"
 version = "2.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -81,6 +87,7 @@ dependencies = [
 name = "basic"
 version = "0.5.0"
 dependencies = [
+ "anyhow",
  "env_logger",
  "function_name",
  "id_tree",
@@ -516,6 +523,7 @@ checksum = "4217ad341ebadf8d8e724e264f13e593e0648f5b3e94b3896a5df283be015ecc"
 name = "json_parser"
 version = "0.5.0"
 dependencies = [
+ "anyhow",
  "env_logger",
  "id_tree",
  "id_tree_layout",
@@ -530,6 +538,7 @@ dependencies = [
 name = "json_parser_auto"
 version = "0.4.0"
 dependencies = [
+ "anyhow",
  "derive_builder",
  "env_logger",
  "function_name",
@@ -604,7 +613,7 @@ dependencies = [
  "backtrace",
  "miette-derive",
  "once_cell",
- "owo-colors",
+ "owo-colors 3.5.0",
  "supports-color",
  "supports-hyperlinks",
  "supports-unicode",
@@ -638,11 +647,11 @@ dependencies = [
 name = "oberon2"
 version = "0.3.0"
 dependencies = [
+ "anyhow",
  "env_logger",
  "function_name",
  "id_tree",
  "log",
- "miette",
  "parol",
  "parol-macros",
  "parol_runtime",
@@ -681,6 +690,12 @@ dependencies = [
 
 [[package]]
 name = "owo-colors"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3a61765925aec40abdb23812a3a1a01fafc6ffb9da22768b2ce665a9e84e527c"
+
+[[package]]
+name = "owo-colors"
 version = "3.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
@@ -689,6 +704,7 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 name = "parol"
 version = "0.15.1"
 dependencies = [
+ "anyhow",
  "assert_cmd",
  "cfg-if",
  "clap",
@@ -697,10 +713,7 @@ dependencies = [
  "function_name",
  "id_tree",
  "id_tree_layout",
- "log",
- "miette",
- "once_cell",
- "owo-colors",
+ "owo-colors 2.1.0",
  "parol-macros",
  "parol_runtime",
  "pretty_assertions",
@@ -718,6 +731,7 @@ dependencies = [
 name = "parol-ls"
 version = "0.3.4"
 dependencies = [
+ "anyhow",
  "clap",
  "derive-new",
  "derive_builder",
@@ -727,7 +741,6 @@ dependencies = [
  "log",
  "lsp-server",
  "lsp-types",
- "miette",
  "once_cell",
  "parol",
  "parol-macros",
@@ -744,14 +757,14 @@ version = "0.1.0"
 
 [[package]]
 name = "parol_runtime"
-version = "0.11.2"
+version = "0.12.0-alpha.1"
 dependencies = [
+ "anyhow",
  "derive_builder",
  "function_name",
  "id_tree",
  "id_tree_layout",
  "log",
- "miette",
  "once_cell",
  "parol-macros",
  "regex",
@@ -762,12 +775,12 @@ dependencies = [
 name = "parol_toml"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "env_logger",
  "function_name",
  "id_tree",
  "id_tree_layout",
  "log",
- "miette",
  "parol",
  "parol-macros",
  "parol_runtime",

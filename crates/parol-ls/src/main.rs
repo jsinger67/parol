@@ -20,16 +20,12 @@ mod rng;
 mod server;
 mod utils;
 
-#[macro_use]
-extern crate thiserror;
-
 extern crate clap;
 extern crate parol_runtime;
 
 use clap::Parser;
 
 use errors::ServerError;
-use log::debug;
 use lsp_server::{Connection, ExtractError, Message, Request, RequestId};
 use lsp_types::notification::DidChangeConfiguration;
 use lsp_types::request::RegisterCapability;
@@ -45,6 +41,7 @@ use lsp_types::{
     TextDocumentSyncCapability, TextDocumentSyncKind, WorkDoneProgressOptions,
 };
 use lsp_types::{Registration, RegistrationParams};
+use parol_runtime::log::debug;
 use serde::Serialize;
 use server::Server;
 

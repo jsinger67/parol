@@ -33,7 +33,7 @@ which closes issue [#33](https://github.com/jsinger67/parol/issues/33)
   * Opt out for tracking generated parser files by git
 * Merged PR [#31](https://github.com/jsinger67/parol/pull/31) from [ryo33](https://github.com/ryo33)
 which closes issue [#20](https://github.com/jsinger67/parol/issues/20)
-  * Use once_cell instead of lazy_static
+  * use parol_runtime::once_cell instead of lazy_static
 * Merged PR [#27](https://github.com/jsinger67/parol/pull/27) from [ryo33](https://github.com/ryo33)
 * Merged PR [#25](https://github.com/jsinger67/parol/pull/25) from [ryo33](https://github.com/ryo33)
 which closes issue [#21](https://github.com/jsinger67/parol/issues/21)

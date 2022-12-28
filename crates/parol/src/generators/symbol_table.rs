@@ -5,7 +5,7 @@ use crate::generators::symbol_table_facade::InstanceItem;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
-use miette::{bail, Result};
+use anyhow::{bail, Result};
 
 use std::fmt::{Debug, Display, Error, Formatter};
 

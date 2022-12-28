@@ -1,4 +1,4 @@
-use miette::miette;
+use anyhow::anyhow;
 use std::convert::TryFrom;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::result::Result;
@@ -37,7 +37,7 @@ impl Display for AssignOperator {
 }
 
 impl TryFrom<&str> for AssignOperator {
-    type Error = miette::Error;
+    type Error = anyhow::Error;
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         match s {
             "=" => Ok(Self::Assign),
@@ -51,7 +51,7 @@ impl TryFrom<&str> for AssignOperator {
             "&=" => Ok(Self::BitwiseAnd),
             "^=" => Ok(Self::BitwiseXOr),
             "|=" => Ok(Self::BitwiseOr),
-            _ => Err(miette!("Unexpected assignment operator {}", s)),
+            _ => Err(anyhow!("Unexpected assignment operator {}", s)),
         }
     }
 }

@@ -188,16 +188,15 @@ impl std::fmt::Display for UserTraitData<'_> {
                 use crate::#module_name::#user_type_name;
             })?;
         }
-        // miette
         if *auto_generate {
             f.write_fmt(ume::ume! {
                 #[allow(unused_imports)]
-                use parol_runtime::miette::{miette, bail, IntoDiagnostic, Result};
+                use anyhow::{bail, anyhow, Result};
             })?;
         } else {
             f.write_fmt(ume::ume! {
                 #[allow(unused_imports)]
-                use parol_runtime::miette::{miette, Result};
+                use anyhow::{bail, Result};
             })?;
         }
         if !*ast_type_has_lifetime {
@@ -368,10 +367,10 @@ impl std::fmt::Display for UserTraitData<'_> {
                         &mut self,
                         prod_num: usize,
                         children: &[ParseTreeStackEntry<'t>],
-                        parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+                        parse_tree: &Tree<ParseTreeType<'t>>) -> anyhow::Result<()> {
                         match prod_num {
                             #trait_caller
-                            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+                            _ => bail!("Unhandled production number: {}", prod_num),
                         }
                     }
                 }
@@ -398,10 +397,10 @@ impl std::fmt::Display for UserTraitData<'_> {
                         &mut self,
                         prod_num: usize,
                         children: &[ParseTreeStackEntry],
-                        parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+                        parse_tree: &Tree<ParseTreeType>) -> anyhow::Result<()> {
                         match prod_num {
                             #trait_caller
-                            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+                            _ => bail!("Unhandled production number: {}", prod_num),
                         }
                     }
                 }

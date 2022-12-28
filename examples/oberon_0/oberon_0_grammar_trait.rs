@@ -13,7 +13,7 @@ use parol_runtime::id_tree::Tree;
 
 use crate::oberon_0_grammar::Oberon0Grammar;
 #[allow(unused_imports)]
-use parol_runtime::miette::{miette, Result};
+use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
 
 ///
@@ -1344,7 +1344,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.selector(&children[0], parse_tree),
             1 => self.selector_list_0(&children[0], &children[1], &children[2], parse_tree),
@@ -1574,7 +1574,7 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
             102 => self.unary_op(&children[0], parse_tree),
             103 => self.ident(&children[0], parse_tree),
             104 => self.integer(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

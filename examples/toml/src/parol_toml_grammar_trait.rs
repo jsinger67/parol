@@ -9,12 +9,12 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
+#[allow(unused_imports)]
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
-#[allow(unused_imports)]
-use parol_runtime::miette::{bail, miette, IntoDiagnostic, Result};
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
@@ -2529,7 +2529,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let parol_toml_built = ParolTomlBuilder::default()
             .parol_toml_list(parol_toml_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.parol_toml(&parol_toml_built)?;
         self.push(ASTType::ParolToml(parol_toml_built), context);
@@ -2554,7 +2554,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let parol_toml_list_0_built = ParolTomlListBuilder::default()
             .expression(Box::new(expression))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         parol_toml_list.push(parol_toml_list_0_built);
         self.push(ASTType::ParolTomlList(parol_toml_list), context);
@@ -2590,7 +2590,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let expression_0_built = ExpressionKeyValBuilder::default()
             .key_val(Box::new(key_val))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let expression_0_built = Expression::KeyVal(expression_0_built);
         // Calling user action here
         self.user_grammar.expression(&expression_0_built)?;
@@ -2614,7 +2614,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let expression_1_built = ExpressionTableBuilder::default()
             .table(Box::new(table))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let expression_1_built = Expression::Table(expression_1_built);
         // Calling user action here
         self.user_grammar.expression(&expression_1_built)?;
@@ -2638,7 +2638,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let newline_built = NewlineBuilder::default()
             .newline(newline)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.newline(&newline_built)?;
         self.push(ASTType::Newline(newline_built), context);
@@ -2661,7 +2661,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let ws_newline_built = WsNewlineBuilder::default()
             .ws_newline(ws_newline)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.ws_newline(&ws_newline_built)?;
         self.push(ASTType::WsNewline(ws_newline_built), context);
@@ -2684,7 +2684,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let non_ascii_built = NonAsciiBuilder::default()
             .non_ascii(non_ascii)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.non_ascii(&non_ascii_built)?;
         self.push(ASTType::NonAscii(non_ascii_built), context);
@@ -2713,7 +2713,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .key_val_sep(Box::new(key_val_sep))
             .val(Box::new(val))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.key_val(&key_val_built)?;
         self.push(ASTType::KeyVal(key_val_built), context);
@@ -2739,7 +2739,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .simple_key(Box::new(simple_key))
             .key_suffix(Box::new(key_suffix))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.key(&key_built)?;
         self.push(ASTType::Key(key_built), context);
@@ -2756,7 +2756,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let key_suffix_0_built = KeySuffixKeySuffixEmptyBuilder::default()
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let key_suffix_0_built = KeySuffix::KeySuffixEmpty(key_suffix_0_built);
         self.push(ASTType::KeySuffix(key_suffix_0_built), context);
         Ok(())
@@ -2784,7 +2784,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .simple_key(Box::new(simple_key))
             .key_list(key_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let key_suffix_1_built = KeySuffix::DotSepSimpleKeyKeyList(key_suffix_1_built);
         self.push(ASTType::KeySuffix(key_suffix_1_built), context);
         Ok(())
@@ -2811,7 +2811,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .simple_key(Box::new(simple_key))
             .dot_sep(Box::new(dot_sep))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         key_list.push(key_list_0_built);
         self.push(ASTType::KeyList(key_list), context);
@@ -2847,7 +2847,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let simple_key_0_built = SimpleKeyQuotedKeyBuilder::default()
             .quoted_key(Box::new(quoted_key))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let simple_key_0_built = SimpleKey::QuotedKey(simple_key_0_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_0_built)?;
@@ -2871,7 +2871,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let simple_key_1_built = SimpleKeyUnquotedKeyBuilder::default()
             .unquoted_key(Box::new(unquoted_key))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let simple_key_1_built = SimpleKey::UnquotedKey(simple_key_1_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_1_built)?;
@@ -2895,7 +2895,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let quoted_key_0_built = QuotedKeyBasicStringBuilder::default()
             .basic_string(Box::new(basic_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let quoted_key_0_built = QuotedKey::BasicString(quoted_key_0_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_0_built)?;
@@ -2919,7 +2919,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let quoted_key_1_built = QuotedKeyLiteralStringBuilder::default()
             .literal_string(Box::new(literal_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let quoted_key_1_built = QuotedKey::LiteralString(quoted_key_1_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_1_built)?;
@@ -2943,7 +2943,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_val_sep_built = KeyValSepBuilder::default()
             .key_val_sep(key_val_sep)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.key_val_sep(&key_val_sep_built)?;
         self.push(ASTType::KeyValSep(key_val_sep_built), context);
@@ -2966,7 +2966,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_0_built = ValBooleanBuilder::default()
             .boolean(Box::new(boolean))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_0_built = Val::Boolean(val_0_built);
         // Calling user action here
         self.user_grammar.val(&val_0_built)?;
@@ -2990,7 +2990,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_1_built = ValArrayBuilder::default()
             .array(Box::new(array))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_1_built = Val::Array(val_1_built);
         // Calling user action here
         self.user_grammar.val(&val_1_built)?;
@@ -3014,7 +3014,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_2_built = ValInlineTableBuilder::default()
             .inline_table(Box::new(inline_table))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_2_built = Val::InlineTable(val_2_built);
         // Calling user action here
         self.user_grammar.val(&val_2_built)?;
@@ -3038,7 +3038,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_3_built = ValDateTimeBuilder::default()
             .date_time(Box::new(date_time))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_3_built = Val::DateTime(val_3_built);
         // Calling user action here
         self.user_grammar.val(&val_3_built)?;
@@ -3062,7 +3062,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_4_built = ValNumericBuilder::default()
             .numeric(Box::new(numeric))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_4_built = Val::Numeric(val_4_built);
         // Calling user action here
         self.user_grammar.val(&val_4_built)?;
@@ -3086,7 +3086,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_5_built = ValBasicStringBuilder::default()
             .basic_string(Box::new(basic_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_5_built = Val::BasicString(val_5_built);
         // Calling user action here
         self.user_grammar.val(&val_5_built)?;
@@ -3110,7 +3110,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_6_built = ValMLBasicStringBuilder::default()
             .m_l_basic_string(Box::new(m_l_basic_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_6_built = Val::MLBasicString(val_6_built);
         // Calling user action here
         self.user_grammar.val(&val_6_built)?;
@@ -3134,7 +3134,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_7_built = ValLiteralStringBuilder::default()
             .literal_string(Box::new(literal_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_7_built = Val::LiteralString(val_7_built);
         // Calling user action here
         self.user_grammar.val(&val_7_built)?;
@@ -3158,7 +3158,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let val_8_built = ValMLLiteralStringBuilder::default()
             .m_l_literal_string(Box::new(m_l_literal_string))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let val_8_built = Val::MLLiteralString(val_8_built);
         // Calling user action here
         self.user_grammar.val(&val_8_built)?;
@@ -3182,7 +3182,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let numeric_0_built = NumericFloatBuilder::default()
             .float(Box::new(float))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let numeric_0_built = Numeric::Float(numeric_0_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_0_built)?;
@@ -3206,7 +3206,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let numeric_1_built = NumericIntegerBuilder::default()
             .integer(Box::new(integer))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let numeric_1_built = Numeric::Integer(numeric_1_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_1_built)?;
@@ -3237,7 +3237,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .basic_string_list(basic_string_list)
             .quotation_mark0(Box::new(quotation_mark0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.basic_string(&basic_string_built)?;
         self.push(ASTType::BasicString(basic_string_built), context);
@@ -3262,7 +3262,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let basic_string_list_0_built = BasicStringListBuilder::default()
             .basic_char(Box::new(basic_char))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         basic_string_list.push(basic_string_list_0_built);
         self.push(ASTType::BasicStringList(basic_string_list), context);
@@ -3298,7 +3298,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let basic_char_0_built = BasicCharBasicUnescapedBuilder::default()
             .basic_unescaped(Box::new(basic_unescaped))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let basic_char_0_built = BasicChar::BasicUnescaped(basic_char_0_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_0_built)?;
@@ -3322,7 +3322,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let basic_char_1_built = BasicCharEscapedBuilder::default()
             .escaped(Box::new(escaped))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let basic_char_1_built = BasicChar::Escaped(basic_char_1_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_1_built)?;
@@ -3346,7 +3346,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let basic_unescaped_0_built = BasicUnescapedAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let basic_unescaped_0_built = BasicUnescaped::AsciiNoEscape(basic_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -3371,7 +3371,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let basic_unescaped_1_built = BasicUnescapedNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let basic_unescaped_1_built = BasicUnescaped::NonAscii(basic_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -3399,7 +3399,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .escape(Box::new(escape))
             .escape_seq_char(Box::new(escape_seq_char))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.escaped(&escaped_built)?;
         self.push(ASTType::Escaped(escaped_built), context);
@@ -3422,7 +3422,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_built = EscapeBuilder::default()
             .escape(escape)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.escape(&escape_built)?;
         self.push(ASTType::Escape(escape_built), context);
@@ -3445,7 +3445,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_0_built = EscapeSeqCharQuotationMarkBuilder::default()
             .quotation_mark(Box::new(quotation_mark))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_0_built = EscapeSeqChar::QuotationMark(escape_seq_char_0_built);
         // Calling user action here
         self.user_grammar
@@ -3470,7 +3470,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_1_built = EscapeSeqCharEscapeBuilder::default()
             .escape(Box::new(escape))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_1_built = EscapeSeqChar::Escape(escape_seq_char_1_built);
         // Calling user action here
         self.user_grammar
@@ -3495,7 +3495,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_2_built = EscapeSeqCharBBuilder::default()
             .b(b)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_2_built = EscapeSeqChar::B(escape_seq_char_2_built);
         // Calling user action here
         self.user_grammar
@@ -3520,7 +3520,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_3_built = EscapeSeqCharFBuilder::default()
             .f(f)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_3_built = EscapeSeqChar::F(escape_seq_char_3_built);
         // Calling user action here
         self.user_grammar
@@ -3545,7 +3545,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_4_built = EscapeSeqCharNBuilder::default()
             .n(n)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_4_built = EscapeSeqChar::N(escape_seq_char_4_built);
         // Calling user action here
         self.user_grammar
@@ -3570,7 +3570,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_5_built = EscapeSeqCharRBuilder::default()
             .r(r)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_5_built = EscapeSeqChar::R(escape_seq_char_5_built);
         // Calling user action here
         self.user_grammar
@@ -3595,7 +3595,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_6_built = EscapeSeqCharTBuilder::default()
             .t(t)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_6_built = EscapeSeqChar::T(escape_seq_char_6_built);
         // Calling user action here
         self.user_grammar
@@ -3620,7 +3620,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_7_built = EscapeSeqCharUnicode4Builder::default()
             .unicode4(Box::new(unicode4))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_7_built = EscapeSeqChar::Unicode4(escape_seq_char_7_built);
         // Calling user action here
         self.user_grammar
@@ -3645,7 +3645,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_8_built = EscapeSeqCharUnicode8Builder::default()
             .unicode8(Box::new(unicode8))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_8_built = EscapeSeqChar::Unicode8(escape_seq_char_8_built);
         // Calling user action here
         self.user_grammar
@@ -3670,7 +3670,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_9_built = EscapeSeqCharWsNewlineBuilder::default()
             .ws_newline(Box::new(ws_newline))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_9_built = EscapeSeqChar::WsNewline(escape_seq_char_9_built);
         // Calling user action here
         self.user_grammar
@@ -3695,7 +3695,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let escape_seq_char_10_built = EscapeSeqChar::AsciiNoEscape(escape_seq_char_10_built);
         // Calling user action here
         self.user_grammar
@@ -3720,7 +3720,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let unicode4_built = Unicode4Builder::default()
             .unicode4(unicode4)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.unicode4(&unicode4_built)?;
         self.push(ASTType::Unicode4(unicode4_built), context);
@@ -3743,7 +3743,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let unicode8_built = Unicode8Builder::default()
             .unicode8(unicode8)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.unicode8(&unicode8_built)?;
         self.push(ASTType::Unicode8(unicode8_built), context);
@@ -3773,7 +3773,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_basic_body(Box::new(m_l_basic_body))
             .m_l_basic_string_end(Box::new(m_l_basic_string_end))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_basic_string(&m_l_basic_string_built)?;
@@ -3801,7 +3801,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_b_content_list(Box::new(m_l_b_content_list))
             .m_l_basic_body_list(m_l_basic_body_list)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.m_l_basic_body(&m_l_basic_body_built)?;
         self.push(ASTType::MLBasicBody(m_l_basic_body_built), context);
@@ -3830,7 +3830,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_b_content_list1(Box::new(m_l_b_content_list1))
             .m_l_b_quotes(Box::new(m_l_b_quotes))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         m_l_basic_body_list.push(m_l_basic_body_list_0_built);
         self.push(ASTType::MLBasicBodyList(m_l_basic_body_list), context);
@@ -3872,7 +3872,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_b_content(Box::new(m_l_b_content))
             .m_l_b_content_list(Box::new(m_l_b_content_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_content_list_0_built =
             MLBContentList::MLBContentMLBContentList(m_l_b_content_list_0_built);
         // Calling user action here
@@ -3892,7 +3892,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list_1_built = MLBContentListMLBContentListEmptyBuilder::default()
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_content_list_1_built =
             MLBContentList::MLBContentListEmpty(m_l_b_content_list_1_built);
         // Calling user action here
@@ -3921,7 +3921,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_b_content(Box::new(m_l_b_content))
             .m_l_b_content_list(Box::new(m_l_b_content_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_b_content_list1(&m_l_b_content_list1_built)?;
@@ -3945,7 +3945,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_0_built = MLBContentMLBCharBuilder::default()
             .m_l_b_char(Box::new(m_l_b_char))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_content_0_built = MLBContent::MLBChar(m_l_b_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_0_built)?;
@@ -3969,7 +3969,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_1_built = MLBContentNewlineBuilder::default()
             .newline(Box::new(newline))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_content_1_built = MLBContent::Newline(m_l_b_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_1_built)?;
@@ -3993,7 +3993,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_2_built = MLBContentMLBEscapedNLBuilder::default()
             .m_l_b_escaped_n_l(Box::new(m_l_b_escaped_n_l))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_content_2_built = MLBContent::MLBEscapedNL(m_l_b_content_2_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_2_built)?;
@@ -4017,7 +4017,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_char_0_built = MLBCharMLBUnescapedBuilder::default()
             .m_l_b_unescaped(Box::new(m_l_b_unescaped))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_char_0_built = MLBChar::MLBUnescaped(m_l_b_char_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_0_built)?;
@@ -4041,7 +4041,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_char_1_built = MLBCharEscapedBuilder::default()
             .escaped(Box::new(escaped))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_char_1_built = MLBChar::Escaped(m_l_b_char_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_1_built)?;
@@ -4065,7 +4065,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscapeBuilder::default()
             .ascii_no_escape(Box::new(ascii_no_escape))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_unescaped_0_built = MLBUnescaped::AsciiNoEscape(m_l_b_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -4090,7 +4090,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_unescaped_1_built = MLBUnescapedNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_b_unescaped_1_built = MLBUnescaped::NonAscii(m_l_b_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -4115,7 +4115,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_escaped_n_l_built = MLBEscapedNLBuilder::default()
             .m_l_b_escaped_n_l(m_l_b_escaped_n_l)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_b_escaped_n_l(&m_l_b_escaped_n_l_built)?;
@@ -4148,7 +4148,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .literal_string_list(literal_string_list)
             // Ignore clipped member 'apostrophe0'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.literal_string(&literal_string_built)?;
         self.push(ASTType::LiteralString(literal_string_built), context);
@@ -4174,7 +4174,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let literal_string_list_0_built = LiteralStringListBuilder::default()
             .literal_char(Box::new(literal_char))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         literal_string_list.push(literal_string_list_0_built);
         self.push(ASTType::LiteralStringList(literal_string_list), context);
@@ -4218,7 +4218,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let literal_char_0_built = LiteralCharLiteralCharNoApostropheBuilder::default()
             .literal_char_no_apostrophe(Box::new(literal_char_no_apostrophe))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let literal_char_0_built = LiteralChar::LiteralCharNoApostrophe(literal_char_0_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_0_built)?;
@@ -4242,7 +4242,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let literal_char_1_built = LiteralCharNonAsciiBuilder::default()
             .non_ascii(Box::new(non_ascii))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let literal_char_1_built = LiteralChar::NonAscii(literal_char_1_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_1_built)?;
@@ -4266,7 +4266,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let literal_char_no_apostrophe_built = LiteralCharNoApostropheBuilder::default()
             .literal_char_no_apostrophe(literal_char_no_apostrophe)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .literal_char_no_apostrophe(&literal_char_no_apostrophe_built)?;
@@ -4297,7 +4297,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             // Ignore clipped member 'm_l_literal_string_start'
             .m_l_literal_body(Box::new(m_l_literal_body))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_literal_string(&m_l_literal_string_built)?;
@@ -4329,7 +4329,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_literal_body_list(m_l_literal_body_list)
             // Ignore clipped member 'm_l_literal_string_end'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_literal_body(&m_l_literal_body_built)?;
@@ -4359,7 +4359,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_l_content_list1(Box::new(m_l_l_content_list1))
             .m_l_l_quotes(Box::new(m_l_l_quotes))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Add an element to the vector
         m_l_literal_body_list.push(m_l_literal_body_list_0_built);
         self.push(ASTType::MLLiteralBodyList(m_l_literal_body_list), context);
@@ -4401,7 +4401,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_l_content(Box::new(m_l_l_content))
             .m_l_l_content_list(Box::new(m_l_l_content_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_l_content_list_0_built =
             MLLContentList::MLLContentMLLContentList(m_l_l_content_list_0_built);
         // Calling user action here
@@ -4421,7 +4421,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list_1_built = MLLContentListMLLContentListEmptyBuilder::default()
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_l_content_list_1_built =
             MLLContentList::MLLContentListEmpty(m_l_l_content_list_1_built);
         // Calling user action here
@@ -4450,7 +4450,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .m_l_l_content(Box::new(m_l_l_content))
             .m_l_l_content_list(Box::new(m_l_l_content_list))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_l_content_list1(&m_l_l_content_list1_built)?;
@@ -4474,7 +4474,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_0_built = MLLContentLiteralCharBuilder::default()
             .literal_char(Box::new(literal_char))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_l_content_0_built = MLLContent::LiteralChar(m_l_l_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_0_built)?;
@@ -4498,7 +4498,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_1_built = MLLContentNewlineBuilder::default()
             .newline(Box::new(newline))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let m_l_l_content_1_built = MLLContent::Newline(m_l_l_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_1_built)?;
@@ -4522,7 +4522,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let integer_0_built = IntegerDecIntBuilder::default()
             .dec_int(Box::new(dec_int))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let integer_0_built = Integer::DecInt(integer_0_built);
         // Calling user action here
         self.user_grammar.integer(&integer_0_built)?;
@@ -4546,7 +4546,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let integer_1_built = IntegerHexIntBuilder::default()
             .hex_int(Box::new(hex_int))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let integer_1_built = Integer::HexInt(integer_1_built);
         // Calling user action here
         self.user_grammar.integer(&integer_1_built)?;
@@ -4570,7 +4570,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let integer_2_built = IntegerOctIntBuilder::default()
             .oct_int(Box::new(oct_int))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let integer_2_built = Integer::OctInt(integer_2_built);
         // Calling user action here
         self.user_grammar.integer(&integer_2_built)?;
@@ -4594,7 +4594,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let integer_3_built = IntegerBinIntBuilder::default()
             .bin_int(Box::new(bin_int))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let integer_3_built = Integer::BinInt(integer_3_built);
         // Calling user action here
         self.user_grammar.integer(&integer_3_built)?;
@@ -4618,7 +4618,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let hex_prefix_built = HexPrefixBuilder::default()
             .hex_prefix(hex_prefix)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.hex_prefix(&hex_prefix_built)?;
         self.push(ASTType::HexPrefix(hex_prefix_built), context);
@@ -4641,7 +4641,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let oct_prefix_built = OctPrefixBuilder::default()
             .oct_prefix(oct_prefix)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.oct_prefix(&oct_prefix_built)?;
         self.push(ASTType::OctPrefix(oct_prefix_built), context);
@@ -4664,7 +4664,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let bin_prefix_built = BinPrefixBuilder::default()
             .bin_prefix(bin_prefix)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bin_prefix(&bin_prefix_built)?;
         self.push(ASTType::BinPrefix(bin_prefix_built), context);
@@ -4690,7 +4690,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .dec_int_opt(dec_int_opt)
             .unsigned_dec_int(Box::new(unsigned_dec_int))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.dec_int(&dec_int_built)?;
         self.push(ASTType::DecInt(dec_int_built), context);
@@ -4713,7 +4713,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let dec_int_opt_0_built = DecIntOptBuilder::default()
             .dec_int_opt_group(Box::new(dec_int_opt_group))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::DecIntOpt(Some(Box::new(dec_int_opt_0_built))),
             context,
@@ -4737,7 +4737,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let dec_int_opt_group_0_built = DecIntOptGroupPlusBuilder::default()
             .plus(Box::new(plus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let dec_int_opt_group_0_built = DecIntOptGroup::Plus(dec_int_opt_group_0_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_0_built), context);
         Ok(())
@@ -4759,7 +4759,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let dec_int_opt_group_1_built = DecIntOptGroupMinusBuilder::default()
             .minus(Box::new(minus))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let dec_int_opt_group_1_built = DecIntOptGroup::Minus(dec_int_opt_group_1_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_1_built), context);
         Ok(())
@@ -4797,7 +4797,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             // Ignore clipped member 'hex_prefix'
             .hex_int_content(Box::new(hex_int_content))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.hex_int(&hex_int_built)?;
         self.push(ASTType::HexInt(hex_int_built), context);
@@ -4820,7 +4820,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let hex_int_content_built = HexIntContentBuilder::default()
             .hex_int_content(hex_int_content)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.hex_int_content(&hex_int_content_built)?;
         self.push(ASTType::HexIntContent(hex_int_content_built), context);
@@ -4847,7 +4847,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             // Ignore clipped member 'oct_prefix'
             .oct_int_content(Box::new(oct_int_content))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.oct_int(&oct_int_built)?;
         self.push(ASTType::OctInt(oct_int_built), context);
@@ -4870,7 +4870,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let oct_int_content_built = OctIntContentBuilder::default()
             .oct_int_content(oct_int_content)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.oct_int_content(&oct_int_content_built)?;
         self.push(ASTType::OctIntContent(oct_int_content_built), context);
@@ -4897,7 +4897,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             // Ignore clipped member 'bin_prefix'
             .bin_int_content(Box::new(bin_int_content))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bin_int(&bin_int_built)?;
         self.push(ASTType::BinInt(bin_int_built), context);
@@ -4920,7 +4920,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let bin_int_content_built = BinIntContentBuilder::default()
             .bin_int_content(bin_int_content)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.bin_int_content(&bin_int_content_built)?;
         self.push(ASTType::BinIntContent(bin_int_content_built), context);
@@ -4943,7 +4943,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let boolean_0_built = BooleanTrueBuilder::default()
             .r#true(r#true)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let boolean_0_built = Boolean::True(boolean_0_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_0_built)?;
@@ -4967,7 +4967,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let boolean_1_built = BooleanFalseBuilder::default()
             .r#false(r#false)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let boolean_1_built = Boolean::False(boolean_1_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_1_built)?;
@@ -4991,7 +4991,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let float_0_built = FloatNormalFloatBuilder::default()
             .normal_float(Box::new(normal_float))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let float_0_built = Float::NormalFloat(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
@@ -5015,7 +5015,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let float_1_built = FloatSpecialFloatBuilder::default()
             .special_float(Box::new(special_float))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let float_1_built = Float::SpecialFloat(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
@@ -5039,7 +5039,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let normal_float_built = NormalFloatBuilder::default()
             .normal_float(normal_float)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.normal_float(&normal_float_built)?;
         self.push(ASTType::NormalFloat(normal_float_built), context);
@@ -5062,7 +5062,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let special_float_built = SpecialFloatBuilder::default()
             .special_float(special_float)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.special_float(&special_float_built)?;
         self.push(ASTType::SpecialFloat(special_float_built), context);
@@ -5085,7 +5085,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let date_time_0_built = DateTimeOffsetDateTimeBuilder::default()
             .offset_date_time(Box::new(offset_date_time))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let date_time_0_built = DateTime::OffsetDateTime(date_time_0_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_0_built)?;
@@ -5109,7 +5109,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let date_time_1_built = DateTimeLocalDateTimeBuilder::default()
             .local_date_time(Box::new(local_date_time))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let date_time_1_built = DateTime::LocalDateTime(date_time_1_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_1_built)?;
@@ -5133,7 +5133,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let date_time_2_built = DateTimeLocalDateBuilder::default()
             .local_date(Box::new(local_date))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let date_time_2_built = DateTime::LocalDate(date_time_2_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_2_built)?;
@@ -5157,7 +5157,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let date_time_3_built = DateTimeLocalTimeBuilder::default()
             .local_time(Box::new(local_time))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let date_time_3_built = DateTime::LocalTime(date_time_3_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_3_built)?;
@@ -5181,7 +5181,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let offset_date_time_built = OffsetDateTimeBuilder::default()
             .offset_date_time(offset_date_time)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .offset_date_time(&offset_date_time_built)?;
@@ -5205,7 +5205,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let local_date_time_built = LocalDateTimeBuilder::default()
             .local_date_time(local_date_time)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.local_date_time(&local_date_time_built)?;
         self.push(ASTType::LocalDateTime(local_date_time_built), context);
@@ -5228,7 +5228,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let local_date_built = LocalDateBuilder::default()
             .local_date(local_date)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.local_date(&local_date_built)?;
         self.push(ASTType::LocalDate(local_date_built), context);
@@ -5251,7 +5251,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let local_time_built = LocalTimeBuilder::default()
             .local_time(local_time)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.local_time(&local_time_built)?;
         self.push(ASTType::LocalTime(local_time_built), context);
@@ -5282,7 +5282,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .array_opt(array_opt)
             // Ignore clipped member 'array_close'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -5305,7 +5305,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_opt_0_built = ArrayOptBuilder::default()
             .array_values(Box::new(array_values))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::ArrayOpt(Some(Box::new(array_opt_0_built))),
             context,
@@ -5345,7 +5345,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .val(Box::new(val))
             .array_values_suffix0(Box::new(array_values_suffix0))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array_values(&array_values_built)?;
         self.push(ASTType::ArrayValues(array_values_built), context);
@@ -5373,7 +5373,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
                 // Ignore clipped member 'array_sep'
                 .array_values_suffix(Box::new(array_values_suffix))
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_values_suffix0_0_built =
             ArrayValuesSuffix0::ArraySepArrayValuesSuffix(array_values_suffix0_0_built);
         self.push(
@@ -5394,7 +5394,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_values_suffix0_1_built =
             ArrayValuesSuffix0ArrayValuesSuffix0EmptyBuilder::default()
                 .build()
-                .into_diagnostic()?;
+                .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_values_suffix0_1_built =
             ArrayValuesSuffix0::ArrayValuesSuffix0Empty(array_values_suffix0_1_built);
         self.push(
@@ -5420,7 +5420,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_values_suffix_0_built = ArrayValuesSuffixArrayValuesBuilder::default()
             .array_values(Box::new(array_values))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_values_suffix_0_built =
             ArrayValuesSuffix::ArrayValues(array_values_suffix_0_built);
         self.push(
@@ -5440,7 +5440,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix_1_built = ArrayValuesSuffixArrayValuesSuffixEmptyBuilder::default()
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let array_values_suffix_1_built =
             ArrayValuesSuffix::ArrayValuesSuffixEmpty(array_values_suffix_1_built);
         self.push(
@@ -5466,7 +5466,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_sep_built = ArraySepBuilder::default()
             .array_sep(array_sep)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array_sep(&array_sep_built)?;
         self.push(ASTType::ArraySep(array_sep_built), context);
@@ -5489,7 +5489,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let table_0_built = TableStdTableBuilder::default()
             .std_table(Box::new(std_table))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let table_0_built = Table::StdTable(table_0_built);
         // Calling user action here
         self.user_grammar.table(&table_0_built)?;
@@ -5513,7 +5513,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let table_1_built = TableArrayTableBuilder::default()
             .array_table(Box::new(array_table))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         let table_1_built = Table::ArrayTable(table_1_built);
         // Calling user action here
         self.user_grammar.table(&table_1_built)?;
@@ -5545,7 +5545,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .key(Box::new(key))
             // Ignore clipped member 'std_table_close'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.std_table(&std_table_built)?;
         self.push(ASTType::StdTable(std_table_built), context);
@@ -5568,7 +5568,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_table_open_built = ArrayTableOpenBuilder::default()
             .array_table_open(array_table_open)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .array_table_open(&array_table_open_built)?;
@@ -5592,7 +5592,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_table_close_built = ArrayTableCloseBuilder::default()
             .array_table_close(array_table_close)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .array_table_close(&array_table_close_built)?;
@@ -5616,7 +5616,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_open_built = ArrayOpenBuilder::default()
             .array_open(array_open)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array_open(&array_open_built)?;
         self.push(ASTType::ArrayOpen(array_open_built), context);
@@ -5639,7 +5639,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_close_built = ArrayCloseBuilder::default()
             .array_close(array_close)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array_close(&array_close_built)?;
         self.push(ASTType::ArrayClose(array_close_built), context);
@@ -5662,7 +5662,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let std_table_open_built = StdTableOpenBuilder::default()
             .array_open(Box::new(array_open))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.std_table_open(&std_table_open_built)?;
         self.push(ASTType::StdTableOpen(std_table_open_built), context);
@@ -5685,7 +5685,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let std_table_close_built = StdTableCloseBuilder::default()
             .array_close(Box::new(array_close))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.std_table_close(&std_table_close_built)?;
         self.push(ASTType::StdTableClose(std_table_close_built), context);
@@ -5716,7 +5716,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .inline_table_opt(inline_table_opt)
             // Ignore clipped member 'inline_table_close'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.inline_table(&inline_table_built)?;
         self.push(ASTType::InlineTable(inline_table_built), context);
@@ -5740,7 +5740,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let inline_table_opt_0_built = InlineTableOptBuilder::default()
             .inline_table_key_vals(Box::new(inline_table_key_vals))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::InlineTableOpt(Some(Box::new(inline_table_opt_0_built))),
             context,
@@ -5776,7 +5776,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let inline_table_open_built = InlineTableOpenBuilder::default()
             .inline_table_open(inline_table_open)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .inline_table_open(&inline_table_open_built)?;
@@ -5800,7 +5800,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let inline_table_close_built = InlineTableCloseBuilder::default()
             .inline_table_close(inline_table_close)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .inline_table_close(&inline_table_close_built)?;
@@ -5824,7 +5824,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let inline_table_sep_built = InlineTableSepBuilder::default()
             .array_sep(Box::new(array_sep))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .inline_table_sep(&inline_table_sep_built)?;
@@ -5856,7 +5856,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .key_val(Box::new(key_val))
             .inline_table_key_vals_opt(inline_table_key_vals_opt)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .inline_table_key_vals(&inline_table_key_vals_built)?;
@@ -5888,7 +5888,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             // Ignore clipped member 'inline_table_sep'
             .inline_table_key_vals(Box::new(inline_table_key_vals))
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         self.push(
             ASTType::InlineTableKeyValsOpt(Some(Box::new(inline_table_key_vals_opt_0_built))),
             context,
@@ -5932,7 +5932,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             .key(Box::new(key))
             // Ignore clipped member 'array_table_close'
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.array_table(&array_table_built)?;
         self.push(ASTType::ArrayTable(array_table_built), context);
@@ -5955,7 +5955,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let unsigned_dec_int_built = UnsignedDecIntBuilder::default()
             .unsigned_dec_int(unsigned_dec_int)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .unsigned_dec_int(&unsigned_dec_int_built)?;
@@ -5979,7 +5979,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let unquoted_key_built = UnquotedKeyBuilder::default()
             .unquoted_key(unquoted_key)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.unquoted_key(&unquoted_key_built)?;
         self.push(ASTType::UnquotedKey(unquoted_key_built), context);
@@ -6002,7 +6002,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let dot_sep_built = DotSepBuilder::default()
             .dot_sep(dot_sep)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.dot_sep(&dot_sep_built)?;
         self.push(ASTType::DotSep(dot_sep_built), context);
@@ -6025,7 +6025,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_basic_string_start_built = MLBasicStringStartBuilder::default()
             .m_l_basic_string_start(m_l_basic_string_start)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_basic_string_start(&m_l_basic_string_start_built)?;
@@ -6052,7 +6052,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_basic_string_end_built = MLBasicStringEndBuilder::default()
             .m_l_basic_string_end(m_l_basic_string_end)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_basic_string_end(&m_l_basic_string_end_built)?;
@@ -6079,7 +6079,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_quotes_built = MLBQuotesBuilder::default()
             .m_l_b_quotes(m_l_b_quotes)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.m_l_b_quotes(&m_l_b_quotes_built)?;
         self.push(ASTType::MLBQuotes(m_l_b_quotes_built), context);
@@ -6102,7 +6102,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let quotation_mark_built = QuotationMarkBuilder::default()
             .quotation_mark(quotation_mark)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.quotation_mark(&quotation_mark_built)?;
         self.push(ASTType::QuotationMark(quotation_mark_built), context);
@@ -6125,7 +6125,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_literal_string_start_built = MLLiteralStringStartBuilder::default()
             .m_l_literal_string_start(m_l_literal_string_start)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_literal_string_start(&m_l_literal_string_start_built)?;
@@ -6152,7 +6152,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_literal_string_end_built = MLLiteralStringEndBuilder::default()
             .m_l_literal_string_end(m_l_literal_string_end)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar
             .m_l_literal_string_end(&m_l_literal_string_end_built)?;
@@ -6179,7 +6179,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_quotes_built = MLLQuotesBuilder::default()
             .m_l_l_quotes(m_l_l_quotes)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.m_l_l_quotes(&m_l_l_quotes_built)?;
         self.push(ASTType::MLLQuotes(m_l_l_quotes_built), context);
@@ -6202,7 +6202,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let apostrophe_built = ApostropheBuilder::default()
             .apostrophe(apostrophe)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.apostrophe(&apostrophe_built)?;
         self.push(ASTType::Apostrophe(apostrophe_built), context);
@@ -6225,7 +6225,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let ascii_no_escape_built = AsciiNoEscapeBuilder::default()
             .ascii_no_escape(ascii_no_escape)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.ascii_no_escape(&ascii_no_escape_built)?;
         self.push(ASTType::AsciiNoEscape(ascii_no_escape_built), context);
@@ -6248,7 +6248,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let minus_built = MinusBuilder::default()
             .minus(minus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -6271,7 +6271,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let plus_built = PlusBuilder::default()
             .plus(plus)
             .build()
-            .into_diagnostic()?;
+            .map_err(|e| anyhow!("Builder error!: {}", e))?;
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -6288,7 +6288,7 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> anyhow::Result<()> {
         match prod_num {
             0 => self.parol_toml(&children[0], parse_tree),
             1 => self.parol_toml_list_0(&children[0], &children[1], parse_tree),
@@ -6448,7 +6448,7 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
             153 => self.ascii_no_escape(&children[0], parse_tree),
             154 => self.minus(&children[0], parse_tree),
             155 => self.plus(&children[0], parse_tree),
-            _ => Err(miette!("Unhandled production number: {}", prod_num)),
+            _ => bail!("Unhandled production number: {}", prod_num),
         }
     }
 }

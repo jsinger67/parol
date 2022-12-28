@@ -2,8 +2,8 @@ use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
 use crate::{Pr, Symbol, Terminal};
-use log::trace;
-use miette::{bail, miette, IntoDiagnostic, Result};
+use anyhow::{anyhow, bail, Result};
+use parol_runtime::log::trace;
 use std::collections::{BTreeMap, HashSet};
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -123,7 +123,7 @@ impl GrammarTypeInfo {
                 FunctionBuilder::default()
                     .non_terminal(non_terminal.to_string())
                     .build()
-                    .into_diagnostic()?,
+                    .unwrap(),
             ),
         )?;
         self.user_actions
@@ -137,7 +137,7 @@ impl GrammarTypeInfo {
             .find(|(nt, _)| nt == non_terminal)
             .map(|(_, fn_id)| *fn_id)
             .ok_or_else(|| {
-                miette!(
+                anyhow!(
                     "There should be a user action for non-terminal '{}'!",
                     non_terminal
                 )
@@ -165,7 +165,7 @@ impl GrammarTypeInfo {
                     Ok(())
                 },
                 |_| {
-                    Err(miette!(
+                    Err(anyhow!(
                         "Type for non-terminal {} already specified",
                         non_terminal
                     ))
@@ -381,7 +381,7 @@ impl GrammarTypeInfo {
                 .prod_string(pr.format(&scanner_state_resolver, &user_type_resolver)?)
                 .sem(pr.2)
                 .build()
-                .into_diagnostic()?;
+                .unwrap();
 
             let type_name = if alts == 1 {
                 NmHlp::to_lower_snake_case(pr.get_n_str())
@@ -529,7 +529,7 @@ impl GrammarTypeInfo {
                     }
                 }
             }
-            _ => Err(miette!("Unexpected symbol kind: {}", symbol)),
+            _ => Err(anyhow!("Unexpected symbol kind: {}", symbol)),
         }
     }
 
