@@ -9,23 +9,34 @@ static RX_NEW_LINE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE"));
 
 ///
-/// Converts parol_runtime::lexer::Location to a lsp_types::Range.
-/// The line is kept for both start and end position in the result which could lead to problems!
-/// This can only be fixed by changing the location data of `parol_runtime`!
+/// Converts `parol_runtime::lexer::Location` to a `lsp_types::Range`.
 ///
 pub(crate) fn location_to_range(location: &Location) -> Range {
-    let line = location.start_line as u32 - 1;
     let start_char = location.start_column as u32 - 1;
     let end_char = start_char + location.length as u32;
     Range {
         start: Position {
-            line,
+            line: location.start_line as u32 - 1,
             character: start_char,
         },
         end: Position {
-            line,
+            line: location.end_line as u32 - 1,
             character: end_char,
         },
+    }
+}
+
+///
+/// Converts `parol_runtime::lexer::Location` to a `lsp_types::Location`.
+/// Url is usually taken from the `LocatedDocumentState`.
+///
+pub(crate) fn location_to_location(
+    location: &Location,
+    uri: &lsp_types::Url,
+) -> lsp_types::Location {
+    lsp_types::Location {
+        uri: uri.to_owned(),
+        range: location_to_range(location),
     }
 }
 
