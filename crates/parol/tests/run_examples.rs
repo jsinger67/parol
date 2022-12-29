@@ -1,9 +1,13 @@
 use anyhow::{anyhow, Result};
 use std::process::{Command, ExitStatus};
 
-macro_rules! parol_path {
-    () => {
-        concat!(env!("CARGO_MANIFEST_DIR"), "/../../target/debug/parol")
+macro_rules! binary_path {
+    ($binary:literal) => {
+        format!(
+            "{}{}",
+            concat!(env!("CARGO_MANIFEST_DIR"), "/../../target/debug/"),
+            $binary
+        )
     };
 }
 
@@ -33,52 +37,55 @@ fn run_examples_test() -> Result<()> {
     run_parol_examples()?;
 
     println!("Running Calc example...");
-    run_example(
+    run(
         &example_path!("calc"),
         &["../../examples/calc/calc_test.txt"],
     )?;
 
     println!("Running CalcAuto example...");
-    run_example(
+    run(
         &example_path!("calc_auto"),
         &["../../examples/calc_auto/calc_test.txt"],
     )?;
 
     println!("Running List example...");
-    run_example(
+    run(
         &example_path!("list"),
         &["../../examples/list/list_test.txt"],
     )?;
 
     println!("Running ListAuto example...");
-    run_example(
+    run(
         &example_path!("list_auto"),
         &["../../examples/list_auto/list_test.txt"],
     )?;
 
     println!("Running Oberon-0 example...");
-    run_example(
+    run(
         &example_path!("oberon_0"),
         &["../../examples/oberon_0/Sample.mod"],
     )?;
 
     println!("Running Scanner States example...");
-    run_example(
+    run(
         &example_path!("scanner_states"),
         &["../../examples/scanner_states/scanner_states_test.txt"],
     )?;
 
     println!("Running Boolean Parser example...");
-    run_example(
+    run(
         &example_path!("boolean_parser"),
         &["../../examples/boolean_parser/boolean_parser_test.txt"],
     )?;
 
-    println!("Running Keywords example...");
+    println!("Running Keywords examples...");
     run_keywords_examples()?;
 
-    println!("Running Keywords2 example...");
+    println!("Running Keywords2 examples...");
     run_keywords2_examples()?;
+
+    println!("Running Basic Interpreter examples...");
+    run_basic_interpreter_examples()?;
 
     Ok(())
 }
@@ -92,41 +99,18 @@ fn build_examples() -> Result<()> {
 }
 
 fn run_parol(args: &[&str]) -> Result<ExitStatus> {
-    Command::new(parol_path!())
+    Command::new(binary_path!("parol"))
         .args(args)
         .status()
         .map_err(|e| anyhow!(e))
 }
 
-fn run_parol_should_fail(args: &[&str]) -> Result<bool> {
-    Ok(Command::new(parol_path!())
-        .args(args)
-        .output()
-        .unwrap()
-        .status
-        .code()
-        .unwrap()
-        != 0)
-}
-
-fn run_example(example: &str, args: &[&str]) -> Result<ExitStatus> {
-    println!("Running example {}, {:?}", example, args);
-    Command::new(example)
+fn run(command: &str, args: &[&str]) -> Result<ExitStatus> {
+    println!("Running command {}, {:?}", command, args);
+    Command::new(command)
         .args(args)
         .status()
         .map_err(|e| anyhow!(e))
-}
-
-fn run_example_should_fail(example: &str, args: &[&str]) -> Result<bool> {
-    println!("Running example that should fail {}, {:?}", example, args);
-    Ok(Command::new(example)
-        .args(args)
-        .output()
-        .unwrap()
-        .status
-        .code()
-        .unwrap()
-        != 0)
 }
 
 fn run_parol_examples() -> Result<()> {
@@ -134,7 +118,8 @@ fn run_parol_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {}...", entry.path().display());
-                run_parol(&["-f", entry.path().to_str().unwrap()])?;
+                let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
             }
         }
     }
@@ -142,8 +127,8 @@ fn run_parol_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {} should fail...", entry.path().display());
-                let failed = run_parol_should_fail(&["-f", entry.path().to_str().unwrap()]);
-                assert!(failed.ok().unwrap());
+                let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
+                assert!(!exit_status.success());
             }
         }
     }
@@ -156,7 +141,8 @@ fn run_keywords_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());
-                run_example(&parser, &["-f", entry.path().to_str().unwrap()])?;
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
             }
         }
     }
@@ -164,9 +150,8 @@ fn run_keywords_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {} should fail...", entry.path().display());
-                let failed =
-                    run_example_should_fail(&parser, &["-f", entry.path().to_str().unwrap()]);
-                assert!(failed.ok().unwrap());
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(!exit_status.success());
             }
         }
     }
@@ -179,9 +164,34 @@ fn run_keywords2_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());
-                run_example(&parser, &["-f", entry.path().to_str().unwrap()])?;
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
             }
         }
     }
     Ok(())
 }
+
+fn run_basic_interpreter_examples() -> Result<()> {
+    let parser = binary_path!("basic");
+    for entry in std::path::Path::new("../../examples/basic_interpreter/tests/data/valid").read_dir()? {
+        if let Ok(entry) = entry {
+            if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
+                println!("Parsing {}...", entry.path().display());
+                let _exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                // assert!(exit_status.success());
+            }
+        }
+    }
+    for entry in std::path::Path::new("../../examples/basic_interpreter/tests/data/invalid").read_dir()? {
+        if let Ok(entry) = entry {
+            if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
+                println!("Parsing {} should fail...", entry.path().display());
+                let _exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                // assert!(!exit_status.success());
+            }
+        }
+    }
+    Ok(())
+}
+
