@@ -11,7 +11,7 @@ parol_runtime = { version = "0.11.2", features = ["auto_generation"] }
 thiserror = "1.0"
 
 [build-dependencies]
-parol = { git = "https://github.com/jsinger67/parol.git", version = "0.15.1" }
+parol = { git = "https://github.com/jsinger67/parol.git", version = "0.16.0-alpha.1" }
 
 # For faster builds.
 [profile.dev.build-override]
