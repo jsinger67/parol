@@ -1,5 +1,3 @@
-extern crate parol_runtime;
-
 pub mod basic_grammar;
 // The output is version controlled
 pub mod basic_grammar_trait;
@@ -9,9 +7,11 @@ pub mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
+use miette::{miette, IntoDiagnostic, WrapErr};
+use parol::to_report;
 use parol_runtime::log::debug;
 use parol_runtime::parser::ParseTreeType;
 use std::env;
@@ -21,7 +21,7 @@ use std::time::Instant;
 // To generate:
 // parol -f ./basic.par -e ./basic-exp.par -p ./src/basic_parser.rs -a ./src/basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -g
 
-fn main() -> Result<()> {
+fn main() -> miette::Result<()> {
     env_logger::init();
     debug!("env logger started");
 
@@ -29,11 +29,13 @@ fn main() -> Result<()> {
     if args.len() >= 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .with_context(|| format!("Can't read file {}", file_name))?;
+            .into_diagnostic()
+            .wrap_err(format!("Can't read file {}", file_name))?;
         let mut basic_grammar = BasicGrammar::new();
         let now = Instant::now();
         let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
-            .with_context(|| format!("Failed parsing file {}", file_name))?;
+            .map_err(to_report)
+            .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         if args.len() > 2 && args[2] == "-q" {
             println!("\n{}", basic_grammar);
@@ -41,10 +43,10 @@ fn main() -> Result<()> {
         } else {
             println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
             println!("Success!\nVariables:\n{}", basic_grammar);
-            generate_tree_layout(&syntax_tree, &file_name)
+            generate_tree_layout(&syntax_tree, &file_name).map_err(to_report)
         }
     } else {
-        Err(anyhow!("Please provide a file name as first parameter!"))
+        Err(miette!("Please provide a file name as first parameter!"))
     }
 }
 

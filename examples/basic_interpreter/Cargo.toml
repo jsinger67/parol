@@ -11,7 +11,8 @@ function_name = "0.3.0"
 id_tree = "^1.8"
 id_tree_layout = "2.0.3"
 log = "0.4.14"
-miette = { version = "^5.3", features = ["fancy"] }
+miette = { version = "5.5", features = ["fancy"] }
+parol = { path = "../../crates/parol" }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
 parol-macros = { path = "../../crates/parol-macros" }
 thiserror = "^1.0"

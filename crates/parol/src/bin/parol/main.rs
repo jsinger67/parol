@@ -1,14 +1,12 @@
 extern crate clap;
 
 mod arguments;
-mod miette_errors;
 mod tools;
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use crate::miette_errors::to_report;
 use anyhow::{anyhow, Context, Result};
 use arguments::CliArgs;
 use clap::Parser;
@@ -18,7 +16,7 @@ use parol_runtime::log::trace;
 use id_tree::Tree;
 use parol::{
     build::{BuildListener, IntermediateGrammar},
-    render_par_string, GrammarConfig, ParolGrammar,
+    render_par_string, to_report, GrammarConfig, ParolGrammar,
 };
 use parol_runtime::parser::ParseTreeType;
 

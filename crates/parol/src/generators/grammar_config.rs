@@ -27,7 +27,7 @@ pub struct GrammarConfig {
     /// The actual context free grammar.
     /// It should be checked and left-factored here.
     /// For this task use the
-    /// [generators::grammar_trans::check_and_transform_grammar]
+    /// [crate::generators::grammar_trans::check_and_transform_grammar]
     /// function to prepare the grammar.
     ///
     pub cfg: Cfg,

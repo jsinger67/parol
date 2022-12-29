@@ -12,7 +12,7 @@ env_logger = "0.10.0"
 function_name = "0.3.0"
 id_tree = "^1.8"
 log = "0.4.17"
-miette = { version = "^5.3", features = ["fancy"] }
+miette = { version = "5.5", features = ["fancy"] }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["trim_parse_tree", "auto_generation"] }
 parol-macros = { path = "../../crates/parol-macros" }
 thiserror = "^1.0"

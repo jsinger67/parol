@@ -130,7 +130,7 @@ fn extract_parser_error(
 ) {
     match error {
         ParolParserError::UnknownScanner { name, token, .. } => {
-            *range = location_to_range(&token);
+            *range = location_to_range(token);
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(token, located_document_state.uri),
                 message: name.to_string(),

@@ -2,7 +2,7 @@
 
 <!-- markdownlint-disable Inline HTML -->
 <br>
-<img src="./images/ParolLS_300x300.png" alt="Logo" height=300 with=300>
+<img src="https://github.com/jsinger67/parol/raw/main/crates/parol-ls/images/ParolLS_300x300.png" alt="Logo" height=300 with=300>
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 

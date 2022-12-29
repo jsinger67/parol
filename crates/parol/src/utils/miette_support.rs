@@ -84,7 +84,7 @@ impl From<parol_runtime::ParserError> for ParserError {
                 expected_tokens,
                 source,
             } => ParserError::PredictionErrorWithExpectations {
-                cause: cause.into(),
+                cause,
                 input: MyFileSource(input).into(),
                 error_location: MyLocation(error_location).into(),
                 unexpected_tokens: MyUnexpectedToken(unexpected_tokens).into(),
@@ -118,31 +118,31 @@ pub enum LexerError {
         help("Error in generated source"),
         code(parol_runtime::lookahead::generation_error)
     )]
-    DataError(&'static str),
+    Data(&'static str),
 
     #[error("{cause}")]
     #[diagnostic(
         help("Error in input"),
         code(parol_runtime::lookahead::production_prediction_error)
     )]
-    PredictionError { cause: String },
+    Prediction { cause: String },
 
     #[error("No valid token read")]
     #[diagnostic(
         help("No valid token read"),
         code(parol_runtime::lookahead::empty_token_buffer)
     )]
-    TokenBufferEmptyError,
+    TokenBufferEmpty,
 }
 
 impl From<parol_runtime::LexerError> for LexerError {
     fn from(value: parol_runtime::LexerError) -> Self {
         match value {
-            parol_runtime::LexerError::DataError(msg) => LexerError::DataError(msg),
+            parol_runtime::LexerError::DataError(msg) => LexerError::Data(msg),
             parol_runtime::LexerError::PredictionError { cause } => {
-                LexerError::PredictionError { cause }
+                LexerError::Prediction { cause }
             }
-            parol_runtime::LexerError::TokenBufferEmptyError => LexerError::TokenBufferEmptyError,
+            parol_runtime::LexerError::TokenBufferEmptyError => LexerError::TokenBufferEmpty,
         }
     }
 }
@@ -285,10 +285,10 @@ Consider using only one single terminal instead of two."
     },
 }
 
-impl From<parol::ParolParserError> for ParolParserError {
-    fn from(value: parol::ParolParserError) -> Self {
+impl From<crate::ParolParserError> for ParolParserError {
+    fn from(value: crate::ParolParserError) -> Self {
         match value {
-            parol::ParolParserError::UnknownScanner {
+            crate::ParolParserError::UnknownScanner {
                 context,
                 name,
                 input,
@@ -299,7 +299,7 @@ impl From<parol::ParolParserError> for ParolParserError {
                 input: MyFileSource(input).into(),
                 token: MyLocation(token).into(),
             },
-            parol::ParolParserError::EmptyGroup {
+            crate::ParolParserError::EmptyGroup {
                 context,
                 input,
                 start,
@@ -310,7 +310,7 @@ impl From<parol::ParolParserError> for ParolParserError {
                 start: MyLocation(start).into(),
                 end: MyLocation(end).into(),
             },
-            parol::ParolParserError::EmptyOptional {
+            crate::ParolParserError::EmptyOptional {
                 context,
                 input,
                 start,
@@ -321,7 +321,7 @@ impl From<parol::ParolParserError> for ParolParserError {
                 start: MyLocation(start).into(),
                 end: MyLocation(end).into(),
             },
-            parol::ParolParserError::EmptyRepetition {
+            crate::ParolParserError::EmptyRepetition {
                 context,
                 input,
                 start,
@@ -332,7 +332,7 @@ impl From<parol::ParolParserError> for ParolParserError {
                 start: MyLocation(start).into(),
                 end: MyLocation(end).into(),
             },
-            parol::ParolParserError::ConflictingTokenAliases {
+            crate::ParolParserError::ConflictingTokenAliases {
                 first_alias,
                 second_alias,
                 expanded,
@@ -347,7 +347,7 @@ impl From<parol::ParolParserError> for ParolParserError {
                 first: MyLocation(first).into(),
                 second: MyLocation(second).into(),
             },
-            parol::ParolParserError::EmptyScanners { empty_scanners } => {
+            crate::ParolParserError::EmptyScanners { empty_scanners } => {
                 ParolParserError::EmptyScanners { empty_scanners }
             }
         }
@@ -409,25 +409,25 @@ pub enum GrammarAnalysisError {
     },
 }
 
-impl From<parol::GrammarAnalysisError> for GrammarAnalysisError {
-    fn from(value: parol::GrammarAnalysisError) -> Self {
+impl From<crate::GrammarAnalysisError> for GrammarAnalysisError {
+    fn from(value: crate::GrammarAnalysisError) -> Self {
         match value {
-            parol::GrammarAnalysisError::LeftRecursion { recursions } => {
+            crate::GrammarAnalysisError::LeftRecursion { recursions } => {
                 GrammarAnalysisError::LeftRecursion {
                     recursions: MyRecursiveNonTerminals(recursions).into(),
                 }
             }
-            parol::GrammarAnalysisError::UnreachableNonTerminals { non_terminals } => {
+            crate::GrammarAnalysisError::UnreachableNonTerminals { non_terminals } => {
                 GrammarAnalysisError::UnreachableNonTerminals {
                     non_terminals: MyRelatedHints(non_terminals).into(),
                 }
             }
-            parol::GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
+            crate::GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
                 GrammarAnalysisError::NonProductiveNonTerminals {
                     non_terminals: MyRelatedHints(non_terminals).into(),
                 }
             }
-            parol::GrammarAnalysisError::MaxKExceeded { max_k } => {
+            crate::GrammarAnalysisError::MaxKExceeded { max_k } => {
                 GrammarAnalysisError::MaxKExceeded { max_k }
             }
         }
@@ -511,7 +511,7 @@ impl From<MyUnexpectedToken> for Vec<UnexpectedToken> {
     }
 }
 
-struct MyRecursiveNonTerminals(Vec<parol::RecursiveNonTerminal>);
+struct MyRecursiveNonTerminals(Vec<crate::RecursiveNonTerminal>);
 
 impl From<MyRecursiveNonTerminals> for Vec<RecursiveNonTerminal> {
     fn from(value: MyRecursiveNonTerminals) -> Self {
@@ -526,7 +526,7 @@ impl From<MyRecursiveNonTerminals> for Vec<RecursiveNonTerminal> {
     }
 }
 
-struct MyRelatedHints(Vec<parol::RelatedHint>);
+struct MyRelatedHints(Vec<crate::RelatedHint>);
 
 impl From<MyRelatedHints> for Vec<RelatedHint> {
     fn from(value: MyRelatedHints) -> Self {
@@ -541,7 +541,26 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
     }
 }
 
-pub(crate) fn to_report(err: anyhow::Error) -> miette::Report {
+/// Supports conversion of `anyhow::Error` objects produced by the libraries `parol_runtime` and
+/// `parol` to `miette::Report` objects. By doing so you can use the fancy error messages feature
+/// of `miette` in your own application too.
+///
+/// You can use it in your binary like this:
+///
+/// ```ignore
+/// let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
+///     .map_err(to_report)
+///     .wrap_err(format!("Failed parsing file {}", file_name))?;
+/// ```
+///
+/// Note that you have to add a dependency to the `miette` crate in your `Cargo.toml` and don't
+/// forget to add the "fancy" feature:
+///
+/// ```toml
+/// miette = { version = "5.5", features = ["fancy"] }
+/// ```
+///
+pub fn to_report(err: anyhow::Error) -> miette::Report {
     let err = match err.downcast::<parol_runtime::ParserError>() {
         Ok(err) => return miette!(<parol_runtime::ParserError as Into<ParserError>>::into(err)),
         Err(err) => err,
@@ -552,18 +571,18 @@ pub(crate) fn to_report(err: anyhow::Error) -> miette::Report {
         Err(err) => err,
     };
 
-    let err = match err.downcast::<parol::ParolParserError>() {
+    let err = match err.downcast::<crate::ParolParserError>() {
         Ok(err) => {
-            return miette!(<parol::ParolParserError as Into<ParolParserError>>::into(
+            return miette!(<crate::ParolParserError as Into<ParolParserError>>::into(
                 err
             ))
         }
         Err(err) => err,
     };
 
-    let err = match err.downcast::<parol::GrammarAnalysisError>() {
+    let err = match err.downcast::<crate::GrammarAnalysisError>() {
         Ok(err) => {
-            return miette!(<parol::GrammarAnalysisError as Into<
+            return miette!(<crate::GrammarAnalysisError as Into<
                 GrammarAnalysisError,
             >>::into(err))
         }

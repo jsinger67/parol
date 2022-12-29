@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.4.0
+
+* Removed `miette` as opaque error handling crate and substituted it by `thiserror` + `anyhow`
+* General improvements of error handling and reporting
+
 ## v0.3.4
 
 * Infrastructural changes: Moved repository into parol workspace

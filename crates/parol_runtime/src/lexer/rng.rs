@@ -35,7 +35,7 @@ impl Span {
         }
     }
 
-    /// Same as [extend] but consuming RHS
+    /// Same as [Span::extend] but consuming RHS
     pub fn extend_to(&self, right: Span) -> Span {
         if self.is_empty() {
             right
@@ -73,7 +73,7 @@ impl Deref for Span {
 impl Add for Span {
     type Output = Self;
 
-    /// Same as [extend] but consuming LHS and RHS
+    /// Same as [Span::extend] but consuming LHS and RHS
     fn add(self, rhs: Self) -> Self::Output {
         if self.is_empty() {
             rhs
