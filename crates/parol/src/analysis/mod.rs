@@ -10,7 +10,7 @@ pub use compiled_terminal::CompiledTerminal;
 ///
 #[forbid(missing_docs)]
 pub mod errors;
-pub use errors::GrammarAnalysisError;
+pub use errors::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 
 /// Module with check for left-recursions
 pub mod left_recursion;

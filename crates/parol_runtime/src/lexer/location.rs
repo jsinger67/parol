@@ -33,26 +33,25 @@ pub struct Location {
 
     /// Start position in the input stream as byte offset at last scanner switching.
     #[builder(default)]
-    pub(crate) scanner_switch_pos: usize,
+    pub scanner_switch_pos: usize,
 
     /// Relative position from scanner_switch_pos as byte offset.
-    pub(crate) offset: usize,
+    pub offset: usize,
 
     /// The name of the input file
     pub file_name: Cow<'static, Path>,
 }
 
-impl Location {}
-
 impl Display for Location {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         write!(
             f,
-            "{}:{}:{}-{}",
+            "{}:{}:{}-{}:{}",
             self.file_name.display(),
             self.start_line,
             self.start_column,
-            self.start_column + self.length
+            self.end_line,
+            self.end_column
         )
     }
 }

@@ -1,15 +1,18 @@
 extern crate clap;
 
 mod arguments;
+mod miette_errors;
 mod tools;
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use crate::miette_errors::to_report;
 use anyhow::{anyhow, Context, Result};
 use arguments::CliArgs;
 use clap::Parser;
+use miette::IntoDiagnostic;
 use parol_runtime::log::trace;
 
 use id_tree::Tree;
@@ -21,18 +24,19 @@ use parol_runtime::parser::ParseTreeType;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
-fn main() -> Result<()> {
-    env_logger::try_init()?;
+fn main() -> miette::Result<()> {
+    env_logger::try_init().into_diagnostic()?;
     trace!("env logger started");
 
     let args = CliArgs::parse();
 
     if let Some(subcommand) = args.subcommand {
-        return subcommand.invoke_main();
+        return subcommand.invoke_main().map_err(to_report);
     }
 
     // If relative paths are specified, they should be resoled relative to the current directory
-    let mut builder = parol::build::Builder::with_explicit_output_dir(env::current_dir()?);
+    let mut builder =
+        parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
 
     // It's okay if the output doesn't exist;
     builder.disable_output_sanity_checks();
@@ -43,10 +47,11 @@ fn main() -> Result<()> {
     let grammar_file = args
         .grammar
         .as_ref()
-        .ok_or_else(|| anyhow!("Missing input grammar file (Specify with `-f`)"))?;
+        .ok_or_else(|| anyhow!("Missing input grammar file (Specify with `-f`)"))
+        .map_err(to_report)?;
     builder.grammar_file(grammar_file);
 
-    builder.max_lookahead(args.lookahead)?;
+    builder.max_lookahead(args.lookahead).into_diagnostic()?;
     if let Some(module) = &args.module {
         builder.user_trait_module_name(module);
     }
@@ -78,12 +83,14 @@ fn main() -> Result<()> {
         grammar_file,
         config: &args,
     };
-    let mut generator = builder.begin_generation_with(Some(&mut listener))?;
+    let mut generator = builder
+        .begin_generation_with(Some(&mut listener))
+        .into_diagnostic()?;
 
-    generator.parse()?;
-    generator.expand()?;
-    generator.post_process()?;
-    generator.write_output()?;
+    generator.parse().map_err(to_report)?;
+    generator.expand().map_err(to_report)?;
+    generator.post_process().map_err(to_report)?;
+    generator.write_output().map_err(to_report)?;
 
     Ok(())
 }
