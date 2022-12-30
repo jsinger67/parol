@@ -5,6 +5,7 @@ use crate::{
 };
 #[allow(unused_imports)]
 use anyhow::{anyhow, bail, Context, Result};
+use parol::utils::miette_support;
 use parol_runtime::log::trace;
 use parol_runtime::{
     errors::FileSource,
@@ -132,8 +133,11 @@ impl<'t> BasicGrammar<'t> {
             if lines.lines.insert(k.0, (k.1.clone(), v)).is_some() {
                 bail!(BasicError::LineNumberDefinedTwice {
                     context: context.to_owned(),
-                    input: FileSource::try_new(k.1.file_name.clone())?,
-                    token: k.1
+                    input: miette_support::MyFileSource(FileSource::try_new(
+                        k.1.file_name.clone()
+                    )?)
+                    .into(),
+                    token: miette_support::MyLocation(k.1).into()
                 });
             }
         }
@@ -158,11 +162,14 @@ impl<'t> BasicGrammar<'t> {
         let context = "pre_process_line";
         let basic_line_number = &line.line_number.line_number;
         if basic_line_number.0 > MAX_LINE_NUMBER {
-            return Err(anyhow!(BasicError::LineNumberTooLarge {
+            bail!(BasicError::LineNumberTooLarge {
                 context: context.to_owned(),
-                input: FileSource::try_new(basic_line_number.1.file_name.clone())?,
-                token: basic_line_number.1.clone()
-            }));
+                input: miette_support::MyFileSource(FileSource::try_new(
+                    basic_line_number.1.file_name.clone()
+                )?)
+                .into(),
+                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
+            });
         }
 
         // On each line there can exist multiple statements separated by colons!
@@ -251,11 +258,14 @@ impl<'t> BasicGrammar<'t> {
         }
 
         if !lines.lines.contains_key(&line_number) {
-            return Err(anyhow!(BasicError::LineNumberBeyondLastLine {
+            bail!(BasicError::LineNumberBeyondLastLine {
                 context: context.to_owned(),
-                input: FileSource::try_new(basic_line_number.1.file_name.clone())?,
-                token: basic_line_number.1.clone()
-            }));
+                input: miette_support::MyFileSource(FileSource::try_new(
+                    basic_line_number.1.file_name.clone()
+                )?)
+                .into(),
+                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
+            });
         }
 
         trace!("{context}: setting next line to {line_number}");

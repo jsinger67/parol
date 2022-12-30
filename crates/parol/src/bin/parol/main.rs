@@ -10,7 +10,7 @@ use std::{env, fs};
 use anyhow::{anyhow, Context, Result};
 use arguments::CliArgs;
 use clap::Parser;
-use miette::IntoDiagnostic;
+use miette::{miette, IntoDiagnostic};
 use parol_runtime::log::trace;
 
 use id_tree::Tree;
@@ -29,7 +29,7 @@ fn main() -> miette::Result<()> {
     let args = CliArgs::parse();
 
     if let Some(subcommand) = args.subcommand {
-        return subcommand.invoke_main().map_err(to_report);
+        return subcommand.invoke_main().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)));
     }
 
     // If relative paths are specified, they should be resoled relative to the current directory
@@ -46,7 +46,7 @@ fn main() -> miette::Result<()> {
         .grammar
         .as_ref()
         .ok_or_else(|| anyhow!("Missing input grammar file (Specify with `-f`)"))
-        .map_err(to_report)?;
+        .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
     builder.grammar_file(grammar_file);
 
     builder.max_lookahead(args.lookahead).into_diagnostic()?;
@@ -85,10 +85,10 @@ fn main() -> miette::Result<()> {
         .begin_generation_with(Some(&mut listener))
         .into_diagnostic()?;
 
-    generator.parse().map_err(to_report)?;
-    generator.expand().map_err(to_report)?;
-    generator.post_process().map_err(to_report)?;
-    generator.write_output().map_err(to_report)?;
+    generator.parse().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
+    generator.expand().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
+    generator.post_process().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
+    generator.write_output().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
 
     Ok(())
 }

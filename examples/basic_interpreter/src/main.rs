@@ -7,11 +7,11 @@ pub mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
+use crate::errors::to_report;
 use anyhow::{Context, Result};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use miette::{miette, IntoDiagnostic, WrapErr};
-use parol::to_report;
 use parol_runtime::log::debug;
 use parol_runtime::parser::ParseTreeType;
 use std::env;
@@ -34,7 +34,7 @@ fn main() -> miette::Result<()> {
         let mut basic_grammar = BasicGrammar::new();
         let now = Instant::now();
         let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
-            .map_err(to_report)
+            .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         if args.len() > 2 && args[2] == "-q" {
@@ -43,7 +43,8 @@ fn main() -> miette::Result<()> {
         } else {
             println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
             println!("Success!\nVariables:\n{}", basic_grammar);
-            generate_tree_layout(&syntax_tree, &file_name).map_err(to_report)
+            generate_tree_layout(&syntax_tree, &file_name)
+                .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))
         }
     } else {
         Err(miette!("Please provide a file name as first parameter!"))

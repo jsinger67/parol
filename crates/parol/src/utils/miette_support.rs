@@ -458,7 +458,7 @@ pub struct RelatedHint {
 // Conversion types and functions
 // -------------------------------------------------------------------------------------------------
 
-struct MyFileSource(parol_runtime::FileSource);
+pub struct MyFileSource(pub parol_runtime::FileSource);
 
 impl SourceCode for MyFileSource {
     fn read_span<'a>(
@@ -480,16 +480,16 @@ impl From<MyFileSource> for NamedSource {
     fn from(file_source: MyFileSource) -> Self {
         let file_name = file_source.0.file_name.clone();
         let file_name = file_name.to_str().unwrap_or("<Bad file name>");
-        Self::new(file_name, file_source)
+        NamedSource::new(file_name, file_source)
     }
 }
 
-struct MyLocation(parol_runtime::Location);
+pub struct MyLocation(pub parol_runtime::Location);
 
 impl From<MyLocation> for SourceSpan {
     fn from(location: MyLocation) -> Self {
         SourceSpan::new(
-            (location.0.scanner_switch_pos + location.0.offset).into(),
+            (location.0.scanner_switch_pos + location.0.offset - location.0.length).into(),
             location.0.length.into(),
         )
     }
@@ -549,10 +549,15 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
 ///
 /// ```ignore
 /// let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
-///     .map_err(to_report)
+///     .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))
 ///     .wrap_err(format!("Failed parsing file {}", file_name))?;
 /// ```
 ///
+/// Since `to_report` returns the anyhow::Error as error type when a coercion was not possible
+/// you can chain your own type coercion attempt there.
+/// A possible way to achieve this can be found in the 'Basic' example's `to_report` function:
+/// examples/basic_interpreter/src/errors.rs
+/// 
 /// Note that you have to add a dependency to the `miette` crate in your `Cargo.toml` and don't
 /// forget to add the "fancy" feature:
 ///
@@ -560,34 +565,34 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
 /// miette = { version = "5.5", features = ["fancy"] }
 /// ```
 ///
-pub fn to_report(err: anyhow::Error) -> miette::Report {
+pub fn to_report(err: anyhow::Error) -> std::result::Result<miette::Report, anyhow::Error> {
     let err = match err.downcast::<parol_runtime::ParserError>() {
-        Ok(err) => return miette!(<parol_runtime::ParserError as Into<ParserError>>::into(err)),
+        Ok(err) => return Ok(miette!(<parol_runtime::ParserError as Into<ParserError>>::into(err))),
         Err(err) => err,
     };
 
     let err = match err.downcast::<parol_runtime::LexerError>() {
-        Ok(err) => return miette!(<parol_runtime::LexerError as Into<LexerError>>::into(err)),
+        Ok(err) => return Ok(miette!(<parol_runtime::LexerError as Into<LexerError>>::into(err))),
         Err(err) => err,
     };
 
     let err = match err.downcast::<crate::ParolParserError>() {
         Ok(err) => {
-            return miette!(<crate::ParolParserError as Into<ParolParserError>>::into(
+            return Ok(miette!(<crate::ParolParserError as Into<ParolParserError>>::into(
                 err
-            ))
+            )))
         }
         Err(err) => err,
     };
 
     let err = match err.downcast::<crate::GrammarAnalysisError>() {
         Ok(err) => {
-            return miette!(<crate::GrammarAnalysisError as Into<
+            return Ok(miette!(<crate::GrammarAnalysisError as Into<
                 GrammarAnalysisError,
-            >>::into(err))
+            >>::into(err)))
         }
         Err(err) => err,
     };
 
-    miette!(err)
+    Err(err)
 }

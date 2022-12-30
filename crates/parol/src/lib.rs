@@ -66,8 +66,10 @@ pub use parser::{parse, ParolGrammar, ParolParserError};
 pub mod transformation;
 pub use transformation::left_factor;
 
-#[forbid(missing_docs)]
-mod utils;
+///
+/// Module with utility functionalities
+///
+pub mod utils;
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};
 pub use utils::{
