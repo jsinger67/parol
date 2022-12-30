@@ -18,9 +18,9 @@ pub const UNMATCHABLE_TOKEN: &str = r###"\w\b\w"###;
 pub const NEW_LINE_TOKEN: &str = r###"\r\n|\r|\n"###;
 
 ///
-/// Regular expression for any whitespace
+/// Regular expression for any whitespace except newline characters
 ///
-pub const WHITESPACE_TOKEN: &str = r###"\s+"###;
+pub const WHITESPACE_TOKEN: &str = r###"[\s--\r\n]+"###;
 
 ///
 /// Regular expression that matches any other token. With this you can detect

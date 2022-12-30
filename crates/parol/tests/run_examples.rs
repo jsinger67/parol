@@ -178,8 +178,8 @@ fn run_basic_interpreter_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
                 println!("Parsing {}...", entry.path().display());
-                let _exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                // assert!(exit_status.success());
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
             }
         }
     }
@@ -187,8 +187,8 @@ fn run_basic_interpreter_examples() -> Result<()> {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
                 println!("Parsing {} should fail...", entry.path().display());
-                let _exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                // assert!(!exit_status.success());
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(!exit_status.success());
             }
         }
     }

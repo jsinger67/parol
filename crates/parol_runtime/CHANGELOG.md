@@ -20,6 +20,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 * Removed `miette` as opaque error handling crate and substituted it by `thiserror` + `anyhow`
 * General improvements of error handling
+* Fixed the problem that regex for white spaces consumed newline characters
 
 ## v0.11.2 - 2022-12-22
 
