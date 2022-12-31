@@ -1,5 +1,4 @@
 use crate::{ParseTreeType, ParserError, Token};
-use anyhow::{anyhow, Result};
 use id_tree::{Node, NodeId, Tree};
 
 ///
@@ -48,7 +47,10 @@ impl<'t> ParseTreeStackEntry<'t> {
     ///
     /// `'t` refers to the lifetime of the scanned text.
     ///
-    pub fn token<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType<'t>>) -> Result<&'a Token<'t>>
+    pub fn token<'a, 'b>(
+        &'a self,
+        parse_tree: &'b Tree<ParseTreeType<'t>>,
+    ) -> Result<&'a Token<'t>, ParserError>
     where
         'b: 'a,
     {
@@ -65,7 +67,10 @@ impl<'t> ParseTreeStackEntry<'t> {
     /// `'a` refers to the lifetime of self.
     /// `'b` refers to the lifetime of the parse tree.
     ///
-    pub fn text<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType>) -> Result<&'a str>
+    pub fn text<'a, 'b>(
+        &'a self,
+        parse_tree: &'b Tree<ParseTreeType>,
+    ) -> Result<&'a str, ParserError>
     where
         'b: 'a,
     {
@@ -77,7 +82,7 @@ impl<'t> ParseTreeStackEntry<'t> {
             Self::Id(i) => {
                 let node = parse_tree
                     .get(i)
-                    .map_err(|e| anyhow!(ParserError::IdTreeError { source: e }))?;
+                    .map_err(|e| ParserError::IdTreeError { source: e })?;
                 let token = node.data().token()?;
                 Ok(&token.text)
             }

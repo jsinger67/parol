@@ -9,8 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
@@ -18,42 +16,43 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParolError, ParserError};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait JsonGrammarTrait<'t> {
     /// Semantic action for non-terminal 'Json'
-    fn json(&mut self, _arg: &Json<'t>) -> Result<()> {
+    fn json(&mut self, _arg: &Json<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Object'
-    fn object(&mut self, _arg: &Object<'t>) -> Result<()> {
+    fn object(&mut self, _arg: &Object<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Pair'
-    fn pair(&mut self, _arg: &Pair<'t>) -> Result<()> {
+    fn pair(&mut self, _arg: &Pair<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Array'
-    fn array(&mut self, _arg: &Array<'t>) -> Result<()> {
+    fn array(&mut self, _arg: &Array<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Value'
-    fn value(&mut self, _arg: &Value<'t>) -> Result<()> {
+    fn value(&mut self, _arg: &Value<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+    fn string(&mut self, _arg: &String<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Number'
-    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
+    fn number(&mut self, _arg: &Number<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 }
@@ -401,14 +400,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _value: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
-        let json_built = JsonBuilder::default()
-            .value(Box::new(value))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let json_built = Json {
+            value: Box::new(value),
+        };
         // Calling user action here
         self.user_grammar.json(&json_built)?;
         self.push(ASTType::Json(json_built), context);
@@ -425,15 +423,14 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _l_brace: &ParseTreeStackEntry<'t>,
         _object_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
-        let object_built = ObjectBuilder::default()
+        let object_built = Object {
             // Ignore clipped member 'l_brace'
-            .object_suffix(Box::new(object_suffix))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            object_suffix: Box::new(object_suffix),
+        };
         // Calling user action here
         self.user_grammar.object(&object_built)?;
         self.push(ASTType::Object(object_built), context);
@@ -451,17 +448,16 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _object_list: &ParseTreeStackEntry<'t>,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_list = pop_and_reverse_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_suffix_0_built = ObjectSuffixPairObjectListRBraceBuilder::default()
-            .pair(Box::new(pair))
-            .object_list(object_list)
+        let object_suffix_0_built = ObjectSuffixPairObjectListRBrace {
+            pair: Box::new(pair),
+            object_list: object_list,
             // Ignore clipped member 'r_brace'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let object_suffix_0_built = ObjectSuffix::PairObjectListRBrace(object_suffix_0_built);
         self.push(ASTType::ObjectSuffix(object_suffix_0_built), context);
         Ok(())
@@ -476,13 +472,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_suffix_1_built = ObjectSuffixRBraceBuilder::default()
-            // Ignore clipped member 'r_brace'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let object_suffix_1_built = ObjectSuffixRBrace {
+        // Ignore clipped member 'r_brace'
+        };
         let object_suffix_1_built = ObjectSuffix::RBrace(object_suffix_1_built);
         self.push(ASTType::ObjectSuffix(object_suffix_1_built), context);
         Ok(())
@@ -499,16 +494,15 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _pair: &ParseTreeStackEntry<'t>,
         _object_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut object_list = pop_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_list_0_built = ObjectListBuilder::default()
-            .pair(Box::new(pair))
+        let object_list_0_built = ObjectList {
+            pair: Box::new(pair),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         object_list.push(object_list_0_built);
         self.push(ASTType::ObjectList(object_list), context);
@@ -520,7 +514,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ObjectList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_list_1_built = Vec::new();
@@ -539,17 +533,16 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _value: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
         let string = pop_item!(self, string, String, context);
-        let pair_built = PairBuilder::default()
-            .string(Box::new(string))
+        let pair_built = Pair {
+            string: Box::new(string),
             // Ignore clipped member 'colon'
-            .value(Box::new(value))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            value: Box::new(value),
+        };
         // Calling user action here
         self.user_grammar.pair(&pair_built)?;
         self.push(ASTType::Pair(pair_built), context);
@@ -566,15 +559,14 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _l_bracket: &ParseTreeStackEntry<'t>,
         _array_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
-        let array_built = ArrayBuilder::default()
+        let array_built = Array {
             // Ignore clipped member 'l_bracket'
-            .array_suffix(Box::new(array_suffix))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            array_suffix: Box::new(array_suffix),
+        };
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -592,17 +584,16 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _array_list: &ParseTreeStackEntry<'t>,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_list = pop_and_reverse_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_suffix_0_built = ArraySuffixValueArrayListRBracketBuilder::default()
-            .value(Box::new(value))
-            .array_list(array_list)
+        let array_suffix_0_built = ArraySuffixValueArrayListRBracket {
+            value: Box::new(value),
+            array_list: array_list,
             // Ignore clipped member 'r_bracket'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let array_suffix_0_built = ArraySuffix::ValueArrayListRBracket(array_suffix_0_built);
         self.push(ASTType::ArraySuffix(array_suffix_0_built), context);
         Ok(())
@@ -617,13 +608,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_suffix_1_built = ArraySuffixRBracketBuilder::default()
-            // Ignore clipped member 'r_bracket'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_suffix_1_built = ArraySuffixRBracket {
+        // Ignore clipped member 'r_bracket'
+        };
         let array_suffix_1_built = ArraySuffix::RBracket(array_suffix_1_built);
         self.push(ASTType::ArraySuffix(array_suffix_1_built), context);
         Ok(())
@@ -640,16 +630,15 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _value: &ParseTreeStackEntry<'t>,
         _array_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut array_list = pop_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_list_0_built = ArrayListBuilder::default()
-            .value(Box::new(value))
+        let array_list_0_built = ArrayList {
+            value: Box::new(value),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         array_list.push(array_list_0_built);
         self.push(ASTType::ArrayList(array_list), context);
@@ -661,7 +650,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ArrayList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_list_1_built = Vec::new();
@@ -678,14 +667,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let value_0_built = ValueStringBuilder::default()
-            .string(Box::new(string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_0_built = ValueString {
+            string: Box::new(string),
+        };
         let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
@@ -702,14 +690,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let value_1_built = ValueNumberBuilder::default()
-            .number(Box::new(number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_1_built = ValueNumber {
+            number: Box::new(number),
+        };
         let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;
@@ -726,14 +713,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _object: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
-        let value_2_built = ValueObjectBuilder::default()
-            .object(Box::new(object))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_2_built = ValueObject {
+            object: Box::new(object),
+        };
         let value_2_built = Value::Object(value_2_built);
         // Calling user action here
         self.user_grammar.value(&value_2_built)?;
@@ -750,14 +736,13 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let value_3_built = ValueArrayBuilder::default()
-            .array(Box::new(array))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_3_built = ValueArray {
+            array: Box::new(array),
+        };
         let value_3_built = Value::Array(value_3_built);
         // Calling user action here
         self.user_grammar.value(&value_3_built)?;
@@ -774,13 +759,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _true: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_4_built = ValueTrueBuilder::default()
-            // Ignore clipped member 'r#true'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_4_built = ValueTrue {
+        // Ignore clipped member 'r#true'
+        };
         let value_4_built = Value::True(value_4_built);
         // Calling user action here
         self.user_grammar.value(&value_4_built)?;
@@ -797,13 +781,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _false: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_5_built = ValueFalseBuilder::default()
-            // Ignore clipped member 'r#false'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_5_built = ValueFalse {
+        // Ignore clipped member 'r#false'
+        };
         let value_5_built = Value::False(value_5_built);
         // Calling user action here
         self.user_grammar.value(&value_5_built)?;
@@ -820,13 +803,12 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _null: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_6_built = ValueNullBuilder::default()
-            // Ignore clipped member 'null'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let value_6_built = ValueNull {
+        // Ignore clipped member 'null'
+        };
         let value_6_built = Value::Null(value_6_built);
         // Calling user action here
         self.user_grammar.value(&value_6_built)?;
@@ -843,14 +825,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
-        let string_built = StringBuilder::default()
-            .string(string)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let string_built = String { string: string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -866,14 +845,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         number: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = number.token(parse_tree)?.clone();
-        let number_built = NumberBuilder::default()
-            .number(number)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number_built = Number { number: number };
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);
@@ -890,7 +866,7 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<(), ParolError> {
         match prod_num {
             0 => self.json(&children[0], parse_tree),
             1 => self.object(&children[0], &children[1], parse_tree),
@@ -913,7 +889,11 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
             18 => self.value_6(&children[0], parse_tree),
             19 => self.string(&children[0], parse_tree),
             20 => self.number(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

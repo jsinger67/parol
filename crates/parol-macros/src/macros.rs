@@ -6,7 +6,12 @@ macro_rules! pop_item {
         if let Some(ASTType::$type($name)) = $self.pop($context) {
             $name
         } else {
-            bail!("{}: Expecting ASTType::{}", stringify!($type), $context);
+            return Err(parol_runtime::ParserError::InternalError(format!(
+                "{}: Expecting ASTType::{}",
+                stringify!($type),
+                $context
+            ))
+            .into());
         }
     };
 }
@@ -20,7 +25,12 @@ macro_rules! pop_and_reverse_item {
             $name.reverse();
             $name
         } else {
-            bail!("{}: Expecting ASTType::{}", stringify!($type), $context);
+            return Err(parol_runtime::ParserError::InternalError(format!(
+                "{}: Expecting ASTType::{}",
+                stringify!($type),
+                $context
+            ))
+            .into());
         }
     };
 }

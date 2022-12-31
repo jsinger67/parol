@@ -107,6 +107,7 @@ impl From<parol_runtime::ParserError> for ParserError {
                 source,
             },
             parol_runtime::ParserError::InternalError(msg) => ParserError::InternalError(msg),
+            parol_runtime::ParserError::UserTypeConversionError(_msg) => todo!(),
         }
     }
 }
@@ -557,7 +558,7 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
 /// you can chain your own type coercion attempt there.
 /// A possible way to achieve this can be found in the 'Basic' example's `to_report` function:
 /// examples/basic_interpreter/src/errors.rs
-/// 
+///
 /// Note that you have to add a dependency to the `miette` crate in your `Cargo.toml` and don't
 /// forget to add the "fancy" feature:
 ///
@@ -567,20 +568,28 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
 ///
 pub fn to_report(err: anyhow::Error) -> std::result::Result<miette::Report, anyhow::Error> {
     let err = match err.downcast::<parol_runtime::ParserError>() {
-        Ok(err) => return Ok(miette!(<parol_runtime::ParserError as Into<ParserError>>::into(err))),
+        Ok(err) => {
+            return Ok(miette!(
+                <parol_runtime::ParserError as Into<ParserError>>::into(err)
+            ))
+        }
         Err(err) => err,
     };
 
     let err = match err.downcast::<parol_runtime::LexerError>() {
-        Ok(err) => return Ok(miette!(<parol_runtime::LexerError as Into<LexerError>>::into(err))),
+        Ok(err) => {
+            return Ok(miette!(
+                <parol_runtime::LexerError as Into<LexerError>>::into(err)
+            ))
+        }
         Err(err) => err,
     };
 
     let err = match err.downcast::<crate::ParolParserError>() {
         Ok(err) => {
-            return Ok(miette!(<crate::ParolParserError as Into<ParolParserError>>::into(
-                err
-            )))
+            return Ok(miette!(<crate::ParolParserError as Into<
+                ParolParserError,
+            >>::into(err)))
         }
         Err(err) => err,
     };

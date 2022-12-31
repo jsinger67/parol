@@ -1,5 +1,7 @@
-use crate::parser::{ParseTreeStackEntry, ParseTreeType};
-use anyhow::Result;
+use crate::{
+    parser::{ParseTreeStackEntry, ParseTreeType},
+    ParolError,
+};
 use id_tree::Tree;
 
 ///
@@ -19,5 +21,5 @@ pub trait UserActionsTrait<'t> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()>;
+    ) -> Result<(), ParolError>;
 }

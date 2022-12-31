@@ -35,6 +35,9 @@ pub enum ParserError {
 
     #[error("{0}")]
     InternalError(String),
+
+    #[error("Conversion error: {0}")]
+    UserTypeConversionError(#[from] anyhow::Error),
 }
 
 #[derive(Error, Debug)]
@@ -47,6 +50,16 @@ pub enum LexerError {
 
     #[error("No valid token read")]
     TokenBufferEmptyError,
+}
+
+#[derive(Error, Debug)]
+pub enum ParolError {
+    #[error(transparent)]
+    ParserError(#[from] ParserError),
+    #[error(transparent)]
+    LexerError(#[from] LexerError),
+    #[error(transparent)]
+    Other(#[from] anyhow::Error),
 }
 
 #[derive(Debug)]

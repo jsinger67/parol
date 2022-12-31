@@ -9,8 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
@@ -18,442 +16,449 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParolError, ParserError};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait ParolTomlGrammarTrait<'t> {
     /// Semantic action for non-terminal 'ParolToml'
-    fn parol_toml(&mut self, _arg: &ParolToml<'t>) -> Result<()> {
+    fn parol_toml(&mut self, _arg: &ParolToml<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Expression'
-    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
+    fn expression(&mut self, _arg: &Expression<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Newline'
-    fn newline(&mut self, _arg: &Newline<'t>) -> Result<()> {
+    fn newline(&mut self, _arg: &Newline<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'WsNewline'
-    fn ws_newline(&mut self, _arg: &WsNewline<'t>) -> Result<()> {
+    fn ws_newline(&mut self, _arg: &WsNewline<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NonAscii'
-    fn non_ascii(&mut self, _arg: &NonAscii<'t>) -> Result<()> {
+    fn non_ascii(&mut self, _arg: &NonAscii<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KeyVal'
-    fn key_val(&mut self, _arg: &KeyVal<'t>) -> Result<()> {
+    fn key_val(&mut self, _arg: &KeyVal<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Key'
-    fn key(&mut self, _arg: &Key<'t>) -> Result<()> {
+    fn key(&mut self, _arg: &Key<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleKey'
-    fn simple_key(&mut self, _arg: &SimpleKey<'t>) -> Result<()> {
+    fn simple_key(&mut self, _arg: &SimpleKey<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QuotedKey'
-    fn quoted_key(&mut self, _arg: &QuotedKey<'t>) -> Result<()> {
+    fn quoted_key(&mut self, _arg: &QuotedKey<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KeyValSep'
-    fn key_val_sep(&mut self, _arg: &KeyValSep<'t>) -> Result<()> {
+    fn key_val_sep(&mut self, _arg: &KeyValSep<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Val'
-    fn val(&mut self, _arg: &Val<'t>) -> Result<()> {
+    fn val(&mut self, _arg: &Val<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Numeric'
-    fn numeric(&mut self, _arg: &Numeric<'t>) -> Result<()> {
+    fn numeric(&mut self, _arg: &Numeric<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicString'
-    fn basic_string(&mut self, _arg: &BasicString<'t>) -> Result<()> {
+    fn basic_string(&mut self, _arg: &BasicString<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicChar'
-    fn basic_char(&mut self, _arg: &BasicChar<'t>) -> Result<()> {
+    fn basic_char(&mut self, _arg: &BasicChar<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicUnescaped'
-    fn basic_unescaped(&mut self, _arg: &BasicUnescaped<'t>) -> Result<()> {
+    fn basic_unescaped(&mut self, _arg: &BasicUnescaped<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Escaped'
-    fn escaped(&mut self, _arg: &Escaped<'t>) -> Result<()> {
+    fn escaped(&mut self, _arg: &Escaped<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Escape'
-    fn escape(&mut self, _arg: &Escape<'t>) -> Result<()> {
+    fn escape(&mut self, _arg: &Escape<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'EscapeSeqChar'
-    fn escape_seq_char(&mut self, _arg: &EscapeSeqChar<'t>) -> Result<()> {
+    fn escape_seq_char(&mut self, _arg: &EscapeSeqChar<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Unicode4'
-    fn unicode4(&mut self, _arg: &Unicode4<'t>) -> Result<()> {
+    fn unicode4(&mut self, _arg: &Unicode4<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Unicode8'
-    fn unicode8(&mut self, _arg: &Unicode8<'t>) -> Result<()> {
+    fn unicode8(&mut self, _arg: &Unicode8<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicString'
-    fn m_l_basic_string(&mut self, _arg: &MLBasicString<'t>) -> Result<()> {
+    fn m_l_basic_string(&mut self, _arg: &MLBasicString<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicBody'
-    fn m_l_basic_body(&mut self, _arg: &MLBasicBody<'t>) -> Result<()> {
+    fn m_l_basic_body(&mut self, _arg: &MLBasicBody<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContentList'
-    fn m_l_b_content_list(&mut self, _arg: &MLBContentList<'t>) -> Result<()> {
+    fn m_l_b_content_list(&mut self, _arg: &MLBContentList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContentList1'
-    fn m_l_b_content_list1(&mut self, _arg: &MLBContentList1<'t>) -> Result<()> {
+    fn m_l_b_content_list1(&mut self, _arg: &MLBContentList1<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContent'
-    fn m_l_b_content(&mut self, _arg: &MLBContent<'t>) -> Result<()> {
+    fn m_l_b_content(&mut self, _arg: &MLBContent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBChar'
-    fn m_l_b_char(&mut self, _arg: &MLBChar<'t>) -> Result<()> {
+    fn m_l_b_char(&mut self, _arg: &MLBChar<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBUnescaped'
-    fn m_l_b_unescaped(&mut self, _arg: &MLBUnescaped<'t>) -> Result<()> {
+    fn m_l_b_unescaped(&mut self, _arg: &MLBUnescaped<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBEscapedNL'
-    fn m_l_b_escaped_n_l(&mut self, _arg: &MLBEscapedNL<'t>) -> Result<()> {
+    fn m_l_b_escaped_n_l(&mut self, _arg: &MLBEscapedNL<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralString'
-    fn literal_string(&mut self, _arg: &LiteralString<'t>) -> Result<()> {
+    fn literal_string(&mut self, _arg: &LiteralString<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralChar'
-    fn literal_char(&mut self, _arg: &LiteralChar<'t>) -> Result<()> {
+    fn literal_char(&mut self, _arg: &LiteralChar<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralCharNoApostrophe'
-    fn literal_char_no_apostrophe(&mut self, _arg: &LiteralCharNoApostrophe<'t>) -> Result<()> {
+    fn literal_char_no_apostrophe(
+        &mut self,
+        _arg: &LiteralCharNoApostrophe<'t>,
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralString'
-    fn m_l_literal_string(&mut self, _arg: &MLLiteralString<'t>) -> Result<()> {
+    fn m_l_literal_string(&mut self, _arg: &MLLiteralString<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralBody'
-    fn m_l_literal_body(&mut self, _arg: &MLLiteralBody<'t>) -> Result<()> {
+    fn m_l_literal_body(&mut self, _arg: &MLLiteralBody<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContentList'
-    fn m_l_l_content_list(&mut self, _arg: &MLLContentList<'t>) -> Result<()> {
+    fn m_l_l_content_list(&mut self, _arg: &MLLContentList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContentList1'
-    fn m_l_l_content_list1(&mut self, _arg: &MLLContentList1<'t>) -> Result<()> {
+    fn m_l_l_content_list1(&mut self, _arg: &MLLContentList1<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContent'
-    fn m_l_l_content(&mut self, _arg: &MLLContent<'t>) -> Result<()> {
+    fn m_l_l_content(&mut self, _arg: &MLLContent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Integer'
-    fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
+    fn integer(&mut self, _arg: &Integer<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexPrefix'
-    fn hex_prefix(&mut self, _arg: &HexPrefix<'t>) -> Result<()> {
+    fn hex_prefix(&mut self, _arg: &HexPrefix<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctPrefix'
-    fn oct_prefix(&mut self, _arg: &OctPrefix<'t>) -> Result<()> {
+    fn oct_prefix(&mut self, _arg: &OctPrefix<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinPrefix'
-    fn bin_prefix(&mut self, _arg: &BinPrefix<'t>) -> Result<()> {
+    fn bin_prefix(&mut self, _arg: &BinPrefix<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DecInt'
-    fn dec_int(&mut self, _arg: &DecInt<'t>) -> Result<()> {
+    fn dec_int(&mut self, _arg: &DecInt<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexInt'
-    fn hex_int(&mut self, _arg: &HexInt<'t>) -> Result<()> {
+    fn hex_int(&mut self, _arg: &HexInt<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexIntContent'
-    fn hex_int_content(&mut self, _arg: &HexIntContent<'t>) -> Result<()> {
+    fn hex_int_content(&mut self, _arg: &HexIntContent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctInt'
-    fn oct_int(&mut self, _arg: &OctInt<'t>) -> Result<()> {
+    fn oct_int(&mut self, _arg: &OctInt<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctIntContent'
-    fn oct_int_content(&mut self, _arg: &OctIntContent<'t>) -> Result<()> {
+    fn oct_int_content(&mut self, _arg: &OctIntContent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinInt'
-    fn bin_int(&mut self, _arg: &BinInt<'t>) -> Result<()> {
+    fn bin_int(&mut self, _arg: &BinInt<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinIntContent'
-    fn bin_int_content(&mut self, _arg: &BinIntContent<'t>) -> Result<()> {
+    fn bin_int_content(&mut self, _arg: &BinIntContent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Boolean'
-    fn boolean(&mut self, _arg: &Boolean<'t>) -> Result<()> {
+    fn boolean(&mut self, _arg: &Boolean<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Float'
-    fn float(&mut self, _arg: &Float<'t>) -> Result<()> {
+    fn float(&mut self, _arg: &Float<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NormalFloat'
-    fn normal_float(&mut self, _arg: &NormalFloat<'t>) -> Result<()> {
+    fn normal_float(&mut self, _arg: &NormalFloat<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SpecialFloat'
-    fn special_float(&mut self, _arg: &SpecialFloat<'t>) -> Result<()> {
+    fn special_float(&mut self, _arg: &SpecialFloat<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DateTime'
-    fn date_time(&mut self, _arg: &DateTime<'t>) -> Result<()> {
+    fn date_time(&mut self, _arg: &DateTime<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OffsetDateTime'
-    fn offset_date_time(&mut self, _arg: &OffsetDateTime<'t>) -> Result<()> {
+    fn offset_date_time(&mut self, _arg: &OffsetDateTime<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalDateTime'
-    fn local_date_time(&mut self, _arg: &LocalDateTime<'t>) -> Result<()> {
+    fn local_date_time(&mut self, _arg: &LocalDateTime<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalDate'
-    fn local_date(&mut self, _arg: &LocalDate<'t>) -> Result<()> {
+    fn local_date(&mut self, _arg: &LocalDate<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalTime'
-    fn local_time(&mut self, _arg: &LocalTime<'t>) -> Result<()> {
+    fn local_time(&mut self, _arg: &LocalTime<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Array'
-    fn array(&mut self, _arg: &Array<'t>) -> Result<()> {
+    fn array(&mut self, _arg: &Array<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayValues'
-    fn array_values(&mut self, _arg: &ArrayValues<'t>) -> Result<()> {
+    fn array_values(&mut self, _arg: &ArrayValues<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArraySep'
-    fn array_sep(&mut self, _arg: &ArraySep<'t>) -> Result<()> {
+    fn array_sep(&mut self, _arg: &ArraySep<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Table'
-    fn table(&mut self, _arg: &Table<'t>) -> Result<()> {
+    fn table(&mut self, _arg: &Table<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTable'
-    fn std_table(&mut self, _arg: &StdTable<'t>) -> Result<()> {
+    fn std_table(&mut self, _arg: &StdTable<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTableOpen'
-    fn array_table_open(&mut self, _arg: &ArrayTableOpen<'t>) -> Result<()> {
+    fn array_table_open(&mut self, _arg: &ArrayTableOpen<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTableClose'
-    fn array_table_close(&mut self, _arg: &ArrayTableClose<'t>) -> Result<()> {
+    fn array_table_close(&mut self, _arg: &ArrayTableClose<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayOpen'
-    fn array_open(&mut self, _arg: &ArrayOpen<'t>) -> Result<()> {
+    fn array_open(&mut self, _arg: &ArrayOpen<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayClose'
-    fn array_close(&mut self, _arg: &ArrayClose<'t>) -> Result<()> {
+    fn array_close(&mut self, _arg: &ArrayClose<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTableOpen'
-    fn std_table_open(&mut self, _arg: &StdTableOpen<'t>) -> Result<()> {
+    fn std_table_open(&mut self, _arg: &StdTableOpen<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTableClose'
-    fn std_table_close(&mut self, _arg: &StdTableClose<'t>) -> Result<()> {
+    fn std_table_close(&mut self, _arg: &StdTableClose<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTable'
-    fn inline_table(&mut self, _arg: &InlineTable<'t>) -> Result<()> {
+    fn inline_table(&mut self, _arg: &InlineTable<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableOpen'
-    fn inline_table_open(&mut self, _arg: &InlineTableOpen<'t>) -> Result<()> {
+    fn inline_table_open(&mut self, _arg: &InlineTableOpen<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableClose'
-    fn inline_table_close(&mut self, _arg: &InlineTableClose<'t>) -> Result<()> {
+    fn inline_table_close(&mut self, _arg: &InlineTableClose<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableSep'
-    fn inline_table_sep(&mut self, _arg: &InlineTableSep<'t>) -> Result<()> {
+    fn inline_table_sep(&mut self, _arg: &InlineTableSep<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableKeyVals'
-    fn inline_table_key_vals(&mut self, _arg: &InlineTableKeyVals<'t>) -> Result<()> {
+    fn inline_table_key_vals(&mut self, _arg: &InlineTableKeyVals<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTable'
-    fn array_table(&mut self, _arg: &ArrayTable<'t>) -> Result<()> {
+    fn array_table(&mut self, _arg: &ArrayTable<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UnsignedDecInt'
-    fn unsigned_dec_int(&mut self, _arg: &UnsignedDecInt<'t>) -> Result<()> {
+    fn unsigned_dec_int(&mut self, _arg: &UnsignedDecInt<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UnquotedKey'
-    fn unquoted_key(&mut self, _arg: &UnquotedKey<'t>) -> Result<()> {
+    fn unquoted_key(&mut self, _arg: &UnquotedKey<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DotSep'
-    fn dot_sep(&mut self, _arg: &DotSep<'t>) -> Result<()> {
+    fn dot_sep(&mut self, _arg: &DotSep<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicStringStart'
-    fn m_l_basic_string_start(&mut self, _arg: &MLBasicStringStart<'t>) -> Result<()> {
+    fn m_l_basic_string_start(&mut self, _arg: &MLBasicStringStart<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicStringEnd'
-    fn m_l_basic_string_end(&mut self, _arg: &MLBasicStringEnd<'t>) -> Result<()> {
+    fn m_l_basic_string_end(&mut self, _arg: &MLBasicStringEnd<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBQuotes'
-    fn m_l_b_quotes(&mut self, _arg: &MLBQuotes<'t>) -> Result<()> {
+    fn m_l_b_quotes(&mut self, _arg: &MLBQuotes<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QuotationMark'
-    fn quotation_mark(&mut self, _arg: &QuotationMark<'t>) -> Result<()> {
+    fn quotation_mark(&mut self, _arg: &QuotationMark<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralStringStart'
-    fn m_l_literal_string_start(&mut self, _arg: &MLLiteralStringStart<'t>) -> Result<()> {
+    fn m_l_literal_string_start(
+        &mut self,
+        _arg: &MLLiteralStringStart<'t>,
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralStringEnd'
-    fn m_l_literal_string_end(&mut self, _arg: &MLLiteralStringEnd<'t>) -> Result<()> {
+    fn m_l_literal_string_end(&mut self, _arg: &MLLiteralStringEnd<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLQuotes'
-    fn m_l_l_quotes(&mut self, _arg: &MLLQuotes<'t>) -> Result<()> {
+    fn m_l_l_quotes(&mut self, _arg: &MLLQuotes<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Apostrophe'
-    fn apostrophe(&mut self, _arg: &Apostrophe<'t>) -> Result<()> {
+    fn apostrophe(&mut self, _arg: &Apostrophe<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AsciiNoEscape'
-    fn ascii_no_escape(&mut self, _arg: &AsciiNoEscape<'t>) -> Result<()> {
+    fn ascii_no_escape(&mut self, _arg: &AsciiNoEscape<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Minus'
-    fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
+    fn minus(&mut self, _arg: &Minus<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Plus'
-    fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
+    fn plus(&mut self, _arg: &Plus<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 }
@@ -2522,14 +2527,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _parol_toml_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let parol_toml_list = pop_and_reverse_item!(self, parol_toml_list, ParolTomlList, context);
-        let parol_toml_built = ParolTomlBuilder::default()
-            .parol_toml_list(parol_toml_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let parol_toml_built = ParolToml {
+            parol_toml_list: parol_toml_list,
+        };
         // Calling user action here
         self.user_grammar.parol_toml(&parol_toml_built)?;
         self.push(ASTType::ParolToml(parol_toml_built), context);
@@ -2546,15 +2550,14 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _parol_toml_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut parol_toml_list = pop_item!(self, parol_toml_list, ParolTomlList, context);
         let expression = pop_item!(self, expression, Expression, context);
-        let parol_toml_list_0_built = ParolTomlListBuilder::default()
-            .expression(Box::new(expression))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let parol_toml_list_0_built = ParolTomlList {
+            expression: Box::new(expression),
+        };
         // Add an element to the vector
         parol_toml_list.push(parol_toml_list_0_built);
         self.push(ASTType::ParolTomlList(parol_toml_list), context);
@@ -2566,7 +2569,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ParolTomlList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn parol_toml_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn parol_toml_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let parol_toml_list_1_built = Vec::new();
@@ -2583,14 +2589,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _key_val: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val = pop_item!(self, key_val, KeyVal, context);
-        let expression_0_built = ExpressionKeyValBuilder::default()
-            .key_val(Box::new(key_val))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expression_0_built = ExpressionKeyVal {
+            key_val: Box::new(key_val),
+        };
         let expression_0_built = Expression::KeyVal(expression_0_built);
         // Calling user action here
         self.user_grammar.expression(&expression_0_built)?;
@@ -2607,14 +2612,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let table = pop_item!(self, table, Table, context);
-        let expression_1_built = ExpressionTableBuilder::default()
-            .table(Box::new(table))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expression_1_built = ExpressionTable {
+            table: Box::new(table),
+        };
         let expression_1_built = Expression::Table(expression_1_built);
         // Calling user action here
         self.user_grammar.expression(&expression_1_built)?;
@@ -2631,14 +2635,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         newline: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = newline.token(parse_tree)?.clone();
-        let newline_built = NewlineBuilder::default()
-            .newline(newline)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let newline_built = Newline { newline: newline };
         // Calling user action here
         self.user_grammar.newline(&newline_built)?;
         self.push(ASTType::Newline(newline_built), context);
@@ -2654,14 +2655,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         ws_newline: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = ws_newline.token(parse_tree)?.clone();
-        let ws_newline_built = WsNewlineBuilder::default()
-            .ws_newline(ws_newline)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ws_newline_built = WsNewline {
+            ws_newline: ws_newline,
+        };
         // Calling user action here
         self.user_grammar.ws_newline(&ws_newline_built)?;
         self.push(ASTType::WsNewline(ws_newline_built), context);
@@ -2677,14 +2677,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         non_ascii: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = non_ascii.token(parse_tree)?.clone();
-        let non_ascii_built = NonAsciiBuilder::default()
-            .non_ascii(non_ascii)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let non_ascii_built = NonAscii {
+            non_ascii: non_ascii,
+        };
         // Calling user action here
         self.user_grammar.non_ascii(&non_ascii_built)?;
         self.push(ASTType::NonAscii(non_ascii_built), context);
@@ -2702,18 +2701,17 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key_val_sep: &ParseTreeStackEntry<'t>,
         _val: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let val = pop_item!(self, val, Val, context);
         let key_val_sep = pop_item!(self, key_val_sep, KeyValSep, context);
         let key = pop_item!(self, key, Key, context);
-        let key_val_built = KeyValBuilder::default()
-            .key(Box::new(key))
-            .key_val_sep(Box::new(key_val_sep))
-            .val(Box::new(val))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_val_built = KeyVal {
+            key: Box::new(key),
+            key_val_sep: Box::new(key_val_sep),
+            val: Box::new(val),
+        };
         // Calling user action here
         self.user_grammar.key_val(&key_val_built)?;
         self.push(ASTType::KeyVal(key_val_built), context);
@@ -2730,16 +2728,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_suffix = pop_item!(self, key_suffix, KeySuffix, context);
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
-        let key_built = KeyBuilder::default()
-            .simple_key(Box::new(simple_key))
-            .key_suffix(Box::new(key_suffix))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_built = Key {
+            simple_key: Box::new(simple_key),
+            key_suffix: Box::new(key_suffix),
+        };
         // Calling user action here
         self.user_grammar.key(&key_built)?;
         self.push(ASTType::Key(key_built), context);
@@ -2751,12 +2748,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// KeySuffix: ;
     ///
     #[parol_runtime::function_name::named]
-    fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let key_suffix_0_built = KeySuffixKeySuffixEmptyBuilder::default()
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_suffix_0_built = KeySuffixKeySuffixEmpty {};
         let key_suffix_0_built = KeySuffix::KeySuffixEmpty(key_suffix_0_built);
         self.push(ASTType::KeySuffix(key_suffix_0_built), context);
         Ok(())
@@ -2773,18 +2768,17 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_list = pop_and_reverse_item!(self, key_list, KeyList, context);
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let dot_sep = pop_item!(self, dot_sep, DotSep, context);
-        let key_suffix_1_built = KeySuffixDotSepSimpleKeyKeyListBuilder::default()
-            .dot_sep(Box::new(dot_sep))
-            .simple_key(Box::new(simple_key))
-            .key_list(key_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_suffix_1_built = KeySuffixDotSepSimpleKeyKeyList {
+            dot_sep: Box::new(dot_sep),
+            simple_key: Box::new(simple_key),
+            key_list: key_list,
+        };
         let key_suffix_1_built = KeySuffix::DotSepSimpleKeyKeyList(key_suffix_1_built);
         self.push(ASTType::KeySuffix(key_suffix_1_built), context);
         Ok(())
@@ -2801,17 +2795,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut key_list = pop_item!(self, key_list, KeyList, context);
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let dot_sep = pop_item!(self, dot_sep, DotSep, context);
-        let key_list_0_built = KeyListBuilder::default()
-            .simple_key(Box::new(simple_key))
-            .dot_sep(Box::new(dot_sep))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_list_0_built = KeyList {
+            simple_key: Box::new(simple_key),
+            dot_sep: Box::new(dot_sep),
+        };
         // Add an element to the vector
         key_list.push(key_list_0_built);
         self.push(ASTType::KeyList(key_list), context);
@@ -2823,7 +2816,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// KeyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_list_1_built = Vec::new();
@@ -2840,14 +2833,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _quoted_key: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quoted_key = pop_item!(self, quoted_key, QuotedKey, context);
-        let simple_key_0_built = SimpleKeyQuotedKeyBuilder::default()
-            .quoted_key(Box::new(quoted_key))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_key_0_built = SimpleKeyQuotedKey {
+            quoted_key: Box::new(quoted_key),
+        };
         let simple_key_0_built = SimpleKey::QuotedKey(simple_key_0_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_0_built)?;
@@ -2864,14 +2856,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unquoted_key: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = pop_item!(self, unquoted_key, UnquotedKey, context);
-        let simple_key_1_built = SimpleKeyUnquotedKeyBuilder::default()
-            .unquoted_key(Box::new(unquoted_key))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_key_1_built = SimpleKeyUnquotedKey {
+            unquoted_key: Box::new(unquoted_key),
+        };
         let simple_key_1_built = SimpleKey::UnquotedKey(simple_key_1_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_1_built)?;
@@ -2888,14 +2879,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let quoted_key_0_built = QuotedKeyBasicStringBuilder::default()
-            .basic_string(Box::new(basic_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let quoted_key_0_built = QuotedKeyBasicString {
+            basic_string: Box::new(basic_string),
+        };
         let quoted_key_0_built = QuotedKey::BasicString(quoted_key_0_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_0_built)?;
@@ -2912,14 +2902,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let quoted_key_1_built = QuotedKeyLiteralStringBuilder::default()
-            .literal_string(Box::new(literal_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let quoted_key_1_built = QuotedKeyLiteralString {
+            literal_string: Box::new(literal_string),
+        };
         let quoted_key_1_built = QuotedKey::LiteralString(quoted_key_1_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_1_built)?;
@@ -2936,14 +2925,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         key_val_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val_sep = key_val_sep.token(parse_tree)?.clone();
-        let key_val_sep_built = KeyValSepBuilder::default()
-            .key_val_sep(key_val_sep)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let key_val_sep_built = KeyValSep {
+            key_val_sep: key_val_sep,
+        };
         // Calling user action here
         self.user_grammar.key_val_sep(&key_val_sep_built)?;
         self.push(ASTType::KeyValSep(key_val_sep_built), context);
@@ -2959,14 +2947,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _boolean: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let boolean = pop_item!(self, boolean, Boolean, context);
-        let val_0_built = ValBooleanBuilder::default()
-            .boolean(Box::new(boolean))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_0_built = ValBoolean {
+            boolean: Box::new(boolean),
+        };
         let val_0_built = Val::Boolean(val_0_built);
         // Calling user action here
         self.user_grammar.val(&val_0_built)?;
@@ -2983,14 +2970,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
-        let val_1_built = ValArrayBuilder::default()
-            .array(Box::new(array))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_1_built = ValArray {
+            array: Box::new(array),
+        };
         let val_1_built = Val::Array(val_1_built);
         // Calling user action here
         self.user_grammar.val(&val_1_built)?;
@@ -3007,14 +2993,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _inline_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table = pop_item!(self, inline_table, InlineTable, context);
-        let val_2_built = ValInlineTableBuilder::default()
-            .inline_table(Box::new(inline_table))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_2_built = ValInlineTable {
+            inline_table: Box::new(inline_table),
+        };
         let val_2_built = Val::InlineTable(val_2_built);
         // Calling user action here
         self.user_grammar.val(&val_2_built)?;
@@ -3031,14 +3016,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let date_time = pop_item!(self, date_time, DateTime, context);
-        let val_3_built = ValDateTimeBuilder::default()
-            .date_time(Box::new(date_time))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_3_built = ValDateTime {
+            date_time: Box::new(date_time),
+        };
         let val_3_built = Val::DateTime(val_3_built);
         // Calling user action here
         self.user_grammar.val(&val_3_built)?;
@@ -3055,14 +3039,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _numeric: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let numeric = pop_item!(self, numeric, Numeric, context);
-        let val_4_built = ValNumericBuilder::default()
-            .numeric(Box::new(numeric))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_4_built = ValNumeric {
+            numeric: Box::new(numeric),
+        };
         let val_4_built = Val::Numeric(val_4_built);
         // Calling user action here
         self.user_grammar.val(&val_4_built)?;
@@ -3079,14 +3062,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let val_5_built = ValBasicStringBuilder::default()
-            .basic_string(Box::new(basic_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_5_built = ValBasicString {
+            basic_string: Box::new(basic_string),
+        };
         let val_5_built = Val::BasicString(val_5_built);
         // Calling user action here
         self.user_grammar.val(&val_5_built)?;
@@ -3103,14 +3085,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string = pop_item!(self, m_l_basic_string, MLBasicString, context);
-        let val_6_built = ValMLBasicStringBuilder::default()
-            .m_l_basic_string(Box::new(m_l_basic_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_6_built = ValMLBasicString {
+            m_l_basic_string: Box::new(m_l_basic_string),
+        };
         let val_6_built = Val::MLBasicString(val_6_built);
         // Calling user action here
         self.user_grammar.val(&val_6_built)?;
@@ -3127,14 +3108,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let val_7_built = ValLiteralStringBuilder::default()
-            .literal_string(Box::new(literal_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_7_built = ValLiteralString {
+            literal_string: Box::new(literal_string),
+        };
         let val_7_built = Val::LiteralString(val_7_built);
         // Calling user action here
         self.user_grammar.val(&val_7_built)?;
@@ -3151,14 +3131,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string = pop_item!(self, m_l_literal_string, MLLiteralString, context);
-        let val_8_built = ValMLLiteralStringBuilder::default()
-            .m_l_literal_string(Box::new(m_l_literal_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let val_8_built = ValMLLiteralString {
+            m_l_literal_string: Box::new(m_l_literal_string),
+        };
         let val_8_built = Val::MLLiteralString(val_8_built);
         // Calling user action here
         self.user_grammar.val(&val_8_built)?;
@@ -3175,14 +3154,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
-        let numeric_0_built = NumericFloatBuilder::default()
-            .float(Box::new(float))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let numeric_0_built = NumericFloat {
+            float: Box::new(float),
+        };
         let numeric_0_built = Numeric::Float(numeric_0_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_0_built)?;
@@ -3199,14 +3177,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let numeric_1_built = NumericIntegerBuilder::default()
-            .integer(Box::new(integer))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let numeric_1_built = NumericInteger {
+            integer: Box::new(integer),
+        };
         let numeric_1_built = Numeric::Integer(numeric_1_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_1_built)?;
@@ -3225,19 +3202,18 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _basic_string_list: &ParseTreeStackEntry<'t>,
         _quotation_mark0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark0 = pop_item!(self, quotation_mark0, QuotationMark, context);
         let basic_string_list =
             pop_and_reverse_item!(self, basic_string_list, BasicStringList, context);
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
-        let basic_string_built = BasicStringBuilder::default()
-            .quotation_mark(Box::new(quotation_mark))
-            .basic_string_list(basic_string_list)
-            .quotation_mark0(Box::new(quotation_mark0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_string_built = BasicString {
+            quotation_mark: Box::new(quotation_mark),
+            basic_string_list: basic_string_list,
+            quotation_mark0: Box::new(quotation_mark0),
+        };
         // Calling user action here
         self.user_grammar.basic_string(&basic_string_built)?;
         self.push(ASTType::BasicString(basic_string_built), context);
@@ -3254,15 +3230,14 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _basic_char: &ParseTreeStackEntry<'t>,
         _basic_string_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut basic_string_list = pop_item!(self, basic_string_list, BasicStringList, context);
         let basic_char = pop_item!(self, basic_char, BasicChar, context);
-        let basic_string_list_0_built = BasicStringListBuilder::default()
-            .basic_char(Box::new(basic_char))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_string_list_0_built = BasicStringList {
+            basic_char: Box::new(basic_char),
+        };
         // Add an element to the vector
         basic_string_list.push(basic_string_list_0_built);
         self.push(ASTType::BasicStringList(basic_string_list), context);
@@ -3274,7 +3249,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// BasicStringList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn basic_string_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string_list_1_built = Vec::new();
@@ -3291,14 +3269,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_unescaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_unescaped = pop_item!(self, basic_unescaped, BasicUnescaped, context);
-        let basic_char_0_built = BasicCharBasicUnescapedBuilder::default()
-            .basic_unescaped(Box::new(basic_unescaped))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_char_0_built = BasicCharBasicUnescaped {
+            basic_unescaped: Box::new(basic_unescaped),
+        };
         let basic_char_0_built = BasicChar::BasicUnescaped(basic_char_0_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_0_built)?;
@@ -3315,14 +3292,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let basic_char_1_built = BasicCharEscapedBuilder::default()
-            .escaped(Box::new(escaped))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_char_1_built = BasicCharEscaped {
+            escaped: Box::new(escaped),
+        };
         let basic_char_1_built = BasicChar::Escaped(basic_char_1_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_1_built)?;
@@ -3339,14 +3315,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let basic_unescaped_0_built = BasicUnescapedAsciiNoEscapeBuilder::default()
-            .ascii_no_escape(Box::new(ascii_no_escape))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_unescaped_0_built = BasicUnescapedAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let basic_unescaped_0_built = BasicUnescaped::AsciiNoEscape(basic_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -3364,14 +3339,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let basic_unescaped_1_built = BasicUnescapedNonAsciiBuilder::default()
-            .non_ascii(Box::new(non_ascii))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_unescaped_1_built = BasicUnescapedNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let basic_unescaped_1_built = BasicUnescaped::NonAscii(basic_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -3390,16 +3364,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _escape: &ParseTreeStackEntry<'t>,
         _escape_seq_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape_seq_char = pop_item!(self, escape_seq_char, EscapeSeqChar, context);
         let escape = pop_item!(self, escape, Escape, context);
-        let escaped_built = EscapedBuilder::default()
-            .escape(Box::new(escape))
-            .escape_seq_char(Box::new(escape_seq_char))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escaped_built = Escaped {
+            escape: Box::new(escape),
+            escape_seq_char: Box::new(escape_seq_char),
+        };
         // Calling user action here
         self.user_grammar.escaped(&escaped_built)?;
         self.push(ASTType::Escaped(escaped_built), context);
@@ -3415,14 +3388,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         escape: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = escape.token(parse_tree)?.clone();
-        let escape_built = EscapeBuilder::default()
-            .escape(escape)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_built = Escape { escape: escape };
         // Calling user action here
         self.user_grammar.escape(&escape_built)?;
         self.push(ASTType::Escape(escape_built), context);
@@ -3438,14 +3408,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _quotation_mark: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
-        let escape_seq_char_0_built = EscapeSeqCharQuotationMarkBuilder::default()
-            .quotation_mark(Box::new(quotation_mark))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_0_built = EscapeSeqCharQuotationMark {
+            quotation_mark: Box::new(quotation_mark),
+        };
         let escape_seq_char_0_built = EscapeSeqChar::QuotationMark(escape_seq_char_0_built);
         // Calling user action here
         self.user_grammar
@@ -3463,14 +3432,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = pop_item!(self, escape, Escape, context);
-        let escape_seq_char_1_built = EscapeSeqCharEscapeBuilder::default()
-            .escape(Box::new(escape))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_1_built = EscapeSeqCharEscape {
+            escape: Box::new(escape),
+        };
         let escape_seq_char_1_built = EscapeSeqChar::Escape(escape_seq_char_1_built);
         // Calling user action here
         self.user_grammar
@@ -3488,14 +3456,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         b: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let b = b.token(parse_tree)?.clone();
-        let escape_seq_char_2_built = EscapeSeqCharBBuilder::default()
-            .b(b)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_2_built = EscapeSeqCharB { b: b };
         let escape_seq_char_2_built = EscapeSeqChar::B(escape_seq_char_2_built);
         // Calling user action here
         self.user_grammar
@@ -3513,14 +3478,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         f: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f = f.token(parse_tree)?.clone();
-        let escape_seq_char_3_built = EscapeSeqCharFBuilder::default()
-            .f(f)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_3_built = EscapeSeqCharF { f: f };
         let escape_seq_char_3_built = EscapeSeqChar::F(escape_seq_char_3_built);
         // Calling user action here
         self.user_grammar
@@ -3538,14 +3500,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         n: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let n = n.token(parse_tree)?.clone();
-        let escape_seq_char_4_built = EscapeSeqCharNBuilder::default()
-            .n(n)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_4_built = EscapeSeqCharN { n: n };
         let escape_seq_char_4_built = EscapeSeqChar::N(escape_seq_char_4_built);
         // Calling user action here
         self.user_grammar
@@ -3563,14 +3522,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r = r.token(parse_tree)?.clone();
-        let escape_seq_char_5_built = EscapeSeqCharRBuilder::default()
-            .r(r)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_5_built = EscapeSeqCharR { r: r };
         let escape_seq_char_5_built = EscapeSeqChar::R(escape_seq_char_5_built);
         // Calling user action here
         self.user_grammar
@@ -3588,14 +3544,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let t = t.token(parse_tree)?.clone();
-        let escape_seq_char_6_built = EscapeSeqCharTBuilder::default()
-            .t(t)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_6_built = EscapeSeqCharT { t: t };
         let escape_seq_char_6_built = EscapeSeqChar::T(escape_seq_char_6_built);
         // Calling user action here
         self.user_grammar
@@ -3613,14 +3566,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unicode4: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = pop_item!(self, unicode4, Unicode4, context);
-        let escape_seq_char_7_built = EscapeSeqCharUnicode4Builder::default()
-            .unicode4(Box::new(unicode4))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_7_built = EscapeSeqCharUnicode4 {
+            unicode4: Box::new(unicode4),
+        };
         let escape_seq_char_7_built = EscapeSeqChar::Unicode4(escape_seq_char_7_built);
         // Calling user action here
         self.user_grammar
@@ -3638,14 +3590,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unicode8: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = pop_item!(self, unicode8, Unicode8, context);
-        let escape_seq_char_8_built = EscapeSeqCharUnicode8Builder::default()
-            .unicode8(Box::new(unicode8))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_8_built = EscapeSeqCharUnicode8 {
+            unicode8: Box::new(unicode8),
+        };
         let escape_seq_char_8_built = EscapeSeqChar::Unicode8(escape_seq_char_8_built);
         // Calling user action here
         self.user_grammar
@@ -3663,14 +3614,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ws_newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = pop_item!(self, ws_newline, WsNewline, context);
-        let escape_seq_char_9_built = EscapeSeqCharWsNewlineBuilder::default()
-            .ws_newline(Box::new(ws_newline))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_9_built = EscapeSeqCharWsNewline {
+            ws_newline: Box::new(ws_newline),
+        };
         let escape_seq_char_9_built = EscapeSeqChar::WsNewline(escape_seq_char_9_built);
         // Calling user action here
         self.user_grammar
@@ -3688,14 +3638,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscapeBuilder::default()
-            .ascii_no_escape(Box::new(ascii_no_escape))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let escape_seq_char_10_built = EscapeSeqChar::AsciiNoEscape(escape_seq_char_10_built);
         // Calling user action here
         self.user_grammar
@@ -3713,14 +3662,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unicode4: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = unicode4.token(parse_tree)?.clone();
-        let unicode4_built = Unicode4Builder::default()
-            .unicode4(unicode4)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let unicode4_built = Unicode4 { unicode4: unicode4 };
         // Calling user action here
         self.user_grammar.unicode4(&unicode4_built)?;
         self.push(ASTType::Unicode4(unicode4_built), context);
@@ -3736,14 +3682,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unicode8: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = unicode8.token(parse_tree)?.clone();
-        let unicode8_built = Unicode8Builder::default()
-            .unicode8(unicode8)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let unicode8_built = Unicode8 { unicode8: unicode8 };
         // Calling user action here
         self.user_grammar.unicode8(&unicode8_built)?;
         self.push(ASTType::Unicode8(unicode8_built), context);
@@ -3761,19 +3704,18 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_basic_body: &ParseTreeStackEntry<'t>,
         _m_l_basic_string_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_end = pop_item!(self, m_l_basic_string_end, MLBasicStringEnd, context);
         let m_l_basic_body = pop_item!(self, m_l_basic_body, MLBasicBody, context);
         let m_l_basic_string_start =
             pop_item!(self, m_l_basic_string_start, MLBasicStringStart, context);
-        let m_l_basic_string_built = MLBasicStringBuilder::default()
-            .m_l_basic_string_start(Box::new(m_l_basic_string_start))
-            .m_l_basic_body(Box::new(m_l_basic_body))
-            .m_l_basic_string_end(Box::new(m_l_basic_string_end))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_basic_string_built = MLBasicString {
+            m_l_basic_string_start: Box::new(m_l_basic_string_start),
+            m_l_basic_body: Box::new(m_l_basic_body),
+            m_l_basic_string_end: Box::new(m_l_basic_string_end),
+        };
         // Calling user action here
         self.user_grammar
             .m_l_basic_string(&m_l_basic_string_built)?;
@@ -3791,17 +3733,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _m_l_basic_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_body_list =
             pop_and_reverse_item!(self, m_l_basic_body_list, MLBasicBodyList, context);
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
-        let m_l_basic_body_built = MLBasicBodyBuilder::default()
-            .m_l_b_content_list(Box::new(m_l_b_content_list))
-            .m_l_basic_body_list(m_l_basic_body_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_basic_body_built = MLBasicBody {
+            m_l_b_content_list: Box::new(m_l_b_content_list),
+            m_l_basic_body_list: m_l_basic_body_list,
+        };
         // Calling user action here
         self.user_grammar.m_l_basic_body(&m_l_basic_body_built)?;
         self.push(ASTType::MLBasicBody(m_l_basic_body_built), context);
@@ -3819,18 +3760,17 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content_list1: &ParseTreeStackEntry<'t>,
         _m_l_basic_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_basic_body_list =
             pop_item!(self, m_l_basic_body_list, MLBasicBodyList, context);
         let m_l_b_content_list1 = pop_item!(self, m_l_b_content_list1, MLBContentList1, context);
         let m_l_b_quotes = pop_item!(self, m_l_b_quotes, MLBQuotes, context);
-        let m_l_basic_body_list_0_built = MLBasicBodyListBuilder::default()
-            .m_l_b_content_list1(Box::new(m_l_b_content_list1))
-            .m_l_b_quotes(Box::new(m_l_b_quotes))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_basic_body_list_0_built = MLBasicBodyList {
+            m_l_b_content_list1: Box::new(m_l_b_content_list1),
+            m_l_b_quotes: Box::new(m_l_b_quotes),
+        };
         // Add an element to the vector
         m_l_basic_body_list.push(m_l_basic_body_list_0_built);
         self.push(ASTType::MLBasicBodyList(m_l_basic_body_list), context);
@@ -3842,7 +3782,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLBasicBodyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_basic_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn m_l_basic_body_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_body_list_1_built = Vec::new();
@@ -3863,16 +3806,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content: &ParseTreeStackEntry<'t>,
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
-        let m_l_b_content_list_0_built = MLBContentListMLBContentMLBContentListBuilder::default()
-            .m_l_b_content(Box::new(m_l_b_content))
-            .m_l_b_content_list(Box::new(m_l_b_content_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_list_0_built = MLBContentListMLBContentMLBContentList {
+            m_l_b_content: Box::new(m_l_b_content),
+            m_l_b_content_list: Box::new(m_l_b_content_list),
+        };
         let m_l_b_content_list_0_built =
             MLBContentList::MLBContentMLBContentList(m_l_b_content_list_0_built);
         // Calling user action here
@@ -3887,12 +3829,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLBContentList: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_b_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn m_l_b_content_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_b_content_list_1_built = MLBContentListMLBContentListEmptyBuilder::default()
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_list_1_built = MLBContentListMLBContentListEmpty {};
         let m_l_b_content_list_1_built =
             MLBContentList::MLBContentListEmpty(m_l_b_content_list_1_built);
         // Calling user action here
@@ -3912,16 +3855,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content: &ParseTreeStackEntry<'t>,
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
-        let m_l_b_content_list1_built = MLBContentList1Builder::default()
-            .m_l_b_content(Box::new(m_l_b_content))
-            .m_l_b_content_list(Box::new(m_l_b_content_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_list1_built = MLBContentList1 {
+            m_l_b_content: Box::new(m_l_b_content),
+            m_l_b_content_list: Box::new(m_l_b_content_list),
+        };
         // Calling user action here
         self.user_grammar
             .m_l_b_content_list1(&m_l_b_content_list1_built)?;
@@ -3938,14 +3880,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_char = pop_item!(self, m_l_b_char, MLBChar, context);
-        let m_l_b_content_0_built = MLBContentMLBCharBuilder::default()
-            .m_l_b_char(Box::new(m_l_b_char))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_0_built = MLBContentMLBChar {
+            m_l_b_char: Box::new(m_l_b_char),
+        };
         let m_l_b_content_0_built = MLBContent::MLBChar(m_l_b_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_0_built)?;
@@ -3962,14 +3903,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_b_content_1_built = MLBContentNewlineBuilder::default()
-            .newline(Box::new(newline))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_1_built = MLBContentNewline {
+            newline: Box::new(newline),
+        };
         let m_l_b_content_1_built = MLBContent::Newline(m_l_b_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_1_built)?;
@@ -3986,14 +3926,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = pop_item!(self, m_l_b_escaped_n_l, MLBEscapedNL, context);
-        let m_l_b_content_2_built = MLBContentMLBEscapedNLBuilder::default()
-            .m_l_b_escaped_n_l(Box::new(m_l_b_escaped_n_l))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_content_2_built = MLBContentMLBEscapedNL {
+            m_l_b_escaped_n_l: Box::new(m_l_b_escaped_n_l),
+        };
         let m_l_b_content_2_built = MLBContent::MLBEscapedNL(m_l_b_content_2_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_2_built)?;
@@ -4010,14 +3949,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_unescaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_unescaped = pop_item!(self, m_l_b_unescaped, MLBUnescaped, context);
-        let m_l_b_char_0_built = MLBCharMLBUnescapedBuilder::default()
-            .m_l_b_unescaped(Box::new(m_l_b_unescaped))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_char_0_built = MLBCharMLBUnescaped {
+            m_l_b_unescaped: Box::new(m_l_b_unescaped),
+        };
         let m_l_b_char_0_built = MLBChar::MLBUnescaped(m_l_b_char_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_0_built)?;
@@ -4034,14 +3972,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let m_l_b_char_1_built = MLBCharEscapedBuilder::default()
-            .escaped(Box::new(escaped))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_char_1_built = MLBCharEscaped {
+            escaped: Box::new(escaped),
+        };
         let m_l_b_char_1_built = MLBChar::Escaped(m_l_b_char_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_1_built)?;
@@ -4058,14 +3995,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscapeBuilder::default()
-            .ascii_no_escape(Box::new(ascii_no_escape))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let m_l_b_unescaped_0_built = MLBUnescaped::AsciiNoEscape(m_l_b_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -4083,14 +4019,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let m_l_b_unescaped_1_built = MLBUnescapedNonAsciiBuilder::default()
-            .non_ascii(Box::new(non_ascii))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_unescaped_1_built = MLBUnescapedNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let m_l_b_unescaped_1_built = MLBUnescaped::NonAscii(m_l_b_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -4108,14 +4043,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = m_l_b_escaped_n_l.token(parse_tree)?.clone();
-        let m_l_b_escaped_n_l_built = MLBEscapedNLBuilder::default()
-            .m_l_b_escaped_n_l(m_l_b_escaped_n_l)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_escaped_n_l_built = MLBEscapedNL {
+            m_l_b_escaped_n_l: m_l_b_escaped_n_l,
+        };
         // Calling user action here
         self.user_grammar
             .m_l_b_escaped_n_l(&m_l_b_escaped_n_l_built)?;
@@ -4134,7 +4068,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _literal_string_list: &ParseTreeStackEntry<'t>,
         _apostrophe0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'apostrophe0'
@@ -4143,12 +4077,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, literal_string_list, LiteralStringList, context);
         // Ignore clipped member 'apostrophe'
         self.pop(context);
-        let literal_string_built = LiteralStringBuilder::default()
+        let literal_string_built = LiteralString {
             // Ignore clipped member 'apostrophe'
-            .literal_string_list(literal_string_list)
+            literal_string_list: literal_string_list,
             // Ignore clipped member 'apostrophe0'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.literal_string(&literal_string_built)?;
         self.push(ASTType::LiteralString(literal_string_built), context);
@@ -4165,16 +4098,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _literal_char: &ParseTreeStackEntry<'t>,
         _literal_string_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut literal_string_list =
             pop_item!(self, literal_string_list, LiteralStringList, context);
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
-        let literal_string_list_0_built = LiteralStringListBuilder::default()
-            .literal_char(Box::new(literal_char))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_string_list_0_built = LiteralStringList {
+            literal_char: Box::new(literal_char),
+        };
         // Add an element to the vector
         literal_string_list.push(literal_string_list_0_built);
         self.push(ASTType::LiteralStringList(literal_string_list), context);
@@ -4186,7 +4118,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// LiteralStringList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn literal_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn literal_string_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string_list_1_built = Vec::new();
@@ -4206,7 +4141,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char_no_apostrophe = pop_item!(
@@ -4215,10 +4150,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             LiteralCharNoApostrophe,
             context
         );
-        let literal_char_0_built = LiteralCharLiteralCharNoApostropheBuilder::default()
-            .literal_char_no_apostrophe(Box::new(literal_char_no_apostrophe))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_char_0_built = LiteralCharLiteralCharNoApostrophe {
+            literal_char_no_apostrophe: Box::new(literal_char_no_apostrophe),
+        };
         let literal_char_0_built = LiteralChar::LiteralCharNoApostrophe(literal_char_0_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_0_built)?;
@@ -4235,14 +4169,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let literal_char_1_built = LiteralCharNonAsciiBuilder::default()
-            .non_ascii(Box::new(non_ascii))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_char_1_built = LiteralCharNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let literal_char_1_built = LiteralChar::NonAscii(literal_char_1_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_1_built)?;
@@ -4259,14 +4192,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char_no_apostrophe = literal_char_no_apostrophe.token(parse_tree)?.clone();
-        let literal_char_no_apostrophe_built = LiteralCharNoApostropheBuilder::default()
-            .literal_char_no_apostrophe(literal_char_no_apostrophe)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_char_no_apostrophe_built = LiteralCharNoApostrophe {
+            literal_char_no_apostrophe: literal_char_no_apostrophe,
+        };
         // Calling user action here
         self.user_grammar
             .literal_char_no_apostrophe(&literal_char_no_apostrophe_built)?;
@@ -4287,17 +4219,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_literal_string_start: &ParseTreeStackEntry<'t>,
         _m_l_literal_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_body = pop_item!(self, m_l_literal_body, MLLiteralBody, context);
         // Ignore clipped member 'm_l_literal_string_start'
         self.pop(context);
-        let m_l_literal_string_built = MLLiteralStringBuilder::default()
+        let m_l_literal_string_built = MLLiteralString {
             // Ignore clipped member 'm_l_literal_string_start'
-            .m_l_literal_body(Box::new(m_l_literal_body))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            m_l_literal_body: Box::new(m_l_literal_body),
+        };
         // Calling user action here
         self.user_grammar
             .m_l_literal_string(&m_l_literal_string_built)?;
@@ -4316,7 +4247,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_literal_body_list: &ParseTreeStackEntry<'t>,
         _m_l_literal_string_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'm_l_literal_string_end'
@@ -4324,12 +4255,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_literal_body_list =
             pop_and_reverse_item!(self, m_l_literal_body_list, MLLiteralBodyList, context);
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
-        let m_l_literal_body_built = MLLiteralBodyBuilder::default()
-            .m_l_l_content_list(Box::new(m_l_l_content_list))
-            .m_l_literal_body_list(m_l_literal_body_list)
+        let m_l_literal_body_built = MLLiteralBody {
+            m_l_l_content_list: Box::new(m_l_l_content_list),
+            m_l_literal_body_list: m_l_literal_body_list,
             // Ignore clipped member 'm_l_literal_string_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar
             .m_l_literal_body(&m_l_literal_body_built)?;
@@ -4348,18 +4278,17 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content_list1: &ParseTreeStackEntry<'t>,
         _m_l_literal_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_literal_body_list =
             pop_item!(self, m_l_literal_body_list, MLLiteralBodyList, context);
         let m_l_l_content_list1 = pop_item!(self, m_l_l_content_list1, MLLContentList1, context);
         let m_l_l_quotes = pop_item!(self, m_l_l_quotes, MLLQuotes, context);
-        let m_l_literal_body_list_0_built = MLLiteralBodyListBuilder::default()
-            .m_l_l_content_list1(Box::new(m_l_l_content_list1))
-            .m_l_l_quotes(Box::new(m_l_l_quotes))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_literal_body_list_0_built = MLLiteralBodyList {
+            m_l_l_content_list1: Box::new(m_l_l_content_list1),
+            m_l_l_quotes: Box::new(m_l_l_quotes),
+        };
         // Add an element to the vector
         m_l_literal_body_list.push(m_l_literal_body_list_0_built);
         self.push(ASTType::MLLiteralBodyList(m_l_literal_body_list), context);
@@ -4371,7 +4300,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLLiteralBodyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_literal_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn m_l_literal_body_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_body_list_1_built = Vec::new();
@@ -4392,16 +4324,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content: &ParseTreeStackEntry<'t>,
         _m_l_l_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
-        let m_l_l_content_list_0_built = MLLContentListMLLContentMLLContentListBuilder::default()
-            .m_l_l_content(Box::new(m_l_l_content))
-            .m_l_l_content_list(Box::new(m_l_l_content_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_content_list_0_built = MLLContentListMLLContentMLLContentList {
+            m_l_l_content: Box::new(m_l_l_content),
+            m_l_l_content_list: Box::new(m_l_l_content_list),
+        };
         let m_l_l_content_list_0_built =
             MLLContentList::MLLContentMLLContentList(m_l_l_content_list_0_built);
         // Calling user action here
@@ -4416,12 +4347,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLLContentList: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_l_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn m_l_l_content_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let m_l_l_content_list_1_built = MLLContentListMLLContentListEmptyBuilder::default()
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_content_list_1_built = MLLContentListMLLContentListEmpty {};
         let m_l_l_content_list_1_built =
             MLLContentList::MLLContentListEmpty(m_l_l_content_list_1_built);
         // Calling user action here
@@ -4441,16 +4373,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content: &ParseTreeStackEntry<'t>,
         _m_l_l_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
-        let m_l_l_content_list1_built = MLLContentList1Builder::default()
-            .m_l_l_content(Box::new(m_l_l_content))
-            .m_l_l_content_list(Box::new(m_l_l_content_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_content_list1_built = MLLContentList1 {
+            m_l_l_content: Box::new(m_l_l_content),
+            m_l_l_content_list: Box::new(m_l_l_content_list),
+        };
         // Calling user action here
         self.user_grammar
             .m_l_l_content_list1(&m_l_l_content_list1_built)?;
@@ -4467,14 +4398,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
-        let m_l_l_content_0_built = MLLContentLiteralCharBuilder::default()
-            .literal_char(Box::new(literal_char))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_content_0_built = MLLContentLiteralChar {
+            literal_char: Box::new(literal_char),
+        };
         let m_l_l_content_0_built = MLLContent::LiteralChar(m_l_l_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_0_built)?;
@@ -4491,14 +4421,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_l_content_1_built = MLLContentNewlineBuilder::default()
-            .newline(Box::new(newline))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_content_1_built = MLLContentNewline {
+            newline: Box::new(newline),
+        };
         let m_l_l_content_1_built = MLLContent::Newline(m_l_l_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_1_built)?;
@@ -4515,14 +4444,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _dec_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int = pop_item!(self, dec_int, DecInt, context);
-        let integer_0_built = IntegerDecIntBuilder::default()
-            .dec_int(Box::new(dec_int))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer_0_built = IntegerDecInt {
+            dec_int: Box::new(dec_int),
+        };
         let integer_0_built = Integer::DecInt(integer_0_built);
         // Calling user action here
         self.user_grammar.integer(&integer_0_built)?;
@@ -4539,14 +4467,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _hex_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int = pop_item!(self, hex_int, HexInt, context);
-        let integer_1_built = IntegerHexIntBuilder::default()
-            .hex_int(Box::new(hex_int))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer_1_built = IntegerHexInt {
+            hex_int: Box::new(hex_int),
+        };
         let integer_1_built = Integer::HexInt(integer_1_built);
         // Calling user action here
         self.user_grammar.integer(&integer_1_built)?;
@@ -4563,14 +4490,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _oct_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int = pop_item!(self, oct_int, OctInt, context);
-        let integer_2_built = IntegerOctIntBuilder::default()
-            .oct_int(Box::new(oct_int))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer_2_built = IntegerOctInt {
+            oct_int: Box::new(oct_int),
+        };
         let integer_2_built = Integer::OctInt(integer_2_built);
         // Calling user action here
         self.user_grammar.integer(&integer_2_built)?;
@@ -4587,14 +4513,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _bin_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int = pop_item!(self, bin_int, BinInt, context);
-        let integer_3_built = IntegerBinIntBuilder::default()
-            .bin_int(Box::new(bin_int))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer_3_built = IntegerBinInt {
+            bin_int: Box::new(bin_int),
+        };
         let integer_3_built = Integer::BinInt(integer_3_built);
         // Calling user action here
         self.user_grammar.integer(&integer_3_built)?;
@@ -4611,14 +4536,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         hex_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_prefix = hex_prefix.token(parse_tree)?.clone();
-        let hex_prefix_built = HexPrefixBuilder::default()
-            .hex_prefix(hex_prefix)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let hex_prefix_built = HexPrefix {
+            hex_prefix: hex_prefix,
+        };
         // Calling user action here
         self.user_grammar.hex_prefix(&hex_prefix_built)?;
         self.push(ASTType::HexPrefix(hex_prefix_built), context);
@@ -4634,14 +4558,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         oct_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_prefix = oct_prefix.token(parse_tree)?.clone();
-        let oct_prefix_built = OctPrefixBuilder::default()
-            .oct_prefix(oct_prefix)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let oct_prefix_built = OctPrefix {
+            oct_prefix: oct_prefix,
+        };
         // Calling user action here
         self.user_grammar.oct_prefix(&oct_prefix_built)?;
         self.push(ASTType::OctPrefix(oct_prefix_built), context);
@@ -4657,14 +4580,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         bin_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_prefix = bin_prefix.token(parse_tree)?.clone();
-        let bin_prefix_built = BinPrefixBuilder::default()
-            .bin_prefix(bin_prefix)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bin_prefix_built = BinPrefix {
+            bin_prefix: bin_prefix,
+        };
         // Calling user action here
         self.user_grammar.bin_prefix(&bin_prefix_built)?;
         self.push(ASTType::BinPrefix(bin_prefix_built), context);
@@ -4681,16 +4603,15 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _dec_int_opt: &ParseTreeStackEntry<'t>,
         _unsigned_dec_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unsigned_dec_int = pop_item!(self, unsigned_dec_int, UnsignedDecInt, context);
         let dec_int_opt = pop_item!(self, dec_int_opt, DecIntOpt, context);
-        let dec_int_built = DecIntBuilder::default()
-            .dec_int_opt(dec_int_opt)
-            .unsigned_dec_int(Box::new(unsigned_dec_int))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let dec_int_built = DecInt {
+            dec_int_opt: dec_int_opt,
+            unsigned_dec_int: Box::new(unsigned_dec_int),
+        };
         // Calling user action here
         self.user_grammar.dec_int(&dec_int_built)?;
         self.push(ASTType::DecInt(dec_int_built), context);
@@ -4706,14 +4627,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _dec_int_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int_opt_group = pop_item!(self, dec_int_opt_group, DecIntOptGroup, context);
-        let dec_int_opt_0_built = DecIntOptBuilder::default()
-            .dec_int_opt_group(Box::new(dec_int_opt_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let dec_int_opt_0_built = DecIntOpt {
+            dec_int_opt_group: Box::new(dec_int_opt_group),
+        };
         self.push(
             ASTType::DecIntOpt(Some(Box::new(dec_int_opt_0_built))),
             context,
@@ -4730,14 +4650,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let dec_int_opt_group_0_built = DecIntOptGroupPlusBuilder::default()
-            .plus(Box::new(plus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let dec_int_opt_group_0_built = DecIntOptGroupPlus {
+            plus: Box::new(plus),
+        };
         let dec_int_opt_group_0_built = DecIntOptGroup::Plus(dec_int_opt_group_0_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_0_built), context);
         Ok(())
@@ -4752,14 +4671,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let dec_int_opt_group_1_built = DecIntOptGroupMinusBuilder::default()
-            .minus(Box::new(minus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let dec_int_opt_group_1_built = DecIntOptGroupMinus {
+            minus: Box::new(minus),
+        };
         let dec_int_opt_group_1_built = DecIntOptGroup::Minus(dec_int_opt_group_1_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_1_built), context);
         Ok(())
@@ -4770,7 +4688,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// DecIntOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::DecIntOpt(None), context);
@@ -4787,17 +4705,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _hex_prefix: &ParseTreeStackEntry<'t>,
         _hex_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = pop_item!(self, hex_int_content, HexIntContent, context);
         // Ignore clipped member 'hex_prefix'
         self.pop(context);
-        let hex_int_built = HexIntBuilder::default()
+        let hex_int_built = HexInt {
             // Ignore clipped member 'hex_prefix'
-            .hex_int_content(Box::new(hex_int_content))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            hex_int_content: Box::new(hex_int_content),
+        };
         // Calling user action here
         self.user_grammar.hex_int(&hex_int_built)?;
         self.push(ASTType::HexInt(hex_int_built), context);
@@ -4813,14 +4730,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         hex_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = hex_int_content.token(parse_tree)?.clone();
-        let hex_int_content_built = HexIntContentBuilder::default()
-            .hex_int_content(hex_int_content)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let hex_int_content_built = HexIntContent {
+            hex_int_content: hex_int_content,
+        };
         // Calling user action here
         self.user_grammar.hex_int_content(&hex_int_content_built)?;
         self.push(ASTType::HexIntContent(hex_int_content_built), context);
@@ -4837,17 +4753,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _oct_prefix: &ParseTreeStackEntry<'t>,
         _oct_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = pop_item!(self, oct_int_content, OctIntContent, context);
         // Ignore clipped member 'oct_prefix'
         self.pop(context);
-        let oct_int_built = OctIntBuilder::default()
+        let oct_int_built = OctInt {
             // Ignore clipped member 'oct_prefix'
-            .oct_int_content(Box::new(oct_int_content))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            oct_int_content: Box::new(oct_int_content),
+        };
         // Calling user action here
         self.user_grammar.oct_int(&oct_int_built)?;
         self.push(ASTType::OctInt(oct_int_built), context);
@@ -4863,14 +4778,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         oct_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = oct_int_content.token(parse_tree)?.clone();
-        let oct_int_content_built = OctIntContentBuilder::default()
-            .oct_int_content(oct_int_content)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let oct_int_content_built = OctIntContent {
+            oct_int_content: oct_int_content,
+        };
         // Calling user action here
         self.user_grammar.oct_int_content(&oct_int_content_built)?;
         self.push(ASTType::OctIntContent(oct_int_content_built), context);
@@ -4887,17 +4801,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _bin_prefix: &ParseTreeStackEntry<'t>,
         _bin_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = pop_item!(self, bin_int_content, BinIntContent, context);
         // Ignore clipped member 'bin_prefix'
         self.pop(context);
-        let bin_int_built = BinIntBuilder::default()
+        let bin_int_built = BinInt {
             // Ignore clipped member 'bin_prefix'
-            .bin_int_content(Box::new(bin_int_content))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            bin_int_content: Box::new(bin_int_content),
+        };
         // Calling user action here
         self.user_grammar.bin_int(&bin_int_built)?;
         self.push(ASTType::BinInt(bin_int_built), context);
@@ -4913,14 +4826,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         bin_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = bin_int_content.token(parse_tree)?.clone();
-        let bin_int_content_built = BinIntContentBuilder::default()
-            .bin_int_content(bin_int_content)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bin_int_content_built = BinIntContent {
+            bin_int_content: bin_int_content,
+        };
         // Calling user action here
         self.user_grammar.bin_int_content(&bin_int_content_built)?;
         self.push(ASTType::BinIntContent(bin_int_content_built), context);
@@ -4936,14 +4848,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r#true: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#true = r#true.token(parse_tree)?.clone();
-        let boolean_0_built = BooleanTrueBuilder::default()
-            .r#true(r#true)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let boolean_0_built = BooleanTrue { r#true: r#true };
         let boolean_0_built = Boolean::True(boolean_0_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_0_built)?;
@@ -4960,14 +4869,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r#false: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#false = r#false.token(parse_tree)?.clone();
-        let boolean_1_built = BooleanFalseBuilder::default()
-            .r#false(r#false)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let boolean_1_built = BooleanFalse { r#false: r#false };
         let boolean_1_built = Boolean::False(boolean_1_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_1_built)?;
@@ -4984,14 +4890,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _normal_float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = pop_item!(self, normal_float, NormalFloat, context);
-        let float_0_built = FloatNormalFloatBuilder::default()
-            .normal_float(Box::new(normal_float))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float_0_built = FloatNormalFloat {
+            normal_float: Box::new(normal_float),
+        };
         let float_0_built = Float::NormalFloat(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
@@ -5008,14 +4913,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _special_float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = pop_item!(self, special_float, SpecialFloat, context);
-        let float_1_built = FloatSpecialFloatBuilder::default()
-            .special_float(Box::new(special_float))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float_1_built = FloatSpecialFloat {
+            special_float: Box::new(special_float),
+        };
         let float_1_built = Float::SpecialFloat(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
@@ -5032,14 +4936,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         normal_float: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = normal_float.token(parse_tree)?.clone();
-        let normal_float_built = NormalFloatBuilder::default()
-            .normal_float(normal_float)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let normal_float_built = NormalFloat {
+            normal_float: normal_float,
+        };
         // Calling user action here
         self.user_grammar.normal_float(&normal_float_built)?;
         self.push(ASTType::NormalFloat(normal_float_built), context);
@@ -5055,14 +4958,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         special_float: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = special_float.token(parse_tree)?.clone();
-        let special_float_built = SpecialFloatBuilder::default()
-            .special_float(special_float)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let special_float_built = SpecialFloat {
+            special_float: special_float,
+        };
         // Calling user action here
         self.user_grammar.special_float(&special_float_built)?;
         self.push(ASTType::SpecialFloat(special_float_built), context);
@@ -5078,14 +4980,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _offset_date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = pop_item!(self, offset_date_time, OffsetDateTime, context);
-        let date_time_0_built = DateTimeOffsetDateTimeBuilder::default()
-            .offset_date_time(Box::new(offset_date_time))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let date_time_0_built = DateTimeOffsetDateTime {
+            offset_date_time: Box::new(offset_date_time),
+        };
         let date_time_0_built = DateTime::OffsetDateTime(date_time_0_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_0_built)?;
@@ -5102,14 +5003,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = pop_item!(self, local_date_time, LocalDateTime, context);
-        let date_time_1_built = DateTimeLocalDateTimeBuilder::default()
-            .local_date_time(Box::new(local_date_time))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let date_time_1_built = DateTimeLocalDateTime {
+            local_date_time: Box::new(local_date_time),
+        };
         let date_time_1_built = DateTime::LocalDateTime(date_time_1_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_1_built)?;
@@ -5126,14 +5026,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_date: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = pop_item!(self, local_date, LocalDate, context);
-        let date_time_2_built = DateTimeLocalDateBuilder::default()
-            .local_date(Box::new(local_date))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let date_time_2_built = DateTimeLocalDate {
+            local_date: Box::new(local_date),
+        };
         let date_time_2_built = DateTime::LocalDate(date_time_2_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_2_built)?;
@@ -5150,14 +5049,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = pop_item!(self, local_time, LocalTime, context);
-        let date_time_3_built = DateTimeLocalTimeBuilder::default()
-            .local_time(Box::new(local_time))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let date_time_3_built = DateTimeLocalTime {
+            local_time: Box::new(local_time),
+        };
         let date_time_3_built = DateTime::LocalTime(date_time_3_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_3_built)?;
@@ -5174,14 +5072,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         offset_date_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = offset_date_time.token(parse_tree)?.clone();
-        let offset_date_time_built = OffsetDateTimeBuilder::default()
-            .offset_date_time(offset_date_time)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let offset_date_time_built = OffsetDateTime {
+            offset_date_time: offset_date_time,
+        };
         // Calling user action here
         self.user_grammar
             .offset_date_time(&offset_date_time_built)?;
@@ -5198,14 +5095,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_date_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = local_date_time.token(parse_tree)?.clone();
-        let local_date_time_built = LocalDateTimeBuilder::default()
-            .local_date_time(local_date_time)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let local_date_time_built = LocalDateTime {
+            local_date_time: local_date_time,
+        };
         // Calling user action here
         self.user_grammar.local_date_time(&local_date_time_built)?;
         self.push(ASTType::LocalDateTime(local_date_time_built), context);
@@ -5221,14 +5117,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_date: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = local_date.token(parse_tree)?.clone();
-        let local_date_built = LocalDateBuilder::default()
-            .local_date(local_date)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let local_date_built = LocalDate {
+            local_date: local_date,
+        };
         // Calling user action here
         self.user_grammar.local_date(&local_date_built)?;
         self.push(ASTType::LocalDate(local_date_built), context);
@@ -5244,14 +5139,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = local_time.token(parse_tree)?.clone();
-        let local_time_built = LocalTimeBuilder::default()
-            .local_time(local_time)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let local_time_built = LocalTime {
+            local_time: local_time,
+        };
         // Calling user action here
         self.user_grammar.local_time(&local_time_built)?;
         self.push(ASTType::LocalTime(local_time_built), context);
@@ -5269,7 +5163,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _array_opt: &ParseTreeStackEntry<'t>,
         _array_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_close'
@@ -5277,12 +5171,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let array_opt = pop_item!(self, array_opt, ArrayOpt, context);
         // Ignore clipped member 'array_open'
         self.pop(context);
-        let array_built = ArrayBuilder::default()
+        let array_built = Array {
             // Ignore clipped member 'array_open'
-            .array_opt(array_opt)
+            array_opt: array_opt,
             // Ignore clipped member 'array_close'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -5298,14 +5191,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values = pop_item!(self, array_values, ArrayValues, context);
-        let array_opt_0_built = ArrayOptBuilder::default()
-            .array_values(Box::new(array_values))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_opt_0_built = ArrayOpt {
+            array_values: Box::new(array_values),
+        };
         self.push(
             ASTType::ArrayOpt(Some(Box::new(array_opt_0_built))),
             context,
@@ -5318,7 +5210,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ArrayOpt(None), context);
@@ -5335,17 +5227,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _val: &ParseTreeStackEntry<'t>,
         _array_values_suffix0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix0 =
             pop_item!(self, array_values_suffix0, ArrayValuesSuffix0, context);
         let val = pop_item!(self, val, Val, context);
-        let array_values_built = ArrayValuesBuilder::default()
-            .val(Box::new(val))
-            .array_values_suffix0(Box::new(array_values_suffix0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_values_built = ArrayValues {
+            val: Box::new(val),
+            array_values_suffix0: Box::new(array_values_suffix0),
+        };
         // Calling user action here
         self.user_grammar.array_values(&array_values_built)?;
         self.push(ASTType::ArrayValues(array_values_built), context);
@@ -5362,18 +5253,16 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _array_sep: &ParseTreeStackEntry<'t>,
         _array_values_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix = pop_item!(self, array_values_suffix, ArrayValuesSuffix, context);
         // Ignore clipped member 'array_sep'
         self.pop(context);
-        let array_values_suffix0_0_built =
-            ArrayValuesSuffix0ArraySepArrayValuesSuffixBuilder::default()
-                // Ignore clipped member 'array_sep'
-                .array_values_suffix(Box::new(array_values_suffix))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_values_suffix0_0_built = ArrayValuesSuffix0ArraySepArrayValuesSuffix {
+            // Ignore clipped member 'array_sep'
+            array_values_suffix: Box::new(array_values_suffix),
+        };
         let array_values_suffix0_0_built =
             ArrayValuesSuffix0::ArraySepArrayValuesSuffix(array_values_suffix0_0_built);
         self.push(
@@ -5388,13 +5277,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayValuesSuffix0: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_values_suffix0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn array_values_suffix0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values_suffix0_1_built =
-            ArrayValuesSuffix0ArrayValuesSuffix0EmptyBuilder::default()
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_values_suffix0_1_built = ArrayValuesSuffix0ArrayValuesSuffix0Empty {};
         let array_values_suffix0_1_built =
             ArrayValuesSuffix0::ArrayValuesSuffix0Empty(array_values_suffix0_1_built);
         self.push(
@@ -5413,14 +5302,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values = pop_item!(self, array_values, ArrayValues, context);
-        let array_values_suffix_0_built = ArrayValuesSuffixArrayValuesBuilder::default()
-            .array_values(Box::new(array_values))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_values_suffix_0_built = ArrayValuesSuffixArrayValues {
+            array_values: Box::new(array_values),
+        };
         let array_values_suffix_0_built =
             ArrayValuesSuffix::ArrayValues(array_values_suffix_0_built);
         self.push(
@@ -5435,12 +5323,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayValuesSuffix: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_values_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn array_values_suffix_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_values_suffix_1_built = ArrayValuesSuffixArrayValuesSuffixEmptyBuilder::default()
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_values_suffix_1_built = ArrayValuesSuffixArrayValuesSuffixEmpty {};
         let array_values_suffix_1_built =
             ArrayValuesSuffix::ArrayValuesSuffixEmpty(array_values_suffix_1_built);
         self.push(
@@ -5459,14 +5348,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = array_sep.token(parse_tree)?.clone();
-        let array_sep_built = ArraySepBuilder::default()
-            .array_sep(array_sep)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_sep_built = ArraySep {
+            array_sep: array_sep,
+        };
         // Calling user action here
         self.user_grammar.array_sep(&array_sep_built)?;
         self.push(ASTType::ArraySep(array_sep_built), context);
@@ -5482,14 +5370,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _std_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let std_table = pop_item!(self, std_table, StdTable, context);
-        let table_0_built = TableStdTableBuilder::default()
-            .std_table(Box::new(std_table))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let table_0_built = TableStdTable {
+            std_table: Box::new(std_table),
+        };
         let table_0_built = Table::StdTable(table_0_built);
         // Calling user action here
         self.user_grammar.table(&table_0_built)?;
@@ -5506,14 +5393,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table = pop_item!(self, array_table, ArrayTable, context);
-        let table_1_built = TableArrayTableBuilder::default()
-            .array_table(Box::new(array_table))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let table_1_built = TableArrayTable {
+            array_table: Box::new(array_table),
+        };
         let table_1_built = Table::ArrayTable(table_1_built);
         // Calling user action here
         self.user_grammar.table(&table_1_built)?;
@@ -5532,7 +5418,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key: &ParseTreeStackEntry<'t>,
         _std_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'std_table_close'
@@ -5540,12 +5426,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key = pop_item!(self, key, Key, context);
         // Ignore clipped member 'std_table_open'
         self.pop(context);
-        let std_table_built = StdTableBuilder::default()
+        let std_table_built = StdTable {
             // Ignore clipped member 'std_table_open'
-            .key(Box::new(key))
+            key: Box::new(key),
             // Ignore clipped member 'std_table_close'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.std_table(&std_table_built)?;
         self.push(ASTType::StdTable(std_table_built), context);
@@ -5561,14 +5446,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_table_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_open = array_table_open.token(parse_tree)?.clone();
-        let array_table_open_built = ArrayTableOpenBuilder::default()
-            .array_table_open(array_table_open)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_table_open_built = ArrayTableOpen {
+            array_table_open: array_table_open,
+        };
         // Calling user action here
         self.user_grammar
             .array_table_open(&array_table_open_built)?;
@@ -5585,14 +5469,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_table_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_close = array_table_close.token(parse_tree)?.clone();
-        let array_table_close_built = ArrayTableCloseBuilder::default()
-            .array_table_close(array_table_close)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_table_close_built = ArrayTableClose {
+            array_table_close: array_table_close,
+        };
         // Calling user action here
         self.user_grammar
             .array_table_close(&array_table_close_built)?;
@@ -5609,14 +5492,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = array_open.token(parse_tree)?.clone();
-        let array_open_built = ArrayOpenBuilder::default()
-            .array_open(array_open)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_open_built = ArrayOpen {
+            array_open: array_open,
+        };
         // Calling user action here
         self.user_grammar.array_open(&array_open_built)?;
         self.push(ASTType::ArrayOpen(array_open_built), context);
@@ -5632,14 +5514,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = array_close.token(parse_tree)?.clone();
-        let array_close_built = ArrayCloseBuilder::default()
-            .array_close(array_close)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let array_close_built = ArrayClose {
+            array_close: array_close,
+        };
         // Calling user action here
         self.user_grammar.array_close(&array_close_built)?;
         self.push(ASTType::ArrayClose(array_close_built), context);
@@ -5655,14 +5536,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_open: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = pop_item!(self, array_open, ArrayOpen, context);
-        let std_table_open_built = StdTableOpenBuilder::default()
-            .array_open(Box::new(array_open))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let std_table_open_built = StdTableOpen {
+            array_open: Box::new(array_open),
+        };
         // Calling user action here
         self.user_grammar.std_table_open(&std_table_open_built)?;
         self.push(ASTType::StdTableOpen(std_table_open_built), context);
@@ -5678,14 +5558,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = pop_item!(self, array_close, ArrayClose, context);
-        let std_table_close_built = StdTableCloseBuilder::default()
-            .array_close(Box::new(array_close))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let std_table_close_built = StdTableClose {
+            array_close: Box::new(array_close),
+        };
         // Calling user action here
         self.user_grammar.std_table_close(&std_table_close_built)?;
         self.push(ASTType::StdTableClose(std_table_close_built), context);
@@ -5703,7 +5582,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _inline_table_opt: &ParseTreeStackEntry<'t>,
         _inline_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'inline_table_close'
@@ -5711,12 +5590,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let inline_table_opt = pop_item!(self, inline_table_opt, InlineTableOpt, context);
         // Ignore clipped member 'inline_table_open'
         self.pop(context);
-        let inline_table_built = InlineTableBuilder::default()
+        let inline_table_built = InlineTable {
             // Ignore clipped member 'inline_table_open'
-            .inline_table_opt(inline_table_opt)
+            inline_table_opt: inline_table_opt,
             // Ignore clipped member 'inline_table_close'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.inline_table(&inline_table_built)?;
         self.push(ASTType::InlineTable(inline_table_built), context);
@@ -5732,15 +5610,14 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _inline_table_key_vals: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
             pop_item!(self, inline_table_key_vals, InlineTableKeyVals, context);
-        let inline_table_opt_0_built = InlineTableOptBuilder::default()
-            .inline_table_key_vals(Box::new(inline_table_key_vals))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let inline_table_opt_0_built = InlineTableOpt {
+            inline_table_key_vals: Box::new(inline_table_key_vals),
+        };
         self.push(
             ASTType::InlineTableOpt(Some(Box::new(inline_table_opt_0_built))),
             context,
@@ -5753,7 +5630,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// InlineTableOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn inline_table_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn inline_table_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::InlineTableOpt(None), context);
@@ -5769,14 +5649,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         inline_table_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_open = inline_table_open.token(parse_tree)?.clone();
-        let inline_table_open_built = InlineTableOpenBuilder::default()
-            .inline_table_open(inline_table_open)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let inline_table_open_built = InlineTableOpen {
+            inline_table_open: inline_table_open,
+        };
         // Calling user action here
         self.user_grammar
             .inline_table_open(&inline_table_open_built)?;
@@ -5793,14 +5672,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         inline_table_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_close = inline_table_close.token(parse_tree)?.clone();
-        let inline_table_close_built = InlineTableCloseBuilder::default()
-            .inline_table_close(inline_table_close)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let inline_table_close_built = InlineTableClose {
+            inline_table_close: inline_table_close,
+        };
         // Calling user action here
         self.user_grammar
             .inline_table_close(&inline_table_close_built)?;
@@ -5817,14 +5695,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_sep: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = pop_item!(self, array_sep, ArraySep, context);
-        let inline_table_sep_built = InlineTableSepBuilder::default()
-            .array_sep(Box::new(array_sep))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let inline_table_sep_built = InlineTableSep {
+            array_sep: Box::new(array_sep),
+        };
         // Calling user action here
         self.user_grammar
             .inline_table_sep(&inline_table_sep_built)?;
@@ -5842,7 +5719,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key_val: &ParseTreeStackEntry<'t>,
         _inline_table_key_vals_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals_opt = pop_item!(
@@ -5852,11 +5729,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             context
         );
         let key_val = pop_item!(self, key_val, KeyVal, context);
-        let inline_table_key_vals_built = InlineTableKeyValsBuilder::default()
-            .key_val(Box::new(key_val))
-            .inline_table_key_vals_opt(inline_table_key_vals_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let inline_table_key_vals_built = InlineTableKeyVals {
+            key_val: Box::new(key_val),
+            inline_table_key_vals_opt: inline_table_key_vals_opt,
+        };
         // Calling user action here
         self.user_grammar
             .inline_table_key_vals(&inline_table_key_vals_built)?;
@@ -5877,18 +5753,17 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _inline_table_sep: &ParseTreeStackEntry<'t>,
         _inline_table_key_vals: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
             pop_item!(self, inline_table_key_vals, InlineTableKeyVals, context);
         // Ignore clipped member 'inline_table_sep'
         self.pop(context);
-        let inline_table_key_vals_opt_0_built = InlineTableKeyValsOptBuilder::default()
+        let inline_table_key_vals_opt_0_built = InlineTableKeyValsOpt {
             // Ignore clipped member 'inline_table_sep'
-            .inline_table_key_vals(Box::new(inline_table_key_vals))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            inline_table_key_vals: Box::new(inline_table_key_vals),
+        };
         self.push(
             ASTType::InlineTableKeyValsOpt(Some(Box::new(inline_table_key_vals_opt_0_built))),
             context,
@@ -5901,7 +5776,10 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// InlineTableKeyValsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn inline_table_key_vals_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn inline_table_key_vals_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::InlineTableKeyValsOpt(None), context);
@@ -5919,7 +5797,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key: &ParseTreeStackEntry<'t>,
         _array_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_table_close'
@@ -5927,12 +5805,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key = pop_item!(self, key, Key, context);
         // Ignore clipped member 'array_table_open'
         self.pop(context);
-        let array_table_built = ArrayTableBuilder::default()
+        let array_table_built = ArrayTable {
             // Ignore clipped member 'array_table_open'
-            .key(Box::new(key))
+            key: Box::new(key),
             // Ignore clipped member 'array_table_close'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.array_table(&array_table_built)?;
         self.push(ASTType::ArrayTable(array_table_built), context);
@@ -5948,14 +5825,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unsigned_dec_int: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unsigned_dec_int = unsigned_dec_int.token(parse_tree)?.clone();
-        let unsigned_dec_int_built = UnsignedDecIntBuilder::default()
-            .unsigned_dec_int(unsigned_dec_int)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let unsigned_dec_int_built = UnsignedDecInt {
+            unsigned_dec_int: unsigned_dec_int,
+        };
         // Calling user action here
         self.user_grammar
             .unsigned_dec_int(&unsigned_dec_int_built)?;
@@ -5972,14 +5848,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unquoted_key: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = unquoted_key.token(parse_tree)?.clone();
-        let unquoted_key_built = UnquotedKeyBuilder::default()
-            .unquoted_key(unquoted_key)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let unquoted_key_built = UnquotedKey {
+            unquoted_key: unquoted_key,
+        };
         // Calling user action here
         self.user_grammar.unquoted_key(&unquoted_key_built)?;
         self.push(ASTType::UnquotedKey(unquoted_key_built), context);
@@ -5995,14 +5870,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         dot_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_sep = dot_sep.token(parse_tree)?.clone();
-        let dot_sep_built = DotSepBuilder::default()
-            .dot_sep(dot_sep)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let dot_sep_built = DotSep { dot_sep: dot_sep };
         // Calling user action here
         self.user_grammar.dot_sep(&dot_sep_built)?;
         self.push(ASTType::DotSep(dot_sep_built), context);
@@ -6018,14 +5890,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_basic_string_start: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_start = m_l_basic_string_start.token(parse_tree)?.clone();
-        let m_l_basic_string_start_built = MLBasicStringStartBuilder::default()
-            .m_l_basic_string_start(m_l_basic_string_start)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_basic_string_start_built = MLBasicStringStart {
+            m_l_basic_string_start: m_l_basic_string_start,
+        };
         // Calling user action here
         self.user_grammar
             .m_l_basic_string_start(&m_l_basic_string_start_built)?;
@@ -6045,14 +5916,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_basic_string_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_end = m_l_basic_string_end.token(parse_tree)?.clone();
-        let m_l_basic_string_end_built = MLBasicStringEndBuilder::default()
-            .m_l_basic_string_end(m_l_basic_string_end)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_basic_string_end_built = MLBasicStringEnd {
+            m_l_basic_string_end: m_l_basic_string_end,
+        };
         // Calling user action here
         self.user_grammar
             .m_l_basic_string_end(&m_l_basic_string_end_built)?;
@@ -6072,14 +5942,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_b_quotes: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_quotes = m_l_b_quotes.token(parse_tree)?.clone();
-        let m_l_b_quotes_built = MLBQuotesBuilder::default()
-            .m_l_b_quotes(m_l_b_quotes)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_b_quotes_built = MLBQuotes {
+            m_l_b_quotes: m_l_b_quotes,
+        };
         // Calling user action here
         self.user_grammar.m_l_b_quotes(&m_l_b_quotes_built)?;
         self.push(ASTType::MLBQuotes(m_l_b_quotes_built), context);
@@ -6095,14 +5964,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         quotation_mark: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = quotation_mark.token(parse_tree)?.clone();
-        let quotation_mark_built = QuotationMarkBuilder::default()
-            .quotation_mark(quotation_mark)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let quotation_mark_built = QuotationMark {
+            quotation_mark: quotation_mark,
+        };
         // Calling user action here
         self.user_grammar.quotation_mark(&quotation_mark_built)?;
         self.push(ASTType::QuotationMark(quotation_mark_built), context);
@@ -6118,14 +5986,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_literal_string_start: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_start = m_l_literal_string_start.token(parse_tree)?.clone();
-        let m_l_literal_string_start_built = MLLiteralStringStartBuilder::default()
-            .m_l_literal_string_start(m_l_literal_string_start)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_literal_string_start_built = MLLiteralStringStart {
+            m_l_literal_string_start: m_l_literal_string_start,
+        };
         // Calling user action here
         self.user_grammar
             .m_l_literal_string_start(&m_l_literal_string_start_built)?;
@@ -6145,14 +6012,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_literal_string_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_end = m_l_literal_string_end.token(parse_tree)?.clone();
-        let m_l_literal_string_end_built = MLLiteralStringEndBuilder::default()
-            .m_l_literal_string_end(m_l_literal_string_end)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_literal_string_end_built = MLLiteralStringEnd {
+            m_l_literal_string_end: m_l_literal_string_end,
+        };
         // Calling user action here
         self.user_grammar
             .m_l_literal_string_end(&m_l_literal_string_end_built)?;
@@ -6172,14 +6038,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_l_quotes: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_quotes = m_l_l_quotes.token(parse_tree)?.clone();
-        let m_l_l_quotes_built = MLLQuotesBuilder::default()
-            .m_l_l_quotes(m_l_l_quotes)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let m_l_l_quotes_built = MLLQuotes {
+            m_l_l_quotes: m_l_l_quotes,
+        };
         // Calling user action here
         self.user_grammar.m_l_l_quotes(&m_l_l_quotes_built)?;
         self.push(ASTType::MLLQuotes(m_l_l_quotes_built), context);
@@ -6195,14 +6060,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         apostrophe: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let apostrophe = apostrophe.token(parse_tree)?.clone();
-        let apostrophe_built = ApostropheBuilder::default()
-            .apostrophe(apostrophe)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let apostrophe_built = Apostrophe {
+            apostrophe: apostrophe,
+        };
         // Calling user action here
         self.user_grammar.apostrophe(&apostrophe_built)?;
         self.push(ASTType::Apostrophe(apostrophe_built), context);
@@ -6218,14 +6082,13 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         ascii_no_escape: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = ascii_no_escape.token(parse_tree)?.clone();
-        let ascii_no_escape_built = AsciiNoEscapeBuilder::default()
-            .ascii_no_escape(ascii_no_escape)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ascii_no_escape_built = AsciiNoEscape {
+            ascii_no_escape: ascii_no_escape,
+        };
         // Calling user action here
         self.user_grammar.ascii_no_escape(&ascii_no_escape_built)?;
         self.push(ASTType::AsciiNoEscape(ascii_no_escape_built), context);
@@ -6241,14 +6104,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let minus_built = MinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let minus_built = Minus { minus: minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -6264,14 +6124,11 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let plus_built = PlusBuilder::default()
-            .plus(plus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let plus_built = Plus { plus: plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -6288,7 +6145,7 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<(), ParolError> {
         match prod_num {
             0 => self.parol_toml(&children[0], parse_tree),
             1 => self.parol_toml_list_0(&children[0], &children[1], parse_tree),
@@ -6448,7 +6305,11 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
             153 => self.ascii_no_escape(&children[0], parse_tree),
             154 => self.minus(&children[0], parse_tree),
             155 => self.plus(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

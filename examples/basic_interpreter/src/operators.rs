@@ -171,7 +171,7 @@ impl UnaryOperator {
         op: &Self,
         val: DefinitionRange,
         context: &str,
-    ) -> Result<DefinitionRange> {
+    ) -> DefinitionRange {
         trace!("apply_unary_operation: {}: {} {}", context, op, val);
         let result = match op {
             Self::LogNot => {
@@ -185,7 +185,7 @@ impl UnaryOperator {
 
         trace!("apply_unary_operation:      = {}", result);
 
-        Ok(result)
+        result
     }
 }
 

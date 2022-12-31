@@ -12,9 +12,8 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::json_grammar::JsonGrammar;
-#[allow(unused_imports)]
-use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParolError, ParserError};
 
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
@@ -30,7 +29,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _value: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -43,7 +42,7 @@ pub trait JsonGrammarTrait {
         _l_brace: &ParseTreeStackEntry,
         _object_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -57,7 +56,7 @@ pub trait JsonGrammarTrait {
         _object_list: &ParseTreeStackEntry,
         _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -69,7 +68,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _r_brace: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -83,7 +82,7 @@ pub trait JsonGrammarTrait {
         _pair: &ParseTreeStackEntry,
         _object_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -91,7 +90,7 @@ pub trait JsonGrammarTrait {
     ///
     /// ObjectList /* Vec<T>::New */: ;
     ///
-    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -105,7 +104,7 @@ pub trait JsonGrammarTrait {
         _colon: &ParseTreeStackEntry,
         _value: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -118,7 +117,7 @@ pub trait JsonGrammarTrait {
         _l_bracket: &ParseTreeStackEntry,
         _array_suffix: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -132,7 +131,7 @@ pub trait JsonGrammarTrait {
         _array_list: &ParseTreeStackEntry,
         _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -144,7 +143,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _r_bracket: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -158,7 +157,7 @@ pub trait JsonGrammarTrait {
         _value: &ParseTreeStackEntry,
         _array_list: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -166,7 +165,7 @@ pub trait JsonGrammarTrait {
     ///
     /// ArrayList /* Vec<T>::New */: ;
     ///
-    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -178,7 +177,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -190,7 +189,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _number: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -202,7 +201,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _object: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -214,7 +213,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _array: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -226,7 +225,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _true: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -238,7 +237,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _false: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -250,7 +249,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _null: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -262,7 +261,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _string: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 
@@ -274,7 +273,7 @@ pub trait JsonGrammarTrait {
         &mut self,
         _number: &ParseTreeStackEntry,
         _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         Ok(())
     }
 }
@@ -288,7 +287,7 @@ impl UserActionsTrait<'_> for JsonGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<(), ParolError> {
         match prod_num {
             0 => self.json(&children[0], parse_tree),
             1 => self.object(&children[0], &children[1], parse_tree),
@@ -311,7 +310,11 @@ impl UserActionsTrait<'_> for JsonGrammar {
             18 => self.value_6(&children[0], parse_tree),
             19 => self.string(&children[0], parse_tree),
             20 => self.number(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

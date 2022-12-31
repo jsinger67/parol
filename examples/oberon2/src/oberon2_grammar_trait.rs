@@ -9,8 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
@@ -18,372 +16,373 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParolError, ParserError};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait Oberon2GrammarTrait<'t> {
     /// Semantic action for non-terminal 'KwBegin'
-    fn kw_begin(&mut self, _arg: &KwBegin) -> Result<()> {
+    fn kw_begin(&mut self, _arg: &KwBegin) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwCase'
-    fn kw_case(&mut self, _arg: &KwCase) -> Result<()> {
+    fn kw_case(&mut self, _arg: &KwCase) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwDo'
-    fn kw_do(&mut self, _arg: &KwDo) -> Result<()> {
+    fn kw_do(&mut self, _arg: &KwDo) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElse'
-    fn kw_else(&mut self, _arg: &KwElse) -> Result<()> {
+    fn kw_else(&mut self, _arg: &KwElse) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElsif'
-    fn kw_elsif(&mut self, _arg: &KwElsif) -> Result<()> {
+    fn kw_elsif(&mut self, _arg: &KwElsif) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwEnd'
-    fn kw_end(&mut self, _arg: &KwEnd) -> Result<()> {
+    fn kw_end(&mut self, _arg: &KwEnd) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwIf'
-    fn kw_if(&mut self, _arg: &KwIf) -> Result<()> {
+    fn kw_if(&mut self, _arg: &KwIf) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwOf'
-    fn kw_of(&mut self, _arg: &KwOf) -> Result<()> {
+    fn kw_of(&mut self, _arg: &KwOf) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwProcedure'
-    fn kw_procedure(&mut self, _arg: &KwProcedure) -> Result<()> {
+    fn kw_procedure(&mut self, _arg: &KwProcedure) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwThen'
-    fn kw_then(&mut self, _arg: &KwThen) -> Result<()> {
+    fn kw_then(&mut self, _arg: &KwThen) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwTo'
-    fn kw_to(&mut self, _arg: &KwTo) -> Result<()> {
+    fn kw_to(&mut self, _arg: &KwTo) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwVar'
-    fn kw_var(&mut self, _arg: &KwVar) -> Result<()> {
+    fn kw_var(&mut self, _arg: &KwVar) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Oberon2'
-    fn oberon2(&mut self, _arg: &Oberon2<'t>) -> Result<()> {
+    fn oberon2(&mut self, _arg: &Oberon2<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ModuleHead'
-    fn module_head(&mut self, _arg: &ModuleHead<'t>) -> Result<()> {
+    fn module_head(&mut self, _arg: &ModuleHead<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ModuleBody'
-    fn module_body(&mut self, _arg: &ModuleBody<'t>) -> Result<()> {
+    fn module_body(&mut self, _arg: &ModuleBody<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ImportList'
-    fn import_list(&mut self, _arg: &ImportList<'t>) -> Result<()> {
+    fn import_list(&mut self, _arg: &ImportList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DeclSeq'
-    fn decl_seq(&mut self, _arg: &DeclSeq<'t>) -> Result<()> {
+    fn decl_seq(&mut self, _arg: &DeclSeq<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DeclBlock'
-    fn decl_block(&mut self, _arg: &DeclBlock<'t>) -> Result<()> {
+    fn decl_block(&mut self, _arg: &DeclBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstDeclBlock'
-    fn const_decl_block(&mut self, _arg: &ConstDeclBlock<'t>) -> Result<()> {
+    fn const_decl_block(&mut self, _arg: &ConstDeclBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDeclBlock'
-    fn type_decl_block(&mut self, _arg: &TypeDeclBlock<'t>) -> Result<()> {
+    fn type_decl_block(&mut self, _arg: &TypeDeclBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'VarDeclBlock'
-    fn var_decl_block(&mut self, _arg: &VarDeclBlock<'t>) -> Result<()> {
+    fn var_decl_block(&mut self, _arg: &VarDeclBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstDecl'
-    fn const_decl(&mut self, _arg: &ConstDecl<'t>) -> Result<()> {
+    fn const_decl(&mut self, _arg: &ConstDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDecl'
-    fn type_decl(&mut self, _arg: &TypeDecl<'t>) -> Result<()> {
+    fn type_decl(&mut self, _arg: &TypeDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'VarDecl'
-    fn var_decl(&mut self, _arg: &VarDecl<'t>) -> Result<()> {
+    fn var_decl(&mut self, _arg: &VarDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcDecl'
-    fn proc_decl(&mut self, _arg: &ProcDecl<'t>) -> Result<()> {
+    fn proc_decl(&mut self, _arg: &ProcDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcedureHeading'
-    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<()> {
+    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcedureBody'
-    fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<()> {
+    fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StatementBlock'
-    fn statement_block(&mut self, _arg: &StatementBlock<'t>) -> Result<()> {
+    fn statement_block(&mut self, _arg: &StatementBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForwardDecl'
-    fn forward_decl(&mut self, _arg: &ForwardDecl<'t>) -> Result<()> {
+    fn forward_decl(&mut self, _arg: &ForwardDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FormalPars'
-    fn formal_pars(&mut self, _arg: &FormalPars<'t>) -> Result<()> {
+    fn formal_pars(&mut self, _arg: &FormalPars<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FPSection'
-    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<()> {
+    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Receiver'
-    fn receiver(&mut self, _arg: &Receiver<'t>) -> Result<()> {
+    fn receiver(&mut self, _arg: &Receiver<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ReceiverVarDecl'
-    fn receiver_var_decl(&mut self, _arg: &ReceiverVarDecl<'t>) -> Result<()> {
+    fn receiver_var_decl(&mut self, _arg: &ReceiverVarDecl<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDef'
-    fn type_def(&mut self, _arg: &TypeDef<'t>) -> Result<()> {
+    fn type_def(&mut self, _arg: &TypeDef<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FieldList'
-    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<()> {
+    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StatementSeq'
-    fn statement_seq(&mut self, _arg: &StatementSeq<'t>) -> Result<()> {
+    fn statement_seq(&mut self, _arg: &StatementSeq<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Statement'
-    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ThenBlock'
-    fn then_block(&mut self, _arg: &ThenBlock<'t>) -> Result<()> {
+    fn then_block(&mut self, _arg: &ThenBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Cases'
-    fn cases(&mut self, _arg: &Cases<'t>) -> Result<()> {
+    fn cases(&mut self, _arg: &Cases<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ElsifPart'
-    fn elsif_part(&mut self, _arg: &ElsifPart<'t>) -> Result<()> {
+    fn elsif_part(&mut self, _arg: &ElsifPart<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ElsePart'
-    fn else_part(&mut self, _arg: &ElsePart<'t>) -> Result<()> {
+    fn else_part(&mut self, _arg: &ElsePart<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OptElsePartEnd'
-    fn opt_else_part_end(&mut self, _arg: &OptElsePartEnd<'t>) -> Result<()> {
+    fn opt_else_part_end(&mut self, _arg: &OptElsePartEnd<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DoBlock'
-    fn do_block(&mut self, _arg: &DoBlock<'t>) -> Result<()> {
+    fn do_block(&mut self, _arg: &DoBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'GuardedDoBlock'
-    fn guarded_do_block(&mut self, _arg: &GuardedDoBlock<'t>) -> Result<()> {
+    fn guarded_do_block(&mut self, _arg: &GuardedDoBlock<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForInit'
-    fn for_init(&mut self, _arg: &ForInit<'t>) -> Result<()> {
+    fn for_init(&mut self, _arg: &ForInit<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForStep'
-    fn for_step(&mut self, _arg: &ForStep<'t>) -> Result<()> {
+    fn for_step(&mut self, _arg: &ForStep<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Case'
-    fn case(&mut self, _arg: &Case<'t>) -> Result<()> {
+    fn case(&mut self, _arg: &Case<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'CaseLabels'
-    fn case_labels(&mut self, _arg: &CaseLabels<'t>) -> Result<()> {
+    fn case_labels(&mut self, _arg: &CaseLabels<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Guard'
-    fn guard(&mut self, _arg: &Guard<'t>) -> Result<()> {
+    fn guard(&mut self, _arg: &Guard<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstExpr'
-    fn const_expr(&mut self, _arg: &ConstExpr<'t>) -> Result<()> {
+    fn const_expr(&mut self, _arg: &ConstExpr<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Expr'
-    fn expr(&mut self, _arg: &Expr<'t>) -> Result<()> {
+    fn expr(&mut self, _arg: &Expr<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleExpr'
-    fn simple_expr(&mut self, _arg: &SimpleExpr<'t>) -> Result<()> {
+    fn simple_expr(&mut self, _arg: &SimpleExpr<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Term'
-    fn term(&mut self, _arg: &Term<'t>) -> Result<()> {
+    fn term(&mut self, _arg: &Term<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Set'
-    fn set(&mut self, _arg: &Set<'t>) -> Result<()> {
+    fn set(&mut self, _arg: &Set<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Element'
-    fn element(&mut self, _arg: &Element<'t>) -> Result<()> {
+    fn element(&mut self, _arg: &Element<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Relation'
-    fn relation(&mut self, _arg: &Relation<'t>) -> Result<()> {
+    fn relation(&mut self, _arg: &Relation<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AddOp'
-    fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<()> {
+    fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MulOp'
-    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<()> {
+    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Designator'
-    fn designator(&mut self, _arg: &Designator<'t>) -> Result<()> {
+    fn designator(&mut self, _arg: &Designator<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DesignatorSuffix'
-    fn designator_suffix(&mut self, _arg: &DesignatorSuffix<'t>) -> Result<()> {
+    fn designator_suffix(&mut self, _arg: &DesignatorSuffix<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ExprList'
-    fn expr_list(&mut self, _arg: &ExprList<'t>) -> Result<()> {
+    fn expr_list(&mut self, _arg: &ExprList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IdentList'
-    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<()> {
+    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QualIdent'
-    fn qual_ident(&mut self, _arg: &QualIdent<'t>) -> Result<()> {
+    fn qual_ident(&mut self, _arg: &QualIdent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IdentDef'
-    fn ident_def(&mut self, _arg: &IdentDef<'t>) -> Result<()> {
+    fn ident_def(&mut self, _arg: &IdentDef<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Number'
-    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
+    fn number(&mut self, _arg: &Number<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Real'
-    fn real(&mut self, _arg: &Real<'t>) -> Result<()> {
+    fn real(&mut self, _arg: &Real<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Character'
-    fn character(&mut self, _arg: &Character<'t>) -> Result<()> {
+    fn character(&mut self, _arg: &Character<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Integer'
-    fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
+    fn integer(&mut self, _arg: &Integer<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QIdent'
-    fn q_ident(&mut self, _arg: &QIdent<'t>) -> Result<()> {
+    fn q_ident(&mut self, _arg: &QIdent<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Ident'
-    fn ident(&mut self, _arg: &Ident<'t>) -> Result<()> {
+    fn ident(&mut self, _arg: &Ident<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
+    fn string(&mut self, _arg: &String<'t>) -> Result<(), ParolError> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InOp'
-    fn in_op(&mut self, _arg: &InOp) -> Result<()> {
+    fn in_op(&mut self, _arg: &InOp) -> Result<(), ParolError> {
         Ok(())
     }
 }
@@ -2658,13 +2657,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_begin: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_begin_built = KwBeginBuilder::default()
-            // Ignore clipped member 'kw_begin'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_begin_built = KwBegin {
+        // Ignore clipped member 'kw_begin'
+        };
         // Calling user action here
         self.user_grammar.kw_begin(&kw_begin_built)?;
         self.push(ASTType::KwBegin(kw_begin_built), context);
@@ -2680,13 +2678,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_case: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_case_built = KwCaseBuilder::default()
-            // Ignore clipped member 'kw_case'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_case_built = KwCase {
+        // Ignore clipped member 'kw_case'
+        };
         // Calling user action here
         self.user_grammar.kw_case(&kw_case_built)?;
         self.push(ASTType::KwCase(kw_case_built), context);
@@ -2702,13 +2699,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_do: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_do_built = KwDoBuilder::default()
-            // Ignore clipped member 'kw_do'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_do_built = KwDo {
+        // Ignore clipped member 'kw_do'
+        };
         // Calling user action here
         self.user_grammar.kw_do(&kw_do_built)?;
         self.push(ASTType::KwDo(kw_do_built), context);
@@ -2724,13 +2720,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_else: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_else_built = KwElseBuilder::default()
-            // Ignore clipped member 'kw_else'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_else_built = KwElse {
+        // Ignore clipped member 'kw_else'
+        };
         // Calling user action here
         self.user_grammar.kw_else(&kw_else_built)?;
         self.push(ASTType::KwElse(kw_else_built), context);
@@ -2746,13 +2741,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_elsif: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_elsif_built = KwElsifBuilder::default()
-            // Ignore clipped member 'kw_elsif'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_elsif_built = KwElsif {
+        // Ignore clipped member 'kw_elsif'
+        };
         // Calling user action here
         self.user_grammar.kw_elsif(&kw_elsif_built)?;
         self.push(ASTType::KwElsif(kw_elsif_built), context);
@@ -2768,13 +2762,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_end_built = KwEndBuilder::default()
-            // Ignore clipped member 'kw_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_end_built = KwEnd {
+        // Ignore clipped member 'kw_end'
+        };
         // Calling user action here
         self.user_grammar.kw_end(&kw_end_built)?;
         self.push(ASTType::KwEnd(kw_end_built), context);
@@ -2790,13 +2783,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_if: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_if_built = KwIfBuilder::default()
-            // Ignore clipped member 'kw_if'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_if_built = KwIf {
+        // Ignore clipped member 'kw_if'
+        };
         // Calling user action here
         self.user_grammar.kw_if(&kw_if_built)?;
         self.push(ASTType::KwIf(kw_if_built), context);
@@ -2812,13 +2804,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_of: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_of_built = KwOfBuilder::default()
-            // Ignore clipped member 'kw_of'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_of_built = KwOf {
+        // Ignore clipped member 'kw_of'
+        };
         // Calling user action here
         self.user_grammar.kw_of(&kw_of_built)?;
         self.push(ASTType::KwOf(kw_of_built), context);
@@ -2834,13 +2825,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_procedure_built = KwProcedureBuilder::default()
-            // Ignore clipped member 'kw_procedure'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_procedure_built = KwProcedure {
+        // Ignore clipped member 'kw_procedure'
+        };
         // Calling user action here
         self.user_grammar.kw_procedure(&kw_procedure_built)?;
         self.push(ASTType::KwProcedure(kw_procedure_built), context);
@@ -2856,13 +2846,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_then: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_then_built = KwThenBuilder::default()
-            // Ignore clipped member 'kw_then'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_then_built = KwThen {
+        // Ignore clipped member 'kw_then'
+        };
         // Calling user action here
         self.user_grammar.kw_then(&kw_then_built)?;
         self.push(ASTType::KwThen(kw_then_built), context);
@@ -2878,13 +2867,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_to: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_to_built = KwToBuilder::default()
-            // Ignore clipped member 'kw_to'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_to_built = KwTo {
+        // Ignore clipped member 'kw_to'
+        };
         // Calling user action here
         self.user_grammar.kw_to(&kw_to_built)?;
         self.push(ASTType::KwTo(kw_to_built), context);
@@ -2900,13 +2888,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_var_built = KwVarBuilder::default()
-            // Ignore clipped member 'kw_var'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let kw_var_built = KwVar {
+        // Ignore clipped member 'kw_var'
+        };
         // Calling user action here
         self.user_grammar.kw_var(&kw_var_built)?;
         self.push(ASTType::KwVar(kw_var_built), context);
@@ -2925,20 +2912,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq: &ParseTreeStackEntry<'t>,
         _module_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let module_body = pop_item!(self, module_body, ModuleBody, context);
         let decl_seq = pop_item!(self, decl_seq, DeclSeq, context);
         let oberon2_opt = pop_item!(self, oberon2_opt, Oberon2Opt, context);
         let module_head = pop_item!(self, module_head, ModuleHead, context);
-        let oberon2_built = Oberon2Builder::default()
-            .module_head(Box::new(module_head))
-            .oberon2_opt(oberon2_opt)
-            .decl_seq(Box::new(decl_seq))
-            .module_body(Box::new(module_body))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let oberon2_built = Oberon2 {
+            module_head: Box::new(module_head),
+            oberon2_opt: oberon2_opt,
+            decl_seq: Box::new(decl_seq),
+            module_body: Box::new(module_body),
+        };
         // Calling user action here
         self.user_grammar.oberon2(&oberon2_built)?;
         self.push(ASTType::Oberon2(oberon2_built), context);
@@ -2954,14 +2940,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _import_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list = pop_item!(self, import_list, ImportList, context);
-        let oberon2_opt_0_built = Oberon2OptBuilder::default()
-            .import_list(Box::new(import_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let oberon2_opt_0_built = Oberon2Opt {
+            import_list: Box::new(import_list),
+        };
         self.push(
             ASTType::Oberon2Opt(Some(Box::new(oberon2_opt_0_built))),
             context,
@@ -2974,7 +2959,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// Oberon2Opt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::Oberon2Opt(None), context);
@@ -2992,16 +2977,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let module_head_built = ModuleHeadBuilder::default()
+        let module_head_built = ModuleHead {
             // Ignore clipped member 'm_o_d_u_l_e'
-            .ident(Box::new(ident))
+            ident: Box::new(ident),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.module_head(&module_head_built)?;
         self.push(ASTType::ModuleHead(module_head_built), context);
@@ -3018,15 +3002,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_block: &ParseTreeStackEntry<'t>,
         _dot: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
-        let module_body_built = ModuleBodyBuilder::default()
-            .statement_block(Box::new(statement_block))
+        let module_body_built = ModuleBody {
+            statement_block: Box::new(statement_block),
             // Ignore clipped member 'dot'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.module_body(&module_body_built)?;
         self.push(ASTType::ModuleBody(module_body_built), context);
@@ -3046,21 +3029,20 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _import_list_list: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list_list =
             pop_and_reverse_item!(self, import_list_list, ImportListList, context);
         let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt = pop_item!(self, import_list_opt, ImportListOpt, context);
-        let import_list_built = ImportListBuilder::default()
+        let import_list_built = ImportList {
             // Ignore clipped member 'i_m_p_o_r_t'
-            .import_list_opt(import_list_opt)
-            .ident(Box::new(ident))
-            .import_list_list(import_list_list)
+            import_list_opt: import_list_opt,
+            ident: Box::new(ident),
+            import_list_list: import_list_list,
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.import_list(&import_list_built)?;
         self.push(ASTType::ImportList(import_list_built), context);
@@ -3079,18 +3061,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _import_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut import_list_list = pop_item!(self, import_list_list, ImportListList, context);
         let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt0 = pop_item!(self, import_list_opt0, ImportListOpt0, context);
-        let import_list_list_0_built = ImportListListBuilder::default()
-            .ident(Box::new(ident))
-            .import_list_opt0(import_list_opt0)
+        let import_list_list_0_built = ImportListList {
+            ident: Box::new(ident),
+            import_list_opt0: import_list_opt0,
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         import_list_list.push(import_list_list_0_built);
         self.push(ASTType::ImportListList(import_list_list), context);
@@ -3102,7 +3083,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn import_list_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list_list_1_built = Vec::new();
@@ -3120,15 +3104,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _colon_equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let import_list_opt0_0_built = ImportListOpt0Builder::default()
-            .ident(Box::new(ident))
+        let import_list_opt0_0_built = ImportListOpt0 {
+            ident: Box::new(ident),
             // Ignore clipped member 'colon_equ'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         self.push(
             ASTType::ImportListOpt0(Some(Box::new(import_list_opt0_0_built))),
             context,
@@ -3141,7 +3124,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn import_list_opt0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ImportListOpt0(None), context);
@@ -3158,15 +3144,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _colon_equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let import_list_opt_0_built = ImportListOptBuilder::default()
-            .ident(Box::new(ident))
+        let import_list_opt_0_built = ImportListOpt {
+            ident: Box::new(ident),
             // Ignore clipped member 'colon_equ'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         self.push(
             ASTType::ImportListOpt(Some(Box::new(import_list_opt_0_built))),
             context,
@@ -3179,7 +3164,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn import_list_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ImportListOpt(None), context);
@@ -3196,16 +3184,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq_list: &ParseTreeStackEntry<'t>,
         _decl_seq_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list0 = pop_and_reverse_item!(self, decl_seq_list0, DeclSeqList0, context);
         let decl_seq_list = pop_and_reverse_item!(self, decl_seq_list, DeclSeqList, context);
-        let decl_seq_built = DeclSeqBuilder::default()
-            .decl_seq_list(decl_seq_list)
-            .decl_seq_list0(decl_seq_list0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_seq_built = DeclSeq {
+            decl_seq_list: decl_seq_list,
+            decl_seq_list0: decl_seq_list0,
+        };
         // Calling user action here
         self.user_grammar.decl_seq(&decl_seq_built)?;
         self.push(ASTType::DeclSeq(decl_seq_built), context);
@@ -3222,16 +3209,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq_list0_group: &ParseTreeStackEntry<'t>,
         _decl_seq_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut decl_seq_list0 = pop_item!(self, decl_seq_list0, DeclSeqList0, context);
         let decl_seq_list0_group =
             pop_item!(self, decl_seq_list0_group, DeclSeqList0Group, context);
-        let decl_seq_list0_0_built = DeclSeqList0Builder::default()
-            .decl_seq_list0_group(Box::new(decl_seq_list0_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_seq_list0_0_built = DeclSeqList0 {
+            decl_seq_list0_group: Box::new(decl_seq_list0_group),
+        };
         // Add an element to the vector
         decl_seq_list0.push(decl_seq_list0_0_built);
         self.push(ASTType::DeclSeqList0(decl_seq_list0), context);
@@ -3248,15 +3234,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _proc_decl: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let proc_decl = pop_item!(self, proc_decl, ProcDecl, context);
-        let decl_seq_list0_group_0_built = DeclSeqList0GroupProcDeclSemicolonBuilder::default()
-            .proc_decl(Box::new(proc_decl))
+        let decl_seq_list0_group_0_built = DeclSeqList0GroupProcDeclSemicolon {
+            proc_decl: Box::new(proc_decl),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let decl_seq_list0_group_0_built =
             DeclSeqList0Group::ProcDeclSemicolon(decl_seq_list0_group_0_built);
         self.push(
@@ -3276,15 +3261,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _forward_decl: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let forward_decl = pop_item!(self, forward_decl, ForwardDecl, context);
-        let decl_seq_list0_group_1_built = DeclSeqList0GroupForwardDeclSemicolonBuilder::default()
-            .forward_decl(Box::new(forward_decl))
+        let decl_seq_list0_group_1_built = DeclSeqList0GroupForwardDeclSemicolon {
+            forward_decl: Box::new(forward_decl),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let decl_seq_list0_group_1_built =
             DeclSeqList0Group::ForwardDeclSemicolon(decl_seq_list0_group_1_built);
         self.push(
@@ -3299,7 +3283,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DeclSeqList0 /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn decl_seq_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn decl_seq_list0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list0_1_built = Vec::new();
@@ -3317,15 +3304,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_block: &ParseTreeStackEntry<'t>,
         _decl_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut decl_seq_list = pop_item!(self, decl_seq_list, DeclSeqList, context);
         let decl_block = pop_item!(self, decl_block, DeclBlock, context);
-        let decl_seq_list_0_built = DeclSeqListBuilder::default()
-            .decl_block(Box::new(decl_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_seq_list_0_built = DeclSeqList {
+            decl_block: Box::new(decl_block),
+        };
         // Add an element to the vector
         decl_seq_list.push(decl_seq_list_0_built);
         self.push(ASTType::DeclSeqList(decl_seq_list), context);
@@ -3337,7 +3323,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DeclSeqList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list_1_built = Vec::new();
@@ -3354,14 +3340,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _const_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block = pop_item!(self, const_decl_block, ConstDeclBlock, context);
-        let decl_block_0_built = DeclBlockConstDeclBlockBuilder::default()
-            .const_decl_block(Box::new(const_decl_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_block_0_built = DeclBlockConstDeclBlock {
+            const_decl_block: Box::new(const_decl_block),
+        };
         let decl_block_0_built = DeclBlock::ConstDeclBlock(decl_block_0_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_0_built)?;
@@ -3378,14 +3363,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _type_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block = pop_item!(self, type_decl_block, TypeDeclBlock, context);
-        let decl_block_1_built = DeclBlockTypeDeclBlockBuilder::default()
-            .type_decl_block(Box::new(type_decl_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_block_1_built = DeclBlockTypeDeclBlock {
+            type_decl_block: Box::new(type_decl_block),
+        };
         let decl_block_1_built = DeclBlock::TypeDeclBlock(decl_block_1_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_1_built)?;
@@ -3402,14 +3386,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _var_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block = pop_item!(self, var_decl_block, VarDeclBlock, context);
-        let decl_block_2_built = DeclBlockVarDeclBlockBuilder::default()
-            .var_decl_block(Box::new(var_decl_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let decl_block_2_built = DeclBlockVarDeclBlock {
+            var_decl_block: Box::new(var_decl_block),
+        };
         let decl_block_2_built = DeclBlock::VarDeclBlock(decl_block_2_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_2_built)?;
@@ -3427,16 +3410,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _c_o_n_s_t: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block_list =
             pop_and_reverse_item!(self, const_decl_block_list, ConstDeclBlockList, context);
-        let const_decl_block_built = ConstDeclBlockBuilder::default()
+        let const_decl_block_built = ConstDeclBlock {
             // Ignore clipped member 'c_o_n_s_t'
-            .const_decl_block_list(const_decl_block_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            const_decl_block_list: const_decl_block_list,
+        };
         // Calling user action here
         self.user_grammar
             .const_decl_block(&const_decl_block_built)?;
@@ -3455,17 +3437,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut const_decl_block_list =
             pop_item!(self, const_decl_block_list, ConstDeclBlockList, context);
         let const_decl = pop_item!(self, const_decl, ConstDecl, context);
-        let const_decl_block_list_0_built = ConstDeclBlockListBuilder::default()
+        let const_decl_block_list_0_built = ConstDeclBlockList {
             // Ignore clipped member 'semicolon'
-            .const_decl(Box::new(const_decl))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            const_decl: Box::new(const_decl),
+        };
         // Add an element to the vector
         const_decl_block_list.push(const_decl_block_list_0_built);
         self.push(ASTType::ConstDeclBlockList(const_decl_block_list), context);
@@ -3477,7 +3458,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ConstDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn const_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn const_decl_block_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block_list_1_built = Vec::new();
@@ -3498,16 +3482,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _t_y_p_e: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block_list =
             pop_and_reverse_item!(self, type_decl_block_list, TypeDeclBlockList, context);
-        let type_decl_block_built = TypeDeclBlockBuilder::default()
+        let type_decl_block_built = TypeDeclBlock {
             // Ignore clipped member 't_y_p_e'
-            .type_decl_block_list(type_decl_block_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_decl_block_list: type_decl_block_list,
+        };
         // Calling user action here
         self.user_grammar.type_decl_block(&type_decl_block_built)?;
         self.push(ASTType::TypeDeclBlock(type_decl_block_built), context);
@@ -3525,17 +3508,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_decl_block_list =
             pop_item!(self, type_decl_block_list, TypeDeclBlockList, context);
         let type_decl = pop_item!(self, type_decl, TypeDecl, context);
-        let type_decl_block_list_0_built = TypeDeclBlockListBuilder::default()
+        let type_decl_block_list_0_built = TypeDeclBlockList {
             // Ignore clipped member 'semicolon'
-            .type_decl(Box::new(type_decl))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_decl: Box::new(type_decl),
+        };
         // Add an element to the vector
         type_decl_block_list.push(type_decl_block_list_0_built);
         self.push(ASTType::TypeDeclBlockList(type_decl_block_list), context);
@@ -3547,7 +3529,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_decl_block_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block_list_1_built = Vec::new();
@@ -3568,18 +3553,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_var: &ParseTreeStackEntry<'t>,
         _var_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list =
             pop_and_reverse_item!(self, var_decl_block_list, VarDeclBlockList, context);
         // Ignore clipped member 'kw_var'
         self.pop(context);
-        let var_decl_block_built = VarDeclBlockBuilder::default()
+        let var_decl_block_built = VarDeclBlock {
             // Ignore clipped member 'kw_var'
-            .var_decl_block_list(var_decl_block_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            var_decl_block_list: var_decl_block_list,
+        };
         // Calling user action here
         self.user_grammar.var_decl_block(&var_decl_block_built)?;
         self.push(ASTType::VarDeclBlock(var_decl_block_built), context);
@@ -3597,17 +3581,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _var_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut var_decl_block_list =
             pop_item!(self, var_decl_block_list, VarDeclBlockList, context);
         let var_decl = pop_item!(self, var_decl, VarDecl, context);
-        let var_decl_block_list_0_built = VarDeclBlockListBuilder::default()
+        let var_decl_block_list_0_built = VarDeclBlockList {
             // Ignore clipped member 'semicolon'
-            .var_decl(Box::new(var_decl))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            var_decl: Box::new(var_decl),
+        };
         // Add an element to the vector
         var_decl_block_list.push(var_decl_block_list_0_built);
         self.push(ASTType::VarDeclBlockList(var_decl_block_list), context);
@@ -3619,7 +3602,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// VarDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn var_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn var_decl_block_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list_1_built = Vec::new();
@@ -3641,17 +3627,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _equ: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
-        let const_decl_built = ConstDeclBuilder::default()
-            .ident_def(Box::new(ident_def))
+        let const_decl_built = ConstDecl {
+            ident_def: Box::new(ident_def),
             // Ignore clipped member 'equ'
-            .const_expr(Box::new(const_expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            const_expr: Box::new(const_expr),
+        };
         // Calling user action here
         self.user_grammar.const_decl(&const_decl_built)?;
         self.push(ASTType::ConstDecl(const_decl_built), context);
@@ -3669,17 +3654,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _equ: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
-        let type_decl_built = TypeDeclBuilder::default()
-            .ident_def(Box::new(ident_def))
+        let type_decl_built = TypeDecl {
+            ident_def: Box::new(ident_def),
             // Ignore clipped member 'equ'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         // Calling user action here
         self.user_grammar.type_decl(&type_decl_built)?;
         self.push(ASTType::TypeDecl(type_decl_built), context);
@@ -3697,17 +3681,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let var_decl_built = VarDeclBuilder::default()
-            .ident_list(Box::new(ident_list))
+        let var_decl_built = VarDecl {
+            ident_list: Box::new(ident_list),
             // Ignore clipped member 'colon'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         // Calling user action here
         self.user_grammar.var_decl(&var_decl_built)?;
         self.push(ASTType::VarDecl(var_decl_built), context);
@@ -3725,17 +3708,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _procedure_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
         let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
-        let proc_decl_built = ProcDeclBuilder::default()
-            .procedure_heading(Box::new(procedure_heading))
+        let proc_decl_built = ProcDecl {
+            procedure_heading: Box::new(procedure_heading),
             // Ignore clipped member 'semicolon'
-            .procedure_body(Box::new(procedure_body))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            procedure_body: Box::new(procedure_body),
+        };
         // Calling user action here
         self.user_grammar.proc_decl(&proc_decl_built)?;
         self.push(ASTType::ProcDecl(proc_decl_built), context);
@@ -3754,7 +3736,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _procedure_heading_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let procedure_heading_opt0 =
@@ -3764,13 +3746,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_item!(self, procedure_heading_opt, ProcedureHeadingOpt, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
-        let procedure_heading_built = ProcedureHeadingBuilder::default()
+        let procedure_heading_built = ProcedureHeading {
             // Ignore clipped member 'kw_procedure'
-            .procedure_heading_opt(procedure_heading_opt)
-            .ident_def(Box::new(ident_def))
-            .procedure_heading_opt0(procedure_heading_opt0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            procedure_heading_opt: procedure_heading_opt,
+            ident_def: Box::new(ident_def),
+            procedure_heading_opt0: procedure_heading_opt0,
+        };
         // Calling user action here
         self.user_grammar
             .procedure_heading(&procedure_heading_built)?;
@@ -3787,14 +3768,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let procedure_heading_opt0_0_built = ProcedureHeadingOpt0Builder::default()
-            .formal_pars(Box::new(formal_pars))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let procedure_heading_opt0_0_built = ProcedureHeadingOpt0 {
+            formal_pars: Box::new(formal_pars),
+        };
         self.push(
             ASTType::ProcedureHeadingOpt0(Some(Box::new(procedure_heading_opt0_0_built))),
             context,
@@ -3807,7 +3787,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ProcedureHeadingOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_heading_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn procedure_heading_opt0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ProcedureHeadingOpt0(None), context);
@@ -3823,14 +3806,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
-        let procedure_heading_opt_0_built = ProcedureHeadingOptBuilder::default()
-            .receiver(Box::new(receiver))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let procedure_heading_opt_0_built = ProcedureHeadingOpt {
+            receiver: Box::new(receiver),
+        };
         self.push(
             ASTType::ProcedureHeadingOpt(Some(Box::new(procedure_heading_opt_0_built))),
             context,
@@ -3843,7 +3825,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ProcedureHeadingOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_heading_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn procedure_heading_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ProcedureHeadingOpt(None), context);
@@ -3860,16 +3845,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq: &ParseTreeStackEntry<'t>,
         _statement_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
         let decl_seq = pop_item!(self, decl_seq, DeclSeq, context);
-        let procedure_body_built = ProcedureBodyBuilder::default()
-            .decl_seq(Box::new(decl_seq))
-            .statement_block(Box::new(statement_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let procedure_body_built = ProcedureBody {
+            decl_seq: Box::new(decl_seq),
+            statement_block: Box::new(statement_block),
+        };
         // Calling user action here
         self.user_grammar.procedure_body(&procedure_body_built)?;
         self.push(ASTType::ProcedureBody(procedure_body_built), context);
@@ -3887,19 +3871,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_end: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
         // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_block_opt = pop_item!(self, statement_block_opt, StatementBlockOpt, context);
-        let statement_block_built = StatementBlockBuilder::default()
-            .statement_block_opt(statement_block_opt)
+        let statement_block_built = StatementBlock {
+            statement_block_opt: statement_block_opt,
             // Ignore clipped member 'kw_end'
-            .ident(Box::new(ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ident: Box::new(ident),
+        };
         // Calling user action here
         self.user_grammar.statement_block(&statement_block_built)?;
         self.push(ASTType::StatementBlock(statement_block_built), context);
@@ -3916,17 +3899,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_begin: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_begin'
         self.pop(context);
-        let statement_block_opt_0_built = StatementBlockOptBuilder::default()
+        let statement_block_opt_0_built = StatementBlockOpt {
             // Ignore clipped member 'kw_begin'
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_seq: Box::new(statement_seq),
+        };
         self.push(
             ASTType::StatementBlockOpt(Some(Box::new(statement_block_opt_0_built))),
             context,
@@ -3939,7 +3921,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementBlockOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_block_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_block_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementBlockOpt(None), context);
@@ -3959,7 +3944,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _forward_decl_opt0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let circumflex = circumflex.token(parse_tree)?.clone();
@@ -3968,14 +3953,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let forward_decl_opt = pop_item!(self, forward_decl_opt, ForwardDeclOpt, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
-        let forward_decl_built = ForwardDeclBuilder::default()
+        let forward_decl_built = ForwardDecl {
             // Ignore clipped member 'kw_procedure'
-            .circumflex(circumflex)
-            .forward_decl_opt(forward_decl_opt)
-            .ident_def(Box::new(ident_def))
-            .forward_decl_opt0(forward_decl_opt0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            circumflex: circumflex,
+            forward_decl_opt: forward_decl_opt,
+            ident_def: Box::new(ident_def),
+            forward_decl_opt0: forward_decl_opt0,
+        };
         // Calling user action here
         self.user_grammar.forward_decl(&forward_decl_built)?;
         self.push(ASTType::ForwardDecl(forward_decl_built), context);
@@ -3991,14 +3975,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let forward_decl_opt0_0_built = ForwardDeclOpt0Builder::default()
-            .formal_pars(Box::new(formal_pars))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let forward_decl_opt0_0_built = ForwardDeclOpt0 {
+            formal_pars: Box::new(formal_pars),
+        };
         self.push(
             ASTType::ForwardDeclOpt0(Some(Box::new(forward_decl_opt0_0_built))),
             context,
@@ -4011,7 +3994,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ForwardDeclOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn forward_decl_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn forward_decl_opt0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ForwardDeclOpt0(None), context);
@@ -4027,14 +4013,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
-        let forward_decl_opt_0_built = ForwardDeclOptBuilder::default()
-            .receiver(Box::new(receiver))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let forward_decl_opt_0_built = ForwardDeclOpt {
+            receiver: Box::new(receiver),
+        };
         self.push(
             ASTType::ForwardDeclOpt(Some(Box::new(forward_decl_opt_0_built))),
             context,
@@ -4047,7 +4032,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ForwardDeclOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn forward_decl_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn forward_decl_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ForwardDeclOpt(None), context);
@@ -4066,18 +4054,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _r_paren: &ParseTreeStackEntry<'t>,
         _formal_pars_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt0 = pop_item!(self, formal_pars_opt0, FormalParsOpt0, context);
         let formal_pars_opt = pop_item!(self, formal_pars_opt, FormalParsOpt, context);
-        let formal_pars_built = FormalParsBuilder::default()
+        let formal_pars_built = FormalPars {
             // Ignore clipped member 'l_paren'
-            .formal_pars_opt(formal_pars_opt)
+            formal_pars_opt: formal_pars_opt,
             // Ignore clipped member 'r_paren'
-            .formal_pars_opt0(formal_pars_opt0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            formal_pars_opt0: formal_pars_opt0,
+        };
         // Calling user action here
         self.user_grammar.formal_pars(&formal_pars_built)?;
         self.push(ASTType::FormalPars(formal_pars_built), context);
@@ -4094,15 +4081,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _qual_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let formal_pars_opt0_0_built = FormalParsOpt0Builder::default()
+        let formal_pars_opt0_0_built = FormalParsOpt0 {
             // Ignore clipped member 'colon'
-            .qual_ident(Box::new(qual_ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            qual_ident: Box::new(qual_ident),
+        };
         self.push(
             ASTType::FormalParsOpt0(Some(Box::new(formal_pars_opt0_0_built))),
             context,
@@ -4115,7 +4101,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn formal_pars_opt0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FormalParsOpt0(None), context);
@@ -4132,17 +4121,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _f_p_section: &ParseTreeStackEntry<'t>,
         _formal_pars_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt_list =
             pop_and_reverse_item!(self, formal_pars_opt_list, FormalParsOptList, context);
         let f_p_section = pop_item!(self, f_p_section, FPSection, context);
-        let formal_pars_opt_0_built = FormalParsOptBuilder::default()
-            .f_p_section(Box::new(f_p_section))
-            .formal_pars_opt_list(formal_pars_opt_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let formal_pars_opt_0_built = FormalParsOpt {
+            f_p_section: Box::new(f_p_section),
+            formal_pars_opt_list: formal_pars_opt_list,
+        };
         self.push(
             ASTType::FormalParsOpt(Some(Box::new(formal_pars_opt_0_built))),
             context,
@@ -4161,17 +4149,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _f_p_section: &ParseTreeStackEntry<'t>,
         _formal_pars_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut formal_pars_opt_list =
             pop_item!(self, formal_pars_opt_list, FormalParsOptList, context);
         let f_p_section = pop_item!(self, f_p_section, FPSection, context);
-        let formal_pars_opt_list_0_built = FormalParsOptListBuilder::default()
-            .f_p_section(Box::new(f_p_section))
+        let formal_pars_opt_list_0_built = FormalParsOptList {
+            f_p_section: Box::new(f_p_section),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         formal_pars_opt_list.push(formal_pars_opt_list_0_built);
         self.push(ASTType::FormalParsOptList(formal_pars_opt_list), context);
@@ -4183,7 +4170,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn formal_pars_opt_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt_list_1_built = Vec::new();
@@ -4199,7 +4189,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn formal_pars_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FormalParsOpt(None), context);
@@ -4219,7 +4212,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -4227,14 +4220,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, f_p_section_list, FPSectionList, context);
         let ident = pop_item!(self, ident, Ident, context);
         let f_p_section_opt = pop_item!(self, f_p_section_opt, FPSectionOpt, context);
-        let f_p_section_built = FPSectionBuilder::default()
-            .f_p_section_opt(f_p_section_opt)
-            .ident(Box::new(ident))
-            .f_p_section_list(f_p_section_list)
+        let f_p_section_built = FPSection {
+            f_p_section_opt: f_p_section_opt,
+            ident: Box::new(ident),
+            f_p_section_list: f_p_section_list,
             // Ignore clipped member 'colon'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         // Calling user action here
         self.user_grammar.f_p_section(&f_p_section_built)?;
         self.push(ASTType::FPSection(f_p_section_built), context);
@@ -4252,16 +4244,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _f_p_section_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut f_p_section_list = pop_item!(self, f_p_section_list, FPSectionList, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let f_p_section_list_0_built = FPSectionListBuilder::default()
-            .ident(Box::new(ident))
+        let f_p_section_list_0_built = FPSectionList {
+            ident: Box::new(ident),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         f_p_section_list.push(f_p_section_list_0_built);
         self.push(ASTType::FPSectionList(f_p_section_list), context);
@@ -4273,7 +4264,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FPSectionList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn f_p_section_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn f_p_section_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f_p_section_list_1_built = Vec::new();
@@ -4290,15 +4284,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
         self.pop(context);
-        let f_p_section_opt_0_built = FPSectionOptBuilder::default()
-            // Ignore clipped member 'kw_var'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let f_p_section_opt_0_built = FPSectionOpt {
+        // Ignore clipped member 'kw_var'
+        };
         self.push(
             ASTType::FPSectionOpt(Some(Box::new(f_p_section_opt_0_built))),
             context,
@@ -4311,7 +4304,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FPSectionOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn f_p_section_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn f_p_section_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FPSectionOpt(None), context);
@@ -4330,18 +4326,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _receiver_var_decl: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver_var_decl = pop_item!(self, receiver_var_decl, ReceiverVarDecl, context);
         let receiver_opt = pop_item!(self, receiver_opt, ReceiverOpt, context);
-        let receiver_built = ReceiverBuilder::default()
+        let receiver_built = Receiver {
             // Ignore clipped member 'l_paren'
-            .receiver_opt(receiver_opt)
-            .receiver_var_decl(Box::new(receiver_var_decl))
+            receiver_opt: receiver_opt,
+            receiver_var_decl: Box::new(receiver_var_decl),
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.receiver(&receiver_built)?;
         self.push(ASTType::Receiver(receiver_built), context);
@@ -4357,15 +4352,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
         self.pop(context);
-        let receiver_opt_0_built = ReceiverOptBuilder::default()
-            // Ignore clipped member 'kw_var'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let receiver_opt_0_built = ReceiverOpt {
+        // Ignore clipped member 'kw_var'
+        };
         self.push(
             ASTType::ReceiverOpt(Some(Box::new(receiver_opt_0_built))),
             context,
@@ -4378,7 +4372,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ReceiverOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ReceiverOpt(None), context);
@@ -4396,17 +4390,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _ident0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident0 = pop_item!(self, ident0, Ident, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let receiver_var_decl_built = ReceiverVarDeclBuilder::default()
-            .ident(Box::new(ident))
+        let receiver_var_decl_built = ReceiverVarDecl {
+            ident: Box::new(ident),
             // Ignore clipped member 'colon'
-            .ident0(Box::new(ident0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ident0: Box::new(ident0),
+        };
         // Calling user action here
         self.user_grammar
             .receiver_var_decl(&receiver_var_decl_built)?;
@@ -4423,14 +4416,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let type_def_0_built = TypeDefQualIdentBuilder::default()
-            .qual_ident(Box::new(qual_ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let type_def_0_built = TypeDefQualIdent {
+            qual_ident: Box::new(qual_ident),
+        };
         let type_def_0_built = TypeDef::QualIdent(type_def_0_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_0_built)?;
@@ -4450,20 +4442,19 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_of: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
         // Ignore clipped member 'kw_of'
         self.pop(context);
         let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
-        let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDefBuilder::default()
+        let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDef {
             // Ignore clipped member 'a_r_r_a_y'
-            .type_def_opt(type_def_opt)
+            type_def_opt: type_def_opt,
             // Ignore clipped member 'kw_of'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         let type_def_1_built = TypeDef::ARRAYTypeDefOptKwOfTypeDef(type_def_1_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_1_built)?;
@@ -4484,7 +4475,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _type_def_list: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -4492,14 +4483,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_list = pop_and_reverse_item!(self, type_def_list, TypeDefList, context);
         let field_list = pop_item!(self, field_list, FieldList, context);
         let type_def_opt0 = pop_item!(self, type_def_opt0, TypeDefOpt0, context);
-        let type_def_2_built = TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEndBuilder::default()
+        let type_def_2_built = TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd {
             // Ignore clipped member 'r_e_c_o_r_d'
-            .type_def_opt0(type_def_opt0)
-            .field_list(Box::new(field_list))
-            .type_def_list(type_def_list)
+            type_def_opt0: type_def_opt0,
+            field_list: Box::new(field_list),
+            type_def_list: type_def_list,
             // Ignore clipped member 'kw_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let type_def_2_built =
             TypeDef::RECORDTypeDefOpt0FieldListTypeDefListKwEnd(type_def_2_built);
         // Calling user action here
@@ -4519,16 +4509,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _field_list: &ParseTreeStackEntry<'t>,
         _type_def_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_list = pop_item!(self, type_def_list, TypeDefList, context);
         let field_list = pop_item!(self, field_list, FieldList, context);
-        let type_def_list_0_built = TypeDefListBuilder::default()
-            .field_list(Box::new(field_list))
+        let type_def_list_0_built = TypeDefList {
+            field_list: Box::new(field_list),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         type_def_list.push(type_def_list_0_built);
         self.push(ASTType::TypeDefList(type_def_list), context);
@@ -4540,7 +4529,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_list_1_built = Vec::new();
@@ -4559,18 +4548,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_to: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
         // Ignore clipped member 'kw_to'
         self.pop(context);
-        let type_def_3_built = TypeDefPOINTERKwToTypeDefBuilder::default()
+        let type_def_3_built = TypeDefPOINTERKwToTypeDef {
             // Ignore clipped member 'p_o_i_n_t_e_r'
             // Ignore clipped member 'kw_to'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         let type_def_3_built = TypeDef::POINTERKwToTypeDef(type_def_3_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_3_built)?;
@@ -4588,17 +4576,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_procedure: &ParseTreeStackEntry<'t>,
         _type_def_opt1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt1 = pop_item!(self, type_def_opt1, TypeDefOpt1, context);
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
-        let type_def_4_built = TypeDefKwProcedureTypeDefOpt1Builder::default()
+        let type_def_4_built = TypeDefKwProcedureTypeDefOpt1 {
             // Ignore clipped member 'kw_procedure'
-            .type_def_opt1(type_def_opt1)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def_opt1: type_def_opt1,
+        };
         let type_def_4_built = TypeDef::KwProcedureTypeDefOpt1(type_def_4_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_4_built)?;
@@ -4615,14 +4602,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let type_def_opt1_0_built = TypeDefOpt1Builder::default()
-            .formal_pars(Box::new(formal_pars))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let type_def_opt1_0_built = TypeDefOpt1 {
+            formal_pars: Box::new(formal_pars),
+        };
         self.push(
             ASTType::TypeDefOpt1(Some(Box::new(type_def_opt1_0_built))),
             context,
@@ -4635,7 +4621,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt1 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt1(None), context);
@@ -4653,16 +4639,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _qual_ident: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let type_def_opt0_0_built = TypeDefOpt0Builder::default()
+        let type_def_opt0_0_built = TypeDefOpt0 {
             // Ignore clipped member 'l_paren'
-            .qual_ident(Box::new(qual_ident))
+            qual_ident: Box::new(qual_ident),
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         self.push(
             ASTType::TypeDefOpt0(Some(Box::new(type_def_opt0_0_built))),
             context,
@@ -4675,7 +4660,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt0(None), context);
@@ -4692,17 +4677,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _type_def_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt_list =
             pop_and_reverse_item!(self, type_def_opt_list, TypeDefOptList, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let type_def_opt_0_built = TypeDefOptBuilder::default()
-            .const_expr(Box::new(const_expr))
-            .type_def_opt_list(type_def_opt_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let type_def_opt_0_built = TypeDefOpt {
+            const_expr: Box::new(const_expr),
+            type_def_opt_list: type_def_opt_list,
+        };
         self.push(
             ASTType::TypeDefOpt(Some(Box::new(type_def_opt_0_built))),
             context,
@@ -4721,16 +4705,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _type_def_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_opt_list = pop_item!(self, type_def_opt_list, TypeDefOptList, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let type_def_opt_list_0_built = TypeDefOptListBuilder::default()
-            .const_expr(Box::new(const_expr))
+        let type_def_opt_list_0_built = TypeDefOptList {
+            const_expr: Box::new(const_expr),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         type_def_opt_list.push(type_def_opt_list_0_built);
         self.push(ASTType::TypeDefOptList(type_def_opt_list), context);
@@ -4742,7 +4725,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_def_opt_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt_list_1_built = Vec::new();
@@ -4755,7 +4741,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt(None), context);
@@ -4771,14 +4757,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _field_list_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let field_list_opt = pop_item!(self, field_list_opt, FieldListOpt, context);
-        let field_list_built = FieldListBuilder::default()
-            .field_list_opt(field_list_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let field_list_built = FieldList {
+            field_list_opt: field_list_opt,
+        };
         // Calling user action here
         self.user_grammar.field_list(&field_list_built)?;
         self.push(ASTType::FieldList(field_list_built), context);
@@ -4796,17 +4781,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_list = pop_item!(self, ident_list, IdentList, context);
-        let field_list_opt_0_built = FieldListOptBuilder::default()
-            .ident_list(Box::new(ident_list))
+        let field_list_opt_0_built = FieldListOpt {
+            ident_list: Box::new(ident_list),
             // Ignore clipped member 'colon'
-            .type_def(Box::new(type_def))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            type_def: Box::new(type_def),
+        };
         self.push(
             ASTType::FieldListOpt(Some(Box::new(field_list_opt_0_built))),
             context,
@@ -4819,7 +4803,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FieldListOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn field_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn field_list_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FieldListOpt(None), context);
@@ -4836,17 +4823,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _statement_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq_list =
             pop_and_reverse_item!(self, statement_seq_list, StatementSeqList, context);
         let statement = pop_item!(self, statement, Statement, context);
-        let statement_seq_built = StatementSeqBuilder::default()
-            .statement(Box::new(statement))
-            .statement_seq_list(statement_seq_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_seq_built = StatementSeq {
+            statement: Box::new(statement),
+            statement_seq_list: statement_seq_list,
+        };
         // Calling user action here
         self.user_grammar.statement_seq(&statement_seq_built)?;
         self.push(ASTType::StatementSeq(statement_seq_built), context);
@@ -4864,16 +4850,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _statement_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_seq_list = pop_item!(self, statement_seq_list, StatementSeqList, context);
         let statement = pop_item!(self, statement, Statement, context);
-        let statement_seq_list_0_built = StatementSeqListBuilder::default()
-            .statement(Box::new(statement))
+        let statement_seq_list_0_built = StatementSeqList {
+            statement: Box::new(statement),
             // Ignore clipped member 'semicolon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         statement_seq_list.push(statement_seq_list_0_built);
         self.push(ASTType::StatementSeqList(statement_seq_list), context);
@@ -4885,7 +4870,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementSeqList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_seq_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq_list_1_built = Vec::new();
@@ -4905,14 +4893,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt = pop_item!(self, statement_opt, StatementOpt, context);
-        let statement_built = StatementBuilder::default()
-            .statement_opt(statement_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_built = Statement {
+            statement_opt: statement_opt,
+        };
         // Calling user action here
         self.user_grammar.statement(&statement_built)?;
         self.push(ASTType::Statement(statement_built), context);
@@ -4928,14 +4915,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group = pop_item!(self, statement_opt_group, StatementOptGroup, context);
-        let statement_opt_0_built = StatementOptBuilder::default()
-            .statement_opt_group(Box::new(statement_opt_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_0_built = StatementOpt {
+            statement_opt_group: Box::new(statement_opt_group),
+        };
         self.push(
             ASTType::StatementOpt(Some(Box::new(statement_opt_0_built))),
             context,
@@ -4953,7 +4939,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator: &ParseTreeStackEntry<'t>,
         _statement_opt_group_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_suffix = pop_item!(
@@ -4963,12 +4949,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let designator = pop_item!(self, designator, Designator, context);
-        let statement_opt_group_0_built =
-            StatementOptGroupDesignatorStatementOptGroupSuffixBuilder::default()
-                .designator(Box::new(designator))
-                .statement_opt_group_suffix(Box::new(statement_opt_group_suffix))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_0_built = StatementOptGroupDesignatorStatementOptGroupSuffix {
+            designator: Box::new(designator),
+            statement_opt_group_suffix: Box::new(statement_opt_group_suffix),
+        };
         let statement_opt_group_0_built =
             StatementOptGroup::DesignatorStatementOptGroupSuffix(statement_opt_group_0_built);
         self.push(
@@ -4988,16 +4972,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt_group_suffix_0_built =
-            StatementOptGroupSuffixColonEquExprBuilder::default()
-                // Ignore clipped member 'colon_equ'
-                .expr(Box::new(expr))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_suffix_0_built = StatementOptGroupSuffixColonEquExpr {
+            // Ignore clipped member 'colon_equ'
+            expr: Box::new(expr),
+        };
         let statement_opt_group_suffix_0_built =
             StatementOptGroupSuffix::ColonEquExpr(statement_opt_group_suffix_0_built);
         self.push(
@@ -5016,15 +4998,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt0 = pop_item!(self, statement_opt0, StatementOpt0, context);
-        let statement_opt_group_suffix_1_built =
-            StatementOptGroupSuffixStatementOpt0Builder::default()
-                .statement_opt0(statement_opt0)
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_suffix_1_built = StatementOptGroupSuffixStatementOpt0 {
+            statement_opt0: statement_opt0,
+        };
         let statement_opt_group_suffix_1_built =
             StatementOptGroupSuffix::StatementOpt0(statement_opt_group_suffix_1_built);
         self.push(
@@ -5047,7 +5027,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5062,14 +5042,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_if'
         self.pop(context);
         let statement_opt_group_1_built =
-            StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEndBuilder::default()
+            StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd {
                 // Ignore clipped member 'kw_if'
-                .expr(Box::new(expr))
-                .then_block(Box::new(then_block))
-                .statement_opt_group_list(statement_opt_group_list)
-                .opt_else_part_end(Box::new(opt_else_part_end))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+                expr: Box::new(expr),
+                then_block: Box::new(then_block),
+                statement_opt_group_list: statement_opt_group_list,
+                opt_else_part_end: Box::new(opt_else_part_end),
+            };
         let statement_opt_group_1_built =
             StatementOptGroup::KwIfExprThenBlockStatementOptGroupListOptElsePartEnd(
                 statement_opt_group_1_built,
@@ -5094,7 +5073,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _cases: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5104,15 +5083,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_case'
         self.pop(context);
-        let statement_opt_group_2_built =
-            StatementOptGroupKwCaseExprKwOfCasesOptElsePartEndBuilder::default()
-                // Ignore clipped member 'kw_case'
-                .expr(Box::new(expr))
-                // Ignore clipped member 'kw_of'
-                .cases(Box::new(cases))
-                .opt_else_part_end(Box::new(opt_else_part_end))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_2_built = StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd {
+            // Ignore clipped member 'kw_case'
+            expr: Box::new(expr),
+            // Ignore clipped member 'kw_of'
+            cases: Box::new(cases),
+            opt_else_part_end: Box::new(opt_else_part_end),
+        };
         let statement_opt_group_2_built =
             StatementOptGroup::KwCaseExprKwOfCasesOptElsePartEnd(statement_opt_group_2_built);
         self.push(
@@ -5133,17 +5110,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let do_block = pop_item!(self, do_block, DoBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt_group_3_built = StatementOptGroupWHILEExprDoBlockBuilder::default()
+        let statement_opt_group_3_built = StatementOptGroupWHILEExprDoBlock {
             // Ignore clipped member 'w_h_i_l_e'
-            .expr(Box::new(expr))
-            .do_block(Box::new(do_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            expr: Box::new(expr),
+            do_block: Box::new(do_block),
+        };
         let statement_opt_group_3_built =
             StatementOptGroup::WHILEExprDoBlock(statement_opt_group_3_built);
         self.push(
@@ -5165,19 +5141,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _u_n_t_i_l: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        let statement_opt_group_4_built =
-            StatementOptGroupREPEATStatementSeqUNTILExprBuilder::default()
-                // Ignore clipped member 'r_e_p_e_a_t'
-                .statement_seq(Box::new(statement_seq))
-                // Ignore clipped member 'u_n_t_i_l'
-                .expr(Box::new(expr))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_4_built = StatementOptGroupREPEATStatementSeqUNTILExpr {
+            // Ignore clipped member 'r_e_p_e_a_t'
+            statement_seq: Box::new(statement_seq),
+            // Ignore clipped member 'u_n_t_i_l'
+            expr: Box::new(expr),
+        };
         let statement_opt_group_4_built =
             StatementOptGroup::REPEATStatementSeqUNTILExpr(statement_opt_group_4_built);
         self.push(
@@ -5199,20 +5173,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt1: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let do_block = pop_item!(self, do_block, DoBlock, context);
         let statement_opt1 = pop_item!(self, statement_opt1, StatementOpt1, context);
         let for_init = pop_item!(self, for_init, ForInit, context);
-        let statement_opt_group_5_built =
-            StatementOptGroupFORForInitStatementOpt1DoBlockBuilder::default()
-                // Ignore clipped member 'f_o_r'
-                .for_init(Box::new(for_init))
-                .statement_opt1(statement_opt1)
-                .do_block(Box::new(do_block))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_5_built = StatementOptGroupFORForInitStatementOpt1DoBlock {
+            // Ignore clipped member 'f_o_r'
+            for_init: Box::new(for_init),
+            statement_opt1: statement_opt1,
+            do_block: Box::new(do_block),
+        };
         let statement_opt_group_5_built =
             StatementOptGroup::FORForInitStatementOpt1DoBlock(statement_opt_group_5_built);
         self.push(
@@ -5233,18 +5205,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_seq: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        let statement_opt_group_6_built = StatementOptGroupLOOPStatementSeqKwEndBuilder::default()
+        let statement_opt_group_6_built = StatementOptGroupLOOPStatementSeqKwEnd {
             // Ignore clipped member 'l_o_o_p'
-            .statement_seq(Box::new(statement_seq))
+            statement_seq: Box::new(statement_seq),
             // Ignore clipped member 'kw_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let statement_opt_group_6_built =
             StatementOptGroup::LOOPStatementSeqKwEnd(statement_opt_group_6_built);
         self.push(
@@ -5266,7 +5237,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5277,13 +5248,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
-        let statement_opt_group_7_built = StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEndBuilder::default()
-        // Ignore clipped member 'w_i_t_h'
-            .guarded_do_block(Box::new(guarded_do_block))
-            .statement_opt_group_list0(statement_opt_group_list0)
-            .opt_else_part_end(Box::new(opt_else_part_end))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_7_built =
+            StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd {
+                // Ignore clipped member 'w_i_t_h'
+                guarded_do_block: Box::new(guarded_do_block),
+                statement_opt_group_list0: statement_opt_group_list0,
+                opt_else_part_end: Box::new(opt_else_part_end),
+            };
         let statement_opt_group_7_built =
             StatementOptGroup::WITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd(
                 statement_opt_group_7_built,
@@ -5304,13 +5275,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _e_x_i_t: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt_group_8_built = StatementOptGroupEXITBuilder::default()
-            // Ignore clipped member 'e_x_i_t'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_8_built = StatementOptGroupEXIT {
+        // Ignore clipped member 'e_x_i_t'
+        };
         let statement_opt_group_8_built = StatementOptGroup::EXIT(statement_opt_group_8_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_8_built),
@@ -5329,15 +5299,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
         _statement_opt2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
-        let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2Builder::default()
+        let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2 {
             // Ignore clipped member 'r_e_t_u_r_n'
-            .statement_opt2(statement_opt2)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_opt2: statement_opt2,
+        };
         let statement_opt_group_9_built =
             StatementOptGroup::RETURNStatementOpt2(statement_opt_group_9_built);
         self.push(
@@ -5357,7 +5326,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _elsif_part: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_opt_group_list = pop_item!(
@@ -5367,10 +5336,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let elsif_part = pop_item!(self, elsif_part, ElsifPart, context);
-        let statement_opt_group_list_0_built = StatementOptGroupListBuilder::default()
-            .elsif_part(Box::new(elsif_part))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt_group_list_0_built = StatementOptGroupList {
+            elsif_part: Box::new(elsif_part),
+        };
         // Add an element to the vector
         statement_opt_group_list.push(statement_opt_group_list_0_built);
         self.push(
@@ -5385,7 +5353,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOptGroupList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_group_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt_group_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_list_1_built = Vec::new();
@@ -5407,7 +5378,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _guarded_do_block: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_opt_group_list0 = pop_item!(
@@ -5417,11 +5388,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
-        let statement_opt_group_list0_0_built = StatementOptGroupList0Builder::default()
-            .guarded_do_block(Box::new(guarded_do_block))
+        let statement_opt_group_list0_0_built = StatementOptGroupList0 {
+            guarded_do_block: Box::new(guarded_do_block),
             // Ignore clipped member 'or'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         statement_opt_group_list0.push(statement_opt_group_list0_0_built);
         self.push(
@@ -5436,7 +5406,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOptGroupList0 /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_group_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt_group_list0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_list0_1_built = Vec::new();
@@ -5456,14 +5429,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt2_0_built = StatementOpt2Builder::default()
-            .expr(Box::new(expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt2_0_built = StatementOpt2 {
+            expr: Box::new(expr),
+        };
         self.push(
             ASTType::StatementOpt2(Some(Box::new(statement_opt2_0_built))),
             context,
@@ -5476,7 +5448,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt2 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt2_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt2_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt2(None), context);
@@ -5492,14 +5467,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _for_step: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let for_step = pop_item!(self, for_step, ForStep, context);
-        let statement_opt1_0_built = StatementOpt1Builder::default()
-            .for_step(Box::new(for_step))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt1_0_built = StatementOpt1 {
+            for_step: Box::new(for_step),
+        };
         self.push(
             ASTType::StatementOpt1(Some(Box::new(statement_opt1_0_built))),
             context,
@@ -5512,7 +5486,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt1 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt1_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt1(None), context);
@@ -5530,16 +5507,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt3: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt3 = pop_item!(self, statement_opt3, StatementOpt3, context);
-        let statement_opt0_0_built = StatementOpt0Builder::default()
+        let statement_opt0_0_built = StatementOpt0 {
             // Ignore clipped member 'l_paren'
-            .statement_opt3(statement_opt3)
+            statement_opt3: statement_opt3,
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         self.push(
             ASTType::StatementOpt0(Some(Box::new(statement_opt0_0_built))),
             context,
@@ -5556,14 +5532,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let statement_opt3_0_built = StatementOpt3Builder::default()
-            .expr_list(Box::new(expr_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_opt3_0_built = StatementOpt3 {
+            expr_list: Box::new(expr_list),
+        };
         self.push(
             ASTType::StatementOpt3(Some(Box::new(statement_opt3_0_built))),
             context,
@@ -5576,7 +5551,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt3 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt3_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt3(None), context);
@@ -5588,7 +5566,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt0_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt0(None), context);
@@ -5600,7 +5581,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt(None), context);
@@ -5617,17 +5598,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_then: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_then'
         self.pop(context);
-        let then_block_built = ThenBlockBuilder::default()
+        let then_block_built = ThenBlock {
             // Ignore clipped member 'kw_then'
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_seq: Box::new(statement_seq),
+        };
         // Calling user action here
         self.user_grammar.then_block(&then_block_built)?;
         self.push(ASTType::ThenBlock(then_block_built), context);
@@ -5644,16 +5624,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case: &ParseTreeStackEntry<'t>,
         _cases_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cases_list = pop_and_reverse_item!(self, cases_list, CasesList, context);
         let case = pop_item!(self, case, Case, context);
-        let cases_built = CasesBuilder::default()
-            .case(Box::new(case))
-            .cases_list(cases_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let cases_built = Cases {
+            case: Box::new(case),
+            cases_list: cases_list,
+        };
         // Calling user action here
         self.user_grammar.cases(&cases_built)?;
         self.push(ASTType::Cases(cases_built), context);
@@ -5671,16 +5650,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case: &ParseTreeStackEntry<'t>,
         _cases_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut cases_list = pop_item!(self, cases_list, CasesList, context);
         let case = pop_item!(self, case, Case, context);
-        let cases_list_0_built = CasesListBuilder::default()
-            .case(Box::new(case))
+        let cases_list_0_built = CasesList {
+            case: Box::new(case),
             // Ignore clipped member 'or'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         cases_list.push(cases_list_0_built);
         self.push(ASTType::CasesList(cases_list), context);
@@ -5692,7 +5670,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CasesList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cases_list_1_built = Vec::new();
@@ -5711,19 +5689,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _then_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let then_block = pop_item!(self, then_block, ThenBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_elsif'
         self.pop(context);
-        let elsif_part_built = ElsifPartBuilder::default()
+        let elsif_part_built = ElsifPart {
             // Ignore clipped member 'kw_elsif'
-            .expr(Box::new(expr))
-            .then_block(Box::new(then_block))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            expr: Box::new(expr),
+            then_block: Box::new(then_block),
+        };
         // Calling user action here
         self.user_grammar.elsif_part(&elsif_part_built)?;
         self.push(ASTType::ElsifPart(elsif_part_built), context);
@@ -5740,17 +5717,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_else: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_else'
         self.pop(context);
-        let else_part_built = ElsePartBuilder::default()
+        let else_part_built = ElsePart {
             // Ignore clipped member 'kw_else'
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_seq: Box::new(statement_seq),
+        };
         // Calling user action here
         self.user_grammar.else_part(&else_part_built)?;
         self.push(ASTType::ElsePart(else_part_built), context);
@@ -5767,18 +5743,17 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _opt_else_part_end_opt: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
         self.pop(context);
         let opt_else_part_end_opt =
             pop_item!(self, opt_else_part_end_opt, OptElsePartEndOpt, context);
-        let opt_else_part_end_built = OptElsePartEndBuilder::default()
-            .opt_else_part_end_opt(opt_else_part_end_opt)
+        let opt_else_part_end_built = OptElsePartEnd {
+            opt_else_part_end_opt: opt_else_part_end_opt,
             // Ignore clipped member 'kw_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar
             .opt_else_part_end(&opt_else_part_end_built)?;
@@ -5795,14 +5770,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _else_part: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let else_part = pop_item!(self, else_part, ElsePart, context);
-        let opt_else_part_end_opt_0_built = OptElsePartEndOptBuilder::default()
-            .else_part(Box::new(else_part))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let opt_else_part_end_opt_0_built = OptElsePartEndOpt {
+            else_part: Box::new(else_part),
+        };
         self.push(
             ASTType::OptElsePartEndOpt(Some(Box::new(opt_else_part_end_opt_0_built))),
             context,
@@ -5815,7 +5789,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// OptElsePartEndOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn opt_else_part_end_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn opt_else_part_end_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::OptElsePartEndOpt(None), context);
@@ -5833,7 +5810,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_seq: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -5841,12 +5818,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_do'
         self.pop(context);
-        let do_block_built = DoBlockBuilder::default()
+        let do_block_built = DoBlock {
             // Ignore clipped member 'kw_do'
-            .statement_seq(Box::new(statement_seq))
+            statement_seq: Box::new(statement_seq),
             // Ignore clipped member 'kw_end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.do_block(&do_block_built)?;
         self.push(ASTType::DoBlock(do_block_built), context);
@@ -5864,19 +5840,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_do'
         self.pop(context);
         let guard = pop_item!(self, guard, Guard, context);
-        let guarded_do_block_built = GuardedDoBlockBuilder::default()
-            .guard(Box::new(guard))
+        let guarded_do_block_built = GuardedDoBlock {
+            guard: Box::new(guard),
             // Ignore clipped member 'kw_do'
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_seq: Box::new(statement_seq),
+        };
         // Calling user action here
         self.user_grammar
             .guarded_do_block(&guarded_do_block_built)?;
@@ -5897,7 +5872,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_to: &ParseTreeStackEntry<'t>,
         _expr0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr0 = pop_item!(self, expr0, Expr, context);
@@ -5905,14 +5880,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let expr = pop_item!(self, expr, Expr, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let for_init_built = ForInitBuilder::default()
-            .ident(Box::new(ident))
+        let for_init_built = ForInit {
+            ident: Box::new(ident),
             // Ignore clipped member 'colon_equ'
-            .expr(Box::new(expr))
+            expr: Box::new(expr),
             // Ignore clipped member 'kw_to'
-            .expr0(Box::new(expr0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            expr0: Box::new(expr0),
+        };
         // Calling user action here
         self.user_grammar.for_init(&for_init_built)?;
         self.push(ASTType::ForInit(for_init_built), context);
@@ -5929,15 +5903,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _b_y: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let for_step_built = ForStepBuilder::default()
+        let for_step_built = ForStep {
             // Ignore clipped member 'b_y'
-            .const_expr(Box::new(const_expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            const_expr: Box::new(const_expr),
+        };
         // Calling user action here
         self.user_grammar.for_step(&for_step_built)?;
         self.push(ASTType::ForStep(for_step_built), context);
@@ -5953,14 +5926,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _case_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_opt = pop_item!(self, case_opt, CaseOpt, context);
-        let case_built = CaseBuilder::default()
-            .case_opt(case_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let case_built = Case { case_opt: case_opt };
         // Calling user action here
         self.user_grammar.case(&case_built)?;
         self.push(ASTType::Case(case_built), context);
@@ -5979,19 +5949,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let case_opt_list = pop_and_reverse_item!(self, case_opt_list, CaseOptList, context);
         let case_labels = pop_item!(self, case_labels, CaseLabels, context);
-        let case_opt_0_built = CaseOptBuilder::default()
-            .case_labels(Box::new(case_labels))
-            .case_opt_list(case_opt_list)
+        let case_opt_0_built = CaseOpt {
+            case_labels: Box::new(case_labels),
+            case_opt_list: case_opt_list,
             // Ignore clipped member 'colon'
-            .statement_seq(Box::new(statement_seq))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            statement_seq: Box::new(statement_seq),
+        };
         self.push(ASTType::CaseOpt(Some(Box::new(case_opt_0_built))), context);
         Ok(())
     }
@@ -6007,16 +5976,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case_labels: &ParseTreeStackEntry<'t>,
         _case_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut case_opt_list = pop_item!(self, case_opt_list, CaseOptList, context);
         let case_labels = pop_item!(self, case_labels, CaseLabels, context);
-        let case_opt_list_0_built = CaseOptListBuilder::default()
-            .case_labels(Box::new(case_labels))
+        let case_opt_list_0_built = CaseOptList {
+            case_labels: Box::new(case_labels),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         case_opt_list.push(case_opt_list_0_built);
         self.push(ASTType::CaseOptList(case_opt_list), context);
@@ -6028,7 +5996,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_opt_list_1_built = Vec::new();
@@ -6041,7 +6009,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::CaseOpt(None), context);
@@ -6058,16 +6026,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _case_labels_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_labels_opt = pop_item!(self, case_labels_opt, CaseLabelsOpt, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let case_labels_built = CaseLabelsBuilder::default()
-            .const_expr(Box::new(const_expr))
-            .case_labels_opt(case_labels_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let case_labels_built = CaseLabels {
+            const_expr: Box::new(const_expr),
+            case_labels_opt: case_labels_opt,
+        };
         // Calling user action here
         self.user_grammar.case_labels(&case_labels_built)?;
         self.push(ASTType::CaseLabels(case_labels_built), context);
@@ -6084,16 +6051,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         dot_dot: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_dot = dot_dot.token(parse_tree)?.clone();
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let case_labels_opt_0_built = CaseLabelsOptBuilder::default()
-            .dot_dot(dot_dot)
-            .const_expr(Box::new(const_expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let case_labels_opt_0_built = CaseLabelsOpt {
+            dot_dot: dot_dot,
+            const_expr: Box::new(const_expr),
+        };
         self.push(
             ASTType::CaseLabelsOpt(Some(Box::new(case_labels_opt_0_built))),
             context,
@@ -6106,7 +6072,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseLabelsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_labels_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn case_labels_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::CaseLabelsOpt(None), context);
@@ -6124,17 +6093,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _qual_ident0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident0 = pop_item!(self, qual_ident0, QualIdent, context);
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let guard_built = GuardBuilder::default()
-            .qual_ident(Box::new(qual_ident))
+        let guard_built = Guard {
+            qual_ident: Box::new(qual_ident),
             // Ignore clipped member 'colon'
-            .qual_ident0(Box::new(qual_ident0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            qual_ident0: Box::new(qual_ident0),
+        };
         // Calling user action here
         self.user_grammar.guard(&guard_built)?;
         self.push(ASTType::Guard(guard_built), context);
@@ -6150,14 +6118,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let const_expr_built = ConstExprBuilder::default()
-            .expr(Box::new(expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let const_expr_built = ConstExpr {
+            expr: Box::new(expr),
+        };
         // Calling user action here
         self.user_grammar.const_expr(&const_expr_built)?;
         self.push(ASTType::ConstExpr(const_expr_built), context);
@@ -6174,16 +6141,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _simple_expr: &ParseTreeStackEntry<'t>,
         _expr_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_opt = pop_item!(self, expr_opt, ExprOpt, context);
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
-        let expr_built = ExprBuilder::default()
-            .simple_expr(Box::new(simple_expr))
-            .expr_opt(expr_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expr_built = Expr {
+            simple_expr: Box::new(simple_expr),
+            expr_opt: expr_opt,
+        };
         // Calling user action here
         self.user_grammar.expr(&expr_built)?;
         self.push(ASTType::Expr(expr_built), context);
@@ -6200,16 +6166,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _relation: &ParseTreeStackEntry<'t>,
         _simple_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
         let relation = pop_item!(self, relation, Relation, context);
-        let expr_opt_0_built = ExprOptBuilder::default()
-            .relation(Box::new(relation))
-            .simple_expr(Box::new(simple_expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expr_opt_0_built = ExprOpt {
+            relation: Box::new(relation),
+            simple_expr: Box::new(simple_expr),
+        };
         self.push(ASTType::ExprOpt(Some(Box::new(expr_opt_0_built))), context);
         Ok(())
     }
@@ -6219,7 +6184,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ExprOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ExprOpt(None), context);
@@ -6237,19 +6202,18 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _term: &ParseTreeStackEntry<'t>,
         _simple_expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_list =
             pop_and_reverse_item!(self, simple_expr_list, SimpleExprList, context);
         let term = pop_item!(self, term, Term, context);
         let simple_expr_opt = pop_item!(self, simple_expr_opt, SimpleExprOpt, context);
-        let simple_expr_built = SimpleExprBuilder::default()
-            .simple_expr_opt(simple_expr_opt)
-            .term(Box::new(term))
-            .simple_expr_list(simple_expr_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_expr_built = SimpleExpr {
+            simple_expr_opt: simple_expr_opt,
+            term: Box::new(term),
+            simple_expr_list: simple_expr_list,
+        };
         // Calling user action here
         self.user_grammar.simple_expr(&simple_expr_built)?;
         self.push(ASTType::SimpleExpr(simple_expr_built), context);
@@ -6267,17 +6231,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _term: &ParseTreeStackEntry<'t>,
         _simple_expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut simple_expr_list = pop_item!(self, simple_expr_list, SimpleExprList, context);
         let term = pop_item!(self, term, Term, context);
         let add_op = pop_item!(self, add_op, AddOp, context);
-        let simple_expr_list_0_built = SimpleExprListBuilder::default()
-            .term(Box::new(term))
-            .add_op(Box::new(add_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_expr_list_0_built = SimpleExprList {
+            term: Box::new(term),
+            add_op: Box::new(add_op),
+        };
         // Add an element to the vector
         simple_expr_list.push(simple_expr_list_0_built);
         self.push(ASTType::SimpleExprList(simple_expr_list), context);
@@ -6289,7 +6252,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SimpleExprList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn simple_expr_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn simple_expr_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_list_1_built = Vec::new();
@@ -6306,15 +6272,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _simple_expr_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_opt_group =
             pop_item!(self, simple_expr_opt_group, SimpleExprOptGroup, context);
-        let simple_expr_opt_0_built = SimpleExprOptBuilder::default()
-            .simple_expr_opt_group(Box::new(simple_expr_opt_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_expr_opt_0_built = SimpleExprOpt {
+            simple_expr_opt_group: Box::new(simple_expr_opt_group),
+        };
         self.push(
             ASTType::SimpleExprOpt(Some(Box::new(simple_expr_opt_0_built))),
             context,
@@ -6331,14 +6296,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_0_built = SimpleExprOptGroupPlusBuilder::default()
-            .plus(plus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_expr_opt_group_0_built = SimpleExprOptGroupPlus { plus: plus };
         let simple_expr_opt_group_0_built = SimpleExprOptGroup::Plus(simple_expr_opt_group_0_built);
         self.push(
             ASTType::SimpleExprOptGroup(simple_expr_opt_group_0_built),
@@ -6356,14 +6318,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_1_built = SimpleExprOptGroupMinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_expr_opt_group_1_built = SimpleExprOptGroupMinus { minus: minus };
         let simple_expr_opt_group_1_built =
             SimpleExprOptGroup::Minus(simple_expr_opt_group_1_built);
         self.push(
@@ -6378,7 +6337,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SimpleExprOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn simple_expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn simple_expr_opt_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::SimpleExprOpt(None), context);
@@ -6395,16 +6357,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _term_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let term_list = pop_and_reverse_item!(self, term_list, TermList, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let term_built = TermBuilder::default()
-            .factor(Box::new(factor))
-            .term_list(term_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let term_built = Term {
+            factor: Box::new(factor),
+            term_list: term_list,
+        };
         // Calling user action here
         self.user_grammar.term(&term_built)?;
         self.push(ASTType::Term(term_built), context);
@@ -6422,17 +6383,16 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _term_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut term_list = pop_item!(self, term_list, TermList, context);
         let factor = pop_item!(self, factor, Factor, context);
         let mul_op = pop_item!(self, mul_op, MulOp, context);
-        let term_list_0_built = TermListBuilder::default()
-            .factor(Box::new(factor))
-            .mul_op(Box::new(mul_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let term_list_0_built = TermList {
+            factor: Box::new(factor),
+            mul_op: Box::new(mul_op),
+        };
         // Add an element to the vector
         term_list.push(term_list_0_built);
         self.push(ASTType::TermList(term_list), context);
@@ -6444,7 +6404,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TermList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let term_list_1_built = Vec::new();
@@ -6462,16 +6422,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator: &ParseTreeStackEntry<'t>,
         _factor_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_opt = pop_item!(self, factor_opt, FactorOpt, context);
         let designator = pop_item!(self, designator, Designator, context);
-        let factor_0_built = FactorDesignatorFactorOptBuilder::default()
-            .designator(Box::new(designator))
-            .factor_opt(factor_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_0_built = FactorDesignatorFactorOpt {
+            designator: Box::new(designator),
+            factor_opt: factor_opt,
+        };
         let factor_0_built = Factor::DesignatorFactorOpt(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -6488,14 +6447,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_1_built = FactorNumberBuilder::default()
-            .number(Box::new(number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_1_built = FactorNumber {
+            number: Box::new(number),
+        };
         let factor_1_built = Factor::Number(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -6512,14 +6470,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _character: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = pop_item!(self, character, Character, context);
-        let factor_2_built = FactorCharacterBuilder::default()
-            .character(Box::new(character))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_2_built = FactorCharacter {
+            character: Box::new(character),
+        };
         let factor_2_built = Factor::Character(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -6536,14 +6493,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let factor_3_built = FactorStringBuilder::default()
-            .string(Box::new(string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_3_built = FactorString {
+            string: Box::new(string),
+        };
         let factor_3_built = Factor::String(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -6560,13 +6516,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _n_i_l: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor_4_built = FactorNILBuilder::default()
-            // Ignore clipped member 'n_i_l'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_4_built = FactorNIL {
+        // Ignore clipped member 'n_i_l'
+        };
         let factor_4_built = Factor::NIL(factor_4_built);
         // Calling user action here
         self.user_grammar.factor(&factor_4_built)?;
@@ -6583,14 +6538,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _set: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set = pop_item!(self, set, Set, context);
-        let factor_5_built = FactorSetBuilder::default()
-            .set(Box::new(set))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_5_built = FactorSet { set: Box::new(set) };
         let factor_5_built = Factor::Set(factor_5_built);
         // Calling user action here
         self.user_grammar.factor(&factor_5_built)?;
@@ -6609,16 +6561,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let factor_6_built = FactorLParenExprRParenBuilder::default()
+        let factor_6_built = FactorLParenExprRParen {
             // Ignore clipped member 'l_paren'
-            .expr(Box::new(expr))
+            expr: Box::new(expr),
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let factor_6_built = Factor::LParenExprRParen(factor_6_built);
         // Calling user action here
         self.user_grammar.factor(&factor_6_built)?;
@@ -6636,15 +6587,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _tilde: &ParseTreeStackEntry<'t>,
         _factor: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
-        let factor_7_built = FactorTildeFactorBuilder::default()
+        let factor_7_built = FactorTildeFactor {
             // Ignore clipped member 'tilde'
-            .factor(Box::new(factor))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            factor: Box::new(factor),
+        };
         let factor_7_built = Factor::TildeFactor(factor_7_built);
         // Calling user action here
         self.user_grammar.factor(&factor_7_built)?;
@@ -6663,16 +6613,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor_opt0: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_opt0 = pop_item!(self, factor_opt0, FactorOpt0, context);
-        let factor_opt_0_built = FactorOptBuilder::default()
+        let factor_opt_0_built = FactorOpt {
             // Ignore clipped member 'l_paren'
-            .factor_opt0(factor_opt0)
+            factor_opt0: factor_opt0,
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         self.push(
             ASTType::FactorOpt(Some(Box::new(factor_opt_0_built))),
             context,
@@ -6689,14 +6638,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let factor_opt0_0_built = FactorOpt0Builder::default()
-            .expr_list(Box::new(expr_list))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_opt0_0_built = FactorOpt0 {
+            expr_list: Box::new(expr_list),
+        };
         self.push(
             ASTType::FactorOpt0(Some(Box::new(factor_opt0_0_built))),
             context,
@@ -6709,7 +6657,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FactorOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FactorOpt0(None), context);
@@ -6721,7 +6669,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FactorOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FactorOpt(None), context);
@@ -6739,16 +6687,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _set_opt: &ParseTreeStackEntry<'t>,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt = pop_item!(self, set_opt, SetOpt, context);
-        let set_built = SetBuilder::default()
+        let set_built = Set {
             // Ignore clipped member 'l_brace'
-            .set_opt(set_opt)
+            set_opt: set_opt,
             // Ignore clipped member 'r_brace'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.set(&set_built)?;
         self.push(ASTType::Set(set_built), context);
@@ -6765,16 +6712,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _element: &ParseTreeStackEntry<'t>,
         _set_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt_list = pop_and_reverse_item!(self, set_opt_list, SetOptList, context);
         let element = pop_item!(self, element, Element, context);
-        let set_opt_0_built = SetOptBuilder::default()
-            .element(Box::new(element))
-            .set_opt_list(set_opt_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let set_opt_0_built = SetOpt {
+            element: Box::new(element),
+            set_opt_list: set_opt_list,
+        };
         self.push(ASTType::SetOpt(Some(Box::new(set_opt_0_built))), context);
         Ok(())
     }
@@ -6790,16 +6736,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _element: &ParseTreeStackEntry<'t>,
         _set_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut set_opt_list = pop_item!(self, set_opt_list, SetOptList, context);
         let element = pop_item!(self, element, Element, context);
-        let set_opt_list_0_built = SetOptListBuilder::default()
-            .element(Box::new(element))
+        let set_opt_list_0_built = SetOptList {
+            element: Box::new(element),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         set_opt_list.push(set_opt_list_0_built);
         self.push(ASTType::SetOptList(set_opt_list), context);
@@ -6811,7 +6756,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SetOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt_list_1_built = Vec::new();
@@ -6824,7 +6769,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SetOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::SetOpt(None), context);
@@ -6841,16 +6786,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _element_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let element_opt = pop_item!(self, element_opt, ElementOpt, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let element_built = ElementBuilder::default()
-            .expr(Box::new(expr))
-            .element_opt(element_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let element_built = Element {
+            expr: Box::new(expr),
+            element_opt: element_opt,
+        };
         // Calling user action here
         self.user_grammar.element(&element_built)?;
         self.push(ASTType::Element(element_built), context);
@@ -6867,15 +6811,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _dot_dot: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let element_opt_0_built = ElementOptBuilder::default()
+        let element_opt_0_built = ElementOpt {
             // Ignore clipped member 'dot_dot'
-            .expr(Box::new(expr))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            expr: Box::new(expr),
+        };
         self.push(
             ASTType::ElementOpt(Some(Box::new(element_opt_0_built))),
             context,
@@ -6888,7 +6831,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ElementOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ElementOpt(None), context);
@@ -6904,13 +6847,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relation_0_built = RelationEquBuilder::default()
-            // Ignore clipped member 'equ'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_0_built = RelationEqu {
+        // Ignore clipped member 'equ'
+        };
         let relation_0_built = Relation::Equ(relation_0_built);
         // Calling user action here
         self.user_grammar.relation(&relation_0_built)?;
@@ -6927,14 +6869,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         hash: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hash = hash.token(parse_tree)?.clone();
-        let relation_1_built = RelationHashBuilder::default()
-            .hash(hash)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_1_built = RelationHash { hash: hash };
         let relation_1_built = Relation::Hash(relation_1_built);
         // Calling user action here
         self.user_grammar.relation(&relation_1_built)?;
@@ -6951,14 +6890,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         l_t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t = l_t.token(parse_tree)?.clone();
-        let relation_2_built = RelationLTBuilder::default()
-            .l_t(l_t)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_2_built = RelationLT { l_t: l_t };
         let relation_2_built = Relation::LT(relation_2_built);
         // Calling user action here
         self.user_grammar.relation(&relation_2_built)?;
@@ -6975,14 +6911,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         l_t_equ: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t_equ = l_t_equ.token(parse_tree)?.clone();
-        let relation_3_built = RelationLTEquBuilder::default()
-            .l_t_equ(l_t_equ)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_3_built = RelationLTEqu { l_t_equ: l_t_equ };
         let relation_3_built = Relation::LTEqu(relation_3_built);
         // Calling user action here
         self.user_grammar.relation(&relation_3_built)?;
@@ -6999,14 +6932,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         g_t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t = g_t.token(parse_tree)?.clone();
-        let relation_4_built = RelationGTBuilder::default()
-            .g_t(g_t)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_4_built = RelationGT { g_t: g_t };
         let relation_4_built = Relation::GT(relation_4_built);
         // Calling user action here
         self.user_grammar.relation(&relation_4_built)?;
@@ -7023,14 +6953,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         g_t_equ: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t_equ = g_t_equ.token(parse_tree)?.clone();
-        let relation_5_built = RelationGTEquBuilder::default()
-            .g_t_equ(g_t_equ)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_5_built = RelationGTEqu { g_t_equ: g_t_equ };
         let relation_5_built = Relation::GTEqu(relation_5_built);
         // Calling user action here
         self.user_grammar.relation(&relation_5_built)?;
@@ -7047,14 +6974,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let in_op = pop_item!(self, in_op, InOp, context);
-        let relation_6_built = RelationInOpBuilder::default()
-            .in_op(Box::new(in_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_6_built = RelationInOp {
+            in_op: Box::new(in_op),
+        };
         let relation_6_built = Relation::InOp(relation_6_built);
         // Calling user action here
         self.user_grammar.relation(&relation_6_built)?;
@@ -7071,14 +6997,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         i_s: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let i_s = i_s.token(parse_tree)?.clone();
-        let relation_7_built = RelationISBuilder::default()
-            .i_s(i_s)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relation_7_built = RelationIS { i_s: i_s };
         let relation_7_built = Relation::IS(relation_7_built);
         // Calling user action here
         self.user_grammar.relation(&relation_7_built)?;
@@ -7095,14 +7018,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let add_op_0_built = AddOpPlusBuilder::default()
-            .plus(plus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let add_op_0_built = AddOpPlus { plus: plus };
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -7119,14 +7039,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let add_op_1_built = AddOpMinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let add_op_1_built = AddOpMinus { minus: minus };
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -7143,14 +7060,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         o_r: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let o_r = o_r.token(parse_tree)?.clone();
-        let add_op_2_built = AddOpORBuilder::default()
-            .o_r(o_r)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let add_op_2_built = AddOpOR { o_r: o_r };
         let add_op_2_built = AddOp::OR(add_op_2_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_2_built)?;
@@ -7167,14 +7081,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         star: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let mul_op_0_built = MulOpStarBuilder::default()
-            .star(star)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_0_built = MulOpStar { star: star };
         let mul_op_0_built = MulOp::Star(mul_op_0_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_0_built)?;
@@ -7191,14 +7102,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         slash: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let slash = slash.token(parse_tree)?.clone();
-        let mul_op_1_built = MulOpSlashBuilder::default()
-            .slash(slash)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_1_built = MulOpSlash { slash: slash };
         let mul_op_1_built = MulOp::Slash(mul_op_1_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_1_built)?;
@@ -7215,14 +7123,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         d_i_v: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let d_i_v = d_i_v.token(parse_tree)?.clone();
-        let mul_op_2_built = MulOpDIVBuilder::default()
-            .d_i_v(d_i_v)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_2_built = MulOpDIV { d_i_v: d_i_v };
         let mul_op_2_built = MulOp::DIV(mul_op_2_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_2_built)?;
@@ -7239,14 +7144,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         m_o_d: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_o_d = m_o_d.token(parse_tree)?.clone();
-        let mul_op_3_built = MulOpMODBuilder::default()
-            .m_o_d(m_o_d)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_3_built = MulOpMOD { m_o_d: m_o_d };
         let mul_op_3_built = MulOp::MOD(mul_op_3_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_3_built)?;
@@ -7263,14 +7165,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         amp: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let amp = amp.token(parse_tree)?.clone();
-        let mul_op_4_built = MulOpAmpBuilder::default()
-            .amp(amp)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_4_built = MulOpAmp { amp: amp };
         let mul_op_4_built = MulOp::Amp(mul_op_4_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_4_built)?;
@@ -7288,16 +7187,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _qual_ident: &ParseTreeStackEntry<'t>,
         _designator_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let designator_list = pop_and_reverse_item!(self, designator_list, DesignatorList, context);
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let designator_built = DesignatorBuilder::default()
-            .qual_ident(Box::new(qual_ident))
-            .designator_list(designator_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let designator_built = Designator {
+            qual_ident: Box::new(qual_ident),
+            designator_list: designator_list,
+        };
         // Calling user action here
         self.user_grammar.designator(&designator_built)?;
         self.push(ASTType::Designator(designator_built), context);
@@ -7314,15 +7212,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator_suffix: &ParseTreeStackEntry<'t>,
         _designator_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut designator_list = pop_item!(self, designator_list, DesignatorList, context);
         let designator_suffix = pop_item!(self, designator_suffix, DesignatorSuffix, context);
-        let designator_list_0_built = DesignatorListBuilder::default()
-            .designator_suffix(Box::new(designator_suffix))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let designator_list_0_built = DesignatorList {
+            designator_suffix: Box::new(designator_suffix),
+        };
         // Add an element to the vector
         designator_list.push(designator_list_0_built);
         self.push(ASTType::DesignatorList(designator_list), context);
@@ -7334,7 +7231,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DesignatorList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn designator_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn designator_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let designator_list_1_built = Vec::new();
@@ -7352,15 +7252,14 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _dot: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let designator_suffix_0_built = DesignatorSuffixDotIdentBuilder::default()
+        let designator_suffix_0_built = DesignatorSuffixDotIdent {
             // Ignore clipped member 'dot'
-            .ident(Box::new(ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ident: Box::new(ident),
+        };
         let designator_suffix_0_built = DesignatorSuffix::DotIdent(designator_suffix_0_built);
         // Calling user action here
         self.user_grammar
@@ -7383,16 +7282,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr_list: &ParseTreeStackEntry<'t>,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let designator_suffix_1_built = DesignatorSuffixLBracketExprListRBracketBuilder::default()
+        let designator_suffix_1_built = DesignatorSuffixLBracketExprListRBracket {
             // Ignore clipped member 'l_bracket'
-            .expr_list(Box::new(expr_list))
+            expr_list: Box::new(expr_list),
             // Ignore clipped member 'r_bracket'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let designator_suffix_1_built =
             DesignatorSuffix::LBracketExprListRBracket(designator_suffix_1_built);
         // Calling user action here
@@ -7414,13 +7312,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _circumflex: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let designator_suffix_2_built = DesignatorSuffixCircumflexBuilder::default()
-            // Ignore clipped member 'circumflex'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let designator_suffix_2_built = DesignatorSuffixCircumflex {
+        // Ignore clipped member 'circumflex'
+        };
         let designator_suffix_2_built = DesignatorSuffix::Circumflex(designator_suffix_2_built);
         // Calling user action here
         self.user_grammar
@@ -7442,16 +7339,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _expr_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list_list = pop_and_reverse_item!(self, expr_list_list, ExprListList, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let expr_list_built = ExprListBuilder::default()
-            .expr(Box::new(expr))
-            .expr_list_list(expr_list_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expr_list_built = ExprList {
+            expr: Box::new(expr),
+            expr_list_list: expr_list_list,
+        };
         // Calling user action here
         self.user_grammar.expr_list(&expr_list_built)?;
         self.push(ASTType::ExprList(expr_list_built), context);
@@ -7469,16 +7365,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _expr_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut expr_list_list = pop_item!(self, expr_list_list, ExprListList, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let expr_list_list_0_built = ExprListListBuilder::default()
-            .expr(Box::new(expr))
+        let expr_list_list_0_built = ExprListList {
+            expr: Box::new(expr),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         expr_list_list.push(expr_list_list_0_built);
         self.push(ASTType::ExprListList(expr_list_list), context);
@@ -7490,7 +7385,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ExprListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn expr_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn expr_list_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list_list_1_built = Vec::new();
@@ -7508,16 +7406,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _ident_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_list_list = pop_and_reverse_item!(self, ident_list_list, IdentListList, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
-        let ident_list_built = IdentListBuilder::default()
-            .ident_def(Box::new(ident_def))
-            .ident_list_list(ident_list_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_list_built = IdentList {
+            ident_def: Box::new(ident_def),
+            ident_list_list: ident_list_list,
+        };
         // Calling user action here
         self.user_grammar.ident_list(&ident_list_built)?;
         self.push(ASTType::IdentList(ident_list_built), context);
@@ -7535,16 +7432,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _ident_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut ident_list_list = pop_item!(self, ident_list_list, IdentListList, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
-        let ident_list_list_0_built = IdentListListBuilder::default()
-            .ident_def(Box::new(ident_def))
+        let ident_list_list_0_built = IdentListList {
+            ident_def: Box::new(ident_def),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         ident_list_list.push(ident_list_list_0_built);
         self.push(ASTType::IdentListList(ident_list_list), context);
@@ -7556,7 +7452,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// IdentListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn ident_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn ident_list_list_1(
+        &mut self,
+        _parse_tree: &Tree<ParseTreeType<'t>>,
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_list_list_1_built = Vec::new();
@@ -7573,14 +7472,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let qual_ident_0_built = QualIdentIdentBuilder::default()
-            .ident(Box::new(ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let qual_ident_0_built = QualIdentIdent {
+            ident: Box::new(ident),
+        };
         let qual_ident_0_built = QualIdent::Ident(qual_ident_0_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_0_built)?;
@@ -7597,14 +7495,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _q_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = pop_item!(self, q_ident, QIdent, context);
-        let qual_ident_1_built = QualIdentQIdentBuilder::default()
-            .q_ident(Box::new(q_ident))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let qual_ident_1_built = QualIdentQIdent {
+            q_ident: Box::new(q_ident),
+        };
         let qual_ident_1_built = QualIdent::QIdent(qual_ident_1_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_1_built)?;
@@ -7622,16 +7519,15 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _ident_def_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_def_opt = pop_item!(self, ident_def_opt, IdentDefOpt, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let ident_def_built = IdentDefBuilder::default()
-            .ident(Box::new(ident))
-            .ident_def_opt(ident_def_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_def_built = IdentDef {
+            ident: Box::new(ident),
+            ident_def_opt: ident_def_opt,
+        };
         // Calling user action here
         self.user_grammar.ident_def(&ident_def_built)?;
         self.push(ASTType::IdentDef(ident_def_built), context);
@@ -7647,14 +7543,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _ident_def_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_def_opt_group = pop_item!(self, ident_def_opt_group, IdentDefOptGroup, context);
-        let ident_def_opt_0_built = IdentDefOptBuilder::default()
-            .ident_def_opt_group(Box::new(ident_def_opt_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_def_opt_0_built = IdentDefOpt {
+            ident_def_opt_group: Box::new(ident_def_opt_group),
+        };
         self.push(
             ASTType::IdentDefOpt(Some(Box::new(ident_def_opt_0_built))),
             context,
@@ -7671,14 +7566,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         star: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let ident_def_opt_group_0_built = IdentDefOptGroupStarBuilder::default()
-            .star(star)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_def_opt_group_0_built = IdentDefOptGroupStar { star: star };
         let ident_def_opt_group_0_built = IdentDefOptGroup::Star(ident_def_opt_group_0_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_0_built),
@@ -7696,14 +7588,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let ident_def_opt_group_1_built = IdentDefOptGroupMinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_def_opt_group_1_built = IdentDefOptGroupMinus { minus: minus };
         let ident_def_opt_group_1_built = IdentDefOptGroup::Minus(ident_def_opt_group_1_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_1_built),
@@ -7717,7 +7606,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// IdentDefOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::IdentDefOpt(None), context);
@@ -7733,14 +7622,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let number_0_built = NumberIntegerBuilder::default()
-            .integer(Box::new(integer))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number_0_built = NumberInteger {
+            integer: Box::new(integer),
+        };
         let number_0_built = Number::Integer(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
@@ -7757,14 +7645,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _real: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = pop_item!(self, real, Real, context);
-        let number_1_built = NumberRealBuilder::default()
-            .real(Box::new(real))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number_1_built = NumberReal {
+            real: Box::new(real),
+        };
         let number_1_built = Number::Real(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
@@ -7781,14 +7668,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         real: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = real.token(parse_tree)?.clone();
-        let real_built = RealBuilder::default()
-            .real(real)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let real_built = Real { real: real };
         // Calling user action here
         self.user_grammar.real(&real_built)?;
         self.push(ASTType::Real(real_built), context);
@@ -7804,14 +7688,13 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         character: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = character.token(parse_tree)?.clone();
-        let character_built = CharacterBuilder::default()
-            .character(character)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let character_built = Character {
+            character: character,
+        };
         // Calling user action here
         self.user_grammar.character(&character_built)?;
         self.push(ASTType::Character(character_built), context);
@@ -7827,14 +7710,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         integer: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = integer.token(parse_tree)?.clone();
-        let integer_built = IntegerBuilder::default()
-            .integer(integer)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer_built = Integer { integer: integer };
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
         self.push(ASTType::Integer(integer_built), context);
@@ -7850,14 +7730,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         q_ident: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = q_ident.token(parse_tree)?.clone();
-        let q_ident_built = QIdentBuilder::default()
-            .q_ident(q_ident)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let q_ident_built = QIdent { q_ident: q_ident };
         // Calling user action here
         self.user_grammar.q_ident(&q_ident_built)?;
         self.push(ASTType::QIdent(q_ident_built), context);
@@ -7873,14 +7750,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         ident: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = ident.token(parse_tree)?.clone();
-        let ident_built = IdentBuilder::default()
-            .ident(ident)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let ident_built = Ident { ident: ident };
         // Calling user action here
         self.user_grammar.ident(&ident_built)?;
         self.push(ASTType::Ident(ident_built), context);
@@ -7896,14 +7770,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
-        let string_built = StringBuilder::default()
-            .string(string)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let string_built = String { string: string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -7919,13 +7790,12 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    ) -> Result<(), ParolError> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let in_op_built = InOpBuilder::default()
-            // Ignore clipped member 'in_op'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let in_op_built = InOp {
+        // Ignore clipped member 'in_op'
+        };
         // Calling user action here
         self.user_grammar.in_op(&in_op_built)?;
         self.push(ASTType::InOp(in_op_built), context);
@@ -7942,7 +7812,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<(), ParolError> {
         match prod_num {
             0 => self.kw_begin(&children[0], parse_tree),
             1 => self.kw_case(&children[0], parse_tree),
@@ -8285,7 +8155,11 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
             222 => self.ident(&children[0], parse_tree),
             223 => self.string(&children[0], parse_tree),
             224 => self.in_op(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

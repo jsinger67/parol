@@ -1,5 +1,4 @@
-use crate::Token;
-use anyhow::{bail, Result};
+use crate::{ParserError, Token};
 
 use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};
@@ -28,10 +27,10 @@ impl<'t> ParseTreeType<'t> {
     /// Tries to access the Token of the ParseTreeType.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
     ///
-    pub fn token(&self) -> Result<&Token<'t>> {
+    pub fn token(&self) -> Result<&Token<'t>, ParserError> {
         match self {
             Self::T(t) => Ok(t),
-            _ => bail!("{} is no token!", self),
+            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
         }
     }
 }
