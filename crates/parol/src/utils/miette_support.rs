@@ -89,7 +89,7 @@ impl From<parol_runtime::ParserError> for ParserError {
                 error_location: MyLocation(error_location).into(),
                 unexpected_tokens: MyUnexpectedToken(unexpected_tokens).into(),
                 expected_tokens,
-                source,
+                source: source.map(|e| e.into()),
             },
             parol_runtime::ParserError::UnprocessedInput { input, last_token } => {
                 ParserError::UnprocessedInput {

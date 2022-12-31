@@ -12,6 +12,7 @@ use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
 };
+use parol_runtime::ParolError;
 use std::cell::RefCell;
 use std::path::Path;
 
@@ -1017,7 +1018,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut ParolGrammar<'t>,
-) -> Result<Tree<ParseTreeType<'t>>>
+) -> Result<Tree<ParseTreeType<'t>>, ParolError>
 where
     T: AsRef<Path>,
 {

@@ -34,7 +34,7 @@ fn main() -> miette::Result<()> {
         let mut basic_grammar = BasicGrammar::new();
         let now = Instant::now();
         let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
-            .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))
+            .map_err(|e| to_report(e.into()).unwrap_or_else(|e| miette!(e)))
             .wrap_err(format!("Failed parsing file {}", file_name))?;
         let elapsed_time = now.elapsed();
         if args.len() > 2 && args[2] == "-q" {

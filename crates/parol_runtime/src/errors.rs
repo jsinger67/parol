@@ -17,7 +17,7 @@ pub enum ParserError {
         error_location: Location,
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
-        source: Option<anyhow::Error>,
+        source: Option<Box<ParolError>>,
     },
 
     #[error("Unprocessed input is left after parsing has finished")]
