@@ -1,6 +1,6 @@
 use crate::{
-    FormatToken, LexerError, ParolError, ProductionIndex, StateIndex, TerminalIndex, TokenStream,
-    TokenVec, UnexpectedToken,
+    FormatToken, LexerError, ProductionIndex, StateIndex, TerminalIndex, TokenStream, TokenVec,
+    UnexpectedToken,
 };
 use log::trace;
 use std::cmp::Ordering;
@@ -76,7 +76,7 @@ impl LookaheadDFA {
     pub fn eval<'t>(
         &self,
         token_stream: &mut TokenStream<'t>,
-    ) -> Result<ProductionIndex, ParolError> {
+    ) -> Result<ProductionIndex, LexerError> {
         let mut state: StateIndex = 0;
         if self.k > token_stream.k {
             return Err(LexerError::DataError(
@@ -171,7 +171,7 @@ impl LookaheadDFA {
         &self,
         terminal_names: &'static [&'static str],
         token_stream: &TokenStream<'_>,
-    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec), ParolError> {
+    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec), LexerError> {
         let mut state = 0;
         let mut diag_msg = String::new();
         let mut unexpected_tokens = Vec::new();

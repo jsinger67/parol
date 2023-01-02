@@ -130,7 +130,7 @@ impl<'t> BasicGrammar<'t> {
         for line in other_lines {
             let (k, v) = self.pre_process_line(&line.line)?;
             if lines.lines.insert(k.0, (k.1.clone(), v)).is_some() {
-                return Err(ParolError::Other(
+                return Err(ParolError::UserError(
                     BasicError::LineNumberDefinedTwice {
                         context: context.to_owned(),
                         input: miette_support::MyFileSource(
@@ -479,6 +479,6 @@ impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
 
 impl From<BasicError> for ParolError {
     fn from(error: BasicError) -> Self {
-        ParolError::Other(error.into())
+        ParolError::UserError(error.into())
     }
 }

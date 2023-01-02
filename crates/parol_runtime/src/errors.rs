@@ -1,5 +1,6 @@
 use crate::lexer::token_stream::TokenStream;
 use crate::lexer::{Location, Token};
+use std::any::Any;
 use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
@@ -17,7 +18,7 @@ pub enum ParserError {
         error_location: Location,
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
-        source: Option<Box<ParolError>>,
+        source: Option<Box<dyn ParolErrorEraced>>,
     },
 
     #[error("Unprocessed input is left after parsing has finished")]
@@ -30,14 +31,14 @@ pub enum ParserError {
     PopOnEmptyScannerStateStack {
         context: String,
         input: FileSource,
-        source: anyhow::Error,
+        source: LexerError,
     },
 
     #[error("{0}")]
     InternalError(String),
 
     #[error("Conversion error: {0}")]
-    UserTypeConversionError(#[from] anyhow::Error),
+    UserTypeConversionError(anyhow::Error),
 }
 
 #[derive(Error, Debug)]
@@ -50,16 +51,28 @@ pub enum LexerError {
 
     #[error("No valid token read")]
     TokenBufferEmptyError,
+
+    #[error("{0}")]
+    InternalError(String),
+
+    #[error("Lookahead exceeds its maximum")]
+    LookaheadExceedsMaximum,
+
+    #[error("Lookahead exceeds token buffer length")]
+    LookaheadExceedsTokenBufferLength,
+
+    #[error("pop_scanner: Tried to pop from an empty scanner stack!")]
+    ScannerStackEmptyError,
 }
 
 #[derive(Error, Debug)]
-pub enum ParolError {
+pub enum ParolError<UserError: std::error::Error> {
     #[error(transparent)]
     ParserError(#[from] ParserError),
     #[error(transparent)]
     LexerError(#[from] LexerError),
     #[error(transparent)]
-    Other(#[from] anyhow::Error),
+    UserError(UserError),
 }
 
 #[derive(Debug)]
@@ -127,3 +140,8 @@ impl FileSource {
         Self { file_name, input }
     }
 }
+
+pub trait ParolErrorEraced: Any + std::error::Error + Send + Sync + 'static {}
+
+impl<T: Any + std::error::Error + Send + Sync + 'static> ParolErrorEraced for ParolError<T> {}
+impl std::error::Error for Box<dyn ParolErrorEraced> {}

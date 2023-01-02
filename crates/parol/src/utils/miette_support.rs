@@ -59,7 +59,7 @@ pub enum ParserError {
         context: String,
         #[source_code]
         input: NamedSource,
-        source: anyhow::Error,
+        source: parol_runtime::LexerError,
     },
 
     #[error("{0}")]
@@ -89,7 +89,7 @@ impl From<parol_runtime::ParserError> for ParserError {
                 error_location: MyLocation(error_location).into(),
                 unexpected_tokens: MyUnexpectedToken(unexpected_tokens).into(),
                 expected_tokens,
-                source: source.map(|e| e.into()),
+                source: source.map(|e| todo!()),
             },
             parol_runtime::ParserError::UnprocessedInput { input, last_token } => {
                 ParserError::UnprocessedInput {
@@ -144,6 +144,10 @@ impl From<parol_runtime::LexerError> for LexerError {
                 LexerError::Prediction { cause }
             }
             parol_runtime::LexerError::TokenBufferEmptyError => LexerError::TokenBufferEmpty,
+            parol_runtime::LexerError::InternalError(_) => todo!(),
+            parol_runtime::LexerError::LookaheadExceedsMaximum => todo!(),
+            parol_runtime::LexerError::LookaheadExceedsTokenBufferLength => todo!(),
+            parol_runtime::LexerError::ScannerStackEmptyError => todo!(),
         }
     }
 }
@@ -567,14 +571,14 @@ impl From<MyRelatedHints> for Vec<RelatedHint> {
 /// ```
 ///
 pub fn to_report(err: anyhow::Error) -> std::result::Result<miette::Report, anyhow::Error> {
-    let err = match err.downcast::<parol_runtime::ParserError>() {
-        Ok(err) => {
-            return Ok(miette!(
-                <parol_runtime::ParserError as Into<ParserError>>::into(err)
-            ))
-        }
-        Err(err) => err,
-    };
+    // let err = match err.downcast::<parol_runtime::ParserError>() {
+    //     Ok(err) => {
+    //         return Ok(miette!(
+    //             <parol_runtime::ParserError as Into<ParserError>>::into(err)
+    //         ))
+    //     }
+    //     Err(err) => err,
+    // };
 
     let err = match err.downcast::<parol_runtime::LexerError>() {
         Ok(err) => {

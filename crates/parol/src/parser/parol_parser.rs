@@ -18,6 +18,7 @@ use std::path::Path;
 
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_grammar_trait::ParolGrammarAuto;
+use crate::ParolParserError;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -1018,7 +1019,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut ParolGrammar<'t>,
-) -> Result<Tree<ParseTreeType<'t>>, ParolError>
+) -> Result<Tree<ParseTreeType<'t>>, ParolError<ParolParserError>>
 where
     T: AsRef<Path>,
 {

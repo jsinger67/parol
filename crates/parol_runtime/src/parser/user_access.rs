@@ -13,6 +13,8 @@ use id_tree::Tree;
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
 pub trait UserActionsTrait<'t> {
+    /// The type of errors that can be returned by the user's semantic actions.
+    type UserError: std::error::Error;
     ///
     /// This function is implemented automatically for the user's item.
     ///
@@ -21,5 +23,5 @@ pub trait UserActionsTrait<'t> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError>;
+    ) -> Result<(), ParolError<Self::UserError>>;
 }

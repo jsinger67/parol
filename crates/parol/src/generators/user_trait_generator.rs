@@ -13,8 +13,8 @@ use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::Production;
 use crate::{InnerAttributes, Pr, StrVec};
+use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
-use parol_runtime::ParserError;
 
 /// Generator for user trait code
 /// The lifetime parameter `'a` refers to the lifetime of the contained references.
@@ -42,7 +42,7 @@ impl<'a> UserTraitGenerator<'a> {
         &self,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
-    ) -> Result<String, ParserError> {
+    ) -> Result<String> {
         // We reference the parse_tree argument only if a token is in the argument list
         let lifetime = if self.auto_generate { "<'t>" } else { "" };
         let mut parse_tree_argument_used = false;
@@ -87,7 +87,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         if !self.auto_generate {
             return Ok(());
         }
@@ -119,7 +119,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         if !self.auto_generate {
             return Ok(());
         }
@@ -164,7 +164,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
         let fn_name = symbol_table.name(fn_type.name_id()).to_string();
@@ -174,9 +174,7 @@ impl<'a> UserTraitGenerator<'a> {
                 .members(action_id)?
                 .iter()
                 .last()
-                .ok_or_else(|| {
-                    ParserError::InternalError(format!("There should be at least one argument!"))
-                })?;
+                .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
             let arg_inst = symbol_table.symbol_as_instance(*last_arg);
             let arg_name = symbol_table.name(arg_inst.name_id());
             code.push("// Add an element to the vector".to_string());
@@ -190,7 +188,7 @@ impl<'a> UserTraitGenerator<'a> {
         member_id: &SymbolId,
         sem: ProductionAttribute,
         code: &mut StrVec,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         let arg_inst = symbol_table.symbol_as_instance(*member_id);
         if arg_inst.sem() == SymbolAttribute::Clipped {
             // Clipped element is ignored here
@@ -230,7 +228,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         if !self.auto_generate {
             return Ok(());
         }
@@ -243,17 +241,13 @@ impl<'a> UserTraitGenerator<'a> {
             *type_info
                 .production_types
                 .get(&function.prod_num)
-                .ok_or_else(|| {
-                    ParserError::InternalError(format!("Production output type not accessible!"))
-                })?,
+                .ok_or_else(|| anyhow!("Production output type not accessible!"))?,
         );
         let nt_type = symbol_table.symbol_as_type(
             *type_info
                 .non_terminal_types
                 .get(&function.non_terminal)
-                .ok_or_else(|| {
-                    ParserError::InternalError(format!("Non-terminal type not accessible!"))
-                })?,
+                .ok_or_else(|| anyhow!("Non-terminal type not accessible!"))?,
         );
 
         if function.sem == ProductionAttribute::CollectionStart {
@@ -302,7 +296,7 @@ impl<'a> UserTraitGenerator<'a> {
                             .symbol(symbol_table.symbol(*enum_variant_id).my_id())
                             .name()
                     })
-                    .ok_or_else(|| ParserError::InternalError(format!("Enum variant not found")))?;
+                    .ok_or_else(|| anyhow!("Enum variant not found"))?;
                 code.push(format!(
                     "let {}_built = {}::{}({}_built);",
                     fn_name,
@@ -320,7 +314,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         if !self.auto_generate {
             return Ok(());
         }
@@ -344,7 +338,7 @@ impl<'a> UserTraitGenerator<'a> {
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
-    ) -> Result<(), ParserError> {
+    ) -> Result<()> {
         if self.auto_generate {
             let function = symbol_table.symbol_as_function(action_id)?;
             let fn_type = symbol_table.symbol_as_type(action_id);
@@ -357,11 +351,7 @@ impl<'a> UserTraitGenerator<'a> {
                     .members(action_id)?
                     .iter()
                     .last()
-                    .ok_or_else(|| {
-                        ParserError::InternalError(format!(
-                            "There should be at least one argument!"
-                        ))
-                    })?;
+                    .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
                 let arg_inst = symbol_table.symbol_as_instance(*last_arg);
                 let arg_name = symbol_table.name(arg_inst.name_id());
 
@@ -394,27 +384,22 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    pub(crate) fn add_user_actions(
-        &self,
-        type_info: &mut GrammarTypeInfo,
-    ) -> Result<(), ParserError> {
+    pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
         let mut processed_non_terminals: HashSet<String> = HashSet::new();
-        self.productions
-            .iter()
-            .fold(Ok(()), |acc: Result<(), ParserError>, p| {
-                acc?;
-                if !processed_non_terminals.contains(&p.lhs) {
-                    type_info.add_user_action(&p.lhs)?;
-                    processed_non_terminals.insert(p.lhs.to_string());
-                }
-                Ok(())
-            })
+        self.productions.iter().fold(Ok(()), |acc: Result<()>, p| {
+            acc?;
+            if !processed_non_terminals.contains(&p.lhs) {
+                type_info.add_user_action(&p.lhs)?;
+                processed_non_terminals.insert(p.lhs.to_string());
+            }
+            Ok(())
+        })
     }
 
     fn generate_user_action_args(
         non_terminal: &str,
         type_info: &GrammarTypeInfo,
-    ) -> Result<String, ParserError> {
+    ) -> Result<String> {
         let type_name = NmHlp::to_upper_camel_case(non_terminal);
         if let Some(symbol_id) = type_info.symbol_table.get_global_type(&type_name) {
             Ok(format!(
@@ -423,10 +408,7 @@ impl<'a> UserTraitGenerator<'a> {
                 type_info.symbol_table.lifetime(symbol_id)
             ))
         } else {
-            Err(ParserError::InternalError(format!(
-                "Can't find type of argument {}",
-                non_terminal
-            )))
+            Err(anyhow!("Can't find type of argument {}", non_terminal))
         }
     }
 
@@ -446,7 +428,7 @@ impl<'a> UserTraitGenerator<'a> {
         type_id: SymbolId,
         symbol_table: &SymbolTable,
         comment: StrVec,
-    ) -> Result<Option<String>, ParserError> {
+    ) -> Result<Option<String>> {
         let type_symbol = symbol_table.symbol_as_type(type_id);
         let type_name = symbol_table.name(type_symbol.name_id()).to_string();
         let lifetime = symbol_table.lifetime(type_symbol.my_id());
@@ -482,14 +464,11 @@ impl<'a> UserTraitGenerator<'a> {
                 };
                 Ok(Some(format!("{}", struct_data)))
             }
-            _ => return Err(ParserError::InternalError(format!("Unexpected type!"))),
+            _ => bail!("Unexpected type!"),
         }
     }
 
-    fn generate_range_calculation(
-        t: SymbolId,
-        symbol_table: &SymbolTable,
-    ) -> Result<String, ParserError> {
+    fn generate_range_calculation(t: SymbolId, symbol_table: &SymbolTable) -> Result<String> {
         let type_symbol = symbol_table.symbol_as_type(t);
         let type_name = type_symbol.name();
         let lifetime = symbol_table.lifetime(t);
@@ -511,14 +490,9 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     /// Generates the file with the user actions trait.
     ///
-    pub fn generate_user_trait_source(
-        &self,
-        type_info: &mut GrammarTypeInfo,
-    ) -> Result<String, ParserError> {
+    pub fn generate_user_trait_source(&self, type_info: &mut GrammarTypeInfo) -> Result<String> {
         if self.range && !self.auto_generate {
-            return Err(ParserError::InternalError(format!(
-                "Range information can only be generated in auto-generation mode!"
-            )));
+            bail!("Range information can only be generated in auto-generation mode!");
         }
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(self.auto_generate)?;
@@ -549,31 +523,28 @@ impl<'a> UserTraitGenerator<'a> {
                         None
                     }
                 })
-                .fold(
-                    Ok(StrVec::new(0)),
-                    |acc: Result<StrVec, ParserError>, (t, f)| {
-                        if let Ok(mut acc) = acc {
-                            let mut comment = StrVec::new(0);
-                            comment.push(String::default());
-                            comment.push(format!("Type derived for production {}", f.prod_num));
-                            comment.push(String::default());
-                            comment.push(f.prod_string);
-                            comment.push(String::default());
-                            Self::format_type(*t, &type_info.symbol_table, comment)?
-                                .into_iter()
-                                .for_each(|s| acc.push(s));
-                            if self.range {
-                                acc.push(Self::generate_range_calculation(
-                                    *t,
-                                    &type_info.symbol_table,
-                                )?);
-                            }
-                            Ok(acc)
-                        } else {
-                            acc
+                .fold(Ok(StrVec::new(0)), |acc: Result<StrVec>, (t, f)| {
+                    if let Ok(mut acc) = acc {
+                        let mut comment = StrVec::new(0);
+                        comment.push(String::default());
+                        comment.push(format!("Type derived for production {}", f.prod_num));
+                        comment.push(String::default());
+                        comment.push(f.prod_string);
+                        comment.push(String::default());
+                        Self::format_type(*t, &type_info.symbol_table, comment)?
+                            .into_iter()
+                            .for_each(|s| acc.push(s));
+                        if self.range {
+                            acc.push(Self::generate_range_calculation(
+                                *t,
+                                &type_info.symbol_table,
+                            )?);
                         }
-                    },
-                )?
+                        Ok(acc)
+                    } else {
+                        acc
+                    }
+                })?
         } else {
             StrVec::new(0)
         };
@@ -581,7 +552,7 @@ impl<'a> UserTraitGenerator<'a> {
         let non_terminal_types = if self.auto_generate {
             type_info.non_terminal_types.iter().fold(
                 Ok(StrVec::new(0)),
-                |acc: Result<StrVec, ParserError>, (s, t)| {
+                |acc: Result<StrVec>, (s, t)| {
                     if let Ok(mut acc) = acc {
                         let mut comment = StrVec::new(0);
                         comment.push(String::default());
@@ -625,7 +596,7 @@ impl<'a> UserTraitGenerator<'a> {
 
         let trait_functions = type_info.adapter_actions.iter().fold(
             Ok(StrVec::new(0).first_line_no_indent()),
-            |acc: Result<StrVec, ParserError>, a| {
+            |acc: Result<StrVec>, a| {
                 if let Ok(mut acc) = acc {
                     let action_id = *a.1;
                     let fn_type = type_info.symbol_table.symbol_as_type(action_id);
@@ -666,7 +637,7 @@ impl<'a> UserTraitGenerator<'a> {
 
             type_info.user_actions.iter().fold(
                 Ok(StrVec::new(0).first_line_no_indent()),
-                |acc: Result<StrVec, ParserError>, (nt, fn_id)| {
+                |acc: Result<StrVec>, (nt, fn_id)| {
                     if let Ok(mut acc) = acc {
                         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
                         let fn_arguments = Self::generate_user_action_args(nt, type_info)?;
@@ -691,7 +662,7 @@ impl<'a> UserTraitGenerator<'a> {
 
         let trait_caller = self.grammar_config.cfg.pr.iter().enumerate().fold(
             Ok(StrVec::new(12)),
-            |acc: Result<StrVec, ParserError>, (i, p)| {
+            |acc: Result<StrVec>, (i, p)| {
                 if let Ok(mut acc) = acc {
                     let fn_type_id = type_info.adapter_actions.get(&i).unwrap();
                     let fn_type = type_info.symbol_table.symbol_as_type(*fn_type_id);
@@ -753,7 +724,7 @@ impl<'a> UserTraitGenerator<'a> {
         inner_attributes: Vec<InnerAttributes>,
         productions: Vec<Production>,
         grammar_config: &'a GrammarConfig,
-    ) -> Result<Self, ParserError> {
+    ) -> Result<Self> {
         let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
         UserTraitGeneratorBuilder::default()
             .user_type_name(user_type_name)
@@ -764,6 +735,6 @@ impl<'a> UserTraitGenerator<'a> {
             .grammar_config(grammar_config)
             .productions(productions)
             .build()
-            .map_err(|e| ParserError::InternalError(format!("Builder error!: {}", e)))
+            .map_err(|e| anyhow!("Builder error!: {}", e))
     }
 }
