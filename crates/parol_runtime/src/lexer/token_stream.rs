@@ -78,6 +78,10 @@ impl<'t> TokenStream<'t> {
         let file_name: Cow<Path> = file_name.as_ref().to_owned().into();
         let token_iter = TokenIter::new(&tokenizers[0].1, input, file_name.clone(), k);
 
+        // issue #54 "Lookahead exceeds token buffer length" with simple grammar:
+        // Ensure that k is at least 1
+        let k = std::cmp::max(1, k);
+
         let mut token_stream = Self {
             k,
             input,
