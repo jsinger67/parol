@@ -30,8 +30,8 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolAttribute, Terminal, Terminal
 pub mod analysis;
 
 pub use analysis::{
-    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal,
-    GrammarAnalysisError, KTuple, KTuples, LookaheadDFA, RecursiveNonTerminal, RelatedHint,
+    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal, KTuple,
+    KTuples, LookaheadDFA,
 };
 
 ///
@@ -57,7 +57,7 @@ pub use generators::{
 /// Module with parol's parser for input grammars
 ///
 pub mod parser;
-pub use parser::{parse, ParolGrammar, ParolParserError};
+pub use parser::{parse, ParolGrammar};
 
 ///
 /// Module with functionalities for grammar transformation
@@ -72,9 +72,7 @@ pub use transformation::left_factor;
 pub mod utils;
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};
-pub use utils::{
-    generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string, to_report,
-};
+pub use utils::{generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string};
 
 ///
 /// Internal lookahead limit

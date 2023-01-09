@@ -128,10 +128,10 @@ use crate::parser::parol_grammar::Production;
 use crate::{
     GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,
 };
-use anyhow::{anyhow, Result};
 use clap::{Parser, ValueEnum};
 use id_tree::Tree;
-use parol_runtime::ParseTreeType;
+use parol_macros::parol;
+use parol_runtime::{ParseTreeType, Result};
 
 /// Contains all attributes that should be inserted optionally on top of the generated trait source.
 /// * Used in the Builder API. Therefore it mus be public
@@ -425,7 +425,7 @@ impl Builder {
     /// Generate the parser, writing it to the pre-configured output files.
     pub fn generate_parser(&mut self) -> Result<()> {
         self.begin_generation_with(None)
-            .map_err(|e| anyhow!("Misconfigured parol generation: {}", e))?
+            .map_err(|e| parol!("Misconfigured parol generation: {}", e))?
             .generate_parser()
     }
 }
@@ -466,7 +466,7 @@ impl GrammarGenerator<'_> {
     pub fn parse(&mut self) -> Result<()> {
         assert_eq!(self.state, None);
         let input = fs::read_to_string(&self.grammar_file).map_err(|e| {
-            anyhow!(
+            parol!(
                 "Can't read grammar file {}: {}",
                 self.grammar_file.display(),
                 e
@@ -501,7 +501,7 @@ impl GrammarGenerator<'_> {
                 expanded_file,
                 crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
-            .map_err(|e| anyhow!("Error writing left-factored grammar! {}", e))?;
+            .map_err(|e| parol!("Error writing left-factored grammar! {}", e))?;
         }
 
         // Exchange original grammar with transformed one
@@ -514,7 +514,7 @@ impl GrammarGenerator<'_> {
                 expanded_file,
                 crate::render_par_string(grammar_config, /* add_index_comment */ true)?,
             )
-            .map_err(|e| anyhow!("Error writing left-factored grammar!: {}", e))?;
+            .map_err(|e| parol!("Error writing left-factored grammar!: {}", e))?;
         }
         self.state = Some(State::Expanded);
         Ok(())
@@ -525,7 +525,7 @@ impl GrammarGenerator<'_> {
         let grammar_config = self.grammar_config.as_mut().unwrap();
         self.lookahead_dfa_s = Some(
             crate::calculate_lookahead_dfas(grammar_config, self.builder.max_lookahead).map_err(
-                |e| anyhow!("Lookahead calculation for the given grammar failed!: {}", e),
+                |e| parol!("Lookahead calculation for the given grammar failed!: {}", e),
             )?,
         );
 
@@ -559,7 +559,7 @@ impl GrammarGenerator<'_> {
         assert_eq!(self.state, Some(State::PostProcessed));
         let grammar_config = self.grammar_config.as_mut().unwrap();
         let lexer_source = crate::generate_lexer_source(grammar_config)
-            .map_err(|e| anyhow!("Failed to generate lexer source!: {}", e))?;
+            .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
         let user_trait_generator = UserTraitGeneratorBuilder::default()
             .user_type_name(self.builder.user_type_name.clone())
@@ -576,7 +576,7 @@ impl GrammarGenerator<'_> {
         let user_trait_source = user_trait_generator.generate_user_trait_source(&mut type_info)?;
         if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
             fs::write(user_trait_file_out, user_trait_source)
-                .map_err(|e| anyhow!("Error writing generated user trait source!: {}", e))?;
+                .map_err(|e| parol!("Error writing generated user trait source!: {}", e))?;
             crate::try_format(user_trait_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nSource for semantic actions:\n{}", user_trait_source);
@@ -596,7 +596,7 @@ impl GrammarGenerator<'_> {
 
         if let Some(ref parser_file_out) = self.builder.parser_output_file {
             fs::write(parser_file_out, parser_source)
-                .map_err(|e| anyhow!("Error writing generated lexer source!: {}", e))?;
+                .map_err(|e| parol!("Error writing generated lexer source!: {}", e))?;
             crate::try_format(parser_file_out)?;
         } else if self.builder.debug_verbose {
             println!("\nParser source:\n{}", parser_source);

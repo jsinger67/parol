@@ -1,7 +1,7 @@
 use crate::{
-    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParolError, ParseStack,
-    ParseTreeStackEntry, ParseTreeType, ParseType, ParserError, ProductionIndex, TokenStream,
-    TokenVec, UnexpectedToken, UserActionsTrait,
+    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParseStack,
+    ParseTreeStackEntry, ParseTreeType, ParseType, ParserError, ProductionIndex, Result,
+    TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use id_tree::{InsertBehavior, MoveBehavior, Node, RemoveBehavior, Tree};
 use log::{debug, trace};
@@ -184,11 +184,11 @@ impl<'t> LLKParser<'t> {
         );
     }
 
-    fn process_item_stack<'u, T: std::error::Error>(
+    fn process_item_stack<'u>(
         &mut self,
         prod_num: ProductionIndex,
-        user_actions: &'u mut dyn UserActionsTrait<'t, UserError = T>,
-    ) -> Result<(), ParolError<T>> {
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<()> {
         let l = self.productions[prod_num]
             .production
             .iter()
@@ -267,11 +267,11 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn predict_production<T: std::error::Error>(
+    fn predict_production(
         &mut self,
         non_terminal: NonTerminalIndex,
         stream: &RefCell<TokenStream<'t>>,
-    ) -> Result<ProductionIndex, ParolError<T>> {
+    ) -> Result<ProductionIndex> {
         let lookahead_dfa = &self.lookahead_automata[non_terminal];
         Ok(lookahead_dfa.eval(&mut stream.borrow_mut())?)
     }
@@ -298,12 +298,12 @@ impl<'t> LLKParser<'t> {
     /// The generated parser sources contain all appropriate initialization and
     /// the actual execution of this parse function.
     ///
-    pub fn parse<'u, T: std::error::Error + Send + Sync + 'static>(
+    pub fn parse<'u>(
         &mut self,
         stream: RefCell<TokenStream<'t>>,
-        user_actions: &'u mut dyn UserActionsTrait<'t, UserError = T>,
-    ) -> Result<(), ParolError<T>> {
-        let prod_num = match self.predict_production::<T>(self.start_symbol_index, &stream) {
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<()> {
+        let prod_num = match self.predict_production(self.start_symbol_index, &stream) {
             Ok(prod_num) => prod_num,
             Err(source) => {
                 let nt_name = self.non_terminal_names[self.start_symbol_index];
@@ -372,7 +372,7 @@ impl<'t> LLKParser<'t> {
                             .into());
                         }
                     }
-                    ParseType::N(n) => match self.predict_production::<T>(n, &stream) {
+                    ParseType::N(n) => match self.predict_production(n, &stream) {
                         Ok(prod_num) => {
                             self.parser_stack.stack.pop();
                             self.push_production(prod_num);

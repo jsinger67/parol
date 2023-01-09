@@ -22,7 +22,9 @@ pub use parser::{
 ///
 #[macro_use]
 pub mod errors;
-pub use errors::{FileSource, LexerError, ParolError, ParserError, TokenVec, UnexpectedToken};
+pub use errors::{
+    FileSource, LexerError, ParolError, ParserError, Result, TokenVec, UnexpectedToken,
+};
 
 // re-export
 #[cfg(feature = "auto_generation")]

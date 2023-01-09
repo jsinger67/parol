@@ -10,16 +10,15 @@
 #![allow(clippy::upper_case_acronyms)]
 
 #[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, bail};
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{derive_builder::Builder, ParolError};
-
-use crate::ParolParserError;
+use parol_runtime::ParserError;
+use parol_runtime::{derive_builder::Builder, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -2786,7 +2785,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 }
 
 impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
-    type UserError = ParolParserError;
     ///
     /// This function is implemented automatically for the user's item ParolGrammar.
     ///
@@ -2795,7 +2793,7 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError<ParolParserError>> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.parol(&children[0], &children[1], parse_tree),
             1 => self.prolog(&children[0], &children[1], &children[2], parse_tree),
@@ -2906,8 +2904,11 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             68 => self.user_type_name(&children[0], &children[1], parse_tree),
             69 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
             70 => self.user_type_name_list_1(parse_tree),
-            _ => todo!(),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
-        .map_err(|e| todo!())
     }
 }

@@ -7,11 +7,11 @@ pub mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
-use crate::errors::to_report;
+use crate::errors::basic_error_reporter;
 use anyhow::{Context, Result};
+use error_report::report_error;
 use id_tree::Tree;
 use id_tree_layout::Layouter;
-use miette::{miette, IntoDiagnostic, WrapErr};
 use parol_runtime::log::debug;
 use parol_runtime::parser::ParseTreeType;
 use std::env;
@@ -21,7 +21,7 @@ use std::time::Instant;
 // To generate:
 // parol -f ./basic.par -e ./basic-exp.par -p ./src/basic_parser.rs -a ./src/basic_grammar_trait.rs -t BasicGrammar -m basic_grammar -g
 
-fn main() -> miette::Result<()> {
+fn main() -> anyhow::Result<std::process::ExitCode> {
     env_logger::init();
     debug!("env logger started");
 
@@ -29,25 +29,36 @@ fn main() -> miette::Result<()> {
     if args.len() >= 2 {
         let file_name = args[1].clone();
         let input = fs::read_to_string(file_name.clone())
-            .into_diagnostic()
-            .wrap_err(format!("Can't read file {}", file_name))?;
+            .context(format!("Can't read file {}", file_name))?;
         let mut basic_grammar = BasicGrammar::new();
         let now = Instant::now();
-        let syntax_tree = parse(&input, &file_name, &mut basic_grammar)
-            .map_err(|e| to_report(e.into()).unwrap_or_else(|e| miette!(e)))
-            .wrap_err(format!("Failed parsing file {}", file_name))?;
-        let elapsed_time = now.elapsed();
-        if args.len() > 2 && args[2] == "-q" {
-            println!("\n{}", basic_grammar);
-            Ok(())
-        } else {
-            println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-            println!("Success!\nVariables:\n{}", basic_grammar);
-            generate_tree_layout(&syntax_tree, &file_name)
-                .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))
+        match parse(&input, &file_name, &mut basic_grammar) {
+            Ok(syntax_tree) => {
+                let elapsed_time = now.elapsed();
+                if args.len() > 2 && args[2] == "-q" {
+                    println!("\n{}", basic_grammar);
+                    Ok(std::process::ExitCode::SUCCESS)
+                } else {
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
+                    println!("Success!\nVariables:\n{}", basic_grammar);
+                    match generate_tree_layout(&syntax_tree, &file_name) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("Error generating tree layout: {e}");
+                            return Ok(std::process::ExitCode::FAILURE);
+                        }
+                    };
+                    Ok(std::process::ExitCode::SUCCESS)
+                }
+            }
+            Err(e) => {
+                report_error(&e, file_name, Some(&basic_error_reporter)).unwrap_or(());
+                Ok(std::process::ExitCode::FAILURE)
+            }
         }
     } else {
-        Err(miette!("Please provide a file name as first parameter!"))
+        println!("Please provide a file name as first parameter!");
+        Ok(std::process::ExitCode::FAILURE)
     }
 }
 

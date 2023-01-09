@@ -4,13 +4,13 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use anyhow::Result;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
+use parol_runtime::ParolError;
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
@@ -1476,7 +1476,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut dyn UserActionsTrait<'t>,
-) -> Result<Tree<ParseTreeType<'t>>>
+) -> Result<Tree<ParseTreeType<'t>>, ParolError>
 where
     T: AsRef<Path>,
 {

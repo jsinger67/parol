@@ -16,228 +16,228 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParolError, ParserError};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait BasicGrammarTrait<'t> {
     /// Semantic action for non-terminal 'Basic'
-    fn basic(&mut self, _arg: &Basic<'t>) -> Result<(), ParolError> {
+    fn basic(&mut self, _arg: &Basic<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Line'
-    fn line(&mut self, _arg: &Line<'t>) -> Result<(), ParolError> {
+    fn line(&mut self, _arg: &Line<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LineNumber'
-    fn line_number(&mut self, _arg: &LineNumber) -> Result<(), ParolError> {
+    fn line_number(&mut self, _arg: &LineNumber) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Statement'
-    fn statement(&mut self, _arg: &Statement<'t>) -> Result<(), ParolError> {
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Remark'
-    fn remark(&mut self, _arg: &Remark<'t>) -> Result<(), ParolError> {
+    fn remark(&mut self, _arg: &Remark<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'GotoStatement'
-    fn goto_statement(&mut self, _arg: &GotoStatement) -> Result<(), ParolError> {
+    fn goto_statement(&mut self, _arg: &GotoStatement) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IfStatement'
-    fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<(), ParolError> {
+    fn if_statement(&mut self, _arg: &IfStatement<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Assignment'
-    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<(), ParolError> {
+    fn assignment(&mut self, _arg: &Assignment<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IfBody'
-    fn if_body(&mut self, _arg: &IfBody<'t>) -> Result<(), ParolError> {
+    fn if_body(&mut self, _arg: &IfBody<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'PrintStatement'
-    fn print_statement(&mut self, _arg: &PrintStatement<'t>) -> Result<(), ParolError> {
+    fn print_statement(&mut self, _arg: &PrintStatement<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'EndStatement'
-    fn end_statement(&mut self, _arg: &EndStatement) -> Result<(), ParolError> {
+    fn end_statement(&mut self, _arg: &EndStatement) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'EndOfLine'
-    fn end_of_line(&mut self, _arg: &EndOfLine) -> Result<(), ParolError> {
+    fn end_of_line(&mut self, _arg: &EndOfLine) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Literal'
-    fn literal(&mut self, _arg: &Literal) -> Result<(), ParolError> {
+    fn literal(&mut self, _arg: &Literal) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Number'
-    fn number(&mut self, _arg: &Number) -> Result<(), ParolError> {
+    fn number(&mut self, _arg: &Number) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Float'
-    fn float(&mut self, _arg: &Float) -> Result<(), ParolError> {
+    fn float(&mut self, _arg: &Float) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Float1'
-    fn float1(&mut self, _arg: &Float1) -> Result<(), ParolError> {
+    fn float1(&mut self, _arg: &Float1) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Float2'
-    fn float2(&mut self, _arg: &Float2) -> Result<(), ParolError> {
+    fn float2(&mut self, _arg: &Float2) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Integer'
-    fn integer(&mut self, _arg: &Integer) -> Result<(), ParolError> {
+    fn integer(&mut self, _arg: &Integer) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'If'
-    fn r#if(&mut self, _arg: &If) -> Result<(), ParolError> {
+    fn r#if(&mut self, _arg: &If) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Then'
-    fn then(&mut self, _arg: &Then) -> Result<(), ParolError> {
+    fn then(&mut self, _arg: &Then) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Goto'
-    fn goto(&mut self, _arg: &Goto) -> Result<(), ParolError> {
+    fn goto(&mut self, _arg: &Goto) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Let'
-    fn r#let(&mut self, _arg: &Let) -> Result<(), ParolError> {
+    fn r#let(&mut self, _arg: &Let) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Print'
-    fn print(&mut self, _arg: &Print) -> Result<(), ParolError> {
+    fn print(&mut self, _arg: &Print) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'End'
-    fn end(&mut self, _arg: &End) -> Result<(), ParolError> {
+    fn end(&mut self, _arg: &End) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AssignOp'
-    fn assign_op(&mut self, _arg: &AssignOp) -> Result<(), ParolError> {
+    fn assign_op(&mut self, _arg: &AssignOp) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalOrOp'
-    fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<(), ParolError> {
+    fn logical_or_op(&mut self, _arg: &LogicalOrOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalAndOp'
-    fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<(), ParolError> {
+    fn logical_and_op(&mut self, _arg: &LogicalAndOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalNotOp'
-    fn logical_not_op(&mut self, _arg: &LogicalNotOp<'t>) -> Result<(), ParolError> {
+    fn logical_not_op(&mut self, _arg: &LogicalNotOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'RelationalOp'
-    fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<(), ParolError> {
+    fn relational_op(&mut self, _arg: &RelationalOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Plus'
-    fn plus(&mut self, _arg: &Plus<'t>) -> Result<(), ParolError> {
+    fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Minus'
-    fn minus(&mut self, _arg: &Minus<'t>) -> Result<(), ParolError> {
+    fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MulOp'
-    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<(), ParolError> {
+    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LParen'
-    fn l_paren(&mut self, _arg: &LParen<'t>) -> Result<(), ParolError> {
+    fn l_paren(&mut self, _arg: &LParen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'RParen'
-    fn r_paren(&mut self, _arg: &RParen<'t>) -> Result<(), ParolError> {
+    fn r_paren(&mut self, _arg: &RParen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Comment'
-    fn comment(&mut self, _arg: &Comment<'t>) -> Result<(), ParolError> {
+    fn comment(&mut self, _arg: &Comment<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Variable'
-    fn variable(&mut self, _arg: &Variable<'t>) -> Result<(), ParolError> {
+    fn variable(&mut self, _arg: &Variable<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Expression'
-    fn expression(&mut self, _arg: &Expression<'t>) -> Result<(), ParolError> {
+    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalOr'
-    fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<(), ParolError> {
+    fn logical_or(&mut self, _arg: &LogicalOr<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalAnd'
-    fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<(), ParolError> {
+    fn logical_and(&mut self, _arg: &LogicalAnd<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LogicalNot'
-    fn logical_not(&mut self, _arg: &LogicalNot<'t>) -> Result<(), ParolError> {
+    fn logical_not(&mut self, _arg: &LogicalNot<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Relational'
-    fn relational(&mut self, _arg: &Relational<'t>) -> Result<(), ParolError> {
+    fn relational(&mut self, _arg: &Relational<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Summation'
-    fn summation(&mut self, _arg: &Summation<'t>) -> Result<(), ParolError> {
+    fn summation(&mut self, _arg: &Summation<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Multiplication'
-    fn multiplication(&mut self, _arg: &Multiplication<'t>) -> Result<(), ParolError> {
+    fn multiplication(&mut self, _arg: &Multiplication<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor<'t>) -> Result<(), ParolError> {
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
 }
@@ -1211,7 +1211,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _basic_list: &ParseTreeStackEntry<'t>,
         _basic_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_opt0 = pop_item!(self, basic_opt0, BasicOpt0, context);
@@ -1241,7 +1241,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _line: &ParseTreeStackEntry<'t>,
         _basic_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut basic_list = pop_item!(self, basic_list, BasicList, context);
@@ -1262,7 +1262,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn basic_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_list_1_built = Vec::new();
@@ -1279,7 +1279,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
@@ -1298,7 +1298,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::BasicOpt0(None), context);
@@ -1314,7 +1314,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
@@ -1333,7 +1333,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::BasicOpt(None), context);
@@ -1351,7 +1351,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _line_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_list = pop_and_reverse_item!(self, line_list, LineList, context);
@@ -1379,7 +1379,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _line_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut line_list = pop_item!(self, line_list, LineList, context);
@@ -1399,7 +1399,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LineList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn line_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn line_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_list_1_built = Vec::new();
@@ -1416,13 +1416,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         line_number: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_number = line_number
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let line_number_built = LineNumber {
             line_number: line_number,
         };
@@ -1441,7 +1441,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _remark: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark = pop_item!(self, remark, Remark, context);
@@ -1464,7 +1464,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _goto_statement: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_statement = pop_item!(self, goto_statement, GotoStatement, context);
@@ -1487,7 +1487,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _if_statement: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let if_statement = pop_item!(self, if_statement, IfStatement, context);
@@ -1510,7 +1510,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _assignment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
@@ -1533,7 +1533,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _print_statement: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement = pop_item!(self, print_statement, PrintStatement, context);
@@ -1556,7 +1556,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end_statement: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_statement = pop_item!(self, end_statement, EndStatement, context);
@@ -1580,7 +1580,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _r_e_m: &ParseTreeStackEntry<'t>,
         _remark_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark_opt = pop_item!(self, remark_opt, RemarkOpt, context);
@@ -1603,7 +1603,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comment = pop_item!(self, comment, Comment, context);
@@ -1622,7 +1622,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RemarkOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::RemarkOpt(None), context);
@@ -1639,7 +1639,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _goto: &ParseTreeStackEntry<'t>,
         _line_number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_number = pop_item!(self, line_number, LineNumber, context);
@@ -1665,7 +1665,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _if_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let if_body = pop_item!(self, if_body, IfBody, context);
@@ -1694,7 +1694,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _assign_op: &ParseTreeStackEntry<'t>,
         _expression: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expression = pop_item!(self, expression, Expression, context);
@@ -1722,7 +1722,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _let: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#let = pop_item!(self, r#let, Let, context);
@@ -1741,10 +1741,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// AssignmentOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn assignment_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::AssignmentOpt(None), context);
@@ -1761,7 +1758,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _then: &ParseTreeStackEntry<'t>,
         _statement: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement = pop_item!(self, statement, Statement, context);
@@ -1787,7 +1784,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _goto: &ParseTreeStackEntry<'t>,
         _line_number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_number = pop_item!(self, line_number, LineNumber, context);
@@ -1814,7 +1811,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _print_statement_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement_list =
@@ -1843,7 +1840,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _print_statement_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut print_statement_list =
@@ -1864,10 +1861,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// PrintStatementList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn print_statement_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn print_statement_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement_list_1_built = Vec::new();
@@ -1887,7 +1881,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end = pop_item!(self, end, End, context);
@@ -1907,7 +1901,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end_of_line: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line_built = EndOfLine {
@@ -1928,7 +1922,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -1950,7 +1944,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
@@ -1973,7 +1967,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
@@ -1996,7 +1990,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _float1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = pop_item!(self, float1, Float1, context);
@@ -2019,7 +2013,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _float2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = pop_item!(self, float2, Float2, context);
@@ -2042,13 +2036,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         float1: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = float1
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let float1_built = Float1 { float1: float1 };
         // Calling user action here
         self.user_grammar.float1(&float1_built)?;
@@ -2065,13 +2059,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         float2: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = float2
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let float2_built = Float2 { float2: float2 };
         // Calling user action here
         self.user_grammar.float2(&float2_built)?;
@@ -2088,13 +2082,13 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         integer: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = integer
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let integer_built = Integer { integer: integer };
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
@@ -2111,7 +2105,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _if: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#if_built = If {
@@ -2132,7 +2126,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _then: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let then_built = Then {
@@ -2153,7 +2147,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _goto: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_built = Goto {
@@ -2174,7 +2168,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _let: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#let_built = Let {
@@ -2195,7 +2189,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _print: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_built = Print {
@@ -2216,7 +2210,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_built = End {
@@ -2237,7 +2231,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _assign_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assign_op_built = AssignOp {
@@ -2258,7 +2252,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         logical_or_op: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_op = logical_or_op.token(parse_tree)?.clone();
@@ -2280,7 +2274,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         logical_and_op: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_op = logical_and_op.token(parse_tree)?.clone();
@@ -2302,7 +2296,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         logical_not_op: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_not_op = logical_not_op.token(parse_tree)?.clone();
@@ -2324,7 +2318,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         relational_op: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_op = relational_op.token(parse_tree)?.clone();
@@ -2346,7 +2340,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
@@ -2366,7 +2360,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
@@ -2386,7 +2380,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         mul_op: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mul_op = mul_op.token(parse_tree)?.clone();
@@ -2406,7 +2400,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         l_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_paren = l_paren.token(parse_tree)?.clone();
@@ -2426,7 +2420,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r_paren = r_paren.token(parse_tree)?.clone();
@@ -2446,7 +2440,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         comment: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comment = comment.token(parse_tree)?.clone();
@@ -2466,7 +2460,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         variable: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = variable.token(parse_tree)?.clone();
@@ -2486,7 +2480,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _logical_or: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
@@ -2509,7 +2503,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _logical_and: &ParseTreeStackEntry<'t>,
         _logical_or_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list = pop_and_reverse_item!(self, logical_or_list, LogicalOrList, context);
@@ -2535,7 +2529,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _logical_and: &ParseTreeStackEntry<'t>,
         _logical_or_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut logical_or_list = pop_item!(self, logical_or_list, LogicalOrList, context);
@@ -2556,10 +2550,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalOrList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_or_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list_1_built = Vec::new();
@@ -2577,7 +2568,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _logical_not: &ParseTreeStackEntry<'t>,
         _logical_and_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list =
@@ -2604,7 +2595,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _logical_not: &ParseTreeStackEntry<'t>,
         _logical_and_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut logical_and_list = pop_item!(self, logical_and_list, LogicalAndList, context);
@@ -2625,10 +2616,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalAndList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_and_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list_1_built = Vec::new();
@@ -2646,7 +2634,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _logical_not_opt: &ParseTreeStackEntry<'t>,
         _relational: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational = pop_item!(self, relational, Relational, context);
@@ -2670,7 +2658,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _logical_not_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_not_op = pop_item!(self, logical_not_op, LogicalNotOp, context);
@@ -2689,10 +2677,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalNotOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_not_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::LogicalNotOpt(None), context);
@@ -2709,7 +2694,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _summation: &ParseTreeStackEntry<'t>,
         _relational_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_list = pop_and_reverse_item!(self, relational_list, RelationalList, context);
@@ -2735,7 +2720,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _summation: &ParseTreeStackEntry<'t>,
         _relational_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut relational_list = pop_item!(self, relational_list, RelationalList, context);
@@ -2756,10 +2741,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RelationalList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn relational_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_list_1_built = Vec::new();
@@ -2777,7 +2759,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _multiplication: &ParseTreeStackEntry<'t>,
         _summation_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let summation_list = pop_and_reverse_item!(self, summation_list, SummationList, context);
@@ -2803,7 +2785,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _multiplication: &ParseTreeStackEntry<'t>,
         _summation_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut summation_list = pop_item!(self, summation_list, SummationList, context);
@@ -2829,7 +2811,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
@@ -2853,7 +2835,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
@@ -2873,10 +2855,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// SummationList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn summation_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn summation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let summation_list_1_built = Vec::new();
@@ -2894,7 +2873,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _multiplication_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let multiplication_list =
@@ -2921,7 +2900,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _multiplication_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut multiplication_list =
@@ -2943,10 +2922,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// MultiplicationList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn multiplication_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn multiplication_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let multiplication_list_1_built = Vec::new();
@@ -2966,7 +2942,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _literal: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal = pop_item!(self, literal, Literal, context);
@@ -2989,7 +2965,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         &mut self,
         _variable: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = pop_item!(self, variable, Variable, context);
@@ -3013,7 +2989,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _minus: &ParseTreeStackEntry<'t>,
         _factor: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
@@ -3040,7 +3016,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r_paren = pop_item!(self, r_paren, RParen, context);
@@ -3068,7 +3044,7 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.basic(
                 &children[0],

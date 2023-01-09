@@ -18,13 +18,14 @@ cfg-if = "1.0.0"
 clap = { version = "4.0", features = [ "derive", "cargo" ] }
 derive_builder = { version = "0.12.0" }
 env_logger = "0.10.0"
+error-report = { path = "../error-report", version = "0.1.0" }
 function_name = "0.3.0"
 id_tree = "1.8"
 id_tree_layout = "2.0.3"
-miette = { version = "5.5", features = ["fancy"] }
 owo-colors = "3.5.0"
-parol_runtime = { path = "../parol_runtime", version = "0.12.0-alpha.1", features = ["auto_generation"] }
-parol-macros = { path = "../parol-macros", version = "0.1.0" }
+parol-errors = { path = "../parol-errors", version = "0.1.0" }
+parol_runtime = { path = "../parol_runtime", version = "0.12.0-alpha.2", features = ["auto_generation"] }
+parol-macros = { path = "../parol-macros", version = "0.2.0" }
 rand = "0.8.5"
 rand_regex = "0.15.1"
 regex = "1.6"

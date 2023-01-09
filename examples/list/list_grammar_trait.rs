@@ -12,9 +12,8 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::list_grammar::ListGrammar;
-#[allow(unused_imports)]
-use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 ///
 /// The `ListGrammarTrait` trait is automatically generated for the
@@ -128,7 +127,7 @@ impl UserActionsTrait<'_> for ListGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.list(&children[0], parse_tree),
             1 => self.list_opt_0(&children[0], &children[1], &children[2], parse_tree),
@@ -139,7 +138,11 @@ impl UserActionsTrait<'_> for ListGrammar {
             6 => self.list_rest_opt_0(&children[0], &children[1], &children[2], parse_tree),
             7 => self.list_rest_opt_1(parse_tree),
             8 => self.num(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

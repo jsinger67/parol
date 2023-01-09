@@ -89,11 +89,11 @@ version = "0.5.0"
 dependencies = [
  "anyhow",
  "env_logger",
+ "error-report",
  "function_name",
  "id_tree",
  "id_tree_layout",
  "log",
- "miette",
  "parol",
  "parol-macros",
  "parol_runtime",
@@ -166,6 +166,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d4198f73e42b4936b35b5bb248d81d2b595ecb170da0bac7655c54eedfa8da8"
 dependencies = [
  "os_str_bytes",
+]
+
+[[package]]
+name = "codespan-reporting"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3538270d33cc669650c4b093848450d380def10c331d38c768e34cac80576e6e"
+dependencies = [
+ "termcolor",
+ "unicode-width",
 ]
 
 [[package]]
@@ -330,6 +340,17 @@ checksum = "aa68f1b12764fab894d2755d2518754e71b4fd80ecfb822714a1206c2aab39bf"
 dependencies = [
  "cc",
  "libc",
+]
+
+[[package]]
+name = "error-report"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "codespan-reporting",
+ "parol-errors",
+ "parol_runtime",
+ "thiserror",
 ]
 
 [[package]]
@@ -530,6 +551,7 @@ dependencies = [
  "log",
  "miette",
  "parol",
+ "parol-macros",
  "parol_runtime",
  "thiserror",
 ]
@@ -704,11 +726,12 @@ dependencies = [
  "clap",
  "derive_builder",
  "env_logger",
+ "error-report",
  "function_name",
  "id_tree",
  "id_tree_layout",
- "miette",
  "owo-colors",
+ "parol-errors",
  "parol-macros",
  "parol_runtime",
  "pretty_assertions",
@@ -720,6 +743,15 @@ dependencies = [
  "tempfile",
  "thiserror",
  "ume",
+]
+
+[[package]]
+name = "parol-errors"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "parol_runtime",
+ "thiserror",
 ]
 
 [[package]]
@@ -738,6 +770,7 @@ dependencies = [
  "lsp-types",
  "once_cell",
  "parol",
+ "parol-errors",
  "parol-macros",
  "parol_runtime",
  "regex",
@@ -748,11 +781,11 @@ dependencies = [
 
 [[package]]
 name = "parol-macros"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "parol_runtime"
-version = "0.12.0-alpha.1"
+version = "0.12.0-alpha.2"
 dependencies = [
  "anyhow",
  "derive_builder",
@@ -1137,18 +1170,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.37"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10deb33631e3c9018b9baf9dcbbc4f737320d2b576bac10f6aefa048fa407e3e"
+checksum = "6a9cd18aa97d5c45c6603caea1da6628790b37f7a34b6ca89522331c5180fed0"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.37"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "982d17546b47146b28f7c22e3d08465f6b8903d0ea13c1660d9d84a6e7adcdbb"
+checksum = "1fb327af4685e4d03fa8cbcf1716380da910eeb2bb8be417e7f9fd3fb164f36f"
 dependencies = [
  "proc-macro2",
  "quote",

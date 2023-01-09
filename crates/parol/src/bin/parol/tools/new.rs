@@ -102,6 +102,7 @@ const DEPENDENCIES: &[&[&str]] = &[
         "auto_generation",
     ],
     &["add", "thiserror@1.0"],
+    &["add", "anyhow@1.0"],
     &[
         "add",
         concat!("parol@", env!("CARGO_PKG_VERSION")),

@@ -12,9 +12,8 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::keywords_grammar::KeywordsGrammar;
-#[allow(unused_imports)]
-use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 ///
 /// The `KeywordsGrammarTrait` trait is automatically generated for the
@@ -178,7 +177,7 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.grammar(&children[0], parse_tree),
             1 => self.grammar_list_0(&children[0], &children[1], parse_tree),
@@ -193,7 +192,11 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
             10 => self.end(&children[0], parse_tree),
             11 => self.var(&children[0], parse_tree),
             12 => self.identifier(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

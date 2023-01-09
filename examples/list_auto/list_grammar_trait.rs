@@ -9,14 +9,13 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -221,11 +220,10 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         // Ignore clipped member 'trailing_comma'
         self.pop(context);
         let list_opt = pop_item!(self, list_opt, ListOpt, context);
-        let list_built = ListBuilder::default()
-            .list_opt(list_opt)
+        let list_built = List {
+            list_opt: list_opt,
             // Ignore clipped member 'trailing_comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Calling user action here
         self.user_grammar.list(&list_built)?;
         self.push(ASTType::List(list_built), context);
@@ -245,14 +243,11 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let items = pop_item!(self, items, Items, context);
-        let list_opt_0_built = ListOptBuilder::default()
-            .items(
-                (&items)
-                    .try_into()
-                    .map_err(|e| anyhow!("Conversion error!: {}", e))?,
-            )
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let list_opt_0_built = ListOpt {
+            items: (&items)
+                .try_into()
+                .map_err(parol_runtime::ParolError::UserError)?,
+        };
         self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
         Ok(())
     }
@@ -284,11 +279,10 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let items_list = pop_and_reverse_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
-        let items_built = ItemsBuilder::default()
-            .num(Box::new(num))
-            .items_list(items_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let items_built = Items {
+            num: Box::new(num),
+            items_list: items_list,
+        };
         // Calling user action here
         self.user_grammar.items(&items_built)?;
         self.push(ASTType::Items(items_built), context);
@@ -311,11 +305,10 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut items_list = pop_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
-        let items_list_0_built = ItemsListBuilder::default()
-            .num(Box::new(num))
+        let items_list_0_built = ItemsList {
+            num: Box::new(num),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         items_list.push(items_list_0_built);
         self.push(ASTType::ItemsList(items_list), context);
@@ -347,11 +340,11 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let num = num.token(parse_tree)?.try_into()?;
-        let num_built = NumBuilder::default()
-            .num(num)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let num = num
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let num_built = Num { num: num };
         // Calling user action here
         self.user_grammar.num(&num_built)?;
         self.push(ASTType::Num(num_built), context);
@@ -371,10 +364,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_opt = pop_item!(self, trailing_comma_opt, TrailingCommaOpt, context);
-        let trailing_comma_built = TrailingCommaBuilder::default()
-            .trailing_comma_opt(trailing_comma_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let trailing_comma_built = TrailingComma {
+            trailing_comma_opt: trailing_comma_opt,
+        };
         // Calling user action here
         self.user_grammar.trailing_comma(&trailing_comma_built)?;
         self.push(ASTType::TrailingComma(trailing_comma_built), context);
@@ -393,10 +385,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma_opt_0_built = TrailingCommaOptBuilder::default()
-            // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let trailing_comma_opt_0_built = TrailingCommaOpt {
+        // Ignore clipped member 'comma'
+        };
         self.push(
             ASTType::TrailingCommaOpt(Some(Box::new(trailing_comma_opt_0_built))),
             context,
@@ -426,7 +417,7 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.list(&children[0], &children[1], parse_tree),
             1 => self.list_opt_0(&children[0], parse_tree),
@@ -438,7 +429,11 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
             7 => self.trailing_comma(&children[0], parse_tree),
             8 => self.trailing_comma_opt_0(&children[0], parse_tree),
             9 => self.trailing_comma_opt_1(parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

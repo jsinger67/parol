@@ -3,11 +3,12 @@ use crate::binary_operator::BinaryOperator;
 use crate::calc_grammar_trait::CalcGrammarTrait;
 use crate::errors::CalcError;
 use crate::unary_operator::UnaryOperator;
-use anyhow::{anyhow, bail, Result};
 use id_tree::Tree;
+use parol_macros::{bail, parol};
 use parol_runtime::errors::FileSource;
 use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::Result;
 use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -134,7 +135,7 @@ impl CalcGrammar {
             Self::apply_assign_item(var, &item.1, num, context)?;
             Ok(*var)
         } else {
-            Err(anyhow!("assign: undeclared variable {}", item.0))
+            Err(parol!("assign: undeclared variable {}", item.0))
         }
     }
 
@@ -241,7 +242,7 @@ impl CalcGrammar {
                 Ok(())
             }
             // _ => Ok(()),
-            _ => Err(anyhow!("{}: unexpected ({:?}, {:?})", context, list, value)),
+            _ => Err(parol!("{}: unexpected ({:?}, {:?})", context, list, value)),
         }
     }
 
@@ -280,7 +281,7 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::Num(*value), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(parol!(
                 "{}: unexpected ({:?}, {:?})",
                 context,
                 value,
@@ -311,7 +312,7 @@ impl CalcGrammar {
                 self.push(CalcGrammarItem::RightItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(parol!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 right_item,
@@ -331,7 +332,7 @@ impl CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected ({:?}, {:?}", context, value, op)),
+            _ => Err(parol!("{}: unexpected ({:?}, {:?}", context, value, op)),
         }
     }
 
@@ -428,7 +429,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 );
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(parol!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 top_of_stack1,
@@ -469,7 +470,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 Ok(())
             }
             //_ => Ok(())
-            _ => Err(anyhow!(
+            _ => Err(parol!(
                 "{}: unexpected ({:?}, {:?}, {:?})",
                 context,
                 value,
@@ -499,7 +500,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::AssignItems(list.to_vec()), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
+            _ => Err(parol!(
                 "{}: unexpected ({:?}, {:?}",
                 context,
                 top_of_stack1,
@@ -1202,7 +1203,7 @@ impl CalcGrammarTrait for CalcGrammar {
             self.push(CalcGrammarItem::UnaryOp(UnaryOperator::Negation), context);
             Ok(())
         } else {
-            Err(anyhow!("{}: unexpected {:?}", context, minus))
+            Err(parol!("{}: unexpected {:?}", context, minus))
         }
     }
 
@@ -1227,7 +1228,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 self.push(CalcGrammarItem::Num(-num), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected {:?} {:?}", context, negate, number)),
+            _ => Err(parol!("{}: unexpected {:?} {:?}", context, negate, number)),
         }
     }
 
@@ -1249,9 +1250,10 @@ impl CalcGrammarTrait for CalcGrammar {
                     context: context.to_owned(),
                     input: FileSource::try_new(
                         tk_number.token(parse_tree)?.location.file_name.clone()
-                    )?,
+                    )
+                    .map_err(|e| parol!(e))?,
                     token: tk_number.token(parse_tree)?.into(),
-                    source: anyhow!(error),
+                    source: anyhow::anyhow!(error),
                 })
             }
         };
@@ -1275,12 +1277,14 @@ impl CalcGrammarTrait for CalcGrammar {
                     // non-terminal to access the actual token.
                     let child = parse_tree
                         .get(node_id)
-                        .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))?
+                        .and_then(|node_ref| parse_tree.get(&node_ref.children()[0]))
+                        .map_err(|e| parol!(e))?
                         .data()
                         .token()?;
                     bail!(CalcError::UndeclaredVariable {
                         context: context.to_owned(),
-                        input: FileSource::try_new(child.location.file_name.clone())?,
+                        input: FileSource::try_new(child.location.file_name.clone())
+                            .map_err(|e| parol!(e))?,
                         token: child.into()
                     });
                 } else {
@@ -1288,7 +1292,7 @@ impl CalcGrammarTrait for CalcGrammar {
                 }
                 Ok(())
             }
-            _ => Err(anyhow!("{}: unexpected {:?}", context, top_of_stack)),
+            _ => Err(parol!("{}: unexpected {:?}", context, top_of_stack)),
         }
     }
 

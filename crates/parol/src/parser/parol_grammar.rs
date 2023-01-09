@@ -3,12 +3,14 @@ use super::parol_grammar_trait::{
     PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
-use crate::ParolParserError;
+use anyhow::anyhow;
+use parol_errors::ParolParserError;
 
-use anyhow::{anyhow, bail, Result};
-use parol_runtime::errors::FileSource;
+use parol_macros::bail;
+
 use parol_runtime::lexer::Token;
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::Result;
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -130,7 +132,9 @@ impl Factor {
     pub(crate) fn inner_alts_mut(&mut self) -> Result<&mut Alternations> {
         match self {
             Factor::Group(alts) | Factor::Repeat(alts) | Factor::Optional(alts) => Ok(alts),
-            _ => bail!("Ain't no inner alternations"),
+            _ => Err(parol_runtime::ParolError::UserError(anyhow!(
+                "Ain't no inner alternations"
+            ))),
         }
     }
 
@@ -807,12 +811,15 @@ impl ParolGrammar<'_> {
         self.scanner_configurations
             .iter()
             .position(|s| s.name == scanner_name.text())
-            .ok_or(anyhow!(ParolParserError::UnknownScanner {
-                context: context.to_owned(),
-                name: scanner_name.text().to_string(),
-                input: FileSource::try_new(scanner_name.location.file_name.clone())?,
-                token: scanner_name.into()
-            }))
+            .ok_or_else(|| {
+                (ParolParserError::UnknownScanner {
+                    context: context.to_owned(),
+                    name: scanner_name.text().to_string(),
+                    input: scanner_name.location.file_name.to_path_buf(),
+                    token: scanner_name.into(),
+                })
+                .into()
+            })
     }
 
     fn process_scanner_switch(
@@ -859,9 +866,9 @@ impl ParolGrammar<'_> {
                 first_alias: conflicting_alias.0.text().to_string(),
                 second_alias: lhs_non_terminal.text().to_string(),
                 expanded,
-                input: FileSource::try_new(lhs_non_terminal.location.file_name.clone())?,
+                input: lhs_non_terminal.location.file_name.to_path_buf(),
                 first: (&conflicting_alias.0).into(),
-                second: (&lhs_non_terminal).into()
+                second: (&lhs_non_terminal).into(),
             })
         }
         self.token_aliases.push((lhs_non_terminal, expanded));
@@ -893,7 +900,7 @@ impl ParolGrammar<'_> {
                 acc
             });
         if !empty_scanners.is_empty() {
-            bail!(ParolParserError::EmptyScanners { empty_scanners })
+            Err(ParolParserError::EmptyScanners { empty_scanners }.into())
         } else {
             Ok(())
         }

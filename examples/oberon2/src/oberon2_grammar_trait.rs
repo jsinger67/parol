@@ -16,373 +16,373 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParolError, ParserError};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait Oberon2GrammarTrait<'t> {
     /// Semantic action for non-terminal 'KwBegin'
-    fn kw_begin(&mut self, _arg: &KwBegin) -> Result<(), ParolError> {
+    fn kw_begin(&mut self, _arg: &KwBegin) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwCase'
-    fn kw_case(&mut self, _arg: &KwCase) -> Result<(), ParolError> {
+    fn kw_case(&mut self, _arg: &KwCase) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwDo'
-    fn kw_do(&mut self, _arg: &KwDo) -> Result<(), ParolError> {
+    fn kw_do(&mut self, _arg: &KwDo) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElse'
-    fn kw_else(&mut self, _arg: &KwElse) -> Result<(), ParolError> {
+    fn kw_else(&mut self, _arg: &KwElse) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwElsif'
-    fn kw_elsif(&mut self, _arg: &KwElsif) -> Result<(), ParolError> {
+    fn kw_elsif(&mut self, _arg: &KwElsif) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwEnd'
-    fn kw_end(&mut self, _arg: &KwEnd) -> Result<(), ParolError> {
+    fn kw_end(&mut self, _arg: &KwEnd) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwIf'
-    fn kw_if(&mut self, _arg: &KwIf) -> Result<(), ParolError> {
+    fn kw_if(&mut self, _arg: &KwIf) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwOf'
-    fn kw_of(&mut self, _arg: &KwOf) -> Result<(), ParolError> {
+    fn kw_of(&mut self, _arg: &KwOf) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwProcedure'
-    fn kw_procedure(&mut self, _arg: &KwProcedure) -> Result<(), ParolError> {
+    fn kw_procedure(&mut self, _arg: &KwProcedure) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwThen'
-    fn kw_then(&mut self, _arg: &KwThen) -> Result<(), ParolError> {
+    fn kw_then(&mut self, _arg: &KwThen) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwTo'
-    fn kw_to(&mut self, _arg: &KwTo) -> Result<(), ParolError> {
+    fn kw_to(&mut self, _arg: &KwTo) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KwVar'
-    fn kw_var(&mut self, _arg: &KwVar) -> Result<(), ParolError> {
+    fn kw_var(&mut self, _arg: &KwVar) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Oberon2'
-    fn oberon2(&mut self, _arg: &Oberon2<'t>) -> Result<(), ParolError> {
+    fn oberon2(&mut self, _arg: &Oberon2<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ModuleHead'
-    fn module_head(&mut self, _arg: &ModuleHead<'t>) -> Result<(), ParolError> {
+    fn module_head(&mut self, _arg: &ModuleHead<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ModuleBody'
-    fn module_body(&mut self, _arg: &ModuleBody<'t>) -> Result<(), ParolError> {
+    fn module_body(&mut self, _arg: &ModuleBody<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ImportList'
-    fn import_list(&mut self, _arg: &ImportList<'t>) -> Result<(), ParolError> {
+    fn import_list(&mut self, _arg: &ImportList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DeclSeq'
-    fn decl_seq(&mut self, _arg: &DeclSeq<'t>) -> Result<(), ParolError> {
+    fn decl_seq(&mut self, _arg: &DeclSeq<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DeclBlock'
-    fn decl_block(&mut self, _arg: &DeclBlock<'t>) -> Result<(), ParolError> {
+    fn decl_block(&mut self, _arg: &DeclBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstDeclBlock'
-    fn const_decl_block(&mut self, _arg: &ConstDeclBlock<'t>) -> Result<(), ParolError> {
+    fn const_decl_block(&mut self, _arg: &ConstDeclBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDeclBlock'
-    fn type_decl_block(&mut self, _arg: &TypeDeclBlock<'t>) -> Result<(), ParolError> {
+    fn type_decl_block(&mut self, _arg: &TypeDeclBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'VarDeclBlock'
-    fn var_decl_block(&mut self, _arg: &VarDeclBlock<'t>) -> Result<(), ParolError> {
+    fn var_decl_block(&mut self, _arg: &VarDeclBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstDecl'
-    fn const_decl(&mut self, _arg: &ConstDecl<'t>) -> Result<(), ParolError> {
+    fn const_decl(&mut self, _arg: &ConstDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDecl'
-    fn type_decl(&mut self, _arg: &TypeDecl<'t>) -> Result<(), ParolError> {
+    fn type_decl(&mut self, _arg: &TypeDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'VarDecl'
-    fn var_decl(&mut self, _arg: &VarDecl<'t>) -> Result<(), ParolError> {
+    fn var_decl(&mut self, _arg: &VarDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcDecl'
-    fn proc_decl(&mut self, _arg: &ProcDecl<'t>) -> Result<(), ParolError> {
+    fn proc_decl(&mut self, _arg: &ProcDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcedureHeading'
-    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<(), ParolError> {
+    fn procedure_heading(&mut self, _arg: &ProcedureHeading<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProcedureBody'
-    fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<(), ParolError> {
+    fn procedure_body(&mut self, _arg: &ProcedureBody<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StatementBlock'
-    fn statement_block(&mut self, _arg: &StatementBlock<'t>) -> Result<(), ParolError> {
+    fn statement_block(&mut self, _arg: &StatementBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForwardDecl'
-    fn forward_decl(&mut self, _arg: &ForwardDecl<'t>) -> Result<(), ParolError> {
+    fn forward_decl(&mut self, _arg: &ForwardDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FormalPars'
-    fn formal_pars(&mut self, _arg: &FormalPars<'t>) -> Result<(), ParolError> {
+    fn formal_pars(&mut self, _arg: &FormalPars<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FPSection'
-    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<(), ParolError> {
+    fn f_p_section(&mut self, _arg: &FPSection<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Receiver'
-    fn receiver(&mut self, _arg: &Receiver<'t>) -> Result<(), ParolError> {
+    fn receiver(&mut self, _arg: &Receiver<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ReceiverVarDecl'
-    fn receiver_var_decl(&mut self, _arg: &ReceiverVarDecl<'t>) -> Result<(), ParolError> {
+    fn receiver_var_decl(&mut self, _arg: &ReceiverVarDecl<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TypeDef'
-    fn type_def(&mut self, _arg: &TypeDef<'t>) -> Result<(), ParolError> {
+    fn type_def(&mut self, _arg: &TypeDef<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'FieldList'
-    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<(), ParolError> {
+    fn field_list(&mut self, _arg: &FieldList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StatementSeq'
-    fn statement_seq(&mut self, _arg: &StatementSeq<'t>) -> Result<(), ParolError> {
+    fn statement_seq(&mut self, _arg: &StatementSeq<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Statement'
-    fn statement(&mut self, _arg: &Statement<'t>) -> Result<(), ParolError> {
+    fn statement(&mut self, _arg: &Statement<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ThenBlock'
-    fn then_block(&mut self, _arg: &ThenBlock<'t>) -> Result<(), ParolError> {
+    fn then_block(&mut self, _arg: &ThenBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Cases'
-    fn cases(&mut self, _arg: &Cases<'t>) -> Result<(), ParolError> {
+    fn cases(&mut self, _arg: &Cases<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ElsifPart'
-    fn elsif_part(&mut self, _arg: &ElsifPart<'t>) -> Result<(), ParolError> {
+    fn elsif_part(&mut self, _arg: &ElsifPart<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ElsePart'
-    fn else_part(&mut self, _arg: &ElsePart<'t>) -> Result<(), ParolError> {
+    fn else_part(&mut self, _arg: &ElsePart<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OptElsePartEnd'
-    fn opt_else_part_end(&mut self, _arg: &OptElsePartEnd<'t>) -> Result<(), ParolError> {
+    fn opt_else_part_end(&mut self, _arg: &OptElsePartEnd<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DoBlock'
-    fn do_block(&mut self, _arg: &DoBlock<'t>) -> Result<(), ParolError> {
+    fn do_block(&mut self, _arg: &DoBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'GuardedDoBlock'
-    fn guarded_do_block(&mut self, _arg: &GuardedDoBlock<'t>) -> Result<(), ParolError> {
+    fn guarded_do_block(&mut self, _arg: &GuardedDoBlock<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForInit'
-    fn for_init(&mut self, _arg: &ForInit<'t>) -> Result<(), ParolError> {
+    fn for_init(&mut self, _arg: &ForInit<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ForStep'
-    fn for_step(&mut self, _arg: &ForStep<'t>) -> Result<(), ParolError> {
+    fn for_step(&mut self, _arg: &ForStep<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Case'
-    fn case(&mut self, _arg: &Case<'t>) -> Result<(), ParolError> {
+    fn case(&mut self, _arg: &Case<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'CaseLabels'
-    fn case_labels(&mut self, _arg: &CaseLabels<'t>) -> Result<(), ParolError> {
+    fn case_labels(&mut self, _arg: &CaseLabels<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Guard'
-    fn guard(&mut self, _arg: &Guard<'t>) -> Result<(), ParolError> {
+    fn guard(&mut self, _arg: &Guard<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ConstExpr'
-    fn const_expr(&mut self, _arg: &ConstExpr<'t>) -> Result<(), ParolError> {
+    fn const_expr(&mut self, _arg: &ConstExpr<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Expr'
-    fn expr(&mut self, _arg: &Expr<'t>) -> Result<(), ParolError> {
+    fn expr(&mut self, _arg: &Expr<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleExpr'
-    fn simple_expr(&mut self, _arg: &SimpleExpr<'t>) -> Result<(), ParolError> {
+    fn simple_expr(&mut self, _arg: &SimpleExpr<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Term'
-    fn term(&mut self, _arg: &Term<'t>) -> Result<(), ParolError> {
+    fn term(&mut self, _arg: &Term<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor<'t>) -> Result<(), ParolError> {
+    fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Set'
-    fn set(&mut self, _arg: &Set<'t>) -> Result<(), ParolError> {
+    fn set(&mut self, _arg: &Set<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Element'
-    fn element(&mut self, _arg: &Element<'t>) -> Result<(), ParolError> {
+    fn element(&mut self, _arg: &Element<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Relation'
-    fn relation(&mut self, _arg: &Relation<'t>) -> Result<(), ParolError> {
+    fn relation(&mut self, _arg: &Relation<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AddOp'
-    fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<(), ParolError> {
+    fn add_op(&mut self, _arg: &AddOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MulOp'
-    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<(), ParolError> {
+    fn mul_op(&mut self, _arg: &MulOp<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Designator'
-    fn designator(&mut self, _arg: &Designator<'t>) -> Result<(), ParolError> {
+    fn designator(&mut self, _arg: &Designator<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DesignatorSuffix'
-    fn designator_suffix(&mut self, _arg: &DesignatorSuffix<'t>) -> Result<(), ParolError> {
+    fn designator_suffix(&mut self, _arg: &DesignatorSuffix<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ExprList'
-    fn expr_list(&mut self, _arg: &ExprList<'t>) -> Result<(), ParolError> {
+    fn expr_list(&mut self, _arg: &ExprList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IdentList'
-    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<(), ParolError> {
+    fn ident_list(&mut self, _arg: &IdentList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QualIdent'
-    fn qual_ident(&mut self, _arg: &QualIdent<'t>) -> Result<(), ParolError> {
+    fn qual_ident(&mut self, _arg: &QualIdent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'IdentDef'
-    fn ident_def(&mut self, _arg: &IdentDef<'t>) -> Result<(), ParolError> {
+    fn ident_def(&mut self, _arg: &IdentDef<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Number'
-    fn number(&mut self, _arg: &Number<'t>) -> Result<(), ParolError> {
+    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Real'
-    fn real(&mut self, _arg: &Real<'t>) -> Result<(), ParolError> {
+    fn real(&mut self, _arg: &Real<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Character'
-    fn character(&mut self, _arg: &Character<'t>) -> Result<(), ParolError> {
+    fn character(&mut self, _arg: &Character<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Integer'
-    fn integer(&mut self, _arg: &Integer<'t>) -> Result<(), ParolError> {
+    fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QIdent'
-    fn q_ident(&mut self, _arg: &QIdent<'t>) -> Result<(), ParolError> {
+    fn q_ident(&mut self, _arg: &QIdent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Ident'
-    fn ident(&mut self, _arg: &Ident<'t>) -> Result<(), ParolError> {
+    fn ident(&mut self, _arg: &Ident<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<(), ParolError> {
+    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InOp'
-    fn in_op(&mut self, _arg: &InOp) -> Result<(), ParolError> {
+    fn in_op(&mut self, _arg: &InOp) -> Result<()> {
         Ok(())
     }
 }
@@ -2657,7 +2657,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_begin: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_begin_built = KwBegin {
@@ -2678,7 +2678,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_case: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_case_built = KwCase {
@@ -2699,7 +2699,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_do: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_do_built = KwDo {
@@ -2720,7 +2720,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_else: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_else_built = KwElse {
@@ -2741,7 +2741,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_elsif: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_elsif_built = KwElsif {
@@ -2762,7 +2762,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_end_built = KwEnd {
@@ -2783,7 +2783,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_if: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_if_built = KwIf {
@@ -2804,7 +2804,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_of: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_of_built = KwOf {
@@ -2825,7 +2825,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_procedure: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_procedure_built = KwProcedure {
@@ -2846,7 +2846,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_then: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_then_built = KwThen {
@@ -2867,7 +2867,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_to: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_to_built = KwTo {
@@ -2888,7 +2888,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let kw_var_built = KwVar {
@@ -2912,7 +2912,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq: &ParseTreeStackEntry<'t>,
         _module_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let module_body = pop_item!(self, module_body, ModuleBody, context);
@@ -2940,7 +2940,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _import_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list = pop_item!(self, import_list, ImportList, context);
@@ -2959,7 +2959,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// Oberon2Opt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn oberon2_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::Oberon2Opt(None), context);
@@ -2977,7 +2977,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -3002,7 +3002,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_block: &ParseTreeStackEntry<'t>,
         _dot: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
@@ -3029,7 +3029,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _import_list_list: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list_list =
@@ -3061,7 +3061,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _import_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut import_list_list = pop_item!(self, import_list_list, ImportListList, context);
@@ -3083,10 +3083,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn import_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list_list_1_built = Vec::new();
@@ -3104,7 +3101,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _colon_equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -3124,10 +3121,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_opt0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn import_list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ImportListOpt0(None), context);
@@ -3144,7 +3138,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _colon_equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -3164,10 +3158,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ImportListOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn import_list_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn import_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ImportListOpt(None), context);
@@ -3184,7 +3175,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq_list: &ParseTreeStackEntry<'t>,
         _decl_seq_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list0 = pop_and_reverse_item!(self, decl_seq_list0, DeclSeqList0, context);
@@ -3209,7 +3200,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq_list0_group: &ParseTreeStackEntry<'t>,
         _decl_seq_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut decl_seq_list0 = pop_item!(self, decl_seq_list0, DeclSeqList0, context);
@@ -3234,7 +3225,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _proc_decl: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let proc_decl = pop_item!(self, proc_decl, ProcDecl, context);
@@ -3261,7 +3252,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _forward_decl: &ParseTreeStackEntry<'t>,
         _semicolon: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let forward_decl = pop_item!(self, forward_decl, ForwardDecl, context);
@@ -3283,10 +3274,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DeclSeqList0 /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn decl_seq_list0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn decl_seq_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list0_1_built = Vec::new();
@@ -3304,7 +3292,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_block: &ParseTreeStackEntry<'t>,
         _decl_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut decl_seq_list = pop_item!(self, decl_seq_list, DeclSeqList, context);
@@ -3323,7 +3311,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DeclSeqList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn decl_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let decl_seq_list_1_built = Vec::new();
@@ -3340,7 +3328,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _const_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block = pop_item!(self, const_decl_block, ConstDeclBlock, context);
@@ -3363,7 +3351,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _type_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block = pop_item!(self, type_decl_block, TypeDeclBlock, context);
@@ -3386,7 +3374,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _var_decl_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block = pop_item!(self, var_decl_block, VarDeclBlock, context);
@@ -3410,7 +3398,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _c_o_n_s_t: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block_list =
@@ -3437,7 +3425,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _const_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut const_decl_block_list =
@@ -3458,10 +3446,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ConstDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn const_decl_block_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn const_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block_list_1_built = Vec::new();
@@ -3482,7 +3467,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _t_y_p_e: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block_list =
@@ -3508,7 +3493,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _type_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_decl_block_list =
@@ -3529,10 +3514,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_decl_block_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn type_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block_list_1_built = Vec::new();
@@ -3553,7 +3535,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_var: &ParseTreeStackEntry<'t>,
         _var_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list =
@@ -3581,7 +3563,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _var_decl_block_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut var_decl_block_list =
@@ -3602,10 +3584,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// VarDeclBlockList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn var_decl_block_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn var_decl_block_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list_1_built = Vec::new();
@@ -3627,7 +3606,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _equ: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
@@ -3654,7 +3633,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _equ: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -3681,7 +3660,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -3708,7 +3687,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _semicolon: &ParseTreeStackEntry<'t>,
         _procedure_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
@@ -3736,7 +3715,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _procedure_heading_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let procedure_heading_opt0 =
@@ -3768,7 +3747,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
@@ -3787,10 +3766,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ProcedureHeadingOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_heading_opt0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn procedure_heading_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ProcedureHeadingOpt0(None), context);
@@ -3806,7 +3782,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
@@ -3825,10 +3801,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ProcedureHeadingOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn procedure_heading_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn procedure_heading_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ProcedureHeadingOpt(None), context);
@@ -3845,7 +3818,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _decl_seq: &ParseTreeStackEntry<'t>,
         _statement_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
@@ -3871,7 +3844,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_end: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -3899,7 +3872,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_begin: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
@@ -3921,10 +3894,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementBlockOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_block_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_block_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementBlockOpt(None), context);
@@ -3944,7 +3914,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _forward_decl_opt0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let circumflex = circumflex.token(parse_tree)?.clone();
@@ -3975,7 +3945,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
@@ -3994,10 +3964,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ForwardDeclOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn forward_decl_opt0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn forward_decl_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ForwardDeclOpt0(None), context);
@@ -4013,7 +3980,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _receiver: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
@@ -4032,10 +3999,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ForwardDeclOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn forward_decl_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn forward_decl_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ForwardDeclOpt(None), context);
@@ -4054,7 +4018,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _r_paren: &ParseTreeStackEntry<'t>,
         _formal_pars_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt0 = pop_item!(self, formal_pars_opt0, FormalParsOpt0, context);
@@ -4081,7 +4045,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _qual_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
@@ -4101,10 +4065,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn formal_pars_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FormalParsOpt0(None), context);
@@ -4121,7 +4082,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _f_p_section: &ParseTreeStackEntry<'t>,
         _formal_pars_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt_list =
@@ -4149,7 +4110,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _f_p_section: &ParseTreeStackEntry<'t>,
         _formal_pars_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut formal_pars_opt_list =
@@ -4170,10 +4131,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn formal_pars_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars_opt_list_1_built = Vec::new();
@@ -4189,10 +4147,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FormalParsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn formal_pars_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn formal_pars_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FormalParsOpt(None), context);
@@ -4212,7 +4167,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -4244,7 +4199,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _f_p_section_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut f_p_section_list = pop_item!(self, f_p_section_list, FPSectionList, context);
@@ -4264,10 +4219,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FPSectionList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn f_p_section_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn f_p_section_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f_p_section_list_1_built = Vec::new();
@@ -4284,7 +4236,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
@@ -4304,10 +4256,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FPSectionOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn f_p_section_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn f_p_section_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FPSectionOpt(None), context);
@@ -4326,7 +4275,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _receiver_var_decl: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver_var_decl = pop_item!(self, receiver_var_decl, ReceiverVarDecl, context);
@@ -4352,7 +4301,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _kw_var: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
@@ -4372,7 +4321,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ReceiverOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn receiver_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ReceiverOpt(None), context);
@@ -4390,7 +4339,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _ident0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident0 = pop_item!(self, ident0, Ident, context);
@@ -4416,7 +4365,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _qual_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
@@ -4442,7 +4391,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_of: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -4475,7 +4424,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _type_def_list: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -4509,7 +4458,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _field_list: &ParseTreeStackEntry<'t>,
         _type_def_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_list = pop_item!(self, type_def_list, TypeDefList, context);
@@ -4529,7 +4478,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn type_def_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_list_1_built = Vec::new();
@@ -4548,7 +4497,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_to: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -4576,7 +4525,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_procedure: &ParseTreeStackEntry<'t>,
         _type_def_opt1: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt1 = pop_item!(self, type_def_opt1, TypeDefOpt1, context);
@@ -4602,7 +4551,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _formal_pars: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
@@ -4621,7 +4570,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt1 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn type_def_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt1(None), context);
@@ -4639,7 +4588,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _qual_ident: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
@@ -4660,7 +4609,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn type_def_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt0(None), context);
@@ -4677,7 +4626,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _type_def_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt_list =
@@ -4705,7 +4654,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _type_def_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_opt_list = pop_item!(self, type_def_opt_list, TypeDefOptList, context);
@@ -4725,10 +4674,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn type_def_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt_list_1_built = Vec::new();
@@ -4741,7 +4687,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TypeDefOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn type_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TypeDefOpt(None), context);
@@ -4757,7 +4703,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _field_list_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let field_list_opt = pop_item!(self, field_list_opt, FieldListOpt, context);
@@ -4781,7 +4727,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _type_def: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
@@ -4803,10 +4749,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FieldListOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn field_list_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn field_list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FieldListOpt(None), context);
@@ -4823,7 +4766,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _statement_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq_list =
@@ -4850,7 +4793,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement: &ParseTreeStackEntry<'t>,
         _statement_seq_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_seq_list = pop_item!(self, statement_seq_list, StatementSeqList, context);
@@ -4870,10 +4813,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementSeqList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_seq_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_seq_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq_list_1_built = Vec::new();
@@ -4893,7 +4833,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt = pop_item!(self, statement_opt, StatementOpt, context);
@@ -4915,7 +4855,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group = pop_item!(self, statement_opt_group, StatementOptGroup, context);
@@ -4939,7 +4879,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator: &ParseTreeStackEntry<'t>,
         _statement_opt_group_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_suffix = pop_item!(
@@ -4972,7 +4912,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon_equ: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -4998,7 +4938,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _statement_opt0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt0 = pop_item!(self, statement_opt0, StatementOpt0, context);
@@ -5027,7 +4967,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5073,7 +5013,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _cases: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5110,7 +5050,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let do_block = pop_item!(self, do_block, DoBlock, context);
@@ -5141,7 +5081,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _u_n_t_i_l: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -5173,7 +5113,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt1: &ParseTreeStackEntry<'t>,
         _do_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let do_block = pop_item!(self, do_block, DoBlock, context);
@@ -5205,7 +5145,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_seq: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -5237,7 +5177,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         _opt_else_part_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
@@ -5275,7 +5215,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _e_x_i_t: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_8_built = StatementOptGroupEXIT {
@@ -5299,7 +5239,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _r_e_t_u_r_n: &ParseTreeStackEntry<'t>,
         _statement_opt2: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
@@ -5326,7 +5266,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _elsif_part: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_opt_group_list = pop_item!(
@@ -5353,10 +5293,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOptGroupList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_group_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt_group_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_list_1_built = Vec::new();
@@ -5378,7 +5315,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _guarded_do_block: &ParseTreeStackEntry<'t>,
         _statement_opt_group_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut statement_opt_group_list0 = pop_item!(
@@ -5406,10 +5343,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOptGroupList0 /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_group_list0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt_group_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group_list0_1_built = Vec::new();
@@ -5429,7 +5363,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -5448,10 +5382,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt2 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt2_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt2_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt2(None), context);
@@ -5467,7 +5398,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _for_step: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let for_step = pop_item!(self, for_step, ForStep, context);
@@ -5486,10 +5417,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt1 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt1_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt1_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt1(None), context);
@@ -5507,7 +5435,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_opt3: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt3 = pop_item!(self, statement_opt3, StatementOpt3, context);
@@ -5532,7 +5460,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
@@ -5551,10 +5479,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt3 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt3_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt3_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt3(None), context);
@@ -5566,10 +5491,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn statement_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt0(None), context);
@@ -5581,7 +5503,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// StatementOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn statement_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::StatementOpt(None), context);
@@ -5598,7 +5520,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_then: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
@@ -5624,7 +5546,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case: &ParseTreeStackEntry<'t>,
         _cases_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cases_list = pop_and_reverse_item!(self, cases_list, CasesList, context);
@@ -5650,7 +5572,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case: &ParseTreeStackEntry<'t>,
         _cases_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut cases_list = pop_item!(self, cases_list, CasesList, context);
@@ -5670,7 +5592,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CasesList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn cases_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cases_list_1_built = Vec::new();
@@ -5689,7 +5611,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _then_block: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let then_block = pop_item!(self, then_block, ThenBlock, context);
@@ -5717,7 +5639,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_else: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
@@ -5743,7 +5665,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _opt_else_part_end_opt: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -5770,7 +5692,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _else_part: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let else_part = pop_item!(self, else_part, ElsePart, context);
@@ -5789,10 +5711,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// OptElsePartEndOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn opt_else_part_end_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn opt_else_part_end_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::OptElsePartEndOpt(None), context);
@@ -5810,7 +5729,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _statement_seq: &ParseTreeStackEntry<'t>,
         _kw_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_end'
@@ -5840,7 +5759,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_do: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
@@ -5872,7 +5791,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _kw_to: &ParseTreeStackEntry<'t>,
         _expr0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr0 = pop_item!(self, expr0, Expr, context);
@@ -5903,7 +5822,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _b_y: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
@@ -5926,7 +5845,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _case_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_opt = pop_item!(self, case_opt, CaseOpt, context);
@@ -5949,7 +5868,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _statement_seq: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
@@ -5976,7 +5895,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _case_labels: &ParseTreeStackEntry<'t>,
         _case_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut case_opt_list = pop_item!(self, case_opt_list, CaseOptList, context);
@@ -5996,7 +5915,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn case_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_opt_list_1_built = Vec::new();
@@ -6009,7 +5928,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn case_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::CaseOpt(None), context);
@@ -6026,7 +5945,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _const_expr: &ParseTreeStackEntry<'t>,
         _case_labels_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_labels_opt = pop_item!(self, case_labels_opt, CaseLabelsOpt, context);
@@ -6051,7 +5970,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         dot_dot: &ParseTreeStackEntry<'t>,
         _const_expr: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_dot = dot_dot.token(parse_tree)?.clone();
@@ -6072,10 +5991,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// CaseLabelsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn case_labels_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn case_labels_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::CaseLabelsOpt(None), context);
@@ -6093,7 +6009,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _qual_ident0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident0 = pop_item!(self, qual_ident0, QualIdent, context);
@@ -6118,7 +6034,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -6141,7 +6057,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _simple_expr: &ParseTreeStackEntry<'t>,
         _expr_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_opt = pop_item!(self, expr_opt, ExprOpt, context);
@@ -6166,7 +6082,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _relation: &ParseTreeStackEntry<'t>,
         _simple_expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
@@ -6184,7 +6100,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ExprOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ExprOpt(None), context);
@@ -6202,7 +6118,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _term: &ParseTreeStackEntry<'t>,
         _simple_expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_list =
@@ -6231,7 +6147,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _term: &ParseTreeStackEntry<'t>,
         _simple_expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut simple_expr_list = pop_item!(self, simple_expr_list, SimpleExprList, context);
@@ -6252,10 +6168,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SimpleExprList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn simple_expr_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn simple_expr_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_list_1_built = Vec::new();
@@ -6272,7 +6185,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _simple_expr_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_expr_opt_group =
@@ -6296,7 +6209,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
@@ -6318,7 +6231,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
@@ -6337,10 +6250,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SimpleExprOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn simple_expr_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn simple_expr_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::SimpleExprOpt(None), context);
@@ -6357,7 +6267,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _term_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let term_list = pop_and_reverse_item!(self, term_list, TermList, context);
@@ -6383,7 +6293,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor: &ParseTreeStackEntry<'t>,
         _term_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut term_list = pop_item!(self, term_list, TermList, context);
@@ -6404,7 +6314,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// TermList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn term_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let term_list_1_built = Vec::new();
@@ -6422,7 +6332,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator: &ParseTreeStackEntry<'t>,
         _factor_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_opt = pop_item!(self, factor_opt, FactorOpt, context);
@@ -6447,7 +6357,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -6470,7 +6380,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _character: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = pop_item!(self, character, Character, context);
@@ -6493,7 +6403,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
@@ -6516,7 +6426,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _n_i_l: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_4_built = FactorNIL {
@@ -6538,7 +6448,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _set: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set = pop_item!(self, set, Set, context);
@@ -6561,7 +6471,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -6587,7 +6497,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _tilde: &ParseTreeStackEntry<'t>,
         _factor: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
@@ -6613,7 +6523,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _factor_opt0: &ParseTreeStackEntry<'t>,
         _r_paren: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_opt0 = pop_item!(self, factor_opt0, FactorOpt0, context);
@@ -6638,7 +6548,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _expr_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
@@ -6657,7 +6567,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FactorOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn factor_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FactorOpt0(None), context);
@@ -6669,7 +6579,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// FactorOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn factor_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::FactorOpt(None), context);
@@ -6687,7 +6597,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _set_opt: &ParseTreeStackEntry<'t>,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt = pop_item!(self, set_opt, SetOpt, context);
@@ -6712,7 +6622,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _element: &ParseTreeStackEntry<'t>,
         _set_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt_list = pop_and_reverse_item!(self, set_opt_list, SetOptList, context);
@@ -6736,7 +6646,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _element: &ParseTreeStackEntry<'t>,
         _set_opt_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut set_opt_list = pop_item!(self, set_opt_list, SetOptList, context);
@@ -6756,7 +6666,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SetOptList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn set_opt_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt_list_1_built = Vec::new();
@@ -6769,7 +6679,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// SetOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn set_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::SetOpt(None), context);
@@ -6786,7 +6696,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _element_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let element_opt = pop_item!(self, element_opt, ElementOpt, context);
@@ -6811,7 +6721,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _dot_dot: &ParseTreeStackEntry<'t>,
         _expr: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
@@ -6831,7 +6741,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ElementOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn element_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ElementOpt(None), context);
@@ -6847,7 +6757,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _equ: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relation_0_built = RelationEqu {
@@ -6869,7 +6779,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         hash: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hash = hash.token(parse_tree)?.clone();
@@ -6890,7 +6800,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         l_t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t = l_t.token(parse_tree)?.clone();
@@ -6911,7 +6821,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         l_t_equ: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t_equ = l_t_equ.token(parse_tree)?.clone();
@@ -6932,7 +6842,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         g_t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t = g_t.token(parse_tree)?.clone();
@@ -6953,7 +6863,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         g_t_equ: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t_equ = g_t_equ.token(parse_tree)?.clone();
@@ -6974,7 +6884,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let in_op = pop_item!(self, in_op, InOp, context);
@@ -6997,7 +6907,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         i_s: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let i_s = i_s.token(parse_tree)?.clone();
@@ -7018,7 +6928,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
@@ -7039,7 +6949,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
@@ -7060,7 +6970,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         o_r: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let o_r = o_r.token(parse_tree)?.clone();
@@ -7081,7 +6991,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         star: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
@@ -7102,7 +7012,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         slash: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let slash = slash.token(parse_tree)?.clone();
@@ -7123,7 +7033,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         d_i_v: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let d_i_v = d_i_v.token(parse_tree)?.clone();
@@ -7144,7 +7054,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         m_o_d: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_o_d = m_o_d.token(parse_tree)?.clone();
@@ -7165,7 +7075,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         amp: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let amp = amp.token(parse_tree)?.clone();
@@ -7187,7 +7097,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _qual_ident: &ParseTreeStackEntry<'t>,
         _designator_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let designator_list = pop_and_reverse_item!(self, designator_list, DesignatorList, context);
@@ -7212,7 +7122,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _designator_suffix: &ParseTreeStackEntry<'t>,
         _designator_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut designator_list = pop_item!(self, designator_list, DesignatorList, context);
@@ -7231,10 +7141,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// DesignatorList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn designator_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn designator_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let designator_list_1_built = Vec::new();
@@ -7252,7 +7159,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _dot: &ParseTreeStackEntry<'t>,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -7282,7 +7189,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr_list: &ParseTreeStackEntry<'t>,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
@@ -7312,7 +7219,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _circumflex: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let designator_suffix_2_built = DesignatorSuffixCircumflex {
@@ -7339,7 +7246,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _expr_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list_list = pop_and_reverse_item!(self, expr_list_list, ExprListList, context);
@@ -7365,7 +7272,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _expr: &ParseTreeStackEntry<'t>,
         _expr_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut expr_list_list = pop_item!(self, expr_list_list, ExprListList, context);
@@ -7385,10 +7292,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// ExprListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn expr_list_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn expr_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list_list_1_built = Vec::new();
@@ -7406,7 +7310,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _ident_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_list_list = pop_and_reverse_item!(self, ident_list_list, IdentListList, context);
@@ -7432,7 +7336,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident_def: &ParseTreeStackEntry<'t>,
         _ident_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut ident_list_list = pop_item!(self, ident_list_list, IdentListList, context);
@@ -7452,10 +7356,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// IdentListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn ident_list_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn ident_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_list_list_1_built = Vec::new();
@@ -7472,7 +7373,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
@@ -7495,7 +7396,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _q_ident: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = pop_item!(self, q_ident, QIdent, context);
@@ -7519,7 +7420,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         _ident: &ParseTreeStackEntry<'t>,
         _ident_def_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_def_opt = pop_item!(self, ident_def_opt, IdentDefOpt, context);
@@ -7543,7 +7444,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _ident_def_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident_def_opt_group = pop_item!(self, ident_def_opt_group, IdentDefOptGroup, context);
@@ -7566,7 +7467,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         star: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
@@ -7588,7 +7489,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
@@ -7606,7 +7507,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     /// IdentDefOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn ident_def_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::IdentDefOpt(None), context);
@@ -7622,7 +7523,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
@@ -7645,7 +7546,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _real: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = pop_item!(self, real, Real, context);
@@ -7668,7 +7569,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         real: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = real.token(parse_tree)?.clone();
@@ -7688,7 +7589,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         character: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = character.token(parse_tree)?.clone();
@@ -7710,7 +7611,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         integer: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = integer.token(parse_tree)?.clone();
@@ -7730,7 +7631,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         q_ident: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = q_ident.token(parse_tree)?.clone();
@@ -7750,7 +7651,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         ident: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = ident.token(parse_tree)?.clone();
@@ -7770,7 +7671,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
@@ -7790,7 +7691,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         &mut self,
         _in_op: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let in_op_built = InOp {
@@ -7812,7 +7713,7 @@ impl<'t> UserActionsTrait<'t> for Oberon2GrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.kw_begin(&children[0], parse_tree),
             1 => self.kw_case(&children[0], parse_tree),

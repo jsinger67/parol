@@ -1,10 +1,11 @@
 use crate::lexer::token_stream::TokenStream;
 use crate::lexer::{Location, Token};
-use std::any::Any;
 use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
 use std::path::Path;
 use thiserror::Error;
+
+pub type Result<T> = std::result::Result<T, ParolError>;
 
 #[derive(Error, Debug)]
 pub enum ParserError {
@@ -18,7 +19,7 @@ pub enum ParserError {
         error_location: Location,
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
-        source: Option<Box<dyn ParolErrorEraced>>,
+        source: Option<Box<ParolError>>,
     },
 
     #[error("Unprocessed input is left after parsing has finished")]
@@ -36,9 +37,6 @@ pub enum ParserError {
 
     #[error("{0}")]
     InternalError(String),
-
-    #[error("Conversion error: {0}")]
-    UserTypeConversionError(anyhow::Error),
 }
 
 #[derive(Error, Debug)]
@@ -66,13 +64,13 @@ pub enum LexerError {
 }
 
 #[derive(Error, Debug)]
-pub enum ParolError<UserError: std::error::Error> {
+pub enum ParolError {
     #[error(transparent)]
     ParserError(#[from] ParserError),
     #[error(transparent)]
     LexerError(#[from] LexerError),
     #[error(transparent)]
-    UserError(UserError),
+    UserError(#[from] anyhow::Error),
 }
 
 #[derive(Debug)]
@@ -140,8 +138,3 @@ impl FileSource {
         Self { file_name, input }
     }
 }
-
-pub trait ParolErrorEraced: Any + std::error::Error + Send + Sync + 'static {}
-
-impl<T: Any + std::error::Error + Send + Sync + 'static> ParolErrorEraced for ParolError<T> {}
-impl std::error::Error for Box<dyn ParolErrorEraced> {}

@@ -2,15 +2,14 @@ use crate::{
     assign_operator::AssignOperator, binary_operator::BinaryOperator, calc_grammar_trait::*,
     errors::CalcError,
 };
-use anyhow::{anyhow, bail, Result};
-use parol_runtime::Token;
+use parol_macros::{bail, parol};
 use parol_runtime::{log::trace, FileSource};
+use parol_runtime::{ParolError, Result, Token};
 use std::{
     collections::BTreeMap,
     convert::TryInto,
     fmt::{Debug, Display, Error, Formatter},
     marker::PhantomData,
-    str::FromStr,
 };
 
 ///
@@ -37,9 +36,10 @@ impl<'t> CalcGrammar<'t> {
         self.env
             .get(id.text())
             .cloned()
-            .ok_or(anyhow!(CalcError::UndeclaredVariable {
+            .ok_or(parol!(CalcError::UndeclaredVariable {
                 context: "value".to_owned(),
-                input: FileSource::try_new(id.location.file_name.clone())?,
+                input: FileSource::try_new(id.location.file_name.clone())
+                    .map_err(|e| ParolError::UserError(anyhow::anyhow!(e)))?,
                 token: id.into()
             }))
     }
@@ -179,7 +179,8 @@ impl<'t> CalcGrammar<'t> {
                     context: "value".to_owned(),
                     input: FileSource::try_new(
                         assign_item.assign_item.id.id.location.file_name.clone()
-                    )?,
+                    )
+                    .map_err(|e| ParolError::UserError(anyhow::anyhow!(e)))?,
                     token: (&assign_item.assign_item.id.id).into()
                 });
             }
@@ -357,9 +358,9 @@ impl<'t> CalcGrammarTrait<'t> for CalcGrammar<'t> {
 pub struct Number(isize);
 
 impl<'t> TryFrom<&Token<'t>> for Number {
-    type Error = <isize as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         Ok(Self(number.text().parse::<isize>()?))
     }
 }

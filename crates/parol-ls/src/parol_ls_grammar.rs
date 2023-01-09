@@ -7,8 +7,6 @@ use crate::{
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
-#[allow(unused_imports)]
-use anyhow::Result;
 use lsp_types::{
     DocumentChanges, DocumentFormattingParams, DocumentSymbol, DocumentSymbolParams,
     DocumentSymbolResponse, Hover, HoverContents::Markup, HoverParams, MarkupContent, MarkupKind,
@@ -18,6 +16,8 @@ use lsp_types::{
 };
 use parol::TerminalKind;
 use parol_runtime::lexer::Token;
+#[allow(unused_imports)]
+use parol_runtime::Result;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
@@ -583,10 +583,12 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
 #[derive(Debug, Clone)]
 pub struct OwnedToken(Token<'static>);
 
-impl<'t> From<&Token<'t>> for OwnedToken {
-    fn from(token: &Token<'t>) -> Self {
+impl<'t> TryFrom<&Token<'t>> for OwnedToken {
+    type Error = anyhow::Error;
+
+    fn try_from(token: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         let owned_token = token.clone().into_owned();
-        Self(owned_token)
+        Ok(Self(owned_token))
     }
 }
 

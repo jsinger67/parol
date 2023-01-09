@@ -5,12 +5,11 @@ use crate::{
 };
 #[allow(unused_imports)]
 use anyhow::{anyhow, bail, Context};
-use parol::utils::miette_support;
 use parol_runtime::{
     errors::FileSource,
     lexer::{Location, Token},
 };
-use parol_runtime::{log::trace, ParolError};
+use parol_runtime::{log::trace, ParolError, Result};
 use std::{
     collections::BTreeMap,
     fmt::{Debug, Display, Error, Formatter},
@@ -35,7 +34,7 @@ pub struct BasicNumber(DefinitionRange);
 impl<'t> TryFrom<&Token<'t>> for BasicNumber {
     type Error = anyhow::Error;
 
-    fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(basic_line_number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         let symbol = basic_line_number.text().replace(' ', "").replace('E', "e");
         Ok(Self(symbol.parse::<DefinitionRange>()?))
     }
@@ -47,7 +46,7 @@ pub struct BasicLineNumber(LineNumberRange, Location);
 impl<'t> TryFrom<&Token<'t>> for BasicLineNumber {
     type Error = anyhow::Error;
 
-    fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(basic_line_number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         let symbol = basic_line_number.text().replace(' ', "");
         Ok(Self(
             symbol.parse::<LineNumberRange>()?,
@@ -103,7 +102,7 @@ impl<'t> BasicGrammar<'t> {
         self.env.insert(name.to_owned(), value);
     }
 
-    fn process_basic(&mut self, basic: &Basic<'t>) -> Result<(), ParolError> {
+    fn process_basic(&mut self, basic: &Basic<'t>) -> Result<()> {
         self.process_lines(&basic.line, &basic.basic_list)
     }
 
@@ -111,7 +110,7 @@ impl<'t> BasicGrammar<'t> {
         &mut self,
         first_line: &Line<'t>,
         other_lines: &[BasicList<'t>],
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let lines = self.pre_process_lines(first_line, other_lines)?;
         self.interpret(&lines)
     }
@@ -120,7 +119,7 @@ impl<'t> BasicGrammar<'t> {
         &mut self,
         first_line: &'a Line<'t>,
         other_lines: &'a [BasicList<'t>],
-    ) -> Result<BasicLines<'a, 't>, ParolError> {
+    ) -> Result<BasicLines<'a, 't>> {
         let context = "pre_process_lines";
 
         let mut lines = BasicLines::default();
@@ -133,12 +132,9 @@ impl<'t> BasicGrammar<'t> {
                 return Err(ParolError::UserError(
                     BasicError::LineNumberDefinedTwice {
                         context: context.to_owned(),
-                        input: miette_support::MyFileSource(
-                            FileSource::try_new(k.1.file_name.clone())
-                                .map_err(|err| anyhow::Error::from(err))?,
-                        )
-                        .into(),
-                        token: miette_support::MyLocation(k.1).into(),
+                        input: FileSource::try_new(k.1.file_name.clone())
+                            .map_err(anyhow::Error::from)?,
+                        token: k.1,
                     }
                     .into(),
                 ));
@@ -161,18 +157,15 @@ impl<'t> BasicGrammar<'t> {
     fn pre_process_line<'a>(
         &mut self,
         line: &'a Line<'t>,
-    ) -> Result<(BasicLineNumber, CompiledLine<'a, 't>), ParolError> {
+    ) -> Result<(BasicLineNumber, CompiledLine<'a, 't>)> {
         let context = "pre_process_line";
         let basic_line_number = &line.line_number.line_number;
         if basic_line_number.0 > MAX_LINE_NUMBER {
             return Err(BasicError::LineNumberTooLarge {
                 context: context.to_owned(),
-                input: miette_support::MyFileSource(
-                    FileSource::try_new(basic_line_number.1.file_name.clone())
-                        .map_err(|err| anyhow::Error::from(err))?,
-                )
-                .into(),
-                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())
+                    .map_err(anyhow::Error::from)?,
+                token: basic_line_number.1.clone(),
             }
             .into());
         }
@@ -192,14 +185,14 @@ impl<'t> BasicGrammar<'t> {
         Ok((basic_line_number.clone(), compiled_line))
     }
 
-    fn interpret<'a>(&mut self, lines: &BasicLines<'a, 't>) -> Result<(), ParolError> {
+    fn interpret<'a>(&mut self, lines: &BasicLines<'a, 't>) -> Result<()> {
         while self.next_line.is_some() {
             self.interpret_line(lines)?;
         }
         Ok(())
     }
 
-    fn interpret_line<'a>(&mut self, lines: &BasicLines<'a, 't>) -> Result<(), ParolError> {
+    fn interpret_line<'a>(&mut self, lines: &BasicLines<'a, 't>) -> Result<()> {
         if let Some(current_line) = lines.lines.get(&self.next_line.unwrap()) {
             self.next_line = current_line.1.next_line;
             let mut continue_statements = true;
@@ -219,7 +212,7 @@ impl<'t> BasicGrammar<'t> {
         statement: &'a Statement<'t>,
         lines: &BasicLines<'a, 't>,
         continue_statements: &mut bool,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         *continue_statements = true;
         match statement {
             Statement::Remark(remark) => self.process_remark(remark),
@@ -241,7 +234,7 @@ impl<'t> BasicGrammar<'t> {
         }
     }
 
-    fn process_remark(&self, _remark: &StatementRemark) -> Result<(), ParolError> {
+    fn process_remark(&self, _remark: &StatementRemark) -> Result<()> {
         Ok(())
     }
 
@@ -249,7 +242,7 @@ impl<'t> BasicGrammar<'t> {
         &mut self,
         basic_line_number: &BasicLineNumber,
         lines: &BasicLines<'a, 't>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = "process_goto";
         let mut line_number = basic_line_number.0;
 
@@ -265,12 +258,9 @@ impl<'t> BasicGrammar<'t> {
         if !lines.lines.contains_key(&line_number) {
             return Err(BasicError::LineNumberBeyondLastLine {
                 context: context.to_owned(),
-                input: miette_support::MyFileSource(
-                    FileSource::try_new(basic_line_number.1.file_name.clone())
-                        .map_err(|err| anyhow::Error::from(err))?,
-                )
-                .into(),
-                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())
+                    .map_err(anyhow::Error::from)?,
+                token: basic_line_number.1.clone(),
             }
             .into());
         }
@@ -285,7 +275,7 @@ impl<'t> BasicGrammar<'t> {
         if_statement: &'a StatementIfStatement<'t>,
         continue_statements: &mut bool,
         lines: &BasicLines<'a, 't>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = "process_if_statement";
         *continue_statements = true;
         let condition = self.process_expression(&if_statement.if_statement.expression)?;
@@ -304,7 +294,7 @@ impl<'t> BasicGrammar<'t> {
         }
     }
 
-    fn process_assign(&mut self, assign: &StatementAssignment) -> Result<(), ParolError> {
+    fn process_assign(&mut self, assign: &StatementAssignment) -> Result<()> {
         let context = "process_assign";
         let value = self.process_expression(&assign.assignment.expression)?;
         let symbol = assign.assignment.variable.variable.text();
@@ -313,10 +303,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(())
     }
 
-    fn process_print_statement(
-        &mut self,
-        print_statement: &StatementPrintStatement,
-    ) -> Result<(), ParolError> {
+    fn process_print_statement(&mut self, print_statement: &StatementPrintStatement) -> Result<()> {
         let value = self.process_expression(&print_statement.print_statement.expression)?;
         print!("{value} ");
         for elem in &print_statement.print_statement.print_statement_list {
@@ -326,27 +313,18 @@ impl<'t> BasicGrammar<'t> {
         Ok(())
     }
 
-    fn process_end_statement(
-        &mut self,
-        _end_statement: &StatementEndStatement,
-    ) -> Result<(), ParolError> {
+    fn process_end_statement(&mut self, _end_statement: &StatementEndStatement) -> Result<()> {
         let context = "process_end_statement";
         trace!("{context}: setting next line to None");
         self.next_line = None;
         Ok(())
     }
 
-    fn process_expression(
-        &mut self,
-        expression: &Expression,
-    ) -> Result<DefinitionRange, ParolError> {
+    fn process_expression(&mut self, expression: &Expression) -> Result<DefinitionRange> {
         self.process_logical_or(&expression.logical_or)
     }
 
-    fn process_logical_or(
-        &mut self,
-        logical_or: &LogicalOr,
-    ) -> Result<DefinitionRange, ParolError> {
+    fn process_logical_or(&mut self, logical_or: &LogicalOr) -> Result<DefinitionRange> {
         let context = "process_logical_or";
         let mut result = self.process_logical_and(&logical_or.logical_and)?;
         for item in &logical_or.logical_or_list {
@@ -357,10 +335,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(result)
     }
 
-    fn process_logical_and(
-        &mut self,
-        logical_and: &LogicalAnd,
-    ) -> Result<DefinitionRange, ParolError> {
+    fn process_logical_and(&mut self, logical_and: &LogicalAnd) -> Result<DefinitionRange> {
         let context = "process_logical_and";
         let mut result = self.process_logical_not(&logical_and.logical_not)?;
         for item in &logical_and.logical_and_list {
@@ -371,10 +346,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(result)
     }
 
-    fn process_logical_not(
-        &mut self,
-        logical_not: &LogicalNot,
-    ) -> Result<DefinitionRange, ParolError> {
+    fn process_logical_not(&mut self, logical_not: &LogicalNot) -> Result<DefinitionRange> {
         let context = "process_logical_not";
         if let Some(not) = &logical_not.logical_not_opt {
             let result = self.process_relational(&logical_not.relational)?;
@@ -385,10 +357,7 @@ impl<'t> BasicGrammar<'t> {
         }
     }
 
-    fn process_relational(
-        &mut self,
-        relational: &Relational,
-    ) -> Result<DefinitionRange, ParolError> {
+    fn process_relational(&mut self, relational: &Relational) -> Result<DefinitionRange> {
         let context = "process_relational";
         let mut result = self.process_summation(&relational.summation)?;
         for item in &relational.relational_list {
@@ -399,7 +368,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(result)
     }
 
-    fn process_summation(&mut self, summation: &Summation) -> Result<DefinitionRange, ParolError> {
+    fn process_summation(&mut self, summation: &Summation) -> Result<DefinitionRange> {
         let context = "process_summation";
         let mut result = self.process_multiplication(&summation.multiplication)?;
         for item in &summation.summation_list {
@@ -416,7 +385,7 @@ impl<'t> BasicGrammar<'t> {
     fn process_multiplication(
         &mut self,
         multiplication: &Multiplication,
-    ) -> Result<DefinitionRange, ParolError> {
+    ) -> Result<DefinitionRange> {
         let context = "process_multiplication";
         let mut result = self.process_factor(&multiplication.factor)?;
         for item in &*multiplication.multiplication_list {
@@ -427,7 +396,7 @@ impl<'t> BasicGrammar<'t> {
         Ok(result)
     }
 
-    fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange, ParolError> {
+    fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
             Factor::Literal(FactorLiteral { literal }) => match &*literal.number {
@@ -472,7 +441,7 @@ impl Display for BasicGrammar<'_> {
 
 impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
     /// Semantic action for non-terminal 'Basic'
-    fn basic(&mut self, basic: &Basic<'t>) -> Result<(), ParolError> {
+    fn basic(&mut self, basic: &Basic<'t>) -> Result<()> {
         self.process_basic(basic)
     }
 }

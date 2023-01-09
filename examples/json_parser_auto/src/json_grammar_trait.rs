@@ -16,43 +16,43 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParolError, ParserError};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait JsonGrammarTrait<'t> {
     /// Semantic action for non-terminal 'Json'
-    fn json(&mut self, _arg: &Json<'t>) -> Result<(), ParolError> {
+    fn json(&mut self, _arg: &Json<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Object'
-    fn object(&mut self, _arg: &Object<'t>) -> Result<(), ParolError> {
+    fn object(&mut self, _arg: &Object<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Pair'
-    fn pair(&mut self, _arg: &Pair<'t>) -> Result<(), ParolError> {
+    fn pair(&mut self, _arg: &Pair<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Array'
-    fn array(&mut self, _arg: &Array<'t>) -> Result<(), ParolError> {
+    fn array(&mut self, _arg: &Array<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Value'
-    fn value(&mut self, _arg: &Value<'t>) -> Result<(), ParolError> {
+    fn value(&mut self, _arg: &Value<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String<'t>) -> Result<(), ParolError> {
+    fn string(&mut self, _arg: &String<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Number'
-    fn number(&mut self, _arg: &Number<'t>) -> Result<(), ParolError> {
+    fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
 }
@@ -400,7 +400,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _value: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
@@ -423,7 +423,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _l_brace: &ParseTreeStackEntry<'t>,
         _object_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
@@ -448,7 +448,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _object_list: &ParseTreeStackEntry<'t>,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_list = pop_and_reverse_item!(self, object_list, ObjectList, context);
@@ -472,7 +472,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _r_brace: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix_1_built = ObjectSuffixRBrace {
@@ -494,7 +494,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _pair: &ParseTreeStackEntry<'t>,
         _object_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut object_list = pop_item!(self, object_list, ObjectList, context);
@@ -514,7 +514,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ObjectList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_list_1_built = Vec::new();
@@ -533,7 +533,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _colon: &ParseTreeStackEntry<'t>,
         _value: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
@@ -559,7 +559,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _l_bracket: &ParseTreeStackEntry<'t>,
         _array_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
@@ -584,7 +584,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _array_list: &ParseTreeStackEntry<'t>,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_list = pop_and_reverse_item!(self, array_list, ArrayList, context);
@@ -608,7 +608,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _r_bracket: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix_1_built = ArraySuffixRBracket {
@@ -630,7 +630,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         _value: &ParseTreeStackEntry<'t>,
         _array_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut array_list = pop_item!(self, array_list, ArrayList, context);
@@ -650,7 +650,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ArrayList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_list_1_built = Vec::new();
@@ -667,7 +667,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
@@ -690,7 +690,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _number: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -713,7 +713,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _object: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
@@ -736,7 +736,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
@@ -759,7 +759,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _true: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_4_built = ValueTrue {
@@ -781,7 +781,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _false: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_5_built = ValueFalse {
@@ -803,7 +803,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         _null: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_6_built = ValueNull {
@@ -825,7 +825,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
@@ -845,7 +845,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         &mut self,
         number: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = number.token(parse_tree)?.clone();
@@ -866,7 +866,7 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.json(&children[0], parse_tree),
             1 => self.object(&children[0], &children[1], parse_tree),

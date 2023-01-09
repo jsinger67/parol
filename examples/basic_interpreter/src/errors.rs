@@ -1,90 +1,194 @@
-use miette::{Diagnostic, NamedSource, SourceSpan};
-use parol::utils::miette_support;
+use std::fs;
+use std::ops::Range;
+
+use codespan_reporting::diagnostic::{Diagnostic, Label};
+use codespan_reporting::files::SimpleFiles;
+use codespan_reporting::term::{self, termcolor::StandardStream};
+use error_report::codespan_reporting;
+use parol_runtime::{FileSource, Location};
 use thiserror::Error;
 
-#[derive(Error, Diagnostic, Debug)]
+#[derive(Error, Debug)]
 pub enum BasicError {
-    #[error("{context} value parse error")]
-    #[diagnostic(
-        help("Error parsing number token as valid f32"),
-        code(basic::parse_float)
-    )]
+    #[error("{context}: value parse error")]
     ParseFloat {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Wrong f32 value")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 
-    #[error("{context} line number parse error")]
-    #[diagnostic(
-        help("Error parsing line number token as valid u16"),
-        code(basic::parse_line_number)
-    )]
+    #[error("{context}: line number parse error")]
     ParseLineNumber {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Wrong i16 value")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 
-    #[error("{context} line number too large")]
-    #[diagnostic(
-        help("Line number exceeds maximum of 63999"),
-        code(basic::line_number_too_large)
-    )]
+    #[error("{context}: line number too large")]
     LineNumberTooLarge {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Line number too large")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 
-    #[error("{context} line number already defined")]
-    #[diagnostic(
-        help("Line number is already defined"),
-        code(basic::line_number_already_defined)
-    )]
+    #[error("{context}: line number already defined")]
     LineNumberDefinedTwice {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Line number is already defined")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 
-    #[error("{context} line not accessible")]
-    #[diagnostic(
-        help("Line number is beyond last line"),
-        code(basic::line_number_beyond_last_line)
-    )]
+    #[error("{context}: line not accessible")]
     LineNumberBeyondLastLine {
         context: String,
-        #[source_code]
-        input: NamedSource,
-        #[label("Line number is beyond last line")]
-        token: SourceSpan,
+        input: FileSource,
+        token: Location,
     },
 }
 
-/// This is an example of how to chain error conversions from opaque `anyhow::Error` objects to
-/// custom `miette::Report` types.
-/// The first step is to call `miette_support::to_report` to let their error types be converted.
-/// Then we can check for our own error types (actually miette errors wrapped in anyhow errors) and
-/// extract them.
-pub fn to_report(err: anyhow::Error) -> std::result::Result<miette::Report, anyhow::Error> {
-    let err = match miette_support::to_report(err) {
-        Ok(err) => return Ok(err),
-        Err(err) => err,
-    };
+pub(crate) fn basic_error_reporter(err: &anyhow::Error) -> anyhow::Result<()> {
+    let files: SimpleFiles<String, String> = SimpleFiles::new();
+    let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
+    let config = codespan_reporting::term::Config::default();
+    // config.chars.note_bullet = '•';
 
-    let err = match err.downcast::<BasicError>() {
-        Ok(err) => return Ok(miette::Report::new(err)),
-        Err(err) => err,
-    };
+    if let Some(err) = err.downcast_ref::<BasicError>() {
+        match err {
+            BasicError::ParseFloat {
+                context,
+                input,
+                token,
+            } => {
+                let mut files = SimpleFiles::new();
+                let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
+                let file_id = files.add(input.file_name.display().to_string(), content);
 
-    Err(err)
+                return Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{context}: value parse error"))
+                            .with_code("basic::parse_float")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(token))
+                                .with_message("Wrong f32 value")])
+                            .with_notes(vec!["Undeclared scanner found. Please declare a scanner via %scanner name {{...}}".to_string()])
+                    )?);
+            }
+            BasicError::ParseLineNumber {
+                context,
+                input,
+                token,
+            } => {
+                let mut files = SimpleFiles::new();
+                let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
+                let file_id = files.add(input.file_name.display().to_string(), content);
+
+                return Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("{context}: line number parse error"))
+                        .with_code("basic::parse_line_number")
+                        .with_labels(vec![Label::primary(
+                            file_id,
+                            Into::<Range<usize>>::into(token),
+                        )
+                        .with_message("Wrong i16 value")])
+                        .with_notes(vec![
+                            "Error parsing line number token as valid u16".to_string()
+                        ]),
+                )?);
+            }
+            BasicError::LineNumberTooLarge {
+                context,
+                input,
+                token,
+            } => {
+                let mut files = SimpleFiles::new();
+                let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
+                let file_id = files.add(input.file_name.display().to_string(), content);
+
+                return Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("{context}: line number too large"))
+                        .with_code("basic::line_number_too_large")
+                        .with_labels(vec![Label::primary(
+                            file_id,
+                            Into::<Range<usize>>::into(token),
+                        )
+                        .with_message("Line number too large")])
+                        .with_notes(vec!["Line number exceeds maximum of 63999".to_string()]),
+                )?);
+            }
+            BasicError::LineNumberDefinedTwice {
+                context,
+                input,
+                token,
+            } => {
+                let mut files = SimpleFiles::new();
+                let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
+                let file_id = files.add(input.file_name.display().to_string(), content);
+
+                return Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("{context}: line number already defined"))
+                        .with_code("basic::line_number_already_defined")
+                        .with_labels(vec![Label::primary(
+                            file_id,
+                            Into::<Range<usize>>::into(token),
+                        )
+                        .with_message("Line number is already defined")])
+                        .with_notes(vec!["Define a new line number".to_string()]),
+                )?);
+            }
+            BasicError::LineNumberBeyondLastLine {
+                context,
+                input,
+                token,
+            } => {
+                let mut files = SimpleFiles::new();
+                let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
+                let file_id = files.add(input.file_name.display().to_string(), content);
+
+                return Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("{context}: line not accessible"))
+                        .with_code("basic::line_number_beyond_last_line")
+                        .with_labels(vec![Label::primary(
+                            file_id,
+                            Into::<Range<usize>>::into(token),
+                        )
+                        .with_message("Line number is beyond last line")])
+                        .with_notes(vec!["Check the jump destination's line number".to_string()]),
+                )?);
+            }
+        }
+    } else {
+        let result = term::emit(
+            &mut writer.lock(),
+            &config,
+            &files,
+            &Diagnostic::error()
+                .with_message("Parol error")
+                .with_notes(vec![
+                    err.to_string(),
+                    err.source()
+                        .map_or("No details".to_string(), |s| s.to_string()),
+                ]),
+        );
+        result.map_err(|e| anyhow::anyhow!(e))
+    }
 }

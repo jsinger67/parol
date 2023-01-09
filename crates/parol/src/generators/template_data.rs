@@ -68,7 +68,7 @@ impl std::fmt::Display for UserTraitFunctionData {
             f.write_fmt(ume::ume!(#[parol_runtime::function_name::named]))?;
         }
         f.write_fmt(ume::ume! {
-            fn #fn_name(&mut self, #fn_arguments) -> Result<(), ParolError> {
+            fn #fn_name(&mut self, #fn_arguments) -> Result<()> {
                 #code
                 Ok(())
             }
@@ -195,7 +195,7 @@ impl std::fmt::Display for UserTraitData<'_> {
         }
         f.write_fmt(ume::ume! {
             use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-            use parol_runtime::{ParolError, ParserError};
+            use parol_runtime::{ParserError, Result};
         })?;
 
         let trait_name = format!("{}Trait", user_type_name);
@@ -357,7 +357,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                         &mut self,
                         prod_num: usize,
                         children: &[ParseTreeStackEntry<'t>],
-                        parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+                        parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
                         match prod_num {
                             #trait_caller
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
@@ -387,7 +387,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                         &mut self,
                         prod_num: usize,
                         children: &[ParseTreeStackEntry],
-                        parse_tree: &Tree<ParseTreeType>) -> Result<(), ParolError> {
+                        parse_tree: &Tree<ParseTreeType>) -> Result<()> {
                         match prod_num {
                             #trait_caller
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),

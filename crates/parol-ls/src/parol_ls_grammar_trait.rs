@@ -15,179 +15,179 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParolError, ParserError};
+use parol_runtime::{ParserError, Result};
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait ParolLsGrammarTrait {
     /// Semantic action for non-terminal 'ParolLs'
-    fn parol_ls(&mut self, _arg: &ParolLs) -> Result<(), ParolError> {
+    fn parol_ls(&mut self, _arg: &ParolLs) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Prolog'
-    fn prolog(&mut self, _arg: &Prolog) -> Result<(), ParolError> {
+    fn prolog(&mut self, _arg: &Prolog) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StartDeclaration'
-    fn start_declaration(&mut self, _arg: &StartDeclaration) -> Result<(), ParolError> {
+    fn start_declaration(&mut self, _arg: &StartDeclaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Declaration'
-    fn declaration(&mut self, _arg: &Declaration) -> Result<(), ParolError> {
+    fn declaration(&mut self, _arg: &Declaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerDirectives'
-    fn scanner_directives(&mut self, _arg: &ScannerDirectives) -> Result<(), ParolError> {
+    fn scanner_directives(&mut self, _arg: &ScannerDirectives) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'GrammarDefinition'
-    fn grammar_definition(&mut self, _arg: &GrammarDefinition) -> Result<(), ParolError> {
+    fn grammar_definition(&mut self, _arg: &GrammarDefinition) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DoubleColon'
-    fn double_colon(&mut self, _arg: &DoubleColon) -> Result<(), ParolError> {
+    fn double_colon(&mut self, _arg: &DoubleColon) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ProductionLHS'
-    fn production_l_h_s(&mut self, _arg: &ProductionLHS) -> Result<(), ParolError> {
+    fn production_l_h_s(&mut self, _arg: &ProductionLHS) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Production'
-    fn production(&mut self, _arg: &Production) -> Result<(), ParolError> {
+    fn production(&mut self, _arg: &Production) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Alternations'
-    fn alternations(&mut self, _arg: &Alternations) -> Result<(), ParolError> {
+    fn alternations(&mut self, _arg: &Alternations) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Alternation'
-    fn alternation(&mut self, _arg: &Alternation) -> Result<(), ParolError> {
+    fn alternation(&mut self, _arg: &Alternation) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Factor'
-    fn factor(&mut self, _arg: &Factor) -> Result<(), ParolError> {
+    fn factor(&mut self, _arg: &Factor) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Symbol'
-    fn symbol(&mut self, _arg: &Symbol) -> Result<(), ParolError> {
+    fn symbol(&mut self, _arg: &Symbol) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TokenLiteral'
-    fn token_literal(&mut self, _arg: &TokenLiteral) -> Result<(), ParolError> {
+    fn token_literal(&mut self, _arg: &TokenLiteral) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleToken'
-    fn simple_token(&mut self, _arg: &SimpleToken) -> Result<(), ParolError> {
+    fn simple_token(&mut self, _arg: &SimpleToken) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'TokenWithStates'
-    fn token_with_states(&mut self, _arg: &TokenWithStates) -> Result<(), ParolError> {
+    fn token_with_states(&mut self, _arg: &TokenWithStates) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Group'
-    fn group(&mut self, _arg: &Group) -> Result<(), ParolError> {
+    fn group(&mut self, _arg: &Group) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Optional'
-    fn optional(&mut self, _arg: &Optional) -> Result<(), ParolError> {
+    fn optional(&mut self, _arg: &Optional) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Repeat'
-    fn repeat(&mut self, _arg: &Repeat) -> Result<(), ParolError> {
+    fn repeat(&mut self, _arg: &Repeat) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NonTerminal'
-    fn non_terminal(&mut self, _arg: &NonTerminal) -> Result<(), ParolError> {
+    fn non_terminal(&mut self, _arg: &NonTerminal) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Identifier'
-    fn identifier(&mut self, _arg: &Identifier) -> Result<(), ParolError> {
+    fn identifier(&mut self, _arg: &Identifier) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'String'
-    fn string(&mut self, _arg: &String) -> Result<(), ParolError> {
+    fn string(&mut self, _arg: &String) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralString'
-    fn literal_string(&mut self, _arg: &LiteralString) -> Result<(), ParolError> {
+    fn literal_string(&mut self, _arg: &LiteralString) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerState'
-    fn scanner_state(&mut self, _arg: &ScannerState) -> Result<(), ParolError> {
+    fn scanner_state(&mut self, _arg: &ScannerState) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StateList'
-    fn state_list(&mut self, _arg: &StateList) -> Result<(), ParolError> {
+    fn state_list(&mut self, _arg: &StateList) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ScannerSwitch'
-    fn scanner_switch(&mut self, _arg: &ScannerSwitch) -> Result<(), ParolError> {
+    fn scanner_switch(&mut self, _arg: &ScannerSwitch) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ASTControl'
-    fn a_s_t_control(&mut self, _arg: &ASTControl) -> Result<(), ParolError> {
+    fn a_s_t_control(&mut self, _arg: &ASTControl) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'CutOperator'
-    fn cut_operator(&mut self, _arg: &CutOperator) -> Result<(), ParolError> {
+    fn cut_operator(&mut self, _arg: &CutOperator) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UserTypeDeclaration'
-    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration) -> Result<(), ParolError> {
+    fn user_type_declaration(&mut self, _arg: &UserTypeDeclaration) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UserTypeName'
-    fn user_type_name(&mut self, _arg: &UserTypeName) -> Result<(), ParolError> {
+    fn user_type_name(&mut self, _arg: &UserTypeName) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Comments'
-    fn comments(&mut self, _arg: &Comments) -> Result<(), ParolError> {
+    fn comments(&mut self, _arg: &Comments) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LineComment'
-    fn line_comment(&mut self, _arg: &LineComment) -> Result<(), ParolError> {
+    fn line_comment(&mut self, _arg: &LineComment) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BlockComment'
-    fn block_comment(&mut self, _arg: &BlockComment) -> Result<(), ParolError> {
+    fn block_comment(&mut self, _arg: &BlockComment) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Regex'
-    fn regex(&mut self, _arg: &Regex) -> Result<(), ParolError> {
+    fn regex(&mut self, _arg: &Regex) -> Result<()> {
         Ok(())
     }
 }
@@ -1209,7 +1209,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _prolog: &ParseTreeStackEntry<'t>,
         _grammar_definition: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let grammar_definition = pop_item!(self, grammar_definition, GrammarDefinition, context);
@@ -1235,7 +1235,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _prolog_list: &ParseTreeStackEntry<'t>,
         _prolog_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let prolog_list0 = pop_and_reverse_item!(self, prolog_list0, PrologList0, context);
@@ -1262,7 +1262,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _scanner_state: &ParseTreeStackEntry<'t>,
         _prolog_list0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
@@ -1281,7 +1281,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// PrologList0 /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn prolog_list0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let prolog_list0_1_built = Vec::new();
@@ -1299,7 +1299,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _declaration: &ParseTreeStackEntry<'t>,
         _prolog_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list = pop_item!(self, prolog_list, PrologList, context);
@@ -1318,7 +1318,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// PrologList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn prolog_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let prolog_list_1_built = Vec::new();
@@ -1338,13 +1338,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _comments0: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_start = percent_start
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments0 = pop_item!(self, comments0, Comments, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let comments = pop_item!(self, comments, Comments, context);
@@ -1372,13 +1372,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _string: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_title = percent_title
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
         let declaration_0_built = DeclarationPercentTitleStringComments {
@@ -1404,13 +1404,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _string: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_comment = percent_comment
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
         let declaration_1_built = DeclarationPercentCommentStringComments {
@@ -1438,17 +1438,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _user_type_name: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_user_underscore_type = percent_user_underscore_type
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let equ = equ
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
@@ -1479,7 +1479,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _scanner_directives: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
@@ -1504,13 +1504,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _token_literal: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_line_underscore_comment = percent_line_underscore_comment
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_0_built =
@@ -1545,13 +1545,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _token_literal0: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_block_underscore_comment = percent_block_underscore_comment
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal0 = pop_item!(self, token_literal0, TokenLiteral, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
@@ -1586,14 +1586,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         percent_auto_underscore_newline_underscore_off: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_auto_underscore_newline_underscore_off =
             percent_auto_underscore_newline_underscore_off
                 .token(parse_tree)?
                 .try_into()
-                .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+                .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_2_built =
             ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffComments {
@@ -1625,13 +1625,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         percent_auto_underscore_ws_underscore_off: &ParseTreeStackEntry<'t>,
         _comments: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_auto_underscore_ws_underscore_off = percent_auto_underscore_ws_underscore_off
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_3_built =
             ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffComments {
@@ -1664,13 +1664,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _production: &ParseTreeStackEntry<'t>,
         _grammar_definition_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_percent = percent_percent
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let grammar_definition_list = pop_and_reverse_item!(
             self,
             grammar_definition_list,
@@ -1703,7 +1703,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _production: &ParseTreeStackEntry<'t>,
         _grammar_definition_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut grammar_definition_list = pop_item!(
@@ -1730,10 +1730,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// GrammarDefinitionList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn grammar_definition_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn grammar_definition_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let grammar_definition_list_1_built = Vec::new();
@@ -1753,13 +1750,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         double_colon: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let double_colon = double_colon
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let double_colon_built = DoubleColon {
             double_colon: double_colon,
         };
@@ -1781,13 +1778,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _comments0: &ParseTreeStackEntry<'t>,
         colon: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let colon = colon
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments0 = pop_item!(self, comments0, Comments, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let comments = pop_item!(self, comments, Comments, context);
@@ -1815,13 +1812,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternations: &ParseTreeStackEntry<'t>,
         semicolon: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let semicolon = semicolon
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let production_l_h_s = pop_item!(self, production_l_h_s, ProductionLHS, context);
         let production_built = Production {
@@ -1845,7 +1842,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternation: &ParseTreeStackEntry<'t>,
         _alternations_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternations_list =
@@ -1873,13 +1870,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternation: &ParseTreeStackEntry<'t>,
         _alternations_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let or = or
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
         let comments = pop_item!(self, comments, Comments, context);
@@ -1899,10 +1896,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// AlternationsList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn alternations_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn alternations_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternations_list_1_built = Vec::new();
@@ -1922,7 +1916,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _alternation_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternation_list =
@@ -1947,7 +1941,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _comments: &ParseTreeStackEntry<'t>,
         _alternation_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut alternation_list = pop_item!(self, alternation_list, AlternationList, context);
@@ -1968,10 +1962,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// AlternationList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn alternation_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn alternation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let alternation_list_1_built = Vec::new();
@@ -1988,7 +1979,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let group = pop_item!(self, group, Group, context);
@@ -2011,7 +2002,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _repeat: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let repeat = pop_item!(self, repeat, Repeat, context);
@@ -2034,7 +2025,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _optional: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let optional = pop_item!(self, optional, Optional, context);
@@ -2057,7 +2048,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _symbol: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let symbol = pop_item!(self, symbol, Symbol, context);
@@ -2080,7 +2071,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _non_terminal: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
@@ -2103,7 +2094,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _simple_token: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token = pop_item!(self, simple_token, SimpleToken, context);
@@ -2126,7 +2117,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _token_with_states: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
@@ -2149,7 +2140,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _scanner_switch: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
@@ -2172,7 +2163,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
@@ -2195,7 +2186,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
@@ -2218,7 +2209,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _regex: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let regex = pop_item!(self, regex, Regex, context);
@@ -2242,7 +2233,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _token_literal: &ParseTreeStackEntry<'t>,
         _simple_token_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
@@ -2266,7 +2257,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
@@ -2285,10 +2276,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// SimpleTokenOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn simple_token_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn simple_token_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::SimpleTokenOpt(None), context);
@@ -2308,17 +2296,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _token_literal: &ParseTreeStackEntry<'t>,
         _token_with_states_opt: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t = l_t
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let g_t = g_t
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let token_with_states_opt =
             pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
@@ -2346,7 +2334,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
@@ -2365,10 +2353,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// TokenWithStatesOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn token_with_states_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn token_with_states_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TokenWithStatesOpt(None), context);
@@ -2386,17 +2371,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternations: &ParseTreeStackEntry<'t>,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_paren = l_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_paren = r_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let group_built = Group {
             l_paren: l_paren,
@@ -2420,17 +2405,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternations: &ParseTreeStackEntry<'t>,
         r_bracket: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_bracket = l_bracket
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_bracket = r_bracket
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let optional_built = Optional {
             l_bracket: l_bracket,
@@ -2454,17 +2439,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _alternations: &ParseTreeStackEntry<'t>,
         r_brace: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_brace = l_brace
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_brace = r_brace
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let repeat_built = Repeat {
             l_brace: l_brace,
@@ -2487,7 +2472,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _non_terminal_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_terminal_opt = pop_item!(self, non_terminal_opt, NonTerminalOpt, context);
@@ -2511,7 +2496,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _a_s_t_control: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
@@ -2530,10 +2515,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// NonTerminalOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn non_terminal_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn non_terminal_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::NonTerminalOpt(None), context);
@@ -2549,13 +2531,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         identifier: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = identifier
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let identifier_built = Identifier {
             identifier: identifier,
         };
@@ -2574,13 +2556,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let string_built = String { string: string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
@@ -2597,13 +2579,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         literal_string: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = literal_string
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let literal_string_built = LiteralString {
             literal_string: literal_string,
         };
@@ -2626,21 +2608,21 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _scanner_state_list: &ParseTreeStackEntry<'t>,
         r_brace: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_scanner = percent_scanner
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let l_brace = l_brace
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_brace = r_brace
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_state_list =
             pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
@@ -2667,7 +2649,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _scanner_directives: &ParseTreeStackEntry<'t>,
         _scanner_state_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut scanner_state_list = pop_item!(self, scanner_state_list, ScannerStateList, context);
@@ -2686,10 +2668,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// ScannerStateList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn scanner_state_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn scanner_state_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_state_list_1_built = Vec::new();
@@ -2710,7 +2689,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _state_list_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
@@ -2736,13 +2715,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _state_list_list: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comma = comma
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_list_0_built = StateListList {
@@ -2760,10 +2739,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// StateListList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn state_list_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn state_list_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let state_list_list_1_built = Vec::new();
@@ -2783,21 +2759,21 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _scanner_switch_opt: &ParseTreeStackEntry<'t>,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_sc = percent_sc
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let l_paren = l_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_paren = r_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
         let scanner_switch_0_built = ScannerSwitchPercentScLParenScannerSwitchOptRParen {
             percent_sc: percent_sc,
@@ -2825,21 +2801,21 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_push = percent_push
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let l_paren = l_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_paren = r_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
             percent_push: percent_push,
@@ -2866,21 +2842,21 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         l_paren: &ParseTreeStackEntry<'t>,
         r_paren: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let percent_pop = percent_pop
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let l_paren = l_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let r_paren = r_paren
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {
             percent_pop: percent_pop,
             l_paren: l_paren,
@@ -2902,7 +2878,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _identifier: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = pop_item!(self, identifier, Identifier, context);
@@ -2921,10 +2897,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// ScannerSwitchOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn scanner_switch_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn scanner_switch_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ScannerSwitchOpt(None), context);
@@ -2940,7 +2913,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _cut_operator: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
@@ -2963,7 +2936,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _user_type_declaration: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_declaration =
@@ -2987,13 +2960,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         cut_operator: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cut_operator = cut_operator
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let cut_operator_built = CutOperator {
             cut_operator: cut_operator,
         };
@@ -3013,13 +2986,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         colon: &ParseTreeStackEntry<'t>,
         _user_type_name: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let colon = colon
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclaration {
             colon: colon,
@@ -3045,7 +3018,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _user_type_name_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_name_list =
@@ -3072,7 +3045,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _identifier: &ParseTreeStackEntry<'t>,
         _user_type_name_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut user_type_name_list =
@@ -3094,10 +3067,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// UserTypeNameList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn user_type_name_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn user_type_name_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let user_type_name_list_1_built = Vec::new();
@@ -3117,7 +3087,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _comments_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comments_list = pop_and_reverse_item!(self, comments_list, CommentsList, context);
@@ -3140,7 +3110,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         _comments_list_group: &ParseTreeStackEntry<'t>,
         _comments_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut comments_list = pop_item!(self, comments_list, CommentsList, context);
@@ -3163,7 +3133,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _line_comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_comment = pop_item!(self, line_comment, LineComment, context);
@@ -3188,7 +3158,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         _block_comment: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let block_comment = pop_item!(self, block_comment, BlockComment, context);
@@ -3209,7 +3179,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     /// CommentsList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn comments_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn comments_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comments_list_1_built = Vec::new();
@@ -3226,13 +3196,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         line_comment: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_comment = line_comment
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let line_comment_built = LineComment {
             line_comment: line_comment,
         };
@@ -3251,13 +3221,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         block_comment: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let block_comment = block_comment
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let block_comment_built = BlockComment {
             block_comment: block_comment,
         };
@@ -3276,13 +3246,13 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         &mut self,
         regex: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let regex = regex
             .token(parse_tree)?
             .try_into()
-            .map_err(parol_runtime::ParserError::UserTypeConversionError)?;
+            .map_err(parol_runtime::ParolError::UserError)?;
         let regex_built = Regex { regex: regex };
         // Calling user action here
         self.user_grammar.regex(&regex_built)?;
@@ -3300,7 +3270,7 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.parol_ls(&children[0], &children[1], parse_tree),
             1 => self.prolog(&children[0], &children[1], &children[2], parse_tree),

@@ -16,449 +16,443 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParolError, ParserError};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
 pub trait ParolTomlGrammarTrait<'t> {
     /// Semantic action for non-terminal 'ParolToml'
-    fn parol_toml(&mut self, _arg: &ParolToml<'t>) -> Result<(), ParolError> {
+    fn parol_toml(&mut self, _arg: &ParolToml<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Expression'
-    fn expression(&mut self, _arg: &Expression<'t>) -> Result<(), ParolError> {
+    fn expression(&mut self, _arg: &Expression<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Newline'
-    fn newline(&mut self, _arg: &Newline<'t>) -> Result<(), ParolError> {
+    fn newline(&mut self, _arg: &Newline<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'WsNewline'
-    fn ws_newline(&mut self, _arg: &WsNewline<'t>) -> Result<(), ParolError> {
+    fn ws_newline(&mut self, _arg: &WsNewline<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NonAscii'
-    fn non_ascii(&mut self, _arg: &NonAscii<'t>) -> Result<(), ParolError> {
+    fn non_ascii(&mut self, _arg: &NonAscii<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KeyVal'
-    fn key_val(&mut self, _arg: &KeyVal<'t>) -> Result<(), ParolError> {
+    fn key_val(&mut self, _arg: &KeyVal<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Key'
-    fn key(&mut self, _arg: &Key<'t>) -> Result<(), ParolError> {
+    fn key(&mut self, _arg: &Key<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SimpleKey'
-    fn simple_key(&mut self, _arg: &SimpleKey<'t>) -> Result<(), ParolError> {
+    fn simple_key(&mut self, _arg: &SimpleKey<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QuotedKey'
-    fn quoted_key(&mut self, _arg: &QuotedKey<'t>) -> Result<(), ParolError> {
+    fn quoted_key(&mut self, _arg: &QuotedKey<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'KeyValSep'
-    fn key_val_sep(&mut self, _arg: &KeyValSep<'t>) -> Result<(), ParolError> {
+    fn key_val_sep(&mut self, _arg: &KeyValSep<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Val'
-    fn val(&mut self, _arg: &Val<'t>) -> Result<(), ParolError> {
+    fn val(&mut self, _arg: &Val<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Numeric'
-    fn numeric(&mut self, _arg: &Numeric<'t>) -> Result<(), ParolError> {
+    fn numeric(&mut self, _arg: &Numeric<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicString'
-    fn basic_string(&mut self, _arg: &BasicString<'t>) -> Result<(), ParolError> {
+    fn basic_string(&mut self, _arg: &BasicString<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicChar'
-    fn basic_char(&mut self, _arg: &BasicChar<'t>) -> Result<(), ParolError> {
+    fn basic_char(&mut self, _arg: &BasicChar<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BasicUnescaped'
-    fn basic_unescaped(&mut self, _arg: &BasicUnescaped<'t>) -> Result<(), ParolError> {
+    fn basic_unescaped(&mut self, _arg: &BasicUnescaped<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Escaped'
-    fn escaped(&mut self, _arg: &Escaped<'t>) -> Result<(), ParolError> {
+    fn escaped(&mut self, _arg: &Escaped<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Escape'
-    fn escape(&mut self, _arg: &Escape<'t>) -> Result<(), ParolError> {
+    fn escape(&mut self, _arg: &Escape<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'EscapeSeqChar'
-    fn escape_seq_char(&mut self, _arg: &EscapeSeqChar<'t>) -> Result<(), ParolError> {
+    fn escape_seq_char(&mut self, _arg: &EscapeSeqChar<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Unicode4'
-    fn unicode4(&mut self, _arg: &Unicode4<'t>) -> Result<(), ParolError> {
+    fn unicode4(&mut self, _arg: &Unicode4<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Unicode8'
-    fn unicode8(&mut self, _arg: &Unicode8<'t>) -> Result<(), ParolError> {
+    fn unicode8(&mut self, _arg: &Unicode8<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicString'
-    fn m_l_basic_string(&mut self, _arg: &MLBasicString<'t>) -> Result<(), ParolError> {
+    fn m_l_basic_string(&mut self, _arg: &MLBasicString<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicBody'
-    fn m_l_basic_body(&mut self, _arg: &MLBasicBody<'t>) -> Result<(), ParolError> {
+    fn m_l_basic_body(&mut self, _arg: &MLBasicBody<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContentList'
-    fn m_l_b_content_list(&mut self, _arg: &MLBContentList<'t>) -> Result<(), ParolError> {
+    fn m_l_b_content_list(&mut self, _arg: &MLBContentList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContentList1'
-    fn m_l_b_content_list1(&mut self, _arg: &MLBContentList1<'t>) -> Result<(), ParolError> {
+    fn m_l_b_content_list1(&mut self, _arg: &MLBContentList1<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBContent'
-    fn m_l_b_content(&mut self, _arg: &MLBContent<'t>) -> Result<(), ParolError> {
+    fn m_l_b_content(&mut self, _arg: &MLBContent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBChar'
-    fn m_l_b_char(&mut self, _arg: &MLBChar<'t>) -> Result<(), ParolError> {
+    fn m_l_b_char(&mut self, _arg: &MLBChar<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBUnescaped'
-    fn m_l_b_unescaped(&mut self, _arg: &MLBUnescaped<'t>) -> Result<(), ParolError> {
+    fn m_l_b_unescaped(&mut self, _arg: &MLBUnescaped<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBEscapedNL'
-    fn m_l_b_escaped_n_l(&mut self, _arg: &MLBEscapedNL<'t>) -> Result<(), ParolError> {
+    fn m_l_b_escaped_n_l(&mut self, _arg: &MLBEscapedNL<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralString'
-    fn literal_string(&mut self, _arg: &LiteralString<'t>) -> Result<(), ParolError> {
+    fn literal_string(&mut self, _arg: &LiteralString<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralChar'
-    fn literal_char(&mut self, _arg: &LiteralChar<'t>) -> Result<(), ParolError> {
+    fn literal_char(&mut self, _arg: &LiteralChar<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LiteralCharNoApostrophe'
-    fn literal_char_no_apostrophe(
-        &mut self,
-        _arg: &LiteralCharNoApostrophe<'t>,
-    ) -> Result<(), ParolError> {
+    fn literal_char_no_apostrophe(&mut self, _arg: &LiteralCharNoApostrophe<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralString'
-    fn m_l_literal_string(&mut self, _arg: &MLLiteralString<'t>) -> Result<(), ParolError> {
+    fn m_l_literal_string(&mut self, _arg: &MLLiteralString<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralBody'
-    fn m_l_literal_body(&mut self, _arg: &MLLiteralBody<'t>) -> Result<(), ParolError> {
+    fn m_l_literal_body(&mut self, _arg: &MLLiteralBody<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContentList'
-    fn m_l_l_content_list(&mut self, _arg: &MLLContentList<'t>) -> Result<(), ParolError> {
+    fn m_l_l_content_list(&mut self, _arg: &MLLContentList<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContentList1'
-    fn m_l_l_content_list1(&mut self, _arg: &MLLContentList1<'t>) -> Result<(), ParolError> {
+    fn m_l_l_content_list1(&mut self, _arg: &MLLContentList1<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLContent'
-    fn m_l_l_content(&mut self, _arg: &MLLContent<'t>) -> Result<(), ParolError> {
+    fn m_l_l_content(&mut self, _arg: &MLLContent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Integer'
-    fn integer(&mut self, _arg: &Integer<'t>) -> Result<(), ParolError> {
+    fn integer(&mut self, _arg: &Integer<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexPrefix'
-    fn hex_prefix(&mut self, _arg: &HexPrefix<'t>) -> Result<(), ParolError> {
+    fn hex_prefix(&mut self, _arg: &HexPrefix<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctPrefix'
-    fn oct_prefix(&mut self, _arg: &OctPrefix<'t>) -> Result<(), ParolError> {
+    fn oct_prefix(&mut self, _arg: &OctPrefix<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinPrefix'
-    fn bin_prefix(&mut self, _arg: &BinPrefix<'t>) -> Result<(), ParolError> {
+    fn bin_prefix(&mut self, _arg: &BinPrefix<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DecInt'
-    fn dec_int(&mut self, _arg: &DecInt<'t>) -> Result<(), ParolError> {
+    fn dec_int(&mut self, _arg: &DecInt<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexInt'
-    fn hex_int(&mut self, _arg: &HexInt<'t>) -> Result<(), ParolError> {
+    fn hex_int(&mut self, _arg: &HexInt<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'HexIntContent'
-    fn hex_int_content(&mut self, _arg: &HexIntContent<'t>) -> Result<(), ParolError> {
+    fn hex_int_content(&mut self, _arg: &HexIntContent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctInt'
-    fn oct_int(&mut self, _arg: &OctInt<'t>) -> Result<(), ParolError> {
+    fn oct_int(&mut self, _arg: &OctInt<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OctIntContent'
-    fn oct_int_content(&mut self, _arg: &OctIntContent<'t>) -> Result<(), ParolError> {
+    fn oct_int_content(&mut self, _arg: &OctIntContent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinInt'
-    fn bin_int(&mut self, _arg: &BinInt<'t>) -> Result<(), ParolError> {
+    fn bin_int(&mut self, _arg: &BinInt<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'BinIntContent'
-    fn bin_int_content(&mut self, _arg: &BinIntContent<'t>) -> Result<(), ParolError> {
+    fn bin_int_content(&mut self, _arg: &BinIntContent<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Boolean'
-    fn boolean(&mut self, _arg: &Boolean<'t>) -> Result<(), ParolError> {
+    fn boolean(&mut self, _arg: &Boolean<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Float'
-    fn float(&mut self, _arg: &Float<'t>) -> Result<(), ParolError> {
+    fn float(&mut self, _arg: &Float<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'NormalFloat'
-    fn normal_float(&mut self, _arg: &NormalFloat<'t>) -> Result<(), ParolError> {
+    fn normal_float(&mut self, _arg: &NormalFloat<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'SpecialFloat'
-    fn special_float(&mut self, _arg: &SpecialFloat<'t>) -> Result<(), ParolError> {
+    fn special_float(&mut self, _arg: &SpecialFloat<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DateTime'
-    fn date_time(&mut self, _arg: &DateTime<'t>) -> Result<(), ParolError> {
+    fn date_time(&mut self, _arg: &DateTime<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'OffsetDateTime'
-    fn offset_date_time(&mut self, _arg: &OffsetDateTime<'t>) -> Result<(), ParolError> {
+    fn offset_date_time(&mut self, _arg: &OffsetDateTime<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalDateTime'
-    fn local_date_time(&mut self, _arg: &LocalDateTime<'t>) -> Result<(), ParolError> {
+    fn local_date_time(&mut self, _arg: &LocalDateTime<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalDate'
-    fn local_date(&mut self, _arg: &LocalDate<'t>) -> Result<(), ParolError> {
+    fn local_date(&mut self, _arg: &LocalDate<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'LocalTime'
-    fn local_time(&mut self, _arg: &LocalTime<'t>) -> Result<(), ParolError> {
+    fn local_time(&mut self, _arg: &LocalTime<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Array'
-    fn array(&mut self, _arg: &Array<'t>) -> Result<(), ParolError> {
+    fn array(&mut self, _arg: &Array<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayValues'
-    fn array_values(&mut self, _arg: &ArrayValues<'t>) -> Result<(), ParolError> {
+    fn array_values(&mut self, _arg: &ArrayValues<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArraySep'
-    fn array_sep(&mut self, _arg: &ArraySep<'t>) -> Result<(), ParolError> {
+    fn array_sep(&mut self, _arg: &ArraySep<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Table'
-    fn table(&mut self, _arg: &Table<'t>) -> Result<(), ParolError> {
+    fn table(&mut self, _arg: &Table<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTable'
-    fn std_table(&mut self, _arg: &StdTable<'t>) -> Result<(), ParolError> {
+    fn std_table(&mut self, _arg: &StdTable<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTableOpen'
-    fn array_table_open(&mut self, _arg: &ArrayTableOpen<'t>) -> Result<(), ParolError> {
+    fn array_table_open(&mut self, _arg: &ArrayTableOpen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTableClose'
-    fn array_table_close(&mut self, _arg: &ArrayTableClose<'t>) -> Result<(), ParolError> {
+    fn array_table_close(&mut self, _arg: &ArrayTableClose<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayOpen'
-    fn array_open(&mut self, _arg: &ArrayOpen<'t>) -> Result<(), ParolError> {
+    fn array_open(&mut self, _arg: &ArrayOpen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayClose'
-    fn array_close(&mut self, _arg: &ArrayClose<'t>) -> Result<(), ParolError> {
+    fn array_close(&mut self, _arg: &ArrayClose<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTableOpen'
-    fn std_table_open(&mut self, _arg: &StdTableOpen<'t>) -> Result<(), ParolError> {
+    fn std_table_open(&mut self, _arg: &StdTableOpen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'StdTableClose'
-    fn std_table_close(&mut self, _arg: &StdTableClose<'t>) -> Result<(), ParolError> {
+    fn std_table_close(&mut self, _arg: &StdTableClose<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTable'
-    fn inline_table(&mut self, _arg: &InlineTable<'t>) -> Result<(), ParolError> {
+    fn inline_table(&mut self, _arg: &InlineTable<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableOpen'
-    fn inline_table_open(&mut self, _arg: &InlineTableOpen<'t>) -> Result<(), ParolError> {
+    fn inline_table_open(&mut self, _arg: &InlineTableOpen<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableClose'
-    fn inline_table_close(&mut self, _arg: &InlineTableClose<'t>) -> Result<(), ParolError> {
+    fn inline_table_close(&mut self, _arg: &InlineTableClose<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableSep'
-    fn inline_table_sep(&mut self, _arg: &InlineTableSep<'t>) -> Result<(), ParolError> {
+    fn inline_table_sep(&mut self, _arg: &InlineTableSep<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'InlineTableKeyVals'
-    fn inline_table_key_vals(&mut self, _arg: &InlineTableKeyVals<'t>) -> Result<(), ParolError> {
+    fn inline_table_key_vals(&mut self, _arg: &InlineTableKeyVals<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'ArrayTable'
-    fn array_table(&mut self, _arg: &ArrayTable<'t>) -> Result<(), ParolError> {
+    fn array_table(&mut self, _arg: &ArrayTable<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UnsignedDecInt'
-    fn unsigned_dec_int(&mut self, _arg: &UnsignedDecInt<'t>) -> Result<(), ParolError> {
+    fn unsigned_dec_int(&mut self, _arg: &UnsignedDecInt<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'UnquotedKey'
-    fn unquoted_key(&mut self, _arg: &UnquotedKey<'t>) -> Result<(), ParolError> {
+    fn unquoted_key(&mut self, _arg: &UnquotedKey<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'DotSep'
-    fn dot_sep(&mut self, _arg: &DotSep<'t>) -> Result<(), ParolError> {
+    fn dot_sep(&mut self, _arg: &DotSep<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicStringStart'
-    fn m_l_basic_string_start(&mut self, _arg: &MLBasicStringStart<'t>) -> Result<(), ParolError> {
+    fn m_l_basic_string_start(&mut self, _arg: &MLBasicStringStart<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBasicStringEnd'
-    fn m_l_basic_string_end(&mut self, _arg: &MLBasicStringEnd<'t>) -> Result<(), ParolError> {
+    fn m_l_basic_string_end(&mut self, _arg: &MLBasicStringEnd<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLBQuotes'
-    fn m_l_b_quotes(&mut self, _arg: &MLBQuotes<'t>) -> Result<(), ParolError> {
+    fn m_l_b_quotes(&mut self, _arg: &MLBQuotes<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'QuotationMark'
-    fn quotation_mark(&mut self, _arg: &QuotationMark<'t>) -> Result<(), ParolError> {
+    fn quotation_mark(&mut self, _arg: &QuotationMark<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralStringStart'
-    fn m_l_literal_string_start(
-        &mut self,
-        _arg: &MLLiteralStringStart<'t>,
-    ) -> Result<(), ParolError> {
+    fn m_l_literal_string_start(&mut self, _arg: &MLLiteralStringStart<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLiteralStringEnd'
-    fn m_l_literal_string_end(&mut self, _arg: &MLLiteralStringEnd<'t>) -> Result<(), ParolError> {
+    fn m_l_literal_string_end(&mut self, _arg: &MLLiteralStringEnd<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'MLLQuotes'
-    fn m_l_l_quotes(&mut self, _arg: &MLLQuotes<'t>) -> Result<(), ParolError> {
+    fn m_l_l_quotes(&mut self, _arg: &MLLQuotes<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Apostrophe'
-    fn apostrophe(&mut self, _arg: &Apostrophe<'t>) -> Result<(), ParolError> {
+    fn apostrophe(&mut self, _arg: &Apostrophe<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'AsciiNoEscape'
-    fn ascii_no_escape(&mut self, _arg: &AsciiNoEscape<'t>) -> Result<(), ParolError> {
+    fn ascii_no_escape(&mut self, _arg: &AsciiNoEscape<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Minus'
-    fn minus(&mut self, _arg: &Minus<'t>) -> Result<(), ParolError> {
+    fn minus(&mut self, _arg: &Minus<'t>) -> Result<()> {
         Ok(())
     }
 
     /// Semantic action for non-terminal 'Plus'
-    fn plus(&mut self, _arg: &Plus<'t>) -> Result<(), ParolError> {
+    fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
 }
@@ -2527,7 +2521,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _parol_toml_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let parol_toml_list = pop_and_reverse_item!(self, parol_toml_list, ParolTomlList, context);
@@ -2550,7 +2544,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _expression: &ParseTreeStackEntry<'t>,
         _parol_toml_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut parol_toml_list = pop_item!(self, parol_toml_list, ParolTomlList, context);
@@ -2569,10 +2563,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ParolTomlList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn parol_toml_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn parol_toml_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let parol_toml_list_1_built = Vec::new();
@@ -2589,7 +2580,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _key_val: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val = pop_item!(self, key_val, KeyVal, context);
@@ -2612,7 +2603,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let table = pop_item!(self, table, Table, context);
@@ -2635,7 +2626,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         newline: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = newline.token(parse_tree)?.clone();
@@ -2655,7 +2646,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         ws_newline: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = ws_newline.token(parse_tree)?.clone();
@@ -2677,7 +2668,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         non_ascii: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = non_ascii.token(parse_tree)?.clone();
@@ -2701,7 +2692,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key_val_sep: &ParseTreeStackEntry<'t>,
         _val: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let val = pop_item!(self, val, Val, context);
@@ -2728,7 +2719,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_suffix = pop_item!(self, key_suffix, KeySuffix, context);
@@ -2748,7 +2739,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// KeySuffix: ;
     ///
     #[parol_runtime::function_name::named]
-    fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn key_suffix_0(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_suffix_0_built = KeySuffixKeySuffixEmpty {};
@@ -2768,7 +2759,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_list = pop_and_reverse_item!(self, key_list, KeyList, context);
@@ -2795,7 +2786,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _simple_key: &ParseTreeStackEntry<'t>,
         _key_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut key_list = pop_item!(self, key_list, KeyList, context);
@@ -2816,7 +2807,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// KeyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn key_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_list_1_built = Vec::new();
@@ -2833,7 +2824,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _quoted_key: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quoted_key = pop_item!(self, quoted_key, QuotedKey, context);
@@ -2856,7 +2847,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unquoted_key: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = pop_item!(self, unquoted_key, UnquotedKey, context);
@@ -2879,7 +2870,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
@@ -2902,7 +2893,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
@@ -2925,7 +2916,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         key_val_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val_sep = key_val_sep.token(parse_tree)?.clone();
@@ -2947,7 +2938,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _boolean: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let boolean = pop_item!(self, boolean, Boolean, context);
@@ -2970,7 +2961,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
@@ -2993,7 +2984,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _inline_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table = pop_item!(self, inline_table, InlineTable, context);
@@ -3016,7 +3007,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let date_time = pop_item!(self, date_time, DateTime, context);
@@ -3039,7 +3030,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _numeric: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let numeric = pop_item!(self, numeric, Numeric, context);
@@ -3062,7 +3053,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
@@ -3085,7 +3076,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_basic_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string = pop_item!(self, m_l_basic_string, MLBasicString, context);
@@ -3108,7 +3099,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
@@ -3131,7 +3122,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_literal_string: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string = pop_item!(self, m_l_literal_string, MLLiteralString, context);
@@ -3154,7 +3145,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
@@ -3177,7 +3168,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _integer: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
@@ -3202,7 +3193,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _basic_string_list: &ParseTreeStackEntry<'t>,
         _quotation_mark0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark0 = pop_item!(self, quotation_mark0, QuotationMark, context);
@@ -3230,7 +3221,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _basic_char: &ParseTreeStackEntry<'t>,
         _basic_string_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut basic_string_list = pop_item!(self, basic_string_list, BasicStringList, context);
@@ -3249,10 +3240,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// BasicStringList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_string_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn basic_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string_list_1_built = Vec::new();
@@ -3269,7 +3257,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _basic_unescaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_unescaped = pop_item!(self, basic_unescaped, BasicUnescaped, context);
@@ -3292,7 +3280,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
@@ -3315,7 +3303,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
@@ -3339,7 +3327,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
@@ -3364,7 +3352,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _escape: &ParseTreeStackEntry<'t>,
         _escape_seq_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape_seq_char = pop_item!(self, escape_seq_char, EscapeSeqChar, context);
@@ -3388,7 +3376,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         escape: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = escape.token(parse_tree)?.clone();
@@ -3408,7 +3396,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _quotation_mark: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
@@ -3432,7 +3420,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = pop_item!(self, escape, Escape, context);
@@ -3456,7 +3444,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         b: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let b = b.token(parse_tree)?.clone();
@@ -3478,7 +3466,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         f: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f = f.token(parse_tree)?.clone();
@@ -3500,7 +3488,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         n: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let n = n.token(parse_tree)?.clone();
@@ -3522,7 +3510,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r = r.token(parse_tree)?.clone();
@@ -3544,7 +3532,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         t: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let t = t.token(parse_tree)?.clone();
@@ -3566,7 +3554,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unicode4: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = pop_item!(self, unicode4, Unicode4, context);
@@ -3590,7 +3578,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _unicode8: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = pop_item!(self, unicode8, Unicode8, context);
@@ -3614,7 +3602,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ws_newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = pop_item!(self, ws_newline, WsNewline, context);
@@ -3638,7 +3626,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
@@ -3662,7 +3650,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unicode4: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = unicode4.token(parse_tree)?.clone();
@@ -3682,7 +3670,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unicode8: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = unicode8.token(parse_tree)?.clone();
@@ -3704,7 +3692,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_basic_body: &ParseTreeStackEntry<'t>,
         _m_l_basic_string_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_end = pop_item!(self, m_l_basic_string_end, MLBasicStringEnd, context);
@@ -3733,7 +3721,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _m_l_basic_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_body_list =
@@ -3760,7 +3748,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content_list1: &ParseTreeStackEntry<'t>,
         _m_l_basic_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_basic_body_list =
@@ -3782,10 +3770,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLBasicBodyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_basic_body_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn m_l_basic_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_body_list_1_built = Vec::new();
@@ -3806,7 +3791,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content: &ParseTreeStackEntry<'t>,
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
@@ -3829,10 +3814,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLBContentList: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_b_content_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn m_l_b_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list_1_built = MLBContentListMLBContentListEmpty {};
@@ -3855,7 +3837,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_b_content: &ParseTreeStackEntry<'t>,
         _m_l_b_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
@@ -3880,7 +3862,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_char = pop_item!(self, m_l_b_char, MLBChar, context);
@@ -3903,7 +3885,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
@@ -3926,7 +3908,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = pop_item!(self, m_l_b_escaped_n_l, MLBEscapedNL, context);
@@ -3949,7 +3931,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _m_l_b_unescaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_unescaped = pop_item!(self, m_l_b_unescaped, MLBUnescaped, context);
@@ -3972,7 +3954,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _escaped: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
@@ -3995,7 +3977,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _ascii_no_escape: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
@@ -4019,7 +4001,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
@@ -4043,7 +4025,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_b_escaped_n_l: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = m_l_b_escaped_n_l.token(parse_tree)?.clone();
@@ -4068,7 +4050,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _literal_string_list: &ParseTreeStackEntry<'t>,
         _apostrophe0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'apostrophe0'
@@ -4098,7 +4080,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _literal_char: &ParseTreeStackEntry<'t>,
         _literal_string_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut literal_string_list =
@@ -4118,10 +4100,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// LiteralStringList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn literal_string_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn literal_string_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string_list_1_built = Vec::new();
@@ -4141,7 +4120,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char_no_apostrophe = pop_item!(
@@ -4169,7 +4148,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _non_ascii: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
@@ -4192,7 +4171,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         literal_char_no_apostrophe: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char_no_apostrophe = literal_char_no_apostrophe.token(parse_tree)?.clone();
@@ -4219,7 +4198,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_literal_string_start: &ParseTreeStackEntry<'t>,
         _m_l_literal_body: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_body = pop_item!(self, m_l_literal_body, MLLiteralBody, context);
@@ -4247,7 +4226,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_literal_body_list: &ParseTreeStackEntry<'t>,
         _m_l_literal_string_end: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'm_l_literal_string_end'
@@ -4278,7 +4257,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content_list1: &ParseTreeStackEntry<'t>,
         _m_l_literal_body_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mut m_l_literal_body_list =
@@ -4300,10 +4279,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLLiteralBodyList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_literal_body_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn m_l_literal_body_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_body_list_1_built = Vec::new();
@@ -4324,7 +4300,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content: &ParseTreeStackEntry<'t>,
         _m_l_l_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
@@ -4347,10 +4323,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// MLLContentList: ;
     ///
     #[parol_runtime::function_name::named]
-    fn m_l_l_content_list_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn m_l_l_content_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list_1_built = MLLContentListMLLContentListEmpty {};
@@ -4373,7 +4346,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _m_l_l_content: &ParseTreeStackEntry<'t>,
         _m_l_l_content_list: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
@@ -4398,7 +4371,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _literal_char: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
@@ -4421,7 +4394,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _newline: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
@@ -4444,7 +4417,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _dec_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int = pop_item!(self, dec_int, DecInt, context);
@@ -4467,7 +4440,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _hex_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int = pop_item!(self, hex_int, HexInt, context);
@@ -4490,7 +4463,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _oct_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int = pop_item!(self, oct_int, OctInt, context);
@@ -4513,7 +4486,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _bin_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int = pop_item!(self, bin_int, BinInt, context);
@@ -4536,7 +4509,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         hex_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_prefix = hex_prefix.token(parse_tree)?.clone();
@@ -4558,7 +4531,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         oct_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_prefix = oct_prefix.token(parse_tree)?.clone();
@@ -4580,7 +4553,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         bin_prefix: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_prefix = bin_prefix.token(parse_tree)?.clone();
@@ -4603,7 +4576,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _dec_int_opt: &ParseTreeStackEntry<'t>,
         _unsigned_dec_int: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unsigned_dec_int = pop_item!(self, unsigned_dec_int, UnsignedDecInt, context);
@@ -4627,7 +4600,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _dec_int_opt_group: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int_opt_group = pop_item!(self, dec_int_opt_group, DecIntOptGroup, context);
@@ -4650,7 +4623,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _plus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
@@ -4671,7 +4644,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _minus: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
@@ -4688,7 +4661,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// DecIntOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn dec_int_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::DecIntOpt(None), context);
@@ -4705,7 +4678,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _hex_prefix: &ParseTreeStackEntry<'t>,
         _hex_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = pop_item!(self, hex_int_content, HexIntContent, context);
@@ -4730,7 +4703,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         hex_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = hex_int_content.token(parse_tree)?.clone();
@@ -4753,7 +4726,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _oct_prefix: &ParseTreeStackEntry<'t>,
         _oct_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = pop_item!(self, oct_int_content, OctIntContent, context);
@@ -4778,7 +4751,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         oct_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = oct_int_content.token(parse_tree)?.clone();
@@ -4801,7 +4774,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _bin_prefix: &ParseTreeStackEntry<'t>,
         _bin_int_content: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = pop_item!(self, bin_int_content, BinIntContent, context);
@@ -4826,7 +4799,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         bin_int_content: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = bin_int_content.token(parse_tree)?.clone();
@@ -4848,7 +4821,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r#true: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#true = r#true.token(parse_tree)?.clone();
@@ -4869,7 +4842,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         r#false: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#false = r#false.token(parse_tree)?.clone();
@@ -4890,7 +4863,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _normal_float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = pop_item!(self, normal_float, NormalFloat, context);
@@ -4913,7 +4886,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _special_float: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = pop_item!(self, special_float, SpecialFloat, context);
@@ -4936,7 +4909,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         normal_float: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = normal_float.token(parse_tree)?.clone();
@@ -4958,7 +4931,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         special_float: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = special_float.token(parse_tree)?.clone();
@@ -4980,7 +4953,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _offset_date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = pop_item!(self, offset_date_time, OffsetDateTime, context);
@@ -5003,7 +4976,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_date_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = pop_item!(self, local_date_time, LocalDateTime, context);
@@ -5026,7 +4999,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_date: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = pop_item!(self, local_date, LocalDate, context);
@@ -5049,7 +5022,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _local_time: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = pop_item!(self, local_time, LocalTime, context);
@@ -5072,7 +5045,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         offset_date_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = offset_date_time.token(parse_tree)?.clone();
@@ -5095,7 +5068,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_date_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = local_date_time.token(parse_tree)?.clone();
@@ -5117,7 +5090,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_date: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = local_date.token(parse_tree)?.clone();
@@ -5139,7 +5112,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         local_time: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = local_time.token(parse_tree)?.clone();
@@ -5163,7 +5136,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _array_opt: &ParseTreeStackEntry<'t>,
         _array_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_close'
@@ -5191,7 +5164,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values = pop_item!(self, array_values, ArrayValues, context);
@@ -5210,7 +5183,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<(), ParolError> {
+    fn array_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ArrayOpt(None), context);
@@ -5227,7 +5200,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _val: &ParseTreeStackEntry<'t>,
         _array_values_suffix0: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix0 =
@@ -5253,7 +5226,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _array_sep: &ParseTreeStackEntry<'t>,
         _array_values_suffix: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix = pop_item!(self, array_values_suffix, ArrayValuesSuffix, context);
@@ -5277,10 +5250,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayValuesSuffix0: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_values_suffix0_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn array_values_suffix0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix0_1_built = ArrayValuesSuffix0ArrayValuesSuffix0Empty {};
@@ -5302,7 +5272,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_values: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values = pop_item!(self, array_values, ArrayValues, context);
@@ -5323,10 +5293,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// ArrayValuesSuffix: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_values_suffix_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn array_values_suffix_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix_1_built = ArrayValuesSuffixArrayValuesSuffixEmpty {};
@@ -5348,7 +5315,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = array_sep.token(parse_tree)?.clone();
@@ -5370,7 +5337,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _std_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let std_table = pop_item!(self, std_table, StdTable, context);
@@ -5393,7 +5360,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_table: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table = pop_item!(self, array_table, ArrayTable, context);
@@ -5418,7 +5385,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key: &ParseTreeStackEntry<'t>,
         _std_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'std_table_close'
@@ -5446,7 +5413,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_table_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_open = array_table_open.token(parse_tree)?.clone();
@@ -5469,7 +5436,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_table_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_close = array_table_close.token(parse_tree)?.clone();
@@ -5492,7 +5459,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = array_open.token(parse_tree)?.clone();
@@ -5514,7 +5481,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         array_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = array_close.token(parse_tree)?.clone();
@@ -5536,7 +5503,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_open: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = pop_item!(self, array_open, ArrayOpen, context);
@@ -5558,7 +5525,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = pop_item!(self, array_close, ArrayClose, context);
@@ -5582,7 +5549,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _inline_table_opt: &ParseTreeStackEntry<'t>,
         _inline_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'inline_table_close'
@@ -5610,7 +5577,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _inline_table_key_vals: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
@@ -5630,10 +5597,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// InlineTableOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn inline_table_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn inline_table_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::InlineTableOpt(None), context);
@@ -5649,7 +5613,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         inline_table_open: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_open = inline_table_open.token(parse_tree)?.clone();
@@ -5672,7 +5636,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         inline_table_close: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_close = inline_table_close.token(parse_tree)?.clone();
@@ -5695,7 +5659,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         _array_sep: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = pop_item!(self, array_sep, ArraySep, context);
@@ -5719,7 +5683,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key_val: &ParseTreeStackEntry<'t>,
         _inline_table_key_vals_opt: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals_opt = pop_item!(
@@ -5753,7 +5717,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _inline_table_sep: &ParseTreeStackEntry<'t>,
         _inline_table_key_vals: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
@@ -5776,10 +5740,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     /// InlineTableKeyValsOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn inline_table_key_vals_opt_1(
-        &mut self,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    fn inline_table_key_vals_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::InlineTableKeyValsOpt(None), context);
@@ -5797,7 +5758,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         _key: &ParseTreeStackEntry<'t>,
         _array_table_close: &ParseTreeStackEntry<'t>,
         _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'array_table_close'
@@ -5825,7 +5786,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unsigned_dec_int: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unsigned_dec_int = unsigned_dec_int.token(parse_tree)?.clone();
@@ -5848,7 +5809,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         unquoted_key: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = unquoted_key.token(parse_tree)?.clone();
@@ -5870,7 +5831,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         dot_sep: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_sep = dot_sep.token(parse_tree)?.clone();
@@ -5890,7 +5851,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_basic_string_start: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_start = m_l_basic_string_start.token(parse_tree)?.clone();
@@ -5916,7 +5877,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_basic_string_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_end = m_l_basic_string_end.token(parse_tree)?.clone();
@@ -5942,7 +5903,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_b_quotes: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_quotes = m_l_b_quotes.token(parse_tree)?.clone();
@@ -5964,7 +5925,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         quotation_mark: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = quotation_mark.token(parse_tree)?.clone();
@@ -5986,7 +5947,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_literal_string_start: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_start = m_l_literal_string_start.token(parse_tree)?.clone();
@@ -6012,7 +5973,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_literal_string_end: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_end = m_l_literal_string_end.token(parse_tree)?.clone();
@@ -6038,7 +5999,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         m_l_l_quotes: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_quotes = m_l_l_quotes.token(parse_tree)?.clone();
@@ -6060,7 +6021,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         apostrophe: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let apostrophe = apostrophe.token(parse_tree)?.clone();
@@ -6082,7 +6043,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         ascii_no_escape: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = ascii_no_escape.token(parse_tree)?.clone();
@@ -6104,7 +6065,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         minus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
@@ -6124,7 +6085,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         &mut self,
         plus: &ParseTreeStackEntry<'t>,
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
@@ -6145,7 +6106,7 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<(), ParolError> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.parol_toml(&children[0], parse_tree),
             1 => self.parol_toml_list_0(&children[0], &children[1], parse_tree),

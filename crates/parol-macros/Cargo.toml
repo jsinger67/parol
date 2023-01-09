@@ -1,6 +1,6 @@
 [package]
 name = "parol-macros"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "Macros for LL(k) parser generator `parol`"
 documentation = "https://docs.rs/parol-macros"

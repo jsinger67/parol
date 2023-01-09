@@ -105,12 +105,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>, LexerError> {
         if n > self.k {
-            return Err(LexerError::LookaheadExceedsMaximum);
+            Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                return Err(LexerError::LookaheadExceedsTokenBufferLength);
+                Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].clone())
@@ -126,12 +126,12 @@ impl<'t> TokenStream<'t> {
     ///
     pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex, LexerError> {
         if n > self.k {
-            return Err(LexerError::LookaheadExceedsMaximum);
+            Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                return Err(LexerError::LookaheadExceedsTokenBufferLength);
+                Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -148,9 +148,9 @@ impl<'t> TokenStream<'t> {
     pub fn consume(&mut self) -> Result<(), LexerError> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
-            return Err(LexerError::InternalError(
+            Err(LexerError::InternalError(
                 "Consume on empty buffer is impossible".into(),
-            ));
+            ))
         } else {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
@@ -191,7 +191,7 @@ impl<'t> TokenStream<'t> {
             .iter()
             .rev()
             .find(|t| t.token_type != super::EOI)
-            .ok_or_else(|| LexerError::TokenBufferEmptyError.into())
+            .ok_or(LexerError::TokenBufferEmptyError)
     }
 
     ///

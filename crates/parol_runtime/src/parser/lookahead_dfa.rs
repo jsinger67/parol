@@ -81,8 +81,7 @@ impl LookaheadDFA {
         if self.k > token_stream.k {
             return Err(LexerError::DataError(
                 "Lookahead size mismatch between token stream and Lookahead DFA",
-            )
-            .into());
+            ));
         }
         let mut last_accepting_state: Option<StateIndex> = None;
         for i in 0..self.k {
@@ -159,8 +158,7 @@ impl LookaheadDFA {
             );
             return Err(LexerError::PredictionError {
                 cause: format!("Production prediction failed at state {}", state),
-            }
-            .into());
+            });
         }
     }
 

@@ -4,7 +4,6 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use anyhow::Result;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::once_cell::sync::Lazy;
@@ -12,13 +11,12 @@ use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
 };
-use parol_runtime::ParolError;
+use parol_runtime::Result;
 use std::cell::RefCell;
 use std::path::Path;
 
 use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_grammar_trait::ParolGrammarAuto;
-use crate::ParolParserError;
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
@@ -1019,7 +1017,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut ParolGrammar<'t>,
-) -> Result<Tree<ParseTreeType<'t>>, ParolError<ParolParserError>>
+) -> Result<Tree<ParseTreeType<'t>>>
 where
     T: AsRef<Path>,
 {

@@ -106,7 +106,7 @@ impl<'a> UserTraitGenerator<'a> {
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = {}.token(parse_tree)?.try_into().map_err(parol_runtime::ParserError::UserTypeConversionError)?;",
+                    "let {} = {}.token(parse_tree)?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
                     arg_name, arg_name,
                 ))
             }
@@ -212,7 +212,7 @@ impl<'a> UserTraitGenerator<'a> {
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
             ) {
                 format!(
-                    r#"(&{}).try_into().map_err(parol_runtime::ParserError::UserTypeConversionError)?"#,
+                    r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
                     arg_name
                 )
             } else {
