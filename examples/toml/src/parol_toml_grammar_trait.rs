@@ -2525,9 +2525,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let parol_toml_list = pop_and_reverse_item!(self, parol_toml_list, ParolTomlList, context);
-        let parol_toml_built = ParolToml {
-            parol_toml_list: parol_toml_list,
-        };
+        let parol_toml_built = ParolToml { parol_toml_list };
         // Calling user action here
         self.user_grammar.parol_toml(&parol_toml_built)?;
         self.push(ASTType::ParolToml(parol_toml_built), context);
@@ -2630,7 +2628,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = newline.token(parse_tree)?.clone();
-        let newline_built = Newline { newline: newline };
+        let newline_built = Newline { newline };
         // Calling user action here
         self.user_grammar.newline(&newline_built)?;
         self.push(ASTType::Newline(newline_built), context);
@@ -2650,9 +2648,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = ws_newline.token(parse_tree)?.clone();
-        let ws_newline_built = WsNewline {
-            ws_newline: ws_newline,
-        };
+        let ws_newline_built = WsNewline { ws_newline };
         // Calling user action here
         self.user_grammar.ws_newline(&ws_newline_built)?;
         self.push(ASTType::WsNewline(ws_newline_built), context);
@@ -2672,9 +2668,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = non_ascii.token(parse_tree)?.clone();
-        let non_ascii_built = NonAscii {
-            non_ascii: non_ascii,
-        };
+        let non_ascii_built = NonAscii { non_ascii };
         // Calling user action here
         self.user_grammar.non_ascii(&non_ascii_built)?;
         self.push(ASTType::NonAscii(non_ascii_built), context);
@@ -2768,7 +2762,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_suffix_1_built = KeySuffixDotSepSimpleKeyKeyList {
             dot_sep: Box::new(dot_sep),
             simple_key: Box::new(simple_key),
-            key_list: key_list,
+            key_list,
         };
         let key_suffix_1_built = KeySuffix::DotSepSimpleKeyKeyList(key_suffix_1_built);
         self.push(ASTType::KeySuffix(key_suffix_1_built), context);
@@ -2920,9 +2914,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let key_val_sep = key_val_sep.token(parse_tree)?.clone();
-        let key_val_sep_built = KeyValSep {
-            key_val_sep: key_val_sep,
-        };
+        let key_val_sep_built = KeyValSep { key_val_sep };
         // Calling user action here
         self.user_grammar.key_val_sep(&key_val_sep_built)?;
         self.push(ASTType::KeyValSep(key_val_sep_built), context);
@@ -3202,7 +3194,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
         let basic_string_built = BasicString {
             quotation_mark: Box::new(quotation_mark),
-            basic_string_list: basic_string_list,
+            basic_string_list,
             quotation_mark0: Box::new(quotation_mark0),
         };
         // Calling user action here
@@ -3380,7 +3372,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = escape.token(parse_tree)?.clone();
-        let escape_built = Escape { escape: escape };
+        let escape_built = Escape { escape };
         // Calling user action here
         self.user_grammar.escape(&escape_built)?;
         self.push(ASTType::Escape(escape_built), context);
@@ -3448,7 +3440,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let b = b.token(parse_tree)?.clone();
-        let escape_seq_char_2_built = EscapeSeqCharB { b: b };
+        let escape_seq_char_2_built = EscapeSeqCharB { b };
         let escape_seq_char_2_built = EscapeSeqChar::B(escape_seq_char_2_built);
         // Calling user action here
         self.user_grammar
@@ -3470,7 +3462,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let f = f.token(parse_tree)?.clone();
-        let escape_seq_char_3_built = EscapeSeqCharF { f: f };
+        let escape_seq_char_3_built = EscapeSeqCharF { f };
         let escape_seq_char_3_built = EscapeSeqChar::F(escape_seq_char_3_built);
         // Calling user action here
         self.user_grammar
@@ -3492,7 +3484,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let n = n.token(parse_tree)?.clone();
-        let escape_seq_char_4_built = EscapeSeqCharN { n: n };
+        let escape_seq_char_4_built = EscapeSeqCharN { n };
         let escape_seq_char_4_built = EscapeSeqChar::N(escape_seq_char_4_built);
         // Calling user action here
         self.user_grammar
@@ -3514,7 +3506,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r = r.token(parse_tree)?.clone();
-        let escape_seq_char_5_built = EscapeSeqCharR { r: r };
+        let escape_seq_char_5_built = EscapeSeqCharR { r };
         let escape_seq_char_5_built = EscapeSeqChar::R(escape_seq_char_5_built);
         // Calling user action here
         self.user_grammar
@@ -3536,7 +3528,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let t = t.token(parse_tree)?.clone();
-        let escape_seq_char_6_built = EscapeSeqCharT { t: t };
+        let escape_seq_char_6_built = EscapeSeqCharT { t };
         let escape_seq_char_6_built = EscapeSeqChar::T(escape_seq_char_6_built);
         // Calling user action here
         self.user_grammar
@@ -3654,7 +3646,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = unicode4.token(parse_tree)?.clone();
-        let unicode4_built = Unicode4 { unicode4: unicode4 };
+        let unicode4_built = Unicode4 { unicode4 };
         // Calling user action here
         self.user_grammar.unicode4(&unicode4_built)?;
         self.push(ASTType::Unicode4(unicode4_built), context);
@@ -3674,7 +3666,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = unicode8.token(parse_tree)?.clone();
-        let unicode8_built = Unicode8 { unicode8: unicode8 };
+        let unicode8_built = Unicode8 { unicode8 };
         // Calling user action here
         self.user_grammar.unicode8(&unicode8_built)?;
         self.push(ASTType::Unicode8(unicode8_built), context);
@@ -3729,7 +3721,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_basic_body_built = MLBasicBody {
             m_l_b_content_list: Box::new(m_l_b_content_list),
-            m_l_basic_body_list: m_l_basic_body_list,
+            m_l_basic_body_list,
         };
         // Calling user action here
         self.user_grammar.m_l_basic_body(&m_l_basic_body_built)?;
@@ -4029,9 +4021,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = m_l_b_escaped_n_l.token(parse_tree)?.clone();
-        let m_l_b_escaped_n_l_built = MLBEscapedNL {
-            m_l_b_escaped_n_l: m_l_b_escaped_n_l,
-        };
+        let m_l_b_escaped_n_l_built = MLBEscapedNL { m_l_b_escaped_n_l };
         // Calling user action here
         self.user_grammar
             .m_l_b_escaped_n_l(&m_l_b_escaped_n_l_built)?;
@@ -4061,7 +4051,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let literal_string_built = LiteralString {
             // Ignore clipped member 'apostrophe'
-            literal_string_list: literal_string_list,
+            literal_string_list,
             // Ignore clipped member 'apostrophe0'
         };
         // Calling user action here
@@ -4176,7 +4166,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let literal_char_no_apostrophe = literal_char_no_apostrophe.token(parse_tree)?.clone();
         let literal_char_no_apostrophe_built = LiteralCharNoApostrophe {
-            literal_char_no_apostrophe: literal_char_no_apostrophe,
+            literal_char_no_apostrophe,
         };
         // Calling user action here
         self.user_grammar
@@ -4236,7 +4226,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_literal_body_built = MLLiteralBody {
             m_l_l_content_list: Box::new(m_l_l_content_list),
-            m_l_literal_body_list: m_l_literal_body_list,
+            m_l_literal_body_list,
             // Ignore clipped member 'm_l_literal_string_end'
         };
         // Calling user action here
@@ -4513,9 +4503,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_prefix = hex_prefix.token(parse_tree)?.clone();
-        let hex_prefix_built = HexPrefix {
-            hex_prefix: hex_prefix,
-        };
+        let hex_prefix_built = HexPrefix { hex_prefix };
         // Calling user action here
         self.user_grammar.hex_prefix(&hex_prefix_built)?;
         self.push(ASTType::HexPrefix(hex_prefix_built), context);
@@ -4535,9 +4523,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_prefix = oct_prefix.token(parse_tree)?.clone();
-        let oct_prefix_built = OctPrefix {
-            oct_prefix: oct_prefix,
-        };
+        let oct_prefix_built = OctPrefix { oct_prefix };
         // Calling user action here
         self.user_grammar.oct_prefix(&oct_prefix_built)?;
         self.push(ASTType::OctPrefix(oct_prefix_built), context);
@@ -4557,9 +4543,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_prefix = bin_prefix.token(parse_tree)?.clone();
-        let bin_prefix_built = BinPrefix {
-            bin_prefix: bin_prefix,
-        };
+        let bin_prefix_built = BinPrefix { bin_prefix };
         // Calling user action here
         self.user_grammar.bin_prefix(&bin_prefix_built)?;
         self.push(ASTType::BinPrefix(bin_prefix_built), context);
@@ -4582,7 +4566,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let unsigned_dec_int = pop_item!(self, unsigned_dec_int, UnsignedDecInt, context);
         let dec_int_opt = pop_item!(self, dec_int_opt, DecIntOpt, context);
         let dec_int_built = DecInt {
-            dec_int_opt: dec_int_opt,
+            dec_int_opt,
             unsigned_dec_int: Box::new(unsigned_dec_int),
         };
         // Calling user action here
@@ -4707,9 +4691,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = hex_int_content.token(parse_tree)?.clone();
-        let hex_int_content_built = HexIntContent {
-            hex_int_content: hex_int_content,
-        };
+        let hex_int_content_built = HexIntContent { hex_int_content };
         // Calling user action here
         self.user_grammar.hex_int_content(&hex_int_content_built)?;
         self.push(ASTType::HexIntContent(hex_int_content_built), context);
@@ -4755,9 +4737,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = oct_int_content.token(parse_tree)?.clone();
-        let oct_int_content_built = OctIntContent {
-            oct_int_content: oct_int_content,
-        };
+        let oct_int_content_built = OctIntContent { oct_int_content };
         // Calling user action here
         self.user_grammar.oct_int_content(&oct_int_content_built)?;
         self.push(ASTType::OctIntContent(oct_int_content_built), context);
@@ -4803,9 +4783,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = bin_int_content.token(parse_tree)?.clone();
-        let bin_int_content_built = BinIntContent {
-            bin_int_content: bin_int_content,
-        };
+        let bin_int_content_built = BinIntContent { bin_int_content };
         // Calling user action here
         self.user_grammar.bin_int_content(&bin_int_content_built)?;
         self.push(ASTType::BinIntContent(bin_int_content_built), context);
@@ -4825,7 +4803,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#true = r#true.token(parse_tree)?.clone();
-        let boolean_0_built = BooleanTrue { r#true: r#true };
+        let boolean_0_built = BooleanTrue { r#true };
         let boolean_0_built = Boolean::True(boolean_0_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_0_built)?;
@@ -4846,7 +4824,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#false = r#false.token(parse_tree)?.clone();
-        let boolean_1_built = BooleanFalse { r#false: r#false };
+        let boolean_1_built = BooleanFalse { r#false };
         let boolean_1_built = Boolean::False(boolean_1_built);
         // Calling user action here
         self.user_grammar.boolean(&boolean_1_built)?;
@@ -4913,9 +4891,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = normal_float.token(parse_tree)?.clone();
-        let normal_float_built = NormalFloat {
-            normal_float: normal_float,
-        };
+        let normal_float_built = NormalFloat { normal_float };
         // Calling user action here
         self.user_grammar.normal_float(&normal_float_built)?;
         self.push(ASTType::NormalFloat(normal_float_built), context);
@@ -4935,9 +4911,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = special_float.token(parse_tree)?.clone();
-        let special_float_built = SpecialFloat {
-            special_float: special_float,
-        };
+        let special_float_built = SpecialFloat { special_float };
         // Calling user action here
         self.user_grammar.special_float(&special_float_built)?;
         self.push(ASTType::SpecialFloat(special_float_built), context);
@@ -5049,9 +5023,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = offset_date_time.token(parse_tree)?.clone();
-        let offset_date_time_built = OffsetDateTime {
-            offset_date_time: offset_date_time,
-        };
+        let offset_date_time_built = OffsetDateTime { offset_date_time };
         // Calling user action here
         self.user_grammar
             .offset_date_time(&offset_date_time_built)?;
@@ -5072,9 +5044,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = local_date_time.token(parse_tree)?.clone();
-        let local_date_time_built = LocalDateTime {
-            local_date_time: local_date_time,
-        };
+        let local_date_time_built = LocalDateTime { local_date_time };
         // Calling user action here
         self.user_grammar.local_date_time(&local_date_time_built)?;
         self.push(ASTType::LocalDateTime(local_date_time_built), context);
@@ -5094,9 +5064,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = local_date.token(parse_tree)?.clone();
-        let local_date_built = LocalDate {
-            local_date: local_date,
-        };
+        let local_date_built = LocalDate { local_date };
         // Calling user action here
         self.user_grammar.local_date(&local_date_built)?;
         self.push(ASTType::LocalDate(local_date_built), context);
@@ -5116,9 +5084,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = local_time.token(parse_tree)?.clone();
-        let local_time_built = LocalTime {
-            local_time: local_time,
-        };
+        let local_time_built = LocalTime { local_time };
         // Calling user action here
         self.user_grammar.local_time(&local_time_built)?;
         self.push(ASTType::LocalTime(local_time_built), context);
@@ -5146,7 +5112,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let array_built = Array {
             // Ignore clipped member 'array_open'
-            array_opt: array_opt,
+            array_opt,
             // Ignore clipped member 'array_close'
         };
         // Calling user action here
@@ -5319,9 +5285,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = array_sep.token(parse_tree)?.clone();
-        let array_sep_built = ArraySep {
-            array_sep: array_sep,
-        };
+        let array_sep_built = ArraySep { array_sep };
         // Calling user action here
         self.user_grammar.array_sep(&array_sep_built)?;
         self.push(ASTType::ArraySep(array_sep_built), context);
@@ -5417,9 +5381,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_open = array_table_open.token(parse_tree)?.clone();
-        let array_table_open_built = ArrayTableOpen {
-            array_table_open: array_table_open,
-        };
+        let array_table_open_built = ArrayTableOpen { array_table_open };
         // Calling user action here
         self.user_grammar
             .array_table_open(&array_table_open_built)?;
@@ -5440,9 +5402,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table_close = array_table_close.token(parse_tree)?.clone();
-        let array_table_close_built = ArrayTableClose {
-            array_table_close: array_table_close,
-        };
+        let array_table_close_built = ArrayTableClose { array_table_close };
         // Calling user action here
         self.user_grammar
             .array_table_close(&array_table_close_built)?;
@@ -5463,9 +5423,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = array_open.token(parse_tree)?.clone();
-        let array_open_built = ArrayOpen {
-            array_open: array_open,
-        };
+        let array_open_built = ArrayOpen { array_open };
         // Calling user action here
         self.user_grammar.array_open(&array_open_built)?;
         self.push(ASTType::ArrayOpen(array_open_built), context);
@@ -5485,9 +5443,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = array_close.token(parse_tree)?.clone();
-        let array_close_built = ArrayClose {
-            array_close: array_close,
-        };
+        let array_close_built = ArrayClose { array_close };
         // Calling user action here
         self.user_grammar.array_close(&array_close_built)?;
         self.push(ASTType::ArrayClose(array_close_built), context);
@@ -5559,7 +5515,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let inline_table_built = InlineTable {
             // Ignore clipped member 'inline_table_open'
-            inline_table_opt: inline_table_opt,
+            inline_table_opt,
             // Ignore clipped member 'inline_table_close'
         };
         // Calling user action here
@@ -5617,9 +5573,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_open = inline_table_open.token(parse_tree)?.clone();
-        let inline_table_open_built = InlineTableOpen {
-            inline_table_open: inline_table_open,
-        };
+        let inline_table_open_built = InlineTableOpen { inline_table_open };
         // Calling user action here
         self.user_grammar
             .inline_table_open(&inline_table_open_built)?;
@@ -5640,9 +5594,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_close = inline_table_close.token(parse_tree)?.clone();
-        let inline_table_close_built = InlineTableClose {
-            inline_table_close: inline_table_close,
-        };
+        let inline_table_close_built = InlineTableClose { inline_table_close };
         // Calling user action here
         self.user_grammar
             .inline_table_close(&inline_table_close_built)?;
@@ -5695,7 +5647,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_val = pop_item!(self, key_val, KeyVal, context);
         let inline_table_key_vals_built = InlineTableKeyVals {
             key_val: Box::new(key_val),
-            inline_table_key_vals_opt: inline_table_key_vals_opt,
+            inline_table_key_vals_opt,
         };
         // Calling user action here
         self.user_grammar
@@ -5790,9 +5742,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unsigned_dec_int = unsigned_dec_int.token(parse_tree)?.clone();
-        let unsigned_dec_int_built = UnsignedDecInt {
-            unsigned_dec_int: unsigned_dec_int,
-        };
+        let unsigned_dec_int_built = UnsignedDecInt { unsigned_dec_int };
         // Calling user action here
         self.user_grammar
             .unsigned_dec_int(&unsigned_dec_int_built)?;
@@ -5813,9 +5763,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = unquoted_key.token(parse_tree)?.clone();
-        let unquoted_key_built = UnquotedKey {
-            unquoted_key: unquoted_key,
-        };
+        let unquoted_key_built = UnquotedKey { unquoted_key };
         // Calling user action here
         self.user_grammar.unquoted_key(&unquoted_key_built)?;
         self.push(ASTType::UnquotedKey(unquoted_key_built), context);
@@ -5835,7 +5783,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dot_sep = dot_sep.token(parse_tree)?.clone();
-        let dot_sep_built = DotSep { dot_sep: dot_sep };
+        let dot_sep_built = DotSep { dot_sep };
         // Calling user action here
         self.user_grammar.dot_sep(&dot_sep_built)?;
         self.push(ASTType::DotSep(dot_sep_built), context);
@@ -5856,7 +5804,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_start = m_l_basic_string_start.token(parse_tree)?.clone();
         let m_l_basic_string_start_built = MLBasicStringStart {
-            m_l_basic_string_start: m_l_basic_string_start,
+            m_l_basic_string_start,
         };
         // Calling user action here
         self.user_grammar
@@ -5882,7 +5830,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string_end = m_l_basic_string_end.token(parse_tree)?.clone();
         let m_l_basic_string_end_built = MLBasicStringEnd {
-            m_l_basic_string_end: m_l_basic_string_end,
+            m_l_basic_string_end,
         };
         // Calling user action here
         self.user_grammar
@@ -5907,9 +5855,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_quotes = m_l_b_quotes.token(parse_tree)?.clone();
-        let m_l_b_quotes_built = MLBQuotes {
-            m_l_b_quotes: m_l_b_quotes,
-        };
+        let m_l_b_quotes_built = MLBQuotes { m_l_b_quotes };
         // Calling user action here
         self.user_grammar.m_l_b_quotes(&m_l_b_quotes_built)?;
         self.push(ASTType::MLBQuotes(m_l_b_quotes_built), context);
@@ -5929,9 +5875,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = quotation_mark.token(parse_tree)?.clone();
-        let quotation_mark_built = QuotationMark {
-            quotation_mark: quotation_mark,
-        };
+        let quotation_mark_built = QuotationMark { quotation_mark };
         // Calling user action here
         self.user_grammar.quotation_mark(&quotation_mark_built)?;
         self.push(ASTType::QuotationMark(quotation_mark_built), context);
@@ -5952,7 +5896,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_start = m_l_literal_string_start.token(parse_tree)?.clone();
         let m_l_literal_string_start_built = MLLiteralStringStart {
-            m_l_literal_string_start: m_l_literal_string_start,
+            m_l_literal_string_start,
         };
         // Calling user action here
         self.user_grammar
@@ -5978,7 +5922,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string_end = m_l_literal_string_end.token(parse_tree)?.clone();
         let m_l_literal_string_end_built = MLLiteralStringEnd {
-            m_l_literal_string_end: m_l_literal_string_end,
+            m_l_literal_string_end,
         };
         // Calling user action here
         self.user_grammar
@@ -6003,9 +5947,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_l_quotes = m_l_l_quotes.token(parse_tree)?.clone();
-        let m_l_l_quotes_built = MLLQuotes {
-            m_l_l_quotes: m_l_l_quotes,
-        };
+        let m_l_l_quotes_built = MLLQuotes { m_l_l_quotes };
         // Calling user action here
         self.user_grammar.m_l_l_quotes(&m_l_l_quotes_built)?;
         self.push(ASTType::MLLQuotes(m_l_l_quotes_built), context);
@@ -6025,9 +5967,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let apostrophe = apostrophe.token(parse_tree)?.clone();
-        let apostrophe_built = Apostrophe {
-            apostrophe: apostrophe,
-        };
+        let apostrophe_built = Apostrophe { apostrophe };
         // Calling user action here
         self.user_grammar.apostrophe(&apostrophe_built)?;
         self.push(ASTType::Apostrophe(apostrophe_built), context);
@@ -6047,9 +5987,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = ascii_no_escape.token(parse_tree)?.clone();
-        let ascii_no_escape_built = AsciiNoEscape {
-            ascii_no_escape: ascii_no_escape,
-        };
+        let ascii_no_escape_built = AsciiNoEscape { ascii_no_escape };
         // Calling user action here
         self.user_grammar.ascii_no_escape(&ascii_no_escape_built)?;
         self.push(ASTType::AsciiNoEscape(ascii_no_escape_built), context);
@@ -6069,7 +6007,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let minus_built = Minus { minus: minus };
+        let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -6089,7 +6027,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let plus_built = Plus { plus: plus };
+        let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);

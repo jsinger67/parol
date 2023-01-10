@@ -2921,7 +2921,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let module_head = pop_item!(self, module_head, ModuleHead, context);
         let oberon2_built = Oberon2 {
             module_head: Box::new(module_head),
-            oberon2_opt: oberon2_opt,
+            oberon2_opt,
             decl_seq: Box::new(decl_seq),
             module_body: Box::new(module_body),
         };
@@ -3038,9 +3038,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let import_list_opt = pop_item!(self, import_list_opt, ImportListOpt, context);
         let import_list_built = ImportList {
             // Ignore clipped member 'i_m_p_o_r_t'
-            import_list_opt: import_list_opt,
+            import_list_opt,
             ident: Box::new(ident),
-            import_list_list: import_list_list,
+            import_list_list,
             // Ignore clipped member 'semicolon'
         };
         // Calling user action here
@@ -3069,7 +3069,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let import_list_opt0 = pop_item!(self, import_list_opt0, ImportListOpt0, context);
         let import_list_list_0_built = ImportListList {
             ident: Box::new(ident),
-            import_list_opt0: import_list_opt0,
+            import_list_opt0,
             // Ignore clipped member 'comma'
         };
         // Add an element to the vector
@@ -3181,8 +3181,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_seq_list0 = pop_and_reverse_item!(self, decl_seq_list0, DeclSeqList0, context);
         let decl_seq_list = pop_and_reverse_item!(self, decl_seq_list, DeclSeqList, context);
         let decl_seq_built = DeclSeq {
-            decl_seq_list: decl_seq_list,
-            decl_seq_list0: decl_seq_list0,
+            decl_seq_list,
+            decl_seq_list0,
         };
         // Calling user action here
         self.user_grammar.decl_seq(&decl_seq_built)?;
@@ -3405,7 +3405,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, const_decl_block_list, ConstDeclBlockList, context);
         let const_decl_block_built = ConstDeclBlock {
             // Ignore clipped member 'c_o_n_s_t'
-            const_decl_block_list: const_decl_block_list,
+            const_decl_block_list,
         };
         // Calling user action here
         self.user_grammar
@@ -3474,7 +3474,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, type_decl_block_list, TypeDeclBlockList, context);
         let type_decl_block_built = TypeDeclBlock {
             // Ignore clipped member 't_y_p_e'
-            type_decl_block_list: type_decl_block_list,
+            type_decl_block_list,
         };
         // Calling user action here
         self.user_grammar.type_decl_block(&type_decl_block_built)?;
@@ -3544,7 +3544,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let var_decl_block_built = VarDeclBlock {
             // Ignore clipped member 'kw_var'
-            var_decl_block_list: var_decl_block_list,
+            var_decl_block_list,
         };
         // Calling user action here
         self.user_grammar.var_decl_block(&var_decl_block_built)?;
@@ -3727,9 +3727,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let procedure_heading_built = ProcedureHeading {
             // Ignore clipped member 'kw_procedure'
-            procedure_heading_opt: procedure_heading_opt,
+            procedure_heading_opt,
             ident_def: Box::new(ident_def),
-            procedure_heading_opt0: procedure_heading_opt0,
+            procedure_heading_opt0,
         };
         // Calling user action here
         self.user_grammar
@@ -3852,7 +3852,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let statement_block_opt = pop_item!(self, statement_block_opt, StatementBlockOpt, context);
         let statement_block_built = StatementBlock {
-            statement_block_opt: statement_block_opt,
+            statement_block_opt,
             // Ignore clipped member 'kw_end'
             ident: Box::new(ident),
         };
@@ -3925,10 +3925,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let forward_decl_built = ForwardDecl {
             // Ignore clipped member 'kw_procedure'
-            circumflex: circumflex,
-            forward_decl_opt: forward_decl_opt,
+            circumflex,
+            forward_decl_opt,
             ident_def: Box::new(ident_def),
-            forward_decl_opt0: forward_decl_opt0,
+            forward_decl_opt0,
         };
         // Calling user action here
         self.user_grammar.forward_decl(&forward_decl_built)?;
@@ -4025,9 +4025,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let formal_pars_opt = pop_item!(self, formal_pars_opt, FormalParsOpt, context);
         let formal_pars_built = FormalPars {
             // Ignore clipped member 'l_paren'
-            formal_pars_opt: formal_pars_opt,
+            formal_pars_opt,
             // Ignore clipped member 'r_paren'
-            formal_pars_opt0: formal_pars_opt0,
+            formal_pars_opt0,
         };
         // Calling user action here
         self.user_grammar.formal_pars(&formal_pars_built)?;
@@ -4090,7 +4090,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let f_p_section = pop_item!(self, f_p_section, FPSection, context);
         let formal_pars_opt_0_built = FormalParsOpt {
             f_p_section: Box::new(f_p_section),
-            formal_pars_opt_list: formal_pars_opt_list,
+            formal_pars_opt_list,
         };
         self.push(
             ASTType::FormalParsOpt(Some(Box::new(formal_pars_opt_0_built))),
@@ -4176,9 +4176,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident = pop_item!(self, ident, Ident, context);
         let f_p_section_opt = pop_item!(self, f_p_section_opt, FPSectionOpt, context);
         let f_p_section_built = FPSection {
-            f_p_section_opt: f_p_section_opt,
+            f_p_section_opt,
             ident: Box::new(ident),
-            f_p_section_list: f_p_section_list,
+            f_p_section_list,
             // Ignore clipped member 'colon'
             type_def: Box::new(type_def),
         };
@@ -4282,7 +4282,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let receiver_opt = pop_item!(self, receiver_opt, ReceiverOpt, context);
         let receiver_built = Receiver {
             // Ignore clipped member 'l_paren'
-            receiver_opt: receiver_opt,
+            receiver_opt,
             receiver_var_decl: Box::new(receiver_var_decl),
             // Ignore clipped member 'r_paren'
         };
@@ -4400,7 +4400,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
         let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDef {
             // Ignore clipped member 'a_r_r_a_y'
-            type_def_opt: type_def_opt,
+            type_def_opt,
             // Ignore clipped member 'kw_of'
             type_def: Box::new(type_def),
         };
@@ -4434,9 +4434,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def_opt0 = pop_item!(self, type_def_opt0, TypeDefOpt0, context);
         let type_def_2_built = TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd {
             // Ignore clipped member 'r_e_c_o_r_d'
-            type_def_opt0: type_def_opt0,
+            type_def_opt0,
             field_list: Box::new(field_list),
-            type_def_list: type_def_list,
+            type_def_list,
             // Ignore clipped member 'kw_end'
         };
         let type_def_2_built =
@@ -4533,7 +4533,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let type_def_4_built = TypeDefKwProcedureTypeDefOpt1 {
             // Ignore clipped member 'kw_procedure'
-            type_def_opt1: type_def_opt1,
+            type_def_opt1,
         };
         let type_def_4_built = TypeDef::KwProcedureTypeDefOpt1(type_def_4_built);
         // Calling user action here
@@ -4634,7 +4634,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let type_def_opt_0_built = TypeDefOpt {
             const_expr: Box::new(const_expr),
-            type_def_opt_list: type_def_opt_list,
+            type_def_opt_list,
         };
         self.push(
             ASTType::TypeDefOpt(Some(Box::new(type_def_opt_0_built))),
@@ -4707,9 +4707,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let field_list_opt = pop_item!(self, field_list_opt, FieldListOpt, context);
-        let field_list_built = FieldList {
-            field_list_opt: field_list_opt,
-        };
+        let field_list_built = FieldList { field_list_opt };
         // Calling user action here
         self.user_grammar.field_list(&field_list_built)?;
         self.push(ASTType::FieldList(field_list_built), context);
@@ -4774,7 +4772,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement = pop_item!(self, statement, Statement, context);
         let statement_seq_built = StatementSeq {
             statement: Box::new(statement),
-            statement_seq_list: statement_seq_list,
+            statement_seq_list,
         };
         // Calling user action here
         self.user_grammar.statement_seq(&statement_seq_built)?;
@@ -4837,9 +4835,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt = pop_item!(self, statement_opt, StatementOpt, context);
-        let statement_built = Statement {
-            statement_opt: statement_opt,
-        };
+        let statement_built = Statement { statement_opt };
         // Calling user action here
         self.user_grammar.statement(&statement_built)?;
         self.push(ASTType::Statement(statement_built), context);
@@ -4942,9 +4938,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt0 = pop_item!(self, statement_opt0, StatementOpt0, context);
-        let statement_opt_group_suffix_1_built = StatementOptGroupSuffixStatementOpt0 {
-            statement_opt0: statement_opt0,
-        };
+        let statement_opt_group_suffix_1_built =
+            StatementOptGroupSuffixStatementOpt0 { statement_opt0 };
         let statement_opt_group_suffix_1_built =
             StatementOptGroupSuffix::StatementOpt0(statement_opt_group_suffix_1_built);
         self.push(
@@ -4986,7 +4981,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
                 // Ignore clipped member 'kw_if'
                 expr: Box::new(expr),
                 then_block: Box::new(then_block),
-                statement_opt_group_list: statement_opt_group_list,
+                statement_opt_group_list,
                 opt_else_part_end: Box::new(opt_else_part_end),
             };
         let statement_opt_group_1_built =
@@ -5122,7 +5117,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt_group_5_built = StatementOptGroupFORForInitStatementOpt1DoBlock {
             // Ignore clipped member 'f_o_r'
             for_init: Box::new(for_init),
-            statement_opt1: statement_opt1,
+            statement_opt1,
             do_block: Box::new(do_block),
         };
         let statement_opt_group_5_built =
@@ -5192,7 +5187,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd {
                 // Ignore clipped member 'w_i_t_h'
                 guarded_do_block: Box::new(guarded_do_block),
-                statement_opt_group_list0: statement_opt_group_list0,
+                statement_opt_group_list0,
                 opt_else_part_end: Box::new(opt_else_part_end),
             };
         let statement_opt_group_7_built =
@@ -5245,7 +5240,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
         let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2 {
             // Ignore clipped member 'r_e_t_u_r_n'
-            statement_opt2: statement_opt2,
+            statement_opt2,
         };
         let statement_opt_group_9_built =
             StatementOptGroup::RETURNStatementOpt2(statement_opt_group_9_built);
@@ -5441,7 +5436,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt3 = pop_item!(self, statement_opt3, StatementOpt3, context);
         let statement_opt0_0_built = StatementOpt0 {
             // Ignore clipped member 'l_paren'
-            statement_opt3: statement_opt3,
+            statement_opt3,
             // Ignore clipped member 'r_paren'
         };
         self.push(
@@ -5553,7 +5548,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case = pop_item!(self, case, Case, context);
         let cases_built = Cases {
             case: Box::new(case),
-            cases_list: cases_list,
+            cases_list,
         };
         // Calling user action here
         self.user_grammar.cases(&cases_built)?;
@@ -5673,7 +5668,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let opt_else_part_end_opt =
             pop_item!(self, opt_else_part_end_opt, OptElsePartEndOpt, context);
         let opt_else_part_end_built = OptElsePartEnd {
-            opt_else_part_end_opt: opt_else_part_end_opt,
+            opt_else_part_end_opt,
             // Ignore clipped member 'kw_end'
         };
         // Calling user action here
@@ -5849,7 +5844,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let case_opt = pop_item!(self, case_opt, CaseOpt, context);
-        let case_built = Case { case_opt: case_opt };
+        let case_built = Case { case_opt };
         // Calling user action here
         self.user_grammar.case(&case_built)?;
         self.push(ASTType::Case(case_built), context);
@@ -5876,7 +5871,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case_labels = pop_item!(self, case_labels, CaseLabels, context);
         let case_opt_0_built = CaseOpt {
             case_labels: Box::new(case_labels),
-            case_opt_list: case_opt_list,
+            case_opt_list,
             // Ignore clipped member 'colon'
             statement_seq: Box::new(statement_seq),
         };
@@ -5952,7 +5947,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_built = CaseLabels {
             const_expr: Box::new(const_expr),
-            case_labels_opt: case_labels_opt,
+            case_labels_opt,
         };
         // Calling user action here
         self.user_grammar.case_labels(&case_labels_built)?;
@@ -5976,7 +5971,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let dot_dot = dot_dot.token(parse_tree)?.clone();
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_opt_0_built = CaseLabelsOpt {
-            dot_dot: dot_dot,
+            dot_dot,
             const_expr: Box::new(const_expr),
         };
         self.push(
@@ -6064,7 +6059,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
         let expr_built = Expr {
             simple_expr: Box::new(simple_expr),
-            expr_opt: expr_opt,
+            expr_opt,
         };
         // Calling user action here
         self.user_grammar.expr(&expr_built)?;
@@ -6126,9 +6121,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let term = pop_item!(self, term, Term, context);
         let simple_expr_opt = pop_item!(self, simple_expr_opt, SimpleExprOpt, context);
         let simple_expr_built = SimpleExpr {
-            simple_expr_opt: simple_expr_opt,
+            simple_expr_opt,
             term: Box::new(term),
-            simple_expr_list: simple_expr_list,
+            simple_expr_list,
         };
         // Calling user action here
         self.user_grammar.simple_expr(&simple_expr_built)?;
@@ -6213,7 +6208,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_0_built = SimpleExprOptGroupPlus { plus: plus };
+        let simple_expr_opt_group_0_built = SimpleExprOptGroupPlus { plus };
         let simple_expr_opt_group_0_built = SimpleExprOptGroup::Plus(simple_expr_opt_group_0_built);
         self.push(
             ASTType::SimpleExprOptGroup(simple_expr_opt_group_0_built),
@@ -6235,7 +6230,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let simple_expr_opt_group_1_built = SimpleExprOptGroupMinus { minus: minus };
+        let simple_expr_opt_group_1_built = SimpleExprOptGroupMinus { minus };
         let simple_expr_opt_group_1_built =
             SimpleExprOptGroup::Minus(simple_expr_opt_group_1_built);
         self.push(
@@ -6274,7 +6269,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor = pop_item!(self, factor, Factor, context);
         let term_built = Term {
             factor: Box::new(factor),
-            term_list: term_list,
+            term_list,
         };
         // Calling user action here
         self.user_grammar.term(&term_built)?;
@@ -6339,7 +6334,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let designator = pop_item!(self, designator, Designator, context);
         let factor_0_built = FactorDesignatorFactorOpt {
             designator: Box::new(designator),
-            factor_opt: factor_opt,
+            factor_opt,
         };
         let factor_0_built = Factor::DesignatorFactorOpt(factor_0_built);
         // Calling user action here
@@ -6529,7 +6524,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_opt0 = pop_item!(self, factor_opt0, FactorOpt0, context);
         let factor_opt_0_built = FactorOpt {
             // Ignore clipped member 'l_paren'
-            factor_opt0: factor_opt0,
+            factor_opt0,
             // Ignore clipped member 'r_paren'
         };
         self.push(
@@ -6603,7 +6598,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let set_opt = pop_item!(self, set_opt, SetOpt, context);
         let set_built = Set {
             // Ignore clipped member 'l_brace'
-            set_opt: set_opt,
+            set_opt,
             // Ignore clipped member 'r_brace'
         };
         // Calling user action here
@@ -6629,7 +6624,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let element = pop_item!(self, element, Element, context);
         let set_opt_0_built = SetOpt {
             element: Box::new(element),
-            set_opt_list: set_opt_list,
+            set_opt_list,
         };
         self.push(ASTType::SetOpt(Some(Box::new(set_opt_0_built))), context);
         Ok(())
@@ -6703,7 +6698,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         let element_built = Element {
             expr: Box::new(expr),
-            element_opt: element_opt,
+            element_opt,
         };
         // Calling user action here
         self.user_grammar.element(&element_built)?;
@@ -6783,7 +6778,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hash = hash.token(parse_tree)?.clone();
-        let relation_1_built = RelationHash { hash: hash };
+        let relation_1_built = RelationHash { hash };
         let relation_1_built = Relation::Hash(relation_1_built);
         // Calling user action here
         self.user_grammar.relation(&relation_1_built)?;
@@ -6804,7 +6799,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t = l_t.token(parse_tree)?.clone();
-        let relation_2_built = RelationLT { l_t: l_t };
+        let relation_2_built = RelationLT { l_t };
         let relation_2_built = Relation::LT(relation_2_built);
         // Calling user action here
         self.user_grammar.relation(&relation_2_built)?;
@@ -6825,7 +6820,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_t_equ = l_t_equ.token(parse_tree)?.clone();
-        let relation_3_built = RelationLTEqu { l_t_equ: l_t_equ };
+        let relation_3_built = RelationLTEqu { l_t_equ };
         let relation_3_built = Relation::LTEqu(relation_3_built);
         // Calling user action here
         self.user_grammar.relation(&relation_3_built)?;
@@ -6846,7 +6841,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t = g_t.token(parse_tree)?.clone();
-        let relation_4_built = RelationGT { g_t: g_t };
+        let relation_4_built = RelationGT { g_t };
         let relation_4_built = Relation::GT(relation_4_built);
         // Calling user action here
         self.user_grammar.relation(&relation_4_built)?;
@@ -6867,7 +6862,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let g_t_equ = g_t_equ.token(parse_tree)?.clone();
-        let relation_5_built = RelationGTEqu { g_t_equ: g_t_equ };
+        let relation_5_built = RelationGTEqu { g_t_equ };
         let relation_5_built = Relation::GTEqu(relation_5_built);
         // Calling user action here
         self.user_grammar.relation(&relation_5_built)?;
@@ -6911,7 +6906,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let i_s = i_s.token(parse_tree)?.clone();
-        let relation_7_built = RelationIS { i_s: i_s };
+        let relation_7_built = RelationIS { i_s };
         let relation_7_built = Relation::IS(relation_7_built);
         // Calling user action here
         self.user_grammar.relation(&relation_7_built)?;
@@ -6932,7 +6927,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let add_op_0_built = AddOpPlus { plus: plus };
+        let add_op_0_built = AddOpPlus { plus };
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -6953,7 +6948,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let add_op_1_built = AddOpMinus { minus: minus };
+        let add_op_1_built = AddOpMinus { minus };
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -6974,7 +6969,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let o_r = o_r.token(parse_tree)?.clone();
-        let add_op_2_built = AddOpOR { o_r: o_r };
+        let add_op_2_built = AddOpOR { o_r };
         let add_op_2_built = AddOp::OR(add_op_2_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_2_built)?;
@@ -6995,7 +6990,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let mul_op_0_built = MulOpStar { star: star };
+        let mul_op_0_built = MulOpStar { star };
         let mul_op_0_built = MulOp::Star(mul_op_0_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_0_built)?;
@@ -7016,7 +7011,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let slash = slash.token(parse_tree)?.clone();
-        let mul_op_1_built = MulOpSlash { slash: slash };
+        let mul_op_1_built = MulOpSlash { slash };
         let mul_op_1_built = MulOp::Slash(mul_op_1_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_1_built)?;
@@ -7037,7 +7032,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let d_i_v = d_i_v.token(parse_tree)?.clone();
-        let mul_op_2_built = MulOpDIV { d_i_v: d_i_v };
+        let mul_op_2_built = MulOpDIV { d_i_v };
         let mul_op_2_built = MulOp::DIV(mul_op_2_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_2_built)?;
@@ -7058,7 +7053,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_o_d = m_o_d.token(parse_tree)?.clone();
-        let mul_op_3_built = MulOpMOD { m_o_d: m_o_d };
+        let mul_op_3_built = MulOpMOD { m_o_d };
         let mul_op_3_built = MulOp::MOD(mul_op_3_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_3_built)?;
@@ -7079,7 +7074,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let amp = amp.token(parse_tree)?.clone();
-        let mul_op_4_built = MulOpAmp { amp: amp };
+        let mul_op_4_built = MulOpAmp { amp };
         let mul_op_4_built = MulOp::Amp(mul_op_4_built);
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_4_built)?;
@@ -7104,7 +7099,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let designator_built = Designator {
             qual_ident: Box::new(qual_ident),
-            designator_list: designator_list,
+            designator_list,
         };
         // Calling user action here
         self.user_grammar.designator(&designator_built)?;
@@ -7253,7 +7248,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         let expr_list_built = ExprList {
             expr: Box::new(expr),
-            expr_list_list: expr_list_list,
+            expr_list_list,
         };
         // Calling user action here
         self.user_grammar.expr_list(&expr_list_built)?;
@@ -7317,7 +7312,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let ident_list_built = IdentList {
             ident_def: Box::new(ident_def),
-            ident_list_list: ident_list_list,
+            ident_list_list,
         };
         // Calling user action here
         self.user_grammar.ident_list(&ident_list_built)?;
@@ -7427,7 +7422,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident = pop_item!(self, ident, Ident, context);
         let ident_def_built = IdentDef {
             ident: Box::new(ident),
-            ident_def_opt: ident_def_opt,
+            ident_def_opt,
         };
         // Calling user action here
         self.user_grammar.ident_def(&ident_def_built)?;
@@ -7471,7 +7466,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let star = star.token(parse_tree)?.clone();
-        let ident_def_opt_group_0_built = IdentDefOptGroupStar { star: star };
+        let ident_def_opt_group_0_built = IdentDefOptGroupStar { star };
         let ident_def_opt_group_0_built = IdentDefOptGroup::Star(ident_def_opt_group_0_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_0_built),
@@ -7493,7 +7488,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let ident_def_opt_group_1_built = IdentDefOptGroupMinus { minus: minus };
+        let ident_def_opt_group_1_built = IdentDefOptGroupMinus { minus };
         let ident_def_opt_group_1_built = IdentDefOptGroup::Minus(ident_def_opt_group_1_built);
         self.push(
             ASTType::IdentDefOptGroup(ident_def_opt_group_1_built),
@@ -7573,7 +7568,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = real.token(parse_tree)?.clone();
-        let real_built = Real { real: real };
+        let real_built = Real { real };
         // Calling user action here
         self.user_grammar.real(&real_built)?;
         self.push(ASTType::Real(real_built), context);
@@ -7593,9 +7588,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = character.token(parse_tree)?.clone();
-        let character_built = Character {
-            character: character,
-        };
+        let character_built = Character { character };
         // Calling user action here
         self.user_grammar.character(&character_built)?;
         self.push(ASTType::Character(character_built), context);
@@ -7615,7 +7608,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = integer.token(parse_tree)?.clone();
-        let integer_built = Integer { integer: integer };
+        let integer_built = Integer { integer };
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
         self.push(ASTType::Integer(integer_built), context);
@@ -7635,7 +7628,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = q_ident.token(parse_tree)?.clone();
-        let q_ident_built = QIdent { q_ident: q_ident };
+        let q_ident_built = QIdent { q_ident };
         // Calling user action here
         self.user_grammar.q_ident(&q_ident_built)?;
         self.push(ASTType::QIdent(q_ident_built), context);
@@ -7655,7 +7648,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = ident.token(parse_tree)?.clone();
-        let ident_built = Ident { ident: ident };
+        let ident_built = Ident { ident };
         // Calling user action here
         self.user_grammar.ident(&ident_built)?;
         self.push(ASTType::Ident(ident_built), context);
@@ -7675,7 +7668,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
-        let string_built = String { string: string };
+        let string_built = String { string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);

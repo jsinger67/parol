@@ -455,7 +455,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let pair = pop_item!(self, pair, Pair, context);
         let object_suffix_0_built = ObjectSuffixPairObjectListRBrace {
             pair: Box::new(pair),
-            object_list: object_list,
+            object_list,
             // Ignore clipped member 'r_brace'
         };
         let object_suffix_0_built = ObjectSuffix::PairObjectListRBrace(object_suffix_0_built);
@@ -591,7 +591,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value = pop_item!(self, value, Value, context);
         let array_suffix_0_built = ArraySuffixValueArrayListRBracket {
             value: Box::new(value),
-            array_list: array_list,
+            array_list,
             // Ignore clipped member 'r_bracket'
         };
         let array_suffix_0_built = ArraySuffix::ValueArrayListRBracket(array_suffix_0_built);
@@ -829,7 +829,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = string.token(parse_tree)?.clone();
-        let string_built = String { string: string };
+        let string_built = String { string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -849,7 +849,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = number.token(parse_tree)?.clone();
-        let number_built = Number { number: number };
+        let number_built = Number { number };
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);

@@ -1243,8 +1243,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let start_declaration = pop_item!(self, start_declaration, StartDeclaration, context);
         let prolog_built = Prolog {
             start_declaration: Box::new(start_declaration),
-            prolog_list: prolog_list,
-            prolog_list0: prolog_list0,
+            prolog_list,
+            prolog_list0,
         };
         // Calling user action here
         self.user_grammar.prolog(&prolog_built)?;
@@ -1350,7 +1350,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let start_declaration_built = StartDeclaration {
             comments: Box::new(comments),
-            percent_start: percent_start,
+            percent_start,
             identifier: Box::new(identifier),
             comments0: Box::new(comments0),
         };
@@ -1382,7 +1382,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
         let declaration_0_built = DeclarationPercentTitleStringComments {
-            percent_title: percent_title,
+            percent_title,
             string: Box::new(string),
             comments: Box::new(comments),
         };
@@ -1414,7 +1414,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
         let declaration_1_built = DeclarationPercentCommentStringComments {
-            percent_comment: percent_comment,
+            percent_comment,
             string: Box::new(string),
             comments: Box::new(comments),
         };
@@ -1454,9 +1454,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let declaration_2_built =
             DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameComments {
-                percent_user_underscore_type: percent_user_underscore_type,
+                percent_user_underscore_type,
                 identifier: Box::new(identifier),
-                equ: equ,
+                equ,
                 user_type_name: Box::new(user_type_name),
                 comments: Box::new(comments),
             };
@@ -1515,7 +1515,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_0_built =
             ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralComments {
-                percent_line_underscore_comment: percent_line_underscore_comment,
+                percent_line_underscore_comment,
                 token_literal: Box::new(token_literal),
                 comments: Box::new(comments),
             };
@@ -1557,7 +1557,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_1_built =
             ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments {
-                percent_block_underscore_comment: percent_block_underscore_comment,
+                percent_block_underscore_comment,
                 token_literal: Box::new(token_literal),
                 token_literal0: Box::new(token_literal0),
                 comments: Box::new(comments),
@@ -1597,8 +1597,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_2_built =
             ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffComments {
-                percent_auto_underscore_newline_underscore_off:
-                    percent_auto_underscore_newline_underscore_off,
+                percent_auto_underscore_newline_underscore_off,
                 comments: Box::new(comments),
             };
         let scanner_directives_2_built =
@@ -1635,8 +1634,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_3_built =
             ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffComments {
-                percent_auto_underscore_ws_underscore_off:
-                    percent_auto_underscore_ws_underscore_off,
+                percent_auto_underscore_ws_underscore_off,
                 comments: Box::new(comments),
             };
         let scanner_directives_3_built =
@@ -1679,9 +1677,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         );
         let production = pop_item!(self, production, Production, context);
         let grammar_definition_built = GrammarDefinition {
-            percent_percent: percent_percent,
+            percent_percent,
             production: Box::new(production),
-            grammar_definition_list: grammar_definition_list,
+            grammar_definition_list,
         };
         // Calling user action here
         self.user_grammar
@@ -1757,9 +1755,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let double_colon_built = DoubleColon {
-            double_colon: double_colon,
-        };
+        let double_colon_built = DoubleColon { double_colon };
         // Calling user action here
         self.user_grammar.double_colon(&double_colon_built)?;
         self.push(ASTType::DoubleColon(double_colon_built), context);
@@ -1792,7 +1788,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             comments: Box::new(comments),
             identifier: Box::new(identifier),
             comments0: Box::new(comments0),
-            colon: colon,
+            colon,
         };
         // Calling user action here
         self.user_grammar
@@ -1824,7 +1820,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let production_built = Production {
             production_l_h_s: Box::new(production_l_h_s),
             alternations: Box::new(alternations),
-            semicolon: semicolon,
+            semicolon,
         };
         // Calling user action here
         self.user_grammar.production(&production_built)?;
@@ -1850,7 +1846,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let alternation = pop_item!(self, alternation, Alternation, context);
         let alternations_built = Alternations {
             alternation: Box::new(alternation),
-            alternations_list: alternations_list,
+            alternations_list,
         };
         // Calling user action here
         self.user_grammar.alternations(&alternations_built)?;
@@ -1883,7 +1879,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let alternations_list_0_built = AlternationsList {
             alternation: Box::new(alternation),
             comments: Box::new(comments),
-            or: or,
+            or,
         };
         // Add an element to the vector
         alternations_list.push(alternations_list_0_built);
@@ -1921,9 +1917,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let alternation_list =
             pop_and_reverse_item!(self, alternation_list, AlternationList, context);
-        let alternation_built = Alternation {
-            alternation_list: alternation_list,
-        };
+        let alternation_built = Alternation { alternation_list };
         // Calling user action here
         self.user_grammar.alternation(&alternation_built)?;
         self.push(ASTType::Alternation(alternation_built), context);
@@ -2240,7 +2234,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let simple_token_built = SimpleToken {
             token_literal: Box::new(token_literal),
-            simple_token_opt: simple_token_opt,
+            simple_token_opt,
         };
         // Calling user action here
         self.user_grammar.simple_token(&simple_token_built)?;
@@ -2312,11 +2306,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let state_list = pop_item!(self, state_list, StateList, context);
         let token_with_states_built = TokenWithStates {
-            l_t: l_t,
+            l_t,
             state_list: Box::new(state_list),
-            g_t: g_t,
+            g_t,
             token_literal: Box::new(token_literal),
-            token_with_states_opt: token_with_states_opt,
+            token_with_states_opt,
         };
         // Calling user action here
         self.user_grammar
@@ -2384,9 +2378,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let group_built = Group {
-            l_paren: l_paren,
+            l_paren,
             alternations: Box::new(alternations),
-            r_paren: r_paren,
+            r_paren,
         };
         // Calling user action here
         self.user_grammar.group(&group_built)?;
@@ -2418,9 +2412,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let optional_built = Optional {
-            l_bracket: l_bracket,
+            l_bracket,
             alternations: Box::new(alternations),
-            r_bracket: r_bracket,
+            r_bracket,
         };
         // Calling user action here
         self.user_grammar.optional(&optional_built)?;
@@ -2452,9 +2446,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let repeat_built = Repeat {
-            l_brace: l_brace,
+            l_brace,
             alternations: Box::new(alternations),
-            r_brace: r_brace,
+            r_brace,
         };
         // Calling user action here
         self.user_grammar.repeat(&repeat_built)?;
@@ -2479,7 +2473,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let non_terminal_built = NonTerminal {
             identifier: Box::new(identifier),
-            non_terminal_opt: non_terminal_opt,
+            non_terminal_opt,
         };
         // Calling user action here
         self.user_grammar.non_terminal(&non_terminal_built)?;
@@ -2538,9 +2532,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let identifier_built = Identifier {
-            identifier: identifier,
-        };
+        let identifier_built = Identifier { identifier };
         // Calling user action here
         self.user_grammar.identifier(&identifier_built)?;
         self.push(ASTType::Identifier(identifier_built), context);
@@ -2563,7 +2555,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let string_built = String { string: string };
+        let string_built = String { string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -2586,9 +2578,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let literal_string_built = LiteralString {
-            literal_string: literal_string,
-        };
+        let literal_string_built = LiteralString { literal_string };
         // Calling user action here
         self.user_grammar.literal_string(&literal_string_built)?;
         self.push(ASTType::LiteralString(literal_string_built), context);
@@ -2627,11 +2617,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_state_built = ScannerState {
-            percent_scanner: percent_scanner,
+            percent_scanner,
             identifier: Box::new(identifier),
-            l_brace: l_brace,
-            scanner_state_list: scanner_state_list,
-            r_brace: r_brace,
+            l_brace,
+            scanner_state_list,
+            r_brace,
         };
         // Calling user action here
         self.user_grammar.scanner_state(&scanner_state_built)?;
@@ -2696,7 +2686,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_built = StateList {
             identifier: Box::new(identifier),
-            state_list_list: state_list_list,
+            state_list_list,
         };
         // Calling user action here
         self.user_grammar.state_list(&state_list_built)?;
@@ -2726,7 +2716,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_list_0_built = StateListList {
             identifier: Box::new(identifier),
-            comma: comma,
+            comma,
         };
         // Add an element to the vector
         state_list_list.push(state_list_list_0_built);
@@ -2776,10 +2766,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
         let scanner_switch_0_built = ScannerSwitchPercentScLParenScannerSwitchOptRParen {
-            percent_sc: percent_sc,
-            l_paren: l_paren,
-            scanner_switch_opt: scanner_switch_opt,
-            r_paren: r_paren,
+            percent_sc,
+            l_paren,
+            scanner_switch_opt,
+            r_paren,
         };
         let scanner_switch_0_built =
             ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
@@ -2818,10 +2808,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
-            percent_push: percent_push,
-            l_paren: l_paren,
+            percent_push,
+            l_paren,
             identifier: Box::new(identifier),
-            r_paren: r_paren,
+            r_paren,
         };
         let scanner_switch_1_built =
             ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
@@ -2858,9 +2848,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {
-            percent_pop: percent_pop,
-            l_paren: l_paren,
-            r_paren: r_paren,
+            percent_pop,
+            l_paren,
+            r_paren,
         };
         let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
@@ -2967,9 +2957,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let cut_operator_built = CutOperator {
-            cut_operator: cut_operator,
-        };
+        let cut_operator_built = CutOperator { cut_operator };
         // Calling user action here
         self.user_grammar.cut_operator(&cut_operator_built)?;
         self.push(ASTType::CutOperator(cut_operator_built), context);
@@ -2995,7 +2983,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclaration {
-            colon: colon,
+            colon,
             user_type_name: Box::new(user_type_name),
         };
         // Calling user action here
@@ -3026,7 +3014,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let user_type_name_built = UserTypeName {
             identifier: Box::new(identifier),
-            user_type_name_list: user_type_name_list,
+            user_type_name_list,
         };
         // Calling user action here
         self.user_grammar.user_type_name(&user_type_name_built)?;
@@ -3091,9 +3079,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comments_list = pop_and_reverse_item!(self, comments_list, CommentsList, context);
-        let comments_built = Comments {
-            comments_list: comments_list,
-        };
+        let comments_built = Comments { comments_list };
         // Calling user action here
         self.user_grammar.comments(&comments_built)?;
         self.push(ASTType::Comments(comments_built), context);
@@ -3203,9 +3189,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let line_comment_built = LineComment {
-            line_comment: line_comment,
-        };
+        let line_comment_built = LineComment { line_comment };
         // Calling user action here
         self.user_grammar.line_comment(&line_comment_built)?;
         self.push(ASTType::LineComment(line_comment_built), context);
@@ -3228,9 +3212,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let block_comment_built = BlockComment {
-            block_comment: block_comment,
-        };
+        let block_comment_built = BlockComment { block_comment };
         // Calling user action here
         self.user_grammar.block_comment(&block_comment_built)?;
         self.push(ASTType::BlockComment(block_comment_built), context);
@@ -3253,7 +3235,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let regex_built = Regex { regex: regex };
+        let regex_built = Regex { regex };
         // Calling user action here
         self.user_grammar.regex(&regex_built)?;
         self.push(ASTType::Regex(regex_built), context);

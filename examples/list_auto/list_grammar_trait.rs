@@ -221,7 +221,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         self.pop(context);
         let list_opt = pop_item!(self, list_opt, ListOpt, context);
         let list_built = List {
-            list_opt: list_opt,
+            list_opt,
             // Ignore clipped member 'trailing_comma'
         };
         // Calling user action here
@@ -281,7 +281,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let num = pop_item!(self, num, Num, context);
         let items_built = Items {
             num: Box::new(num),
-            items_list: items_list,
+            items_list,
         };
         // Calling user action here
         self.user_grammar.items(&items_built)?;
@@ -344,7 +344,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let num_built = Num { num: num };
+        let num_built = Num { num };
         // Calling user action here
         self.user_grammar.num(&num_built)?;
         self.push(ASTType::Num(num_built), context);
@@ -364,9 +364,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_opt = pop_item!(self, trailing_comma_opt, TrailingCommaOpt, context);
-        let trailing_comma_built = TrailingComma {
-            trailing_comma_opt: trailing_comma_opt,
-        };
+        let trailing_comma_built = TrailingComma { trailing_comma_opt };
         // Calling user action here
         self.user_grammar.trailing_comma(&trailing_comma_built)?;
         self.push(ASTType::TrailingComma(trailing_comma_built), context);

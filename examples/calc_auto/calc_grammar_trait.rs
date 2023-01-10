@@ -884,9 +884,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let calc_list = pop_and_reverse_item!(self, calc_list, CalcList, context);
-        let calc_built = Calc {
-            calc_list: calc_list,
-        };
+        let calc_built = Calc { calc_list };
         // Calling user action here
         self.user_grammar.calc(&calc_built)?;
         self.push(ASTType::Calc(calc_built), context);
@@ -945,9 +943,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let equality_op = equality_op.token(parse_tree)?.clone();
-        let equality_op_built = EqualityOp {
-            equality_op: equality_op,
-        };
+        let equality_op_built = EqualityOp { equality_op };
         // Calling user action here
         self.user_grammar.equality_op(&equality_op_built)?;
         self.push(ASTType::EqualityOp(equality_op_built), context);
@@ -967,9 +963,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assign_op = assign_op.token(parse_tree)?.clone();
-        let assign_op_built = AssignOp {
-            assign_op: assign_op,
-        };
+        let assign_op_built = AssignOp { assign_op };
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
@@ -989,9 +983,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_op = logical_or_op.token(parse_tree)?.clone();
-        let logical_or_op_built = LogicalOrOp {
-            logical_or_op: logical_or_op,
-        };
+        let logical_or_op_built = LogicalOrOp { logical_or_op };
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_built), context);
@@ -1011,9 +1003,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_op = logical_and_op.token(parse_tree)?.clone();
-        let logical_and_op_built = LogicalAndOp {
-            logical_and_op: logical_and_op,
-        };
+        let logical_and_op_built = LogicalAndOp { logical_and_op };
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_built), context);
@@ -1033,9 +1023,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_op = bitwise_or_op.token(parse_tree)?.clone();
-        let bitwise_or_op_built = BitwiseOrOp {
-            bitwise_or_op: bitwise_or_op,
-        };
+        let bitwise_or_op_built = BitwiseOrOp { bitwise_or_op };
         // Calling user action here
         self.user_grammar.bitwise_or_op(&bitwise_or_op_built)?;
         self.push(ASTType::BitwiseOrOp(bitwise_or_op_built), context);
@@ -1055,9 +1043,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_op = bitwise_and_op.token(parse_tree)?.clone();
-        let bitwise_and_op_built = BitwiseAndOp {
-            bitwise_and_op: bitwise_and_op,
-        };
+        let bitwise_and_op_built = BitwiseAndOp { bitwise_and_op };
         // Calling user action here
         self.user_grammar.bitwise_and_op(&bitwise_and_op_built)?;
         self.push(ASTType::BitwiseAndOp(bitwise_and_op_built), context);
@@ -1077,9 +1063,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_op = bitwise_shift_op.token(parse_tree)?.clone();
-        let bitwise_shift_op_built = BitwiseShiftOp {
-            bitwise_shift_op: bitwise_shift_op,
-        };
+        let bitwise_shift_op_built = BitwiseShiftOp { bitwise_shift_op };
         // Calling user action here
         self.user_grammar
             .bitwise_shift_op(&bitwise_shift_op_built)?;
@@ -1100,9 +1084,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_op = relational_op.token(parse_tree)?.clone();
-        let relational_op_built = RelationalOp {
-            relational_op: relational_op,
-        };
+        let relational_op_built = RelationalOp { relational_op };
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
         self.push(ASTType::RelationalOp(relational_op_built), context);
@@ -1122,7 +1104,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let plus_built = Plus { plus: plus };
+        let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -1142,7 +1124,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let minus_built = Minus { minus: minus };
+        let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -1162,7 +1144,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let pow_op = pow_op.token(parse_tree)?.clone();
-        let pow_op_built = PowOp { pow_op: pow_op };
+        let pow_op_built = PowOp { pow_op };
         // Calling user action here
         self.user_grammar.pow_op(&pow_op_built)?;
         self.push(ASTType::PowOp(pow_op_built), context);
@@ -1182,7 +1164,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mult_op = mult_op.token(parse_tree)?.clone();
-        let mult_op_built = MultOp { mult_op: mult_op };
+        let mult_op_built = MultOp { mult_op };
         // Calling user action here
         self.user_grammar.mult_op(&mult_op_built)?;
         self.push(ASTType::MultOp(mult_op_built), context);
@@ -1279,7 +1261,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let assign_item = pop_item!(self, assign_item, AssignItem, context);
         let assignment_built = Assignment {
             assign_item: Box::new(assign_item),
-            assignment_list: assignment_list,
+            assignment_list,
             logical_or: Box::new(logical_or),
         };
         // Calling user action here
@@ -1342,7 +1324,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
         let logical_or_built = LogicalOr {
             logical_and: Box::new(logical_and),
-            logical_or_list: logical_or_list,
+            logical_or_list,
         };
         // Calling user action here
         self.user_grammar.logical_or(&logical_or_built)?;
@@ -1408,7 +1390,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_or = pop_item!(self, bitwise_or, BitwiseOr, context);
         let logical_and_built = LogicalAnd {
             bitwise_or: Box::new(bitwise_or),
-            logical_and_list: logical_and_list,
+            logical_and_list,
         };
         // Calling user action here
         self.user_grammar.logical_and(&logical_and_built)?;
@@ -1473,7 +1455,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_and = pop_item!(self, bitwise_and, BitwiseAnd, context);
         let bitwise_or_built = BitwiseOr {
             bitwise_and: Box::new(bitwise_and),
-            bitwise_or_list: bitwise_or_list,
+            bitwise_or_list,
         };
         // Calling user action here
         self.user_grammar.bitwise_or(&bitwise_or_built)?;
@@ -1539,7 +1521,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let equality = pop_item!(self, equality, Equality, context);
         let bitwise_and_built = BitwiseAnd {
             equality: Box::new(equality),
-            bitwise_and_list: bitwise_and_list,
+            bitwise_and_list,
         };
         // Calling user action here
         self.user_grammar.bitwise_and(&bitwise_and_built)?;
@@ -1604,7 +1586,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let relational = pop_item!(self, relational, Relational, context);
         let equality_built = Equality {
             relational: Box::new(relational),
-            equality_list: equality_list,
+            equality_list,
         };
         // Calling user action here
         self.user_grammar.equality(&equality_built)?;
@@ -1669,7 +1651,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_shift = pop_item!(self, bitwise_shift, BitwiseShift, context);
         let relational_built = Relational {
             bitwise_shift: Box::new(bitwise_shift),
-            relational_list: relational_list,
+            relational_list,
         };
         // Calling user action here
         self.user_grammar.relational(&relational_built)?;
@@ -1735,7 +1717,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let summ = pop_item!(self, summ, Summ, context);
         let bitwise_shift_built = BitwiseShift {
             summ: Box::new(summ),
-            bitwise_shift_list: bitwise_shift_list,
+            bitwise_shift_list,
         };
         // Calling user action here
         self.user_grammar.bitwise_shift(&bitwise_shift_built)?;
@@ -1849,7 +1831,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mult = pop_item!(self, mult, Mult, context);
         let summ_built = Summ {
             mult: Box::new(mult),
-            summ_list: summ_list,
+            summ_list,
         };
         // Calling user action here
         self.user_grammar.summ(&summ_built)?;
@@ -1914,7 +1896,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let power = pop_item!(self, power, Power, context);
         let mult_built = Mult {
             power: Box::new(power),
-            mult_list: mult_list,
+            mult_list,
         };
         // Calling user action here
         self.user_grammar.mult(&mult_built)?;
@@ -1979,7 +1961,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let factor = pop_item!(self, factor, Factor, context);
         let power_built = Power {
             factor: Box::new(factor),
-            power_list: power_list,
+            power_list,
         };
         // Calling user action here
         self.user_grammar.power(&power_built)?;
@@ -2164,7 +2146,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
             .token(parse_tree)?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
-        let number_built = Number { number: number };
+        let number_built = Number { number };
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);
@@ -2204,7 +2186,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = id.token(parse_tree)?.clone();
-        let id_built = Id { id: id };
+        let id_built = Id { id };
         // Calling user action here
         self.user_grammar.id(&id_built)?;
         self.push(ASTType::Id(id_built), context);

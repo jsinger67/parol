@@ -218,7 +218,12 @@ impl<'a> UserTraitGenerator<'a> {
             } else {
                 arg_name.to_string()
             };
-            code.push(format!("    {}: {},", setter_name, arg_name));
+            if *setter_name == arg_name {
+                // Avoid clippy warning "Redundant field names in struct initialization"
+                code.push(format!("    {},", setter_name));
+            } else {
+                code.push(format!("    {}: {},", setter_name, arg_name));
+            }
         }
         Ok(())
     }
