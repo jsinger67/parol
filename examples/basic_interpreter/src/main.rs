@@ -9,7 +9,7 @@ use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
 use crate::errors::basic_error_reporter;
 use anyhow::{Context, Result};
-use error_report::report_error;
+use error_report::{ErrorReporter, Report};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use parol_runtime::log::debug;
@@ -52,7 +52,8 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
                 }
             }
             Err(e) => {
-                report_error(&e, file_name, Some(&basic_error_reporter)).unwrap_or(());
+                ErrorReporter::report_error(&e, file_name, Some(&basic_error_reporter))
+                    .unwrap_or(());
                 Ok(std::process::ExitCode::FAILURE)
             }
         }
