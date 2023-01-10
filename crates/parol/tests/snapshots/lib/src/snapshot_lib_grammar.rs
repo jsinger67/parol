@@ -1,6 +1,6 @@
 use crate::snapshot_lib_grammar_trait::{SnapshotLib, SnapshotLibGrammarTrait};
 #[allow(unused_imports)]
-use anyhow::Result;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
