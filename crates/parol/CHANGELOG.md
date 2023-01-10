@@ -23,12 +23,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ## v0.16.0 - not released yet
 
-* Removed `miette` as opaque error handling crate and substituted it by `thiserror` + `anyhow`
-* `miette` support still exists as a single module and is used be the `parol` binary to leverage
-`miette`'s fancy error messages
-  * Example binaries should perhaps be changed this way
-  * A new feature and/or a command line option at the `parol new` subcommand could also bring
-  `miette` support to user applications
+* Removed `miette` as opaque error reporting crate
+  * All crates are agnostic regarding the actual error reporting
+* Solely the error reporting for `parol`'s binary is done with the help of `codespan_reporting`
+  * A new crate is designated to this: `error-report`
+  * To avoid cyclic references `parol`'s error data types are extracted into a new crate `parol-errors`
 * General improvements of error handling and reporting
 
 ## v0.15.1 - 2022-12-22
