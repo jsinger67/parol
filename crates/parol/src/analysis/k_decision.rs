@@ -1,9 +1,9 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
+use crate::GrammarAnalysisError;
 use crate::{GrammarConfig, KTuples};
 use anyhow::{anyhow, bail, Result};
-use parol_errors::GrammarAnalysisError;
 use parol_runtime::log::trace;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};

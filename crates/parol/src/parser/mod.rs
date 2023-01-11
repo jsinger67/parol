@@ -1,4 +1,11 @@
 ///
+/// Error types used by the parser
+///
+#[forbid(missing_docs)]
+pub mod errors;
+pub use errors::ParolParserError;
+
+///
 /// Module with types that support the representation of a parser PAR grammar
 ///  
 #[forbid(missing_docs)]

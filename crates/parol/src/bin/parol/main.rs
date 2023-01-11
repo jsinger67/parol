@@ -11,17 +11,14 @@ use anyhow::Context;
 use arguments::CliArgs;
 use clap::Parser;
 use owo_colors::OwoColorize;
-use parol_runtime::{log::trace, Result};
+use parol_runtime::{log::trace, parser::ParseTreeType, Report, Result};
 
 use id_tree::Tree;
 use parol::{
     build::{BuildListener, IntermediateGrammar},
-    render_par_string, GrammarConfig, ParolGrammar,
+    render_par_string, GrammarConfig, ParolErrorReporter, ParolGrammar,
 };
 use parol_macros::parol;
-use parol_runtime::parser::ParseTreeType;
-
-use error_report::report_parol_error;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
@@ -174,7 +171,7 @@ fn main() -> Result<std::process::ExitCode> {
             println!("{} {}", "Parol".bright_blue(), "succeeded".bright_green());
             return Ok(std::process::ExitCode::SUCCESS);
         }
-        Err(err) => report_parol_error(&err, file).unwrap_or(()),
+        Err(err) => ParolErrorReporter::report_error(&err, file).unwrap_or(()),
     }
     println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
     Ok(std::process::ExitCode::FAILURE)

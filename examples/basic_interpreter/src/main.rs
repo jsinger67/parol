@@ -7,13 +7,13 @@ pub mod operators;
 
 use crate::basic_grammar::BasicGrammar;
 use crate::basic_parser::parse;
-use crate::errors::basic_error_reporter;
+use crate::errors::BasicErrorReporter;
 use anyhow::{Context, Result};
-use error_report::{ErrorReporter, Report};
 use id_tree::Tree;
 use id_tree_layout::Layouter;
 use parol_runtime::log::debug;
 use parol_runtime::parser::ParseTreeType;
+use parol_runtime::Report;
 use std::env;
 use std::fs;
 use std::time::Instant;
@@ -52,8 +52,7 @@ fn main() -> anyhow::Result<std::process::ExitCode> {
                 }
             }
             Err(e) => {
-                ErrorReporter::report_error(&e, file_name, Some(&basic_error_reporter))
-                    .unwrap_or(());
+                BasicErrorReporter::report_error(&e, file_name).unwrap_or(());
                 Ok(std::process::ExitCode::FAILURE)
             }
         }

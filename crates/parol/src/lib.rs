@@ -30,8 +30,8 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolAttribute, Terminal, Terminal
 pub mod analysis;
 
 pub use analysis::{
-    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal, KTuple,
-    KTuples, LookaheadDFA,
+    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal,
+    GrammarAnalysisError, KTuple, KTuples, LookaheadDFA, RecursiveNonTerminal, RelatedHint,
 };
 
 ///
@@ -41,6 +41,13 @@ pub use analysis::{
 pub mod conversions;
 
 pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_string};
+
+///
+/// Module with functionalities for error reporting
+///
+#[forbid(missing_docs)]
+mod error_report;
+pub use error_report::ParolErrorReporter;
 
 ///
 /// Module with functionalities for lexer and parser generation
@@ -57,7 +64,7 @@ pub use generators::{
 /// Module with parol's parser for input grammars
 ///
 pub mod parser;
-pub use parser::{parse, ParolGrammar};
+pub use parser::{parse, ParolGrammar, ParolParserError};
 
 ///
 /// Module with functionalities for grammar transformation

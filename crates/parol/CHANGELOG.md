@@ -24,11 +24,8 @@ new minor version numbers. Please note that this is no version handling covered 
 ## v0.16.0 - not released yet
 
 * Removed `miette` as error reporting crate
-  * All crates are agnostic regarding the actual error reporting
 * The error reporting for `parol`'s binary is done with the help of `codespan_reporting` (also
 example `basic_interpreter` as PoC)
-  * A new crate is designated to this: `error-report`
-  * To avoid cyclic references `parol`'s error data types are extracted into a new crate `parol-errors`
 * General improvements of error handling and reporting
 
 ## v0.15.1 - 2022-12-22

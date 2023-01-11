@@ -3,8 +3,8 @@ use super::parol_grammar_trait::{
     PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
+use crate::ParolParserError;
 use anyhow::anyhow;
-use parol_errors::ParolParserError;
 
 use parol_macros::bail;
 

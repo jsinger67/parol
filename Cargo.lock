@@ -89,7 +89,6 @@ version = "0.5.0"
 dependencies = [
  "anyhow",
  "env_logger",
- "error-report",
  "function_name",
  "id_tree",
  "id_tree_layout",
@@ -340,17 +339,6 @@ checksum = "aa68f1b12764fab894d2755d2518754e71b4fd80ecfb822714a1206c2aab39bf"
 dependencies = [
  "cc",
  "libc",
-]
-
-[[package]]
-name = "error-report"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "codespan-reporting",
- "parol-errors",
- "parol_runtime",
- "thiserror",
 ]
 
 [[package]]
@@ -718,7 +706,7 @@ checksum = "c1b04fb49957986fdce4d6ee7a65027d55d4b6d2265e5848bbb507b58ccfdb6f"
 
 [[package]]
 name = "parol"
-version = "0.16.0-alpha.1"
+version = "0.16.0-alpha.2"
 dependencies = [
  "anyhow",
  "assert_cmd",
@@ -726,12 +714,10 @@ dependencies = [
  "clap",
  "derive_builder",
  "env_logger",
- "error-report",
  "function_name",
  "id_tree",
  "id_tree_layout",
  "owo-colors",
- "parol-errors",
  "parol-macros",
  "parol_runtime",
  "pretty_assertions",
@@ -743,15 +729,6 @@ dependencies = [
  "tempfile",
  "thiserror",
  "ume",
-]
-
-[[package]]
-name = "parol-errors"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "parol_runtime",
- "thiserror",
 ]
 
 [[package]]
@@ -770,7 +747,6 @@ dependencies = [
  "lsp-types",
  "once_cell",
  "parol",
- "parol-errors",
  "parol-macros",
  "parol_runtime",
  "regex",
@@ -785,9 +761,10 @@ version = "0.2.0"
 
 [[package]]
 name = "parol_runtime"
-version = "0.12.0-alpha.2"
+version = "0.12.0-alpha.3"
 dependencies = [
  "anyhow",
+ "codespan-reporting",
  "derive_builder",
  "function_name",
  "id_tree",

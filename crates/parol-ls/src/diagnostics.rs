@@ -1,5 +1,5 @@
 use lsp_types::{Diagnostic, DiagnosticRelatedInformation, Location, Range, Url};
-use parol_errors::{GrammarAnalysisError, ParolParserError};
+use parol::{GrammarAnalysisError, ParolParserError};
 use std::fmt::Write as _;
 
 use crate::{

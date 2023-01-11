@@ -9,7 +9,6 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 anyhow = "1.0"
 env_logger = "0.10.0"
-error-report = { path = "../../crates/error-report" }
 function_name = "0.3.0"
 id_tree = "^1.8"
 id_tree_layout = "2.0.3"
