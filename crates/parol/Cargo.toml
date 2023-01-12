@@ -22,7 +22,7 @@ function_name = "0.3.0"
 id_tree = "1.8"
 id_tree_layout = "2.0.3"
 owo-colors = "3.5.0"
-parol_runtime = { path = "../parol_runtime", version = "0.12.0-alpha.3", features = ["auto_generation"] }
+parol_runtime = { path = "../parol_runtime", version = "0.12.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 rand = "0.8.5"
 rand_regex = "0.15.1"

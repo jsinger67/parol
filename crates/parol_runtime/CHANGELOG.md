@@ -16,9 +16,9 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## v0.12.0 - not released yet
+## v0.12.0 - 2023-01-12
 
-* Removed `miette` as opaque error handling crate and substituted it by `thiserror` + `anyhow`
+* Removed `miette` as error handling
 * General improvements of error handling
 * Fixed the problem that regex for white spaces consumed newline characters
 * Fixed issue [#54](https://github.com/jsinger67/parol/issues/54)
