@@ -4,18 +4,16 @@ use crate::{
     operators::{BinaryOperator, UnaryOperator},
 };
 #[allow(unused_imports)]
-use anyhow::{anyhow, bail, Context, Result};
-use parol::utils::miette_support;
-use parol_runtime::log::trace;
+use anyhow::{anyhow, bail, Context};
 use parol_runtime::{
     errors::FileSource,
     lexer::{Location, Token},
 };
+use parol_runtime::{log::trace, ParolError, Result};
 use std::{
     collections::BTreeMap,
     fmt::{Debug, Display, Error, Formatter},
     marker::PhantomData,
-    str::FromStr,
 };
 
 ///
@@ -34,9 +32,9 @@ const MAX_LINE_NUMBER: u16 = 63999;
 pub struct BasicNumber(DefinitionRange);
 
 impl<'t> TryFrom<&Token<'t>> for BasicNumber {
-    type Error = <DefinitionRange as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(basic_line_number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         let symbol = basic_line_number.text().replace(' ', "").replace('E', "e");
         Ok(Self(symbol.parse::<DefinitionRange>()?))
     }
@@ -46,9 +44,9 @@ impl<'t> TryFrom<&Token<'t>> for BasicNumber {
 pub struct BasicLineNumber(LineNumberRange, Location);
 
 impl<'t> TryFrom<&Token<'t>> for BasicLineNumber {
-    type Error = <LineNumberRange as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(basic_line_number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(basic_line_number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         let symbol = basic_line_number.text().replace(' ', "");
         Ok(Self(
             symbol.parse::<LineNumberRange>()?,
@@ -87,7 +85,7 @@ impl<'t> BasicGrammar<'t> {
         BasicGrammar::default()
     }
 
-    fn value(&self, context: &str, id: &Token<'t>) -> Result<DefinitionRange> {
+    fn value(&self, context: &str, id: &Token<'t>) -> DefinitionRange {
         let name: &str = if id.text().len() < 2 {
             id.text()
         } else {
@@ -95,7 +93,7 @@ impl<'t> BasicGrammar<'t> {
         };
         let value = self.env.get(name).cloned().unwrap_or_default();
         trace!("value @ {context}: {name} = {value}");
-        Ok(value)
+        value
     }
 
     fn set_value(&mut self, id: &str, context: &str, value: DefinitionRange) {
@@ -131,14 +129,15 @@ impl<'t> BasicGrammar<'t> {
         for line in other_lines {
             let (k, v) = self.pre_process_line(&line.line)?;
             if lines.lines.insert(k.0, (k.1.clone(), v)).is_some() {
-                bail!(BasicError::LineNumberDefinedTwice {
-                    context: context.to_owned(),
-                    input: miette_support::MyFileSource(FileSource::try_new(
-                        k.1.file_name.clone()
-                    )?)
+                return Err(ParolError::UserError(
+                    BasicError::LineNumberDefinedTwice {
+                        context: context.to_owned(),
+                        input: FileSource::try_new(k.1.file_name.clone())
+                            .map_err(anyhow::Error::from)?,
+                        token: k.1,
+                    }
                     .into(),
-                    token: miette_support::MyLocation(k.1).into()
-                });
+                ));
             }
         }
 
@@ -162,14 +161,13 @@ impl<'t> BasicGrammar<'t> {
         let context = "pre_process_line";
         let basic_line_number = &line.line_number.line_number;
         if basic_line_number.0 > MAX_LINE_NUMBER {
-            bail!(BasicError::LineNumberTooLarge {
+            return Err(BasicError::LineNumberTooLarge {
                 context: context.to_owned(),
-                input: miette_support::MyFileSource(FileSource::try_new(
-                    basic_line_number.1.file_name.clone()
-                )?)
-                .into(),
-                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
-            });
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())
+                    .map_err(anyhow::Error::from)?,
+                token: basic_line_number.1.clone(),
+            }
+            .into());
         }
 
         // On each line there can exist multiple statements separated by colons!
@@ -258,14 +256,13 @@ impl<'t> BasicGrammar<'t> {
         }
 
         if !lines.lines.contains_key(&line_number) {
-            bail!(BasicError::LineNumberBeyondLastLine {
+            return Err(BasicError::LineNumberBeyondLastLine {
                 context: context.to_owned(),
-                input: miette_support::MyFileSource(FileSource::try_new(
-                    basic_line_number.1.file_name.clone()
-                )?)
-                .into(),
-                token: miette_support::MyLocation(basic_line_number.1.clone()).into(),
-            });
+                input: FileSource::try_new(basic_line_number.1.file_name.clone())
+                    .map_err(anyhow::Error::from)?,
+                token: basic_line_number.1.clone(),
+            }
+            .into());
         }
 
         trace!("{context}: setting next line to {line_number}");
@@ -354,7 +351,7 @@ impl<'t> BasicGrammar<'t> {
         if let Some(not) = &logical_not.logical_not_opt {
             let result = self.process_relational(&logical_not.relational)?;
             let op: UnaryOperator = not.logical_not_op.logical_not_op.text().try_into()?;
-            UnaryOperator::apply_unary_operation(&op, result, context)
+            Ok(UnaryOperator::apply_unary_operation(&op, result, context))
         } else {
             self.process_relational(&logical_not.relational)
         }
@@ -410,7 +407,7 @@ impl<'t> BasicGrammar<'t> {
                 Number::Integer(int) => Ok(int.integer.integer.0),
             },
             Factor::Variable(FactorVariable { variable }) => {
-                self.value(context, &variable.variable)
+                Ok(self.value(context, &variable.variable))
             }
             Factor::MinusFactor(FactorMinusFactor { factor, .. }) => {
                 Ok(-(self.process_factor(factor)?))
@@ -446,5 +443,11 @@ impl<'t> BasicGrammarTrait<'t> for BasicGrammar<'t> {
     /// Semantic action for non-terminal 'Basic'
     fn basic(&mut self, basic: &Basic<'t>) -> Result<()> {
         self.process_basic(basic)
+    }
+}
+
+impl From<BasicError> for ParolError {
+    fn from(error: BasicError) -> Self {
+        ParolError::UserError(error.into())
     }
 }

@@ -10,14 +10,15 @@
 #![allow(clippy::upper_case_acronyms)]
 
 #[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
-use parol_runtime::derive_builder::Builder;
+use anyhow::{anyhow, bail};
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::ParserError;
+use parol_runtime::{derive_builder::Builder, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -1533,7 +1534,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let double_colon = double_colon.token(parse_tree)?.clone();
+        let double_colon = double_colon.token(parse_tree).unwrap().clone();
         let double_colon_built = DoubleColonBuilder::default()
             .double_colon(double_colon)
             .build()
@@ -2115,7 +2116,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = string.token(parse_tree)?.clone();
+        let string = string.token(parse_tree).unwrap().clone();
         let string_built = StringBuilder::default()
             .string(string)
             .build()
@@ -2138,7 +2139,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let raw_string = raw_string.token(parse_tree)?.clone();
+        let raw_string = raw_string.token(parse_tree).unwrap().clone();
         let raw_string_built = RawStringBuilder::default()
             .raw_string(raw_string)
             .build()
@@ -2161,7 +2162,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let regex = regex.token(parse_tree)?.clone();
+        let regex = regex.token(parse_tree).unwrap().clone();
         let regex_built = RegexBuilder::default()
             .regex(regex)
             .build()
@@ -2327,7 +2328,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = identifier.token(parse_tree)?.clone();
+        let identifier = identifier.token(parse_tree).unwrap().clone();
         let identifier_built = IdentifierBuilder::default()
             .identifier(identifier)
             .build()
@@ -2903,7 +2904,11 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             68 => self.user_type_name(&children[0], &children[1], parse_tree),
             69 => self.user_type_name_list_0(&children[0], &children[1], &children[2], parse_tree),
             70 => self.user_type_name_list_1(parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

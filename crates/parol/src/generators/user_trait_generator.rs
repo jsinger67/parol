@@ -106,7 +106,7 @@ impl<'a> UserTraitGenerator<'a> {
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = {}.token(parse_tree)?.try_into()?;",
+                    "let {} = {}.token(parse_tree)?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
                     arg_name, arg_name,
                 ))
             }
@@ -212,13 +212,18 @@ impl<'a> UserTraitGenerator<'a> {
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
             ) {
                 format!(
-                    r#"(&{}).try_into().map_err(|e| anyhow!("Conversion error!: {{}}", e))?"#,
+                    r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
                     arg_name
                 )
             } else {
                 arg_name.to_string()
             };
-            code.push(format!("    .{}({})", setter_name, arg_name));
+            if *setter_name == arg_name {
+                // Avoid clippy warning "Redundant field names in struct initialization"
+                code.push(format!("    {},", setter_name));
+            } else {
+                code.push(format!("    {}: {},", setter_name, arg_name));
+            }
         }
         Ok(())
     }
@@ -253,27 +258,17 @@ impl<'a> UserTraitGenerator<'a> {
         if function.sem == ProductionAttribute::CollectionStart {
             code.push(format!("let {}_built = Vec::new();", fn_name));
         } else if function.sem == ProductionAttribute::AddToCollection {
-            code.push(format!(
-                "let {}_built = {}Builder::default()",
-                fn_name,
-                nt_type.name()
-            ));
+            code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
-            code.push("    .build()".to_string());
-            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
+            code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalSome {
-            code.push(format!(
-                "let {}_built = {}Builder::default()",
-                fn_name,
-                nt_type.name()
-            ));
+            code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)? {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
-            code.push("    .build()".to_string());
-            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
+            code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalNone {
             // Don't generate a builder!
         } else {
@@ -282,15 +277,11 @@ impl<'a> UserTraitGenerator<'a> {
             } else {
                 fn_out_type.name()
             };
-            code.push(format!(
-                "let {}_built = {}Builder::default()",
-                fn_name, builder_prefix
-            ));
+            code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
             for member_id in symbol_table.members(action_id)? {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
-            code.push("    .build()".to_string());
-            code.push(r#"    .map_err(|e| anyhow!("Builder error!: {}", e))?;"#.to_string());
+            code.push("};".to_string());
             if function.alts > 1 {
                 // Type adjustment to the non-terminal enum
                 // let list_0 = List::List0(list_0);

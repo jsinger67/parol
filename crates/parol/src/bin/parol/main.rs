@@ -7,34 +7,29 @@ use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::Context;
 use arguments::CliArgs;
 use clap::Parser;
-use miette::{miette, IntoDiagnostic};
-use parol_runtime::log::trace;
+use owo_colors::OwoColorize;
+use parol_runtime::{log::trace, parser::ParseTreeType, Report, Result};
 
 use id_tree::Tree;
 use parol::{
     build::{BuildListener, IntermediateGrammar},
-    render_par_string, to_report, GrammarConfig, ParolGrammar,
+    render_par_string, GrammarConfig, ParolErrorReporter, ParolGrammar,
 };
-use parol_runtime::parser::ParseTreeType;
+use parol_macros::parol;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
-fn main() -> miette::Result<()> {
-    env_logger::try_init().into_diagnostic()?;
-    trace!("env logger started");
-
-    let args = CliArgs::parse();
-
-    if let Some(subcommand) = args.subcommand {
-        return subcommand.invoke_main().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)));
+fn run(args: &CliArgs) -> Result<()> {
+    if let Some(subcommand) = &args.subcommand {
+        return subcommand.invoke_main().map_err(|e| parol!(e));
     }
 
     // If relative paths are specified, they should be resoled relative to the current directory
     let mut builder =
-        parol::build::Builder::with_explicit_output_dir(env::current_dir().into_diagnostic()?);
+        parol::build::Builder::with_explicit_output_dir(env::current_dir().map_err(|e| parol!(e))?);
 
     // It's okay if the output doesn't exist;
     builder.disable_output_sanity_checks();
@@ -45,11 +40,12 @@ fn main() -> miette::Result<()> {
     let grammar_file = args
         .grammar
         .as_ref()
-        .ok_or_else(|| anyhow!("Missing input grammar file (Specify with `-f`)"))
-        .map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
+        .ok_or_else(|| parol!("Missing input grammar file (Specify with `-f`)"))?;
     builder.grammar_file(grammar_file);
 
-    builder.max_lookahead(args.lookahead).into_diagnostic()?;
+    builder
+        .max_lookahead(args.lookahead)
+        .map_err(|e| parol!(e))?;
     if let Some(module) = &args.module {
         builder.user_trait_module_name(module);
     }
@@ -79,16 +75,16 @@ fn main() -> miette::Result<()> {
 
     let mut listener = CLIListener {
         grammar_file,
-        config: &args,
+        config: args,
     };
     let mut generator = builder
         .begin_generation_with(Some(&mut listener))
-        .into_diagnostic()?;
+        .map_err(|e| parol!(e))?;
 
-    generator.parse().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
-    generator.expand().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
-    generator.post_process().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
-    generator.write_output().map_err(|e| to_report(e).unwrap_or_else(|e| miette!(e)))?;
+    generator.parse()?;
+    generator.expand()?;
+    generator.post_process()?;
+    generator.write_output()?;
 
     Ok(())
 }
@@ -119,7 +115,8 @@ impl BuildListener for CLIListener<'_> {
 
         if self.config.generate_tree_graph {
             parol::generate_tree_layout(syntax_tree, self.grammar_file)
-                .context("Error generating tree layout")?;
+                .context("Error generating tree layout")
+                .map_err(|e| parol!(e))?;
         }
 
         Ok(())
@@ -136,14 +133,16 @@ impl BuildListener for CLIListener<'_> {
                 if let Some(file_name) = self.config.write_untransformed.as_ref() {
                     let serialized = render_par_string(grammar_config, false)?;
                     fs::write(file_name, serialized)
-                        .context("Error writing untransformed grammar!")?;
+                        .context("Error writing untransformed grammar!")
+                        .map_err(|e| parol!(e))?;
                 }
             }
             // final pass
             IntermediateGrammar::LAST => {
                 if let Some(file_name) = self.config.expanded.as_ref() {
                     // NOTE: We still need special handling for writing to stdout
-                    let lf_source = render_par_string(grammar_config, true)?;
+                    let lf_source =
+                        render_par_string(grammar_config, true).map_err(|e| parol!(e))?;
                     if *file_name == OsStr::new("--") {
                         print!("{}", lf_source);
                     } else {
@@ -155,4 +154,25 @@ impl BuildListener for CLIListener<'_> {
         }
         Ok(())
     }
+}
+
+fn main() -> Result<std::process::ExitCode> {
+    env_logger::try_init().map_err(|e| parol!(e))?;
+    trace!("env logger started");
+
+    let args = CliArgs::parse();
+    let file = if args.subcommand.is_some() {
+        PathBuf::new()
+    } else {
+        args.grammar.as_ref().unwrap().to_path_buf()
+    };
+    match run(&args) {
+        Ok(_) => {
+            println!("{} {}", "Parol".bright_blue(), "succeeded".bright_green());
+            return Ok(std::process::ExitCode::SUCCESS);
+        }
+        Err(err) => ParolErrorReporter::report_error(&err, file).unwrap_or(()),
+    }
+    println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
+    Ok(std::process::ExitCode::FAILURE)
 }

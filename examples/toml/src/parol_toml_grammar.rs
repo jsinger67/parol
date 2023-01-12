@@ -1,6 +1,6 @@
 use crate::parol_toml_grammar_trait::{ParolToml, ParolTomlGrammarTrait};
 #[allow(unused_imports)]
-use anyhow::Result;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

@@ -17,14 +17,13 @@ pub use parser::{
     StateIndex, UserActionsTrait,
 };
 
-///
-/// error_chain's error module that auto-creates basic error types.
-///
-#[macro_use]
 pub mod errors;
-pub use errors::{FileSource, LexerError, ParserError, TokenVec, UnexpectedToken};
+pub use errors::{
+    FileSource, LexerError, ParolError, ParserError, Report, Result, TokenVec, UnexpectedToken,
+};
 
 // re-export
+pub use codespan_reporting;
 #[cfg(feature = "auto_generation")]
 pub use derive_builder;
 pub use function_name;

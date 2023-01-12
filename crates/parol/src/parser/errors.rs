@@ -1,4 +1,7 @@
-use parol_runtime::{FileSource, Location};
+use std::path::PathBuf;
+
+use anyhow::anyhow;
+use parol_runtime::Location;
 use thiserror::Error;
 
 ///
@@ -13,7 +16,7 @@ pub enum ParolParserError {
         /// Name of the unknown scanner state
         name: String,
         /// Source
-        input: FileSource,
+        input: PathBuf,
         /// Location
         token: Location,
     },
@@ -24,7 +27,7 @@ pub enum ParolParserError {
         /// Context (semantic action) where the error was issued
         context: String,
         /// Source
-        input: FileSource,
+        input: PathBuf,
         /// Start location
         start: Location,
         /// End location
@@ -37,7 +40,7 @@ pub enum ParolParserError {
         /// Context (semantic action) where the error was issued
         context: String,
         /// Source
-        input: FileSource,
+        input: PathBuf,
         /// Start location
         start: Location,
         /// End location
@@ -50,7 +53,7 @@ pub enum ParolParserError {
         /// Context (semantic action) where the error was issued
         context: String,
         /// Source
-        input: FileSource,
+        input: PathBuf,
         /// Start location
         start: Location,
         /// End location
@@ -70,7 +73,7 @@ pub enum ParolParserError {
         /// Expanded
         expanded: String,
         /// Source
-        input: FileSource,
+        input: PathBuf,
         /// First alias
         first: Location,
         /// Second alias
@@ -83,4 +86,10 @@ pub enum ParolParserError {
         /// Names of the empty scanner states
         empty_scanners: Vec<String>,
     },
+}
+
+impl From<ParolParserError> for parol_runtime::ParolError {
+    fn from(err: ParolParserError) -> Self {
+        parol_runtime::ParolError::UserError(anyhow!(err))
+    }
 }

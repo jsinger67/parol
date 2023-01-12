@@ -5,6 +5,8 @@ use std::fmt::{Display, Formatter};
 use std::path::Path;
 use thiserror::Error;
 
+pub type Result<T> = std::result::Result<T, ParolError>;
+
 #[derive(Error, Debug)]
 pub enum ParserError {
     #[error(transparent)]
@@ -17,7 +19,7 @@ pub enum ParserError {
         error_location: Location,
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
-        source: Option<anyhow::Error>,
+        source: Option<Box<ParolError>>,
     },
 
     #[error("Unprocessed input is left after parsing has finished")]
@@ -30,7 +32,7 @@ pub enum ParserError {
     PopOnEmptyScannerStateStack {
         context: String,
         input: FileSource,
-        source: anyhow::Error,
+        source: LexerError,
     },
 
     #[error("{0}")]
@@ -47,6 +49,28 @@ pub enum LexerError {
 
     #[error("No valid token read")]
     TokenBufferEmptyError,
+
+    #[error("{0}")]
+    InternalError(String),
+
+    #[error("Lookahead exceeds its maximum")]
+    LookaheadExceedsMaximum,
+
+    #[error("Lookahead exceeds token buffer length")]
+    LookaheadExceedsTokenBufferLength,
+
+    #[error("pop_scanner: Tried to pop from an empty scanner stack!")]
+    ScannerStackEmptyError,
+}
+
+#[derive(Error, Debug)]
+pub enum ParolError {
+    #[error(transparent)]
+    ParserError(#[from] ParserError),
+    #[error(transparent)]
+    LexerError(#[from] LexerError),
+    #[error(transparent)]
+    UserError(#[from] anyhow::Error),
 }
 
 #[derive(Debug)]

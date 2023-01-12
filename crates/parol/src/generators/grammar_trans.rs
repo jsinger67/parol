@@ -1,8 +1,6 @@
-use crate::analysis::errors::{RecursiveNonTerminal, RelatedHint};
-use crate::analysis::{
-    non_productive_non_terminals, unreachable_non_terminals, GrammarAnalysisError,
-};
+use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::{detect_left_recursive_non_terminals, left_factor, Cfg};
+use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 use anyhow::{bail, Result};
 
 // ---------------------------------------------------

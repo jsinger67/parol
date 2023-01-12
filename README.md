@@ -12,6 +12,12 @@
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
+## ATTENTION - The main branch is subject to constant changes, so the experience can be bumpy
+
+Therefore, please use an officially released version from [crates.io](https://crates.io/crates/parol).
+
+---
+
 [parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) parser generator
 **for Rust**.
 

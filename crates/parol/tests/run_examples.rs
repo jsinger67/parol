@@ -174,7 +174,9 @@ fn run_keywords2_examples() -> Result<()> {
 
 fn run_basic_interpreter_examples() -> Result<()> {
     let parser = binary_path!("basic");
-    for entry in std::path::Path::new("../../examples/basic_interpreter/tests/data/valid").read_dir()? {
+    for entry in
+        std::path::Path::new("../../examples/basic_interpreter/tests/data/valid").read_dir()?
+    {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
                 println!("Parsing {}...", entry.path().display());
@@ -183,7 +185,9 @@ fn run_basic_interpreter_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("../../examples/basic_interpreter/tests/data/invalid").read_dir()? {
+    for entry in
+        std::path::Path::new("../../examples/basic_interpreter/tests/data/invalid").read_dir()?
+    {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
                 println!("Parsing {} should fail...", entry.path().display());
@@ -194,4 +198,3 @@ fn run_basic_interpreter_examples() -> Result<()> {
     }
     Ok(())
 }
-

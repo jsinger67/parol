@@ -1,6 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
+use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
-use crate::analysis::{GrammarAnalysisError, LookaheadDFA};
+use crate::GrammarAnalysisError;
 use crate::{GrammarConfig, KTuples};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;

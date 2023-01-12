@@ -1,8 +1,9 @@
 use crate::scanner_states_grammar_trait::ScannerStatesGrammarTrait;
-use anyhow::{anyhow, bail, Result};
 use id_tree::Tree;
+use parol_macros::{bail, parol};
 use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -110,7 +111,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
             self.push(ScannerStatesGrammarItem::String(s), context);
             Ok(())
         } else {
-            Err(anyhow!("{}: Expected 'String' on TOS.", context))
+            Err(parol!("{}: Expected 'String' on TOS.", context))
         }
     }
 
@@ -130,7 +131,7 @@ impl ScannerStatesGrammarTrait for ScannerStatesGrammar {
             self.push(ScannerStatesGrammarItem::String(s), context);
             Ok(())
         } else {
-            Err(anyhow!("{}: Expected 'String' on TOS.", context))
+            Err(parol!("{}: Expected 'String' on TOS.", context))
         }
     }
 

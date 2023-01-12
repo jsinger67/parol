@@ -43,6 +43,13 @@ pub mod conversions;
 pub use conversions::{render_dfa_dot_string, render_nt_dot_string, render_par_string};
 
 ///
+/// Module with functionalities for error reporting
+///
+#[forbid(missing_docs)]
+mod error_report;
+pub use error_report::ParolErrorReporter;
+
+///
 /// Module with functionalities for lexer and parser generation
 ///
 #[forbid(missing_docs)]
@@ -72,9 +79,7 @@ pub use transformation::left_factor;
 pub mod utils;
 pub(crate) use utils::str_vec::StrVec;
 pub(crate) use utils::{generate_name, group_by};
-pub use utils::{
-    generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string, to_report,
-};
+pub use utils::{generate_tree_layout, obtain_grammar_config, obtain_grammar_config_from_string};
 
 ///
 /// Internal lookahead limit

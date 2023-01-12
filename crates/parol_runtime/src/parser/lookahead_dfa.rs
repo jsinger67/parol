@@ -2,7 +2,6 @@ use crate::{
     FormatToken, LexerError, ProductionIndex, StateIndex, TerminalIndex, TokenStream, TokenVec,
     UnexpectedToken,
 };
-use anyhow::{bail, Result};
 use log::trace;
 use std::cmp::Ordering;
 use std::fmt::Debug;
@@ -74,13 +73,15 @@ impl LookaheadDFA {
     /// Retrieves the lookahead tokens from the TokenStream object without
     /// consuming any of them.
     ///
-    pub fn eval<'t>(&self, token_stream: &mut TokenStream<'t>) -> Result<ProductionIndex> {
+    pub fn eval<'t>(
+        &self,
+        token_stream: &mut TokenStream<'t>,
+    ) -> Result<ProductionIndex, LexerError> {
         let mut state: StateIndex = 0;
         if self.k > token_stream.k {
             return Err(LexerError::DataError(
                 "Lookahead size mismatch between token stream and Lookahead DFA",
-            )
-            .into());
+            ));
         }
         let mut last_accepting_state: Option<StateIndex> = None;
         for i in 0..self.k {
@@ -155,7 +156,7 @@ impl LookaheadDFA {
                 state,
                 token_stream.lookahead(0)
             );
-            bail!(LexerError::PredictionError {
+            return Err(LexerError::PredictionError {
                 cause: format!("Production prediction failed at state {}", state),
             });
         }
@@ -168,7 +169,7 @@ impl LookaheadDFA {
         &self,
         terminal_names: &'static [&'static str],
         token_stream: &TokenStream<'_>,
-    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec)> {
+    ) -> Result<(String, Vec<UnexpectedToken>, TokenVec), LexerError> {
         let mut state = 0;
         let mut diag_msg = String::new();
         let mut unexpected_tokens = Vec::new();

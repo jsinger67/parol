@@ -9,8 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
@@ -18,6 +16,7 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -885,10 +884,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let calc_list = pop_and_reverse_item!(self, calc_list, CalcList, context);
-        let calc_built = CalcBuilder::default()
-            .calc_list(calc_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let calc_built = Calc { calc_list };
         // Calling user action here
         self.user_grammar.calc(&calc_built)?;
         self.push(ASTType::Calc(calc_built), context);
@@ -911,11 +907,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut calc_list = pop_item!(self, calc_list, CalcList, context);
         let instruction = pop_item!(self, instruction, Instruction, context);
-        let calc_list_0_built = CalcListBuilder::default()
+        let calc_list_0_built = CalcList {
             // Ignore clipped member 'semicolon'
-            .instruction(Box::new(instruction))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            instruction: Box::new(instruction),
+        };
         // Add an element to the vector
         calc_list.push(calc_list_0_built);
         self.push(ASTType::CalcList(calc_list), context);
@@ -948,10 +943,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let equality_op = equality_op.token(parse_tree)?.clone();
-        let equality_op_built = EqualityOpBuilder::default()
-            .equality_op(equality_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let equality_op_built = EqualityOp { equality_op };
         // Calling user action here
         self.user_grammar.equality_op(&equality_op_built)?;
         self.push(ASTType::EqualityOp(equality_op_built), context);
@@ -971,10 +963,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assign_op = assign_op.token(parse_tree)?.clone();
-        let assign_op_built = AssignOpBuilder::default()
-            .assign_op(assign_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assign_op_built = AssignOp { assign_op };
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
@@ -994,10 +983,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_op = logical_or_op.token(parse_tree)?.clone();
-        let logical_or_op_built = LogicalOrOpBuilder::default()
-            .logical_or_op(logical_or_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_op_built = LogicalOrOp { logical_or_op };
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_built), context);
@@ -1017,10 +1003,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_op = logical_and_op.token(parse_tree)?.clone();
-        let logical_and_op_built = LogicalAndOpBuilder::default()
-            .logical_and_op(logical_and_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_op_built = LogicalAndOp { logical_and_op };
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_built), context);
@@ -1040,10 +1023,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_op = bitwise_or_op.token(parse_tree)?.clone();
-        let bitwise_or_op_built = BitwiseOrOpBuilder::default()
-            .bitwise_or_op(bitwise_or_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_or_op_built = BitwiseOrOp { bitwise_or_op };
         // Calling user action here
         self.user_grammar.bitwise_or_op(&bitwise_or_op_built)?;
         self.push(ASTType::BitwiseOrOp(bitwise_or_op_built), context);
@@ -1063,10 +1043,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_op = bitwise_and_op.token(parse_tree)?.clone();
-        let bitwise_and_op_built = BitwiseAndOpBuilder::default()
-            .bitwise_and_op(bitwise_and_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_and_op_built = BitwiseAndOp { bitwise_and_op };
         // Calling user action here
         self.user_grammar.bitwise_and_op(&bitwise_and_op_built)?;
         self.push(ASTType::BitwiseAndOp(bitwise_and_op_built), context);
@@ -1086,10 +1063,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_op = bitwise_shift_op.token(parse_tree)?.clone();
-        let bitwise_shift_op_built = BitwiseShiftOpBuilder::default()
-            .bitwise_shift_op(bitwise_shift_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_shift_op_built = BitwiseShiftOp { bitwise_shift_op };
         // Calling user action here
         self.user_grammar
             .bitwise_shift_op(&bitwise_shift_op_built)?;
@@ -1110,10 +1084,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_op = relational_op.token(parse_tree)?.clone();
-        let relational_op_built = RelationalOpBuilder::default()
-            .relational_op(relational_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_op_built = RelationalOp { relational_op };
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
         self.push(ASTType::RelationalOp(relational_op_built), context);
@@ -1133,10 +1104,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let plus_built = PlusBuilder::default()
-            .plus(plus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -1156,10 +1124,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let minus_built = MinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -1179,10 +1144,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let pow_op = pow_op.token(parse_tree)?.clone();
-        let pow_op_built = PowOpBuilder::default()
-            .pow_op(pow_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let pow_op_built = PowOp { pow_op };
         // Calling user action here
         self.user_grammar.pow_op(&pow_op_built)?;
         self.push(ASTType::PowOp(pow_op_built), context);
@@ -1202,10 +1164,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mult_op = mult_op.token(parse_tree)?.clone();
-        let mult_op_built = MultOpBuilder::default()
-            .mult_op(mult_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mult_op_built = MultOp { mult_op };
         // Calling user action here
         self.user_grammar.mult_op(&mult_op_built)?;
         self.push(ASTType::MultOp(mult_op_built), context);
@@ -1225,10 +1184,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
-        let instruction_0_built = InstructionAssignmentBuilder::default()
-            .assignment(Box::new(assignment))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let instruction_0_built = InstructionAssignment {
+            assignment: Box::new(assignment),
+        };
         let instruction_0_built = Instruction::Assignment(instruction_0_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_0_built)?;
@@ -1249,10 +1207,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
-        let instruction_1_built = InstructionLogicalOrBuilder::default()
-            .logical_or(Box::new(logical_or))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let instruction_1_built = InstructionLogicalOr {
+            logical_or: Box::new(logical_or),
+        };
         let instruction_1_built = Instruction::LogicalOr(instruction_1_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_1_built)?;
@@ -1275,11 +1232,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let assign_op = pop_item!(self, assign_op, AssignOp, context);
         let id = pop_item!(self, id, Id, context);
-        let assign_item_built = AssignItemBuilder::default()
-            .id(Box::new(id))
-            .assign_op(Box::new(assign_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assign_item_built = AssignItem {
+            id: Box::new(id),
+            assign_op: Box::new(assign_op),
+        };
         // Calling user action here
         self.user_grammar.assign_item(&assign_item_built)?;
         self.push(ASTType::AssignItem(assign_item_built), context);
@@ -1303,12 +1259,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
         let assignment_list = pop_and_reverse_item!(self, assignment_list, AssignmentList, context);
         let assign_item = pop_item!(self, assign_item, AssignItem, context);
-        let assignment_built = AssignmentBuilder::default()
-            .assign_item(Box::new(assign_item))
-            .assignment_list(assignment_list)
-            .logical_or(Box::new(logical_or))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assignment_built = Assignment {
+            assign_item: Box::new(assign_item),
+            assignment_list,
+            logical_or: Box::new(logical_or),
+        };
         // Calling user action here
         self.user_grammar.assignment(&assignment_built)?;
         self.push(ASTType::Assignment(assignment_built), context);
@@ -1330,10 +1285,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut assignment_list = pop_item!(self, assignment_list, AssignmentList, context);
         let assign_item = pop_item!(self, assign_item, AssignItem, context);
-        let assignment_list_0_built = AssignmentListBuilder::default()
-            .assign_item(Box::new(assign_item))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assignment_list_0_built = AssignmentList {
+            assign_item: Box::new(assign_item),
+        };
         // Add an element to the vector
         assignment_list.push(assignment_list_0_built);
         self.push(ASTType::AssignmentList(assignment_list), context);
@@ -1368,11 +1322,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list = pop_and_reverse_item!(self, logical_or_list, LogicalOrList, context);
         let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
-        let logical_or_built = LogicalOrBuilder::default()
-            .logical_and(Box::new(logical_and))
-            .logical_or_list(logical_or_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_built = LogicalOr {
+            logical_and: Box::new(logical_and),
+            logical_or_list,
+        };
         // Calling user action here
         self.user_grammar.logical_or(&logical_or_built)?;
         self.push(ASTType::LogicalOr(logical_or_built), context);
@@ -1396,11 +1349,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut logical_or_list = pop_item!(self, logical_or_list, LogicalOrList, context);
         let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
         let logical_or_op = pop_item!(self, logical_or_op, LogicalOrOp, context);
-        let logical_or_list_0_built = LogicalOrListBuilder::default()
-            .logical_and(Box::new(logical_and))
-            .logical_or_op(Box::new(logical_or_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_list_0_built = LogicalOrList {
+            logical_and: Box::new(logical_and),
+            logical_or_op: Box::new(logical_or_op),
+        };
         // Add an element to the vector
         logical_or_list.push(logical_or_list_0_built);
         self.push(ASTType::LogicalOrList(logical_or_list), context);
@@ -1436,11 +1388,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_and_list =
             pop_and_reverse_item!(self, logical_and_list, LogicalAndList, context);
         let bitwise_or = pop_item!(self, bitwise_or, BitwiseOr, context);
-        let logical_and_built = LogicalAndBuilder::default()
-            .bitwise_or(Box::new(bitwise_or))
-            .logical_and_list(logical_and_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_built = LogicalAnd {
+            bitwise_or: Box::new(bitwise_or),
+            logical_and_list,
+        };
         // Calling user action here
         self.user_grammar.logical_and(&logical_and_built)?;
         self.push(ASTType::LogicalAnd(logical_and_built), context);
@@ -1464,11 +1415,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut logical_and_list = pop_item!(self, logical_and_list, LogicalAndList, context);
         let bitwise_or = pop_item!(self, bitwise_or, BitwiseOr, context);
         let logical_and_op = pop_item!(self, logical_and_op, LogicalAndOp, context);
-        let logical_and_list_0_built = LogicalAndListBuilder::default()
-            .bitwise_or(Box::new(bitwise_or))
-            .logical_and_op(Box::new(logical_and_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_list_0_built = LogicalAndList {
+            bitwise_or: Box::new(bitwise_or),
+            logical_and_op: Box::new(logical_and_op),
+        };
         // Add an element to the vector
         logical_and_list.push(logical_and_list_0_built);
         self.push(ASTType::LogicalAndList(logical_and_list), context);
@@ -1503,11 +1453,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_list = pop_and_reverse_item!(self, bitwise_or_list, BitwiseOrList, context);
         let bitwise_and = pop_item!(self, bitwise_and, BitwiseAnd, context);
-        let bitwise_or_built = BitwiseOrBuilder::default()
-            .bitwise_and(Box::new(bitwise_and))
-            .bitwise_or_list(bitwise_or_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_or_built = BitwiseOr {
+            bitwise_and: Box::new(bitwise_and),
+            bitwise_or_list,
+        };
         // Calling user action here
         self.user_grammar.bitwise_or(&bitwise_or_built)?;
         self.push(ASTType::BitwiseOr(bitwise_or_built), context);
@@ -1531,11 +1480,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut bitwise_or_list = pop_item!(self, bitwise_or_list, BitwiseOrList, context);
         let bitwise_and = pop_item!(self, bitwise_and, BitwiseAnd, context);
         let bitwise_or_op = pop_item!(self, bitwise_or_op, BitwiseOrOp, context);
-        let bitwise_or_list_0_built = BitwiseOrListBuilder::default()
-            .bitwise_and(Box::new(bitwise_and))
-            .bitwise_or_op(Box::new(bitwise_or_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_or_list_0_built = BitwiseOrList {
+            bitwise_and: Box::new(bitwise_and),
+            bitwise_or_op: Box::new(bitwise_or_op),
+        };
         // Add an element to the vector
         bitwise_or_list.push(bitwise_or_list_0_built);
         self.push(ASTType::BitwiseOrList(bitwise_or_list), context);
@@ -1571,11 +1519,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_and_list =
             pop_and_reverse_item!(self, bitwise_and_list, BitwiseAndList, context);
         let equality = pop_item!(self, equality, Equality, context);
-        let bitwise_and_built = BitwiseAndBuilder::default()
-            .equality(Box::new(equality))
-            .bitwise_and_list(bitwise_and_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_and_built = BitwiseAnd {
+            equality: Box::new(equality),
+            bitwise_and_list,
+        };
         // Calling user action here
         self.user_grammar.bitwise_and(&bitwise_and_built)?;
         self.push(ASTType::BitwiseAnd(bitwise_and_built), context);
@@ -1599,11 +1546,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut bitwise_and_list = pop_item!(self, bitwise_and_list, BitwiseAndList, context);
         let equality = pop_item!(self, equality, Equality, context);
         let bitwise_and_op = pop_item!(self, bitwise_and_op, BitwiseAndOp, context);
-        let bitwise_and_list_0_built = BitwiseAndListBuilder::default()
-            .equality(Box::new(equality))
-            .bitwise_and_op(Box::new(bitwise_and_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_and_list_0_built = BitwiseAndList {
+            equality: Box::new(equality),
+            bitwise_and_op: Box::new(bitwise_and_op),
+        };
         // Add an element to the vector
         bitwise_and_list.push(bitwise_and_list_0_built);
         self.push(ASTType::BitwiseAndList(bitwise_and_list), context);
@@ -1638,11 +1584,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let equality_list = pop_and_reverse_item!(self, equality_list, EqualityList, context);
         let relational = pop_item!(self, relational, Relational, context);
-        let equality_built = EqualityBuilder::default()
-            .relational(Box::new(relational))
-            .equality_list(equality_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let equality_built = Equality {
+            relational: Box::new(relational),
+            equality_list,
+        };
         // Calling user action here
         self.user_grammar.equality(&equality_built)?;
         self.push(ASTType::Equality(equality_built), context);
@@ -1666,11 +1611,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut equality_list = pop_item!(self, equality_list, EqualityList, context);
         let relational = pop_item!(self, relational, Relational, context);
         let equality_op = pop_item!(self, equality_op, EqualityOp, context);
-        let equality_list_0_built = EqualityListBuilder::default()
-            .relational(Box::new(relational))
-            .equality_op(Box::new(equality_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let equality_list_0_built = EqualityList {
+            relational: Box::new(relational),
+            equality_op: Box::new(equality_op),
+        };
         // Add an element to the vector
         equality_list.push(equality_list_0_built);
         self.push(ASTType::EqualityList(equality_list), context);
@@ -1705,11 +1649,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let relational_list = pop_and_reverse_item!(self, relational_list, RelationalList, context);
         let bitwise_shift = pop_item!(self, bitwise_shift, BitwiseShift, context);
-        let relational_built = RelationalBuilder::default()
-            .bitwise_shift(Box::new(bitwise_shift))
-            .relational_list(relational_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_built = Relational {
+            bitwise_shift: Box::new(bitwise_shift),
+            relational_list,
+        };
         // Calling user action here
         self.user_grammar.relational(&relational_built)?;
         self.push(ASTType::Relational(relational_built), context);
@@ -1733,11 +1676,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut relational_list = pop_item!(self, relational_list, RelationalList, context);
         let bitwise_shift = pop_item!(self, bitwise_shift, BitwiseShift, context);
         let relational_op = pop_item!(self, relational_op, RelationalOp, context);
-        let relational_list_0_built = RelationalListBuilder::default()
-            .bitwise_shift(Box::new(bitwise_shift))
-            .relational_op(Box::new(relational_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_list_0_built = RelationalList {
+            bitwise_shift: Box::new(bitwise_shift),
+            relational_op: Box::new(relational_op),
+        };
         // Add an element to the vector
         relational_list.push(relational_list_0_built);
         self.push(ASTType::RelationalList(relational_list), context);
@@ -1773,11 +1715,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_shift_list =
             pop_and_reverse_item!(self, bitwise_shift_list, BitwiseShiftList, context);
         let summ = pop_item!(self, summ, Summ, context);
-        let bitwise_shift_built = BitwiseShiftBuilder::default()
-            .summ(Box::new(summ))
-            .bitwise_shift_list(bitwise_shift_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_shift_built = BitwiseShift {
+            summ: Box::new(summ),
+            bitwise_shift_list,
+        };
         // Calling user action here
         self.user_grammar.bitwise_shift(&bitwise_shift_built)?;
         self.push(ASTType::BitwiseShift(bitwise_shift_built), context);
@@ -1801,11 +1742,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut bitwise_shift_list = pop_item!(self, bitwise_shift_list, BitwiseShiftList, context);
         let summ = pop_item!(self, summ, Summ, context);
         let bitwise_shift_op = pop_item!(self, bitwise_shift_op, BitwiseShiftOp, context);
-        let bitwise_shift_list_0_built = BitwiseShiftListBuilder::default()
-            .summ(Box::new(summ))
-            .bitwise_shift_op(Box::new(bitwise_shift_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let bitwise_shift_list_0_built = BitwiseShiftList {
+            summ: Box::new(summ),
+            bitwise_shift_op: Box::new(bitwise_shift_op),
+        };
         // Add an element to the vector
         bitwise_shift_list.push(bitwise_shift_list_0_built);
         self.push(ASTType::BitwiseShiftList(bitwise_shift_list), context);
@@ -1841,10 +1781,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let add_op_0_built = AddOpPlusBuilder::default()
-            .plus(Box::new(plus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let add_op_0_built = AddOpPlus {
+            plus: Box::new(plus),
+        };
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -1865,10 +1804,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let add_op_1_built = AddOpMinusBuilder::default()
-            .minus(Box::new(minus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let add_op_1_built = AddOpMinus {
+            minus: Box::new(minus),
+        };
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -1891,11 +1829,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let summ_list = pop_and_reverse_item!(self, summ_list, SummList, context);
         let mult = pop_item!(self, mult, Mult, context);
-        let summ_built = SummBuilder::default()
-            .mult(Box::new(mult))
-            .summ_list(summ_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summ_built = Summ {
+            mult: Box::new(mult),
+            summ_list,
+        };
         // Calling user action here
         self.user_grammar.summ(&summ_built)?;
         self.push(ASTType::Summ(summ_built), context);
@@ -1919,11 +1856,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut summ_list = pop_item!(self, summ_list, SummList, context);
         let mult = pop_item!(self, mult, Mult, context);
         let add_op = pop_item!(self, add_op, AddOp, context);
-        let summ_list_0_built = SummListBuilder::default()
-            .mult(Box::new(mult))
-            .add_op(Box::new(add_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summ_list_0_built = SummList {
+            mult: Box::new(mult),
+            add_op: Box::new(add_op),
+        };
         // Add an element to the vector
         summ_list.push(summ_list_0_built);
         self.push(ASTType::SummList(summ_list), context);
@@ -1958,11 +1894,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mult_list = pop_and_reverse_item!(self, mult_list, MultList, context);
         let power = pop_item!(self, power, Power, context);
-        let mult_built = MultBuilder::default()
-            .power(Box::new(power))
-            .mult_list(mult_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mult_built = Mult {
+            power: Box::new(power),
+            mult_list,
+        };
         // Calling user action here
         self.user_grammar.mult(&mult_built)?;
         self.push(ASTType::Mult(mult_built), context);
@@ -1986,11 +1921,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut mult_list = pop_item!(self, mult_list, MultList, context);
         let power = pop_item!(self, power, Power, context);
         let mult_op = pop_item!(self, mult_op, MultOp, context);
-        let mult_list_0_built = MultListBuilder::default()
-            .power(Box::new(power))
-            .mult_op(Box::new(mult_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mult_list_0_built = MultList {
+            power: Box::new(power),
+            mult_op: Box::new(mult_op),
+        };
         // Add an element to the vector
         mult_list.push(mult_list_0_built);
         self.push(ASTType::MultList(mult_list), context);
@@ -2025,11 +1959,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let power_list = pop_and_reverse_item!(self, power_list, PowerList, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let power_built = PowerBuilder::default()
-            .factor(Box::new(factor))
-            .power_list(power_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let power_built = Power {
+            factor: Box::new(factor),
+            power_list,
+        };
         // Calling user action here
         self.user_grammar.power(&power_built)?;
         self.push(ASTType::Power(power_built), context);
@@ -2053,11 +1986,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mut power_list = pop_item!(self, power_list, PowerList, context);
         let factor = pop_item!(self, factor, Factor, context);
         let pow_op = pop_item!(self, pow_op, PowOp, context);
-        let power_list_0_built = PowerListBuilder::default()
-            .factor(Box::new(factor))
-            .pow_op(Box::new(pow_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let power_list_0_built = PowerList {
+            factor: Box::new(factor),
+            pow_op: Box::new(pow_op),
+        };
         // Add an element to the vector
         power_list.push(power_list_0_built);
         self.push(ASTType::PowerList(power_list), context);
@@ -2090,10 +2022,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let negate_built = NegateBuilder::default()
-            .minus(Box::new(minus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let negate_built = Negate {
+            minus: Box::new(minus),
+        };
         // Calling user action here
         self.user_grammar.negate(&negate_built)?;
         self.push(ASTType::Negate(negate_built), context);
@@ -2113,10 +2044,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_0_built = FactorNumberBuilder::default()
-            .number(Box::new(number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_0_built = FactorNumber {
+            number: Box::new(number),
+        };
         let factor_0_built = Factor::Number(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -2137,10 +2067,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id_ref = pop_item!(self, id_ref, IdRef, context);
-        let factor_1_built = FactorIdRefBuilder::default()
-            .id_ref(Box::new(id_ref))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_1_built = FactorIdRef {
+            id_ref: Box::new(id_ref),
+        };
         let factor_1_built = Factor::IdRef(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -2163,11 +2092,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
         let negate = pop_item!(self, negate, Negate, context);
-        let factor_2_built = FactorNegateFactorBuilder::default()
-            .negate(Box::new(negate))
-            .factor(Box::new(factor))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_2_built = FactorNegateFactor {
+            negate: Box::new(negate),
+            factor: Box::new(factor),
+        };
         let factor_2_built = Factor::NegateFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -2190,12 +2118,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
-        let factor_3_built = FactorLParenLogicalOrRParenBuilder::default()
+        let factor_3_built = FactorLParenLogicalOrRParen {
             // Ignore clipped member 'l_paren'
-            .logical_or(Box::new(logical_or))
+            logical_or: Box::new(logical_or),
             // Ignore clipped member 'r_paren'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         let factor_3_built = Factor::LParenLogicalOrRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -2215,11 +2142,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = number.token(parse_tree)?.try_into()?;
-        let number_built = NumberBuilder::default()
-            .number(number)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number = number
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let number_built = Number { number };
         // Calling user action here
         self.user_grammar.number(&number_built)?;
         self.push(ASTType::Number(number_built), context);
@@ -2239,10 +2166,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = pop_item!(self, id, Id, context);
-        let id_ref_built = IdRefBuilder::default()
-            .id(Box::new(id))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let id_ref_built = IdRef { id: Box::new(id) };
         // Calling user action here
         self.user_grammar.id_ref(&id_ref_built)?;
         self.push(ASTType::IdRef(id_ref_built), context);
@@ -2262,10 +2186,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = id.token(parse_tree)?.clone();
-        let id_built = IdBuilder::default()
-            .id(id)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let id_built = Id { id };
         // Calling user action here
         self.user_grammar.id(&id_built)?;
         self.push(ASTType::Id(id_built), context);
@@ -2282,7 +2203,7 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.calc(&children[0], parse_tree),
             1 => self.calc_list_0(&children[0], &children[1], &children[2], parse_tree),
@@ -2345,7 +2266,11 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
             58 => self.number(&children[0], parse_tree),
             59 => self.id_ref(&children[0], parse_tree),
             60 => self.id(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

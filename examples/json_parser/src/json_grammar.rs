@@ -1,10 +1,11 @@
 use crate::errors::JsonError;
 use crate::json_grammar_trait::JsonGrammarTrait;
-use anyhow::{anyhow, Result};
 use id_tree::Tree;
+use parol_macros::bail;
 use parol_runtime::errors::FileSource;
 use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::{ParolError, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::path::PathBuf;
 
@@ -134,7 +135,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: expecting Object on top of stack", context)),
+            _ => bail!("{}: expecting Object on top of stack", context),
         }
     }
 
@@ -156,10 +157,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
-                "{}: expected Object, Pair on top of stack",
-                context
-            )),
+            _ => bail!("{}: expected Object, Pair on top of stack", context),
         }
     }
 
@@ -195,10 +193,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Object(pairs), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
-                "{}: expected Object, Pair on top of stack",
-                context,
-            )),
+            _ => bail!("{}: expected Object, Pair on top of stack", context,),
         }
     }
 
@@ -229,7 +224,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Pair((string, Box::new(value))), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: expected Value, Name on top of stack", context)),
+            _ => bail!("{}: expected Value, Name on top of stack", context),
         }
     }
 
@@ -250,7 +245,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(list), context);
                 Ok(())
             }
-            _ => Err(anyhow!("{}: Expecting Array on top of stack", context)),
+            _ => bail!("{}: Expecting Array on top of stack", context),
         }
     }
 
@@ -272,10 +267,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
-                "{}: expecting Array, Value on top of stack",
-                context
-            )),
+            _ => bail!("{}: expecting Array, Value on top of stack", context),
         }
     }
 
@@ -311,10 +303,7 @@ impl JsonGrammarTrait for JsonGrammar {
                 self.push(JsonGrammarItem::Array(array), context);
                 Ok(())
             }
-            _ => Err(anyhow!(
-                "{}: expecting Array, Value on top of stack",
-                context
-            )),
+            _ => bail!("{}: expecting Array, Value on top of stack", context),
         }
     }
 
@@ -398,11 +387,12 @@ impl JsonGrammarTrait for JsonGrammar {
         let number = match number.text(parse_tree)?.parse::<f64>() {
             Ok(number) => number,
             Err(source) => {
-                return Err(anyhow!(JsonError::ParseF64Failed {
-                    input: FileSource::try_new(self.file_name.clone())?,
+                bail!(JsonError::ParseF64Failed {
+                    input: FileSource::try_new(self.file_name.clone())
+                        .map_err(|e| ParolError::UserError(anyhow::anyhow!(e)))?,
                     token: number.token(parse_tree)?.into(),
                     source
-                }))
+                })
             }
         };
 

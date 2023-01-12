@@ -1,10 +1,7 @@
 use crate::list_grammar_trait::{Items, List, ListGrammarTrait, ListOpt};
-use anyhow::Result;
 use parol_runtime::lexer::Token;
-use std::{
-    fmt::{Debug, Display, Error, Formatter},
-    str::FromStr,
-};
+use parol_runtime::Result;
+use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
 /// Data structure that implements the semantic actions for our list grammar
@@ -25,9 +22,9 @@ impl ListGrammar {
 pub struct Number(u32);
 
 impl<'t> TryFrom<&Token<'t>> for Number {
-    type Error = <u32 as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         Ok(Self(number.text().parse::<u32>()?))
     }
 }
@@ -51,9 +48,9 @@ impl Display for Numbers {
 }
 
 impl TryFrom<&Items> for Numbers {
-    type Error = <u32 as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(items: &Items) -> Result<Self, Self::Error> {
+    fn try_from(items: &Items) -> std::result::Result<Self, Self::Error> {
         Ok(Self(items.items_list.iter().fold(
             vec![items.num.num.0],
             |mut acc, e| {

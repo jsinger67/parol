@@ -1,4 +1,4 @@
-use crate::PathBuf;
+use std::path::PathBuf;
 
 use clap::Parser;
 use parol::InnerAttributes;

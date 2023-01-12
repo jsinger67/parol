@@ -103,7 +103,7 @@ fn lexer_token_production() {
 }
 
 #[test]
-#[should_panic(expected = "Lookahead exceeds its maximum")]
+#[should_panic(expected = "LookaheadExceedsMaximum")]
 fn lookahead_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let mut token_stream = TokenStream::new(PAROL_CFG_1, file_name, &TOKENIZERS, 1).unwrap();
@@ -111,7 +111,7 @@ fn lookahead_must_fail() {
 }
 
 #[test]
-#[should_panic(expected = "Lookahead exceeds token buffer length")]
+#[should_panic(expected = "LookaheadExceedsTokenBuffer")]
 fn lookahead_beyond_buffer_must_fail() {
     let file_name: Cow<'static, Path> = Cow::Owned(PathBuf::default());
     let token_stream =

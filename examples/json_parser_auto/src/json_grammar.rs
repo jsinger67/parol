@@ -1,5 +1,5 @@
 use crate::json_grammar_trait::*;
-use anyhow::Result;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 impl Display for Json<'_> {

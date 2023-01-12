@@ -12,9 +12,8 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::json_grammar::JsonGrammar;
-#[allow(unused_imports)]
-use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
@@ -288,7 +287,7 @@ impl UserActionsTrait<'_> for JsonGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.json(&children[0], parse_tree),
             1 => self.object(&children[0], &children[1], parse_tree),
@@ -311,7 +310,11 @@ impl UserActionsTrait<'_> for JsonGrammar {
             18 => self.value_6(&children[0], parse_tree),
             19 => self.string(&children[0], parse_tree),
             20 => self.number(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

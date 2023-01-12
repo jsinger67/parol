@@ -1,6 +1,6 @@
 use crate::oberon2_grammar_trait::{Oberon2, Oberon2GrammarTrait};
 #[allow(unused_imports)]
-use anyhow::Result;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

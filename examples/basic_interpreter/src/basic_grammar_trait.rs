@@ -9,8 +9,6 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
@@ -18,6 +16,7 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -1219,13 +1218,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let basic_list = pop_and_reverse_item!(self, basic_list, BasicList, context);
         let line = pop_item!(self, line, Line, context);
         let basic_opt = pop_item!(self, basic_opt, BasicOpt, context);
-        let basic_built = BasicBuilder::default()
-            .basic_opt(basic_opt)
-            .line(Box::new(line))
-            .basic_list(basic_list)
-            .basic_opt0(basic_opt0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_built = Basic {
+            basic_opt,
+            line: Box::new(line),
+            basic_list,
+            basic_opt0,
+        };
         // Calling user action here
         self.user_grammar.basic(&basic_built)?;
         self.push(ASTType::Basic(basic_built), context);
@@ -1249,11 +1247,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut basic_list = pop_item!(self, basic_list, BasicList, context);
         let line = pop_item!(self, line, Line, context);
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
-        let basic_list_0_built = BasicListBuilder::default()
-            .line(Box::new(line))
-            .end_of_line(Box::new(end_of_line))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_list_0_built = BasicList {
+            line: Box::new(line),
+            end_of_line: Box::new(end_of_line),
+        };
         // Add an element to the vector
         basic_list.push(basic_list_0_built);
         self.push(ASTType::BasicList(basic_list), context);
@@ -1286,10 +1283,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
-        let basic_opt0_0_built = BasicOpt0Builder::default()
-            .end_of_line(Box::new(end_of_line))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_opt0_0_built = BasicOpt0 {
+            end_of_line: Box::new(end_of_line),
+        };
         self.push(
             ASTType::BasicOpt0(Some(Box::new(basic_opt0_0_built))),
             context,
@@ -1322,10 +1318,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
-        let basic_opt_0_built = BasicOptBuilder::default()
-            .end_of_line(Box::new(end_of_line))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let basic_opt_0_built = BasicOpt {
+            end_of_line: Box::new(end_of_line),
+        };
         self.push(
             ASTType::BasicOpt(Some(Box::new(basic_opt_0_built))),
             context,
@@ -1362,12 +1357,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let line_list = pop_and_reverse_item!(self, line_list, LineList, context);
         let statement = pop_item!(self, statement, Statement, context);
         let line_number = pop_item!(self, line_number, LineNumber, context);
-        let line_built = LineBuilder::default()
-            .line_number(Box::new(line_number))
-            .statement(Box::new(statement))
-            .line_list(line_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let line_built = Line {
+            line_number: Box::new(line_number),
+            statement: Box::new(statement),
+            line_list,
+        };
         // Calling user action here
         self.user_grammar.line(&line_built)?;
         self.push(ASTType::Line(line_built), context);
@@ -1390,11 +1384,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut line_list = pop_item!(self, line_list, LineList, context);
         let statement = pop_item!(self, statement, Statement, context);
-        let line_list_0_built = LineListBuilder::default()
-            .statement(Box::new(statement))
+        let line_list_0_built = LineList {
+            statement: Box::new(statement),
             // Ignore clipped member 'colon'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         line_list.push(line_list_0_built);
         self.push(ASTType::LineList(line_list), context);
@@ -1426,11 +1419,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_number = line_number.token(parse_tree)?.try_into()?;
-        let line_number_built = LineNumberBuilder::default()
-            .line_number(line_number)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let line_number = line_number
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let line_number_built = LineNumber { line_number };
         // Calling user action here
         self.user_grammar.line_number(&line_number_built)?;
         self.push(ASTType::LineNumber(line_number_built), context);
@@ -1450,10 +1443,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark = pop_item!(self, remark, Remark, context);
-        let statement_0_built = StatementRemarkBuilder::default()
-            .remark(Box::new(remark))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_0_built = StatementRemark {
+            remark: Box::new(remark),
+        };
         let statement_0_built = Statement::Remark(statement_0_built);
         // Calling user action here
         self.user_grammar.statement(&statement_0_built)?;
@@ -1474,10 +1466,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_statement = pop_item!(self, goto_statement, GotoStatement, context);
-        let statement_1_built = StatementGotoStatementBuilder::default()
-            .goto_statement(Box::new(goto_statement))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_1_built = StatementGotoStatement {
+            goto_statement: Box::new(goto_statement),
+        };
         let statement_1_built = Statement::GotoStatement(statement_1_built);
         // Calling user action here
         self.user_grammar.statement(&statement_1_built)?;
@@ -1498,10 +1489,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let if_statement = pop_item!(self, if_statement, IfStatement, context);
-        let statement_2_built = StatementIfStatementBuilder::default()
-            .if_statement(Box::new(if_statement))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_2_built = StatementIfStatement {
+            if_statement: Box::new(if_statement),
+        };
         let statement_2_built = Statement::IfStatement(statement_2_built);
         // Calling user action here
         self.user_grammar.statement(&statement_2_built)?;
@@ -1522,10 +1512,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
-        let statement_3_built = StatementAssignmentBuilder::default()
-            .assignment(Box::new(assignment))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_3_built = StatementAssignment {
+            assignment: Box::new(assignment),
+        };
         let statement_3_built = Statement::Assignment(statement_3_built);
         // Calling user action here
         self.user_grammar.statement(&statement_3_built)?;
@@ -1546,10 +1535,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement = pop_item!(self, print_statement, PrintStatement, context);
-        let statement_4_built = StatementPrintStatementBuilder::default()
-            .print_statement(Box::new(print_statement))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_4_built = StatementPrintStatement {
+            print_statement: Box::new(print_statement),
+        };
         let statement_4_built = Statement::PrintStatement(statement_4_built);
         // Calling user action here
         self.user_grammar.statement(&statement_4_built)?;
@@ -1570,10 +1558,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_statement = pop_item!(self, end_statement, EndStatement, context);
-        let statement_5_built = StatementEndStatementBuilder::default()
-            .end_statement(Box::new(end_statement))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let statement_5_built = StatementEndStatement {
+            end_statement: Box::new(end_statement),
+        };
         let statement_5_built = Statement::EndStatement(statement_5_built);
         // Calling user action here
         self.user_grammar.statement(&statement_5_built)?;
@@ -1595,11 +1582,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark_opt = pop_item!(self, remark_opt, RemarkOpt, context);
-        let remark_built = RemarkBuilder::default()
+        let remark_built = Remark {
             // Ignore clipped member 'r_e_m'
-            .remark_opt(remark_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            remark_opt,
+        };
         // Calling user action here
         self.user_grammar.remark(&remark_built)?;
         self.push(ASTType::Remark(remark_built), context);
@@ -1619,10 +1605,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comment = pop_item!(self, comment, Comment, context);
-        let remark_opt_0_built = RemarkOptBuilder::default()
-            .comment(Box::new(comment))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let remark_opt_0_built = RemarkOpt {
+            comment: Box::new(comment),
+        };
         self.push(
             ASTType::RemarkOpt(Some(Box::new(remark_opt_0_built))),
             context,
@@ -1657,11 +1642,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let line_number = pop_item!(self, line_number, LineNumber, context);
         let goto = pop_item!(self, goto, Goto, context);
-        let goto_statement_built = GotoStatementBuilder::default()
-            .goto(Box::new(goto))
-            .line_number(Box::new(line_number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let goto_statement_built = GotoStatement {
+            goto: Box::new(goto),
+            line_number: Box::new(line_number),
+        };
         // Calling user action here
         self.user_grammar.goto_statement(&goto_statement_built)?;
         self.push(ASTType::GotoStatement(goto_statement_built), context);
@@ -1685,12 +1669,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let if_body = pop_item!(self, if_body, IfBody, context);
         let expression = pop_item!(self, expression, Expression, context);
         let r#if = pop_item!(self, r#if, If, context);
-        let if_statement_built = IfStatementBuilder::default()
-            .r#if(Box::new(r#if))
-            .expression(Box::new(expression))
-            .if_body(Box::new(if_body))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let if_statement_built = IfStatement {
+            r#if: Box::new(r#if),
+            expression: Box::new(expression),
+            if_body: Box::new(if_body),
+        };
         // Calling user action here
         self.user_grammar.if_statement(&if_statement_built)?;
         self.push(ASTType::IfStatement(if_statement_built), context);
@@ -1716,13 +1699,12 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let assign_op = pop_item!(self, assign_op, AssignOp, context);
         let variable = pop_item!(self, variable, Variable, context);
         let assignment_opt = pop_item!(self, assignment_opt, AssignmentOpt, context);
-        let assignment_built = AssignmentBuilder::default()
-            .assignment_opt(assignment_opt)
-            .variable(Box::new(variable))
-            .assign_op(Box::new(assign_op))
-            .expression(Box::new(expression))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assignment_built = Assignment {
+            assignment_opt,
+            variable: Box::new(variable),
+            assign_op: Box::new(assign_op),
+            expression: Box::new(expression),
+        };
         // Calling user action here
         self.user_grammar.assignment(&assignment_built)?;
         self.push(ASTType::Assignment(assignment_built), context);
@@ -1742,10 +1724,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#let = pop_item!(self, r#let, Let, context);
-        let assignment_opt_0_built = AssignmentOptBuilder::default()
-            .r#let(Box::new(r#let))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assignment_opt_0_built = AssignmentOpt {
+            r#let: Box::new(r#let),
+        };
         self.push(
             ASTType::AssignmentOpt(Some(Box::new(assignment_opt_0_built))),
             context,
@@ -1780,11 +1761,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let statement = pop_item!(self, statement, Statement, context);
         let then = pop_item!(self, then, Then, context);
-        let if_body_0_built = IfBodyThenStatementBuilder::default()
-            .then(Box::new(then))
-            .statement(Box::new(statement))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let if_body_0_built = IfBodyThenStatement {
+            then: Box::new(then),
+            statement: Box::new(statement),
+        };
         let if_body_0_built = IfBody::ThenStatement(if_body_0_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_0_built)?;
@@ -1807,11 +1787,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let line_number = pop_item!(self, line_number, LineNumber, context);
         let goto = pop_item!(self, goto, Goto, context);
-        let if_body_1_built = IfBodyGotoLineNumberBuilder::default()
-            .goto(Box::new(goto))
-            .line_number(Box::new(line_number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let if_body_1_built = IfBodyGotoLineNumber {
+            goto: Box::new(goto),
+            line_number: Box::new(line_number),
+        };
         let if_body_1_built = IfBody::GotoLineNumber(if_body_1_built);
         // Calling user action here
         self.user_grammar.if_body(&if_body_1_built)?;
@@ -1837,12 +1816,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, print_statement_list, PrintStatementList, context);
         let expression = pop_item!(self, expression, Expression, context);
         let print = pop_item!(self, print, Print, context);
-        let print_statement_built = PrintStatementBuilder::default()
-            .print(Box::new(print))
-            .expression(Box::new(expression))
-            .print_statement_list(print_statement_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let print_statement_built = PrintStatement {
+            print: Box::new(print),
+            expression: Box::new(expression),
+            print_statement_list,
+        };
         // Calling user action here
         self.user_grammar.print_statement(&print_statement_built)?;
         self.push(ASTType::PrintStatement(print_statement_built), context);
@@ -1866,11 +1844,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut print_statement_list =
             pop_item!(self, print_statement_list, PrintStatementList, context);
         let expression = pop_item!(self, expression, Expression, context);
-        let print_statement_list_0_built = PrintStatementListBuilder::default()
-            .expression(Box::new(expression))
+        let print_statement_list_0_built = PrintStatementList {
+            expression: Box::new(expression),
             // Ignore clipped member 'comma'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        };
         // Add an element to the vector
         print_statement_list.push(print_statement_list_0_built);
         self.push(ASTType::PrintStatementList(print_statement_list), context);
@@ -1906,10 +1883,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end = pop_item!(self, end, End, context);
-        let end_statement_built = EndStatementBuilder::default()
-            .end(Box::new(end))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let end_statement_built = EndStatement { end: Box::new(end) };
         // Calling user action here
         self.user_grammar.end_statement(&end_statement_built)?;
         self.push(ASTType::EndStatement(end_statement_built), context);
@@ -1928,10 +1902,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_of_line_built = EndOfLineBuilder::default()
-            // Ignore clipped member 'end_of_line'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let end_of_line_built = EndOfLine {
+        // Ignore clipped member 'end_of_line'
+        };
         // Calling user action here
         self.user_grammar.end_of_line(&end_of_line_built)?;
         self.push(ASTType::EndOfLine(end_of_line_built), context);
@@ -1951,10 +1924,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let literal_built = LiteralBuilder::default()
-            .number(Box::new(number))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_built = Literal {
+            number: Box::new(number),
+        };
         // Calling user action here
         self.user_grammar.literal(&literal_built)?;
         self.push(ASTType::Literal(literal_built), context);
@@ -1974,10 +1946,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
-        let number_0_built = NumberFloatBuilder::default()
-            .float(Box::new(float))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number_0_built = NumberFloat {
+            float: Box::new(float),
+        };
         let number_0_built = Number::Float(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
@@ -1998,10 +1969,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let number_1_built = NumberIntegerBuilder::default()
-            .integer(Box::new(integer))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let number_1_built = NumberInteger {
+            integer: Box::new(integer),
+        };
         let number_1_built = Number::Integer(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
@@ -2022,10 +1992,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = pop_item!(self, float1, Float1, context);
-        let float_0_built = FloatFloat1Builder::default()
-            .float1(Box::new(float1))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float_0_built = FloatFloat1 {
+            float1: Box::new(float1),
+        };
         let float_0_built = Float::Float1(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
@@ -2046,10 +2015,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = pop_item!(self, float2, Float2, context);
-        let float_1_built = FloatFloat2Builder::default()
-            .float2(Box::new(float2))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float_1_built = FloatFloat2 {
+            float2: Box::new(float2),
+        };
         let float_1_built = Float::Float2(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
@@ -2069,11 +2037,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float1 = float1.token(parse_tree)?.try_into()?;
-        let float1_built = Float1Builder::default()
-            .float1(float1)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float1 = float1
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let float1_built = Float1 { float1 };
         // Calling user action here
         self.user_grammar.float1(&float1_built)?;
         self.push(ASTType::Float1(float1_built), context);
@@ -2092,11 +2060,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let float2 = float2.token(parse_tree)?.try_into()?;
-        let float2_built = Float2Builder::default()
-            .float2(float2)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let float2 = float2
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let float2_built = Float2 { float2 };
         // Calling user action here
         self.user_grammar.float2(&float2_built)?;
         self.push(ASTType::Float2(float2_built), context);
@@ -2115,11 +2083,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let integer = integer.token(parse_tree)?.try_into()?;
-        let integer_built = IntegerBuilder::default()
-            .integer(integer)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let integer = integer
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let integer_built = Integer { integer };
         // Calling user action here
         self.user_grammar.integer(&integer_built)?;
         self.push(ASTType::Integer(integer_built), context);
@@ -2138,10 +2106,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#if_built = IfBuilder::default()
-            // Ignore clipped member 'r#if'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let r#if_built = If {
+        // Ignore clipped member 'r#if'
+        };
         // Calling user action here
         self.user_grammar.r#if(&r#if_built)?;
         self.push(ASTType::If(r#if_built), context);
@@ -2160,10 +2127,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let then_built = ThenBuilder::default()
-            // Ignore clipped member 'then'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let then_built = Then {
+        // Ignore clipped member 'then'
+        };
         // Calling user action here
         self.user_grammar.then(&then_built)?;
         self.push(ASTType::Then(then_built), context);
@@ -2182,10 +2148,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let goto_built = GotoBuilder::default()
-            // Ignore clipped member 'goto'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let goto_built = Goto {
+        // Ignore clipped member 'goto'
+        };
         // Calling user action here
         self.user_grammar.goto(&goto_built)?;
         self.push(ASTType::Goto(goto_built), context);
@@ -2204,10 +2169,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#let_built = LetBuilder::default()
-            // Ignore clipped member 'r#let'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let r#let_built = Let {
+        // Ignore clipped member 'r#let'
+        };
         // Calling user action here
         self.user_grammar.r#let(&r#let_built)?;
         self.push(ASTType::Let(r#let_built), context);
@@ -2226,10 +2190,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let print_built = PrintBuilder::default()
-            // Ignore clipped member 'print'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let print_built = Print {
+        // Ignore clipped member 'print'
+        };
         // Calling user action here
         self.user_grammar.print(&print_built)?;
         self.push(ASTType::Print(print_built), context);
@@ -2248,10 +2211,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_built = EndBuilder::default()
-            // Ignore clipped member 'end'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let end_built = End {
+        // Ignore clipped member 'end'
+        };
         // Calling user action here
         self.user_grammar.end(&end_built)?;
         self.push(ASTType::End(end_built), context);
@@ -2270,10 +2232,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op_built = AssignOpBuilder::default()
-            // Ignore clipped member 'assign_op'
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let assign_op_built = AssignOp {
+        // Ignore clipped member 'assign_op'
+        };
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
@@ -2293,10 +2254,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_op = logical_or_op.token(parse_tree)?.clone();
-        let logical_or_op_built = LogicalOrOpBuilder::default()
-            .logical_or_op(logical_or_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_op_built = LogicalOrOp { logical_or_op };
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
         self.push(ASTType::LogicalOrOp(logical_or_op_built), context);
@@ -2316,10 +2274,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_op = logical_and_op.token(parse_tree)?.clone();
-        let logical_and_op_built = LogicalAndOpBuilder::default()
-            .logical_and_op(logical_and_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_op_built = LogicalAndOp { logical_and_op };
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
         self.push(ASTType::LogicalAndOp(logical_and_op_built), context);
@@ -2339,10 +2294,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_not_op = logical_not_op.token(parse_tree)?.clone();
-        let logical_not_op_built = LogicalNotOpBuilder::default()
-            .logical_not_op(logical_not_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_not_op_built = LogicalNotOp { logical_not_op };
         // Calling user action here
         self.user_grammar.logical_not_op(&logical_not_op_built)?;
         self.push(ASTType::LogicalNotOp(logical_not_op_built), context);
@@ -2362,10 +2314,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_op = relational_op.token(parse_tree)?.clone();
-        let relational_op_built = RelationalOpBuilder::default()
-            .relational_op(relational_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_op_built = RelationalOp { relational_op };
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
         self.push(ASTType::RelationalOp(relational_op_built), context);
@@ -2385,10 +2334,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = plus.token(parse_tree)?.clone();
-        let plus_built = PlusBuilder::default()
-            .plus(plus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
         self.push(ASTType::Plus(plus_built), context);
@@ -2408,10 +2354,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = minus.token(parse_tree)?.clone();
-        let minus_built = MinusBuilder::default()
-            .minus(minus)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
         self.push(ASTType::Minus(minus_built), context);
@@ -2431,10 +2374,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mul_op = mul_op.token(parse_tree)?.clone();
-        let mul_op_built = MulOpBuilder::default()
-            .mul_op(mul_op)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let mul_op_built = MulOp { mul_op };
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_built)?;
         self.push(ASTType::MulOp(mul_op_built), context);
@@ -2454,10 +2394,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let l_paren = l_paren.token(parse_tree)?.clone();
-        let l_paren_built = LParenBuilder::default()
-            .l_paren(l_paren)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let l_paren_built = LParen { l_paren };
         // Calling user action here
         self.user_grammar.l_paren(&l_paren_built)?;
         self.push(ASTType::LParen(l_paren_built), context);
@@ -2477,10 +2414,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r_paren = r_paren.token(parse_tree)?.clone();
-        let r_paren_built = RParenBuilder::default()
-            .r_paren(r_paren)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let r_paren_built = RParen { r_paren };
         // Calling user action here
         self.user_grammar.r_paren(&r_paren_built)?;
         self.push(ASTType::RParen(r_paren_built), context);
@@ -2500,10 +2434,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comment = comment.token(parse_tree)?.clone();
-        let comment_built = CommentBuilder::default()
-            .comment(comment)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let comment_built = Comment { comment };
         // Calling user action here
         self.user_grammar.comment(&comment_built)?;
         self.push(ASTType::Comment(comment_built), context);
@@ -2523,10 +2454,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = variable.token(parse_tree)?.clone();
-        let variable_built = VariableBuilder::default()
-            .variable(variable)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let variable_built = Variable { variable };
         // Calling user action here
         self.user_grammar.variable(&variable_built)?;
         self.push(ASTType::Variable(variable_built), context);
@@ -2546,10 +2474,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
-        let expression_built = ExpressionBuilder::default()
-            .logical_or(Box::new(logical_or))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let expression_built = Expression {
+            logical_or: Box::new(logical_or),
+        };
         // Calling user action here
         self.user_grammar.expression(&expression_built)?;
         self.push(ASTType::Expression(expression_built), context);
@@ -2571,11 +2498,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list = pop_and_reverse_item!(self, logical_or_list, LogicalOrList, context);
         let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
-        let logical_or_built = LogicalOrBuilder::default()
-            .logical_and(Box::new(logical_and))
-            .logical_or_list(logical_or_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_built = LogicalOr {
+            logical_and: Box::new(logical_and),
+            logical_or_list,
+        };
         // Calling user action here
         self.user_grammar.logical_or(&logical_or_built)?;
         self.push(ASTType::LogicalOr(logical_or_built), context);
@@ -2599,11 +2525,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut logical_or_list = pop_item!(self, logical_or_list, LogicalOrList, context);
         let logical_and = pop_item!(self, logical_and, LogicalAnd, context);
         let logical_or_op = pop_item!(self, logical_or_op, LogicalOrOp, context);
-        let logical_or_list_0_built = LogicalOrListBuilder::default()
-            .logical_and(Box::new(logical_and))
-            .logical_or_op(Box::new(logical_or_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_or_list_0_built = LogicalOrList {
+            logical_and: Box::new(logical_and),
+            logical_or_op: Box::new(logical_or_op),
+        };
         // Add an element to the vector
         logical_or_list.push(logical_or_list_0_built);
         self.push(ASTType::LogicalOrList(logical_or_list), context);
@@ -2639,11 +2564,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_and_list =
             pop_and_reverse_item!(self, logical_and_list, LogicalAndList, context);
         let logical_not = pop_item!(self, logical_not, LogicalNot, context);
-        let logical_and_built = LogicalAndBuilder::default()
-            .logical_not(Box::new(logical_not))
-            .logical_and_list(logical_and_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_built = LogicalAnd {
+            logical_not: Box::new(logical_not),
+            logical_and_list,
+        };
         // Calling user action here
         self.user_grammar.logical_and(&logical_and_built)?;
         self.push(ASTType::LogicalAnd(logical_and_built), context);
@@ -2667,11 +2591,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut logical_and_list = pop_item!(self, logical_and_list, LogicalAndList, context);
         let logical_not = pop_item!(self, logical_not, LogicalNot, context);
         let logical_and_op = pop_item!(self, logical_and_op, LogicalAndOp, context);
-        let logical_and_list_0_built = LogicalAndListBuilder::default()
-            .logical_not(Box::new(logical_not))
-            .logical_and_op(Box::new(logical_and_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_and_list_0_built = LogicalAndList {
+            logical_not: Box::new(logical_not),
+            logical_and_op: Box::new(logical_and_op),
+        };
         // Add an element to the vector
         logical_and_list.push(logical_and_list_0_built);
         self.push(ASTType::LogicalAndList(logical_and_list), context);
@@ -2706,11 +2629,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let relational = pop_item!(self, relational, Relational, context);
         let logical_not_opt = pop_item!(self, logical_not_opt, LogicalNotOpt, context);
-        let logical_not_built = LogicalNotBuilder::default()
-            .logical_not_opt(logical_not_opt)
-            .relational(Box::new(relational))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_not_built = LogicalNot {
+            logical_not_opt,
+            relational: Box::new(relational),
+        };
         // Calling user action here
         self.user_grammar.logical_not(&logical_not_built)?;
         self.push(ASTType::LogicalNot(logical_not_built), context);
@@ -2730,10 +2652,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_not_op = pop_item!(self, logical_not_op, LogicalNotOp, context);
-        let logical_not_opt_0_built = LogicalNotOptBuilder::default()
-            .logical_not_op(Box::new(logical_not_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let logical_not_opt_0_built = LogicalNotOpt {
+            logical_not_op: Box::new(logical_not_op),
+        };
         self.push(
             ASTType::LogicalNotOpt(Some(Box::new(logical_not_opt_0_built))),
             context,
@@ -2768,11 +2689,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let relational_list = pop_and_reverse_item!(self, relational_list, RelationalList, context);
         let summation = pop_item!(self, summation, Summation, context);
-        let relational_built = RelationalBuilder::default()
-            .summation(Box::new(summation))
-            .relational_list(relational_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_built = Relational {
+            summation: Box::new(summation),
+            relational_list,
+        };
         // Calling user action here
         self.user_grammar.relational(&relational_built)?;
         self.push(ASTType::Relational(relational_built), context);
@@ -2796,11 +2716,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut relational_list = pop_item!(self, relational_list, RelationalList, context);
         let summation = pop_item!(self, summation, Summation, context);
         let relational_op = pop_item!(self, relational_op, RelationalOp, context);
-        let relational_list_0_built = RelationalListBuilder::default()
-            .summation(Box::new(summation))
-            .relational_op(Box::new(relational_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let relational_list_0_built = RelationalList {
+            summation: Box::new(summation),
+            relational_op: Box::new(relational_op),
+        };
         // Add an element to the vector
         relational_list.push(relational_list_0_built);
         self.push(ASTType::RelationalList(relational_list), context);
@@ -2835,11 +2754,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let summation_list = pop_and_reverse_item!(self, summation_list, SummationList, context);
         let multiplication = pop_item!(self, multiplication, Multiplication, context);
-        let summation_built = SummationBuilder::default()
-            .multiplication(Box::new(multiplication))
-            .summation_list(summation_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summation_built = Summation {
+            multiplication: Box::new(multiplication),
+            summation_list,
+        };
         // Calling user action here
         self.user_grammar.summation(&summation_built)?;
         self.push(ASTType::Summation(summation_built), context);
@@ -2864,11 +2782,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let multiplication = pop_item!(self, multiplication, Multiplication, context);
         let summation_list_group =
             pop_item!(self, summation_list_group, SummationListGroup, context);
-        let summation_list_0_built = SummationListBuilder::default()
-            .multiplication(Box::new(multiplication))
-            .summation_list_group(Box::new(summation_list_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summation_list_0_built = SummationList {
+            multiplication: Box::new(multiplication),
+            summation_list_group: Box::new(summation_list_group),
+        };
         // Add an element to the vector
         summation_list.push(summation_list_0_built);
         self.push(ASTType::SummationList(summation_list), context);
@@ -2888,10 +2805,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let summation_list_group_0_built = SummationListGroupPlusBuilder::default()
-            .plus(Box::new(plus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summation_list_group_0_built = SummationListGroupPlus {
+            plus: Box::new(plus),
+        };
         let summation_list_group_0_built = SummationListGroup::Plus(summation_list_group_0_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_0_built),
@@ -2913,10 +2829,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let summation_list_group_1_built = SummationListGroupMinusBuilder::default()
-            .minus(Box::new(minus))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let summation_list_group_1_built = SummationListGroupMinus {
+            minus: Box::new(minus),
+        };
         let summation_list_group_1_built = SummationListGroup::Minus(summation_list_group_1_built);
         self.push(
             ASTType::SummationListGroup(summation_list_group_1_built),
@@ -2954,11 +2869,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let multiplication_list =
             pop_and_reverse_item!(self, multiplication_list, MultiplicationList, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let multiplication_built = MultiplicationBuilder::default()
-            .factor(Box::new(factor))
-            .multiplication_list(multiplication_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let multiplication_built = Multiplication {
+            factor: Box::new(factor),
+            multiplication_list,
+        };
         // Calling user action here
         self.user_grammar.multiplication(&multiplication_built)?;
         self.push(ASTType::Multiplication(multiplication_built), context);
@@ -2983,11 +2897,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
             pop_item!(self, multiplication_list, MultiplicationList, context);
         let factor = pop_item!(self, factor, Factor, context);
         let mul_op = pop_item!(self, mul_op, MulOp, context);
-        let multiplication_list_0_built = MultiplicationListBuilder::default()
-            .factor(Box::new(factor))
-            .mul_op(Box::new(mul_op))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let multiplication_list_0_built = MultiplicationList {
+            factor: Box::new(factor),
+            mul_op: Box::new(mul_op),
+        };
         // Add an element to the vector
         multiplication_list.push(multiplication_list_0_built);
         self.push(ASTType::MultiplicationList(multiplication_list), context);
@@ -3023,10 +2936,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal = pop_item!(self, literal, Literal, context);
-        let factor_0_built = FactorLiteralBuilder::default()
-            .literal(Box::new(literal))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_0_built = FactorLiteral {
+            literal: Box::new(literal),
+        };
         let factor_0_built = Factor::Literal(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -3047,10 +2959,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = pop_item!(self, variable, Variable, context);
-        let factor_1_built = FactorVariableBuilder::default()
-            .variable(Box::new(variable))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_1_built = FactorVariable {
+            variable: Box::new(variable),
+        };
         let factor_1_built = Factor::Variable(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -3073,11 +2984,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
         let minus = pop_item!(self, minus, Minus, context);
-        let factor_2_built = FactorMinusFactorBuilder::default()
-            .minus(Box::new(minus))
-            .factor(Box::new(factor))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_2_built = FactorMinusFactor {
+            minus: Box::new(minus),
+            factor: Box::new(factor),
+        };
         let factor_2_built = Factor::MinusFactor(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -3102,12 +3012,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r_paren = pop_item!(self, r_paren, RParen, context);
         let expression = pop_item!(self, expression, Expression, context);
         let l_paren = pop_item!(self, l_paren, LParen, context);
-        let factor_3_built = FactorLParenExpressionRParenBuilder::default()
-            .l_paren(Box::new(l_paren))
-            .expression(Box::new(expression))
-            .r_paren(Box::new(r_paren))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_3_built = FactorLParenExpressionRParen {
+            l_paren: Box::new(l_paren),
+            expression: Box::new(expression),
+            r_paren: Box::new(r_paren),
+        };
         let factor_3_built = Factor::LParenExpressionRParen(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -3125,7 +3034,7 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.basic(
                 &children[0],
@@ -3222,7 +3131,11 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             80 => self.factor_1(&children[0], parse_tree),
             81 => self.factor_2(&children[0], &children[1], parse_tree),
             82 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

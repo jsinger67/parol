@@ -9,14 +9,13 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-#[allow(unused_imports)]
-use anyhow::{anyhow, bail, Result};
 use parol_runtime::derive_builder::Builder;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -1215,11 +1214,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let grammar_definition = pop_item!(self, grammar_definition, GrammarDefinition, context);
         let prolog = pop_item!(self, prolog, Prolog, context);
-        let parol_ls_built = ParolLsBuilder::default()
-            .prolog(Box::new(prolog))
-            .grammar_definition(Box::new(grammar_definition))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let parol_ls_built = ParolLs {
+            prolog: Box::new(prolog),
+            grammar_definition: Box::new(grammar_definition),
+        };
         // Calling user action here
         self.user_grammar.parol_ls(&parol_ls_built)?;
         self.push(ASTType::ParolLs(parol_ls_built), context);
@@ -1243,12 +1241,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let prolog_list0 = pop_and_reverse_item!(self, prolog_list0, PrologList0, context);
         let prolog_list = pop_and_reverse_item!(self, prolog_list, PrologList, context);
         let start_declaration = pop_item!(self, start_declaration, StartDeclaration, context);
-        let prolog_built = PrologBuilder::default()
-            .start_declaration(Box::new(start_declaration))
-            .prolog_list(prolog_list)
-            .prolog_list0(prolog_list0)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let prolog_built = Prolog {
+            start_declaration: Box::new(start_declaration),
+            prolog_list,
+            prolog_list0,
+        };
         // Calling user action here
         self.user_grammar.prolog(&prolog_built)?;
         self.push(ASTType::Prolog(prolog_built), context);
@@ -1270,10 +1267,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
         let scanner_state = pop_item!(self, scanner_state, ScannerState, context);
-        let prolog_list0_0_built = PrologList0Builder::default()
-            .scanner_state(Box::new(scanner_state))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let prolog_list0_0_built = PrologList0 {
+            scanner_state: Box::new(scanner_state),
+        };
         // Add an element to the vector
         prolog_list0.push(prolog_list0_0_built);
         self.push(ASTType::PrologList0(prolog_list0), context);
@@ -1308,10 +1304,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list = pop_item!(self, prolog_list, PrologList, context);
         let declaration = pop_item!(self, declaration, Declaration, context);
-        let prolog_list_0_built = PrologListBuilder::default()
-            .declaration(Box::new(declaration))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let prolog_list_0_built = PrologList {
+            declaration: Box::new(declaration),
+        };
         // Add an element to the vector
         prolog_list.push(prolog_list_0_built);
         self.push(ASTType::PrologList(prolog_list), context);
@@ -1346,17 +1341,19 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_start = percent_start.token(parse_tree)?.try_into()?;
+        let percent_start = percent_start
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments0 = pop_item!(self, comments0, Comments, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let comments = pop_item!(self, comments, Comments, context);
-        let start_declaration_built = StartDeclarationBuilder::default()
-            .comments(Box::new(comments))
-            .percent_start(percent_start)
-            .identifier(Box::new(identifier))
-            .comments0(Box::new(comments0))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let start_declaration_built = StartDeclaration {
+            comments: Box::new(comments),
+            percent_start,
+            identifier: Box::new(identifier),
+            comments0: Box::new(comments0),
+        };
         // Calling user action here
         self.user_grammar
             .start_declaration(&start_declaration_built)?;
@@ -1378,15 +1375,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_title = percent_title.token(parse_tree)?.try_into()?;
+        let percent_title = percent_title
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
-        let declaration_0_built = DeclarationPercentTitleStringCommentsBuilder::default()
-            .percent_title(percent_title)
-            .string(Box::new(string))
-            .comments(Box::new(comments))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let declaration_0_built = DeclarationPercentTitleStringComments {
+            percent_title,
+            string: Box::new(string),
+            comments: Box::new(comments),
+        };
         let declaration_0_built = Declaration::PercentTitleStringComments(declaration_0_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_0_built)?;
@@ -1408,15 +1407,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_comment = percent_comment.token(parse_tree)?.try_into()?;
+        let percent_comment = percent_comment
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let string = pop_item!(self, string, String, context);
-        let declaration_1_built = DeclarationPercentCommentStringCommentsBuilder::default()
-            .percent_comment(percent_comment)
-            .string(Box::new(string))
-            .comments(Box::new(comments))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let declaration_1_built = DeclarationPercentCommentStringComments {
+            percent_comment,
+            string: Box::new(string),
+            comments: Box::new(comments),
+        };
         let declaration_1_built = Declaration::PercentCommentStringComments(declaration_1_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_1_built)?;
@@ -1440,21 +1441,25 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_user_underscore_type =
-            percent_user_underscore_type.token(parse_tree)?.try_into()?;
-        let equ = equ.token(parse_tree)?.try_into()?;
+        let percent_user_underscore_type = percent_user_underscore_type
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let equ = equ
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let declaration_2_built =
-            DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameCommentsBuilder::default()
-                .percent_user_underscore_type(percent_user_underscore_type)
-                .identifier(Box::new(identifier))
-                .equ(equ)
-                .user_type_name(Box::new(user_type_name))
-                .comments(Box::new(comments))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeNameComments {
+                percent_user_underscore_type,
+                identifier: Box::new(identifier),
+                equ,
+                user_type_name: Box::new(user_type_name),
+                comments: Box::new(comments),
+            };
         let declaration_2_built =
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(
                 declaration_2_built,
@@ -1478,10 +1483,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let declaration_3_built = DeclarationScannerDirectivesBuilder::default()
-            .scanner_directives(Box::new(scanner_directives))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let declaration_3_built = DeclarationScannerDirectives {
+            scanner_directives: Box::new(scanner_directives),
+        };
         let declaration_3_built = Declaration::ScannerDirectives(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
@@ -1505,16 +1509,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let percent_line_underscore_comment = percent_line_underscore_comment
             .token(parse_tree)?
-            .try_into()?;
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_0_built =
-            ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralCommentsBuilder::default()
-                .percent_line_underscore_comment(percent_line_underscore_comment)
-                .token_literal(Box::new(token_literal))
-                .comments(Box::new(comments))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ScannerDirectivesPercentLineUnderscoreCommentTokenLiteralComments {
+                percent_line_underscore_comment,
+                token_literal: Box::new(token_literal),
+                comments: Box::new(comments),
+            };
         let scanner_directives_0_built =
             ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(
                 scanner_directives_0_built,
@@ -1546,17 +1550,18 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let percent_block_underscore_comment = percent_block_underscore_comment
             .token(parse_tree)?
-            .try_into()?;
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let token_literal0 = pop_item!(self, token_literal0, TokenLiteral, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
-        let scanner_directives_1_built = ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralCommentsBuilder::default()
-            .percent_block_underscore_comment(percent_block_underscore_comment)
-            .token_literal(Box::new(token_literal))
-            .token_literal0(Box::new(token_literal0))
-            .comments(Box::new(comments))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_directives_1_built =
+            ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments {
+                percent_block_underscore_comment,
+                token_literal: Box::new(token_literal),
+                token_literal0: Box::new(token_literal0),
+                comments: Box::new(comments),
+            };
         let scanner_directives_1_built =
             ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
                 scanner_directives_1_built,
@@ -1587,16 +1592,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let percent_auto_underscore_newline_underscore_off =
             percent_auto_underscore_newline_underscore_off
                 .token(parse_tree)?
-                .try_into()?;
+                .try_into()
+                .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_2_built =
-            ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffCommentsBuilder::default()
-                .percent_auto_underscore_newline_underscore_off(
-                    percent_auto_underscore_newline_underscore_off,
-                )
-                .comments(Box::new(comments))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOffComments {
+                percent_auto_underscore_newline_underscore_off,
+                comments: Box::new(comments),
+            };
         let scanner_directives_2_built =
             ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(
                 scanner_directives_2_built,
@@ -1626,16 +1629,14 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let percent_auto_underscore_ws_underscore_off = percent_auto_underscore_ws_underscore_off
             .token(parse_tree)?
-            .try_into()?;
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments = pop_item!(self, comments, Comments, context);
         let scanner_directives_3_built =
-            ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffCommentsBuilder::default()
-                .percent_auto_underscore_ws_underscore_off(
-                    percent_auto_underscore_ws_underscore_off,
-                )
-                .comments(Box::new(comments))
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+            ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOffComments {
+                percent_auto_underscore_ws_underscore_off,
+                comments: Box::new(comments),
+            };
         let scanner_directives_3_built =
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(
                 scanner_directives_3_built,
@@ -1664,7 +1665,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_percent = percent_percent.token(parse_tree)?.try_into()?;
+        let percent_percent = percent_percent
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let grammar_definition_list = pop_and_reverse_item!(
             self,
             grammar_definition_list,
@@ -1672,12 +1676,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             context
         );
         let production = pop_item!(self, production, Production, context);
-        let grammar_definition_built = GrammarDefinitionBuilder::default()
-            .percent_percent(percent_percent)
-            .production(Box::new(production))
-            .grammar_definition_list(grammar_definition_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let grammar_definition_built = GrammarDefinition {
+            percent_percent,
+            production: Box::new(production),
+            grammar_definition_list,
+        };
         // Calling user action here
         self.user_grammar
             .grammar_definition(&grammar_definition_built)?;
@@ -1708,10 +1711,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             context
         );
         let production = pop_item!(self, production, Production, context);
-        let grammar_definition_list_0_built = GrammarDefinitionListBuilder::default()
-            .production(Box::new(production))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let grammar_definition_list_0_built = GrammarDefinitionList {
+            production: Box::new(production),
+        };
         // Add an element to the vector
         grammar_definition_list.push(grammar_definition_list_0_built);
         self.push(
@@ -1749,11 +1751,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let double_colon = double_colon.token(parse_tree)?.try_into()?;
-        let double_colon_built = DoubleColonBuilder::default()
-            .double_colon(double_colon)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let double_colon = double_colon
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let double_colon_built = DoubleColon { double_colon };
         // Calling user action here
         self.user_grammar.double_colon(&double_colon_built)?;
         self.push(ASTType::DoubleColon(double_colon_built), context);
@@ -1775,17 +1777,19 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token(parse_tree)?.try_into()?;
+        let colon = colon
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let comments0 = pop_item!(self, comments0, Comments, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let comments = pop_item!(self, comments, Comments, context);
-        let production_l_h_s_built = ProductionLHSBuilder::default()
-            .comments(Box::new(comments))
-            .identifier(Box::new(identifier))
-            .comments0(Box::new(comments0))
-            .colon(colon)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let production_l_h_s_built = ProductionLHS {
+            comments: Box::new(comments),
+            identifier: Box::new(identifier),
+            comments0: Box::new(comments0),
+            colon,
+        };
         // Calling user action here
         self.user_grammar
             .production_l_h_s(&production_l_h_s_built)?;
@@ -1807,15 +1811,17 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let semicolon = semicolon.token(parse_tree)?.try_into()?;
+        let semicolon = semicolon
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
         let production_l_h_s = pop_item!(self, production_l_h_s, ProductionLHS, context);
-        let production_built = ProductionBuilder::default()
-            .production_l_h_s(Box::new(production_l_h_s))
-            .alternations(Box::new(alternations))
-            .semicolon(semicolon)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let production_built = Production {
+            production_l_h_s: Box::new(production_l_h_s),
+            alternations: Box::new(alternations),
+            semicolon,
+        };
         // Calling user action here
         self.user_grammar.production(&production_built)?;
         self.push(ASTType::Production(production_built), context);
@@ -1838,11 +1844,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let alternations_list =
             pop_and_reverse_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
-        let alternations_built = AlternationsBuilder::default()
-            .alternation(Box::new(alternation))
-            .alternations_list(alternations_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let alternations_built = Alternations {
+            alternation: Box::new(alternation),
+            alternations_list,
+        };
         // Calling user action here
         self.user_grammar.alternations(&alternations_built)?;
         self.push(ASTType::Alternations(alternations_built), context);
@@ -1864,16 +1869,18 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let or = or.token(parse_tree)?.try_into()?;
+        let or = or
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
         let comments = pop_item!(self, comments, Comments, context);
-        let alternations_list_0_built = AlternationsListBuilder::default()
-            .alternation(Box::new(alternation))
-            .comments(Box::new(comments))
-            .or(or)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let alternations_list_0_built = AlternationsList {
+            alternation: Box::new(alternation),
+            comments: Box::new(comments),
+            or,
+        };
         // Add an element to the vector
         alternations_list.push(alternations_list_0_built);
         self.push(ASTType::AlternationsList(alternations_list), context);
@@ -1910,10 +1917,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let alternation_list =
             pop_and_reverse_item!(self, alternation_list, AlternationList, context);
-        let alternation_built = AlternationBuilder::default()
-            .alternation_list(alternation_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let alternation_built = Alternation { alternation_list };
         // Calling user action here
         self.user_grammar.alternation(&alternation_built)?;
         self.push(ASTType::Alternation(alternation_built), context);
@@ -1937,11 +1941,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let mut alternation_list = pop_item!(self, alternation_list, AlternationList, context);
         let comments = pop_item!(self, comments, Comments, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let alternation_list_0_built = AlternationListBuilder::default()
-            .comments(Box::new(comments))
-            .factor(Box::new(factor))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let alternation_list_0_built = AlternationList {
+            comments: Box::new(comments),
+            factor: Box::new(factor),
+        };
         // Add an element to the vector
         alternation_list.push(alternation_list_0_built);
         self.push(ASTType::AlternationList(alternation_list), context);
@@ -1974,10 +1977,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let group = pop_item!(self, group, Group, context);
-        let factor_0_built = FactorGroupBuilder::default()
-            .group(Box::new(group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_0_built = FactorGroup {
+            group: Box::new(group),
+        };
         let factor_0_built = Factor::Group(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -1998,10 +2000,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let repeat = pop_item!(self, repeat, Repeat, context);
-        let factor_1_built = FactorRepeatBuilder::default()
-            .repeat(Box::new(repeat))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_1_built = FactorRepeat {
+            repeat: Box::new(repeat),
+        };
         let factor_1_built = Factor::Repeat(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -2022,10 +2023,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let optional = pop_item!(self, optional, Optional, context);
-        let factor_2_built = FactorOptionalBuilder::default()
-            .optional(Box::new(optional))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_2_built = FactorOptional {
+            optional: Box::new(optional),
+        };
         let factor_2_built = Factor::Optional(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -2046,10 +2046,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let symbol = pop_item!(self, symbol, Symbol, context);
-        let factor_3_built = FactorSymbolBuilder::default()
-            .symbol(Box::new(symbol))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let factor_3_built = FactorSymbol {
+            symbol: Box::new(symbol),
+        };
         let factor_3_built = Factor::Symbol(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -2070,10 +2069,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
-        let symbol_0_built = SymbolNonTerminalBuilder::default()
-            .non_terminal(Box::new(non_terminal))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let symbol_0_built = SymbolNonTerminal {
+            non_terminal: Box::new(non_terminal),
+        };
         let symbol_0_built = Symbol::NonTerminal(symbol_0_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_0_built)?;
@@ -2094,10 +2092,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token = pop_item!(self, simple_token, SimpleToken, context);
-        let symbol_1_built = SymbolSimpleTokenBuilder::default()
-            .simple_token(Box::new(simple_token))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let symbol_1_built = SymbolSimpleToken {
+            simple_token: Box::new(simple_token),
+        };
         let symbol_1_built = Symbol::SimpleToken(symbol_1_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_1_built)?;
@@ -2118,10 +2115,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
-        let symbol_2_built = SymbolTokenWithStatesBuilder::default()
-            .token_with_states(Box::new(token_with_states))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let symbol_2_built = SymbolTokenWithStates {
+            token_with_states: Box::new(token_with_states),
+        };
         let symbol_2_built = Symbol::TokenWithStates(symbol_2_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_2_built)?;
@@ -2142,10 +2138,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
-        let symbol_3_built = SymbolScannerSwitchBuilder::default()
-            .scanner_switch(Box::new(scanner_switch))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let symbol_3_built = SymbolScannerSwitch {
+            scanner_switch: Box::new(scanner_switch),
+        };
         let symbol_3_built = Symbol::ScannerSwitch(symbol_3_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_3_built)?;
@@ -2166,10 +2161,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let token_literal_0_built = TokenLiteralStringBuilder::default()
-            .string(Box::new(string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let token_literal_0_built = TokenLiteralString {
+            string: Box::new(string),
+        };
         let token_literal_0_built = TokenLiteral::String(token_literal_0_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_0_built)?;
@@ -2190,10 +2184,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let token_literal_1_built = TokenLiteralLiteralStringBuilder::default()
-            .literal_string(Box::new(literal_string))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let token_literal_1_built = TokenLiteralLiteralString {
+            literal_string: Box::new(literal_string),
+        };
         let token_literal_1_built = TokenLiteral::LiteralString(token_literal_1_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_1_built)?;
@@ -2214,10 +2207,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let regex = pop_item!(self, regex, Regex, context);
-        let token_literal_2_built = TokenLiteralRegexBuilder::default()
-            .regex(Box::new(regex))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let token_literal_2_built = TokenLiteralRegex {
+            regex: Box::new(regex),
+        };
         let token_literal_2_built = TokenLiteral::Regex(token_literal_2_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_2_built)?;
@@ -2240,11 +2232,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
-        let simple_token_built = SimpleTokenBuilder::default()
-            .token_literal(Box::new(token_literal))
-            .simple_token_opt(simple_token_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_token_built = SimpleToken {
+            token_literal: Box::new(token_literal),
+            simple_token_opt,
+        };
         // Calling user action here
         self.user_grammar.simple_token(&simple_token_built)?;
         self.push(ASTType::SimpleToken(simple_token_built), context);
@@ -2264,10 +2255,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let simple_token_opt_0_built = SimpleTokenOptBuilder::default()
-            .a_s_t_control(Box::new(a_s_t_control))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let simple_token_opt_0_built = SimpleTokenOpt {
+            a_s_t_control: Box::new(a_s_t_control),
+        };
         self.push(
             ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
             context,
@@ -2303,20 +2293,25 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_t = l_t.token(parse_tree)?.try_into()?;
-        let g_t = g_t.token(parse_tree)?.try_into()?;
+        let l_t = l_t
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let g_t = g_t
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let token_with_states_opt =
             pop_item!(self, token_with_states_opt, TokenWithStatesOpt, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let state_list = pop_item!(self, state_list, StateList, context);
-        let token_with_states_built = TokenWithStatesBuilder::default()
-            .l_t(l_t)
-            .state_list(Box::new(state_list))
-            .g_t(g_t)
-            .token_literal(Box::new(token_literal))
-            .token_with_states_opt(token_with_states_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let token_with_states_built = TokenWithStates {
+            l_t,
+            state_list: Box::new(state_list),
+            g_t,
+            token_literal: Box::new(token_literal),
+            token_with_states_opt,
+        };
         // Calling user action here
         self.user_grammar
             .token_with_states(&token_with_states_built)?;
@@ -2337,10 +2332,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let token_with_states_opt_0_built = TokenWithStatesOptBuilder::default()
-            .a_s_t_control(Box::new(a_s_t_control))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let token_with_states_opt_0_built = TokenWithStatesOpt {
+            a_s_t_control: Box::new(a_s_t_control),
+        };
         self.push(
             ASTType::TokenWithStatesOpt(Some(Box::new(token_with_states_opt_0_built))),
             context,
@@ -2374,15 +2368,20 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = l_paren.token(parse_tree)?.try_into()?;
-        let r_paren = r_paren.token(parse_tree)?.try_into()?;
+        let l_paren = l_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_paren = r_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
-        let group_built = GroupBuilder::default()
-            .l_paren(l_paren)
-            .alternations(Box::new(alternations))
-            .r_paren(r_paren)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let group_built = Group {
+            l_paren,
+            alternations: Box::new(alternations),
+            r_paren,
+        };
         // Calling user action here
         self.user_grammar.group(&group_built)?;
         self.push(ASTType::Group(group_built), context);
@@ -2403,15 +2402,20 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_bracket = l_bracket.token(parse_tree)?.try_into()?;
-        let r_bracket = r_bracket.token(parse_tree)?.try_into()?;
+        let l_bracket = l_bracket
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_bracket = r_bracket
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
-        let optional_built = OptionalBuilder::default()
-            .l_bracket(l_bracket)
-            .alternations(Box::new(alternations))
-            .r_bracket(r_bracket)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let optional_built = Optional {
+            l_bracket,
+            alternations: Box::new(alternations),
+            r_bracket,
+        };
         // Calling user action here
         self.user_grammar.optional(&optional_built)?;
         self.push(ASTType::Optional(optional_built), context);
@@ -2432,15 +2436,20 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_brace = l_brace.token(parse_tree)?.try_into()?;
-        let r_brace = r_brace.token(parse_tree)?.try_into()?;
+        let l_brace = l_brace
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_brace = r_brace
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let alternations = pop_item!(self, alternations, Alternations, context);
-        let repeat_built = RepeatBuilder::default()
-            .l_brace(l_brace)
-            .alternations(Box::new(alternations))
-            .r_brace(r_brace)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let repeat_built = Repeat {
+            l_brace,
+            alternations: Box::new(alternations),
+            r_brace,
+        };
         // Calling user action here
         self.user_grammar.repeat(&repeat_built)?;
         self.push(ASTType::Repeat(repeat_built), context);
@@ -2462,11 +2471,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let non_terminal_opt = pop_item!(self, non_terminal_opt, NonTerminalOpt, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let non_terminal_built = NonTerminalBuilder::default()
-            .identifier(Box::new(identifier))
-            .non_terminal_opt(non_terminal_opt)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let non_terminal_built = NonTerminal {
+            identifier: Box::new(identifier),
+            non_terminal_opt,
+        };
         // Calling user action here
         self.user_grammar.non_terminal(&non_terminal_built)?;
         self.push(ASTType::NonTerminal(non_terminal_built), context);
@@ -2486,10 +2494,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let non_terminal_opt_0_built = NonTerminalOptBuilder::default()
-            .a_s_t_control(Box::new(a_s_t_control))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let non_terminal_opt_0_built = NonTerminalOpt {
+            a_s_t_control: Box::new(a_s_t_control),
+        };
         self.push(
             ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
             context,
@@ -2521,11 +2528,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let identifier = identifier.token(parse_tree)?.try_into()?;
-        let identifier_built = IdentifierBuilder::default()
-            .identifier(identifier)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let identifier = identifier
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let identifier_built = Identifier { identifier };
         // Calling user action here
         self.user_grammar.identifier(&identifier_built)?;
         self.push(ASTType::Identifier(identifier_built), context);
@@ -2544,11 +2551,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = string.token(parse_tree)?.try_into()?;
-        let string_built = StringBuilder::default()
-            .string(string)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let string = string
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let string_built = String { string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
         self.push(ASTType::String(string_built), context);
@@ -2567,11 +2574,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let literal_string = literal_string.token(parse_tree)?.try_into()?;
-        let literal_string_built = LiteralStringBuilder::default()
-            .literal_string(literal_string)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let literal_string = literal_string
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let literal_string_built = LiteralString { literal_string };
         // Calling user action here
         self.user_grammar.literal_string(&literal_string_built)?;
         self.push(ASTType::LiteralString(literal_string_built), context);
@@ -2594,20 +2601,28 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_scanner = percent_scanner.token(parse_tree)?.try_into()?;
-        let l_brace = l_brace.token(parse_tree)?.try_into()?;
-        let r_brace = r_brace.token(parse_tree)?.try_into()?;
+        let percent_scanner = percent_scanner
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let l_brace = l_brace
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_brace = r_brace
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_state_list =
             pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_state_built = ScannerStateBuilder::default()
-            .percent_scanner(percent_scanner)
-            .identifier(Box::new(identifier))
-            .l_brace(l_brace)
-            .scanner_state_list(scanner_state_list)
-            .r_brace(r_brace)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_state_built = ScannerState {
+            percent_scanner,
+            identifier: Box::new(identifier),
+            l_brace,
+            scanner_state_list,
+            r_brace,
+        };
         // Calling user action here
         self.user_grammar.scanner_state(&scanner_state_built)?;
         self.push(ASTType::ScannerState(scanner_state_built), context);
@@ -2629,10 +2644,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut scanner_state_list = pop_item!(self, scanner_state_list, ScannerStateList, context);
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let scanner_state_list_0_built = ScannerStateListBuilder::default()
-            .scanner_directives(Box::new(scanner_directives))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_state_list_0_built = ScannerStateList {
+            scanner_directives: Box::new(scanner_directives),
+        };
         // Add an element to the vector
         scanner_state_list.push(scanner_state_list_0_built);
         self.push(ASTType::ScannerStateList(scanner_state_list), context);
@@ -2670,11 +2684,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_built = StateListBuilder::default()
-            .identifier(Box::new(identifier))
-            .state_list_list(state_list_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let state_list_built = StateList {
+            identifier: Box::new(identifier),
+            state_list_list,
+        };
         // Calling user action here
         self.user_grammar.state_list(&state_list_built)?;
         self.push(ASTType::StateList(state_list_built), context);
@@ -2695,14 +2708,16 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comma = comma.token(parse_tree)?.try_into()?;
+        let comma = comma
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_list_0_built = StateListListBuilder::default()
-            .identifier(Box::new(identifier))
-            .comma(comma)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let state_list_list_0_built = StateListList {
+            identifier: Box::new(identifier),
+            comma,
+        };
         // Add an element to the vector
         state_list_list.push(state_list_list_0_built);
         self.push(ASTType::StateListList(state_list_list), context);
@@ -2737,18 +2752,25 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_sc = percent_sc.token(parse_tree)?.try_into()?;
-        let l_paren = l_paren.token(parse_tree)?.try_into()?;
-        let r_paren = r_paren.token(parse_tree)?.try_into()?;
+        let percent_sc = percent_sc
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let l_paren = l_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_paren = r_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
-        let scanner_switch_0_built =
-            ScannerSwitchPercentScLParenScannerSwitchOptRParenBuilder::default()
-                .percent_sc(percent_sc)
-                .l_paren(l_paren)
-                .scanner_switch_opt(scanner_switch_opt)
-                .r_paren(r_paren)
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_switch_0_built = ScannerSwitchPercentScLParenScannerSwitchOptRParen {
+            percent_sc,
+            l_paren,
+            scanner_switch_opt,
+            r_paren,
+        };
         let scanner_switch_0_built =
             ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
         // Calling user action here
@@ -2772,18 +2794,25 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_push = percent_push.token(parse_tree)?.try_into()?;
-        let l_paren = l_paren.token(parse_tree)?.try_into()?;
-        let r_paren = r_paren.token(parse_tree)?.try_into()?;
+        let percent_push = percent_push
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let l_paren = l_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_paren = r_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_1_built =
-            ScannerSwitchPercentPushLParenIdentifierRParenBuilder::default()
-                .percent_push(percent_push)
-                .l_paren(l_paren)
-                .identifier(Box::new(identifier))
-                .r_paren(r_paren)
-                .build()
-                .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
+            percent_push,
+            l_paren,
+            identifier: Box::new(identifier),
+            r_paren,
+        };
         let scanner_switch_1_built =
             ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
         // Calling user action here
@@ -2806,15 +2835,23 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let percent_pop = percent_pop.token(parse_tree)?.try_into()?;
-        let l_paren = l_paren.token(parse_tree)?.try_into()?;
-        let r_paren = r_paren.token(parse_tree)?.try_into()?;
-        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParenBuilder::default()
-            .percent_pop(percent_pop)
-            .l_paren(l_paren)
-            .r_paren(r_paren)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let percent_pop = percent_pop
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let l_paren = l_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let r_paren = r_paren
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {
+            percent_pop,
+            l_paren,
+            r_paren,
+        };
         let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_2_built)?;
@@ -2835,10 +2872,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_opt_0_built = ScannerSwitchOptBuilder::default()
-            .identifier(Box::new(identifier))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let scanner_switch_opt_0_built = ScannerSwitchOpt {
+            identifier: Box::new(identifier),
+        };
         self.push(
             ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
             context,
@@ -2871,10 +2907,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
-        let a_s_t_control_0_built = ASTControlCutOperatorBuilder::default()
-            .cut_operator(Box::new(cut_operator))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let a_s_t_control_0_built = ASTControlCutOperator {
+            cut_operator: Box::new(cut_operator),
+        };
         let a_s_t_control_0_built = ASTControl::CutOperator(a_s_t_control_0_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_0_built)?;
@@ -2896,10 +2931,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let user_type_declaration =
             pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
-        let a_s_t_control_1_built = ASTControlUserTypeDeclarationBuilder::default()
-            .user_type_declaration(Box::new(user_type_declaration))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let a_s_t_control_1_built = ASTControlUserTypeDeclaration {
+            user_type_declaration: Box::new(user_type_declaration),
+        };
         let a_s_t_control_1_built = ASTControl::UserTypeDeclaration(a_s_t_control_1_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_1_built)?;
@@ -2919,11 +2953,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator = cut_operator.token(parse_tree)?.try_into()?;
-        let cut_operator_built = CutOperatorBuilder::default()
-            .cut_operator(cut_operator)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let cut_operator = cut_operator
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let cut_operator_built = CutOperator { cut_operator };
         // Calling user action here
         self.user_grammar.cut_operator(&cut_operator_built)?;
         self.push(ASTType::CutOperator(cut_operator_built), context);
@@ -2943,13 +2977,15 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let colon = colon.token(parse_tree)?.try_into()?;
+        let colon = colon
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
-        let user_type_declaration_built = UserTypeDeclarationBuilder::default()
-            .colon(colon)
-            .user_type_name(Box::new(user_type_name))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let user_type_declaration_built = UserTypeDeclaration {
+            colon,
+            user_type_name: Box::new(user_type_name),
+        };
         // Calling user action here
         self.user_grammar
             .user_type_declaration(&user_type_declaration_built)?;
@@ -2976,11 +3012,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let user_type_name_list =
             pop_and_reverse_item!(self, user_type_name_list, UserTypeNameList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let user_type_name_built = UserTypeNameBuilder::default()
-            .identifier(Box::new(identifier))
-            .user_type_name_list(user_type_name_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let user_type_name_built = UserTypeName {
+            identifier: Box::new(identifier),
+            user_type_name_list,
+        };
         // Calling user action here
         self.user_grammar.user_type_name(&user_type_name_built)?;
         self.push(ASTType::UserTypeName(user_type_name_built), context);
@@ -3005,11 +3040,10 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             pop_item!(self, user_type_name_list, UserTypeNameList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let double_colon = pop_item!(self, double_colon, DoubleColon, context);
-        let user_type_name_list_0_built = UserTypeNameListBuilder::default()
-            .identifier(Box::new(identifier))
-            .double_colon(Box::new(double_colon))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let user_type_name_list_0_built = UserTypeNameList {
+            identifier: Box::new(identifier),
+            double_colon: Box::new(double_colon),
+        };
         // Add an element to the vector
         user_type_name_list.push(user_type_name_list_0_built);
         self.push(ASTType::UserTypeNameList(user_type_name_list), context);
@@ -3045,10 +3079,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comments_list = pop_and_reverse_item!(self, comments_list, CommentsList, context);
-        let comments_built = CommentsBuilder::default()
-            .comments_list(comments_list)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let comments_built = Comments { comments_list };
         // Calling user action here
         self.user_grammar.comments(&comments_built)?;
         self.push(ASTType::Comments(comments_built), context);
@@ -3070,10 +3101,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut comments_list = pop_item!(self, comments_list, CommentsList, context);
         let comments_list_group = pop_item!(self, comments_list_group, CommentsListGroup, context);
-        let comments_list_0_built = CommentsListBuilder::default()
-            .comments_list_group(Box::new(comments_list_group))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let comments_list_0_built = CommentsList {
+            comments_list_group: Box::new(comments_list_group),
+        };
         // Add an element to the vector
         comments_list.push(comments_list_0_built);
         self.push(ASTType::CommentsList(comments_list), context);
@@ -3093,10 +3123,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_comment = pop_item!(self, line_comment, LineComment, context);
-        let comments_list_group_0_built = CommentsListGroupLineCommentBuilder::default()
-            .line_comment(Box::new(line_comment))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let comments_list_group_0_built = CommentsListGroupLineComment {
+            line_comment: Box::new(line_comment),
+        };
         let comments_list_group_0_built =
             CommentsListGroup::LineComment(comments_list_group_0_built);
         self.push(
@@ -3119,10 +3148,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let block_comment = pop_item!(self, block_comment, BlockComment, context);
-        let comments_list_group_1_built = CommentsListGroupBlockCommentBuilder::default()
-            .block_comment(Box::new(block_comment))
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let comments_list_group_1_built = CommentsListGroupBlockComment {
+            block_comment: Box::new(block_comment),
+        };
         let comments_list_group_1_built =
             CommentsListGroup::BlockComment(comments_list_group_1_built);
         self.push(
@@ -3157,11 +3185,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let line_comment = line_comment.token(parse_tree)?.try_into()?;
-        let line_comment_built = LineCommentBuilder::default()
-            .line_comment(line_comment)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let line_comment = line_comment
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let line_comment_built = LineComment { line_comment };
         // Calling user action here
         self.user_grammar.line_comment(&line_comment_built)?;
         self.push(ASTType::LineComment(line_comment_built), context);
@@ -3180,11 +3208,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let block_comment = block_comment.token(parse_tree)?.try_into()?;
-        let block_comment_built = BlockCommentBuilder::default()
-            .block_comment(block_comment)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let block_comment = block_comment
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let block_comment_built = BlockComment { block_comment };
         // Calling user action here
         self.user_grammar.block_comment(&block_comment_built)?;
         self.push(ASTType::BlockComment(block_comment_built), context);
@@ -3203,11 +3231,11 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let regex = regex.token(parse_tree)?.try_into()?;
-        let regex_built = RegexBuilder::default()
-            .regex(regex)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))?;
+        let regex = regex
+            .token(parse_tree)?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let regex_built = Regex { regex };
         // Calling user action here
         self.user_grammar.regex(&regex_built)?;
         self.push(ASTType::Regex(regex_built), context);
@@ -3224,7 +3252,7 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
         prod_num: usize,
         children: &[ParseTreeStackEntry<'t>],
         parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.parol_ls(&children[0], &children[1], parse_tree),
             1 => self.prolog(&children[0], &children[1], &children[2], parse_tree),
@@ -3362,7 +3390,11 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             76 => self.line_comment(&children[0], parse_tree),
             77 => self.block_comment(&children[0], parse_tree),
             78 => self.regex(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

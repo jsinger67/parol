@@ -4,7 +4,6 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use anyhow::Result;
 use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::once_cell::sync::Lazy;
@@ -12,6 +11,7 @@ use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
 };
+use parol_runtime::Result;
 use std::cell::RefCell;
 use std::path::Path;
 

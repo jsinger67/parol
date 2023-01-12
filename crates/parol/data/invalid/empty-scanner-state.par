@@ -8,6 +8,8 @@
     %auto_newline_off
 }
 
+%scanner Comment {}
+
 %%
 
 ParolSandbox: /"/^ %push(String) { /a/ | /b/ | /c/ } /"/^ %pop();

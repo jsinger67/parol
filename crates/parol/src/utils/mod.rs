@@ -13,11 +13,6 @@ use std::fs;
 use std::hash::Hash;
 use std::path::Path;
 
-pub mod miette_support;
-pub use miette_support::{
-    to_report, GrammarAnalysisError, LexerError, ParolParserError, ParserError,
-    RecursiveNonTerminal, RelatedHint, UnexpectedToken,
-};
 pub mod str_vec;
 
 /// Applies a key-generating function to each element of a vector and yields a vector of
@@ -176,7 +171,7 @@ pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<G
 // ---------------------------------------------------
 ///
 /// Utility function for generating tree layouts
-///  
+///
 pub fn generate_tree_layout<T>(syntax_tree: &Tree<ParseTreeType>, input_file_name: T) -> Result<()>
 where
     T: AsRef<Path>,

@@ -12,9 +12,8 @@
 use parol_runtime::id_tree::Tree;
 
 use crate::boolean_grammar::BooleanGrammar;
-#[allow(unused_imports)]
-use anyhow::{bail, Result};
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::{ParserError, Result};
 
 ///
 /// The `BooleanGrammarTrait` trait is automatically generated for the
@@ -454,7 +453,7 @@ impl UserActionsTrait<'_> for BooleanGrammar {
         prod_num: usize,
         children: &[ParseTreeStackEntry],
         parse_tree: &Tree<ParseTreeType>,
-    ) -> anyhow::Result<()> {
+    ) -> Result<()> {
         match prod_num {
             0 => self.expressions(&children[0], &children[1], &children[2], parse_tree),
             1 => self.expressions_list_0(&children[0], &children[1], &children[2], parse_tree),
@@ -492,7 +491,11 @@ impl UserActionsTrait<'_> for BooleanGrammar {
             33 => self.right_parenthesis(&children[0], parse_tree),
             34 => self.factor_0(&children[0], parse_tree),
             35 => self.factor_1(&children[0], parse_tree),
-            _ => bail!("Unhandled production number: {}", prod_num),
+            _ => Err(ParserError::InternalError(format!(
+                "Unhandled production number: {}",
+                prod_num
+            ))
+            .into()),
         }
     }
 }

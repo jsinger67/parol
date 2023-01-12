@@ -1,5 +1,7 @@
-use crate::parser::{ParseTreeStackEntry, ParseTreeType};
-use anyhow::Result;
+use crate::{
+    parser::{ParseTreeStackEntry, ParseTreeType},
+    Result,
+};
 use id_tree::Tree;
 
 ///

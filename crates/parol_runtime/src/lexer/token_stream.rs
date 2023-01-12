@@ -1,6 +1,5 @@
 use crate::parser::ScannerIndex;
 use crate::{LexerError, TerminalIndex, Token, TokenIter, Tokenizer};
-use anyhow::{bail, Result};
 use log::trace;
 use std::borrow::Cow;
 
@@ -66,12 +65,14 @@ impl<'t> TokenStream<'t> {
     /// an input string.
     /// The k determines the number of lookahead tokens the stream supports.
     ///
+    /// Currently this never return LexerError but it could be changed in the future.
+    ///
     pub fn new<T>(
         input: &'t str,
         file_name: T,
         tokenizers: &'static [(&'static str, Tokenizer)],
         k: usize,
-    ) -> Result<Self>
+    ) -> Result<Self, LexerError>
     where
         T: AsRef<Path>,
     {
@@ -106,14 +107,14 @@ impl<'t> TokenStream<'t> {
     /// position.
     /// If successful it returns an owned token from buffer position self.pos + n
     ///
-    pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>> {
+    pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>, LexerError> {
         if n > self.k {
-            bail!("Lookahead exceeds its maximum");
+            Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                bail!("Lookahead exceeds token buffer length");
+                Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("LA({}): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].clone())
@@ -127,14 +128,14 @@ impl<'t> TokenStream<'t> {
     /// If successful it returns the type (index) of the token at buffer
     /// position n.
     ///
-    pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex> {
+    pub fn lookahead_token_type(&mut self, n: usize) -> Result<TerminalIndex, LexerError> {
         if n > self.k {
-            bail!("Lookahead exceeds its maximum");
+            Err(LexerError::LookaheadExceedsMaximum)
         } else {
             // Fill buffer to lookahead size k relative to pos
             self.ensure_buffer();
             if n >= self.tokens.len() {
-                bail!("Lookahead exceeds token buffer length");
+                Err(LexerError::LookaheadExceedsTokenBufferLength)
             } else {
                 trace!("Type(LA({})): {}", n, self.tokens[n]);
                 Ok(self.tokens[n].token_type)
@@ -148,10 +149,12 @@ impl<'t> TokenStream<'t> {
     ///
     /// The token's positions are captured to support scanner switching.
     ///
-    pub fn consume(&mut self) -> Result<()> {
+    pub fn consume(&mut self) -> Result<(), LexerError> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
-            bail!("Consume on empty buffer is impossible");
+            Err(LexerError::InternalError(
+                "Consume on empty buffer is impossible".into(),
+            ))
         } else {
             // Store positions of last latest consumed token for scanner switching.
             // Actually this is token LA(1) with buffer index 0.
@@ -187,12 +190,12 @@ impl<'t> TokenStream<'t> {
     ///
     /// Returns the last valid token from token buffer if there is one
     ///
-    pub fn last_token(&self) -> Result<&Token<'_>> {
+    pub fn last_token(&self) -> Result<&Token<'_>, LexerError> {
         self.tokens
             .iter()
             .rev()
             .find(|t| t.token_type != super::EOI)
-            .ok_or_else(|| LexerError::TokenBufferEmptyError.into())
+            .ok_or(LexerError::TokenBufferEmptyError)
     }
 
     ///
@@ -212,7 +215,9 @@ impl<'t> TokenStream<'t> {
     /// `TokenStream::consume`.
     /// This is a documented restriction.
     ///
-    pub fn switch_scanner(&mut self, scanner_index: ScannerIndex) -> Result<()> {
+    /// Currently this never return LexerError but it could be changed in the future.
+    ///
+    pub fn switch_scanner(&mut self, scanner_index: ScannerIndex) -> Result<(), LexerError> {
         if self.current_scanner_index == scanner_index {
             trace!(
                 "Redundant switch to scanner {} <{}> omitted",
@@ -237,7 +242,9 @@ impl<'t> TokenStream<'t> {
     ///
     /// Push the current scanner index and switch to the scanner with given index.
     ///
-    pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> Result<()> {
+    /// Currently this never return LexerError but it could be changed in the future.
+    ///
+    pub fn push_scanner(&mut self, scanner_index: ScannerIndex) -> Result<(), LexerError> {
         if self.current_scanner_index == scanner_index {
             trace!(
                 "push_scanner: Redundant switch to scanner {} <{}> omitted",
@@ -270,7 +277,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// Push the current scanner index and switch to the scanner with given index.
     ///
-    pub fn pop_scanner(&mut self) -> Result<()> {
+    pub fn pop_scanner(&mut self) -> Result<(), LexerError> {
         if let Some(scanner_index) = self.scanner_stack.pop() {
             if self.current_scanner_index == scanner_index {
                 trace!(
@@ -296,7 +303,7 @@ impl<'t> TokenStream<'t> {
             }
             Ok(())
         } else {
-            bail!("pop_scanner: Tried to pop from an empty scanner stack!")
+            Err(LexerError::ScannerStackEmptyError)
         }
     }
 
