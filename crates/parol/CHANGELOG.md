@@ -21,7 +21,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.16.0 - not released yet
+## v0.16.1 - 2023-01-12
+
+* Removed clippy warning
+
+## v0.16.0 - 2023-01-12
 
 * Removed `miette` as error reporting crate
 * The error reporting for `parol`'s binary is done with the help of `codespan_reporting` (also
