@@ -11,6 +11,7 @@ keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
+exclude = ["/tests", "/data"]
 
 [dependencies]
 anyhow = "1.0"
