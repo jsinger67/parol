@@ -97,7 +97,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     &["add", "env_logger@0.10.0"],
     &[
         "add",
-        "parol_runtime@0.11.2",
+        "parol_runtime@0.12.1",
         "--features",
         "auto_generation",
     ],
