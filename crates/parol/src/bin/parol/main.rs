@@ -5,6 +5,7 @@ mod tools;
 
 use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
+use std::time::Instant;
 use std::{env, fs};
 
 use anyhow::Context;
@@ -22,9 +23,13 @@ use parol_macros::parol;
 
 // To rebuild the parser sources from scratch use the command build_parsers.ps1
 
-fn run(args: &CliArgs) -> Result<()> {
+fn run(args: &CliArgs) -> Result<u128> {
+    let now = Instant::now();
     if let Some(subcommand) = &args.subcommand {
-        return subcommand.invoke_main().map_err(|e| parol!(e));
+        return subcommand
+            .invoke_main()
+            .map_err(|e| parol!(e))
+            .map(|_| now.elapsed().as_millis());
     }
 
     // If relative paths are specified, they should be resoled relative to the current directory
@@ -86,7 +91,7 @@ fn run(args: &CliArgs) -> Result<()> {
     generator.post_process()?;
     generator.write_output()?;
 
-    Ok(())
+    Ok(now.elapsed().as_millis())
 }
 
 pub struct CLIListener<'a> {
@@ -167,8 +172,13 @@ fn main() -> Result<std::process::ExitCode> {
         args.grammar.as_ref().unwrap().to_path_buf()
     };
     match run(&args) {
-        Ok(_) => {
-            println!("{} {}", "Parol".bright_blue(), "succeeded".bright_green());
+        Ok(millis) => {
+            println!(
+                "{} {} ({} milliseconds)",
+                "Parol".bright_blue(),
+                "succeeded".bright_green(),
+                millis
+            );
             return Ok(std::process::ExitCode::SUCCESS);
         }
         Err(err) => ParolErrorReporter::report_error(&err, file).unwrap_or(()),

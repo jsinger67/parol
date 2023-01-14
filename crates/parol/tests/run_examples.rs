@@ -39,43 +39,64 @@ fn run_examples_test() -> Result<()> {
     println!("Running Calc example...");
     run(
         &example_path!("calc"),
-        &["../../examples/calc/calc_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/calc/calc_test.txt"
+        )],
     )?;
 
     println!("Running CalcAuto example...");
     run(
         &example_path!("calc_auto"),
-        &["../../examples/calc_auto/calc_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/calc_auto/calc_test.txt"
+        )],
     )?;
 
     println!("Running List example...");
     run(
         &example_path!("list"),
-        &["../../examples/list/list_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/list/list_test.txt"
+        )],
     )?;
 
     println!("Running ListAuto example...");
     run(
         &example_path!("list_auto"),
-        &["../../examples/list_auto/list_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/list_auto/list_test.txt"
+        )],
     )?;
 
     println!("Running Oberon-0 example...");
     run(
         &example_path!("oberon_0"),
-        &["../../examples/oberon_0/Sample.mod"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/oberon_0/Sample.mod"
+        )],
     )?;
 
     println!("Running Scanner States example...");
     run(
         &example_path!("scanner_states"),
-        &["../../examples/scanner_states/scanner_states_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/scanner_states/scanner_states_test.txt"
+        )],
     )?;
 
     println!("Running Boolean Parser example...");
     run(
         &example_path!("boolean_parser"),
-        &["../../examples/boolean_parser/boolean_parser_test.txt"],
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/boolean_parser/boolean_parser_test.txt"
+        )],
     )?;
 
     println!("Running Keywords examples...");
@@ -114,7 +135,9 @@ fn run(command: &str, args: &[&str]) -> Result<ExitStatus> {
 }
 
 fn run_parol_examples() -> Result<()> {
-    for entry in std::path::Path::new("./data/valid").read_dir()? {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data/valid");
+    println!("from folder {path}:");
+    for entry in std::path::Path::new(path).read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {}...", entry.path().display());
@@ -123,7 +146,9 @@ fn run_parol_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("./data/invalid").read_dir()? {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data/invalid");
+    println!("from folder {path}:");
+    for entry in std::path::Path::new(path).read_dir()? {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {} should fail...", entry.path().display());
@@ -137,7 +162,12 @@ fn run_parol_examples() -> Result<()> {
 
 fn run_keywords_examples() -> Result<()> {
     let parser = example_path!("keywords");
-    for entry in std::path::Path::new("../../examples/keywords/testfiles/valid").read_dir()? {
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/keywords/testfiles/valid"
+    ))
+    .read_dir()?
+    {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());
@@ -146,7 +176,12 @@ fn run_keywords_examples() -> Result<()> {
             }
         }
     }
-    for entry in std::path::Path::new("../../examples/keywords/testfiles/invalid").read_dir()? {
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/keywords/testfiles/invalid"
+    ))
+    .read_dir()?
+    {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {} should fail...", entry.path().display());
@@ -160,7 +195,12 @@ fn run_keywords_examples() -> Result<()> {
 
 fn run_keywords2_examples() -> Result<()> {
     let parser = example_path!("keywords2");
-    for entry in std::path::Path::new("../../examples/keywords2/testfiles/valid").read_dir()? {
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/keywords2/testfiles/valid"
+    ))
+    .read_dir()?
+    {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
                 println!("Parsing {}...", entry.path().display());
@@ -174,8 +214,11 @@ fn run_keywords2_examples() -> Result<()> {
 
 fn run_basic_interpreter_examples() -> Result<()> {
     let parser = binary_path!("basic");
-    for entry in
-        std::path::Path::new("../../examples/basic_interpreter/tests/data/valid").read_dir()?
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/basic_interpreter/tests/data/valid"
+    ))
+    .read_dir()?
     {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
@@ -185,8 +228,11 @@ fn run_basic_interpreter_examples() -> Result<()> {
             }
         }
     }
-    for entry in
-        std::path::Path::new("../../examples/basic_interpreter/tests/data/invalid").read_dir()?
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/basic_interpreter/tests/data/invalid"
+    ))
+    .read_dir()?
     {
         if let Ok(entry) = entry {
             if entry.path().extension().unwrap().to_str().unwrap() == "bas" {

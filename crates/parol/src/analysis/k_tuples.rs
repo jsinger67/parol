@@ -1,5 +1,6 @@
 use crate::KTuple;
 //use parol_runtime::log::trace;
+use rayon::prelude::*;
 use std::collections::HashSet;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -86,14 +87,14 @@ impl KTuples {
         self.0.is_disjoint(&other.0)
     }
 
-    /// Checks if self is epsilon
+    /// Creates an epsilon item, i.e. a set with exactly one epsilon k-tuple
     pub fn eps(k: usize) -> Self {
         let mut set = HashSet::new();
         set.insert(KTuple::eps(k));
         Self(set, k, false)
     }
 
-    /// Checks if self is end-of-input representation
+    /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
     pub fn end(k: usize) -> Self {
         let mut set = HashSet::new();
         set.insert(KTuple::end(k));
@@ -147,22 +148,17 @@ impl KTuples {
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.2 {
-            let mut to_remove = Vec::<KTuple>::with_capacity(self.0.len()); // Maximum possible size
-            let mut to_insert = HashSet::<KTuple>::with_capacity(self.0.len()); // Start size
-            for i in &self.0 {
-                if !i.is_k_complete() {
-                    to_remove.push(i.clone());
-                    for j in &other.0 {
-                        to_insert.insert(i.clone().k_concat(j, k));
-                    }
-                }
-            }
-            for i in &to_remove {
-                self.remove(i);
-            }
-            for i in to_insert {
-                self.insert(i);
-            }
+            let (complete, incomplete): (HashSet<KTuple>, HashSet<KTuple>) =
+                self.0.par_drain().partition(|t| t.is_k_complete());
+            self.0 = complete;
+            self.0.extend(
+                incomplete
+                    .par_iter()
+                    .map(|t| other.0.par_iter().map(move |o| t.clone().k_concat(o, k)))
+                    .flatten()
+                    .collect::<HashSet<KTuple>>(),
+            );
+            self.update_completeness();
         }
         // trace!("KTuples::k_concat => {}", result);
         self
