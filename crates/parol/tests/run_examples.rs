@@ -108,6 +108,12 @@ fn run_examples_test() -> Result<()> {
     println!("Running Basic Interpreter examples...");
     run_basic_interpreter_examples()?;
 
+    println!("Running JSON Parser examples...");
+    run_json_examples()?;
+
+    println!("Running JSON Parser Auto examples...");
+    run_json_auto_examples()?;
+
     Ok(())
 }
 
@@ -239,6 +245,44 @@ fn run_basic_interpreter_examples() -> Result<()> {
                 println!("Parsing {} should fail...", entry.path().display());
                 let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
                 assert!(!exit_status.success());
+            }
+        }
+    }
+    Ok(())
+}
+
+fn run_json_examples() -> Result<()> {
+    let parser = binary_path!("json_parser");
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/json_parser/json"
+    ))
+    .read_dir()?
+    {
+        if let Ok(entry) = entry {
+            if entry.path().extension().unwrap().to_str().unwrap() == "json" {
+                println!("Parsing {}...", entry.path().display());
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
+            }
+        }
+    }
+    Ok(())
+}
+
+fn run_json_auto_examples() -> Result<()> {
+    let parser = binary_path!("json_parser_auto");
+    for entry in std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../examples/json_parser/json"
+    ))
+    .read_dir()?
+    {
+        if let Ok(entry) = entry {
+            if entry.path().extension().unwrap().to_str().unwrap() == "json" {
+                println!("Parsing {}...", entry.path().display());
+                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+                assert!(exit_status.success());
             }
         }
     }

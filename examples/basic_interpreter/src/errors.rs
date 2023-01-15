@@ -71,18 +71,18 @@ impl Report for BasicErrorReporter {
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
                     return Ok(term::emit(
-                            &mut writer.lock(),
-                            &config,
-                            &files,
-                            &Diagnostic::error()
-                                .with_message(format!("{context}: value parse error"))
-                                .with_code("basic::parse_float")
-                                .with_labels(vec![Label::primary(
-                                    file_id,
-                                    Into::<Range<usize>>::into(token))
-                                    .with_message("Wrong f32 value")])
-                                .with_notes(vec!["Undeclared scanner found. Please declare a scanner via %scanner name {{...}}".to_string()])
-                        )?);
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{context}: value parse error"))
+                            .with_code("basic::parse_float")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(token),
+                            )
+                            .with_message("Wrong f32 value")]),
+                    )?);
                 }
                 BasicError::ParseLineNumber {
                     context,

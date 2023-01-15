@@ -7,7 +7,6 @@ use parol_runtime::log::trace;
 use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
 use parol_runtime::{ParolError, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
-use std::path::PathBuf;
 
 ///
 /// Data structure used to build up a json structure item during parsing
@@ -59,7 +58,6 @@ impl Display for JsonGrammarItem {
 #[derive(Debug, Default)]
 pub struct JsonGrammar {
     pub item_stack: Vec<JsonGrammarItem>,
-    file_name: PathBuf,
 }
 
 impl JsonGrammar {
@@ -384,11 +382,13 @@ impl JsonGrammarTrait for JsonGrammar {
         parse_tree: &Tree<ParseTreeType>,
     ) -> Result<()> {
         let context = "number_20";
+        let file_name = number.token(parse_tree)?.location.file_name.clone();
         let number = match number.text(parse_tree)?.parse::<f64>() {
             Ok(number) => number,
             Err(source) => {
                 bail!(JsonError::ParseF64Failed {
-                    input: FileSource::try_new(self.file_name.clone())
+                    context: context.to_string(),
+                    input: FileSource::try_new(file_name)
                         .map_err(|e| ParolError::UserError(anyhow::anyhow!(e)))?,
                     token: number.token(parse_tree)?.into(),
                     source

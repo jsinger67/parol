@@ -9,12 +9,16 @@ use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
 use anyhow::{anyhow, Context, Result};
 use parol_runtime::log::debug;
+use parol_runtime::Report;
 use std::env;
 use std::fs;
 use std::time::Instant;
 
 // To generate:
 // parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar -g
+
+struct JSONErrorReporter;
+impl Report for JSONErrorReporter {}
 
 fn main() -> Result<()> {
     env_logger::init();
@@ -27,15 +31,18 @@ fn main() -> Result<()> {
             .with_context(|| format!("Can't read file {}", file_name))?;
         let mut json_grammar = JsonGrammar::new();
         let now = Instant::now();
-        parse(&input, &file_name, &mut json_grammar)
-            .with_context(|| format!("Failed parsing file {}", file_name))?;
-        let elapsed_time = now.elapsed();
-        println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-        if args.len() > 2 && args[2] == "-q" {
-            Ok(())
-        } else {
-            println!("Success!\n{}", json_grammar);
-            Ok(())
+        match parse(&input, &file_name, &mut json_grammar) {
+            Ok(_) => {
+                let elapsed_time = now.elapsed();
+                println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
+                if args.len() > 2 && args[2] == "-q" {
+                    Ok(())
+                } else {
+                    println!("Success!\n{}", json_grammar);
+                    Ok(())
+                }
+            }
+            Err(e) => JSONErrorReporter::report_error(&e, file_name),
         }
     } else {
         Err(anyhow!("Please provide a file name as first parameter!"))
