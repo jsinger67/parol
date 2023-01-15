@@ -11,7 +11,7 @@ use std::path::PathBuf;
 pub struct Args {
     /// The grammar file to use
     #[clap(short = 'f', long = "grammar-file")]
-    grammar_file: PathBuf,
+    pub(crate) grammar_file: PathBuf,
     /// The maximum number of lookahead tokens to be used
     #[clap(short = 'k', long = "lookahead", default_value = "5")]
     lookahead: usize,

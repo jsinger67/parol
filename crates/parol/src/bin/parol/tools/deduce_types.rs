@@ -9,7 +9,7 @@ use std::path::PathBuf;
 pub struct Args {
     /// The grammar file to use
     #[clap(short = 'f', long = "grammar-file")]
-    grammar_file: Option<PathBuf>,
+    pub(crate) grammar_file: Option<PathBuf>,
     /// Grammar input as text
     #[clap(short = 's', long = "grammar-text")]
     grammar: Option<String>,

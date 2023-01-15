@@ -442,7 +442,7 @@ pub struct GrammarGenerator<'l> {
     ///
     /// This is a fairly advanced feature
     listener: MaybeBuildListener<'l>,
-    grammar_file: PathBuf,
+    pub(crate) grammar_file: PathBuf,
     builder: Builder,
     state: Option<State>,
     grammar_config: Option<GrammarConfig>,

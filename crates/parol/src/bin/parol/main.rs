@@ -166,11 +166,7 @@ fn main() -> Result<std::process::ExitCode> {
     trace!("env logger started");
 
     let args = CliArgs::parse();
-    let file = if args.subcommand.is_some() {
-        PathBuf::new()
-    } else {
-        args.grammar.as_ref().unwrap().to_path_buf()
-    };
+    let file = extract_file_name(&args);
     match run(&args) {
         Ok(millis) => {
             println!(
@@ -185,4 +181,29 @@ fn main() -> Result<std::process::ExitCode> {
     }
     println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
     Ok(std::process::ExitCode::FAILURE)
+}
+
+// We need the file name to support error reporting
+fn extract_file_name(args: &CliArgs) -> PathBuf {
+    if args.subcommand.is_some() {
+        match args.subcommand.as_ref().unwrap() {
+            tools::ToolsSubcommands::calculate_k(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::calculate_k_tuples(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::decidable(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::deduce_types(args) => args
+                .grammar_file
+                .as_ref()
+                .map_or(PathBuf::default(), |f| f.to_path_buf()),
+            tools::ToolsSubcommands::first(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::follow(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::format(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::generate(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::left_factor(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::left_recursions(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::new(_) => PathBuf::default(),
+            tools::ToolsSubcommands::productivity(args) => args.grammar_file.to_path_buf(),
+        }
+    } else {
+        args.grammar.as_ref().unwrap().to_path_buf()
+    }
 }

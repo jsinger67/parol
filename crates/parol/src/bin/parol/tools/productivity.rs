@@ -9,7 +9,7 @@ use parol::obtain_grammar_config;
 pub struct Args {
     /// The grammar file to use
     #[clap(short = 'f', long = "grammar-file")]
-    grammar_file: PathBuf,
+    pub(crate) grammar_file: PathBuf,
 }
 
 pub fn main(args: &Args) -> Result<()> {

@@ -9,7 +9,7 @@ use parol::{analysis::left_recursion::detect_left_recursive_non_terminals, obtai
 pub struct Args {
     /// The grammar file to use
     #[clap(short = 'f', long = "grammar-file")]
-    grammar_file: PathBuf,
+    pub(crate) grammar_file: PathBuf,
 }
 
 pub fn main(args: &Args) -> Result<()> {
