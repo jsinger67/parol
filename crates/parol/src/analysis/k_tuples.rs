@@ -153,8 +153,7 @@ impl KTuples {
             self.0.extend(
                 incomplete
                     .iter()
-                    .map(|t| other.0.iter().map(move |o| t.clone().k_concat(o, k)))
-                    .flatten()
+                    .flat_map(|t| other.0.iter().map(move |o| t.clone().k_concat(o, k)))
                     .collect::<HashSet<KTuple>>(),
             );
             self.update_completeness();
