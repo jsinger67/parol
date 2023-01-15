@@ -1,6 +1,5 @@
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use rayon::prelude::*;
 use std::collections::HashSet;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -149,12 +148,12 @@ impl KTuples {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.2 {
             let (complete, incomplete): (HashSet<KTuple>, HashSet<KTuple>) =
-                self.0.par_drain().partition(|t| t.is_k_complete());
+                self.0.drain().partition(|t| t.is_k_complete());
             self.0 = complete;
             self.0.extend(
                 incomplete
-                    .par_iter()
-                    .map(|t| other.0.par_iter().map(move |o| t.clone().k_concat(o, k)))
+                    .iter()
+                    .map(|t| other.0.iter().map(move |o| t.clone().k_concat(o, k)))
                     .flatten()
                     .collect::<HashSet<KTuple>>(),
             );
