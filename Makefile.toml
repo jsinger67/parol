@@ -22,11 +22,12 @@ run_task = { name = [
     ], parallel = true }
 
 [tasks.generate_parol]
-private = true
+workspace = false
+dependencies = ["build_parol"]
 cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/crates/parol"
 script_runner = "@shell"
 script = '''
-echo "Building parol..."
+echo "Building parol's parser sources..."
 ${PAROL_TARGET} -f ./src/parser/parol-grammar.par -e ./src/parser/parol-grammar-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g
 '''
 

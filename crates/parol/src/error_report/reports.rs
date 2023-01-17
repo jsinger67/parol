@@ -61,8 +61,10 @@ impl Report for ParolErrorReporter {
                             .with_message(format!("{context} - Empty Group not allowed"))
                             .with_code("parol::parser::empty_group")
                             .with_labels(vec![
-                                Label::primary(file_id, Into::<Range<usize>>::into(start)),
-                                Label::primary(file_id, Into::<Range<usize>>::into(end)),
+                                Label::primary(file_id, Into::<Range<usize>>::into(start))
+                                    .with_message("Start"),
+                                Label::primary(file_id, Into::<Range<usize>>::into(end))
+                                    .with_message("End"),
                             ])
                             .with_notes(vec!["Empty groups can be safely removed.".to_string()]),
                     )?);
@@ -85,8 +87,10 @@ impl Report for ParolErrorReporter {
                             .with_message(format!("{context} - Empty Optionals not allowed"))
                             .with_code("parol::parser::empty_optional")
                             .with_labels(vec![
-                                Label::primary(file_id, Into::<Range<usize>>::into(start)),
-                                Label::primary(file_id, Into::<Range<usize>>::into(end)),
+                                Label::primary(file_id, Into::<Range<usize>>::into(start))
+                                    .with_message("Start"),
+                                Label::primary(file_id, Into::<Range<usize>>::into(end))
+                                    .with_message("End"),
                             ])
                             .with_notes(vec!["Empty optionals can be safely removed.".to_string()]),
                     )?);
@@ -109,8 +113,10 @@ impl Report for ParolErrorReporter {
                             .with_message(format!("{context} - Empty Repetitions not allowed"))
                             .with_code("parol::parser::empty_repetition")
                             .with_labels(vec![
-                                Label::primary(file_id, Into::<Range<usize>>::into(start)),
-                                Label::primary(file_id, Into::<Range<usize>>::into(end)),
+                                Label::primary(file_id, Into::<Range<usize>>::into(start))
+                                    .with_message("Start"),
+                                Label::primary(file_id, Into::<Range<usize>>::into(end))
+                                    .with_message("End"),
                             ])
                             .with_notes(vec![
                                 "Empty repetitions can be safely removed.".to_string()

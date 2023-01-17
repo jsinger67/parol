@@ -1,5 +1,6 @@
 use lsp_types::{Diagnostic, DiagnosticRelatedInformation, Location, Range, Url};
 use parol::{GrammarAnalysisError, ParolParserError};
+use parol_runtime::ParolError;
 use std::fmt::Write as _;
 
 use crate::{
@@ -24,22 +25,30 @@ impl Diagnostics {
         let message = err.to_string();
 
         // Extract additional information from certain errors
-        if let Some(e) = err.downcast_ref::<GrammarAnalysisError>() {
-            let located_document_state = LocatedDocumentState::new(uri, document_state);
-            extract_grammar_analysis_error(
-                e,
-                &located_document_state,
-                &mut range,
-                &mut related_information,
-            );
-        } else if let Some(e) = err.downcast_ref::<ParolParserError>() {
-            let located_document_state = LocatedDocumentState::new(uri, document_state);
-            extract_parser_error(
-                e,
-                &located_document_state,
-                &mut range,
-                &mut related_information,
-            );
+        if let Some(e) = err.downcast_ref::<ParolError>() {
+            match e {
+                ParolError::ParserError(_) => (),
+                ParolError::LexerError(_) => (),
+                ParolError::UserError(err) => {
+                    if let Some(e) = err.downcast_ref::<GrammarAnalysisError>() {
+                        let located_document_state = LocatedDocumentState::new(uri, document_state);
+                        extract_grammar_analysis_error(
+                            e,
+                            &located_document_state,
+                            &mut range,
+                            &mut related_information,
+                        );
+                    } else if let Some(e) = err.downcast_ref::<ParolParserError>() {
+                        let located_document_state = LocatedDocumentState::new(uri, document_state);
+                        extract_parser_error(
+                            e,
+                            &located_document_state,
+                            &mut range,
+                            &mut related_information,
+                        );
+                    }
+                }
+            }
         }
 
         let diagnostic = Diagnostic {
@@ -138,13 +147,13 @@ fn extract_parser_error(
         }
         ParolParserError::EmptyGroup { start, end, .. } => {
             *range = location_to_range(
-                &parol_runtime::LocationBuilder::default()
-                    .start_line(start.start_line)
-                    .start_column(start.start_column)
-                    .end_line(end.end_line)
-                    .end_column(end.end_column)
-                    .build()
-                    .unwrap(),
+                &parol_runtime::Location {
+                    start_line: start.start_line,
+                    start_column: start.start_column,
+                    end_line: end.end_line,
+                    end_column: end.end_column,
+                    ..Default::default()
+                }
             );
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),
@@ -157,13 +166,13 @@ fn extract_parser_error(
         }
         ParolParserError::EmptyOptional { start, end, .. } => {
             *range = location_to_range(
-                &parol_runtime::LocationBuilder::default()
-                    .start_line(start.start_line)
-                    .start_column(start.start_column)
-                    .end_line(end.end_line)
-                    .end_column(end.end_column)
-                    .build()
-                    .unwrap(),
+                &parol_runtime::Location {
+                    start_line: start.start_line,
+                    start_column: start.start_column,
+                    end_line: end.end_line,
+                    end_column: end.end_column,
+                    ..Default::default()
+                }
             );
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),
@@ -176,13 +185,13 @@ fn extract_parser_error(
         }
         ParolParserError::EmptyRepetition { start, end, .. } => {
             *range = location_to_range(
-                &parol_runtime::LocationBuilder::default()
-                    .start_line(start.start_line)
-                    .start_column(start.start_column)
-                    .end_line(end.end_line)
-                    .end_column(end.end_column)
-                    .build()
-                    .unwrap(),
+                &parol_runtime::Location {
+                    start_line: start.start_line,
+                    start_column: start.start_column,
+                    end_line: end.end_line,
+                    end_column: end.end_column,
+                    ..Default::default()
+                }
             );
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),

@@ -53,8 +53,8 @@ impl<'a> LanguageGenerator<'a> {
                 Symbol::N(n, ..) => {
                     self.process_non_terminal(&n, result.len() > termination_threshold)
                 }
-                Symbol::T(Terminal::Trm(t, ..)) => {
-                    self.process_terminal(t.clone(), &mut result, max_result_length)
+                Symbol::T(Terminal::Trm(t, k, ..)) => {
+                    self.process_terminal(k.expand(&t), &mut result, max_result_length)
                 }
                 _ => Ok(()),
             }?
@@ -119,13 +119,17 @@ impl<'a> LanguageGenerator<'a> {
         }
 
         match regex_syntax::ParserBuilder::new().build().parse(&terminal) {
-            Ok(utf8_hir) => {
-                let utf8_gen = rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT)?;
-                trace!("Caching regex for: {}", terminal);
-                self.cache.insert(terminal.clone(), utf8_gen);
-                self.get_regex(terminal)
-            }
-            Err(err) => Err(anyhow!(err)),
+            Ok(utf8_hir) => match rand_regex::Regex::with_hir(utf8_hir, MAX_REPEAT) {
+                Ok(utf8_gen) => {
+                    trace!("Caching regex for: {}", terminal);
+                    self.cache.insert(terminal.clone(), utf8_gen);
+                    self.get_regex(terminal)
+                }
+                Err(e) => Err(anyhow!(e).context(format!(
+                    "rand_regex can't generate a sentence for this: /{terminal}/"
+                ))),
+            },
+            Err(err) => Err(anyhow!(err).context(format!("regex_syntax can't parse /{terminal}/"))),
         }
     }
 

@@ -54,9 +54,9 @@
 /* 43 */ String: /"(\\.|[^\\])*?"/;
 /* 44 */ RawString: /'(\\'|[^'])*?'/;
 /* 45 */ Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
-/* 46 */ Group: '('^ /* Clipped */ Alternations ')'^ /* Clipped */;
-/* 47 */ Optional: '['^ /* Clipped */ Alternations ']'^ /* Clipped */;
-/* 48 */ Repeat: '{'^ /* Clipped */ Alternations '}'^ /* Clipped */;
+/* 46 */ Group: '(' Alternations ')';
+/* 47 */ Optional: '[' Alternations ']';
+/* 48 */ Repeat: '{' Alternations '}';
 /* 49 */ NonTerminal: Identifier NonTerminalOpt /* Option */;
 /* 50 */ NonTerminalOpt /* Option<T>::Some */: ASTControl;
 /* 51 */ NonTerminalOpt /* Option<T>::None */: ;

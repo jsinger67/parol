@@ -5,13 +5,13 @@
 // ---------------------------------------------------------
 
 use parol_runtime::id_tree::Tree;
-use parol_runtime::lexer::{TokenStream, Tokenizer};
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
 };
-use parol_runtime::Result;
+use parol_runtime::ParolError;
+use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
 
@@ -863,17 +863,17 @@ pub const PRODUCTIONS: &[Production; 71] = &[
         lhs: 22,
         production: &[ParseType::T(23)],
     },
-    // 46 - Group: '('^ /* Clipped */ Alternations ')'^ /* Clipped */;
+    // 46 - Group: '(' Alternations ')';
     Production {
         lhs: 11,
         production: &[ParseType::T(25), ParseType::N(3), ParseType::T(24)],
     },
-    // 47 - Optional: '['^ /* Clipped */ Alternations ']'^ /* Clipped */;
+    // 47 - Optional: '[' Alternations ']';
     Production {
         lhs: 15,
         production: &[ParseType::T(27), ParseType::N(3), ParseType::T(26)],
     },
-    // 48 - Repeat: '{'^ /* Clipped */ Alternations '}'^ /* Clipped */;
+    // 48 - Repeat: '{' Alternations '}';
     Production {
         lhs: 23,
         production: &[ParseType::T(29), ParseType::N(3), ParseType::T(28)],
@@ -1017,7 +1017,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut ParolGrammar<'t>,
-) -> Result<Tree<ParseTreeType<'t>>>
+) -> Result<Tree<ParseTreeType<'t>>, ParolError>
 where
     T: AsRef<Path>,
 {

@@ -6,11 +6,9 @@ use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKin
 use crate::ParolParserError;
 use anyhow::anyhow;
 
-use parol_macros::bail;
+use parol_macros::{bail, parol};
 
-use parol_runtime::lexer::Token;
-use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::Result;
+use parol_runtime::{lexer::Token, once_cell::sync::Lazy, Result};
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -75,15 +73,18 @@ impl Display for UserDefinedTypeName {
 
 /// This trait is used to automatically convert the generated type `UserTypeName` to our own
 /// `UserDefinedTypeName`.
-impl From<&super::parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
-    fn from(user_type_names: &super::parol_grammar_trait::UserTypeName<'_>) -> Self {
-        Self(user_type_names.user_type_name_list.iter().fold(
+impl TryFrom<&super::parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
+    type Error = anyhow::Error;
+    fn try_from(
+        user_type_names: &super::parol_grammar_trait::UserTypeName<'_>,
+    ) -> std::result::Result<Self, Self::Error> {
+        Ok(Self(user_type_names.user_type_name_list.iter().fold(
             vec![user_type_names.identifier.identifier.text().to_string()],
             |mut acc, a| {
                 acc.push(a.identifier.identifier.text().to_string());
                 acc
             },
-        ))
+        )))
     }
 }
 
@@ -319,6 +320,10 @@ impl Alternations {
     fn is_used_scanner(&self, scanner_index: usize) -> bool {
         self.0.iter().any(|a| a.is_used_scanner(scanner_index))
     }
+
+    fn is_empty(&self) -> bool {
+        self.0.is_empty() || (self.0.len() == 1 && self.0[0].0.is_empty())
+    }
 }
 
 impl Display for Alternations {
@@ -452,8 +457,11 @@ impl Default for ScannerConfig {
 
 /// This trait is used to automatically convert the generated type `ScannerState` to our own
 /// `ScannerConfig`.
-impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
-    fn from(scanner_state: &super::parol_grammar_trait::ScannerState<'_>) -> Self {
+impl TryFrom<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
+    type Error = anyhow::Error;
+    fn try_from(
+        scanner_state: &super::parol_grammar_trait::ScannerState<'_>,
+    ) -> std::result::Result<Self, Self::Error> {
         let mut me = Self {
             name: scanner_state.identifier.identifier.text().to_string(),
             ..Default::default()
@@ -477,7 +485,7 @@ impl From<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
                 ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(_) => me.auto_ws_off = true,
             }
         }
-        me
+        Ok(me)
     }
 }
 
@@ -668,19 +676,51 @@ impl ParolGrammar<'_> {
         Ok(result)
     }
 
+    #[named]
     fn process_factor(&mut self, factor: &super::parol_grammar_trait::Factor) -> Result<Factor> {
+        let context = function_name!();
         match factor {
             super::parol_grammar_trait::Factor::Group(group) => {
                 let alternations = Self::to_alternation_vec(&group.group.alternations);
-                Ok(Factor::Group(self.process_alternations(&alternations)?))
+                let factors = self.process_alternations(&alternations)?;
+                if factors.is_empty() {
+                    Err(parol!(ParolParserError::EmptyGroup {
+                        context: context.to_string(),
+                        input: group.group.l_paren.location.file_name.to_path_buf(),
+                        start: group.group.l_paren.location.clone(),
+                        end: group.group.r_paren.location.clone(),
+                    }))
+                } else {
+                    Ok(Factor::Group(factors))
+                }
             }
             super::parol_grammar_trait::Factor::Repeat(repeat) => {
                 let alternations = Self::to_alternation_vec(&repeat.repeat.alternations);
-                Ok(Factor::Repeat(self.process_alternations(&alternations)?))
+                let factors = self.process_alternations(&alternations)?;
+                if factors.is_empty() {
+                    Err(parol!(ParolParserError::EmptyRepetition {
+                        context: context.to_string(),
+                        input: repeat.repeat.l_brace.location.file_name.to_path_buf(),
+                        start: repeat.repeat.l_brace.location.clone(),
+                        end: repeat.repeat.r_brace.location.clone(),
+                    }))
+                } else {
+                    Ok(Factor::Repeat(factors))
+                }
             }
             super::parol_grammar_trait::Factor::Optional(optional) => {
                 let alternations = Self::to_alternation_vec(&optional.optional.alternations);
-                Ok(Factor::Optional(self.process_alternations(&alternations)?))
+                let factors = self.process_alternations(&alternations)?;
+                if factors.is_empty() {
+                    Err(parol!(ParolParserError::EmptyOptional {
+                        context: context.to_string(),
+                        input: optional.optional.l_bracket.location.file_name.to_path_buf(),
+                        start: optional.optional.l_bracket.location.clone(),
+                        end: optional.optional.r_bracket.location.clone(),
+                    }))
+                } else {
+                    Ok(Factor::Optional(factors))
+                }
             }
             super::parol_grammar_trait::Factor::Symbol(symbol) => {
                 self.process_symbol(&symbol.symbol)

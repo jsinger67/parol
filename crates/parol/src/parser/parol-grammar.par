@@ -98,17 +98,17 @@ Regex
 
 // A non-empty grouping
 Group
-    : '('^ Alternations ')'^
+    : '(' Alternations ')'
     ;
 
 // A non-empty optional expression
 Optional
-    : '['^ Alternations ']'^
+    : '[' Alternations ']'
     ;
 
 // A non-empty repetition
 Repeat
-    : '{'^ Alternations '}'^
+    : '{' Alternations '}'
     ;
 
 NonTerminal
