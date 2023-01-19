@@ -48,11 +48,9 @@ use crate::{crate_name}_parser::parse;
                     })?;
         }
         f.write_fmt(ume::ume! {
-        use parol_runtime::log::debug;
+        use parol_runtime::{log::debug, Report};
         use anyhow::{anyhow, Context, Result};
-        use std::env;
-        use std::fs;
-        use std::time::Instant;
+        use std::{env, fs, time::Instant};
                 })?;
 
         write!(f, "\n\n")?;
@@ -62,11 +60,14 @@ use crate::{crate_name}_parser::parse;
 // parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar -g
 ")?;
 
-        write!(f, "\n\n")?;
+        write!(f, "\n
+        struct ErrorReporter;
+        impl Report for ErrorReporter {{}}
+\n")?;
 
         let grammar = format!("{grammar_name}Grammar");
         let crate_name_grammar = format!("{crate_name}_grammar");
-        let let_syntax_tree = if *tree_gen { "let syntax_tree = " } else { "" };
+        let syntax_tree = if *tree_gen { "syntax_tree" } else { "_" };
         let generate_tree_layout = if *tree_gen {
             ume::ume!(generate_tree_layout(&syntax_tree, &file_name)?;).to_string()
         } else {
@@ -85,16 +86,19 @@ use crate::{crate_name}_parser::parse;
                         .with_context(|| format!("Can't read file {}", file_name))?;
                     let mut #crate_name_grammar = #grammar::new();
                     let now = Instant::now();
-                    #let_syntax_tree parse(&input, &file_name, &mut #crate_name_grammar)
-                        .with_context(|| format!("Failed parsing file {}", file_name))?;
-                    let elapsed_time = now.elapsed();
-                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-                    if args.len() > 2 && args[2] == "-q" {
-                        Ok(())
-                    } else {
-                        #generate_tree_layout
-                        println!("Success!\n{}", #crate_name_grammar);
-                        Ok(())
+                    match parse(&input, &file_name, &mut #crate_name_grammar) {
+                        Ok(#syntax_tree) => {
+                            let elapsed_time = now.elapsed();
+                            println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
+                            if args.len() > 2 && args[2] == "-q" {
+                                Ok(())
+                            } else {
+                                #generate_tree_layout
+                                println!("Success!\n{}", #crate_name_grammar);
+                                Ok(())
+                            }
+                        }
+                        Err(e) => ErrorReporter::report_error(&e, file_name),
                     }
                 } else {
                     Err(anyhow!("Please provide a file name as first parameter!"))
@@ -106,16 +110,16 @@ use crate::{crate_name}_parser::parse;
             write!(f, "\n\n")?;
 
             f.write_fmt(ume::ume! {
-				fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
-					let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
-					svg_full_file_name.set_extension("svg");
+                fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+                    let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
+                    svg_full_file_name.set_extension("svg");
 
-					Layouter::new(syntax_tree)
-						.with_file_path(&svg_full_file_name)
-						.write()
-						.context("Failed writing layout")
-				}
-			})?;
+                    Layouter::new(syntax_tree)
+                        .with_file_path(&svg_full_file_name)
+                        .write()
+                        .context("Failed writing layout")
+                }
+            })?;
         }
         Ok(())
     }

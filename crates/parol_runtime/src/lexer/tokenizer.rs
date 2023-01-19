@@ -99,7 +99,7 @@ impl Tokenizer {
     /// Isn't meant for external use.
     #[doc(hidden)]
     pub fn with_regex(rx: &str, error_token_type: TerminalIndex) -> Result<Self> {
-        let rx = Regex::new(&rx).map_err(|e| anyhow!(e))?;
+        let rx = Regex::new(rx).map_err(|e| anyhow!(e))?;
         Ok(Self {
             rx,
             error_token_type,

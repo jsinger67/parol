@@ -21,6 +21,22 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.16.1 - Not released yet
+
+* Fixed [#52](https://github.com/jsinger67/parol/issues/52) (Currently the parser doesn't complain
+about empty groups, repetitions and optionals)
+* Fixed [#57](https://github.com/jsinger67/parol/issues/57) (Unreachable non-terminals error at
+parol v0.16.0)
+  * The new error reporting approach is implemented for `parol new` to support standard error
+  reporting for both build script and the executable itself.
+* Some works regarding `parol`'s compile performance (`k_tuples.rs`)
+* Improvements of `parol`'s error reporting
+  * Sub commands provide the file name that was given to them (if any) to the error reporting method
+  for better diagnostics.
+  * Tests provide better error reports (`basic_interpreter`, `json_parser`, `json_parser_auto`)
+* Extended tests in `run_examples.rs` test
+  * `json_parser` and `json_parser_auto` tests are executed
+
 ## v0.16.0 - 2023-01-12
 
 * Removed `miette` as error reporting crate

@@ -7,8 +7,22 @@ use codespan_reporting::diagnostic::{Diagnostic, Label};
 use codespan_reporting::files::SimpleFiles;
 use codespan_reporting::term::{self, termcolor::StandardStream};
 
-/// Trait for parol's error reporting
-/// Implement this trait when you want to provide your own error reporting for your own error types
+/// *Trait for parol's error reporting*
+///
+/// Implement this trait and provide an own implementation for [Report::report_user_error] when you
+/// want to contribute your own error reporting for your error types.
+///
+/// If you don't want to report own errors then simply use it's default implementation like this:
+/// ```
+/// use parol_runtime::Report;
+/// use parol_macros::parol;
+///
+/// struct MyErrorReporter;
+/// impl Report for MyErrorReporter {};
+///
+/// let err = parol!("Crucial problem!");   // Suppose that this error comes from a call of `parse`
+/// MyErrorReporter::report_error(&err, "my_file.xyz").unwrap_or_default();
+/// ```
 pub trait Report {
     ///
     /// Implement this method if you want to provide your own error reporting for your own error
@@ -21,8 +35,23 @@ pub trait Report {
     /// content. It should return Ok(()) if reporting succeeds and an error value if the reporting
     /// itself fails somehow.
     ///
-    fn report_user_error(_err: &anyhow::Error) -> anyhow::Result<()> {
-        Ok(())
+    fn report_user_error(err: &anyhow::Error) -> anyhow::Result<()> {
+        let writer = StandardStream::stderr(term::termcolor::ColorChoice::Auto);
+        let config = codespan_reporting::term::Config::default();
+        let files = SimpleFiles::<String, String>::new();
+        let result = term::emit(
+            &mut writer.lock(),
+            &config,
+            &files,
+            &Diagnostic::error()
+                .with_message("User error")
+                .with_notes(vec![
+                    err.to_string(),
+                    err.source()
+                        .map_or("No details".to_string(), |s| s.to_string()),
+                ]),
+        );
+        result.map_err(|e| anyhow::anyhow!(e))
     }
 
     /// You don't need to implement this method because it contains the reporting functionality for

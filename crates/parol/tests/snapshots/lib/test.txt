@@ -1,5 +1,5 @@
 // To run the test please issue:
-// cargo run --bin snapshot_lib -- ./test.txt
+// cargo run snapshot_lib ./test.txt
 
     Hello world!
 

@@ -146,15 +146,13 @@ fn extract_parser_error(
             });
         }
         ParolParserError::EmptyGroup { start, end, .. } => {
-            *range = location_to_range(
-                &parol_runtime::Location {
-                    start_line: start.start_line,
-                    start_column: start.start_column,
-                    end_line: end.end_line,
-                    end_column: end.end_column,
-                    ..Default::default()
-                }
-            );
+            *range = location_to_range(&parol_runtime::Location {
+                start_line: start.start_line,
+                start_column: start.start_column,
+                end_line: end.end_line,
+                end_column: end.end_column,
+                ..Default::default()
+            });
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),
                 message: "Start".to_string(),
@@ -165,15 +163,13 @@ fn extract_parser_error(
             });
         }
         ParolParserError::EmptyOptional { start, end, .. } => {
-            *range = location_to_range(
-                &parol_runtime::Location {
-                    start_line: start.start_line,
-                    start_column: start.start_column,
-                    end_line: end.end_line,
-                    end_column: end.end_column,
-                    ..Default::default()
-                }
-            );
+            *range = location_to_range(&parol_runtime::Location {
+                start_line: start.start_line,
+                start_column: start.start_column,
+                end_line: end.end_line,
+                end_column: end.end_column,
+                ..Default::default()
+            });
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),
                 message: "Start".to_string(),
@@ -184,15 +180,13 @@ fn extract_parser_error(
             });
         }
         ParolParserError::EmptyRepetition { start, end, .. } => {
-            *range = location_to_range(
-                &parol_runtime::Location {
-                    start_line: start.start_line,
-                    start_column: start.start_column,
-                    end_line: end.end_line,
-                    end_column: end.end_column,
-                    ..Default::default()
-                }
-            );
+            *range = location_to_range(&parol_runtime::Location {
+                start_line: start.start_line,
+                start_column: start.start_column,
+                end_line: end.end_line,
+                end_column: end.end_column,
+                ..Default::default()
+            });
             related_information.push(DiagnosticRelatedInformation {
                 location: location_to_location(start, located_document_state.uri),
                 message: "Start".to_string(),

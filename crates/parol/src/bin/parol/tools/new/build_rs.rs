@@ -15,12 +15,15 @@ impl std::fmt::Display for BuildRsData<'_> {
 
         write!(
             f,
-            r#"use parol::build::Builder;
+            r#"use std::process;
+
+use parol::{{build::Builder, ParolErrorReporter}};
+use parol_runtime::Report;
 
 fn main() {{
     // CLI equivalent is:
     // parol -f ./{crate_name}.par -e ./{crate_name}-exp.par -p ./src/{crate_name}_parser.rs -a ./src/{crate_name}_grammar_trait.rs -t {grammar_name}Grammar -m {crate_name}_grammar -g
-    Builder::with_explicit_output_dir("src")
+    if let Err(err) = Builder::with_explicit_output_dir("src")
         .grammar_file("{crate_name}.par")
         .expanded_grammar_output_file("../{crate_name}-exp.par")
         .parser_output_file("{crate_name}_parser.rs")
@@ -29,7 +32,10 @@ fn main() {{
         .user_type_name("{grammar_name}Grammar")
         .user_trait_module_name("{crate_name}_grammar")
         .generate_parser()
-        .unwrap();
+    {{
+        ParolErrorReporter::report_error(&err, "{crate_name}.par").unwrap_or_default();
+        process::exit(1);
+    }}
 }}
 "#
         )

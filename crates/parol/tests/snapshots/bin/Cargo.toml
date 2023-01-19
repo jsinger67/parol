@@ -13,6 +13,7 @@ thiserror = "1.0"
 
 [build-dependencies]
 parol = "0.16.0"
+parol_runtime = { version = "0.12.1", features = ["auto_generation"] }
 
 # For faster builds.
 [profile.dev.build-override]

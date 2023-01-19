@@ -108,6 +108,13 @@ const DEPENDENCIES: &[&[&str]] = &[
         concat!("parol@", env!("CARGO_PKG_VERSION")),
         "--build",
     ],
+    &[
+        "add",
+        "parol_runtime@0.12.1",
+        "--features",
+        "auto_generation",
+        "--build",
+    ],
 ];
 
 const TREE_GEN_DEPENDENCY: &str = "add id_tree_layout@2.0";
@@ -320,7 +327,7 @@ fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
     let test_content = format!(
         "\
 // To run the test please issue:
-// cargo run --bin {crate_name} -- ./test.txt
+// cargo run {crate_name} ./test.txt
 
     Hello world!
 
