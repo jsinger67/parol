@@ -8,7 +8,7 @@ mod snapshot_bin_parser;
 use crate::snapshot_bin_grammar::SnapshotBinGrammar;
 use crate::snapshot_bin_parser::parse;
 use anyhow::{anyhow, Context, Result};
-use parol_runtime::log::debug;
+use parol_runtime::{log::debug, Report};
 use std::{env, fs, time::Instant};
 
 // To generate:
