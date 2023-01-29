@@ -22,4 +22,4 @@ thiserror = "^1.0"
 parol = { path = "../../crates/parol" }
 
 [dev-dependencies]
-regex = "1.5.5"
+regex = "1.7"
