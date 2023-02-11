@@ -846,7 +846,7 @@ impl ParolGrammar<'_> {
     }
 
     #[named]
-    fn resolve_scanner<'t>(&self, scanner_name: &Token<'t>) -> Result<usize> {
+    fn resolve_scanner(&self, scanner_name: &Token<'_>) -> Result<usize> {
         let context = function_name!();
         self.scanner_configurations
             .iter()

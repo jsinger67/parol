@@ -15,8 +15,8 @@ pub enum ParserError {
     #[error("{cause}Expecting one of {expected_tokens}")]
     PredictionErrorWithExpectations {
         cause: String,
-        input: FileSource,
-        error_location: Location,
+        input: Box<FileSource>,
+        error_location: Box<Location>,
         unexpected_tokens: Vec<UnexpectedToken>,
         expected_tokens: TokenVec,
         source: Option<Box<ParolError>>,
@@ -24,8 +24,8 @@ pub enum ParserError {
 
     #[error("Unprocessed input is left after parsing has finished")]
     UnprocessedInput {
-        input: FileSource,
-        last_token: Location,
+        input: Box<FileSource>,
+        last_token: Box<Location>,
     },
 
     #[error("{context}Tried to pop from an empty scanner stack")]

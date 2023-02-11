@@ -73,9 +73,9 @@ impl LookaheadDFA {
     /// Retrieves the lookahead tokens from the TokenStream object without
     /// consuming any of them.
     ///
-    pub fn eval<'t>(
+    pub fn eval(
         &self,
-        token_stream: &mut TokenStream<'t>,
+        token_stream: &mut TokenStream<'_>,
     ) -> Result<ProductionIndex, LexerError> {
         let mut state: StateIndex = 0;
         if self.k > token_stream.k {

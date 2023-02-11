@@ -321,10 +321,10 @@ impl<'t> LLKParser<'t> {
                         )
                         .as_str(),
                     ),
-                    input: FileSource::from_stream(&stream.borrow()),
+                    input: Box::new(FileSource::from_stream(&stream.borrow())),
                     error_location: unexpected_tokens
                         .get(0)
-                        .map_or(Location::default(), |t| t.token.clone()),
+                        .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
                     unexpected_tokens,
                     expected_tokens,
                     source: Some(Box::new(source)),
@@ -359,8 +359,8 @@ impl<'t> LLKParser<'t> {
                                     )
                                     .as_str(),
                                 ),
-                                input: FileSource::from_stream(&stream.borrow()),
-                                error_location: (&token).into(),
+                                input: Box::new(FileSource::from_stream(&stream.borrow())),
+                                error_location: Box::new((&token).into()),
                                 unexpected_tokens: vec![UnexpectedToken::new(
                                     "LA(1)".to_owned(),
                                     self.terminal_names[token.token_type].to_owned(),
@@ -393,10 +393,10 @@ impl<'t> LLKParser<'t> {
                                     )
                                     .as_str(),
                                 ),
-                                input: FileSource::from_stream(&stream.borrow()),
+                                input: Box::new(FileSource::from_stream(&stream.borrow())),
                                 error_location: unexpected_tokens
                                     .get(0)
-                                    .map_or(Location::default(), |t| t.token.clone()),
+                                    .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
                                 unexpected_tokens,
                                 expected_tokens,
                                 source: Some(Box::new(source)),
@@ -444,8 +444,8 @@ impl<'t> LLKParser<'t> {
 
         if !stream.borrow().all_input_consumed() {
             Err((ParserError::UnprocessedInput {
-                input: FileSource::from_stream(&stream.borrow()),
-                last_token: stream.borrow().last_token()?.into(),
+                input: Box::new(FileSource::from_stream(&stream.borrow())),
+                last_token: Box::new(stream.borrow().last_token()?.into()),
             })
             .into())
         } else {

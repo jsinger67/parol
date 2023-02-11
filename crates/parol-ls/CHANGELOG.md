@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v4.1.0 - Not released yet
+
+* Removed clippy warnings new in Rust 1.67
+
 ## v0.4.0
 
 * Removed `miette` as opaque error handling crate and substituted it by `thiserror` + `anyhow`

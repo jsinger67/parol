@@ -36,6 +36,7 @@ parol v0.16.0)
   * Tests provide better error reports (`basic_interpreter`, `json_parser`, `json_parser_auto`)
 * Extended tests in `run_examples.rs` test
   * `json_parser` and `json_parser_auto` tests are executed
+* Removed clippy warnings new in Rust 1.67
 
 ## v0.16.0 - 2023-01-12
 

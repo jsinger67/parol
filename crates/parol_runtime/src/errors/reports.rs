@@ -189,7 +189,7 @@ pub trait Report {
                     )?)
                 }
                 ParserError::UnprocessedInput { last_token, .. } => {
-                    let un_span: Span = (Into::<Range<usize>>::into(last_token)).into();
+                    let un_span: Span = (Into::<Range<usize>>::into(&**last_token)).into();
                     Ok(term::emit(
                         &mut writer.lock(),
                         &config,
