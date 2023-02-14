@@ -16,6 +16,6 @@
 /*  7 */ BlockList /* Vec<T>::Push */: Items BlockList;
 /*  8 */ BlockList /* Vec<T>::New */: ;
 /*  9 */ Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
-/* 10 */ Begin: "(?i)\bBegin\b";
-/* 11 */ End: "(?i)\bEnd\b";
-/* 12 */ Var: "(?i)\bVar\b";
+/* 10 */ Begin: "(?i)(?-u:\b)Begin(?-u:\b)";
+/* 11 */ End: "(?i)(?-u:\b)End(?-u:\b)";
+/* 12 */ Var: "(?i)(?-u:\b)Var(?-u:\b)";

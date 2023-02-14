@@ -27,9 +27,9 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  4 */ UNMATCHABLE_TOKEN,
     /*  5 */ r###";"###,
     /*  6 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
-    /*  7 */ r###"(?i)\bBegin\b"###,
-    /*  8 */ r###"(?i)\bEnd\b"###,
-    /*  9 */ r###"(?i)\bVar\b"###,
+    /*  7 */ r###"(?i)(?-u:\b)Begin(?-u:\b)"###,
+    /*  8 */ r###"(?i)(?-u:\b)End(?-u:\b)"###,
+    /*  9 */ r###"(?i)(?-u:\b)Var(?-u:\b)"###,
     /* 10 */ ERROR_TOKEN,
 ];
 
@@ -219,17 +219,17 @@ pub const PRODUCTIONS: &[Production; 13] = &[
         lhs: 7,
         production: &[ParseType::T(6)],
     },
-    // 10 - Begin: "(?i)\bBegin\b";
+    // 10 - Begin: "(?i)(?-u:\b)Begin(?-u:\b)";
     Production {
         lhs: 0,
         production: &[ParseType::T(7)],
     },
-    // 11 - End: "(?i)\bEnd\b";
+    // 11 - End: "(?i)(?-u:\b)End(?-u:\b)";
     Production {
         lhs: 4,
         production: &[ParseType::T(8)],
     },
-    // 12 - Var: "(?i)\bVar\b";
+    // 12 - Var: "(?i)(?-u:\b)Var(?-u:\b)";
     Production {
         lhs: 9,
         production: &[ParseType::T(9)],
