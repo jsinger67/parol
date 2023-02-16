@@ -864,7 +864,6 @@ dependencies = [
  "log",
  "once_cell",
  "parol-macros",
- "regex",
  "regex-automata 0.2.0",
  "thiserror",
 ]
