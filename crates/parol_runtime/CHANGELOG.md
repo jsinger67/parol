@@ -16,9 +16,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.12.2 - Not released yet
+## 0.13.0 - 2023-02-16
 
 * New benches to measure performance of tokenizer
+* Using `RegexSet` from `regex-automata` crate as foundation of tokenizing
+  * This will result in major performance boost
+  * Currently unicode word boundaries are not supported, so one has to use ASCII word boundaries
+  instead. Simple change occurrences of `\b` to `(?-u:\b)`.
 
 ## v0.12.1 - 2023-01-12
 
