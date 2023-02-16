@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## v0.16.1 - Not released yet
+## v0.17.0 - 2023-02-16
 
 * Fixed [#52](https://github.com/jsinger67/parol/issues/52) (Currently the parser doesn't complain
 about empty groups, repetitions and optionals)
@@ -37,6 +37,11 @@ parol v0.16.0)
 * Extended tests in `run_examples.rs` test
   * `json_parser` and `json_parser_auto` tests are executed
 * Removed clippy warnings new in Rust 1.67
+* Using `RegexSet` from `regex-automata` crate as foundation of tokenizing, fixing issue
+[#56](https://github.com/jsinger67/parol/issues/56)
+  * This will result in major performance boost
+  * Currently unicode word boundaries are not supported, so one has to use ASCII word boundaries
+  instead. Simple change occurrences of `\b` to `(?-u:\b)`.
 
 ## v0.16.0 - 2023-01-12
 
