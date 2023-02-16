@@ -12,15 +12,15 @@ license = "MIT OR Apache-2.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0"
-env_logger = "0.10.0"
-function_name = "0.3.0"
-id_tree = "1.8"
-id_tree_layout = "2"
-log = "0.4.17"
-parol-macros = { path = "../../crates/parol-macros" }
+anyhow = { workspace = true }
+env_logger = { workspace = true }
+function_name = { workspace = true }
+id_tree = { workspace = true }
+id_tree_layout = { workspace = true }
+log = { workspace = true }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
-thiserror = "1.0"
+parol-macros = { path = "../../crates/parol-macros" }
+thiserror = { workspace = true }
 
 [build-dependencies]
 parol = { path = "../../crates/parol" }

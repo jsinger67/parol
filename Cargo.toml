@@ -26,6 +26,20 @@ exclude = [
   "crates/parol/tests/snapshots/lib",
 ]
 
+[workspace.dependencies]
+anyhow = "1.0"
+clap = { version = "4.1", features = [ "derive", "cargo" ] }
+derive_builder = "0.12.0"
+derive-new = "0.5.9"
+env_logger = "0.10.0"
+function_name = "0.3.0"
+id_tree = "1.8"
+id_tree_layout = "2"
+log = "0.4.17"
+once_cell = "1.16"
+regex = "1.7"
+thiserror = "1.0"
+
 [profile.release.package.parol]
 debug = true
 opt-level = 3

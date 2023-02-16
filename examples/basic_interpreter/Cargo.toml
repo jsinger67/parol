@@ -7,19 +7,16 @@ description = "Example use of parol - Partial Basic Interpreter"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-anyhow = "1.0"
-env_logger = "0.10.0"
-function_name = "0.3.0"
-id_tree = "^1.8"
-id_tree_layout = "2.0.3"
-log = "0.4.14"
+anyhow = { workspace = true }
+env_logger = { workspace = true }
+function_name = { workspace = true }
+id_tree = { workspace = true }
+id_tree_layout = { workspace = true }
+log = { workspace = true }
 parol = { path = "../../crates/parol" }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
 parol-macros = { path = "../../crates/parol-macros" }
-thiserror = "^1.0"
+thiserror = { workspace = true }
 
 [build-dependencies]
 parol = { path = "../../crates/parol" }
-
-[dev-dependencies]
-regex = "1.7"

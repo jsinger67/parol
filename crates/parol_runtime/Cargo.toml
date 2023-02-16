@@ -12,17 +12,17 @@ license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [dependencies]
-anyhow = "1.0"
+anyhow = { workspace = true }
 codespan-reporting = "0.11.1"
-derive_builder = "0.12.0"
-function_name = "0.3.0"
-id_tree = "1.8"
-id_tree_layout = "2.0.4"
-log = "0.4.17"
-once_cell = "1.16"
+derive_builder = { workspace = true }
+function_name = { workspace = true }
+id_tree = { workspace = true }
+id_tree_layout = { workspace = true }
+log = { workspace = true }
+once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "0.2.0", optional = true }
 regex-automata = "0.2.0"
-thiserror = "1.0"
+thiserror = { workspace = true }
 
 [dev-dependencies]
 criterion = "0.4.0"

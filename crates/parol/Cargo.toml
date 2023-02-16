@@ -14,25 +14,25 @@ edition = "2021"
 exclude = ["/tests", "/data"]
 
 [dependencies]
-anyhow = "1.0"
+anyhow = { workspace = true }
 cfg-if = "1.0.0"
-clap = { version = "4.1", features = ["derive", "cargo"] }
+clap = { workspace = true }
 derive_builder = { version = "0.12.0" }
-env_logger = "0.10.0"
-function_name = "0.3.0"
-id_tree = "1.8"
-id_tree_layout = "2.0.4"
+env_logger = { workspace = true }
+function_name = { workspace = true }
+id_tree = { workspace = true }
+id_tree_layout = { workspace = true }
 owo-colors = "3.5.0"
 parol_runtime = { path = "../parol_runtime", version = "0.13.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 rand = "0.8.5"
 rand_regex = "0.15.1"
-regex = "1.7"
+rayon = "1.6.1"
+regex = { workspace = true }
 regex-syntax = "0.6.27"
 syn = { version = "1", default-features = false, features = ["full", "parsing"] }
-thiserror = "1.0"
+thiserror = { workspace = true }
 ume = "0.1"
-rayon = "1.6.1"
 
 [features]
 default = ["build"]
