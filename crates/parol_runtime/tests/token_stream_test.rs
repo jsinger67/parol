@@ -1,6 +1,5 @@
 //! This test is based on the scanner_states example of `parol`.
-//! Scanner switching is tested and consistence of [miette::NamedSource] which is produced from
-//! token stream and token spans is checked.
+//! Scanner switching is tested and token spans are checked.
 
 use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,

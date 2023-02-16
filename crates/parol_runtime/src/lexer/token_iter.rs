@@ -18,7 +18,7 @@ pub struct TokenIter<'t> {
     /// Column number, starting with 1
     col: usize,
 
-    /// An iterator of capture groups
+    /// An iterator over left most matches
     find_iter: FindLeftmostMatches<'static, 't, DFA<Vec<u32>>, prefilter::None>,
 
     /// The tokenizer itself
