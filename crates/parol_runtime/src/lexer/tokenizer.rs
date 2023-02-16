@@ -10,7 +10,7 @@ use regex_automata::{dfa::regex::Regex, PatternID};
 /// comments you could mark the regex on index token::BLOCK_COMMENT as
 /// unmatchable.
 ///
-pub const UNMATCHABLE_TOKEN: &str = r###"\w(-u:\b)\w"###;
+pub const UNMATCHABLE_TOKEN: &str = r###"\w\b\w"###;
 
 ///
 /// Regular expression for new lines
@@ -36,9 +36,9 @@ pub const ERROR_TOKEN: &str = r###"."###;
 pub struct Tokenizer {
     pub(crate) rx: Regex,
 
-    // This vector provides the mapping of
-    // scanned PatternID (index in vec) to TerminalIndex (content at index)
-    pub(crate) token_types: Vec<TerminalIndex>,
+    /// This vector provides the mapping of
+    /// scanned PatternID (index in vec) to TerminalIndex (content at index)
+    token_types: Vec<TerminalIndex>,
 
     ///
     /// This is the token index for the special error token.
@@ -54,29 +54,44 @@ impl Tokenizer {
     /// Creates a new Tokenizer object from augmented terminals and scanner
     /// specific information.
     ///
+    /// # Arguments
+    ///
+    /// ## augmented_terminals
+    /// All valid terminals of the grammar. These include the specific common terminals
+    /// `EOI`, `NEW_LINE`, `WHITESPACE`, `LINE_COMMENT`, `BLOCK_COMMENT` with the value
+    /// `UNMATCHABLE_TOKEN` to provide consistent index handling for all scanner states.
+    ///
+    /// ## scanner_specifics
+    /// The values of the five scanner specific common terminals `EOI`, `NEW_LINE`, `WHITESPACE`,
+    /// `LINE_COMMENT` and `BLOCK_COMMENT`
+    ///
+    /// ## scanner_terminal_indices
+    /// The indices of token types belonging to this scanner state. These indices are pointing into
+    /// `augmented_terminals`.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if the regex patterns can't be compiled.
     pub fn build(
         augmented_terminals: &[&str],
         scanner_specifics: &[&str],
         scanner_terminal_indices: &[usize],
     ) -> Result<Self> {
         debug_assert_eq!(5, scanner_specifics.len());
-        // This vector provides the mapping of
-        // scanned PatternID (index in vec) to TerminalIndex (content at index)
-        let mut token_types = vec![];
-        let internal_terminals =
-            scanner_specifics
-                .iter()
-                .enumerate()
-                .fold(Vec::new(), |mut acc, (i, t)| {
-                    if *t != UNMATCHABLE_TOKEN {
-                        acc.push(t.to_string());
-                        token_types.push(i);
-                    }
-                    acc
-                });
+        let mut token_types = Vec::with_capacity(augmented_terminals.len());
+        let internal_terminals = scanner_specifics.iter().enumerate().fold(
+            Vec::with_capacity(augmented_terminals.len()),
+            |mut acc, (i, t)| {
+                if *t != UNMATCHABLE_TOKEN {
+                    acc.push(*t);
+                    token_types.push(i);
+                }
+                acc
+            },
+        );
         let mut patterns = scanner_terminal_indices
             .iter()
-            .map(|term_idx| (*term_idx, augmented_terminals[*term_idx].to_string()))
+            .map(|term_idx| (*term_idx, augmented_terminals[*term_idx]))
             .fold(internal_terminals, |mut acc, (term_idx, pattern)| {
                 acc.push(pattern);
                 token_types.push(term_idx);
@@ -89,7 +104,7 @@ impl Tokenizer {
             "Last token should always be the error token!"
         );
 
-        patterns.push(augmented_terminals[error_token_type].to_string());
+        patterns.push(augmented_terminals[error_token_type]);
         token_types.push(error_token_type);
 
         debug_assert_eq!(
