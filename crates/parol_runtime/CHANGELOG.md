@@ -16,6 +16,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## Coming soon
+
+* Filled some missing source documentations
+
 ## 0.13.0 - 2023-02-16
 
 * New benches to measure performance of tokenizer
