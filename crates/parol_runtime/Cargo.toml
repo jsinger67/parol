@@ -32,9 +32,6 @@ parol-macros = { path = "../parol-macros", version = "0.2.0" }
 name = "lexer_benchmark"
 harness = false
 
-[profile.bench]
-debug = true
-
 [features]
 default = []
 
