@@ -63,6 +63,7 @@ impl Display for ParseType {
 /// The generated parsers are push down automata (PDA) which utilize a stack
 /// during parsing. It helps to process the grammar's productions.
 ///
+#[derive(Debug, Default)]
 pub struct ParseStack {
     ///
     /// The actual stack.

@@ -19,6 +19,10 @@ new minor version numbers. Please note that this is no version handling covered 
 ## Coming soon
 
 * Filled some missing source documentations
+* Fixed issue [#58](https://github.com/jsinger67/parol/issues/58)
+  * ATTENTION ! Incompatible change !
+  * Removed feature `trim_parse_tree`
+  * Enable trimming of parse tree in build script by calling `trim_parse_tree` on the builder object
 
 ## 0.13.0 - 2023-02-16
 

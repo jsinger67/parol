@@ -183,8 +183,8 @@ pub struct Builder {
     parser_output_file: Option<PathBuf>,
     /// Output file for the generated actions files.
     actions_output_file: Option<PathBuf>,
-    user_type_name: String,
-    module_name: String,
+    pub(crate) user_type_name: String,
+    pub(crate) module_name: String,
     cargo_integration: bool,
     max_lookahead: usize,
     /// By default, we want to require that the parser output file is specified.
@@ -193,7 +193,7 @@ pub struct Builder {
     /// The CLI needs to be able to override this (mostly for debugging), hence the option.
     output_sanity_checks: bool,
     /// Enables auto-generation of expanded grammar's semantic actions - experimental
-    auto_generate: bool,
+    pub(crate) auto_generate: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
     /// Generate range information for AST types
@@ -202,6 +202,9 @@ pub struct Builder {
     inner_attributes: Vec<InnerAttributes>,
     /// Used for auto generation of user's grammar semantic action trait
     productions: Vec<Production>,
+    /// Enables trimming of the parse tree during parsing.
+    /// Generates the call to trim_parse_tree on the parser object before the call of parse.
+    pub(crate) trim_parse_tree: bool,
 }
 
 impl Builder {
@@ -277,6 +280,7 @@ impl Builder {
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
             productions: Vec::new(),
+            trim_parse_tree: false,
         }
     }
     /// By default, we require that the generated parser and action files are not discarded.
@@ -382,6 +386,13 @@ impl Builder {
     ///
     pub fn enable_auto_generation(&mut self) -> &mut Self {
         self.auto_generate = true;
+        self
+    }
+    /// Enables trimming of the parse tree during parsing.
+    /// Generates the call to trim_parse_tree on the parser object before the call of parse.
+    ///
+    pub fn trim_parse_tree(&mut self) -> &mut Self {
+        self.trim_parse_tree = true;
         self
     }
     /// Begin the process of generating the grammar
@@ -587,9 +598,7 @@ impl GrammarGenerator<'_> {
         let parser_source = crate::generate_parser_source(
             grammar_config,
             &lexer_source,
-            self.builder.auto_generate,
-            &self.builder.user_type_name,
-            &self.builder.module_name,
+            &self.builder,
             self.lookahead_dfa_s.as_ref().unwrap(),
             ast_type_has_lifetime,
         )?;

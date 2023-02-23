@@ -58,6 +58,7 @@ impl Production {
 ///
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 ///
+#[derive(Debug)]
 pub struct LLKParser<'t> {
     ///
     /// The non-terminal index of the start symbol
@@ -106,6 +107,15 @@ pub struct LLKParser<'t> {
     /// Array of generated non-terminal names.
     ///
     non_terminal_names: &'static [&'static str],
+
+    ///
+    /// Enables trimming of the parse tree during parsing.
+    /// Thus the parse tree doesn't grow much and runtime overhead is diminished.
+    /// Useful when enabling production mode and the whole parse tree is not needed.
+    ///
+    /// To enable this call the method [trim_parse_tree] on the parser object before parsing.
+    ///
+    trim_parse_tree: bool,
 }
 
 impl<'t> LLKParser<'t> {
@@ -129,7 +139,18 @@ impl<'t> LLKParser<'t> {
             productions,
             terminal_names,
             non_terminal_names,
+            trim_parse_tree: false,
         }
+    }
+
+    ///
+    /// Call this method to enable trimming of the parse tree during parsing before parsing.
+    ///
+    /// Doing so the parse tree doesn't grow much and runtime overhead is diminished.
+    /// Useful when enabling production mode and the whole parse tree is not needed.
+    ///
+    pub fn trim_parse_tree(&mut self) {
+        self.trim_parse_tree = true;
     }
 
     fn input_accepted(&self) -> bool {
@@ -212,51 +233,10 @@ impl<'t> LLKParser<'t> {
         let tos = self.parse_tree_stack.pop();
 
         if let Some(ParseTreeStackEntry::Id(non_terminal_node_id)) = tos {
-            if cfg!(feature = "trim_parse_tree") {
-                // Remove the node from the tree unless it is the root node.
-                if Some(&non_terminal_node_id) == self.parse_tree.root_node_id() {
-                    self.parse_tree_stack
-                        .push(ParseTreeStackEntry::Id(non_terminal_node_id));
-                    Ok(())
-                } else {
-                    self.parse_tree
-                        .remove_node(non_terminal_node_id, RemoveBehavior::DropChildren)
-                        .map(|_| {
-                            self.parse_tree_stack.push(ParseTreeStackEntry::Id(
-                                self.parse_tree.root_node_id().unwrap().clone(),
-                            ))
-                        })
-                        .map_err(|e| crate::ParserError::IdTreeError { source: e }.into())
-                }
+            if self.trim_parse_tree {
+                self.cut_parse_tree(&non_terminal_node_id)
             } else {
-                // Insert the children under the non-terminal node
-                children
-                    .into_iter()
-                    .fold(Ok(()), |mut acc, c| match c {
-                        ParseTreeStackEntry::Id(child_node_id) => {
-                            if acc.is_ok() {
-                                acc = self.parse_tree.move_node(
-                                    &child_node_id,
-                                    MoveBehavior::ToParent(&non_terminal_node_id),
-                                );
-                            }
-                            acc
-                        }
-                        ParseTreeStackEntry::Nd(node) => {
-                            if acc.is_ok() {
-                                acc = self
-                                    .parse_tree
-                                    .insert(node, InsertBehavior::UnderNode(&non_terminal_node_id))
-                                    .map(|_| ());
-                            }
-                            acc
-                        }
-                    })
-                    .map(|_| {
-                        self.parse_tree_stack
-                            .push(ParseTreeStackEntry::Id(non_terminal_node_id))
-                    })
-                    .map_err(|e| ParserError::IdTreeError { source: e }.into())
+                self.build_parse_tree(children, non_terminal_node_id)
             }
         } else {
             Err(ParserError::InternalError(format!(
@@ -264,6 +244,59 @@ impl<'t> LLKParser<'t> {
                 tos
             ))
             .into())
+        }
+    }
+
+    fn build_parse_tree(
+        &mut self,
+        children: Vec<ParseTreeStackEntry<'t>>,
+        non_terminal_node_id: id_tree::NodeId,
+    ) -> Result<()> {
+        // Insert the children under the non-terminal node
+        children
+            .into_iter()
+            .fold(Ok(()), |mut acc, c| match c {
+                ParseTreeStackEntry::Id(child_node_id) => {
+                    if acc.is_ok() {
+                        acc = self.parse_tree.move_node(
+                            &child_node_id,
+                            MoveBehavior::ToParent(&non_terminal_node_id),
+                        );
+                    }
+                    acc
+                }
+                ParseTreeStackEntry::Nd(node) => {
+                    if acc.is_ok() {
+                        acc = self
+                            .parse_tree
+                            .insert(node, InsertBehavior::UnderNode(&non_terminal_node_id))
+                            .map(|_| ());
+                    }
+                    acc
+                }
+            })
+            .map(|_| {
+                self.parse_tree_stack
+                    .push(ParseTreeStackEntry::Id(non_terminal_node_id))
+            })
+            .map_err(|e| ParserError::IdTreeError { source: e }.into())
+    }
+
+    fn cut_parse_tree(&mut self, non_terminal_node_id: &id_tree::NodeId) -> Result<()> {
+        // Remove the node from the tree unless it is the root node.
+        if Some(non_terminal_node_id) == self.parse_tree.root_node_id() {
+            self.parse_tree_stack
+                .push(ParseTreeStackEntry::Id(non_terminal_node_id.clone()));
+            Ok(())
+        } else {
+            self.parse_tree
+                .remove_node(non_terminal_node_id.clone(), RemoveBehavior::DropChildren)
+                .map(|_| {
+                    self.parse_tree_stack.push(ParseTreeStackEntry::Id(
+                        self.parse_tree.root_node_id().unwrap().clone(),
+                    ))
+                })
+                .map_err(|e| crate::ParserError::IdTreeError { source: e }.into())
         }
     }
 

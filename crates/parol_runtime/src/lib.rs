@@ -32,7 +32,6 @@ pub use parser::{
     StateIndex, UserActionsTrait,
 };
 
-
 ///
 /// Module with error types reported from this crate.
 ///

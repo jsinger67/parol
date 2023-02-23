@@ -1,5 +1,6 @@
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::analysis::LookaheadDFA;
+use crate::build::Builder;
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
@@ -190,6 +191,7 @@ struct ParserData<'a> {
     user_type_name: &'a str,
     user_type_life_time: &'static str,
     module_name: &'a str,
+    trim_parse_tree: bool,
 }
 
 impl std::fmt::Display for ParserData<'_> {
@@ -207,6 +209,7 @@ impl std::fmt::Display for ParserData<'_> {
             user_type_name,
             user_type_life_time,
             module_name,
+            trim_parse_tree,
         } = self;
 
         writeln!(
@@ -291,6 +294,11 @@ impl std::fmt::Display for ParserData<'_> {
         } else {
             ume::ume!(user_actions)
         };
+        let enable_trimming = if *trim_parse_tree {
+            "llk_parser.trim_parse_tree();\n"
+        } else {
+            ""
+        };
         f.write_fmt(ume::ume! {
             pub fn parse<'t, T>(
                 input: &'t str,
@@ -304,6 +312,7 @@ impl std::fmt::Display for ParserData<'_> {
                     TERMINAL_NAMES,
                     NON_TERMINALS,
                 );
+                #enable_trimming
                 let token_stream = RefCell::new(
                     TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
                 );
@@ -328,9 +337,7 @@ impl std::fmt::Display for ParserData<'_> {
 pub fn generate_parser_source(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
-    auto_generate: bool,
-    user_type_name: &str,
-    module_name: &str,
+    builder: &Builder,
     la_dfa: &BTreeMap<String, LookaheadDFA>,
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
@@ -393,10 +400,11 @@ pub fn generate_parser_source(
         productions,
         max_k,
         scanner_builds,
-        auto_generate,
-        user_type_name,
+        auto_generate: builder.auto_generate,
+        user_type_name: &builder.user_type_name,
         user_type_life_time,
-        module_name,
+        module_name: &builder.module_name,
+        trim_parse_tree: builder.trim_parse_tree,
     };
 
     Ok(format!("{}", parser_data))

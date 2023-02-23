@@ -11,6 +11,7 @@ fn main() {
         .enable_auto_generation()
         .user_type_name("JsonGrammar")
         .user_trait_module_name("json_grammar")
+        .trim_parse_tree()
         .generate_parser()
         .unwrap();
 }

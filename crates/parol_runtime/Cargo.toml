@@ -35,8 +35,5 @@ harness = false
 [features]
 default = []
 
-# The feature `trim_parse_tree` is usefull if performace is a goal and the full parse tree is not
-# needed at the end of the parse process.
-trim_parse_tree = []
 # Auto generation mode requires these crates.
 auto_generation = ["parol-macros"]

@@ -11,6 +11,7 @@ fn main() {
         .enable_auto_generation()
         .user_type_name("ParolLsGrammar")
         .user_trait_module_name("parol_ls_grammar")
+        .trim_parse_tree()
         .generate_parser()
         .unwrap();
 }
