@@ -21,6 +21,14 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## v0.18.0 - 2023-02-25
+
+* Fixed issue [#58](https://github.com/jsinger67/parol/issues/58)
+* Abstracting the configuration of parser generation
+* Adapted to the removal of feature `trim_parse_tree` at crate `parol_runtime`
+* Enable the `trim_parse_tree` behavior in newly created parol crates by default, unless the switch
+-t (Add support for generating visualized parse trees) at parol new subcommand was given.
+
 ## v0.17.0 - 2023-02-16
 
 * Fixed [#52](https://github.com/jsinger67/parol/issues/52) (Currently the parser doesn't complain
