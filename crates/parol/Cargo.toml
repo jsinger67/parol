@@ -23,7 +23,7 @@ function_name = { workspace = true }
 id_tree = { workspace = true }
 id_tree_layout = { workspace = true }
 owo-colors = "3.5.0"
-parol_runtime = { path = "../parol_runtime", version = "0.13.0", features = ["auto_generation"] }
+parol_runtime = { path = "../parol_runtime", version = "0.14.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 rand = "0.8.5"
 rand_regex = "0.15.1"
