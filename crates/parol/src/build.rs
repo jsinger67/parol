@@ -124,9 +124,7 @@ use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
-use crate::config::config::{
-    CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig,
-};
+use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
 use crate::parser::parol_grammar::Production;
 use crate::{
     GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,

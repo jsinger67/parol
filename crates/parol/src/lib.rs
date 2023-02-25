@@ -16,7 +16,7 @@ pub mod build;
 pub use build::InnerAttributes;
 
 mod config;
-pub use config::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
+pub use config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
 
 ///
 /// Basic grammar data structures and algorithms

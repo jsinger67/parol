@@ -8,7 +8,7 @@ use super::template_data::{
     UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
     UserTraitFunctionStackPopDataBuilder,
 };
-use crate::config::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
+use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
@@ -721,7 +721,7 @@ impl<'a> UserTraitGenerator<'a> {
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
         let user_trait_data = UserTraitDataBuilder::default()
-            .user_type_name(&config.user_type_name())
+            .user_type_name(config.user_type_name())
             .auto_generate(config.auto_generate())
             .range(config.range())
             .user_provided_attributes(config.inner_attributes().iter().fold(
@@ -737,7 +737,7 @@ impl<'a> UserTraitGenerator<'a> {
             .ast_type_has_lifetime(ast_type_has_lifetime)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .module_name(&config.module_name())
+            .module_name(config.module_name())
             .user_trait_functions(user_trait_functions)
             .build()
             .unwrap();

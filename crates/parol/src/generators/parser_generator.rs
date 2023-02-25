@@ -1,6 +1,6 @@
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::analysis::LookaheadDFA;
-use crate::config::config::{CommonGeneratorConfig, ParserGeneratorConfig};
+use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
@@ -401,9 +401,9 @@ pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
         max_k,
         scanner_builds,
         auto_generate: config.auto_generate(),
-        user_type_name: &config.user_type_name(),
+        user_type_name: config.user_type_name(),
         user_type_life_time,
-        module_name: &config.module_name(),
+        module_name: config.module_name(),
         trim_parse_tree: config.trim_parse_tree(),
     };
 
