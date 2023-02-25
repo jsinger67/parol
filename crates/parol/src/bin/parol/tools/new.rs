@@ -219,6 +219,7 @@ fn generate_build_rs(creation_data: &CreationData) -> Result<()> {
     let build_data = BuildRsDataBuilder::default()
         .crate_name(creation_data.crate_name)
         .grammar_name(NmHlp::to_upper_camel_case(creation_data.crate_name))
+        .tree_gen(creation_data.tree_gen)
         .build()?;
     let build_source = format!("{}", build_data);
     fs::write(build_file_out, build_source)

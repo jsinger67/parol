@@ -14,6 +14,7 @@ fn main() {
         .enable_auto_generation()
         .user_type_name("SnapshotBinGrammar")
         .user_trait_module_name("snapshot_bin_grammar")
+        .trim_parse_tree()
         .generate_parser()
     {
         ParolErrorReporter::report_error(&err, "snapshot_bin.par").unwrap_or_default();

@@ -124,6 +124,9 @@ use std::convert::TryFrom;
 use std::path::{Path, PathBuf};
 use std::{env, fs};
 
+use crate::config::config::{
+    CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig,
+};
 use crate::parser::parol_grammar::Production;
 use crate::{
     GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,
@@ -441,6 +444,36 @@ impl Builder {
     }
 }
 
+impl CommonGeneratorConfig for Builder {
+    fn user_type_name(&self) -> &str {
+        &self.user_type_name
+    }
+
+    fn module_name(&self) -> &str {
+        &self.module_name
+    }
+
+    fn auto_generate(&self) -> bool {
+        self.auto_generate
+    }
+
+    fn range(&self) -> bool {
+        self.range
+    }
+}
+
+impl ParserGeneratorConfig for Builder {
+    fn trim_parse_tree(&self) -> bool {
+        self.trim_parse_tree
+    }
+}
+
+impl UserTraitGeneratorConfig for Builder {
+    fn inner_attributes(&self) -> &[InnerAttributes] {
+        &self.inner_attributes
+    }
+}
+
 /// Represents in-process grammar generation.
 ///
 /// Most of the time you will want to use [Builder::generate_parser] to bypass this completely.
@@ -573,18 +606,14 @@ impl GrammarGenerator<'_> {
             .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
         let user_trait_generator = UserTraitGeneratorBuilder::default()
-            .user_type_name(self.builder.user_type_name.clone())
-            .module_name(&self.builder.module_name)
-            .auto_generate(self.builder.auto_generate)
-            .range(self.builder.range)
-            .inner_attributes(self.builder.inner_attributes.clone())
             .productions(self.builder.productions.clone())
             .grammar_config(grammar_config)
             .build()
             .unwrap();
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
-        let user_trait_source = user_trait_generator.generate_user_trait_source(&mut type_info)?;
+        let user_trait_source =
+            user_trait_generator.generate_user_trait_source(&self.builder, &mut type_info)?;
         if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
             fs::write(user_trait_file_out, user_trait_source)
                 .map_err(|e| parol!("Error writing generated user trait source!: {}", e))?;

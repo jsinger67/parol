@@ -1,6 +1,6 @@
 use crate::analysis::compiled_la_dfa::CompiledDFA;
 use crate::analysis::LookaheadDFA;
-use crate::build::Builder;
+use crate::config::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{Pr, Symbol, Terminal};
@@ -334,10 +334,10 @@ impl std::fmt::Display for ParserData<'_> {
 ///
 /// Generates the parser part of the parser output file.
 ///
-pub fn generate_parser_source(
+pub fn generate_parser_source<C: CommonGeneratorConfig + ParserGeneratorConfig>(
     grammar_config: &GrammarConfig,
     lexer_source: &str,
-    builder: &Builder,
+    config: &C,
     la_dfa: &BTreeMap<String, LookaheadDFA>,
     ast_type_has_lifetime: bool,
 ) -> Result<String> {
@@ -400,11 +400,11 @@ pub fn generate_parser_source(
         productions,
         max_k,
         scanner_builds,
-        auto_generate: builder.auto_generate,
-        user_type_name: &builder.user_type_name,
+        auto_generate: config.auto_generate(),
+        user_type_name: &config.user_type_name(),
         user_type_life_time,
-        module_name: &builder.module_name,
-        trim_parse_tree: builder.trim_parse_tree,
+        module_name: &config.module_name(),
+        trim_parse_tree: config.trim_parse_tree(),
     };
 
     Ok(format!("{}", parser_data))

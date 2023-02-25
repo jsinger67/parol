@@ -4,6 +4,7 @@ use derive_builder::Builder;
 pub(crate) struct BuildRsData<'a> {
     crate_name: &'a str,
     grammar_name: String,
+    tree_gen: bool,
 }
 
 impl std::fmt::Display for BuildRsData<'_> {
@@ -11,7 +12,10 @@ impl std::fmt::Display for BuildRsData<'_> {
         let BuildRsData {
             crate_name,
             grammar_name,
+            tree_gen,
         } = self;
+
+        let trim_parse_tree = if *tree_gen { "" } else { "\n        .trim_parse_tree()" };
 
         write!(
             f,
@@ -30,7 +34,7 @@ fn main() {{
         .actions_output_file("{crate_name}_grammar_trait.rs")
         .enable_auto_generation()
         .user_type_name("{grammar_name}Grammar")
-        .user_trait_module_name("{crate_name}_grammar")
+        .user_trait_module_name("{crate_name}_grammar"){trim_parse_tree}
         .generate_parser()
     {{
         ParolErrorReporter::report_error(&err, "{crate_name}.par").unwrap_or_default();

@@ -8,11 +8,12 @@ use super::template_data::{
     UserTraitCallerFunctionDataBuilder, UserTraitDataBuilder, UserTraitFunctionDataBuilder,
     UserTraitFunctionStackPopDataBuilder,
 };
+use crate::config::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::Production;
-use crate::{InnerAttributes, Pr, StrVec};
+use crate::{Pr, StrVec};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
 
@@ -21,16 +22,6 @@ use parol_runtime::log::trace;
 /// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 #[derive(Builder, Debug, Default)]
 pub struct UserTraitGenerator<'a> {
-    /// User type that implements the language processing
-    user_type_name: String,
-    /// User type's module name
-    module_name: &'a str,
-    /// Enable feature auto-generation for expanded grammar's semantic actions
-    auto_generate: bool,
-    /// Generate range information for AST types
-    range: bool,
-    /// Inner attributes to insert at the top of the generated trait source.
-    inner_attributes: Vec<InnerAttributes>,
     /// Parsed original user grammar
     productions: Vec<Production>,
     /// Compiled grammar configuration
@@ -38,13 +29,14 @@ pub struct UserTraitGenerator<'a> {
 }
 
 impl<'a> UserTraitGenerator<'a> {
-    fn generate_inner_action_args(
+    fn generate_inner_action_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<String> {
         // We reference the parse_tree argument only if a token is in the argument list
-        let lifetime = if self.auto_generate { "<'t>" } else { "" };
+        let lifetime = if config.auto_generate() { "<'t>" } else { "" };
         let mut parse_tree_argument_used = false;
         let mut arguments = Vec::new();
 
@@ -69,26 +61,31 @@ impl<'a> UserTraitGenerator<'a> {
 
         arguments.push(format!(
             "{}parse_tree: &Tree<ParseTreeType{}>",
-            NmHlp::item_unused_indicator(self.auto_generate && parse_tree_argument_used),
+            NmHlp::item_unused_indicator(config.auto_generate() && parse_tree_argument_used),
             lifetime
         ));
         Ok(arguments.join(", "))
     }
 
-    fn generate_context(&self, code: &mut StrVec) {
-        if self.auto_generate {
+    fn generate_context<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+        &self,
+        config: &C,
+        code: &mut StrVec,
+    ) {
+        if config.auto_generate() {
             code.push("let context = function_name!();".to_string());
             code.push("trace!(\"{}\", self.trace_item_stack(context));".to_string());
         }
     }
 
-    fn generate_token_assignments(
+    fn generate_token_assignments<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<()> {
-        if !self.auto_generate {
+        if !config.auto_generate() {
             return Ok(());
         }
 
@@ -114,13 +111,14 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_stack_pops(
+    fn generate_stack_pops<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<()> {
-        if !self.auto_generate {
+        if !config.auto_generate() {
             return Ok(());
         }
 
@@ -159,8 +157,9 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_push_semantic(
+    fn generate_push_semantic<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
@@ -169,7 +168,7 @@ impl<'a> UserTraitGenerator<'a> {
         let fn_type = symbol_table.symbol_as_type(action_id);
         let fn_name = symbol_table.name(fn_type.name_id()).to_string();
 
-        if self.auto_generate && function.sem == ProductionAttribute::AddToCollection {
+        if config.auto_generate() && function.sem == ProductionAttribute::AddToCollection {
             let last_arg = symbol_table
                 .members(action_id)?
                 .iter()
@@ -228,13 +227,14 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_result_builder(
+    fn generate_result_builder<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
-        if !self.auto_generate {
+        if !config.auto_generate() {
             return Ok(());
         }
 
@@ -314,13 +314,14 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_user_action_call(
+    fn generate_user_action_call<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
     ) -> Result<()> {
-        if !self.auto_generate {
+        if !config.auto_generate() {
             return Ok(());
         }
         let symbol_table = &type_info.symbol_table;
@@ -338,13 +339,14 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn generate_stack_push(
+    fn generate_stack_push<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
+        config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
         symbol_table: &SymbolTable,
     ) -> Result<()> {
-        if self.auto_generate {
+        if config.auto_generate() {
             let function = symbol_table.symbol_as_function(action_id)?;
             let fn_type = symbol_table.symbol_as_type(action_id);
             let fn_name = symbol_table.name(fn_type.name_id()).to_string();
@@ -495,17 +497,21 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     /// Generates the file with the user actions trait.
     ///
-    pub fn generate_user_trait_source(&self, type_info: &mut GrammarTypeInfo) -> Result<String> {
-        if self.range && !self.auto_generate {
+    pub fn generate_user_trait_source<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+        &self,
+        config: &C,
+        type_info: &mut GrammarTypeInfo,
+    ) -> Result<String> {
+        if config.range() && !config.auto_generate() {
             bail!("Range information can only be generated in auto-generation mode!");
         }
         type_info.build(self.grammar_config)?;
-        type_info.set_auto_generate(self.auto_generate)?;
+        type_info.set_auto_generate(config.auto_generate())?;
 
         self.add_user_actions(type_info)?;
         type_info.symbol_table.propagate_lifetimes();
 
-        let production_output_types = if self.auto_generate {
+        let production_output_types = if config.auto_generate() {
             type_info
                 .production_types
                 .iter()
@@ -539,7 +545,7 @@ impl<'a> UserTraitGenerator<'a> {
                         Self::format_type(*t, &type_info.symbol_table, comment)?
                             .into_iter()
                             .for_each(|s| acc.push(s));
-                        if self.range {
+                        if config.range() {
                             acc.push(Self::generate_range_calculation(
                                 *t,
                                 &type_info.symbol_table,
@@ -554,7 +560,7 @@ impl<'a> UserTraitGenerator<'a> {
             StrVec::new(0)
         };
 
-        let non_terminal_types = if self.auto_generate {
+        let non_terminal_types = if config.auto_generate() {
             type_info.non_terminal_types.iter().fold(
                 Ok(StrVec::new(0)),
                 |acc: Result<StrVec>, (s, t)| {
@@ -566,7 +572,7 @@ impl<'a> UserTraitGenerator<'a> {
                         Self::format_type(*t, &type_info.symbol_table, comment)?
                             .into_iter()
                             .for_each(|s| acc.push(s));
-                        if self.range {
+                        if config.range() {
                             acc.push(Self::generate_range_calculation(
                                 *t,
                                 &type_info.symbol_table,
@@ -582,7 +588,7 @@ impl<'a> UserTraitGenerator<'a> {
             StrVec::new(0)
         };
 
-        let mut ast_type_decl = if self.auto_generate {
+        let mut ast_type_decl = if config.auto_generate() {
             let mut comment = StrVec::new(0);
             comment.push(String::default());
             comment.push("Deduced ASTType of expanded grammar".to_string());
@@ -592,7 +598,7 @@ impl<'a> UserTraitGenerator<'a> {
             String::default()
         };
 
-        if self.range {
+        if config.range() {
             ast_type_decl += &Self::generate_range_calculation(
                 type_info.ast_enum_type,
                 &type_info.symbol_table,
@@ -609,22 +615,45 @@ impl<'a> UserTraitGenerator<'a> {
                     let function = type_info.symbol_table.symbol_as_function(action_id)?;
                     let prod_num = function.prod_num;
                     let prod_string = function.prod_string;
-                    let fn_arguments =
-                        self.generate_inner_action_args(action_id, &type_info.symbol_table)?;
+                    let fn_arguments = self.generate_inner_action_args(
+                        config,
+                        action_id,
+                        &type_info.symbol_table,
+                    )?;
                     let mut code = StrVec::new(8);
-                    self.generate_context(&mut code);
-                    self.generate_token_assignments(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_stack_pops(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_result_builder(&mut code, action_id, type_info)?;
-                    self.generate_push_semantic(&mut code, action_id, &type_info.symbol_table)?;
-                    self.generate_user_action_call(&mut code, action_id, type_info)?;
-                    self.generate_stack_push(&mut code, action_id, &type_info.symbol_table)?;
+                    self.generate_context(config, &mut code);
+                    self.generate_token_assignments(
+                        config,
+                        &mut code,
+                        action_id,
+                        &type_info.symbol_table,
+                    )?;
+                    self.generate_stack_pops(
+                        config,
+                        &mut code,
+                        action_id,
+                        &type_info.symbol_table,
+                    )?;
+                    self.generate_result_builder(config, &mut code, action_id, type_info)?;
+                    self.generate_push_semantic(
+                        config,
+                        &mut code,
+                        action_id,
+                        &type_info.symbol_table,
+                    )?;
+                    self.generate_user_action_call(config, &mut code, action_id, type_info)?;
+                    self.generate_stack_push(
+                        config,
+                        &mut code,
+                        action_id,
+                        &type_info.symbol_table,
+                    )?;
                     let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                         .fn_name(fn_name)
                         .prod_num(prod_num)
                         .fn_arguments(fn_arguments)
                         .prod_string(prod_string)
-                        .named(self.auto_generate)
+                        .named(config.auto_generate())
                         .code(code)
                         .inner(true)
                         .build()
@@ -637,7 +666,7 @@ impl<'a> UserTraitGenerator<'a> {
             },
         )?;
 
-        let user_trait_functions = if self.auto_generate {
+        let user_trait_functions = if config.auto_generate() {
             trace!("parol_grammar.item_stack:\n{:?}", self.productions);
 
             type_info.user_actions.iter().fold(
@@ -692,10 +721,10 @@ impl<'a> UserTraitGenerator<'a> {
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
         let user_trait_data = UserTraitDataBuilder::default()
-            .user_type_name(&self.user_type_name)
-            .auto_generate(self.auto_generate)
-            .range(self.range)
-            .user_provided_attributes(self.inner_attributes.iter().fold(
+            .user_type_name(&config.user_type_name())
+            .auto_generate(config.auto_generate())
+            .range(config.range())
+            .user_provided_attributes(config.inner_attributes().iter().fold(
                 StrVec::new(0),
                 |mut acc, e| {
                     acc.push(e.to_string());
@@ -708,7 +737,7 @@ impl<'a> UserTraitGenerator<'a> {
             .ast_type_has_lifetime(ast_type_has_lifetime)
             .trait_functions(trait_functions)
             .trait_caller(trait_caller)
-            .module_name(self.module_name)
+            .module_name(&config.module_name())
             .user_trait_functions(user_trait_functions)
             .build()
             .unwrap();
@@ -722,21 +751,10 @@ impl<'a> UserTraitGenerator<'a> {
     // ---------------------------------------------------
     /// Creates a new item
     pub fn try_new(
-        user_type_name: &'a str,
-        module_name: &'a str,
-        auto_generate: bool,
-        range: bool,
-        inner_attributes: Vec<InnerAttributes>,
         productions: Vec<Production>,
         grammar_config: &'a GrammarConfig,
     ) -> Result<Self> {
-        let user_type_name = NmHlp::to_upper_camel_case(user_type_name);
         UserTraitGeneratorBuilder::default()
-            .user_type_name(user_type_name)
-            .module_name(module_name)
-            .auto_generate(auto_generate)
-            .range(range)
-            .inner_attributes(inner_attributes)
             .grammar_config(grammar_config)
             .productions(productions)
             .build()
