@@ -18,6 +18,22 @@ Therefore, please use an officially released version from [crates.io](https://cr
 
 ---
 
+This workspace contains contains four essential crates that are all separately released on crates.io.
+
+* [parol](https://crates.io/crates/parol)
+* [parol_runtime](https://crates.io/crates/parol_runtime)
+* [parol-macros](https://crates.io/crates/parol-macros)
+* [parol-ls](https://crates.io/crates/parol-ls)
+
+New changes can be viewed in the change logs of the respective projects.
+
+* [CHANGELOG parol](./crates/parol/CHANGELOG.md)
+* [CHANGELOG parol_runtime](./crates/parol_runtime/CHANGELOG.md)
+* [CHANGELOG parol-macros](./crates/parol-macros/CHANGELOG.md)
+* [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
+
+---
+
 [parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) parser generator
 **for Rust**.
 
