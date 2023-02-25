@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## v0.6.0 - 2023-02-16
+
+* Using newer and faster `parol 0.18.0` + `parol_runtime 0.14.0`
+
 ## v0.5.0 - 2023-02-16
 
 * Removed clippy warnings new in Rust 1.67
