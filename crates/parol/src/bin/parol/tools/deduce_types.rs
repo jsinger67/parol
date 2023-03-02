@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Result};
 use parol::generators::grammar_type_generator::GrammarTypeInfo;
 use parol::{left_factor, obtain_grammar_config, obtain_grammar_config_from_string};
+use std::fs;
 use std::path::PathBuf;
 
 /// Calculates the type structure of the generated expanded grammar.
@@ -13,6 +14,9 @@ pub struct Args {
     /// Grammar input as text
     #[clap(short = 's', long = "grammar-text")]
     grammar: Option<String>,
+    /// The optional json output file
+    #[clap(short = 'j', long = "json-output-file")]
+    json_output_file: Option<PathBuf>,
     /// Increase verbosity
     #[clap(short = 'v', long = "verbose")]
     verbose: bool,
@@ -59,5 +63,10 @@ pub fn main(args: &Args) -> Result<()> {
     println!();
     println!("Type information:");
     println!("{}", type_info);
+
+    if let Some(output_file) = &args.json_output_file {
+        let json = serde_json::to_string(type_info.symbol_table())?;
+        fs::write(output_file, json)?;
+    }
     Ok(())
 }

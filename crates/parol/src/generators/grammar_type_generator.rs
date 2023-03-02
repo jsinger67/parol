@@ -640,6 +640,11 @@ impl GrammarTypeInfo {
             })
         }
     }
+
+    /// Returns a reference to the inner symbol table.
+    pub fn symbol_table(&self) -> &SymbolTable {
+        &self.symbol_table
+    }
 }
 
 impl Display for GrammarTypeInfo {

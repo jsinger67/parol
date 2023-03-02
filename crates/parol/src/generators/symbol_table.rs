@@ -6,13 +6,14 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
 use anyhow::{bail, Result};
+use serde::{Deserialize, Serialize};
 
 use std::fmt::{Debug, Display, Error, Formatter};
 
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, SymbolItem, TypeFacade, TypeItem};
 
 /// Index type for Symbols
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct SymbolId(usize);
 
 impl SymbolId {
@@ -28,7 +29,7 @@ impl Display for SymbolId {
 }
 
 /// Scope local index type for SymbolNames
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct ScopedNameId(ScopeId, usize);
 
 impl ScopedNameId {
@@ -43,8 +44,8 @@ impl Display for ScopedNameId {
     }
 }
 
-/// Index type for SymbolNames
-#[derive(Clone, Copy, Debug, Default, PartialEq)]
+/// Id type for Scopes
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct ScopeId(usize);
 
 impl Display for ScopeId {
@@ -62,7 +63,7 @@ fn build_indent(amount: usize) -> String {
 ///
 /// Type specificities of a function type
 ///
-#[derive(Builder, Clone, Debug, Default, PartialEq)]
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct Function {
     /// Associated non-terminal
     pub(crate) non_terminal: String,
@@ -106,7 +107,7 @@ impl Function {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) enum MetaSymbolKind {
     Undefined,
     Token,
@@ -127,7 +128,7 @@ impl Display for MetaSymbolKind {
 ///
 /// Type information used for auto-generation
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
     None,
@@ -245,7 +246,7 @@ impl Default for TypeEntrails {
 ///
 /// Type information used for auto-generation
 ///
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct Type {
     /// The type specificities
     pub(crate) entrails: TypeEntrails,
@@ -323,7 +324,7 @@ impl Type {
 ///
 /// A typed instance, usually a function argument or a struct member
 ///
-#[derive(Builder, Clone, Debug, Default, PartialEq)]
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 pub(crate) struct Instance {
     /// The scope where the instance resides
     pub(crate) scope: ScopeId,
@@ -393,7 +394,7 @@ impl Instance {
 ///
 /// A more general symbol
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) enum SymbolKind {
     Type(Type),
     Instance(Instance),
@@ -402,7 +403,7 @@ pub(crate) enum SymbolKind {
 ///
 /// A more general symbol
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Symbol {
     /// The symbol's id in the symbol table
     pub(crate) my_id: SymbolId,
@@ -481,7 +482,7 @@ impl Symbol {
 ///
 /// Scope with symbols inside
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct Scope {
     pub(crate) parent: Option<ScopeId>,
     pub(crate) my_id: ScopeId,
@@ -616,13 +617,13 @@ impl Display for Scope {
 /// Collection of symbols
 ///
 /// Mimics rust's rules of uniqueness of symbol names within a certain scope.
-/// This struct models the scope and symbols within them only to the extend needed to auto-generate
+/// This struct models the scopes and symbols within them only to the extend needed to auto-generate
 /// flawless type and instance names.
 /// Especially the deduction of the existence of lifetime parameter on generated types is modelled
 /// as simple as possible.
 ///
-#[derive(Clone, Debug, Default, PartialEq)]
-pub(crate) struct SymbolTable {
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SymbolTable {
     // All symbols, ever created
     pub(crate) symbols: Vec<Symbol>,
 
@@ -633,7 +634,10 @@ pub(crate) struct SymbolTable {
 
 impl SymbolTable {
     pub(crate) const GLOBAL_SCOPE: ScopeId = ScopeId(0);
-    pub(crate) const UNNAMED_TYPE: &'static str = "$$";
+    // Some type symbols don't have a user defined name. You can think of it as built in types.
+    // Regarding their names those types are identical. The differences are determined by other
+    // properties. We need not to keep track of their individual names.
+    pub(crate) const UNNAMED_TYPE: &'static str = "";
 
     pub(crate) fn new() -> Self {
         Self {
@@ -999,7 +1003,7 @@ mod tests {
                 symbol_table.scope(struct_type.member_scope).parent
             );
             assert_eq!(1, struct_type.member_scope.0);
-            // UNNAMED_TYPE's pseudo name $$ is already inserted
+            // UNNAMED_TYPE's pseudo name '' is already inserted
             assert_eq!(1, symbol_table.scope(struct_type.member_scope).names.len());
             assert_eq!("StructA", symbol_table.name(symbol.name_id()));
         } else {

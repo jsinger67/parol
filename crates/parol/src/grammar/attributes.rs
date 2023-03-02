@@ -3,6 +3,8 @@
 //! transformation.
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 
+use serde::{Deserialize, Serialize};
+
 /// Id type for tracking of optionals during grammar transformation
 #[derive(Debug, Clone, Copy, Hash, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct OptionalId(usize);
@@ -20,7 +22,7 @@ where
 ///
 /// Attributes applicable to a production or an alternation
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
     None,
@@ -77,7 +79,7 @@ where
 ///
 /// Attributes applicable to a grammar symbol
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
     None,
