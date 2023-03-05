@@ -137,13 +137,13 @@ pub trait Report {
 
         let report_parser_error = |err: &ParserError| -> anyhow::Result<()> {
             match err {
-                ParserError::IdTreeError { source } => Ok(term::emit(
+                ParserError::TreeError { source } => Ok(term::emit(
                     &mut writer.lock(),
                     &config,
                     &files,
                     &Diagnostic::bug()
-                        .with_message(format!("Error from id_tree crate: {}", source))
-                        .with_code("parol_runtime::parser::id_tree_error")
+                        .with_message(format!("Error from syntree crate: {}", source))
+                        .with_code("parol_runtime::parser::syntree_error")
                         .with_notes(vec!["Internal error".to_string()]),
                 )?),
                 ParserError::PredictionErrorWithExpectations {

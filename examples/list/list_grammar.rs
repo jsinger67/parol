@@ -1,8 +1,6 @@
 use crate::list_grammar_trait::ListGrammarTrait;
-use anyhow::Context;
-use id_tree::Tree;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
-use parol_runtime::Result;
+use parol_macros::parol;
+use parol_runtime::{ParseTreeType, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -47,11 +45,11 @@ impl ListGrammarTrait for ListGrammar {
     ///
     /// Num: "[0-9]+";
     ///
-    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>) -> Result<()> {
-        let symbol = num.text(parse_tree)?;
+    fn num(&mut self, num: &ParseTreeType<'_>) -> Result<()> {
+        let symbol = num.text()?;
         let number = symbol
             .parse::<DefinitionRange>()
-            .context("num_6: Error accessing token from ParseTreeStackEntry")?;
+            .map_err(|e| parol!("num_6: Parse error: {e}"))?;
         self.push(number);
         Ok(())
     }

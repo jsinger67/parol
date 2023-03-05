@@ -229,10 +229,9 @@ impl std::fmt::Display for ParserData<'_> {
             ume::ume!(UserActionsTrait,).to_string()
         };
         f.write_fmt(ume::ume! {
-            use parol_runtime::id_tree::Tree;
             use parol_runtime::{TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
-            use parol_runtime::ParolError;
+            use parol_runtime::{ParolError, ParseTree};
             #[allow(unused_imports)]
             use parol_runtime::parser::{
                 ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait
@@ -304,7 +303,7 @@ impl std::fmt::Display for ParserData<'_> {
                 input: &'t str,
                 file_name: T,
                 user_actions: #user_actions,
-            ) -> Result<Tree<ParseTreeType<'t>>, ParolError> where T: AsRef<Path> {
+            ) -> Result<ParseTree<'t>, ParolError> where T: AsRef<Path> {
                 let mut llk_parser = LLKParser::new(
                     #start_symbol_index,
                     LOOKAHEAD_AUTOMATA,
@@ -317,11 +316,7 @@ impl std::fmt::Display for ParserData<'_> {
                     TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
                 );
                 #auto_wrapper
-                let result = llk_parser.parse(token_stream, #mut_ref_user_actions);
-                match result {
-                    Ok(()) => Ok(llk_parser.parse_tree),
-                    Err(e) => Err(e),
-                }
+                llk_parser.parse(token_stream, #mut_ref_user_actions)
             }
         })
     }

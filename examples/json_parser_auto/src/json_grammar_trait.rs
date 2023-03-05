@@ -10,12 +10,11 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use parol_runtime::derive_builder::Builder;
-use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
@@ -396,11 +395,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Json: Value;
     ///
     #[parol_runtime::function_name::named]
-    fn json(
-        &mut self,
-        _value: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn json(&mut self, _value: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
@@ -420,9 +415,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn object(
         &mut self,
-        _l_brace: &ParseTreeStackEntry<'t>,
-        _object_suffix: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _l_brace: &ParseTreeType<'t>,
+        _object_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -444,10 +438,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn object_suffix_0(
         &mut self,
-        _pair: &ParseTreeStackEntry<'t>,
-        _object_list: &ParseTreeStackEntry<'t>,
-        _r_brace: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _pair: &ParseTreeType<'t>,
+        _object_list: &ParseTreeType<'t>,
+        _r_brace: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -468,11 +461,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ObjectSuffix: "\}"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn object_suffix_1(
-        &mut self,
-        _r_brace: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn object_suffix_1(&mut self, _r_brace: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix_1_built = ObjectSuffixRBrace {
@@ -490,10 +479,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn object_list_0(
         &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _pair: &ParseTreeStackEntry<'t>,
-        _object_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _comma: &ParseTreeType<'t>,
+        _pair: &ParseTreeType<'t>,
+        _object_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -514,7 +502,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ObjectList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn object_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn object_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_list_1_built = Vec::new();
@@ -529,10 +517,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn pair(
         &mut self,
-        _string: &ParseTreeStackEntry<'t>,
-        _colon: &ParseTreeStackEntry<'t>,
-        _value: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _string: &ParseTreeType<'t>,
+        _colon: &ParseTreeType<'t>,
+        _value: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -556,9 +543,8 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn array(
         &mut self,
-        _l_bracket: &ParseTreeStackEntry<'t>,
-        _array_suffix: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _l_bracket: &ParseTreeType<'t>,
+        _array_suffix: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -580,10 +566,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn array_suffix_0(
         &mut self,
-        _value: &ParseTreeStackEntry<'t>,
-        _array_list: &ParseTreeStackEntry<'t>,
-        _r_bracket: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _value: &ParseTreeType<'t>,
+        _array_list: &ParseTreeType<'t>,
+        _r_bracket: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -604,11 +589,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ArraySuffix: "\]"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn array_suffix_1(
-        &mut self,
-        _r_bracket: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix_1_built = ArraySuffixRBracket {
@@ -626,10 +607,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn array_list_0(
         &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _value: &ParseTreeStackEntry<'t>,
-        _array_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _comma: &ParseTreeType<'t>,
+        _value: &ParseTreeType<'t>,
+        _array_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -650,7 +630,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// ArrayList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn array_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn array_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_list_1_built = Vec::new();
@@ -663,11 +643,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: String;
     ///
     #[parol_runtime::function_name::named]
-    fn value_0(
-        &mut self,
-        _string: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_0(&mut self, _string: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
@@ -686,11 +662,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: Number;
     ///
     #[parol_runtime::function_name::named]
-    fn value_1(
-        &mut self,
-        _number: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_1(&mut self, _number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -709,11 +681,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: Object;
     ///
     #[parol_runtime::function_name::named]
-    fn value_2(
-        &mut self,
-        _object: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_2(&mut self, _object: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object = pop_item!(self, object, Object, context);
@@ -732,11 +700,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: Array;
     ///
     #[parol_runtime::function_name::named]
-    fn value_3(
-        &mut self,
-        _array: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_3(&mut self, _array: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array = pop_item!(self, array, Array, context);
@@ -755,11 +719,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: "true"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn value_4(
-        &mut self,
-        _true: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_4(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_4_built = ValueTrue {
@@ -777,11 +737,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: "false"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn value_5(
-        &mut self,
-        _false: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_5(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_5_built = ValueFalse {
@@ -799,11 +755,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Value: "null"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn value_6(
-        &mut self,
-        _null: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn value_6(&mut self, _null: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let value_6_built = ValueNull {
@@ -821,14 +773,10 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
     ///
     #[parol_runtime::function_name::named]
-    fn string(
-        &mut self,
-        string: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let string = string.token(parse_tree)?.clone();
+        let string = string.token()?.clone();
         let string_built = String { string };
         // Calling user action here
         self.user_grammar.string(&string_built)?;
@@ -841,14 +789,10 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
     ///
     #[parol_runtime::function_name::named]
-    fn number(
-        &mut self,
-        number: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn number(&mut self, number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let number = number.token(parse_tree)?.clone();
+        let number = number.token()?.clone();
         let number_built = Number { number };
         // Calling user action here
         self.user_grammar.number(&number_built)?;
@@ -864,31 +808,30 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry<'t>],
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
-            0 => self.json(&children[0], parse_tree),
-            1 => self.object(&children[0], &children[1], parse_tree),
-            2 => self.object_suffix_0(&children[0], &children[1], &children[2], parse_tree),
-            3 => self.object_suffix_1(&children[0], parse_tree),
-            4 => self.object_list_0(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.object_list_1(parse_tree),
-            6 => self.pair(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.array(&children[0], &children[1], parse_tree),
-            8 => self.array_suffix_0(&children[0], &children[1], &children[2], parse_tree),
-            9 => self.array_suffix_1(&children[0], parse_tree),
-            10 => self.array_list_0(&children[0], &children[1], &children[2], parse_tree),
-            11 => self.array_list_1(parse_tree),
-            12 => self.value_0(&children[0], parse_tree),
-            13 => self.value_1(&children[0], parse_tree),
-            14 => self.value_2(&children[0], parse_tree),
-            15 => self.value_3(&children[0], parse_tree),
-            16 => self.value_4(&children[0], parse_tree),
-            17 => self.value_5(&children[0], parse_tree),
-            18 => self.value_6(&children[0], parse_tree),
-            19 => self.string(&children[0], parse_tree),
-            20 => self.number(&children[0], parse_tree),
+            0 => self.json(&children[0]),
+            1 => self.object(&children[0], &children[1]),
+            2 => self.object_suffix_0(&children[0], &children[1], &children[2]),
+            3 => self.object_suffix_1(&children[0]),
+            4 => self.object_list_0(&children[0], &children[1], &children[2]),
+            5 => self.object_list_1(),
+            6 => self.pair(&children[0], &children[1], &children[2]),
+            7 => self.array(&children[0], &children[1]),
+            8 => self.array_suffix_0(&children[0], &children[1], &children[2]),
+            9 => self.array_suffix_1(&children[0]),
+            10 => self.array_list_0(&children[0], &children[1], &children[2]),
+            11 => self.array_list_1(),
+            12 => self.value_0(&children[0]),
+            13 => self.value_1(&children[0]),
+            14 => self.value_2(&children[0]),
+            15 => self.value_3(&children[0]),
+            16 => self.value_4(&children[0]),
+            17 => self.value_5(&children[0]),
+            18 => self.value_6(&children[0]),
+            19 => self.string(&children[0]),
+            20 => self.number(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

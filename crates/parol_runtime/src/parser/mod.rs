@@ -29,13 +29,6 @@ pub mod parse_tree_type;
 pub use parse_tree_type::ParseTreeType;
 
 ///
-/// Module with types used in the generated parser's parse tree stack.
-///
-#[forbid(missing_docs)]
-pub mod parse_tree_stack_entry;
-pub use parse_tree_stack_entry::ParseTreeStackEntry;
-
-///
 /// Module with types used to predict the next productions to choose during runs
 /// of generated parsers.
 ///
@@ -55,7 +48,7 @@ pub use parse_type::{ParseStack, ParseType};
 ///
 #[forbid(missing_docs)]
 pub mod parser_types;
-pub use parser_types::{LLKParser, Production};
+pub use parser_types::{LLKParser, ParseTree, Production};
 
 ///
 /// Module with the UserActionsTrait type.

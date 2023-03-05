@@ -12,9 +12,9 @@ use anyhow::Context;
 use arguments::CliArgs;
 use clap::Parser;
 use owo_colors::OwoColorize;
-use parol_runtime::{log::trace, parser::ParseTreeType, Report, Result};
+use parol_runtime::ParseTree;
+use parol_runtime::{log::trace, Report, Result};
 
-use id_tree::Tree;
 use parol::{
     build::{BuildListener, IntermediateGrammar},
     render_par_string, GrammarConfig, ParolErrorReporter, ParolGrammar,
@@ -106,7 +106,7 @@ impl CLIListener<'_> {
 impl BuildListener for CLIListener<'_> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &Tree<ParseTreeType>,
+        syntax_tree: &ParseTree<'_>,
         parol_grammar: &ParolGrammar,
     ) -> Result<()> {
         if self.verbose() {

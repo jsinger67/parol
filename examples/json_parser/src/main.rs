@@ -19,10 +19,9 @@ mod json_parser;
 use crate::json_grammar::JsonGrammar;
 use crate::json_parser::parse;
 use anyhow::{anyhow, Context, Result};
-use id_tree::Tree;
-use id_tree_layout::Layouter;
-use parol_runtime::{log::debug, parser::ParseTreeType, Report};
+use parol_runtime::{log::debug, ParseTree, Report};
 use std::{env, fs, time::Instant};
+use syntree_layout::Layouter;
 
 // To generate:
 // parol -f ./json.par -e ./json-exp.par -p ./src/json_parser.rs -a ./src/json_grammar_trait.rs -t JsonGrammar -m json_grammar
@@ -57,12 +56,19 @@ fn main() -> Result<()> {
     }
 }
 
-fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> Result<()> {
     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
     svg_full_file_name.set_extension("svg");
 
     Layouter::new(syntax_tree)
         .with_file_path(&svg_full_file_name)
+        .embed_with(
+            |n, f| match n {
+                parol_runtime::ParseTreeType::T(t) => write!(f, "{}", t.text()),
+                parol_runtime::ParseTreeType::N(n) => write!(f, "{}", n),
+            },
+            |n| matches!(n, parol_runtime::ParseTreeType::T(_)),
+        )?
         .write()
         .context("Failed writing layout")
 }

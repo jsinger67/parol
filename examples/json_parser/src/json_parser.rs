@@ -4,13 +4,12 @@
 // lost after next build.
 // ---------------------------------------------------------
 
-use parol_runtime::id_tree::Tree;
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
     DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
 };
-use parol_runtime::ParolError;
+use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
@@ -314,7 +313,7 @@ pub fn parse<'t, T>(
     input: &'t str,
     file_name: T,
     user_actions: &mut dyn UserActionsTrait<'t>,
-) -> Result<Tree<ParseTreeType<'t>>, ParolError>
+) -> Result<ParseTree<'t>, ParolError>
 where
     T: AsRef<Path>,
 {
@@ -327,9 +326,5 @@ where
     );
     let token_stream =
         RefCell::new(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap());
-    let result = llk_parser.parse(token_stream, user_actions);
-    match result {
-        Ok(()) => Ok(llk_parser.parse_tree),
-        Err(e) => Err(e),
-    }
+    llk_parser.parse(token_stream, user_actions)
 }

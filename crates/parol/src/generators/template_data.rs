@@ -159,12 +159,6 @@ impl std::fmt::Display for UserTraitData<'_> {
 
         writeln!(f, "\n")?;
 
-        if !*auto_generate {
-            f.write_fmt(ume::ume! {
-                use parol_runtime::id_tree::Tree;
-            })?;
-            writeln!(f, "\n")?;
-        }
         if *range {
             f.write_fmt(ume::ume!(
                 use parol_runtime::{Span, ToSpan};
@@ -181,7 +175,6 @@ impl std::fmt::Display for UserTraitData<'_> {
                 #[allow(unused_imports)]
                 use parol_runtime::parol_macros::{pop_item, pop_and_reverse_item};
                 use parol_runtime::log::trace;
-                use parol_runtime::id_tree::Tree;
             })?;
         } else {
             f.write_fmt(ume::ume! {
@@ -194,7 +187,7 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         f.write_fmt(ume::ume! {
-            use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+            use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
             use parol_runtime::{ParserError, Result};
         })?;
 
@@ -356,8 +349,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                     fn call_semantic_action_for_production_number(
                         &mut self,
                         prod_num: usize,
-                        children: &[ParseTreeStackEntry<'t>],
-                        parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+                        children: &[ParseTreeType<'t>]) -> Result<()> {
                         match prod_num {
                             #trait_caller
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
@@ -386,8 +378,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                     fn call_semantic_action_for_production_number(
                         &mut self,
                         prod_num: usize,
-                        children: &[ParseTreeStackEntry],
-                        parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+                        children: &[ParseTreeType]) -> Result<()> {
                         match prod_num {
                             #trait_caller
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),

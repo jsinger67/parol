@@ -10,7 +10,7 @@ pub type Result<T> = std::result::Result<T, ParolError>;
 #[derive(Error, Debug)]
 pub enum ParserError {
     #[error(transparent)]
-    IdTreeError { source: id_tree::NodeIdError },
+    TreeError { source: syntree::Error },
 
     #[error("{cause}Expecting one of {expected_tokens}")]
     PredictionErrorWithExpectations {

@@ -17,8 +17,8 @@ impl std::fmt::Display for LibRsData<'_> {
 
         if *tree_gen {
             f.write_fmt(ume::ume! {
-                use parol_runtime::id_tree::Tree;
-                use parol_runtime::id_tree_layout::Layouter;
+                use parol_runtime::syntree::Tree;
+                use parol_runtime::syntree_layout::Layouter;
                 use parol_runtime::parser::ParseTreeType;
             })?;
 
@@ -51,12 +51,13 @@ pub use {crate_name}_parser::parse;
                 pub fn generate_tree_layout(
                     syntax_tree: &Tree<ParseTreeType>,
                     input_file_name: &str,
-                ) -> id_tree_layout::layouter::Result {
+                ) -> syntree_layout::layouter::Result {
                     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
                     svg_full_file_name.set_extension("svg");
 
                     Layouter::new(syntax_tree)
                         .with_file_path(&svg_full_file_name)
+                        .embed_with_visualize()?
                         .write()
                 }
             })?;

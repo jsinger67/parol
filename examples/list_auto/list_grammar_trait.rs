@@ -10,11 +10,10 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use parol_runtime::derive_builder::Builder;
-use parol_runtime::id_tree::Tree;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 use std::marker::PhantomData;
 
@@ -211,9 +210,8 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn list(
         &mut self,
-        _list_opt: &ParseTreeStackEntry<'t>,
-        _trailing_comma: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _list_opt: &ParseTreeType<'t>,
+        _trailing_comma: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -235,11 +233,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// ListOpt /* Option<T>::Some */: Items : Numbers;
     ///
     #[parol_runtime::function_name::named]
-    fn list_opt_0(
-        &mut self,
-        _items: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn list_opt_0(&mut self, _items: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let items = pop_item!(self, items, Items, context);
@@ -257,7 +251,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// ListOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn list_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::ListOpt(None), context);
@@ -269,12 +263,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// Items: Num ItemsList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
-    fn items(
-        &mut self,
-        _num: &ParseTreeStackEntry<'t>,
-        _items_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn items(&mut self, _num: &ParseTreeType<'t>, _items_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let items_list = pop_and_reverse_item!(self, items_list, ItemsList, context);
@@ -296,10 +285,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn items_list_0(
         &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _num: &ParseTreeStackEntry<'t>,
-        _items_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _comma: &ParseTreeType<'t>,
+        _num: &ParseTreeType<'t>,
+        _items_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -320,7 +308,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// ItemsList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn items_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn items_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let items_list_1_built = Vec::new();
@@ -333,15 +321,11 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// Num: "0|[1-9][0-9]*" : Number;
     ///
     #[parol_runtime::function_name::named]
-    fn num(
-        &mut self,
-        num: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn num(&mut self, num: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let num = num
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let num_built = Num { num };
@@ -356,11 +340,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// TrailingComma: TrailingCommaOpt /* Option */;
     ///
     #[parol_runtime::function_name::named]
-    fn trailing_comma(
-        &mut self,
-        _trailing_comma_opt: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn trailing_comma(&mut self, _trailing_comma_opt: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_opt = pop_item!(self, trailing_comma_opt, TrailingCommaOpt, context);
@@ -376,11 +356,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// TrailingCommaOpt /* Option<T>::Some */: ","^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn trailing_comma_opt_0(
-        &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn trailing_comma_opt_0(&mut self, _comma: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let trailing_comma_opt_0_built = TrailingCommaOpt {
@@ -398,7 +374,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     /// TrailingCommaOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn trailing_comma_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn trailing_comma_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::TrailingCommaOpt(None), context);
@@ -413,20 +389,19 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry<'t>],
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
-            0 => self.list(&children[0], &children[1], parse_tree),
-            1 => self.list_opt_0(&children[0], parse_tree),
-            2 => self.list_opt_1(parse_tree),
-            3 => self.items(&children[0], &children[1], parse_tree),
-            4 => self.items_list_0(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.items_list_1(parse_tree),
-            6 => self.num(&children[0], parse_tree),
-            7 => self.trailing_comma(&children[0], parse_tree),
-            8 => self.trailing_comma_opt_0(&children[0], parse_tree),
-            9 => self.trailing_comma_opt_1(parse_tree),
+            0 => self.list(&children[0], &children[1]),
+            1 => self.list_opt_0(&children[0]),
+            2 => self.list_opt_1(),
+            3 => self.items(&children[0], &children[1]),
+            4 => self.items_list_0(&children[0], &children[1], &children[2]),
+            5 => self.items_list_1(),
+            6 => self.num(&children[0]),
+            7 => self.trailing_comma(&children[0]),
+            8 => self.trailing_comma_opt_0(&children[0]),
+            9 => self.trailing_comma_opt_1(),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

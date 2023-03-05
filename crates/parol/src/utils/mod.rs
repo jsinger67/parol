@@ -3,15 +3,14 @@ use crate::parser::parol_grammar::ParolGrammar;
 use crate::parser::parol_parser::parse;
 use crate::GrammarConfig;
 use anyhow::{Context, Result};
-use id_tree::Tree;
-use id_tree_layout::Layouter;
-use parol_runtime::parser::ParseTreeType;
+use parol_runtime::ParseTree;
 use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fmt::Debug;
 use std::fs;
 use std::hash::Hash;
 use std::path::Path;
+use syntree_layout::Layouter;
 
 pub mod str_vec;
 
@@ -172,7 +171,7 @@ pub fn obtain_grammar_config_from_string(input: &str, verbose: bool) -> Result<G
 ///
 /// Utility function for generating tree layouts
 ///
-pub fn generate_tree_layout<T>(syntax_tree: &Tree<ParseTreeType>, input_file_name: T) -> Result<()>
+pub fn generate_tree_layout<T>(syntax_tree: &ParseTree<'_>, input_file_name: T) -> Result<()>
 where
     T: AsRef<Path>,
 {
@@ -180,7 +179,8 @@ where
     svg_full_file_name.set_extension("svg");
 
     Layouter::new(syntax_tree)
-        .with_file_path(std::path::Path::new(&svg_full_file_name))
+        .with_file_path(&svg_full_file_name)
+        .embed_with_visualize()?
         .write()
         .context("Failed writing layout")
 }

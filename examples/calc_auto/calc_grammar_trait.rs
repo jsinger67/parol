@@ -10,12 +10,11 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use parol_runtime::derive_builder::Builder;
-use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
@@ -876,11 +875,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Calc: CalcList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
-    fn calc(
-        &mut self,
-        _calc_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn calc(&mut self, _calc_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let calc_list = pop_and_reverse_item!(self, calc_list, CalcList, context);
@@ -898,10 +893,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn calc_list_0(
         &mut self,
-        _instruction: &ParseTreeStackEntry<'t>,
-        _semicolon: &ParseTreeStackEntry<'t>,
-        _calc_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _instruction: &ParseTreeType<'t>,
+        _semicolon: &ParseTreeType<'t>,
+        _calc_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -922,7 +916,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// CalcList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn calc_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn calc_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let calc_list_1_built = Vec::new();
@@ -935,14 +929,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// EqualityOp: "==|!=";
     ///
     #[parol_runtime::function_name::named]
-    fn equality_op(
-        &mut self,
-        equality_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn equality_op(&mut self, equality_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let equality_op = equality_op.token(parse_tree)?.clone();
+        let equality_op = equality_op.token()?.clone();
         let equality_op_built = EqualityOp { equality_op };
         // Calling user action here
         self.user_grammar.equality_op(&equality_op_built)?;
@@ -955,14 +945,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// AssignOp: "(\+|-|\*|/|%|<<|>>|&|\^|\|)?=";
     ///
     #[parol_runtime::function_name::named]
-    fn assign_op(
-        &mut self,
-        assign_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn assign_op(&mut self, assign_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op = assign_op.token(parse_tree)?.clone();
+        let assign_op = assign_op.token()?.clone();
         let assign_op_built = AssignOp { assign_op };
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
@@ -975,14 +961,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// LogicalOrOp: "\|\|";
     ///
     #[parol_runtime::function_name::named]
-    fn logical_or_op(
-        &mut self,
-        logical_or_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_or_op(&mut self, logical_or_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_op = logical_or_op.token(parse_tree)?.clone();
+        let logical_or_op = logical_or_op.token()?.clone();
         let logical_or_op_built = LogicalOrOp { logical_or_op };
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
@@ -995,14 +977,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// LogicalAndOp: "&&";
     ///
     #[parol_runtime::function_name::named]
-    fn logical_and_op(
-        &mut self,
-        logical_and_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_and_op(&mut self, logical_and_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_and_op = logical_and_op.token(parse_tree)?.clone();
+        let logical_and_op = logical_and_op.token()?.clone();
         let logical_and_op_built = LogicalAndOp { logical_and_op };
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
@@ -1015,14 +993,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseOrOp: "\|";
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_or_op(
-        &mut self,
-        bitwise_or_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn bitwise_or_op(&mut self, bitwise_or_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_or_op = bitwise_or_op.token(parse_tree)?.clone();
+        let bitwise_or_op = bitwise_or_op.token()?.clone();
         let bitwise_or_op_built = BitwiseOrOp { bitwise_or_op };
         // Calling user action here
         self.user_grammar.bitwise_or_op(&bitwise_or_op_built)?;
@@ -1035,14 +1009,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseAndOp: "&";
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_and_op(
-        &mut self,
-        bitwise_and_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn bitwise_and_op(&mut self, bitwise_and_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_and_op = bitwise_and_op.token(parse_tree)?.clone();
+        let bitwise_and_op = bitwise_and_op.token()?.clone();
         let bitwise_and_op_built = BitwiseAndOp { bitwise_and_op };
         // Calling user action here
         self.user_grammar.bitwise_and_op(&bitwise_and_op_built)?;
@@ -1055,14 +1025,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseShiftOp: "<<|>>";
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_shift_op(
-        &mut self,
-        bitwise_shift_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn bitwise_shift_op(&mut self, bitwise_shift_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let bitwise_shift_op = bitwise_shift_op.token(parse_tree)?.clone();
+        let bitwise_shift_op = bitwise_shift_op.token()?.clone();
         let bitwise_shift_op_built = BitwiseShiftOp { bitwise_shift_op };
         // Calling user action here
         self.user_grammar
@@ -1076,14 +1042,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// RelationalOp: "<=|<|>=|>";
     ///
     #[parol_runtime::function_name::named]
-    fn relational_op(
-        &mut self,
-        relational_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn relational_op(&mut self, relational_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational_op = relational_op.token(parse_tree)?.clone();
+        let relational_op = relational_op.token()?.clone();
         let relational_op_built = RelationalOp { relational_op };
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
@@ -1096,14 +1058,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Plus: "\+";
     ///
     #[parol_runtime::function_name::named]
-    fn plus(
-        &mut self,
-        plus: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn plus(&mut self, plus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = plus.token(parse_tree)?.clone();
+        let plus = plus.token()?.clone();
         let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
@@ -1116,14 +1074,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Minus: "-";
     ///
     #[parol_runtime::function_name::named]
-    fn minus(
-        &mut self,
-        minus: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn minus(&mut self, minus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = minus.token(parse_tree)?.clone();
+        let minus = minus.token()?.clone();
         let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
@@ -1136,14 +1090,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// PowOp: "\*\*";
     ///
     #[parol_runtime::function_name::named]
-    fn pow_op(
-        &mut self,
-        pow_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn pow_op(&mut self, pow_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let pow_op = pow_op.token(parse_tree)?.clone();
+        let pow_op = pow_op.token()?.clone();
         let pow_op_built = PowOp { pow_op };
         // Calling user action here
         self.user_grammar.pow_op(&pow_op_built)?;
@@ -1156,14 +1106,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// MultOp: "\*|/|%";
     ///
     #[parol_runtime::function_name::named]
-    fn mult_op(
-        &mut self,
-        mult_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn mult_op(&mut self, mult_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mult_op = mult_op.token(parse_tree)?.clone();
+        let mult_op = mult_op.token()?.clone();
         let mult_op_built = MultOp { mult_op };
         // Calling user action here
         self.user_grammar.mult_op(&mult_op_built)?;
@@ -1176,11 +1122,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Instruction: Assignment;
     ///
     #[parol_runtime::function_name::named]
-    fn instruction_0(
-        &mut self,
-        _assignment: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn instruction_0(&mut self, _assignment: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
@@ -1199,11 +1141,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Instruction: LogicalOr;
     ///
     #[parol_runtime::function_name::named]
-    fn instruction_1(
-        &mut self,
-        _logical_or: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn instruction_1(&mut self, _logical_or: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
@@ -1224,9 +1162,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn assign_item(
         &mut self,
-        _id: &ParseTreeStackEntry<'t>,
-        _assign_op: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _id: &ParseTreeType<'t>,
+        _assign_op: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1249,10 +1186,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn assignment(
         &mut self,
-        _assign_item: &ParseTreeStackEntry<'t>,
-        _assignment_list: &ParseTreeStackEntry<'t>,
-        _logical_or: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _assign_item: &ParseTreeType<'t>,
+        _assignment_list: &ParseTreeType<'t>,
+        _logical_or: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1277,9 +1213,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn assignment_list_0(
         &mut self,
-        _assign_item: &ParseTreeStackEntry<'t>,
-        _assignment_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _assign_item: &ParseTreeType<'t>,
+        _assignment_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1299,7 +1234,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// AssignmentList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn assignment_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn assignment_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment_list_1_built = Vec::new();
@@ -1314,9 +1249,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_or(
         &mut self,
-        _logical_and: &ParseTreeStackEntry<'t>,
-        _logical_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_and: &ParseTreeType<'t>,
+        _logical_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1339,10 +1273,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_or_list_0(
         &mut self,
-        _logical_or_op: &ParseTreeStackEntry<'t>,
-        _logical_and: &ParseTreeStackEntry<'t>,
-        _logical_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_or_op: &ParseTreeType<'t>,
+        _logical_and: &ParseTreeType<'t>,
+        _logical_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1364,7 +1297,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// LogicalOrList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn logical_or_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list_1_built = Vec::new();
@@ -1379,9 +1312,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_and(
         &mut self,
-        _bitwise_or: &ParseTreeStackEntry<'t>,
-        _logical_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_or: &ParseTreeType<'t>,
+        _logical_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1405,10 +1337,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_and_list_0(
         &mut self,
-        _logical_and_op: &ParseTreeStackEntry<'t>,
-        _bitwise_or: &ParseTreeStackEntry<'t>,
-        _logical_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_and_op: &ParseTreeType<'t>,
+        _bitwise_or: &ParseTreeType<'t>,
+        _logical_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1430,7 +1361,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// LogicalAndList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn logical_and_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list_1_built = Vec::new();
@@ -1445,9 +1376,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_or(
         &mut self,
-        _bitwise_and: &ParseTreeStackEntry<'t>,
-        _bitwise_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_and: &ParseTreeType<'t>,
+        _bitwise_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1470,10 +1400,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_or_list_0(
         &mut self,
-        _bitwise_or_op: &ParseTreeStackEntry<'t>,
-        _bitwise_and: &ParseTreeStackEntry<'t>,
-        _bitwise_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_or_op: &ParseTreeType<'t>,
+        _bitwise_and: &ParseTreeType<'t>,
+        _bitwise_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1495,7 +1424,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseOrList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn bitwise_or_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_or_list_1_built = Vec::new();
@@ -1510,9 +1439,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_and(
         &mut self,
-        _equality: &ParseTreeStackEntry<'t>,
-        _bitwise_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _equality: &ParseTreeType<'t>,
+        _bitwise_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1536,10 +1464,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_and_list_0(
         &mut self,
-        _bitwise_and_op: &ParseTreeStackEntry<'t>,
-        _equality: &ParseTreeStackEntry<'t>,
-        _bitwise_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_and_op: &ParseTreeType<'t>,
+        _equality: &ParseTreeType<'t>,
+        _bitwise_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1561,7 +1488,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseAndList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn bitwise_and_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_and_list_1_built = Vec::new();
@@ -1576,9 +1503,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn equality(
         &mut self,
-        _relational: &ParseTreeStackEntry<'t>,
-        _equality_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _relational: &ParseTreeType<'t>,
+        _equality_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1601,10 +1527,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn equality_list_0(
         &mut self,
-        _equality_op: &ParseTreeStackEntry<'t>,
-        _relational: &ParseTreeStackEntry<'t>,
-        _equality_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _equality_op: &ParseTreeType<'t>,
+        _relational: &ParseTreeType<'t>,
+        _equality_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1626,7 +1551,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// EqualityList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn equality_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn equality_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let equality_list_1_built = Vec::new();
@@ -1641,9 +1566,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn relational(
         &mut self,
-        _bitwise_shift: &ParseTreeStackEntry<'t>,
-        _relational_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_shift: &ParseTreeType<'t>,
+        _relational_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1666,10 +1590,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn relational_list_0(
         &mut self,
-        _relational_op: &ParseTreeStackEntry<'t>,
-        _bitwise_shift: &ParseTreeStackEntry<'t>,
-        _relational_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _relational_op: &ParseTreeType<'t>,
+        _bitwise_shift: &ParseTreeType<'t>,
+        _relational_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1691,7 +1614,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// RelationalList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn relational_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_list_1_built = Vec::new();
@@ -1706,9 +1629,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_shift(
         &mut self,
-        _summ: &ParseTreeStackEntry<'t>,
-        _bitwise_shift_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _summ: &ParseTreeType<'t>,
+        _bitwise_shift_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1732,10 +1654,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn bitwise_shift_list_0(
         &mut self,
-        _bitwise_shift_op: &ParseTreeStackEntry<'t>,
-        _summ: &ParseTreeStackEntry<'t>,
-        _bitwise_shift_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _bitwise_shift_op: &ParseTreeType<'t>,
+        _summ: &ParseTreeType<'t>,
+        _bitwise_shift_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1757,7 +1678,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// BitwiseShiftList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn bitwise_shift_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn bitwise_shift_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bitwise_shift_list_1_built = Vec::new();
@@ -1773,11 +1694,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// AddOp: Plus;
     ///
     #[parol_runtime::function_name::named]
-    fn add_op_0(
-        &mut self,
-        _plus: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn add_op_0(&mut self, _plus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
@@ -1796,11 +1713,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// AddOp: Minus;
     ///
     #[parol_runtime::function_name::named]
-    fn add_op_1(
-        &mut self,
-        _minus: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn add_op_1(&mut self, _minus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
@@ -1819,12 +1732,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Summ: Mult SummList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
-    fn summ(
-        &mut self,
-        _mult: &ParseTreeStackEntry<'t>,
-        _summ_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn summ(&mut self, _mult: &ParseTreeType<'t>, _summ_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let summ_list = pop_and_reverse_item!(self, summ_list, SummList, context);
@@ -1846,10 +1754,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn summ_list_0(
         &mut self,
-        _add_op: &ParseTreeStackEntry<'t>,
-        _mult: &ParseTreeStackEntry<'t>,
-        _summ_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _add_op: &ParseTreeType<'t>,
+        _mult: &ParseTreeType<'t>,
+        _summ_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1871,7 +1778,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// SummList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn summ_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn summ_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let summ_list_1_built = Vec::new();
@@ -1884,12 +1791,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Mult: Power MultList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
-    fn mult(
-        &mut self,
-        _power: &ParseTreeStackEntry<'t>,
-        _mult_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn mult(&mut self, _power: &ParseTreeType<'t>, _mult_list: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mult_list = pop_and_reverse_item!(self, mult_list, MultList, context);
@@ -1911,10 +1813,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn mult_list_0(
         &mut self,
-        _mult_op: &ParseTreeStackEntry<'t>,
-        _power: &ParseTreeStackEntry<'t>,
-        _mult_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _mult_op: &ParseTreeType<'t>,
+        _power: &ParseTreeType<'t>,
+        _mult_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1936,7 +1837,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// MultList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn mult_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn mult_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let mult_list_1_built = Vec::new();
@@ -1951,9 +1852,8 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn power(
         &mut self,
-        _factor: &ParseTreeStackEntry<'t>,
-        _power_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _factor: &ParseTreeType<'t>,
+        _power_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1976,10 +1876,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn power_list_0(
         &mut self,
-        _pow_op: &ParseTreeStackEntry<'t>,
-        _factor: &ParseTreeStackEntry<'t>,
-        _power_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _pow_op: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+        _power_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2001,7 +1900,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// PowerList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn power_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn power_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let power_list_1_built = Vec::new();
@@ -2014,11 +1913,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Negate: Minus;
     ///
     #[parol_runtime::function_name::named]
-    fn negate(
-        &mut self,
-        _minus: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn negate(&mut self, _minus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
@@ -2036,11 +1931,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Factor: Number;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_0(
-        &mut self,
-        _number: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_0(&mut self, _number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -2059,11 +1950,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Factor: IdRef;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_1(
-        &mut self,
-        _id_ref: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_1(&mut self, _id_ref: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id_ref = pop_item!(self, id_ref, IdRef, context);
@@ -2082,12 +1969,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Factor: Negate Factor;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_2(
-        &mut self,
-        _negate: &ParseTreeStackEntry<'t>,
-        _factor: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_2(&mut self, _negate: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
@@ -2110,10 +1992,9 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
-        _l_paren: &ParseTreeStackEntry<'t>,
-        _logical_or: &ParseTreeStackEntry<'t>,
-        _r_paren: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _l_paren: &ParseTreeType<'t>,
+        _logical_or: &ParseTreeType<'t>,
+        _r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2135,15 +2016,11 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Number: "0|[1-9][0-9]*" : crate::calc_grammar::Number;
     ///
     #[parol_runtime::function_name::named]
-    fn number(
-        &mut self,
-        number: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn number(&mut self, number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = number
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let number_built = Number { number };
@@ -2158,11 +2035,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// IdRef: Id;
     ///
     #[parol_runtime::function_name::named]
-    fn id_ref(
-        &mut self,
-        _id: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn id_ref(&mut self, _id: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = pop_item!(self, id, Id, context);
@@ -2178,14 +2051,10 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
     /// Id: "[a-zA-Z_][a-zA-Z0-9_]*";
     ///
     #[parol_runtime::function_name::named]
-    fn id(
-        &mut self,
-        id: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn id(&mut self, id: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let id = id.token(parse_tree)?.clone();
+        let id = id.token()?.clone();
         let id_built = Id { id };
         // Calling user action here
         self.user_grammar.id(&id_built)?;
@@ -2201,71 +2070,70 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry<'t>],
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
-            0 => self.calc(&children[0], parse_tree),
-            1 => self.calc_list_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.calc_list_1(parse_tree),
-            3 => self.equality_op(&children[0], parse_tree),
-            4 => self.assign_op(&children[0], parse_tree),
-            5 => self.logical_or_op(&children[0], parse_tree),
-            6 => self.logical_and_op(&children[0], parse_tree),
-            7 => self.bitwise_or_op(&children[0], parse_tree),
-            8 => self.bitwise_and_op(&children[0], parse_tree),
-            9 => self.bitwise_shift_op(&children[0], parse_tree),
-            10 => self.relational_op(&children[0], parse_tree),
-            11 => self.plus(&children[0], parse_tree),
-            12 => self.minus(&children[0], parse_tree),
-            13 => self.pow_op(&children[0], parse_tree),
-            14 => self.mult_op(&children[0], parse_tree),
-            15 => self.instruction_0(&children[0], parse_tree),
-            16 => self.instruction_1(&children[0], parse_tree),
-            17 => self.assign_item(&children[0], &children[1], parse_tree),
-            18 => self.assignment(&children[0], &children[1], &children[2], parse_tree),
-            19 => self.assignment_list_0(&children[0], &children[1], parse_tree),
-            20 => self.assignment_list_1(parse_tree),
-            21 => self.logical_or(&children[0], &children[1], parse_tree),
-            22 => self.logical_or_list_0(&children[0], &children[1], &children[2], parse_tree),
-            23 => self.logical_or_list_1(parse_tree),
-            24 => self.logical_and(&children[0], &children[1], parse_tree),
-            25 => self.logical_and_list_0(&children[0], &children[1], &children[2], parse_tree),
-            26 => self.logical_and_list_1(parse_tree),
-            27 => self.bitwise_or(&children[0], &children[1], parse_tree),
-            28 => self.bitwise_or_list_0(&children[0], &children[1], &children[2], parse_tree),
-            29 => self.bitwise_or_list_1(parse_tree),
-            30 => self.bitwise_and(&children[0], &children[1], parse_tree),
-            31 => self.bitwise_and_list_0(&children[0], &children[1], &children[2], parse_tree),
-            32 => self.bitwise_and_list_1(parse_tree),
-            33 => self.equality(&children[0], &children[1], parse_tree),
-            34 => self.equality_list_0(&children[0], &children[1], &children[2], parse_tree),
-            35 => self.equality_list_1(parse_tree),
-            36 => self.relational(&children[0], &children[1], parse_tree),
-            37 => self.relational_list_0(&children[0], &children[1], &children[2], parse_tree),
-            38 => self.relational_list_1(parse_tree),
-            39 => self.bitwise_shift(&children[0], &children[1], parse_tree),
-            40 => self.bitwise_shift_list_0(&children[0], &children[1], &children[2], parse_tree),
-            41 => self.bitwise_shift_list_1(parse_tree),
-            42 => self.add_op_0(&children[0], parse_tree),
-            43 => self.add_op_1(&children[0], parse_tree),
-            44 => self.summ(&children[0], &children[1], parse_tree),
-            45 => self.summ_list_0(&children[0], &children[1], &children[2], parse_tree),
-            46 => self.summ_list_1(parse_tree),
-            47 => self.mult(&children[0], &children[1], parse_tree),
-            48 => self.mult_list_0(&children[0], &children[1], &children[2], parse_tree),
-            49 => self.mult_list_1(parse_tree),
-            50 => self.power(&children[0], &children[1], parse_tree),
-            51 => self.power_list_0(&children[0], &children[1], &children[2], parse_tree),
-            52 => self.power_list_1(parse_tree),
-            53 => self.negate(&children[0], parse_tree),
-            54 => self.factor_0(&children[0], parse_tree),
-            55 => self.factor_1(&children[0], parse_tree),
-            56 => self.factor_2(&children[0], &children[1], parse_tree),
-            57 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
-            58 => self.number(&children[0], parse_tree),
-            59 => self.id_ref(&children[0], parse_tree),
-            60 => self.id(&children[0], parse_tree),
+            0 => self.calc(&children[0]),
+            1 => self.calc_list_0(&children[0], &children[1], &children[2]),
+            2 => self.calc_list_1(),
+            3 => self.equality_op(&children[0]),
+            4 => self.assign_op(&children[0]),
+            5 => self.logical_or_op(&children[0]),
+            6 => self.logical_and_op(&children[0]),
+            7 => self.bitwise_or_op(&children[0]),
+            8 => self.bitwise_and_op(&children[0]),
+            9 => self.bitwise_shift_op(&children[0]),
+            10 => self.relational_op(&children[0]),
+            11 => self.plus(&children[0]),
+            12 => self.minus(&children[0]),
+            13 => self.pow_op(&children[0]),
+            14 => self.mult_op(&children[0]),
+            15 => self.instruction_0(&children[0]),
+            16 => self.instruction_1(&children[0]),
+            17 => self.assign_item(&children[0], &children[1]),
+            18 => self.assignment(&children[0], &children[1], &children[2]),
+            19 => self.assignment_list_0(&children[0], &children[1]),
+            20 => self.assignment_list_1(),
+            21 => self.logical_or(&children[0], &children[1]),
+            22 => self.logical_or_list_0(&children[0], &children[1], &children[2]),
+            23 => self.logical_or_list_1(),
+            24 => self.logical_and(&children[0], &children[1]),
+            25 => self.logical_and_list_0(&children[0], &children[1], &children[2]),
+            26 => self.logical_and_list_1(),
+            27 => self.bitwise_or(&children[0], &children[1]),
+            28 => self.bitwise_or_list_0(&children[0], &children[1], &children[2]),
+            29 => self.bitwise_or_list_1(),
+            30 => self.bitwise_and(&children[0], &children[1]),
+            31 => self.bitwise_and_list_0(&children[0], &children[1], &children[2]),
+            32 => self.bitwise_and_list_1(),
+            33 => self.equality(&children[0], &children[1]),
+            34 => self.equality_list_0(&children[0], &children[1], &children[2]),
+            35 => self.equality_list_1(),
+            36 => self.relational(&children[0], &children[1]),
+            37 => self.relational_list_0(&children[0], &children[1], &children[2]),
+            38 => self.relational_list_1(),
+            39 => self.bitwise_shift(&children[0], &children[1]),
+            40 => self.bitwise_shift_list_0(&children[0], &children[1], &children[2]),
+            41 => self.bitwise_shift_list_1(),
+            42 => self.add_op_0(&children[0]),
+            43 => self.add_op_1(&children[0]),
+            44 => self.summ(&children[0], &children[1]),
+            45 => self.summ_list_0(&children[0], &children[1], &children[2]),
+            46 => self.summ_list_1(),
+            47 => self.mult(&children[0], &children[1]),
+            48 => self.mult_list_0(&children[0], &children[1], &children[2]),
+            49 => self.mult_list_1(),
+            50 => self.power(&children[0], &children[1]),
+            51 => self.power_list_0(&children[0], &children[1], &children[2]),
+            52 => self.power_list_1(),
+            53 => self.negate(&children[0]),
+            54 => self.factor_0(&children[0]),
+            55 => self.factor_1(&children[0]),
+            56 => self.factor_2(&children[0], &children[1]),
+            57 => self.factor_3(&children[0], &children[1], &children[2]),
+            58 => self.number(&children[0]),
+            59 => self.id_ref(&children[0]),
+            60 => self.id(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

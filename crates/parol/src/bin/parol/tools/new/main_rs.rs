@@ -42,8 +42,8 @@ use crate::{crate_name}_parser::parse;
         )?;
         if *tree_gen {
             f.write_fmt(ume::ume! {
-            use parol_runtime::id_tree::Tree;
-            use parol_runtime::id_tree_layout::Layouter;
+            use parol_runtime::syntree::Tree;
+            use parol_runtime::syntree_layout::Layouter;
             use parol_runtime::parser::ParseTreeType;
                     })?;
         }
@@ -117,6 +117,7 @@ use crate::{crate_name}_parser::parse;
                     Layouter::new(syntax_tree)
                         .with_file_path(&svg_full_file_name)
                         .write()
+                        .embed_with_visualize()?
                         .context("Failed writing layout")
                 }
             })?;

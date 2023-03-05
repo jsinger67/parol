@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.18.1"
+version = "0.19.0"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -20,10 +20,10 @@ clap = { workspace = true }
 derive_builder = { version = "0.12.0" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-id_tree = { workspace = true }
-id_tree_layout = { workspace = true }
+syntree = { workspace = true }
+syntree_layout = { workspace = true }
 owo-colors = "3.5.0"
-parol_runtime = { path = "../parol_runtime", version = "0.14.0", features = ["auto_generation"] }
+parol_runtime = { path = "../parol_runtime", version = "0.15.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 rand = "0.8.5"
 rand_regex = "0.15.1"

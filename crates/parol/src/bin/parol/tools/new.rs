@@ -117,7 +117,7 @@ const DEPENDENCIES: &[&[&str]] = &[
     ],
 ];
 
-const TREE_GEN_DEPENDENCY: &str = "add id_tree_layout@2.0";
+const TREE_GEN_DEPENDENCY: &str = "add syntree_layout@2.0";
 
 fn apply_cargo(creation_data: &CreationData) -> Result<()> {
     // Prepare arguments for the `cargo new` command
@@ -165,7 +165,7 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
             }
         })?;
 
-    // Add dependency to id_tree_layout
+    // Add dependency to syntree_layout
     if creation_data.tree_gen {
         Command::new("cargo")
             .current_dir(&creation_data.path)

@@ -9,10 +9,8 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::id_tree::Tree;
-
 use crate::list_grammar::ListGrammar;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 ///
@@ -25,11 +23,7 @@ pub trait ListGrammarTrait {
     ///
     /// List: ListOpt /* Option */;
     ///
-    fn list(
-        &mut self,
-        _list_opt: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn list(&mut self, _list_opt: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -39,10 +33,9 @@ pub trait ListGrammarTrait {
     ///
     fn list_opt_0(
         &mut self,
-        _num: &ParseTreeStackEntry,
-        _list_rest: &ParseTreeStackEntry,
-        _list_opt0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _num: &ParseTreeType,
+        _list_rest: &ParseTreeType,
+        _list_opt0: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -51,11 +44,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListOpt0 /* Option<T>::Some */: ",";
     ///
-    fn list_opt0_0(
-        &mut self,
-        _comma: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn list_opt0_0(&mut self, _comma: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -63,7 +52,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListOpt0 /* Option<T>::None */: ;
     ///
-    fn list_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_opt0_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -71,7 +60,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListOpt /* Option<T>::None */: ;
     ///
-    fn list_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_opt_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -79,11 +68,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListRest: ListRestOpt /* Option */;
     ///
-    fn list_rest(
-        &mut self,
-        _list_rest_opt: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn list_rest(&mut self, _list_rest_opt: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -93,10 +78,9 @@ pub trait ListGrammarTrait {
     ///
     fn list_rest_opt_0(
         &mut self,
-        _comma: &ParseTreeStackEntry,
-        _num: &ParseTreeStackEntry,
-        _list_rest: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _comma: &ParseTreeType,
+        _num: &ParseTreeType,
+        _list_rest: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -105,7 +89,7 @@ pub trait ListGrammarTrait {
     ///
     /// ListRestOpt /* Option<T>::None */: ;
     ///
-    fn list_rest_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn list_rest_opt_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -113,7 +97,7 @@ pub trait ListGrammarTrait {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn num(&mut self, _num: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 }
@@ -125,19 +109,18 @@ impl UserActionsTrait<'_> for ListGrammar {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeType],
     ) -> Result<()> {
         match prod_num {
-            0 => self.list(&children[0], parse_tree),
-            1 => self.list_opt_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.list_opt0_0(&children[0], parse_tree),
-            3 => self.list_opt0_1(parse_tree),
-            4 => self.list_opt_1(parse_tree),
-            5 => self.list_rest(&children[0], parse_tree),
-            6 => self.list_rest_opt_0(&children[0], &children[1], &children[2], parse_tree),
-            7 => self.list_rest_opt_1(parse_tree),
-            8 => self.num(&children[0], parse_tree),
+            0 => self.list(&children[0]),
+            1 => self.list_opt_0(&children[0], &children[1], &children[2]),
+            2 => self.list_opt0_0(&children[0]),
+            3 => self.list_opt0_1(),
+            4 => self.list_opt_1(),
+            5 => self.list_rest(&children[0]),
+            6 => self.list_rest_opt_0(&children[0], &children[1], &children[2]),
+            7 => self.list_rest_opt_1(),
+            8 => self.num(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

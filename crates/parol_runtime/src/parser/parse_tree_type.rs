@@ -1,7 +1,7 @@
 use crate::{ParserError, Token};
 
-use id_tree_layout::Visualize;
 use std::fmt::{Display, Formatter};
+use syntree_layout::Visualize;
 
 ///
 /// The type of the elements in the parse tree.
@@ -33,6 +33,17 @@ impl<'t> ParseTreeType<'t> {
             _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
         }
     }
+
+    ///
+    /// Tries to access the scanned text of the ParseTreeType.
+    /// Can fail if the entry is no terminal (i.e. a non-terminal).
+    ///
+    pub fn text(&self) -> Result<&str, ParserError> {
+        match self {
+            Self::T(t) => Ok(t.text()),
+            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
+        }
+    }
 }
 
 ///
@@ -40,10 +51,10 @@ impl<'t> ParseTreeType<'t> {
 /// ParseTreeType in a tree layout.
 ///
 impl Visualize for ParseTreeType<'_> {
-    fn visualize(&self) -> std::string::String {
+    fn visualize(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::T(t) => format!("{}", t),
-            Self::N(n) => n.to_string(),
+            ParseTreeType::T(t) => write!(f, "{}", t),
+            ParseTreeType::N(n) => write!(f, "{}", n),
         }
     }
     fn emphasize(&self) -> bool {

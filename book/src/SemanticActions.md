@@ -128,12 +128,12 @@ functions that you can directly call in your semantic actions:
 impl<'t> ParseTreeStackEntry<'t> {
     /// Returns the inner ParseTreeType.
     pub fn get_parse_tree_type<'a, 'b>(&'a self,
-      parse_tree: &'b Tree<ParseTreeType<'t>>)
+      parse_tree: &'b ParseTree<'t>)
       -> &'a ParseTreeType;
 
     /// Tries to access the Token of the ParseTreeStackEntry.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
-    pub fn token<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType<'t>>)
+    pub fn token<'a, 'b>(&'a self, parse_tree: &'b ParseTree<'t>)
       -> Result<&'a Token<'t>>;
 
     /// Tries to access the text of the ParseTreeStackEntry.

@@ -10,12 +10,11 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use parol_runtime::derive_builder::Builder;
-use parol_runtime::id_tree::Tree;
 use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 /// Semantic actions trait generated for the user grammar
@@ -1206,11 +1205,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn basic(
         &mut self,
-        _basic_opt: &ParseTreeStackEntry<'t>,
-        _line: &ParseTreeStackEntry<'t>,
-        _basic_list: &ParseTreeStackEntry<'t>,
-        _basic_opt0: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _basic_opt: &ParseTreeType<'t>,
+        _line: &ParseTreeType<'t>,
+        _basic_list: &ParseTreeType<'t>,
+        _basic_opt0: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1237,10 +1235,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn basic_list_0(
         &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _line: &ParseTreeStackEntry<'t>,
-        _basic_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _end_of_line: &ParseTreeType<'t>,
+        _line: &ParseTreeType<'t>,
+        _basic_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1262,7 +1259,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn basic_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_list_1_built = Vec::new();
@@ -1275,11 +1272,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt0 /* Option<T>::Some */: EndOfLine;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt0_0(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn basic_opt0_0(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
@@ -1298,7 +1291,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt0 /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt0_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn basic_opt0_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::BasicOpt0(None), context);
@@ -1310,11 +1303,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt /* Option<T>::Some */: EndOfLine;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt_0(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn basic_opt_0(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
@@ -1333,7 +1322,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// BasicOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn basic_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn basic_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::BasicOpt(None), context);
@@ -1347,10 +1336,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn line(
         &mut self,
-        _line_number: &ParseTreeStackEntry<'t>,
-        _statement: &ParseTreeStackEntry<'t>,
-        _line_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _line_number: &ParseTreeType<'t>,
+        _statement: &ParseTreeType<'t>,
+        _line_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1375,10 +1363,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn line_list_0(
         &mut self,
-        _colon: &ParseTreeStackEntry<'t>,
-        _statement: &ParseTreeStackEntry<'t>,
-        _line_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _colon: &ParseTreeType<'t>,
+        _statement: &ParseTreeType<'t>,
+        _line_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1399,7 +1386,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LineList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn line_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn line_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_list_1_built = Vec::new();
@@ -1412,15 +1399,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LineNumber: /[0 ]*[1-9] *(?:[0-9] *){1,4}|[0 ]+/ : BasicLineNumber;
     ///
     #[parol_runtime::function_name::named]
-    fn line_number(
-        &mut self,
-        line_number: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn line_number(&mut self, line_number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let line_number = line_number
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let line_number_built = LineNumber { line_number };
@@ -1435,11 +1418,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: Remark;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_0(
-        &mut self,
-        _remark: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_0(&mut self, _remark: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark = pop_item!(self, remark, Remark, context);
@@ -1458,11 +1437,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: GotoStatement;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_1(
-        &mut self,
-        _goto_statement: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_1(&mut self, _goto_statement: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_statement = pop_item!(self, goto_statement, GotoStatement, context);
@@ -1481,11 +1456,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: IfStatement;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_2(
-        &mut self,
-        _if_statement: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_2(&mut self, _if_statement: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let if_statement = pop_item!(self, if_statement, IfStatement, context);
@@ -1504,11 +1475,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: Assignment;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_3(
-        &mut self,
-        _assignment: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_3(&mut self, _assignment: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
@@ -1527,11 +1494,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: PrintStatement;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_4(
-        &mut self,
-        _print_statement: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_4(&mut self, _print_statement: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement = pop_item!(self, print_statement, PrintStatement, context);
@@ -1550,11 +1513,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Statement: EndStatement;
     ///
     #[parol_runtime::function_name::named]
-    fn statement_5(
-        &mut self,
-        _end_statement: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn statement_5(&mut self, _end_statement: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_statement = pop_item!(self, end_statement, EndStatement, context);
@@ -1575,9 +1534,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn remark(
         &mut self,
-        _r_e_m: &ParseTreeStackEntry<'t>,
-        _remark_opt: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _r_e_m: &ParseTreeType<'t>,
+        _remark_opt: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1597,11 +1555,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RemarkOpt /* Option<T>::Some */: Comment;
     ///
     #[parol_runtime::function_name::named]
-    fn remark_opt_0(
-        &mut self,
-        _comment: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn remark_opt_0(&mut self, _comment: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let comment = pop_item!(self, comment, Comment, context);
@@ -1620,7 +1574,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RemarkOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn remark_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn remark_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::RemarkOpt(None), context);
@@ -1634,9 +1588,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn goto_statement(
         &mut self,
-        _goto: &ParseTreeStackEntry<'t>,
-        _line_number: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _goto: &ParseTreeType<'t>,
+        _line_number: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1659,10 +1612,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn if_statement(
         &mut self,
-        _if: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _if_body: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _if: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _if_body: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1687,11 +1639,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn assignment(
         &mut self,
-        _assignment_opt: &ParseTreeStackEntry<'t>,
-        _variable: &ParseTreeStackEntry<'t>,
-        _assign_op: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _assignment_opt: &ParseTreeType<'t>,
+        _variable: &ParseTreeType<'t>,
+        _assign_op: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1716,11 +1667,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// AssignmentOpt /* Option<T>::Some */: Let;
     ///
     #[parol_runtime::function_name::named]
-    fn assignment_opt_0(
-        &mut self,
-        _let: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn assignment_opt_0(&mut self, _let: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#let = pop_item!(self, r#let, Let, context);
@@ -1739,7 +1686,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// AssignmentOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn assignment_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn assignment_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::AssignmentOpt(None), context);
@@ -1753,9 +1700,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn if_body_0(
         &mut self,
-        _then: &ParseTreeStackEntry<'t>,
-        _statement: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _then: &ParseTreeType<'t>,
+        _statement: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1779,9 +1725,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn if_body_1(
         &mut self,
-        _goto: &ParseTreeStackEntry<'t>,
-        _line_number: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _goto: &ParseTreeType<'t>,
+        _line_number: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1805,10 +1750,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn print_statement(
         &mut self,
-        _print: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _print_statement_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _print: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _print_statement_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1834,10 +1778,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn print_statement_list_0(
         &mut self,
-        _comma: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _print_statement_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _comma: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _print_statement_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -1859,7 +1802,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// PrintStatementList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn print_statement_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn print_statement_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_statement_list_1_built = Vec::new();
@@ -1875,11 +1818,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// EndStatement: End;
     ///
     #[parol_runtime::function_name::named]
-    fn end_statement(
-        &mut self,
-        _end: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn end_statement(&mut self, _end: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end = pop_item!(self, end, End, context);
@@ -1895,11 +1834,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// EndOfLine: <INITIAL, Expr>/(?:\r?\n|\r)+/^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn end_of_line(
-        &mut self,
-        _end_of_line: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn end_of_line(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_of_line_built = EndOfLine {
@@ -1916,11 +1851,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Literal: Number;
     ///
     #[parol_runtime::function_name::named]
-    fn literal(
-        &mut self,
-        _number: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn literal(&mut self, _number: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
@@ -1938,11 +1869,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Number: Float;
     ///
     #[parol_runtime::function_name::named]
-    fn number_0(
-        &mut self,
-        _float: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn number_0(&mut self, _float: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
@@ -1961,11 +1888,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Number: Integer;
     ///
     #[parol_runtime::function_name::named]
-    fn number_1(
-        &mut self,
-        _integer: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn number_1(&mut self, _integer: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
@@ -1984,11 +1907,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Float: Float1;
     ///
     #[parol_runtime::function_name::named]
-    fn float_0(
-        &mut self,
-        _float1: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn float_0(&mut self, _float1: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = pop_item!(self, float1, Float1, context);
@@ -2007,11 +1926,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Float: Float2;
     ///
     #[parol_runtime::function_name::named]
-    fn float_1(
-        &mut self,
-        _float2: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn float_1(&mut self, _float2: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = pop_item!(self, float2, Float2, context);
@@ -2030,15 +1945,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Float1: <Expr>/(?:(?:[0-9] *)+)?\. *(?:(?:[0-9] *)+)? *(?:E *[-+]? *(?:[0-9] *)+)?/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
-    fn float1(
-        &mut self,
-        float1: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn float1(&mut self, float1: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float1 = float1
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let float1_built = Float1 { float1 };
@@ -2053,15 +1964,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Float2: <Expr>/(?:[0-9] *)+E *[-+]? *(?:[0-9] *)+/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
-    fn float2(
-        &mut self,
-        float2: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn float2(&mut self, float2: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float2 = float2
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let float2_built = Float2 { float2 };
@@ -2076,15 +1983,11 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Integer: <Expr>/(?:[0-9] *)+/ : BasicNumber;
     ///
     #[parol_runtime::function_name::named]
-    fn integer(
-        &mut self,
-        integer: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn integer(&mut self, integer: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = integer
-            .token(parse_tree)?
+            .token()?
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let integer_built = Integer { integer };
@@ -2099,11 +2002,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// If: 'IF'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn r#if(
-        &mut self,
-        _if: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn r#if(&mut self, _if: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#if_built = If {
@@ -2120,11 +2019,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Then: <INITIAL, Expr>'THEN'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn then(
-        &mut self,
-        _then: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn then(&mut self, _then: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let then_built = Then {
@@ -2141,11 +2036,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Goto: <INITIAL, Expr>'GOTO'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn goto(
-        &mut self,
-        _goto: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn goto(&mut self, _goto: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let goto_built = Goto {
@@ -2162,11 +2053,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Let: 'LET'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn r#let(
-        &mut self,
-        _let: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn r#let(&mut self, _let: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let r#let_built = Let {
@@ -2183,11 +2070,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Print: /PRINT|\?/^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn print(
-        &mut self,
-        _print: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn print(&mut self, _print: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let print_built = Print {
@@ -2204,11 +2087,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// End: 'END'^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn end(
-        &mut self,
-        _end: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn end(&mut self, _end: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let end_built = End {
@@ -2225,11 +2104,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// AssignOp: '='^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
-    fn assign_op(
-        &mut self,
-        _assign_op: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn assign_op(&mut self, _assign_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assign_op_built = AssignOp {
@@ -2246,14 +2121,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalOrOp: <Expr>/N?OR/;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_or_op(
-        &mut self,
-        logical_or_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_or_op(&mut self, logical_or_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_or_op = logical_or_op.token(parse_tree)?.clone();
+        let logical_or_op = logical_or_op.token()?.clone();
         let logical_or_op_built = LogicalOrOp { logical_or_op };
         // Calling user action here
         self.user_grammar.logical_or_op(&logical_or_op_built)?;
@@ -2266,14 +2137,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalAndOp: <Expr>'AND';
     ///
     #[parol_runtime::function_name::named]
-    fn logical_and_op(
-        &mut self,
-        logical_and_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_and_op(&mut self, logical_and_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_and_op = logical_and_op.token(parse_tree)?.clone();
+        let logical_and_op = logical_and_op.token()?.clone();
         let logical_and_op_built = LogicalAndOp { logical_and_op };
         // Calling user action here
         self.user_grammar.logical_and_op(&logical_and_op_built)?;
@@ -2286,14 +2153,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalNotOp: <Expr>'NOT';
     ///
     #[parol_runtime::function_name::named]
-    fn logical_not_op(
-        &mut self,
-        logical_not_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_not_op(&mut self, logical_not_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let logical_not_op = logical_not_op.token(parse_tree)?.clone();
+        let logical_not_op = logical_not_op.token()?.clone();
         let logical_not_op_built = LogicalNotOp { logical_not_op };
         // Calling user action here
         self.user_grammar.logical_not_op(&logical_not_op_built)?;
@@ -2306,14 +2169,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RelationalOp: <Expr>/<\s*>|<\s*=|<|>\s*=|>|=/;
     ///
     #[parol_runtime::function_name::named]
-    fn relational_op(
-        &mut self,
-        relational_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn relational_op(&mut self, relational_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relational_op = relational_op.token(parse_tree)?.clone();
+        let relational_op = relational_op.token()?.clone();
         let relational_op_built = RelationalOp { relational_op };
         // Calling user action here
         self.user_grammar.relational_op(&relational_op_built)?;
@@ -2326,14 +2185,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Plus: <Expr>'+';
     ///
     #[parol_runtime::function_name::named]
-    fn plus(
-        &mut self,
-        plus: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn plus(&mut self, plus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let plus = plus.token(parse_tree)?.clone();
+        let plus = plus.token()?.clone();
         let plus_built = Plus { plus };
         // Calling user action here
         self.user_grammar.plus(&plus_built)?;
@@ -2346,14 +2201,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Minus: <Expr>'-';
     ///
     #[parol_runtime::function_name::named]
-    fn minus(
-        &mut self,
-        minus: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn minus(&mut self, minus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let minus = minus.token(parse_tree)?.clone();
+        let minus = minus.token()?.clone();
         let minus_built = Minus { minus };
         // Calling user action here
         self.user_grammar.minus(&minus_built)?;
@@ -2366,14 +2217,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// MulOp: <Expr>/\*|\u{2F}/;
     ///
     #[parol_runtime::function_name::named]
-    fn mul_op(
-        &mut self,
-        mul_op: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn mul_op(&mut self, mul_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let mul_op = mul_op.token(parse_tree)?.clone();
+        let mul_op = mul_op.token()?.clone();
         let mul_op_built = MulOp { mul_op };
         // Calling user action here
         self.user_grammar.mul_op(&mul_op_built)?;
@@ -2386,14 +2233,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LParen: <Expr>'(';
     ///
     #[parol_runtime::function_name::named]
-    fn l_paren(
-        &mut self,
-        l_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn l_paren(&mut self, l_paren: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let l_paren = l_paren.token(parse_tree)?.clone();
+        let l_paren = l_paren.token()?.clone();
         let l_paren_built = LParen { l_paren };
         // Calling user action here
         self.user_grammar.l_paren(&l_paren_built)?;
@@ -2406,14 +2249,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RParen: <Expr>')';
     ///
     #[parol_runtime::function_name::named]
-    fn r_paren(
-        &mut self,
-        r_paren: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn r_paren(&mut self, r_paren: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r_paren = r_paren.token(parse_tree)?.clone();
+        let r_paren = r_paren.token()?.clone();
         let r_paren_built = RParen { r_paren };
         // Calling user action here
         self.user_grammar.r_paren(&r_paren_built)?;
@@ -2426,14 +2265,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Comment: <Cmnt>/[^\r\n]+/;
     ///
     #[parol_runtime::function_name::named]
-    fn comment(
-        &mut self,
-        comment: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn comment(&mut self, comment: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let comment = comment.token(parse_tree)?.clone();
+        let comment = comment.token()?.clone();
         let comment_built = Comment { comment };
         // Calling user action here
         self.user_grammar.comment(&comment_built)?;
@@ -2446,14 +2281,10 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Variable: <INITIAL, Expr>/[A-Z][0-9A-Z]*/;
     ///
     #[parol_runtime::function_name::named]
-    fn variable(
-        &mut self,
-        variable: &ParseTreeStackEntry<'t>,
-        parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn variable(&mut self, variable: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let variable = variable.token(parse_tree)?.clone();
+        let variable = variable.token()?.clone();
         let variable_built = Variable { variable };
         // Calling user action here
         self.user_grammar.variable(&variable_built)?;
@@ -2466,11 +2297,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Expression: LogicalOr;
     ///
     #[parol_runtime::function_name::named]
-    fn expression(
-        &mut self,
-        _logical_or: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn expression(&mut self, _logical_or: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or = pop_item!(self, logical_or, LogicalOr, context);
@@ -2490,9 +2317,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_or(
         &mut self,
-        _logical_and: &ParseTreeStackEntry<'t>,
-        _logical_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_and: &ParseTreeType<'t>,
+        _logical_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2515,10 +2341,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_or_list_0(
         &mut self,
-        _logical_or_op: &ParseTreeStackEntry<'t>,
-        _logical_and: &ParseTreeStackEntry<'t>,
-        _logical_or_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_or_op: &ParseTreeType<'t>,
+        _logical_and: &ParseTreeType<'t>,
+        _logical_or_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2540,7 +2365,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalOrList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_or_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn logical_or_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_or_list_1_built = Vec::new();
@@ -2555,9 +2380,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_and(
         &mut self,
-        _logical_not: &ParseTreeStackEntry<'t>,
-        _logical_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_not: &ParseTreeType<'t>,
+        _logical_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2581,10 +2405,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_and_list_0(
         &mut self,
-        _logical_and_op: &ParseTreeStackEntry<'t>,
-        _logical_not: &ParseTreeStackEntry<'t>,
-        _logical_and_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_and_op: &ParseTreeType<'t>,
+        _logical_not: &ParseTreeType<'t>,
+        _logical_and_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2606,7 +2429,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalAndList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_and_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn logical_and_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_and_list_1_built = Vec::new();
@@ -2621,9 +2444,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn logical_not(
         &mut self,
-        _logical_not_opt: &ParseTreeStackEntry<'t>,
-        _relational: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _logical_not_opt: &ParseTreeType<'t>,
+        _relational: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2644,11 +2466,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalNotOpt /* Option<T>::Some */: LogicalNotOp;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_not_opt_0(
-        &mut self,
-        _logical_not_op: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn logical_not_opt_0(&mut self, _logical_not_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let logical_not_op = pop_item!(self, logical_not_op, LogicalNotOp, context);
@@ -2667,7 +2485,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// LogicalNotOpt /* Option<T>::None */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn logical_not_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn logical_not_opt_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         self.push(ASTType::LogicalNotOpt(None), context);
@@ -2681,9 +2499,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn relational(
         &mut self,
-        _summation: &ParseTreeStackEntry<'t>,
-        _relational_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _summation: &ParseTreeType<'t>,
+        _relational_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2706,10 +2523,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn relational_list_0(
         &mut self,
-        _relational_op: &ParseTreeStackEntry<'t>,
-        _summation: &ParseTreeStackEntry<'t>,
-        _relational_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _relational_op: &ParseTreeType<'t>,
+        _summation: &ParseTreeType<'t>,
+        _relational_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2731,7 +2547,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// RelationalList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn relational_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn relational_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let relational_list_1_built = Vec::new();
@@ -2746,9 +2562,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn summation(
         &mut self,
-        _multiplication: &ParseTreeStackEntry<'t>,
-        _summation_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _multiplication: &ParseTreeType<'t>,
+        _summation_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2771,10 +2586,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn summation_list_0(
         &mut self,
-        _summation_list_group: &ParseTreeStackEntry<'t>,
-        _multiplication: &ParseTreeStackEntry<'t>,
-        _summation_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _summation_list_group: &ParseTreeType<'t>,
+        _multiplication: &ParseTreeType<'t>,
+        _summation_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2797,11 +2611,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// SummationListGroup: Plus;
     ///
     #[parol_runtime::function_name::named]
-    fn summation_list_group_0(
-        &mut self,
-        _plus: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn summation_list_group_0(&mut self, _plus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
@@ -2821,11 +2631,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// SummationListGroup: Minus;
     ///
     #[parol_runtime::function_name::named]
-    fn summation_list_group_1(
-        &mut self,
-        _minus: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn summation_list_group_1(&mut self, _minus: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
@@ -2845,7 +2651,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// SummationList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn summation_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn summation_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let summation_list_1_built = Vec::new();
@@ -2860,9 +2666,8 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn multiplication(
         &mut self,
-        _factor: &ParseTreeStackEntry<'t>,
-        _multiplication_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _factor: &ParseTreeType<'t>,
+        _multiplication_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2886,10 +2691,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn multiplication_list_0(
         &mut self,
-        _mul_op: &ParseTreeStackEntry<'t>,
-        _factor: &ParseTreeStackEntry<'t>,
-        _multiplication_list: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _mul_op: &ParseTreeType<'t>,
+        _factor: &ParseTreeType<'t>,
+        _multiplication_list: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -2912,7 +2716,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// MultiplicationList /* Vec<T>::New */: ;
     ///
     #[parol_runtime::function_name::named]
-    fn multiplication_list_1(&mut self, _parse_tree: &Tree<ParseTreeType<'t>>) -> Result<()> {
+    fn multiplication_list_1(&mut self) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let multiplication_list_1_built = Vec::new();
@@ -2928,11 +2732,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Factor: Literal;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_0(
-        &mut self,
-        _literal: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_0(&mut self, _literal: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal = pop_item!(self, literal, Literal, context);
@@ -2951,11 +2751,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Factor: Variable;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_1(
-        &mut self,
-        _variable: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_1(&mut self, _variable: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let variable = pop_item!(self, variable, Variable, context);
@@ -2974,12 +2770,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     /// Factor: Minus Factor;
     ///
     #[parol_runtime::function_name::named]
-    fn factor_2(
-        &mut self,
-        _minus: &ParseTreeStackEntry<'t>,
-        _factor: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
-    ) -> Result<()> {
+    fn factor_2(&mut self, _minus: &ParseTreeType<'t>, _factor: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
@@ -3002,10 +2793,9 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     #[parol_runtime::function_name::named]
     fn factor_3(
         &mut self,
-        _l_paren: &ParseTreeStackEntry<'t>,
-        _expression: &ParseTreeStackEntry<'t>,
-        _r_paren: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _l_paren: &ParseTreeType<'t>,
+        _expression: &ParseTreeType<'t>,
+        _r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
@@ -3032,105 +2822,92 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry<'t>],
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        children: &[ParseTreeType<'t>],
     ) -> Result<()> {
         match prod_num {
-            0 => self.basic(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
-            1 => self.basic_list_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.basic_list_1(parse_tree),
-            3 => self.basic_opt0_0(&children[0], parse_tree),
-            4 => self.basic_opt0_1(parse_tree),
-            5 => self.basic_opt_0(&children[0], parse_tree),
-            6 => self.basic_opt_1(parse_tree),
-            7 => self.line(&children[0], &children[1], &children[2], parse_tree),
-            8 => self.line_list_0(&children[0], &children[1], &children[2], parse_tree),
-            9 => self.line_list_1(parse_tree),
-            10 => self.line_number(&children[0], parse_tree),
-            11 => self.statement_0(&children[0], parse_tree),
-            12 => self.statement_1(&children[0], parse_tree),
-            13 => self.statement_2(&children[0], parse_tree),
-            14 => self.statement_3(&children[0], parse_tree),
-            15 => self.statement_4(&children[0], parse_tree),
-            16 => self.statement_5(&children[0], parse_tree),
-            17 => self.remark(&children[0], &children[1], parse_tree),
-            18 => self.remark_opt_0(&children[0], parse_tree),
-            19 => self.remark_opt_1(parse_tree),
-            20 => self.goto_statement(&children[0], &children[1], parse_tree),
-            21 => self.if_statement(&children[0], &children[1], &children[2], parse_tree),
-            22 => self.assignment(
-                &children[0],
-                &children[1],
-                &children[2],
-                &children[3],
-                parse_tree,
-            ),
-            23 => self.assignment_opt_0(&children[0], parse_tree),
-            24 => self.assignment_opt_1(parse_tree),
-            25 => self.if_body_0(&children[0], &children[1], parse_tree),
-            26 => self.if_body_1(&children[0], &children[1], parse_tree),
-            27 => self.print_statement(&children[0], &children[1], &children[2], parse_tree),
-            28 => self.print_statement_list_0(&children[0], &children[1], &children[2], parse_tree),
-            29 => self.print_statement_list_1(parse_tree),
-            30 => self.end_statement(&children[0], parse_tree),
-            31 => self.end_of_line(&children[0], parse_tree),
-            32 => self.literal(&children[0], parse_tree),
-            33 => self.number_0(&children[0], parse_tree),
-            34 => self.number_1(&children[0], parse_tree),
-            35 => self.float_0(&children[0], parse_tree),
-            36 => self.float_1(&children[0], parse_tree),
-            37 => self.float1(&children[0], parse_tree),
-            38 => self.float2(&children[0], parse_tree),
-            39 => self.integer(&children[0], parse_tree),
-            40 => self.r#if(&children[0], parse_tree),
-            41 => self.then(&children[0], parse_tree),
-            42 => self.goto(&children[0], parse_tree),
-            43 => self.r#let(&children[0], parse_tree),
-            44 => self.print(&children[0], parse_tree),
-            45 => self.end(&children[0], parse_tree),
-            46 => self.assign_op(&children[0], parse_tree),
-            47 => self.logical_or_op(&children[0], parse_tree),
-            48 => self.logical_and_op(&children[0], parse_tree),
-            49 => self.logical_not_op(&children[0], parse_tree),
-            50 => self.relational_op(&children[0], parse_tree),
-            51 => self.plus(&children[0], parse_tree),
-            52 => self.minus(&children[0], parse_tree),
-            53 => self.mul_op(&children[0], parse_tree),
-            54 => self.l_paren(&children[0], parse_tree),
-            55 => self.r_paren(&children[0], parse_tree),
-            56 => self.comment(&children[0], parse_tree),
-            57 => self.variable(&children[0], parse_tree),
-            58 => self.expression(&children[0], parse_tree),
-            59 => self.logical_or(&children[0], &children[1], parse_tree),
-            60 => self.logical_or_list_0(&children[0], &children[1], &children[2], parse_tree),
-            61 => self.logical_or_list_1(parse_tree),
-            62 => self.logical_and(&children[0], &children[1], parse_tree),
-            63 => self.logical_and_list_0(&children[0], &children[1], &children[2], parse_tree),
-            64 => self.logical_and_list_1(parse_tree),
-            65 => self.logical_not(&children[0], &children[1], parse_tree),
-            66 => self.logical_not_opt_0(&children[0], parse_tree),
-            67 => self.logical_not_opt_1(parse_tree),
-            68 => self.relational(&children[0], &children[1], parse_tree),
-            69 => self.relational_list_0(&children[0], &children[1], &children[2], parse_tree),
-            70 => self.relational_list_1(parse_tree),
-            71 => self.summation(&children[0], &children[1], parse_tree),
-            72 => self.summation_list_0(&children[0], &children[1], &children[2], parse_tree),
-            73 => self.summation_list_group_0(&children[0], parse_tree),
-            74 => self.summation_list_group_1(&children[0], parse_tree),
-            75 => self.summation_list_1(parse_tree),
-            76 => self.multiplication(&children[0], &children[1], parse_tree),
-            77 => self.multiplication_list_0(&children[0], &children[1], &children[2], parse_tree),
-            78 => self.multiplication_list_1(parse_tree),
-            79 => self.factor_0(&children[0], parse_tree),
-            80 => self.factor_1(&children[0], parse_tree),
-            81 => self.factor_2(&children[0], &children[1], parse_tree),
-            82 => self.factor_3(&children[0], &children[1], &children[2], parse_tree),
+            0 => self.basic(&children[0], &children[1], &children[2], &children[3]),
+            1 => self.basic_list_0(&children[0], &children[1], &children[2]),
+            2 => self.basic_list_1(),
+            3 => self.basic_opt0_0(&children[0]),
+            4 => self.basic_opt0_1(),
+            5 => self.basic_opt_0(&children[0]),
+            6 => self.basic_opt_1(),
+            7 => self.line(&children[0], &children[1], &children[2]),
+            8 => self.line_list_0(&children[0], &children[1], &children[2]),
+            9 => self.line_list_1(),
+            10 => self.line_number(&children[0]),
+            11 => self.statement_0(&children[0]),
+            12 => self.statement_1(&children[0]),
+            13 => self.statement_2(&children[0]),
+            14 => self.statement_3(&children[0]),
+            15 => self.statement_4(&children[0]),
+            16 => self.statement_5(&children[0]),
+            17 => self.remark(&children[0], &children[1]),
+            18 => self.remark_opt_0(&children[0]),
+            19 => self.remark_opt_1(),
+            20 => self.goto_statement(&children[0], &children[1]),
+            21 => self.if_statement(&children[0], &children[1], &children[2]),
+            22 => self.assignment(&children[0], &children[1], &children[2], &children[3]),
+            23 => self.assignment_opt_0(&children[0]),
+            24 => self.assignment_opt_1(),
+            25 => self.if_body_0(&children[0], &children[1]),
+            26 => self.if_body_1(&children[0], &children[1]),
+            27 => self.print_statement(&children[0], &children[1], &children[2]),
+            28 => self.print_statement_list_0(&children[0], &children[1], &children[2]),
+            29 => self.print_statement_list_1(),
+            30 => self.end_statement(&children[0]),
+            31 => self.end_of_line(&children[0]),
+            32 => self.literal(&children[0]),
+            33 => self.number_0(&children[0]),
+            34 => self.number_1(&children[0]),
+            35 => self.float_0(&children[0]),
+            36 => self.float_1(&children[0]),
+            37 => self.float1(&children[0]),
+            38 => self.float2(&children[0]),
+            39 => self.integer(&children[0]),
+            40 => self.r#if(&children[0]),
+            41 => self.then(&children[0]),
+            42 => self.goto(&children[0]),
+            43 => self.r#let(&children[0]),
+            44 => self.print(&children[0]),
+            45 => self.end(&children[0]),
+            46 => self.assign_op(&children[0]),
+            47 => self.logical_or_op(&children[0]),
+            48 => self.logical_and_op(&children[0]),
+            49 => self.logical_not_op(&children[0]),
+            50 => self.relational_op(&children[0]),
+            51 => self.plus(&children[0]),
+            52 => self.minus(&children[0]),
+            53 => self.mul_op(&children[0]),
+            54 => self.l_paren(&children[0]),
+            55 => self.r_paren(&children[0]),
+            56 => self.comment(&children[0]),
+            57 => self.variable(&children[0]),
+            58 => self.expression(&children[0]),
+            59 => self.logical_or(&children[0], &children[1]),
+            60 => self.logical_or_list_0(&children[0], &children[1], &children[2]),
+            61 => self.logical_or_list_1(),
+            62 => self.logical_and(&children[0], &children[1]),
+            63 => self.logical_and_list_0(&children[0], &children[1], &children[2]),
+            64 => self.logical_and_list_1(),
+            65 => self.logical_not(&children[0], &children[1]),
+            66 => self.logical_not_opt_0(&children[0]),
+            67 => self.logical_not_opt_1(),
+            68 => self.relational(&children[0], &children[1]),
+            69 => self.relational_list_0(&children[0], &children[1], &children[2]),
+            70 => self.relational_list_1(),
+            71 => self.summation(&children[0], &children[1]),
+            72 => self.summation_list_0(&children[0], &children[1], &children[2]),
+            73 => self.summation_list_group_0(&children[0]),
+            74 => self.summation_list_group_1(&children[0]),
+            75 => self.summation_list_1(),
+            76 => self.multiplication(&children[0], &children[1]),
+            77 => self.multiplication_list_0(&children[0], &children[1], &children[2]),
+            78 => self.multiplication_list_1(),
+            79 => self.factor_0(&children[0]),
+            80 => self.factor_1(&children[0]),
+            81 => self.factor_2(&children[0], &children[1]),
+            82 => self.factor_3(&children[0], &children[1], &children[2]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

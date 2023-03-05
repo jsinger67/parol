@@ -176,7 +176,7 @@ expanded grammar `list-exp.par` which can be found in also generated traits file
     fn list_opt_0(
         &mut self,
         _items: &ParseTreeStackEntry<'t>,
-        _parse_tree: &Tree<ParseTreeType<'t>>,
+        _parse_tree: &ParseTree<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));

@@ -37,33 +37,17 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<String> {
         // We reference the parse_tree argument only if a token is in the argument list
         let lifetime = if config.auto_generate() { "<'t>" } else { "" };
-        let mut parse_tree_argument_used = false;
         let mut arguments = Vec::new();
 
         for member_id in symbol_table.members(action_id)? {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
-            let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
-            if (matches!(*arg_type.entrails(), TypeEntrails::Token)
-                || matches!(
-                    *arg_type.entrails(),
-                    TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _)
-                ))
-                && arg_inst.sem() != SymbolAttribute::Clipped
-            {
-                parse_tree_argument_used = true;
-            }
             arguments.push(format!(
-                "{}: &ParseTreeStackEntry{}",
+                "{}: &ParseTreeType{}",
                 NmHlp::add_unused_indicator(arg_inst.used(), symbol_table.name(arg_inst.name_id())),
                 lifetime
             ));
         }
 
-        arguments.push(format!(
-            "{}parse_tree: &Tree<ParseTreeType{}>",
-            NmHlp::item_unused_indicator(config.auto_generate() && parse_tree_argument_used),
-            lifetime
-        ));
         Ok(arguments.join(", "))
     }
 
@@ -94,16 +78,13 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
             if matches!(arg_type.entrails(), TypeEntrails::Token) {
                 let arg_name = symbol_table.name(arg_inst.name_id());
-                code.push(format!(
-                    "let {} = {}.token(parse_tree)?.clone();",
-                    arg_name, arg_name
-                ))
+                code.push(format!("let {} = {}.token()?.clone();", arg_name, arg_name))
             } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _) =
                 arg_type.entrails()
             {
                 let arg_name = symbol_table.name(arg_inst.name_id());
                 code.push(format!(
-                    "let {} = {}.token(parse_tree)?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
+                    "let {} = {}.token()?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
                     arg_name, arg_name,
                 ))
             }
@@ -420,14 +401,13 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
-        let mut arguments = pr
+        let arguments = pr
             .get_r()
             .iter()
             .filter(|s| !s.is_switch())
             .enumerate()
             .map(|(i, _)| format!("&children[{}]", i))
             .collect::<Vec<String>>();
-        arguments.push("parse_tree".to_string());
         arguments.join(", ")
     }
 

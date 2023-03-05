@@ -1,8 +1,7 @@
 use crate::boolean_grammar_trait::BooleanGrammarTrait;
-use id_tree::Tree;
 use parol_macros::parol;
 use parol_runtime::log::trace;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::parser::ParseTreeType;
 use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -288,9 +287,8 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     fn expression(
         &mut self,
-        _term: &ParseTreeStackEntry,
-        _tail_expression: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _term: &ParseTreeType<'_>,
+        _tail_expression: &ParseTreeType<'_>,
     ) -> Result<()> {
         let context = "expression";
         trace!("{}", self.trace_item_stack(context));
@@ -301,12 +299,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// Term: TermOpt Factor;
     ///
-    fn term(
-        &mut self,
-        _term_opt: &ParseTreeStackEntry,
-        _factor: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn term(&mut self, _term_opt: &ParseTreeType<'_>, _factor: &ParseTreeType<'_>) -> Result<()> {
         let context = "term";
         trace!("{}", self.trace_item_stack(context));
         self.process_unary_operator(context)
@@ -316,11 +309,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// TermOpt: UnaryOperator;
     ///
-    fn term_opt_0(
-        &mut self,
-        _unary_operator: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn term_opt_0(&mut self, _unary_operator: &ParseTreeType<'_>) -> Result<()> {
         let context = "term_opt_0";
         trace!("{}", self.trace_item_stack(context));
         self.push(BooleanGrammarItem::UnaryOp(UnaryOp::Not), context);
@@ -331,11 +320,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: AndOp;
     ///
-    fn binary_operator_0(
-        &mut self,
-        _and_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_0(&mut self, _and_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_0";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -345,11 +330,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: OrOp;
     ///
-    fn binary_operator_1(
-        &mut self,
-        _or_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_1(&mut self, _or_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_1";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -359,11 +340,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: XorOp;
     ///
-    fn binary_operator_2(
-        &mut self,
-        _xor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_2(&mut self, _xor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_2";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -373,11 +350,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: NorOp;
     ///
-    fn binary_operator_3(
-        &mut self,
-        _nor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_3(&mut self, _nor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_3";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -387,11 +360,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: NandOp;
     ///
-    fn binary_operator_4(
-        &mut self,
-        _nand_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_4(&mut self, _nand_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_4";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -401,11 +370,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// BinaryOperator: XnorOp;
     ///
-    fn binary_operator_5(
-        &mut self,
-        _xnor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_5(&mut self, _xnor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "binary_operator_5";
         trace!("{}", self.trace_item_stack(context));
         self.process_left_assoc(context)
@@ -415,11 +380,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// AndOp: "(?i)AND";
     ///
-    fn and_op(
-        &mut self,
-        _and_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn and_op(&mut self, _and_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "and_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::And;
@@ -432,11 +393,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// OrOp: "(?i)OR";
     ///
-    fn or_op(
-        &mut self,
-        _or_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn or_op(&mut self, _or_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "or_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::Or;
@@ -449,11 +406,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// XorOp: "(?i)XOR";
     ///
-    fn xor_op(
-        &mut self,
-        _xor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn xor_op(&mut self, _xor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "xor_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::Xor;
@@ -466,11 +419,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// NorOp: "(?i)NOR";
     ///
-    fn nor_op(
-        &mut self,
-        _nor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn nor_op(&mut self, _nor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "nor_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::Nor;
@@ -483,11 +432,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// NandOp: "(?i)NAND";
     ///
-    fn nand_op(
-        &mut self,
-        _nand_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn nand_op(&mut self, _nand_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "nand_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::Nand;
@@ -500,11 +445,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// XnorOp: "(?i)XNOR";
     ///
-    fn xnor_op(
-        &mut self,
-        _xnor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn xnor_op(&mut self, _xnor_op: &ParseTreeType<'_>) -> Result<()> {
         let context = "xnor_op";
         trace!("{}", self.trace_item_stack(context));
         let op = BinaryOp::Xnor;
@@ -517,11 +458,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// True: "(?i)TRUE";
     ///
-    fn r#true(
-        &mut self,
-        _true: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn r#true(&mut self, _true: &ParseTreeType<'_>) -> Result<()> {
         let context = "r#true";
         let val = BooleanGrammarItem::Val(true);
         self.record_expression(&val);
@@ -533,11 +470,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// False: "(?i)FALSE";
     ///
-    fn r#false(
-        &mut self,
-        _false: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn r#false(&mut self, _false: &ParseTreeType<'_>) -> Result<()> {
         let context = "r#false";
         let val = BooleanGrammarItem::Val(false);
         self.record_expression(&val);
@@ -549,7 +482,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// Not: "(?i)NOT";
     ///
-    fn not(&mut self, _not: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn not(&mut self, _not: &ParseTreeType<'_>) -> Result<()> {
         let context = "not";
         let op = UnaryOp::Not;
         self.record_expression(&op);
@@ -561,11 +494,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// Semicolon: ";";
     ///
-    fn semicolon(
-        &mut self,
-        _semicolon: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn semicolon(&mut self, _semicolon: &ParseTreeType<'_>) -> Result<()> {
         self.expression_stack.push(String::new());
         Ok(())
     }
@@ -574,11 +503,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// LeftParenthesis: "\(";
     ///
-    fn left_parenthesis(
-        &mut self,
-        _left_parenthesis: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn left_parenthesis(&mut self, _left_parenthesis: &ParseTreeType<'_>) -> Result<()> {
         self.record_expression(&"(");
         Ok(())
     }
@@ -587,11 +512,7 @@ impl BooleanGrammarTrait for BooleanGrammar {
     ///
     /// RightParenthesis: "\)";
     ///
-    fn right_parenthesis(
-        &mut self,
-        _right_parenthesis: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn right_parenthesis(&mut self, _right_parenthesis: &ParseTreeType<'_>) -> Result<()> {
         self.record_expression(&")");
         Ok(())
     }

@@ -130,9 +130,8 @@ use crate::{
     GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,
 };
 use clap::{Parser, ValueEnum};
-use id_tree::Tree;
 use parol_macros::parol;
-use parol_runtime::{ParseTreeType, Result};
+use parol_runtime::{ParseTree, Result};
 
 /// Contains all attributes that should be inserted optionally on top of the generated trait source.
 /// * Used in the Builder API. Therefore it mus be public
@@ -663,7 +662,7 @@ enum State {
 pub trait BuildListener {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &Tree<ParseTreeType>,
+        syntax_tree: &ParseTree<'_>,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         Ok(())
@@ -681,7 +680,7 @@ struct MaybeBuildListener<'l>(Option<&'l mut dyn BuildListener>);
 impl<'l> BuildListener for MaybeBuildListener<'l> {
     fn on_initial_grammar_parse(
         &mut self,
-        syntax_tree: &Tree<ParseTreeType>,
+        syntax_tree: &ParseTree<'_>,
         grammar: &ParolGrammar,
     ) -> Result<()> {
         if let Some(ref mut inner) = self.0 {

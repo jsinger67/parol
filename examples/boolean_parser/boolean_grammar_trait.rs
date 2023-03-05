@@ -9,10 +9,8 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::id_tree::Tree;
-
 use crate::boolean_grammar::BooleanGrammar;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 ///
@@ -27,10 +25,9 @@ pub trait BooleanGrammarTrait {
     ///
     fn expressions(
         &mut self,
-        _expression: &ParseTreeStackEntry,
-        _expressions_list: &ParseTreeStackEntry,
-        _expressions_opt: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _expression: &ParseTreeType,
+        _expressions_list: &ParseTreeType,
+        _expressions_opt: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -41,10 +38,9 @@ pub trait BooleanGrammarTrait {
     ///
     fn expressions_list_0(
         &mut self,
-        _semicolon: &ParseTreeStackEntry,
-        _expression: &ParseTreeStackEntry,
-        _expressions_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _semicolon: &ParseTreeType,
+        _expression: &ParseTreeType,
+        _expressions_list: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -53,7 +49,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// ExpressionsList /* Vec<T>::New */: ;
     ///
-    fn expressions_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn expressions_list_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -61,11 +57,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// ExpressionsOpt /* Option<T>::Some */: Semicolon;
     ///
-    fn expressions_opt_0(
-        &mut self,
-        _semicolon: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn expressions_opt_0(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -73,7 +65,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// ExpressionsOpt /* Option<T>::None */: ;
     ///
-    fn expressions_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn expressions_opt_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -83,9 +75,8 @@ pub trait BooleanGrammarTrait {
     ///
     fn expression(
         &mut self,
-        _term: &ParseTreeStackEntry,
-        _tail_expression: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _term: &ParseTreeType,
+        _tail_expression: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -94,11 +85,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// TailExpression: TailExpressionList /* Vec */;
     ///
-    fn tail_expression(
-        &mut self,
-        _tail_expression_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn tail_expression(&mut self, _tail_expression_list: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -108,10 +95,9 @@ pub trait BooleanGrammarTrait {
     ///
     fn tail_expression_list_0(
         &mut self,
-        _binary_operator: &ParseTreeStackEntry,
-        _term: &ParseTreeStackEntry,
-        _tail_expression_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _binary_operator: &ParseTreeType,
+        _term: &ParseTreeType,
+        _tail_expression_list: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -120,7 +106,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// TailExpressionList /* Vec<T>::New */: ;
     ///
-    fn tail_expression_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn tail_expression_list_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -128,12 +114,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Term: TermOpt /* Option */ Factor;
     ///
-    fn term(
-        &mut self,
-        _term_opt: &ParseTreeStackEntry,
-        _factor: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn term(&mut self, _term_opt: &ParseTreeType, _factor: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -141,11 +122,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// TermOpt /* Option<T>::Some */: UnaryOperator;
     ///
-    fn term_opt_0(
-        &mut self,
-        _unary_operator: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn term_opt_0(&mut self, _unary_operator: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -153,7 +130,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// TermOpt /* Option<T>::None */: ;
     ///
-    fn term_opt_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn term_opt_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -161,11 +138,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Boolean: True;
     ///
-    fn boolean_0(
-        &mut self,
-        _true: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn boolean_0(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -173,11 +146,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Boolean: False;
     ///
-    fn boolean_1(
-        &mut self,
-        _false: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn boolean_1(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -185,11 +154,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// UnaryOperator: Not;
     ///
-    fn unary_operator(
-        &mut self,
-        _not: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn unary_operator(&mut self, _not: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -197,11 +162,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: AndOp;
     ///
-    fn binary_operator_0(
-        &mut self,
-        _and_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_0(&mut self, _and_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -209,11 +170,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: OrOp;
     ///
-    fn binary_operator_1(
-        &mut self,
-        _or_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_1(&mut self, _or_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -221,11 +178,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: XorOp;
     ///
-    fn binary_operator_2(
-        &mut self,
-        _xor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_2(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -233,11 +186,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: NorOp;
     ///
-    fn binary_operator_3(
-        &mut self,
-        _nor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_3(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -245,11 +194,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: NandOp;
     ///
-    fn binary_operator_4(
-        &mut self,
-        _nand_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_4(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -257,11 +202,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// BinaryOperator: XnorOp;
     ///
-    fn binary_operator_5(
-        &mut self,
-        _xnor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn binary_operator_5(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -269,11 +210,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// AndOp: "(?i)AND";
     ///
-    fn and_op(
-        &mut self,
-        _and_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn and_op(&mut self, _and_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -281,11 +218,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// OrOp: "(?i)OR";
     ///
-    fn or_op(
-        &mut self,
-        _or_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn or_op(&mut self, _or_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -293,11 +226,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// XorOp: "(?i)XOR";
     ///
-    fn xor_op(
-        &mut self,
-        _xor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn xor_op(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -305,11 +234,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// NorOp: "(?i)NOR";
     ///
-    fn nor_op(
-        &mut self,
-        _nor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn nor_op(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -317,11 +242,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// NandOp: "(?i)NAND";
     ///
-    fn nand_op(
-        &mut self,
-        _nand_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn nand_op(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -329,11 +250,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// XnorOp: "(?i)XNOR";
     ///
-    fn xnor_op(
-        &mut self,
-        _xnor_op: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn xnor_op(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -341,11 +258,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// True: "(?i)TRUE";
     ///
-    fn r#true(
-        &mut self,
-        _true: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn r#true(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -353,11 +266,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// False: "(?i)FALSE";
     ///
-    fn r#false(
-        &mut self,
-        _false: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn r#false(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -365,7 +274,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Not: "(?i)NOT";
     ///
-    fn not(&mut self, _not: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn not(&mut self, _not: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -375,10 +284,9 @@ pub trait BooleanGrammarTrait {
     ///
     fn parenthesized(
         &mut self,
-        _left_parenthesis: &ParseTreeStackEntry,
-        _expression: &ParseTreeStackEntry,
-        _right_parenthesis: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _left_parenthesis: &ParseTreeType,
+        _expression: &ParseTreeType,
+        _right_parenthesis: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -387,11 +295,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Semicolon: ";";
     ///
-    fn semicolon(
-        &mut self,
-        _semicolon: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn semicolon(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -399,11 +303,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// LeftParenthesis: "\(";
     ///
-    fn left_parenthesis(
-        &mut self,
-        _left_parenthesis: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn left_parenthesis(&mut self, _left_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -411,11 +311,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// RightParenthesis: "\)";
     ///
-    fn right_parenthesis(
-        &mut self,
-        _right_parenthesis: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn right_parenthesis(&mut self, _right_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -423,11 +319,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Factor: Boolean;
     ///
-    fn factor_0(
-        &mut self,
-        _boolean: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn factor_0(&mut self, _boolean: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -435,11 +327,7 @@ pub trait BooleanGrammarTrait {
     ///
     /// Factor: Parenthesized;
     ///
-    fn factor_1(
-        &mut self,
-        _parenthesized: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn factor_1(&mut self, _parenthesized: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 }
@@ -451,46 +339,45 @@ impl UserActionsTrait<'_> for BooleanGrammar {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeType],
     ) -> Result<()> {
         match prod_num {
-            0 => self.expressions(&children[0], &children[1], &children[2], parse_tree),
-            1 => self.expressions_list_0(&children[0], &children[1], &children[2], parse_tree),
-            2 => self.expressions_list_1(parse_tree),
-            3 => self.expressions_opt_0(&children[0], parse_tree),
-            4 => self.expressions_opt_1(parse_tree),
-            5 => self.expression(&children[0], &children[1], parse_tree),
-            6 => self.tail_expression(&children[0], parse_tree),
-            7 => self.tail_expression_list_0(&children[0], &children[1], &children[2], parse_tree),
-            8 => self.tail_expression_list_1(parse_tree),
-            9 => self.term(&children[0], &children[1], parse_tree),
-            10 => self.term_opt_0(&children[0], parse_tree),
-            11 => self.term_opt_1(parse_tree),
-            12 => self.boolean_0(&children[0], parse_tree),
-            13 => self.boolean_1(&children[0], parse_tree),
-            14 => self.unary_operator(&children[0], parse_tree),
-            15 => self.binary_operator_0(&children[0], parse_tree),
-            16 => self.binary_operator_1(&children[0], parse_tree),
-            17 => self.binary_operator_2(&children[0], parse_tree),
-            18 => self.binary_operator_3(&children[0], parse_tree),
-            19 => self.binary_operator_4(&children[0], parse_tree),
-            20 => self.binary_operator_5(&children[0], parse_tree),
-            21 => self.and_op(&children[0], parse_tree),
-            22 => self.or_op(&children[0], parse_tree),
-            23 => self.xor_op(&children[0], parse_tree),
-            24 => self.nor_op(&children[0], parse_tree),
-            25 => self.nand_op(&children[0], parse_tree),
-            26 => self.xnor_op(&children[0], parse_tree),
-            27 => self.r#true(&children[0], parse_tree),
-            28 => self.r#false(&children[0], parse_tree),
-            29 => self.not(&children[0], parse_tree),
-            30 => self.parenthesized(&children[0], &children[1], &children[2], parse_tree),
-            31 => self.semicolon(&children[0], parse_tree),
-            32 => self.left_parenthesis(&children[0], parse_tree),
-            33 => self.right_parenthesis(&children[0], parse_tree),
-            34 => self.factor_0(&children[0], parse_tree),
-            35 => self.factor_1(&children[0], parse_tree),
+            0 => self.expressions(&children[0], &children[1], &children[2]),
+            1 => self.expressions_list_0(&children[0], &children[1], &children[2]),
+            2 => self.expressions_list_1(),
+            3 => self.expressions_opt_0(&children[0]),
+            4 => self.expressions_opt_1(),
+            5 => self.expression(&children[0], &children[1]),
+            6 => self.tail_expression(&children[0]),
+            7 => self.tail_expression_list_0(&children[0], &children[1], &children[2]),
+            8 => self.tail_expression_list_1(),
+            9 => self.term(&children[0], &children[1]),
+            10 => self.term_opt_0(&children[0]),
+            11 => self.term_opt_1(),
+            12 => self.boolean_0(&children[0]),
+            13 => self.boolean_1(&children[0]),
+            14 => self.unary_operator(&children[0]),
+            15 => self.binary_operator_0(&children[0]),
+            16 => self.binary_operator_1(&children[0]),
+            17 => self.binary_operator_2(&children[0]),
+            18 => self.binary_operator_3(&children[0]),
+            19 => self.binary_operator_4(&children[0]),
+            20 => self.binary_operator_5(&children[0]),
+            21 => self.and_op(&children[0]),
+            22 => self.or_op(&children[0]),
+            23 => self.xor_op(&children[0]),
+            24 => self.nor_op(&children[0]),
+            25 => self.nand_op(&children[0]),
+            26 => self.xnor_op(&children[0]),
+            27 => self.r#true(&children[0]),
+            28 => self.r#false(&children[0]),
+            29 => self.not(&children[0]),
+            30 => self.parenthesized(&children[0], &children[1], &children[2]),
+            31 => self.semicolon(&children[0]),
+            32 => self.left_parenthesis(&children[0]),
+            33 => self.right_parenthesis(&children[0]),
+            34 => self.factor_0(&children[0]),
+            35 => self.factor_1(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

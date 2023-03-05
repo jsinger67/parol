@@ -9,10 +9,8 @@
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
 
-use parol_runtime::id_tree::Tree;
-
 use crate::scanner_states_grammar::ScannerStatesGrammar;
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType, UserActionsTrait};
+use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
 use parol_runtime::{ParserError, Result};
 
 ///
@@ -25,11 +23,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// Start: StartList /* Vec */;
     ///
-    fn start(
-        &mut self,
-        _start_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn start(&mut self, _start_list: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -39,9 +33,8 @@ pub trait ScannerStatesGrammarTrait {
     ///
     fn start_list_0(
         &mut self,
-        _content: &ParseTreeStackEntry,
-        _start_list: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _content: &ParseTreeType,
+        _start_list: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -50,7 +43,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StartList /* Vec<T>::New */: ;
     ///
-    fn start_list_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn start_list_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -58,11 +51,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// Content: Identifier;
     ///
-    fn content_0(
-        &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn content_0(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -72,10 +61,9 @@ pub trait ScannerStatesGrammarTrait {
     ///
     fn content_1(
         &mut self,
-        _string_delimiter: &ParseTreeStackEntry,
-        _string_content: &ParseTreeStackEntry,
-        _string_delimiter0: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _string_delimiter: &ParseTreeType,
+        _string_content: &ParseTreeType,
+        _string_delimiter0: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -86,9 +74,8 @@ pub trait ScannerStatesGrammarTrait {
     ///
     fn string_content_0(
         &mut self,
-        _string_element: &ParseTreeStackEntry,
-        _string_content: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
+        _string_element: &ParseTreeType,
+        _string_content: &ParseTreeType,
     ) -> Result<()> {
         Ok(())
     }
@@ -97,7 +84,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringContent: ;
     ///
-    fn string_content_1(&mut self, _parse_tree: &Tree<ParseTreeType>) -> Result<()> {
+    fn string_content_1(&mut self) -> Result<()> {
         Ok(())
     }
 
@@ -105,11 +92,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringElement: Escaped;
     ///
-    fn string_element_0(
-        &mut self,
-        _escaped: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn string_element_0(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -117,11 +100,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringElement: EscapedLineEnd;
     ///
-    fn string_element_1(
-        &mut self,
-        _escaped_line_end: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn string_element_1(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -129,11 +108,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringElement: NoneQuote;
     ///
-    fn string_element_2(
-        &mut self,
-        _none_quote: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn string_element_2(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -141,11 +116,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// Identifier: "[a-zA-Z_]\w*";
     ///
-    fn identifier(
-        &mut self,
-        _identifier: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -153,11 +124,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
     ///
-    fn escaped(
-        &mut self,
-        _escaped: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn escaped(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -165,11 +132,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";
     ///
-    fn escaped_line_end(
-        &mut self,
-        _escaped_line_end: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn escaped_line_end(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -177,11 +140,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// NoneQuote: <String>"[^\u{22}\u{5c}]+";
     ///
-    fn none_quote(
-        &mut self,
-        _none_quote: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn none_quote(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -189,11 +148,7 @@ pub trait ScannerStatesGrammarTrait {
     ///
     /// StringDelimiter: <INITIAL, String>"\u{22}";
     ///
-    fn string_delimiter(
-        &mut self,
-        _string_delimiter: &ParseTreeStackEntry,
-        _parse_tree: &Tree<ParseTreeType>,
-    ) -> Result<()> {
+    fn string_delimiter(&mut self, _string_delimiter: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 }
@@ -205,25 +160,24 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry],
-        parse_tree: &Tree<ParseTreeType>,
+        children: &[ParseTreeType],
     ) -> Result<()> {
         match prod_num {
-            0 => self.start(&children[0], parse_tree),
-            1 => self.start_list_0(&children[0], &children[1], parse_tree),
-            2 => self.start_list_1(parse_tree),
-            3 => self.content_0(&children[0], parse_tree),
-            4 => self.content_1(&children[0], &children[1], &children[2], parse_tree),
-            5 => self.string_content_0(&children[0], &children[1], parse_tree),
-            6 => self.string_content_1(parse_tree),
-            7 => self.string_element_0(&children[0], parse_tree),
-            8 => self.string_element_1(&children[0], parse_tree),
-            9 => self.string_element_2(&children[0], parse_tree),
-            10 => self.identifier(&children[0], parse_tree),
-            11 => self.escaped(&children[0], parse_tree),
-            12 => self.escaped_line_end(&children[0], parse_tree),
-            13 => self.none_quote(&children[0], parse_tree),
-            14 => self.string_delimiter(&children[0], parse_tree),
+            0 => self.start(&children[0]),
+            1 => self.start_list_0(&children[0], &children[1]),
+            2 => self.start_list_1(),
+            3 => self.content_0(&children[0]),
+            4 => self.content_1(&children[0], &children[1], &children[2]),
+            5 => self.string_content_0(&children[0], &children[1]),
+            6 => self.string_content_1(),
+            7 => self.string_element_0(&children[0]),
+            8 => self.string_element_1(&children[0]),
+            9 => self.string_element_2(&children[0]),
+            10 => self.identifier(&children[0]),
+            11 => self.escaped(&children[0]),
+            12 => self.escaped_line_end(&children[0]),
+            13 => self.none_quote(&children[0]),
+            14 => self.string_delimiter(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

@@ -27,9 +27,9 @@ pub use lexer::{
 ///
 pub mod parser;
 pub use parser::{
-    DFAState, DFATransition, LLKParser, LookaheadDFA, NonTerminalIndex, ParseStack,
-    ParseTreeStackEntry, ParseTreeType, ParseType, Production, ProductionIndex, ScannerIndex,
-    StateIndex, UserActionsTrait,
+    DFAState, DFATransition, LLKParser, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTree,
+    ParseTreeType, ParseType, Production, ProductionIndex, ScannerIndex, StateIndex,
+    UserActionsTrait,
 };
 
 ///
@@ -45,9 +45,9 @@ pub use codespan_reporting;
 #[cfg(feature = "auto_generation")]
 pub use derive_builder;
 pub use function_name;
-pub use id_tree;
-pub use id_tree_layout;
 pub use log;
 pub use once_cell;
 #[cfg(feature = "auto_generation")]
 pub use parol_macros;
+pub use syntree;
+pub use syntree_layout;

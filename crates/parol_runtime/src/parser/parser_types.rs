@@ -1,11 +1,11 @@
 use crate::{
-    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParseStack,
-    ParseTreeStackEntry, ParseTreeType, ParseType, ParserError, ProductionIndex, Result,
-    TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeType,
+    ParseType, ParserError, ProductionIndex, Result, TokenStream, TokenVec, UnexpectedToken,
+    UserActionsTrait,
 };
-use id_tree::{InsertBehavior, MoveBehavior, Node, RemoveBehavior, Tree};
 use log::{debug, trace};
 use std::cell::RefCell;
+use syntree::{Builder, Tree};
 
 ///
 /// The type that contains all data to process a production within the parser.
@@ -51,6 +51,12 @@ impl Production {
     }
 }
 
+/// The type used for the parse tree
+pub type ParseTree<'t> = Tree<ParseTreeType<'t>, u32, usize>;
+
+/// The parse tree builder type
+type TreeBuilder<'t> = Builder<ParseTreeType<'t>, u32, usize>;
+
 ///
 /// The actual LLK parser.
 /// It resembles a PDA.
@@ -77,16 +83,11 @@ pub struct LLKParser<'t> {
     pub production_depth: usize,
 
     ///
-    /// The parse tree the parser creates
-    ///
-    pub parse_tree: Tree<ParseTreeType<'t>>,
-
-    ///
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     /// This stack is also used to provide arguments to semantic user actions.
     ///
-    parse_tree_stack: Vec<ParseTreeStackEntry<'t>>,
+    parse_tree_stack: Vec<ParseTreeType<'t>>,
 
     ///
     /// The array of generated lookahead automata.
@@ -133,7 +134,6 @@ impl<'t> LLKParser<'t> {
             start_symbol_index,
             parser_stack: ParseStack::new(terminal_names, non_terminal_names),
             production_depth: 0,
-            parse_tree: Tree::new(),
             parse_tree_stack: Vec::new(),
             lookahead_automata,
             productions,
@@ -166,35 +166,29 @@ impl<'t> LLKParser<'t> {
         None
     }
 
-    fn push_production(&mut self, prod_num: ProductionIndex) {
+    fn push_production(
+        &mut self,
+        tree_builder: &mut TreeBuilder<'t>,
+        prod_num: ProductionIndex,
+    ) -> Result<()> {
         self.parser_stack.stack.push(ParseType::E(prod_num));
         for s in self.productions[prod_num].production {
             self.parser_stack.stack.push(*s);
         }
+
+        // Open a 'production entry' node in the tree
+        if !self.trim_parse_tree {
+            tree_builder
+                .open(ParseTreeType::N(
+                    self.non_terminal_names[self.productions[prod_num].lhs],
+                ))
+                .map_err(|source| ParserError::TreeError { source })?;
+        }
+
         // Now push a 'production entry' onto the parse stack
-        let root_node_id = self.parse_tree.root_node_id().cloned();
-
-        let node_id = if let Some(root_node_id) = root_node_id {
-            // We create a new non-terminal node and temporarily insert it under the root node
-            self.parse_tree.insert(
-                Node::new(ParseTreeType::N(
-                    self.non_terminal_names[self.productions[prod_num].lhs],
-                )),
-                InsertBehavior::UnderNode(&root_node_id),
-            )
-        } else {
-            // We create a new non-terminal node and insert it as the root node
-            self.parse_tree.insert(
-                Node::new(ParseTreeType::N(
-                    self.non_terminal_names[self.productions[prod_num].lhs],
-                )),
-                InsertBehavior::AsRoot,
-            )
-        };
-
-        // The node's id is pushed on the parse stack
-        self.parse_tree_stack
-            .push(ParseTreeStackEntry::Id(node_id.unwrap()));
+        self.parse_tree_stack.push(ParseTreeType::N(
+            self.non_terminal_names[self.productions[prod_num].lhs],
+        ));
 
         self.production_depth += 1;
         trace!(
@@ -203,10 +197,13 @@ impl<'t> LLKParser<'t> {
             self.productions[prod_num].production.len(),
             self.production_depth
         );
+
+        Ok(())
     }
 
     fn process_item_stack<'u>(
         &mut self,
+        tree_builder: &mut TreeBuilder<'t>,
         prod_num: ProductionIndex,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<()> {
@@ -222,81 +219,15 @@ impl<'t> LLKParser<'t> {
             .split_off(self.parse_tree_stack.len() - l);
 
         // With the children we can call the user's semantic action
-        user_actions.call_semantic_action_for_production_number(
-            prod_num,
-            &children,
-            &self.parse_tree,
-        )?;
+        user_actions.call_semantic_action_for_production_number(prod_num, &children)?;
 
-        // At the top of the parse tree stack we find the node id of the left-hand side of the
-        // current processed production.
-        let tos = self.parse_tree_stack.pop();
-
-        if let Some(ParseTreeStackEntry::Id(non_terminal_node_id)) = tos {
-            if self.trim_parse_tree {
-                self.cut_parse_tree(&non_terminal_node_id)
-            } else {
-                self.build_parse_tree(children, non_terminal_node_id)
-            }
+        if !self.trim_parse_tree {
+            // And we close the production subtree
+            tree_builder
+                .close()
+                .map_err(|source| ParserError::TreeError { source }.into())
         } else {
-            Err(ParserError::InternalError(format!(
-                "Expected node id on parse tree stack, found {:?}",
-                tos
-            ))
-            .into())
-        }
-    }
-
-    fn build_parse_tree(
-        &mut self,
-        children: Vec<ParseTreeStackEntry<'t>>,
-        non_terminal_node_id: id_tree::NodeId,
-    ) -> Result<()> {
-        // Insert the children under the non-terminal node
-        children
-            .into_iter()
-            .fold(Ok(()), |mut acc, c| match c {
-                ParseTreeStackEntry::Id(child_node_id) => {
-                    if acc.is_ok() {
-                        acc = self.parse_tree.move_node(
-                            &child_node_id,
-                            MoveBehavior::ToParent(&non_terminal_node_id),
-                        );
-                    }
-                    acc
-                }
-                ParseTreeStackEntry::Nd(node) => {
-                    if acc.is_ok() {
-                        acc = self
-                            .parse_tree
-                            .insert(node, InsertBehavior::UnderNode(&non_terminal_node_id))
-                            .map(|_| ());
-                    }
-                    acc
-                }
-            })
-            .map(|_| {
-                self.parse_tree_stack
-                    .push(ParseTreeStackEntry::Id(non_terminal_node_id))
-            })
-            .map_err(|e| ParserError::IdTreeError { source: e }.into())
-    }
-
-    fn cut_parse_tree(&mut self, non_terminal_node_id: &id_tree::NodeId) -> Result<()> {
-        // Remove the node from the tree unless it is the root node.
-        if Some(non_terminal_node_id) == self.parse_tree.root_node_id() {
-            self.parse_tree_stack
-                .push(ParseTreeStackEntry::Id(non_terminal_node_id.clone()));
             Ok(())
-        } else {
-            self.parse_tree
-                .remove_node(non_terminal_node_id.clone(), RemoveBehavior::DropChildren)
-                .map(|_| {
-                    self.parse_tree_stack.push(ParseTreeStackEntry::Id(
-                        self.parse_tree.root_node_id().unwrap().clone(),
-                    ))
-                })
-                .map_err(|e| crate::ParserError::IdTreeError { source: e }.into())
         }
     }
 
@@ -335,7 +266,7 @@ impl<'t> LLKParser<'t> {
         &mut self,
         stream: RefCell<TokenStream<'t>>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
-    ) -> Result<()> {
+    ) -> Result<ParseTree<'t>> {
         let prod_num = match self.predict_production(self.start_symbol_index, &stream) {
             Ok(prod_num) => prod_num,
             Err(source) => {
@@ -366,7 +297,9 @@ impl<'t> LLKParser<'t> {
             }
         };
 
-        self.push_production(prod_num);
+        let mut tree_builder = TreeBuilder::new();
+
+        self.push_production(&mut tree_builder, prod_num)?;
 
         while !self.input_accepted() {
             if let Some(entry) = self.parser_stack.stack.last().cloned() {
@@ -377,8 +310,12 @@ impl<'t> LLKParser<'t> {
                             trace!("Consuming token {}", token);
                             stream.borrow_mut().consume()?;
                             self.parser_stack.stack.pop();
-                            self.parse_tree_stack
-                                .push(ParseTreeStackEntry::Nd(Node::new(ParseTreeType::T(token))));
+                            if !self.trim_parse_tree {
+                                tree_builder
+                                    .token(ParseTreeType::T(token.clone()), 1)
+                                    .map_err(|source| ParserError::TreeError { source })?;
+                            }
+                            self.parse_tree_stack.push(ParseTreeType::T(token));
                         } else {
                             let mut expected_tokens = TokenVec::default();
                             expected_tokens.push(self.terminal_names[t].to_string());
@@ -408,7 +345,7 @@ impl<'t> LLKParser<'t> {
                     ParseType::N(n) => match self.predict_production(n, &stream) {
                         Ok(prod_num) => {
                             self.parser_stack.stack.pop();
-                            self.push_production(prod_num);
+                            self.push_production(&mut tree_builder, prod_num)?;
                         }
                         Err(source) => {
                             let nt_name = self.non_terminal_names[n];
@@ -471,7 +408,7 @@ impl<'t> LLKParser<'t> {
                         self.production_depth -= 1;
                         debug!("Popped production {} -> depth {}", p, self.production_depth);
                         self.parser_stack.stack.pop(); // Pop the End of production marker
-                        self.process_item_stack(p, user_actions)?;
+                        self.process_item_stack(&mut tree_builder, p, user_actions)?;
                     }
                 }
             }
@@ -484,7 +421,9 @@ impl<'t> LLKParser<'t> {
             })
             .into())
         } else {
-            Ok(())
+            Ok(tree_builder
+                .build()
+                .map_err(|source| ParserError::TreeError { source })?)
         }
     }
 }

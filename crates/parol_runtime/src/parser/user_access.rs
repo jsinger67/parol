@@ -1,8 +1,4 @@
-use crate::{
-    parser::{ParseTreeStackEntry, ParseTreeType},
-    Result,
-};
-use id_tree::Tree;
+use crate::{ParseTreeType, Result};
 
 ///
 /// This trait is used as a coupling point between the generated parser and
@@ -19,7 +15,6 @@ pub trait UserActionsTrait<'t> {
     fn call_semantic_action_for_production_number(
         &mut self,
         prod_num: usize,
-        children: &[ParseTreeStackEntry<'t>],
-        parse_tree: &Tree<ParseTreeType<'t>>,
+        children: &[ParseTreeType<'t>],
     ) -> Result<()>;
 }

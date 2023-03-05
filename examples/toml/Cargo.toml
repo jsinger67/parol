@@ -15,8 +15,8 @@ edition = "2021"
 anyhow = { workspace = true }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-id_tree = { workspace = true }
-id_tree_layout = { workspace = true }
+syntree = { workspace = true }
+syntree_layout = { workspace = true }
 log = { workspace = true }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
 parol-macros = { path = "../../crates/parol-macros" }
