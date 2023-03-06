@@ -16,13 +16,13 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.15.0 -
+## 0.15.0 - 2023-03-06
 
-* Exchanged id_tree by syntree
+* Exchanged `id_tree` by `syntree`
   * This includes major API changes that have impact on user code. Please open discussions for
   migration support
 
-## 0.14.0 - 23-02-25
+## 0.14.0 - 2023-02-25
 
 * Filled some missing source documentations
 * Fixed issue [#58](https://github.com/jsinger67/parol/issues/58)
