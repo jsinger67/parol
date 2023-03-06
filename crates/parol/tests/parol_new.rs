@@ -15,6 +15,11 @@ fn snapshot_path(name: &str) -> PathBuf {
         .join(name)
 }
 
+fn write_command_output(output: &std::process::Output) {
+    std::io::stdout().write_all(&output.stdout).unwrap();
+    std::io::stderr().write_all(&output.stderr).unwrap();
+}
+
 fn diff<L, R>(actual: L, expected: R)
 where
     L: AsRef<Path>,
@@ -22,16 +27,41 @@ where
 {
     fs::remove_file(actual.as_ref().join("Cargo.lock")).unwrap();
     fs::remove_dir_all(actual.as_ref().join(".git")).unwrap();
-    let diff = Command::new("git")
-        .args(["diff", "--no-index"])
-        .args([actual.as_ref(), expected.as_ref()])
-        .assert();
 
-    let output = diff.get_output();
-    std::io::stdout().write_all(&output.stdout).unwrap();
-    std::io::stderr().write_all(&output.stderr).unwrap();
+    let local_package_version = concat!("parol = \"", env!("CARGO_PKG_VERSION"), "\"");
 
-    diff.success();
+    // Check if the current package version is already released on crates.io.
+    let pre_release_state = !std::str::from_utf8(
+        &std::process::Command::new("cargo")
+            .args([
+                "search", "parol", "--limit", "1", "--quiet", "--color", "never",
+            ])
+            .output()
+            .unwrap()
+            .stdout,
+    )
+    .unwrap()
+    .contains(local_package_version);
+
+    if pre_release_state {
+        // In pre-release mode we only print out the diffs here
+        // because the comparisons would always fail.
+        let output = std::process::Command::new("git")
+            .args(["diff", "--no-index"])
+            .args([actual.as_ref(), expected.as_ref()])
+            .output()
+            .unwrap();
+        write_command_output(&output);
+    } else {
+        // If not in pre-release mode we assert on diffs.
+        let diff = Command::new("git")
+            .args(["diff", "--no-index"])
+            .args([actual.as_ref(), expected.as_ref()])
+            .assert();
+
+        let output = diff.get_output();
+        write_command_output(output);
+    };
 }
 
 #[test]
