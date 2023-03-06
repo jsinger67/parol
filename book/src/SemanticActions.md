@@ -52,8 +52,7 @@ pub trait VanillaListGrammarTrait {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>)
-      -> Result<()> {
+    fn num(&mut self, _num: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 
@@ -73,8 +72,7 @@ nothing but returning `Ok`.
 The second property of a all these functions is that the first argument always is a mutable
 reference to the implementing item, in this case a reference to `VanillaListGrammar`.
 
-The rest of the arguments correspond to the right-hand side of the respective production, except the
-last one which is needed to access the parse tree.
+The rest of the arguments correspond to the right-hand side of the respective production.
 
 Next you see a concrete implementation of a semantic action, where all arguments of the semantic
 action are used. This is not always necessary the case and depends on your own language
@@ -86,13 +84,11 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>)
-      -> Result<()> {
-        let text = num.text(parse_tree)?;
-        let number = text
+    fn num(&mut self, num: &ParseTreeType) -> Result<()> {
+        let symbol = num.text()?;
+        let number = symbol
             .parse::<DefinitionRange>()
-            .into_diagnostic()
-            .wrap_err("num: Error accessing token from ParseTreeStackEntry")?;
+            .map_err(|e| parol!("num: Parse error: {e}"))?;
         self.push(number);
         Ok(())
     }
@@ -100,55 +96,64 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
 ```
 
 You can see that the parameter of the semantic actions which correspond to the right-hand side of
-the respective productions are all of type `&ParseTreeStackEntry`. This type from the
-[parol_runtime](https://crates.io/crates/parol_runtime) crate is defined this way:
+the respective productions are all of type `&ParseTreeType`. This type from the
+[parol_runtime](https://github.com/jsinger67/parol/blob/main/crates/parol_runtime/src/parser/parse_tree_type.rs)
+crate is defined this way:
 
 ```rust
 ///
-/// The type of elements in the parser's parse tree stack.
-/// * 'Nd' references nodes not yet inserted into the parse tree.
-/// * 'Id' holds node ids to nodes that are already part of the parse tree.
+/// The type of the elements in the parse tree.
 ///
-#[derive(Debug)]
-pub enum ParseTreeStackEntry<'t> {
-    /// The node is not inserted into the parse tree yet.
-    /// Thus we can access it directly.
-    Nd(Node<ParseTreeType<'t>>),
+/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
+///
+#[derive(Debug, Clone)]
+pub enum ParseTreeType<'t> {
+    ///
+    /// A scanned token.
+    ///
+    T(Token<'t>),
 
-    /// The node is already inserted into the parse tree.
-    /// Wee need to lookup the node in the parse tree via the NodeId.
-    Id(NodeId),
+    ///
+    /// A non-terminal name.
+    /// All names are of static lifetime (see NON_TERMINALS slice of non-terminal names).
+    ///
+    N(&'static str),
 }
 ```
 
-Actually it is a wrapper type that provides access to a specific tree node type. It implements three
-functions that you can directly call in your semantic actions:
+It implements two functions that you can directly call in your semantic actions:
 
 ```rust
-impl<'t> ParseTreeStackEntry<'t> {
-    /// Returns the inner ParseTreeType.
-    pub fn get_parse_tree_type<'a, 'b>(&'a self,
-      parse_tree: &'b ParseTree<'t>)
-      -> &'a ParseTreeType;
-
-    /// Tries to access the Token of the ParseTreeStackEntry.
+impl<'t> ParseTreeType<'t> {
+    ///
+    /// Tries to access the Token of the ParseTreeType.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
-    pub fn token<'a, 'b>(&'a self, parse_tree: &'b ParseTree<'t>)
-      -> Result<&'a Token<'t>>;
+    ///
+    pub fn token(&self) -> Result<&Token<'t>, ParserError> {
+        match self {
+            Self::T(t) => Ok(t),
+            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
+        }
+    }
 
-    /// Tries to access the text of the ParseTreeStackEntry.
+    ///
+    /// Tries to access the scanned text of the ParseTreeType.
     /// Can fail if the entry is no terminal (i.e. a non-terminal).
-    pub fn symbol<'a, 'b>(&'a self, parse_tree: &'b Tree<ParseTreeType>)
-      -> Result<&'a str>;
+    ///
+    pub fn text(&self) -> Result<&str, ParserError> {
+        match self {
+            Self::T(t) => Ok(t.text()),
+            _ => Err(ParserError::InternalError(format!("{} is no token!", self))),
+        }
+    }
 }
 ```
 
 In your semantic action you exactly know which argument correspond to a terminal or a non-terminal
-symbol. If you want to access the token that contains a concrete terminal you can use the last two
-functions. If you want to access a non-terminal you can use the first function. But this is normally
-not necessary because the non-terminals are simply nodes with the non-terminal's name that
-represents certain subtrees in the concrete parse-tree. So it is worth to consider the following
-hints.
+symbol. If you want to access the token that contains a concrete terminal you can use one of these
+functions. Non-terminals are of lesser interest because non-terminals are simply nodes with the
+non-terminal's name that represents certain subtrees in the concrete parse-tree. So it is worth to
+consider the following hints.
 
 A good way to process your grammar is to implement an own typed parse stack in your grammar
 processing item. Then you construct such stack items from the tokens you encounter in your semantic
@@ -172,9 +177,8 @@ your grammar. As in [vanilla mode](SemanticActions.html#semantic-actions-in-vani
 the semantic actions are typed and they are generated for the *non-terminals of your input grammar*
 instead of for *productions of the [expanded grammar](AstGeneration.html#the-expanded-grammar)*.
 
-You therefore don't have to mess around with `ParseTreeStackEntry` and `ParseTreeType` although you
-still encounter items of type `Token`. Also the expanded version of your grammar is much less of
-interest for you.
+You therefore don't have to mess around with `ParseTreeType` although you still encounter items of
+type `Token`. Also the expanded version of your grammar is much less of interest for you.
 
 `parol`'s great merit is that it can generate an adapter layer automatically that provides the
 conversion to typed grammar items. Indeed I carved out some simple rules that can be applied
@@ -219,10 +223,7 @@ the functionality of a calculator language.
 
 ```rust
 impl<'t> CalcGrammarTrait<'t> for CalcGrammar<'t> {
-    /// Semantic action for user production 0:
-    ///
-    /// calc: {instruction <0>";"};
-    ///
+    /// Semantic action for non-terminal 'Calc'
     fn calc(&mut self, arg: &Calc<'t>) -> Result<()> {
         self.process_calc(arg)?;
         Ok(())
@@ -245,8 +246,6 @@ calc: { instruction ";"^ };
 ///
 /// Type derived for non-terminal calc
 ///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
 pub struct Calc<'t> {
     pub calc_list: Vec<CalcList<'t>>,
 }
@@ -263,8 +262,6 @@ The elements of the vector are of type `CalcList` that is defined this way:
 ///
 /// Type derived for non-terminal calcList
 ///
-#[allow(dead_code)]
-#[derive(Builder, Debug, Clone)]
 pub struct CalcList<'t> {
     pub instruction: Box<Instruction<'t>>,
 }
@@ -276,11 +273,9 @@ And in turn the type `Instruction` looks like this:
 ///
 /// Type derived for non-terminal instruction
 ///
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
 pub enum Instruction<'t> {
-    Instruction0(Instruction0<'t>),
-    Instruction1(Instruction1<'t>),
+    Assignment(InstructionAssignment<'t>),
+    LogicalOr(InstructionLogicalOr<'t>),
 }
 ```
 

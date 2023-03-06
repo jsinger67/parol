@@ -18,7 +18,7 @@ Therefore, please use an officially released version from [crates.io](https://cr
 
 ---
 
-This workspace contains contains four essential crates that are all separately released on crates.io.
+This workspace contains four essential crates that are all separately released on crates.io.
 
 * [parol](https://crates.io/crates/parol)
 * [parol_runtime](https://crates.io/crates/parol_runtime)

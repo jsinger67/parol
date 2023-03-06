@@ -17,12 +17,12 @@ associative, i.e. `x * y * z` is evaluated as `(x * y) * z`.
 
 %%
 
-Literal : "(?:[0-9] *)+"
+Literal : /[0-9]+/
         ;
 
 // ---------------------------------------------------------
 // OPERATOR SYMBOLS
-MulOp   : "\*"
+MulOp   : '*'
         ;
 
 // ---------------------------------------------------------
@@ -34,7 +34,6 @@ LeftAssociativity
 Multiplication
         : Literal { MulOp Literal }
         ;
-
 ```
 
 You can try this grammar by calling
@@ -103,8 +102,8 @@ Replace the use statements at the top of the file with the following lines:
 use crate::left_associativity_grammar_trait::{
     LeftAssociativity, LeftAssociativityGrammarTrait, Literal,
 };
-use miette::Result;
-use miette::{bail, IntoDiagnostic};
+use parol_runtime::parol_macros::{bail, parol};
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 ```
 
@@ -121,7 +120,11 @@ Add the following two functions to the impl block of the struct `LeftAssociativi
 
 ```rust
     fn number(literal: &Literal) -> Result<u32> {
-        literal.literal.text().parse::<u32>().into_diagnostic()
+        literal
+            .literal
+            .text()
+            .parse::<u32>()
+            .map_err(|e| parol!("'{}': {e}", literal.literal.text()))
     }
 
     fn process_operation(&mut self) -> Result<()> {
@@ -129,7 +132,7 @@ Add the following two functions to the impl block of the struct `LeftAssociativi
             let init = Self::number(&grammar.multiplication.literal)?;
             self.result = grammar.multiplication.multiplication_list.iter().fold(
                 Ok(init),
-                |acc: Result<u32, miette::ErrReport>, mul| {
+                |acc: Result<u32>, mul| {
                     if let Ok(mut acc) = acc {
                         acc *= Self::number(&mul.literal)?;
                         Ok(acc)
@@ -220,12 +223,12 @@ mathematical notation: \\\( {x^{y}}^{z} \\\)
 
 %%
 
-Literal : "[0-9]+"
+Literal : /[0-9]+/
         ;
 
 // ---------------------------------------------------------
 // OPERATOR SYMBOLS
-PowOp   : "\^"
+PowOp   : '^'
         ;
 
 // ---------------------------------------------------------
@@ -281,7 +284,7 @@ Replace the function `process_operation` with this implementation.
         if let Some(grammar) = &self.right_associativity {
             self.result = grammar.potentiation.potentiation_list.iter().rev().fold(
                 Ok(1),
-                |acc: Result<u32, miette::ErrReport>, mul| {
+                |acc: Result<u32>, mul| {
                     if let Ok(mut acc) = acc {
                         acc =  Self::number(&mul.literal)?.pow(acc);
                         Ok(acc)

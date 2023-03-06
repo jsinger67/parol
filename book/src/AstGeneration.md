@@ -118,7 +118,7 @@ You can suffix grammar symbols (terminals and non-terminals) with a cut operator
 `parol` to not propagate them to the AST type, e.g.:
 
 ```parol
-Group: "\("^ Alternations "\)"^;
+Group: '('^ Alternations ')'^;
 ```
 
 The AST type for the symbol `Group` will then only contain a member for the non-terminal
@@ -172,23 +172,16 @@ expanded grammar `list-exp.par` which can be found in also generated traits file
     ///
     /// ListOpt /* Option<T>::Some */: Items : Numbers;
     ///
-    #[named]
-    fn list_opt_0(
-        &mut self,
-        _items: &ParseTreeStackEntry<'t>,
-        _parse_tree: &ParseTree<'t>,
-    ) -> Result<()> {
+    #[parol_runtime::function_name::named]
+    fn list_opt_0(&mut self, _items: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let items = if let Some(ASTType::Items(items)) = self.pop(context) {
-            items
-        } else {
-            bail!("{}: Expecting ASTType::Items", context);
+        let items = pop_item!(self, items, Items, context);
+        let list_opt_0_built = ListOpt {
+            items: (&items)
+                .try_into()
+                .map_err(parol_runtime::ParolError::UserError)?,
         };
-        let list_opt_0_built = ListOptBuilder::default()
-            .items((&items).try_into().into_diagnostic()?)
-            .build()
-            .into_diagnostic()?;
         self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
         Ok(())
     }
@@ -205,17 +198,17 @@ pub struct Items {
 }
 ```
 
-Then later at the construction of the `ListOpt` structure with the help of the `ListOptBuilder` the
-conversion to the user's type is called: `.items((&items).try_into().into_diagnostic()?)`.
+Then later at the construction of the `ListOpt` structure the conversion to the user's type is
+called: `.items((&items).try_into()`.
 
 The `TryFrom` trait is provided by the user. Please see `examples\list_auto\list_grammar.rs` for
 that:
 
 ```rust
 impl TryFrom<&Items> for Numbers {
-    type Error = <u32 as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(items: &Items) -> Result<Self, Self::Error> {
+    fn try_from(items: &Items) -> std::result::Result<Self, Self::Error> {
         Ok(Self(items.items_list.iter().fold(
             vec![items.num.num.0],
             |mut acc, e| {
@@ -234,16 +227,16 @@ find an example also in `examples\list_auto\list_grammar.rs`:
 
 ```rust
 impl<'t> TryFrom<&Token<'t>> for Number {
-    type Error = <u32 as FromStr>::Err;
+    type Error = anyhow::Error;
 
-    fn try_from(number: &Token<'t>) -> Result<Self, Self::Error> {
+    fn try_from(number: &Token<'t>) -> std::result::Result<Self, Self::Error> {
         Ok(Self(number.text().parse::<u32>()?))
     }
 }
 ```
 
-Here the scanned text of the token is accessed using the property `symbol` of the `Token` type that
-was imported from the `parol_runtime`crate. This text is then parsed into a `u32` type and finally
+Here the scanned text of the token is accessed using the method `text` of the `Token` type that was
+imported from the `parol_runtime`crate. This text is then parsed into an `u32` type and finally
 wrapped into a `Number`type which is a *newtype* for `u32`.
 
 By implementing some `From` or `TryFrom` traits for your user type you can integrate them easily
@@ -251,4 +244,4 @@ into the parse process.
 
 There exist some examples that can help to become familiar with this concept. Maybe you would like
 to have a look at my rudimentary
-[basic interpreter example](https://github.com/jsinger67/parol_basic_interpreter.git).
+[basic interpreter example](https://github.com/jsinger67/parol/tree/main/examples/basic_interpreter).

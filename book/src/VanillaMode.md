@@ -78,9 +78,9 @@ But fortunately it is easy to correct the errors and create the basis for our *v
 Replace the content of `vanilla_list_grammar.rs` with the following lines
 
 ```rust
-use id_tree::Tree;
-use miette::{IntoDiagnostic, Result, WrapErr};
-use parol_runtime::parser::{ParseTreeStackEntry, ParseTreeType};
+use parol_runtime::parol_macros::parol;
+use parol_runtime::parser::ParseTreeType;
+use parol_runtime::Result;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 use crate::vanilla_list_grammar_trait::VanillaListGrammarTrait;
@@ -164,8 +164,7 @@ impl VanillaListGrammarTrait for VanillaListGrammar {
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, _num: &ParseTreeStackEntry, _parse_tree: &Tree<ParseTreeType>)
-      -> Result<()> {
+    fn num(&mut self, _num: &ParseTreeType) -> Result<()> {
         Ok(())
     }
 }
@@ -178,13 +177,11 @@ Here we can implement our handling:
     ///
     /// Num: "0|[1-9][0-9]*";
     ///
-    fn num(&mut self, num: &ParseTreeStackEntry, parse_tree: &Tree<ParseTreeType>)
-      -> Result<()> {
-        let text = num.text(parse_tree)?;
-        let number = text
+    fn num(&mut self, num: &ParseTreeType) -> Result<()> {
+        let symbol = num.text()?;
+        let number = symbol
             .parse::<DefinitionRange>()
-            .into_diagnostic()
-            .wrap_err("num: Error accessing token from ParseTreeStackEntry")?;
+            .map_err(|e| parol!("num: Parse error: {e}"))?;
         self.push(number);
         Ok(())
     }
@@ -202,18 +199,6 @@ Success!
 ```
 
 Yep! This worked fine.
-
-The remaining warnings can be removed be deleting the following lines in `main.rs`:
-
-```rust
-#[macro_use]
-extern crate derive_builder;
-#[macro_use]
-extern crate function_name;
-```
-
-Finally you can remove the references to crates `derive_builder` and `function_name` from
-`cargo.toml`.
 
 Note that you can`t use user defined types for your ATS types in vanilla mode because no AST types
 are generated at all. But actually you opted in to build the AST types on your own when you disable

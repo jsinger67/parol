@@ -15,29 +15,29 @@ Please have a look at this example:
 
 // ---------------------------------------------------------
 // VARIABLE
-Variable: "(?i)[A-Z][0-9A-Z]*"
+Variable: /(?i)[A-Z][0-9A-Z]*/
         ;
-Literal : "(?:[0-9] *)+"
+Literal : /[0-9]+/
         ;
 
 // ---------------------------------------------------------
 // OPERATOR SYMBOLS
-Plus    : "\+"
+Plus    : '+'
         ;
-Minus   : "-"
+Minus   : '-'
         ;
 MulOp   : "\*|/"
         ;
 
 // ---------------------------------------------------------
 // PARENTHESIS
-LParen  : "\("
+LParen  : '('
         ;
-RParen  : "\)"
+RParen  : ')'
         ;
 
 // ---------------------------------------------------------
-// EXPRESSIONS
+// EXPRESSIONS in order of increasing precedence
 Precedence
         : Summation
         ;
