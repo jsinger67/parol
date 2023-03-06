@@ -42,16 +42,15 @@ use crate::{crate_name}_parser::parse;
         )?;
         if *tree_gen {
             f.write_fmt(ume::ume! {
-            use parol_runtime::syntree::Tree;
-            use parol_runtime::syntree_layout::Layouter;
-            use parol_runtime::parser::ParseTreeType;
-                    })?;
+                use parol_runtime::ParseTree;
+                use parol_runtime::syntree_layout::Layouter;
+            })?;
         }
         f.write_fmt(ume::ume! {
-        use parol_runtime::{log::debug, Report};
-        use anyhow::{anyhow, Context, Result};
-        use std::{env, fs, time::Instant};
-                })?;
+            use parol_runtime::{log::debug, Report};
+            use anyhow::{anyhow, Context, Result};
+            use std::{env, fs, time::Instant};
+        })?;
 
         write!(f, "\n\n")?;
 
@@ -110,15 +109,14 @@ use crate::{crate_name}_parser::parse;
             write!(f, "\n\n")?;
 
             f.write_fmt(ume::ume! {
-                fn generate_tree_layout(syntax_tree: &Tree<ParseTreeType>, input_file_name: &str) -> Result<()> {
+                fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> parol_runtime::syntree_layout::Result<()> {
                     let mut svg_full_file_name = std::path::PathBuf::from(input_file_name);
                     svg_full_file_name.set_extension("svg");
 
                     Layouter::new(syntax_tree)
                         .with_file_path(&svg_full_file_name)
-                        .write()
                         .embed_with_visualize()?
-                        .context("Failed writing layout")
+                        .write()
                 }
             })?;
         }
