@@ -216,3 +216,4 @@ Thanks to all the contributors for improving this project!
 * [mobotsar](https://github.com/mobotsar)
 * [ryo33](https://github.com/ryo33)
 * [dalance](https://github.com/dalance)
+* [udoprog](https://github.com/udoprog)
