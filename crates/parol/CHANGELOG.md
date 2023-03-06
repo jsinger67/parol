@@ -21,9 +21,9 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.19.0 -
+## 0.19.0 - 2023-03-06
 
-* Exchanged id_tree by syntree
+* Exchanged `id_tree` by `syntree`
   * This includes major API changes that have impact on user code. Please open discussions for
   migration support
 
