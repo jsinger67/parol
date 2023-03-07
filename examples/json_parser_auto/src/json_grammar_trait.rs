@@ -363,15 +363,11 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     #[allow(dead_code)]
     fn pop(&mut self, context: &str) -> Option<ASTType<'t>> {
-        if !self.item_stack.is_empty() {
-            let item = self.item_stack.pop();
-            if let Some(ref item) = item {
-                trace!("pop     {}: {:?}", context, item);
-            }
-            item
-        } else {
-            None
+        let item = self.item_stack.pop();
+        if let Some(ref item) = item {
+            trace!("pop     {}: {:?}", context, item);
         }
+        item
     }
 
     #[allow(dead_code)]
