@@ -37,3 +37,19 @@ default = []
 
 # Auto generation mode requires these crates.
 auto_generation = ["parol-macros"]
+
+# Features to statically disable log levels in binary crates during compile time.
+# Avoid using them in libraries.
+# See https://docs.rs/log/0.4.17/log/#compile-time-filters for details.
+max_level_off   = ["log/max_level_off"]
+max_level_error = ["log/max_level_error"]
+max_level_warn  = ["log/max_level_warn"]
+max_level_info  = ["log/max_level_info"]
+max_level_debug = ["log/max_level_debug"]
+max_level_trace = ["log/max_level_trace"]
+release_max_level_off   = ["log/release_max_level_off"]
+release_max_level_error = ["log/release_max_level_error"]
+release_max_level_warn  = ["log/release_max_level_warn"]
+release_max_level_info  = ["log/release_max_level_info"]
+release_max_level_debug = ["log/release_max_level_debug"]
+release_max_level_trace = ["log/release_max_level_trace"]
