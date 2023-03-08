@@ -5,6 +5,7 @@ use std::{
 };
 
 use assert_cmd::Command;
+use owo_colors::OwoColorize;
 use tempfile::tempdir;
 
 fn snapshot_path(name: &str) -> PathBuf {
@@ -46,6 +47,17 @@ where
     if pre_release_state {
         // In pre-release mode we only print out the diffs here
         // because the comparisons would always fail.
+
+        std::io::stderr()
+            .write_all(
+                format!(
+                    "\nWARNING! {} is not released yet!\n\n",
+                    local_package_version.bright_red()
+                )
+                .as_bytes(),
+            )
+            .unwrap();
+
         let output = std::process::Command::new("git")
             .args(["diff", "--no-index"])
             .args([actual.as_ref(), expected.as_ref()])
@@ -53,6 +65,16 @@ where
             .unwrap();
         write_command_output(&output);
     } else {
+        std::io::stderr()
+            .write_all(
+                format!(
+                    "\nINFO! {} is already released!\n\n",
+                    local_package_version.bright_green()
+                )
+                .as_bytes(),
+            )
+            .unwrap();
+
         // If not in pre-release mode we assert on diffs.
         let diff = Command::new("git")
             .args(["diff", "--no-index"])
@@ -61,6 +83,7 @@ where
 
         let output = diff.get_output();
         write_command_output(output);
+        diff.success();
     };
 }
 

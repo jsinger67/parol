@@ -16,6 +16,12 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.15.1 - Not released yet
+
+* Add new features to support static disabling of log levels during compile time (see issue
+[#61](https://github.com/jsinger67/parol/issues/61))
+  * Thanks to [dalance](https://github.com/dalance) for this proposal
+
 ## 0.15.0 - 2023-03-06
 
 * Exchanged `id_tree` by `syntree`
