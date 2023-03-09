@@ -1,7 +1,8 @@
 use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::{detect_left_recursive_non_terminals, left_factor, Cfg};
 use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
-use anyhow::{bail, Result};
+use parol_macros::bail;
+use parol_runtime::Result;
 
 // ---------------------------------------------------
 // Part of the Public API

@@ -26,6 +26,10 @@ new minor version numbers. Please note that this is no version handling covered 
 * Include fix of issue [#61](https://github.com/jsinger67/parol/issues/61) via parol_runtime 0.15.1
   * Thanks to [dalance](https://github.com/dalance) for this proposal
 * Improved handling of pre-release mode in test parol_new
+* Changed wrapping error type of `GrammarAnalysisError` from `anyhow::Error` to
+`parol_runtime::ParolError::UserError` for better recognition. This improves output of errors
+reported by the `parol-ls`language server.
+
 
 ## 0.19.0 - 2023-03-06
 
