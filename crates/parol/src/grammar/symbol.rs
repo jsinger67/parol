@@ -227,20 +227,29 @@ impl Display for Terminal {
 }
 
 impl TerminalMappings<Terminal> for Terminal {
+    #[inline]
     fn eps() -> Terminal {
         Self::Eps
     }
 
+    #[inline]
     fn end() -> Terminal {
         Self::End
     }
 
+    #[inline]
     fn is_eps(&self) -> bool {
         self.is_eps()
     }
 
+    #[inline]
     fn is_end(&self) -> bool {
         self.is_end()
+    }
+
+    #[inline]
+    fn is_inv(&self) -> bool {
+        false
     }
 }
 

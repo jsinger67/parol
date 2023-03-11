@@ -231,7 +231,7 @@ fn combine_production_equation<'a, 'c: 'a>(
                 result_function = Box::new(move |result_vector: &ResultVector| {
                     let mapper = |s| CompiledTerminal::create(s, terminal_index.clone());
                     result_function(result_vector).k_concat(
-                        &DomainType::of(&[KTuple::from_slice(&symbol_string.0, mapper, k)], k),
+                        &DomainType::of(&[KTuple::from_slice_with(&symbol_string.0, mapper, k)], k),
                         k,
                     )
                 });

@@ -8,7 +8,11 @@ use std::fmt::{Debug, Display, Error, Formatter};
 /// Epsilon token constant
 /// Can be contained in FIRST sets
 ///
-pub(crate) const EPS: TerminalIndex = TerminalIndex::MAX;
+pub const EPS: TerminalIndex = TerminalIndex::MAX;
+
+///
+/// Invalid token, used as placeholder and initial value in Default
+pub(crate) const INVALID: TerminalIndex = TerminalIndex::MAX - 1;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -34,6 +38,12 @@ impl CompiledTerminal {
     }
 }
 
+impl Default for CompiledTerminal {
+    fn default() -> Self {
+        Self(INVALID)
+    }
+}
+
 impl Display for CompiledTerminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(f, "{}", self.0)
@@ -41,19 +51,28 @@ impl Display for CompiledTerminal {
 }
 
 impl TerminalMappings<CompiledTerminal> for CompiledTerminal {
+    #[inline]
     fn eps() -> CompiledTerminal {
         Self(EPS)
     }
 
+    #[inline]
     fn end() -> CompiledTerminal {
         Self(EOI)
     }
 
+    #[inline]
     fn is_eps(&self) -> bool {
         self.0 == EPS
     }
 
+    #[inline]
     fn is_end(&self) -> bool {
         self.0 == EOI
+    }
+
+    #[inline]
+    fn is_inv(&self) -> bool {
+        self.0 == INVALID
     }
 }

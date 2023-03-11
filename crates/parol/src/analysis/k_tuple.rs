@@ -20,67 +20,121 @@ pub trait TerminalMappings<T> {
     fn is_eps(&self) -> bool;
     /// Check for end-of-input
     fn is_end(&self) -> bool;
+    /// Check for invalid (i.e. unassigned) terminal
+    fn is_inv(&self) -> bool;
 }
 
 /// An ordered collection of terminals
-#[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct Terminals(pub Vec<CompiledTerminal>);
+#[derive(Debug, Clone, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Terminals {
+    // The terminals
+    pub(crate) t: [CompiledTerminal; MAX_K],
+    // The index of next insertion
+    pub(crate) i: usize,
+}
 
 impl Terminals {
     /// Creates a new item with initial capacity
     pub fn new() -> Self {
-        Self(Vec::with_capacity(MAX_K))
+        Self::default()
+    }
+
+    fn eps() -> Terminals {
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        t[0] = CompiledTerminal::eps();
+        Self { t, i: 1 }
+    }
+
+    fn end() -> Terminals {
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        t[0] = CompiledTerminal::end();
+        Self { t, i: 1 }
     }
 
     ///
     /// Creates a new object with maximum k length from another object
     ///
-    pub fn of(k: usize, mut other: Self) -> Self {
+    pub fn of(k: usize, other: Self) -> Self {
         let first_len = other.k_len(k);
-        let mut terminals = Self::new();
-        for elem in other.0.drain(..).take(first_len) {
-            terminals.0.push(elem);
-        }
-        terminals
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        (0..first_len).for_each(|i| t[i] = other.t[i]);
+        Self { t, i: first_len }
+    }
+
+    ///
+    /// Creates a new object from a slice of other objects while applying a mapper function
+    ///
+    pub fn from_slice_with<'s, S, M>(others: &'s [S], k: usize, m: M) -> Self
+    where
+        M: Fn(&'s S) -> CompiledTerminal,
+    {
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        others
+            .iter()
+            .take(k)
+            .enumerate()
+            .for_each(|(i, o)| t[i] = m(o));
+        Self { t, i: others.len() }
     }
 
     ///
     /// Creates a new object from a slice of other objects
     ///
-    pub fn from_slice<'s, S, M>(others: &'s [S], k: usize, m: M) -> Self
-    where
-        S: Clone,
-        M: Fn(&'s S) -> CompiledTerminal,
-    {
-        others.iter().take(k).fold(Self::new(), |mut acc, s| {
-            acc.0.push(m(s));
-            acc
-        })
+    pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        others
+            .iter()
+            .take(k)
+            .enumerate()
+            .for_each(|(i, o)| t[i] = *o);
+        Self { t, i: others.len() }
     }
 
     /// Returns the length of the collection
+    #[inline]
     pub fn len(&self) -> usize {
-        self.0.len()
+        self.i
     }
     /// Checks if the collection is empty
+    #[inline]
     pub fn is_empty(&self) -> bool {
-        self.0.is_empty()
+        self.i == 0
+    }
+
+    fn last(&self) -> Option<&CompiledTerminal> {
+        if self.is_empty() {
+            None
+        } else {
+            Some(&self.t[self.i - 1])
+        }
     }
 
     /// Checks if the collection is k-complete, i.e. no terminals can be added
     pub fn is_k_complete(&self, k: usize) -> bool {
-        !self.is_eps() && (self.len() >= k || (!self.is_empty() && self.0.last().unwrap().is_end()))
+        !self.is_eps() && (self.len() >= k || self.last().map_or(false, |t| t.is_end()))
     }
 
     /// Returns the k-length, i.e. the number of symbols that contributes to lookahead sizes
     pub fn k_len(&self, k: usize) -> usize {
+        // let mut k_len = 0;
+        // for t in &self.t {
+        //     if k_len >= k {
+        //         break;
+        //     }
+        //     k_len += 1;
+        //     if t.is_end() {
+        //         break;
+        //     }
+        // }
+        // k_len
+
         let mut k_len = 0;
-        for t in &self.0 {
+        for i in 0..self.i {
             if k_len >= k {
                 break;
             }
             k_len += 1;
-            if t.is_end() {
+            if self.t[i].is_end() {
                 break;
             }
         }
@@ -89,17 +143,18 @@ impl Terminals {
 
     /// Clears the collection
     pub fn clear(&mut self) {
-        self.0.clear()
+        (0..MAX_K).for_each(|i| self.t[i] = CompiledTerminal::default());
+        self.i = 0;
     }
 
     /// Concatenates two collections with respect to the rules of k-concatenation
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
-        if other.len() == 1 && other.0[0].is_eps() {
+        if other.is_eps() {
             // w + ε = W
             return self;
         }
 
-        if self.len() == 1 && self.0[0].is_eps() {
+        if self.is_eps() {
             // ε + w = w
             // Remove possible epsilon terminal
             self.clear();
@@ -113,25 +168,28 @@ impl Terminals {
         let my_k_len = self.k_len(k);
         let to_take = other.k_len(k - my_k_len);
         for i in 0..to_take {
-            self.0.push(other.0[i]);
+            self.t[self.i] = other.t[i];
+            self.i += 1;
         }
         self
     }
 
+    /// Adds a new terminal to self
+    pub fn push(&mut self, t: CompiledTerminal) {
+        if self.i < MAX_K {
+            self.t[self.i] = t;
+            self.i += 1;
+        }
+    }
+
     /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
-        self.len() == 1 && self.0[0].is_eps()
+        self.i == 1 && self.t[0].is_eps()
     }
 
     /// Checks if self is an end-of-input symbol
     pub fn is_end(&self) -> bool {
-        self.len() == 1 && self.0[0].is_end()
-    }
-}
-
-impl Default for Terminals {
-    fn default() -> Self {
-        Self::new()
+        self.i == 1 && self.t[0].is_end()
     }
 }
 
@@ -218,7 +276,7 @@ impl TerminalString {
     pub fn push(self, t: CompiledTerminal, k: usize) -> Self {
         match self {
             Self::Incomplete(mut v) => {
-                v.0.push(t);
+                v.push(t);
                 if v.is_k_complete(k) {
                     Self::Complete(v)
                 } else {
@@ -230,21 +288,21 @@ impl TerminalString {
     }
 
     /// Append a sequence
-    pub fn append(self, other: &mut Self, k: usize) -> Self {
-        match self {
-            Self::Incomplete(mut v) => {
-                let my_k_len = v.k_len(k);
-                let to_take = other.inner().k_len(k - my_k_len);
-                v.0.append(&mut other.inner().0[0..to_take].to_vec());
-                if v.is_k_complete(k) {
-                    Self::Complete(v)
-                } else {
-                    Self::Incomplete(v)
-                }
-            }
-            Self::Complete(_) => self,
-        }
-    }
+    // pub fn append(self, other: &mut Self, k: usize) -> Self {
+    //     match self {
+    //         Self::Incomplete(mut v) => {
+    //             let my_k_len = v.k_len(k);
+    //             let to_take = other.inner().k_len(k - my_k_len);
+    //             v.0.append(&mut other.inner().0[0..to_take].to_vec());
+    //             if v.is_k_complete(k) {
+    //                 Self::Complete(v)
+    //             } else {
+    //                 Self::Incomplete(v)
+    //             }
+    //         }
+    //         Self::Complete(_) => self,
+    //     }
+    // }
 
     /// Concat self with another sequence while consuming self
     pub fn k_concat(self, other: &Self, k: usize) -> Self {
@@ -286,15 +344,51 @@ impl KTuple {
         Self { terminals, k }
     }
 
+    /// Used for debugging only
+    pub fn with_terminal_indices(self, terms: &[TerminalIndex]) -> Self {
+        let k = self.k;
+        let mut terminals = match self.terminals {
+            TerminalString::Incomplete(s) => s,
+            TerminalString::Complete(s) => s,
+        };
+
+        terminals
+            .t
+            .iter_mut()
+            .zip(terms.iter())
+            .for_each(|(l, r)| *l = CompiledTerminal(*r));
+        terminals.i = std::cmp::min(MAX_K, terms.len());
+
+        let terminals = if terminals.is_k_complete(k) {
+            TerminalString::Complete(terminals)
+        } else {
+            TerminalString::Incomplete(terminals)
+        };
+
+        Self { terminals, k }
+    }
+
+    ///
+    /// Creates a new object from a slice of other objects while applying a mapper function
+    ///
+    pub fn from_slice_with<'s, S, M>(others: &'s [S], m: M, k: usize) -> Self
+    where
+        M: Fn(&'s S) -> CompiledTerminal,
+    {
+        let terminals = Terminals::from_slice_with(others, k, m);
+        let terminals = if terminals.is_k_complete(k) {
+            TerminalString::Complete(terminals)
+        } else {
+            TerminalString::Incomplete(terminals)
+        };
+        Self { terminals, k }
+    }
+
     ///
     /// Creates a new object from a slice of other objects
     ///
-    pub fn from_slice<'s, S, M>(others: &'s [S], m: M, k: usize) -> Self
-    where
-        S: Clone,
-        M: Fn(&'s S) -> CompiledTerminal,
-    {
-        let terminals = Terminals::from_slice(others, k, m);
+    pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
+        let terminals = Terminals::from_slice(others, k);
         let terminals = if terminals.is_k_complete(k) {
             TerminalString::Complete(terminals)
         } else {
@@ -306,8 +400,8 @@ impl KTuple {
     ///
     /// Creates a new object from a vector of terminal symbols
     ///
-    pub fn of(t: Vec<CompiledTerminal>, k: usize) -> Self {
-        let terminals = Terminals::of(k, Terminals(t));
+    pub fn of(t: Terminals, k: usize) -> Self {
+        let terminals = Terminals::of(k, t);
 
         let terminals = if terminals.is_k_complete(k) {
             TerminalString::Complete(terminals)
@@ -316,18 +410,19 @@ impl KTuple {
         };
         Self { terminals, k }
     }
+
     ///
     /// Creates a new ε object
     ///
     pub fn eps(k: usize) -> Self {
-        let terminals = TerminalString::Incomplete(Terminals(vec![CompiledTerminal::eps()]));
+        let terminals = TerminalString::Incomplete(Terminals::eps());
         Self { terminals, k }
     }
     ///
     /// Creates a new End object
     ///
     pub fn end(k: usize) -> Self {
-        let terminals = TerminalString::Complete(Terminals(vec![CompiledTerminal::end()]));
+        let terminals = TerminalString::Complete(Terminals::end());
         Self { terminals, k }
     }
     ///
@@ -348,12 +443,12 @@ impl KTuple {
     }
 
     /// Appends a sequence to self while consuming self
-    pub fn append(self, other: &mut Self) -> Self {
-        Self {
-            terminals: self.terminals.append(&mut other.terminals, self.k),
-            k: self.k,
-        }
-    }
+    // pub fn append(self, other: &mut Self) -> Self {
+    //     Self {
+    //         terminals: self.terminals.append(&mut other.terminals, self.k),
+    //         k: self.k,
+    //     }
+    // }
 
     /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
@@ -401,7 +496,7 @@ impl KTuple {
             "[{}]",
             self.terminals
                 .inner()
-                .0
+                .t
                 .iter()
                 .map(|t| match t.0 {
                     EOI => "$".to_owned(),
@@ -429,14 +524,16 @@ impl Display for KTuple {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(
             f,
-            "[{}](k{})",
+            "[{}(i{})](k{})",
             self.terminals
                 .inner()
-                .0
+                .t
                 .iter()
+                .take_while(|t| !t.is_inv())
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
                 .join(", "),
+            self.terminals.inner().i,
             self.k
         )
     }
@@ -456,45 +553,60 @@ impl PartialEq for KTuple {
 
 #[cfg(test)]
 mod test {
-    use super::{TerminalMappings, Terminals};
-    use crate::{CompiledTerminal, KTuple};
+    use parol_runtime::TerminalIndex;
+
+    use super::Terminals;
+    use crate::{analysis::k_tuple::EOI, CompiledTerminal, KTuple, MAX_K};
+
+    fn term(terminals: &[TerminalIndex], k: usize) -> Terminals {
+        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        debug_assert!(k <= MAX_K);
+        terminals
+            .iter()
+            .enumerate()
+            .for_each(|(i, x)| t[i] = CompiledTerminal(*x));
+        Terminals {
+            t,
+            i: terminals.len(),
+        }
+    }
 
     #[test]
     fn check_k_concat() {
         {
-            let tuple1 = KTuple::of(vec![CompiledTerminal::eps()], 1);
-            let tuple2 = KTuple::of(vec![CompiledTerminal::eps()], 1);
+            let tuple1 = KTuple::eps(1);
+            let tuple2 = KTuple::eps(1);
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::of(vec![CompiledTerminal::eps()], 1);
+            let expected = KTuple::eps(1);
             assert_eq!(expected, result, "1: [ε] + [ε] = [ε]");
         }
         {
-            let tuple1 = KTuple::of(vec![CompiledTerminal(1)], 1);
-            let tuple2 = KTuple::of(vec![CompiledTerminal::eps()], 1);
+            let tuple1 = KTuple::new(1).with_terminal_indices(&[1]);
+            let tuple2 = KTuple::eps(1);
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::of(vec![CompiledTerminal(1)], 1);
+            let expected = KTuple::new(1).with_terminal_indices(&[1]);
             assert_eq!(expected, result, "1: [a] + [ε] = [a]");
         }
         {
-            let tuple1 = KTuple::of(vec![CompiledTerminal::eps()], 1);
-            let tuple2 = KTuple::of(vec![CompiledTerminal(1)], 1);
+            let tuple1 = KTuple::eps(1);
+            let tuple2 = KTuple::new(1).with_terminal_indices(&[1]);
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::of(vec![CompiledTerminal(1)], 1);
+            let expected = KTuple::new(1).with_terminal_indices(&[1]);
             assert_eq!(expected, result, "1: [ε] + [a] = [a]");
         }
         {
-            let tuple1 = KTuple::of(vec![CompiledTerminal(1)], 2);
-            let tuple2 = KTuple::of(vec![CompiledTerminal(2)], 2);
+            let tuple1 = KTuple::new(2).with_terminal_indices(&[1]);
+            let tuple2 = KTuple::new(2).with_terminal_indices(&[2]);
             let result = tuple1.k_concat(&tuple2, 2);
-            let expected = KTuple::of(vec![CompiledTerminal(1), CompiledTerminal(2)], 2);
+            let expected = KTuple::new(2).with_terminal_indices(&[1, 2]);
             assert_eq!(expected, result, "2: [a] + [b] = [ab]");
         }
     }
 
     #[test]
-    fn check_terminals() {
+    fn check_term() {
         {
-            let terminals = Terminals(vec![]);
+            let terminals = Terminals::new();
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(0, terminals.k_len(1));
             assert_eq!(0, terminals.k_len(2));
@@ -505,7 +617,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = Terminals(vec![CompiledTerminal(1)]);
+            let terminals = term(&[1], 1);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(1, terminals.k_len(2));
@@ -516,7 +628,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = Terminals(vec![CompiledTerminal(1), CompiledTerminal(2)]);
+            let terminals = term(&[1, 2], 2);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(2, terminals.k_len(2));
@@ -528,7 +640,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = Terminals(vec![CompiledTerminal(1), CompiledTerminal::end()]);
+            let terminals = term(&[1, EOI], 2);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(2, terminals.k_len(2));
@@ -540,11 +652,12 @@ mod test {
             assert!(terminals.is_k_complete(3));
         }
         {
-            let terminals = Terminals(vec![
-                CompiledTerminal(1),
-                CompiledTerminal::end(),
-                CompiledTerminal(1), // This constellation is actually illegal!
-            ]);
+            let terminals = term(
+                &[
+                    1, EOI, 1, // This constellation is actually illegal!
+                ],
+                3,
+            );
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(2, terminals.k_len(2));
@@ -555,16 +668,9 @@ mod test {
             assert!(terminals.is_k_complete(2));
             assert!(terminals.is_k_complete(3));
 
-            let terminals2 = Terminals(vec![CompiledTerminal(3)]);
+            let terminals2 = term(&[3], 1);
             let result = terminals.k_concat(&terminals2, 3);
-            assert_eq!(
-                vec![
-                    CompiledTerminal(1),
-                    CompiledTerminal::end(),
-                    CompiledTerminal(1)
-                ],
-                result.0
-            );
+            assert_eq!(term(&[1, EOI, 1], 3), result);
         }
     }
 }

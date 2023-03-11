@@ -108,7 +108,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                 // Also combine the result to the non_terminal_results.
                 let sym = non_terminal_positions.get(pos).unwrap();
                 if let Some(set) = non_terminal_results.borrow_mut().get_mut(sym) {
-                    *set = set.union(&pos_result);
+                    *set = set.union(pos_result);
                 }
             }
             new_result_vector
@@ -217,7 +217,11 @@ fn update_production_equations<'a, 'c: 'a>(
                                     |s| CompiledTerminal::create(s, terminal_index.clone());
                                 result_function(result_map, non_terminal_results).k_concat(
                                     &DomainType::of(
-                                        &[KTuple::from_slice(&symbol_string_clone.0, mapper, k)],
+                                        &[KTuple::from_slice_with(
+                                            &symbol_string_clone.0,
+                                            mapper,
+                                            k,
+                                        )],
                                         k,
                                     ),
                                     k,

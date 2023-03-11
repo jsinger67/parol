@@ -47,9 +47,10 @@ impl KTuples {
     }
 
     /// Creates a union with another KTuples and self
-    pub fn union(&self, other: &Self) -> Self {
+    pub fn union(&self, mut other: Self) -> Self {
+        let unn = other.0.drain().fold(self.0.clone(), |mut acc, t| { acc.insert(t); acc });
         let mut tuples = Self(
-            self.0.union(&other.0).cloned().collect::<HashSet<KTuple>>(),
+            unn,
             self.1,
             false,
         );
@@ -106,40 +107,41 @@ impl KTuples {
     /// ```
     /// use parol::{KTuple, KTuples, CompiledTerminal};
     /// use parol::analysis::k_tuple::TerminalMappings;
+    /// use parol::analysis::compiled_terminal::EPS;
     ///
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal::eps()], 1)], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal::eps()], 1)], 1);
+    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
+    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal::eps()], 1)], 1);
+    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
     ///     assert_eq!(expected, result, "[ε] + [ε] = [ε]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal::eps()], 1)], 1);
+    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
+    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
     ///     assert_eq!(expected, result, "[a] + [ε] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal::eps()], 1)], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
+    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
+    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
+    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
     ///     assert_eq!(expected, result, "[ε] + [a] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(2)], 1)], 1);
+    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[2])], 1);
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 1)], 1);
+    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
     ///     assert_eq!(expected, result, "1: [a] + [b] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1)], 2)], 2);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(2)], 2)], 2);
+    ///     let tuples1 = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[1])], 2);
+    ///     let tuples2 = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[2])], 2);
     ///     let result = tuples1.k_concat(&tuples2, 2);
-    ///     let expected = KTuples::of(&vec![KTuple::of(vec![CompiledTerminal(1), CompiledTerminal(2)], 2)], 2);
+    ///     let expected = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[1, 2])], 2);
     ///     assert_eq!(expected, result, "2: [a] + [b] = [ab]");
     /// }
     ///
