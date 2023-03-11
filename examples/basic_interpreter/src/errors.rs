@@ -70,7 +70,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -82,7 +82,7 @@ impl Report for BasicErrorReporter {
                                 Into::<Range<usize>>::into(token),
                             )
                             .with_message("Wrong f32 value")]),
-                    )?);
+                    )?)
                 }
                 BasicError::ParseLineNumber {
                     context,
@@ -93,7 +93,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -108,7 +108,7 @@ impl Report for BasicErrorReporter {
                             .with_notes(vec![
                                 "Error parsing line number token as valid u16".to_string()
                             ]),
-                    )?);
+                    )?)
                 }
                 BasicError::LineNumberTooLarge {
                     context,
@@ -119,7 +119,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -132,7 +132,7 @@ impl Report for BasicErrorReporter {
                             )
                             .with_message("Line number too large")])
                             .with_notes(vec!["Line number exceeds maximum of 63999".to_string()]),
-                    )?);
+                    )?)
                 }
                 BasicError::LineNumberDefinedTwice {
                     context,
@@ -143,7 +143,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -156,7 +156,7 @@ impl Report for BasicErrorReporter {
                             )
                             .with_message("Line number is already defined")])
                             .with_notes(vec!["Define a new line number".to_string()]),
-                    )?);
+                    )?)
                 }
                 BasicError::LineNumberBeyondLastLine {
                     context,
@@ -167,7 +167,7 @@ impl Report for BasicErrorReporter {
                     let content = fs::read_to_string(input.file_name.as_ref()).unwrap_or_default();
                     let file_id = files.add(input.file_name.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -182,7 +182,7 @@ impl Report for BasicErrorReporter {
                             .with_notes(vec![
                                 "Check the jump destination's line number".to_string()
                             ]),
-                    )?);
+                    )?)
                 }
             }
         } else {

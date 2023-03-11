@@ -29,6 +29,7 @@ new minor version numbers. Please note that this is no version handling covered 
 * Changed wrapping error type of `GrammarAnalysisError` from `anyhow::Error` to
 `parol_runtime::ParolError::UserError` for better recognition. This improves output of errors
 reported by the `parol-ls`language server.
+* Removed clippy warnings new in Rust 1.68
 
 
 ## 0.19.0 - 2023-03-06

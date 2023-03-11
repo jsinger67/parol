@@ -32,7 +32,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                             &mut writer.lock(),
                             &config,
                             &files,
@@ -41,7 +41,7 @@ impl Report for ParolErrorReporter {
                                 .with_code("parol::parser::unknown_scanner")
                                 .with_labels(vec![Label::primary(file_id, Into::<Range<usize>>::into(token))])
                                 .with_notes(vec!["Undeclared scanner found. Please declare a scanner via %scanner name {{...}}".to_string()])
-                        )?);
+                        )?)
                 }
                 ParolParserError::EmptyGroup {
                     context,
@@ -53,7 +53,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -67,7 +67,7 @@ impl Report for ParolErrorReporter {
                                     .with_message("End"),
                             ])
                             .with_notes(vec!["Empty groups can be safely removed.".to_string()]),
-                    )?);
+                    )?)
                 }
                 ParolParserError::EmptyOptional {
                     context,
@@ -79,7 +79,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -93,7 +93,7 @@ impl Report for ParolErrorReporter {
                                     .with_message("End"),
                             ])
                             .with_notes(vec!["Empty optionals can be safely removed.".to_string()]),
-                    )?);
+                    )?)
                 }
                 ParolParserError::EmptyRepetition {
                     context,
@@ -105,7 +105,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -121,7 +121,7 @@ impl Report for ParolErrorReporter {
                             .with_notes(vec![
                                 "Empty repetitions can be safely removed.".to_string()
                             ]),
-                    )?);
+                    )?)
                 }
                 ParolParserError::ConflictingTokenAliases {
                     first_alias,
@@ -135,7 +135,7 @@ impl Report for ParolErrorReporter {
                     let content = fs::read_to_string(input).unwrap_or_default();
                     let file_id = files.add(input.display().to_string(), content);
 
-                    return Ok(term::emit(
+                    Ok(term::emit(
                         &mut writer.lock(),
                         &config,
                         &files,
@@ -155,23 +155,19 @@ impl Report for ParolErrorReporter {
                                 "Consider using only one single terminal instead of two."
                                     .to_string(),
                             ]),
-                    )?);
+                    )?)
                 }
-                ParolParserError::EmptyScanners { empty_scanners } => {
-                    return Ok(term::emit(
-                        &mut writer.lock(),
-                        &config,
-                        &files,
-                        &Diagnostic::error()
-                            .with_message(format!(
-                                "Empty scanner states ({empty_scanners:?}) found"
-                            ))
-                            .with_code("parol::parser::empty_scanner_states")
-                            .with_notes(vec![
-                                "Assign at least one terminal or remove them.".to_string()
-                            ]),
-                    )?);
-                }
+                ParolParserError::EmptyScanners { empty_scanners } => Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::error()
+                        .with_message(format!("Empty scanner states ({empty_scanners:?}) found"))
+                        .with_code("parol::parser::empty_scanner_states")
+                        .with_notes(vec![
+                            "Assign at least one terminal or remove them.".to_string()
+                        ]),
+                )?),
             }
         } else if let Some(err) = err.downcast_ref::<GrammarAnalysisError>() {
             match err {
@@ -262,6 +258,6 @@ impl Report for ParolErrorReporter {
                     ]),
             );
             return result.map_err(|e| anyhow::anyhow!(e));
-        };
+        }
     }
 }
