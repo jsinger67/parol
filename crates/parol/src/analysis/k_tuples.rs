@@ -48,12 +48,11 @@ impl KTuples {
 
     /// Creates a union with another KTuples and self
     pub fn union(&self, mut other: Self) -> Self {
-        let unn = other.0.drain().fold(self.0.clone(), |mut acc, t| { acc.insert(t); acc });
-        let mut tuples = Self(
-            unn,
-            self.1,
-            false,
-        );
+        let unn = other.0.drain().fold(self.0.clone(), |mut acc, t| {
+            acc.insert(t);
+            acc
+        });
+        let mut tuples = Self(unn, self.1, false);
         tuples.update_completeness();
         tuples
     }

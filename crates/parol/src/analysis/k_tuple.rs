@@ -25,7 +25,7 @@ pub trait TerminalMappings<T> {
 }
 
 /// An ordered collection of terminals
-#[derive(Debug, Clone, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Copy, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Terminals {
     // The terminals
     pub(crate) t: [CompiledTerminal; MAX_K],
@@ -315,7 +315,7 @@ impl TerminalString {
                     TerminalString::Incomplete(terminals)
                 }
             }
-            Self::Complete(_) => self.clone(),
+            Self::Complete(_) => self,
         }
     }
 }
