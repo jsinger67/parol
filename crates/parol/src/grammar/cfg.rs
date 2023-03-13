@@ -127,6 +127,32 @@ impl Cfg {
     }
 
     ///
+    /// Set of Terminals - ordered by occurrence as owned values.
+    ///
+    pub fn get_ordered_terminals_owned(&self) -> Vec<(String, TerminalKind, Vec<usize>)> {
+        self.pr.iter().fold(Vec::new(), |mut acc, p| {
+            acc = p.get_r().iter().fold(acc, |mut acc, s| {
+                if let Symbol::T(Terminal::Trm(t, k, s, ..)) = s {
+                    if let Some(pos) = acc
+                        .iter_mut()
+                        .position(|(trm, knd, _)| trm == t && knd.behaves_like(*k))
+                    {
+                        for st in s {
+                            if !acc[pos].2.contains(st) {
+                                acc[pos].2.push(*st);
+                            }
+                        }
+                    } else {
+                        acc.push((t.to_string(), *k, s.to_vec()));
+                    }
+                }
+                acc
+            });
+            acc
+        })
+    }
+
+    ///
     /// Terminal positions within the grammar
     /// Used for Nt grammar graphs
     ///

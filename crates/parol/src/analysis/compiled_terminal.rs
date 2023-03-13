@@ -26,12 +26,13 @@ pub struct CompiledTerminal(pub TerminalIndex);
 
 impl CompiledTerminal {
     /// Creates a new item from a Symbol
-    pub fn create<R>(s: &Symbol, terminal_index_resolver: R) -> Self
+    pub fn create<F, R>(s: &Symbol, terminal_index_resolver: R) -> Self
     where
-        R: Fn(&str, TerminalKind) -> TerminalIndex,
+        R: AsRef<F>,
+        F: Fn(&str, TerminalKind) -> TerminalIndex,
     {
         match s {
-            Symbol::T(Terminal::Trm(t, k, ..)) => Self(terminal_index_resolver(t, *k)),
+            Symbol::T(Terminal::Trm(t, k, ..)) => Self(terminal_index_resolver.as_ref()(t, *k)),
             Symbol::T(Terminal::End) => Self(EOI),
             _ => panic!("Unexpected symbol type: {:?}", s),
         }

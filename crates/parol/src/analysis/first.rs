@@ -9,7 +9,9 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: Mapping of non-terminals to KTuples
@@ -28,11 +30,12 @@ type ResultVector = Vec<DomainType>;
 
 /// The type of the function in the equation system
 /// It is called for each non-terminal
-type TransferFunction<'a> = Box<dyn Fn(&ResultVector) -> DomainType + 'a>;
+type TransferFunction = Arc<dyn Fn(&ResultVector) -> DomainType + Send + Sync + 'static>;
 
-type EquationSystem<'a> = Vec<TransferFunction<'a>>;
+type EquationSystem = Vec<TransferFunction>;
 
-type StepFunction = Box<dyn Fn(&EquationSystem, &ResultVector) -> ResultVector>;
+type StepFunction =
+    Arc<dyn Fn(&EquationSystem, &ResultVector) -> ResultVector + Send + Sync + 'static>;
 
 ///
 /// Calculates the FIRST k sets for all productions of the given grammar.
@@ -53,26 +56,28 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let nt_count = non_terminals.len();
 
     let non_terminal_index =
-        |nt: &str| -> usize { non_terminals.iter().position(|n| n == nt).unwrap() };
+        Arc::new(move |nt: &str| -> usize { non_terminals.iter().position(|n| n == nt).unwrap() });
 
-    let terminals = grammar_config.cfg.get_ordered_terminals();
+    let terminals = grammar_config.cfg.get_ordered_terminals_owned();
 
-    let terminal_index = |t: &str, k: TerminalKind| -> usize {
+    let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> usize {
         terminals
             .iter()
             .position(|(trm, kind, _)| *trm == t && kind.behaves_like(k))
             .unwrap()
             + FIRST_USER_TOKEN
-    };
+    });
 
     let nt_for_production: Vec<usize> =
-        non_terminals.iter().fold(vec![0; pr_count], |mut acc, nt| {
-            let non_terminal_index = non_terminal_index(nt);
-            for (pi, _) in cfg.matching_productions(nt) {
-                acc[pi] = non_terminal_index;
-            }
-            acc
-        });
+        cfg.get_non_terminal_set()
+            .iter()
+            .fold(vec![0; pr_count], |mut acc, nt| {
+                let non_terminal_index = non_terminal_index(nt);
+                for (pi, _) in cfg.matching_productions(nt) {
+                    acc[pi] = non_terminal_index;
+                }
+                acc
+            });
 
     // trace!("nt_for_production: {:?}", nt_for_production);
 
@@ -84,8 +89,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 es.push(combine_production_equation(
                     pr,
                     pr_count,
-                    &terminal_index,
-                    &non_terminal_index,
+                    terminal_index.clone(),
+                    non_terminal_index.clone(),
                     k,
                 ));
                 es
@@ -93,25 +98,32 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let step_function: StepFunction = {
         // let terminals = terminals.clone();
-        Box::new(move |es: &EquationSystem, result_vector: &ResultVector| {
+        Arc::new(move |es: &EquationSystem, result_vector: &ResultVector| {
             //let mut new_result_vector: ResultVector = result_vector.clone();
-            let mut new_result_vector: ResultVector = vec![DomainType::new(k); result_vector.len()];
-            for pr_i in 0..pr_count {
+            let new_result_vector =
+                Arc::new(Mutex::new(vec![DomainType::new(k); result_vector.len()]));
+            (0..pr_count).into_par_iter().for_each(|pr_i| {
                 let mut r = es[pr_i](result_vector);
                 // trace!(
                 //     "Result for production {} is {}",
                 //     pr_i,
                 //     r.to_string(&terminals)
                 // );
-                new_result_vector[pr_i] = r.clone();
-                // trace!(
-                //     "Nt index for production {} is {}",
-                //     pr_i,
-                //     pr_count + nt_for_production[pr_i]
-                // );
-                new_result_vector[pr_count + nt_for_production[pr_i]].append(&mut r);
-            }
-            new_result_vector
+                {
+                    let mut vec = new_result_vector.lock().unwrap();
+                    vec[pr_i] = r.clone();
+                    // trace!(
+                    //     "Nt index for production {} is {}",
+                    //     pr_i,
+                    //     pr_count + nt_for_production[pr_i]
+                    // );
+                    vec[pr_count + nt_for_production[pr_i]].append(&mut r);
+                }
+            });
+            Arc::try_unwrap(new_result_vector)
+                .unwrap()
+                .into_inner()
+                .unwrap()
         })
     };
 
@@ -157,7 +169,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let (r, n) = result_vector.split_at(pr_count);
 
-    let k_tuples_of_nt = non_terminals.iter().enumerate().fold(
+    let k_tuples_of_nt = cfg.get_non_terminal_set().iter().enumerate().fold(
         HashMap::<String, DomainType>::new(),
         |mut acc, (ni, nt)| {
             acc.insert(nt.to_string(), n[ni].clone());
@@ -171,13 +183,17 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 ///
 /// Creates a function that calculates the FIRST k set for the given production.
 ///
-fn combine_production_equation<'a, 'c: 'a>(
-    pr: &'c Pr,
+fn combine_production_equation<N, T>(
+    pr: &Pr,
     pr_count: usize,
-    terminal_index: &'a (impl Fn(&str, TerminalKind) -> TerminalIndex + Clone),
-    non_terminal_index: &'a (impl Fn(&str) -> usize + Clone),
+    terminal_index: Arc<T>,
+    non_terminal_index: Arc<N>,
     k: usize,
-) -> TransferFunction<'a> {
+) -> TransferFunction
+where
+    T: Fn(&str, TerminalKind) -> TerminalIndex + Clone + Send + Sync + 'static,
+    N: Fn(&str) -> usize + Send + 'static,
+{
     let parts = pr
         .get_r()
         .iter()
@@ -216,7 +232,7 @@ fn combine_production_equation<'a, 'c: 'a>(
     //         .collect::<Vec<String>>()
     //         .join(", ")
     // );
-    let mut result_function: TransferFunction = Box::new(move |_| DomainType::eps(k));
+    let mut result_function: TransferFunction = Arc::new(move |_| DomainType::eps(k));
     // trace!(" ε");
     // For each part of the production (separated into strings of terminals and
     // single non-terminals) we have to provide a part of the equation like this:
@@ -228,7 +244,8 @@ fn combine_production_equation<'a, 'c: 'a>(
         // trace!(" + {}", symbol_string);
         match &symbol_string.0[0] {
             Symbol::T(_) => {
-                result_function = Box::new(move |result_vector: &ResultVector| {
+                let terminal_index = terminal_index.clone();
+                result_function = Arc::new(move |result_vector: &ResultVector| {
                     let mapper = |s| CompiledTerminal::create(s, terminal_index.clone());
                     result_function(result_vector).k_concat(
                         &DomainType::of(&[KTuple::from_slice_with(&symbol_string.0, mapper, k)], k),
@@ -237,8 +254,8 @@ fn combine_production_equation<'a, 'c: 'a>(
                 });
             }
             Symbol::N(nt, _, _) => {
-                let f = create_union_access_function(nt, pr_count, non_terminal_index);
-                result_function = Box::new(move |result_vector: &ResultVector| {
+                let f = create_union_access_function(nt, pr_count, non_terminal_index.clone());
+                result_function = Arc::new(move |result_vector: &ResultVector| {
                     result_function(result_vector).k_concat(&f(result_vector), k)
                 });
             }
@@ -257,14 +274,14 @@ fn combine_production_equation<'a, 'c: 'a>(
 /// Is used to calculate the union of KTuples of productions that belong to
 /// certain non-terminal.
 ///
-fn create_union_access_function<'a>(
+fn create_union_access_function(
     nt: &str,
     pr_count: usize,
-    non_terminal_index: &'a (impl Fn(&str) -> usize + Clone),
-) -> TransferFunction<'a> {
+    non_terminal_index: Arc<dyn Fn(&str) -> usize>,
+) -> TransferFunction {
     let nt = nt.to_owned();
     let index = non_terminal_index(&nt);
-    Box::new(move |result_vector: &ResultVector| {
+    Arc::new(move |result_vector: &ResultVector| {
         result_vector[pr_count + index].clone()
         // trace!(
         //     "Accessing non-terminal union of {}({}): {} (v: {:?})",
