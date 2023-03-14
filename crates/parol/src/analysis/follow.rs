@@ -12,7 +12,7 @@ use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::{BTreeMap, HashMap};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
 
 /// Result type for each non-terminal:
 /// The set of the follow k terminals
@@ -29,7 +29,7 @@ type ResultMap = HashMap<Pos, DomainType>;
 /// The type of the function in the equation system
 /// It is called for each non-terminal
 type TransferFunction = Arc<
-    dyn Fn(&ResultMap, Arc<Mutex<HashMap<String, DomainType>>>) -> DomainType
+    dyn Fn(&ResultMap, Arc<RwLock<HashMap<String, DomainType>>>) -> DomainType
         + Send
         + Sync
         + 'static,
@@ -42,7 +42,7 @@ type StepFunction = Arc<
         &EquationSystem,
         &ResultMap,
         &HashMap<Pos, String>,
-        Arc<Mutex<HashMap<String, DomainType>>>,
+        Arc<RwLock<HashMap<String, DomainType>>>,
     ) -> ResultMap,
 >;
 
@@ -66,7 +66,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let start_symbol = cfg.get_start_symbol();
 
-    let non_terminal_results: Arc<Mutex<HashMap<String, DomainType>>> = Arc::new(Mutex::new(
+    let non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>> = Arc::new(RwLock::new(
         cfg.get_non_terminal_set()
             .iter()
             .fold(HashMap::new(), |mut acc, nt| {
@@ -108,22 +108,22 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
         |es: &EquationSystem,
          result_map: &ResultMap,
          non_terminal_positions: &HashMap<Pos, String>,
-         non_terminal_results: Arc<Mutex<HashMap<String, DomainType>>>| {
-            let new_result_vector = Arc::new(Mutex::new(ResultMap::new()));
+         non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
+            let new_result_vector = Arc::new(RwLock::new(ResultMap::new()));
             result_map.par_iter().for_each(|(pos, _)| {
                 // Call each function of the equation system and put the
                 // result into the new result vector.
                 let pos_result = es[pos](result_map, non_terminal_results.clone());
 
                 {
-                    let mut vec = new_result_vector.lock().unwrap();
+                    let mut vec = new_result_vector.write().unwrap();
                     vec.insert(*pos, pos_result.clone());
+                }
 
-                    // Also combine the result to the non_terminal_results.
-                    let sym = non_terminal_positions.get(pos).unwrap();
-                    if let Some(set) = non_terminal_results.lock().unwrap().get_mut(sym) {
-                        *set = set.union(pos_result);
-                    }
+                // Also combine the result to the non_terminal_results.
+                let sym = non_terminal_positions.get(pos).unwrap();
+                if let Some(set) = non_terminal_results.write().unwrap().get_mut(sym) {
+                    *set = set.union(pos_result);
                 }
             });
             Arc::try_unwrap(new_result_vector)
@@ -271,9 +271,9 @@ where
             let nt = pr.get_n_str().to_string();
             es.insert(
                 (prod_num, *symbol_index).into(),
-                Arc::new(move |result_map, non_terminal_results: Arc<Mutex<HashMap<String, DomainType>>>| {
+                Arc::new(move |result_map, non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
                     result_function(result_map, non_terminal_results.clone()).k_concat(
-                        non_terminal_results.lock().unwrap().get(&nt).unwrap(),
+                        non_terminal_results.read().unwrap().get(&nt).unwrap(),
                         k,
                     )
                 }),

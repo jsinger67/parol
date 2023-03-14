@@ -11,7 +11,7 @@ use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, RwLock};
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: Mapping of non-terminals to KTuples
@@ -101,7 +101,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         Arc::new(move |es: &EquationSystem, result_vector: &ResultVector| {
             //let mut new_result_vector: ResultVector = result_vector.clone();
             let new_result_vector =
-                Arc::new(Mutex::new(vec![DomainType::new(k); result_vector.len()]));
+                Arc::new(RwLock::new(vec![DomainType::new(k); result_vector.len()]));
             (0..pr_count).into_par_iter().for_each(|pr_i| {
                 let mut r = es[pr_i](result_vector);
                 // trace!(
@@ -110,7 +110,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 //     r.to_string(&terminals)
                 // );
                 {
-                    let mut vec = new_result_vector.lock().unwrap();
+                    let mut vec = new_result_vector.write().unwrap();
                     vec[pr_i] = r.clone();
                     // trace!(
                     //     "Nt index for production {} is {}",
