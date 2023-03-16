@@ -9,9 +9,10 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use std::collections::HashMap;
-use std::sync::{Arc, RwLock};
+use std::sync::mpsc::channel;
+use std::sync::Arc;
+use std::thread;
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: Mapping of non-terminals to KTuples
@@ -30,12 +31,12 @@ type ResultVector = Vec<DomainType>;
 
 /// The type of the function in the equation system
 /// It is called for each non-terminal
-type TransferFunction = Arc<dyn Fn(&ResultVector) -> DomainType + Send + Sync + 'static>;
+type TransferFunction = Arc<dyn Fn(Arc<ResultVector>) -> DomainType + Send + Sync + 'static>;
 
 type EquationSystem = Vec<TransferFunction>;
 
 type StepFunction =
-    Arc<dyn Fn(&EquationSystem, &ResultVector) -> ResultVector + Send + Sync + 'static>;
+    Arc<dyn Fn(Arc<EquationSystem>, Arc<ResultVector>) -> ResultVector + Send + Sync + 'static>;
 
 ///
 /// Calculates the FIRST k sets for all productions of the given grammar.
@@ -84,7 +85,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let equation_system: EquationSystem =
         cfg.pr
             .iter()
-            .fold(EquationSystem::with_capacity(pr_count), |mut es, pr| {
+            .fold(Vec::with_capacity(pr_count), |mut es, pr| {
                 // trace!("{}:", pr);
                 es.push(combine_production_equation(
                     pr,
@@ -96,38 +97,35 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 es
             });
 
+    let equation_system = Arc::new(equation_system);
+
     let step_function: StepFunction = {
         // let terminals = terminals.clone();
-        Arc::new(move |es: &EquationSystem, result_vector: &ResultVector| {
-            //let mut new_result_vector: ResultVector = result_vector.clone();
-            let new_result_vector =
-                Arc::new(RwLock::new(vec![DomainType::new(k); result_vector.len()]));
-            (0..pr_count).into_par_iter().for_each(|pr_i| {
-                let mut r = es[pr_i](result_vector);
-                // trace!(
-                //     "Result for production {} is {}",
-                //     pr_i,
-                //     r.to_string(&terminals)
-                // );
-                {
-                    let mut vec = new_result_vector.write().unwrap();
-                    vec[pr_i] = r.clone();
-                    // trace!(
-                    //     "Nt index for production {} is {}",
-                    //     pr_i,
-                    //     pr_count + nt_for_production[pr_i]
-                    // );
-                    vec[pr_count + nt_for_production[pr_i]].append(&mut r);
-                }
-            });
-            Arc::try_unwrap(new_result_vector)
-                .unwrap()
-                .into_inner()
-                .unwrap()
-        })
+        Arc::new(
+            move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
+                let (tx, rx) = channel();
+                (0..pr_count).for_each(|pr_i| {
+                    let tx = tx.clone();
+                    let es = es.clone();
+                    let result_vector = result_vector.clone();
+                    thread::spawn(move || {
+                        tx.send((pr_i, es[pr_i](result_vector))).unwrap();
+                    });
+                });
+
+                let mut new_result_vector = vec![DomainType::new(k); result_vector.len()];
+                (0..pr_count).for_each(|_| {
+                    let (pr_i, mut r) = rx.recv().unwrap();
+                    new_result_vector[pr_i] = r.clone();
+                    new_result_vector[pr_count + nt_for_production[pr_i]].append(&mut r);
+                });
+
+                new_result_vector
+            },
+        )
     };
 
-    let mut result_vector = if k <= 1 {
+    let mut result_vector = Arc::new(if k <= 1 {
         (0..pr_count + nt_count).fold(Vec::with_capacity(pr_count + nt_count), |mut acc, i| {
             if i < pr_count {
                 acc.push(DomainType::new(k));
@@ -145,7 +143,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
             p[pr_count + non_terminal_index(&nt)] = t;
         }
         p.drain(..).map(|t| t.set_k(k)).collect()
-    };
+    });
 
     let mut iterations = 0usize;
     loop {
@@ -153,7 +151,10 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         //     "\nInput\n{}",
         //     result_vector_to_string(&result_vector, pr_count, &terminals, &non_terminals)
         // );
-        let new_result_vector = step_function(&equation_system, &result_vector);
+        let new_result_vector = Arc::new(step_function(
+            equation_system.clone(),
+            result_vector.clone(),
+        ));
         // trace!(
         //     "\nOutput\n{}",
         //     result_vector_to_string(&new_result_vector, pr_count, &terminals, &non_terminals)
@@ -245,7 +246,7 @@ where
         match &symbol_string.0[0] {
             Symbol::T(_) => {
                 let terminal_index = terminal_index.clone();
-                result_function = Arc::new(move |result_vector: &ResultVector| {
+                result_function = Arc::new(move |result_vector: Arc<ResultVector>| {
                     let mapper = |s| CompiledTerminal::create(s, terminal_index.clone());
                     result_function(result_vector).k_concat(
                         &DomainType::of(&[KTuple::from_slice_with(&symbol_string.0, mapper, k)], k),
@@ -255,8 +256,8 @@ where
             }
             Symbol::N(nt, _, _) => {
                 let f = create_union_access_function(nt, pr_count, non_terminal_index.clone());
-                result_function = Arc::new(move |result_vector: &ResultVector| {
-                    result_function(result_vector).k_concat(&f(result_vector), k)
+                result_function = Arc::new(move |result_vector: Arc<ResultVector>| {
+                    result_function(result_vector.clone()).k_concat(&f(result_vector), k)
                 });
             }
             Symbol::S(_) => (),
@@ -281,7 +282,7 @@ fn create_union_access_function(
 ) -> TransferFunction {
     let nt = nt.to_owned();
     let index = non_terminal_index(&nt);
-    Arc::new(move |result_vector: &ResultVector| {
+    Arc::new(move |result_vector: Arc<ResultVector>| {
         result_vector[pr_count + index].clone()
         // trace!(
         //     "Accessing non-terminal union of {}({}): {} (v: {:?})",

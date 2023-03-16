@@ -10,9 +10,10 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::{BTreeMap, HashMap};
+use std::sync::mpsc::channel;
 use std::sync::{Arc, RwLock};
+use std::thread;
 
 /// Result type for each non-terminal:
 /// The set of the follow k terminals
@@ -29,7 +30,7 @@ type ResultMap = HashMap<Pos, DomainType>;
 /// The type of the function in the equation system
 /// It is called for each non-terminal
 type TransferFunction = Arc<
-    dyn Fn(&ResultMap, Arc<RwLock<HashMap<String, DomainType>>>) -> DomainType
+    dyn Fn(Arc<ResultMap>, Arc<RwLock<HashMap<String, DomainType>>>) -> DomainType
         + Send
         + Sync
         + 'static,
@@ -39,9 +40,9 @@ type EquationSystem = HashMap<Pos, TransferFunction>;
 
 type StepFunction = Arc<
     dyn Fn(
-        &EquationSystem,
-        &ResultMap,
-        &HashMap<Pos, String>,
+        Arc<EquationSystem>,
+        Arc<ResultMap>,
+        Arc<HashMap<Pos, String>>,
         Arc<RwLock<HashMap<String, DomainType>>>,
     ) -> ResultMap,
 >;
@@ -79,14 +80,15 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
             }),
     ));
 
-    let non_terminal_positions = cfg
-        .get_non_terminal_positions()
-        .iter()
-        .filter(|(p, _)| p.sy_index() > 0)
-        .fold(HashMap::<Pos, String>::new(), |mut acc, (p, s)| {
-            acc.insert(*p, s.to_string());
-            acc
-        });
+    let non_terminal_positions = Arc::new(
+        cfg.get_non_terminal_positions()
+            .iter()
+            .filter(|(p, _)| p.sy_index() > 0)
+            .fold(HashMap::<Pos, String>::new(), |mut acc, (p, s)| {
+                acc.insert(*p, s.to_string());
+                acc
+            }),
+    );
 
     let equation_system: EquationSystem =
         cfg.pr
@@ -104,56 +106,65 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                 )
             });
 
-    let step_function: StepFunction = Arc::new(
-        |es: &EquationSystem,
-         result_map: &ResultMap,
-         non_terminal_positions: &HashMap<Pos, String>,
-         non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
-            let new_result_vector = Arc::new(RwLock::new(ResultMap::new()));
-            result_map.par_iter().for_each(|(pos, _)| {
-                // Call each function of the equation system and put the
-                // result into the new result vector.
-                let pos_result = es[pos](result_map, non_terminal_results.clone());
+    let equation_system = Arc::new(equation_system);
 
-                {
-                    let mut vec = new_result_vector.write().unwrap();
-                    vec.insert(*pos, pos_result.clone());
-                }
+    let step_function: StepFunction = Arc::new(
+        |es: Arc<EquationSystem>,
+         result_map: Arc<ResultMap>,
+         non_terminal_positions: Arc<HashMap<Pos, String>>,
+         non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
+            let (tx, rx) = channel();
+            result_map.iter().map(|(pos, _)| *pos).for_each(|pos| {
+                let tx = tx.clone();
+                let es = es.clone();
+                let result_map = result_map.clone();
+                let non_terminal_results = non_terminal_results.clone();
+
+                // Call each function of the equation system...
+                thread::spawn(move || {
+                    tx.send((pos, es[&pos](result_map, non_terminal_results)))
+                        .unwrap();
+                });
+            });
+
+            let mut new_result_vector = ResultMap::new();
+            result_map.iter().for_each(|(_, _)| {
+                let (pos, pos_result) = rx.recv().unwrap();
+
+                // ...and put the result into the new result vector.
+                new_result_vector.insert(pos, pos_result.clone());
 
                 // Also combine the result to the non_terminal_results.
-                let sym = non_terminal_positions.get(pos).unwrap();
+                let sym = non_terminal_positions.get(&pos).unwrap();
                 if let Some(set) = non_terminal_results.write().unwrap().get_mut(sym) {
                     *set = set.union(pos_result);
                 }
             });
-            Arc::try_unwrap(new_result_vector)
-                .unwrap()
-                .into_inner()
-                .unwrap()
+            new_result_vector
         },
     );
 
-    let mut result_map: ResultMap =
-        non_terminal_positions
-            .iter()
-            .fold(ResultMap::new(), |mut acc, (p, _)| {
-                acc.insert(*p, DomainType::new(k));
-                acc
-            });
+    let mut result_map = Arc::new(non_terminal_positions.iter().fold(
+        ResultMap::new(),
+        |mut acc, (p, _)| {
+            acc.insert(*p, DomainType::new(k));
+            acc
+        },
+    ));
 
     let mut iterations = 0usize;
     loop {
         let new_result_vector = step_function(
-            &equation_system,
-            &result_map,
-            &non_terminal_positions,
+            equation_system.clone(),
+            result_map.clone(),
+            non_terminal_positions.clone(),
             non_terminal_results.clone(),
         );
         // trace!("\nStep:{}", trace_result_vector(&new_result_vector));
-        if new_result_vector == result_map {
+        if new_result_vector == *result_map {
             break;
         }
-        result_map = new_result_vector;
+        result_map = Arc::new(new_result_vector);
         iterations += 1;
         trace!("Iteration number {} completed", iterations);
     }
@@ -236,7 +247,7 @@ where
                         // trace!("  concat terminals: {}", symbol_string_clone);
                         let terminal_index = terminal_index.clone();
                         result_function =
-                            Arc::new(move |result_map: &ResultMap, non_terminal_results| {
+                            Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
                                 let mapper =
                                     |s| CompiledTerminal::create(s, terminal_index.clone());
                                 result_function(result_map, non_terminal_results).k_concat(
@@ -256,7 +267,7 @@ where
                         // trace!("  concat first k of nt: {}:{}", nt, first_of_nt);
                         let first_k_of_nt = first_k_of_nt.clone();
                         result_function =
-                            Arc::new(move |result_map: &ResultMap, non_terminal_results| {
+                            Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
                                 let first_of_nt = first_k_of_nt.get(&nt).unwrap();
                                 result_function(result_map, non_terminal_results)
                                     .k_concat(first_of_nt, k)
@@ -271,12 +282,12 @@ where
             let nt = pr.get_n_str().to_string();
             es.insert(
                 (prod_num, *symbol_index).into(),
-                Arc::new(move |result_map, non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
-                    result_function(result_map, non_terminal_results.clone()).k_concat(
-                        non_terminal_results.read().unwrap().get(&nt).unwrap(),
-                        k,
-                    )
-                }),
+                Arc::new(
+                    move |result_map, non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
+                        result_function(result_map, non_terminal_results.clone())
+                            .k_concat(non_terminal_results.read().unwrap().get(&nt).unwrap(), k)
+                    },
+                ),
             );
         }
     }
