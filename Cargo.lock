@@ -786,6 +786,7 @@ dependencies = [
  "derive_builder",
  "env_logger",
  "function_name",
+ "num_cpus",
  "owo-colors",
  "parol-macros",
  "parol_runtime",

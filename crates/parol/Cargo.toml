@@ -20,8 +20,7 @@ clap = { workspace = true }
 derive_builder = { version = "0.12.0" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-syntree = { workspace = true }
-syntree_layout = { workspace = true }
+num_cpus = "1.15.0"
 owo-colors = "3.5.0"
 parol_runtime = { path = "../parol_runtime", version = "0.15.1", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
@@ -33,6 +32,8 @@ regex-syntax = "0.6.27"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 syn = { version = "1", default-features = false, features = ["full", "parsing"] }
+syntree = { workspace = true }
+syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 ume = "0.1"
 

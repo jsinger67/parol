@@ -99,27 +99,35 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let equation_system = Arc::new(equation_system);
 
+    let max_threads: usize = num_cpus::get();
+
     let step_function: StepFunction = {
         // let terminals = terminals.clone();
         Arc::new(
             move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
                 let (tx, rx) = channel();
-                (0..pr_count).for_each(|pr_i| {
-                    let tx = tx.clone();
-                    let es = es.clone();
-                    let result_vector = result_vector.clone();
-                    thread::spawn(move || {
-                        tx.send((pr_i, es[pr_i](result_vector))).unwrap();
-                    });
-                });
-
+                let iter = &mut (0..pr_count) as &mut dyn Iterator<Item = usize>;
                 let mut new_result_vector = vec![DomainType::new(k); result_vector.len()];
-                (0..pr_count).for_each(|_| {
-                    let (pr_i, mut r) = rx.recv().unwrap();
-                    new_result_vector[pr_i] = r.clone();
-                    new_result_vector[pr_count + nt_for_production[pr_i]].append(&mut r);
-                });
-
+                loop {
+                    let mut threads = 0;
+                    iter.take(max_threads).for_each(|pr_i| {
+                        threads += 1;
+                        let tx = tx.clone();
+                        let es = es.clone();
+                        let result_vector = result_vector.clone();
+                        thread::spawn(move || {
+                            tx.send((pr_i, es[pr_i](result_vector))).unwrap();
+                        });
+                    });
+                    (0..threads).for_each(|_| {
+                        let (pr_i, mut r) = rx.recv().unwrap();
+                        new_result_vector[pr_i] = r.clone();
+                        new_result_vector[pr_count + nt_for_production[pr_i]].append(&mut r);
+                    });
+                    if threads == 0 {
+                        break;
+                    }
+                }
                 new_result_vector
             },
         )
