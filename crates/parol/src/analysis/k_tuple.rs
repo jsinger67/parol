@@ -498,6 +498,7 @@ impl KTuple {
                 .inner()
                 .t
                 .iter()
+                .take(self.terminals.inner().i)
                 .map(|t| match t.0 {
                     EOI => "$".to_owned(),
                     NEW_LINE => "NewLine".to_owned(),
@@ -529,7 +530,7 @@ impl Display for KTuple {
                 .inner()
                 .t
                 .iter()
-                .take_while(|t| !t.is_inv())
+                .take(self.terminals.inner().i)
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
                 .join(", "),
