@@ -100,6 +100,33 @@ impl Cfg {
     }
 
     ///
+    /// Generates a function that returns the non-terminal index (in alphabetical sort order) for a
+    /// given non-terminal name
+    ///
+    pub fn get_non_terminal_index_function(&self) -> impl Fn(&str) -> usize {
+        let vec = self.get_non_terminal_set();
+        move |nt_name: &str| vec.iter().position(|nt| nt == nt_name).unwrap()
+    }
+
+    ///
+    /// Generates a function that returns the terminal index (in ordered of occurrence) for given
+    /// terminal string and terminal kind
+    ///
+    pub fn get_terminal_index_function(&self) -> impl Fn(&str, TerminalKind) -> usize {
+        let vec = self
+            .get_ordered_terminals_owned()
+            .into_iter()
+            .map(|(s, k, _)| (s, k))
+            .collect::<Vec<(String, TerminalKind)>>();
+        move |t: &str, k: TerminalKind| {
+            vec.iter()
+                .position(|(t0, k0)| t == t0 && k.behaves_like(*k0))
+                .unwrap()
+                + parol_runtime::lexer::FIRST_USER_TOKEN
+        }
+    }
+
+    ///
     /// Set of Terminals - ordered by occurrence.
     /// Used for Lexer generation.
     ///

@@ -2,7 +2,6 @@ use anyhow::{bail, Result};
 use parol::analysis::{first_k, FirstCache};
 use parol::generators::generate_terminal_names;
 use parol::{obtain_grammar_config, KTuples, MAX_K};
-use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 /// Calculates the FIRST(k) sets for each production and for each non-terminal.
@@ -31,6 +30,7 @@ pub fn main(args: &Args) -> Result<()> {
     let first_cache = FirstCache::new();
 
     let (first_k_per_prod, mut first_k_per_nt) = first_k(&grammar_config, max_k, &first_cache);
+
     println!("Per production:");
     for (i, f) in first_k_per_prod.iter().enumerate() {
         println!(
@@ -40,10 +40,17 @@ pub fn main(args: &Args) -> Result<()> {
             f.to_string(&terminals)
         );
     }
+
     println!("Per non-terminal:");
-    let first_k_per_nt: BTreeMap<String, KTuples> = first_k_per_nt.drain().collect();
-    for (nt, fi) in first_k_per_nt.iter() {
-        println!("  {}: {}", nt, fi.to_string(&terminals));
+    let non_terminals = grammar_config
+        .cfg
+        .get_non_terminal_set()
+        .iter()
+        .cloned()
+        .collect::<Vec<String>>();
+    let first_k_per_nt: Vec<KTuples> = first_k_per_nt.drain(..).collect();
+    for (nt_i, fi) in first_k_per_nt.iter().enumerate() {
+        println!("  {}: {}", non_terminals[nt_i], fi.to_string(&terminals));
     }
     Ok(())
 }

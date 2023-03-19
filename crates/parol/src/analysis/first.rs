@@ -7,16 +7,14 @@ use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
-use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use std::collections::HashMap;
 use std::sync::mpsc::channel;
 use std::sync::Arc;
 use std::thread;
 
 /// 0: KTuples for terminals in terminal-index order
-/// 1: Mapping of non-terminals to KTuples
-pub type FirstSet = (Vec<KTuples>, HashMap<String, KTuples>);
+/// 1: KTuples for non-terminals in non-terminal-index (alphabetical) order
+pub type FirstSet = (Vec<KTuples>, Vec<KTuples>);
 
 /// Result type for each production:
 /// The set of the first k terminals
@@ -46,28 +44,12 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let cfg = &grammar_config.cfg;
 
     let pr_count = cfg.pr.len();
+    let nt_count = cfg.get_non_terminal_set().len();
 
-    // The indices within this vector of non-terminals corresponds to the
-    // indices in the result-vector.
-    let non_terminals = cfg
-        .get_non_terminal_set()
-        .iter()
-        .cloned()
-        .collect::<Vec<String>>();
-    let nt_count = non_terminals.len();
-
-    let non_terminal_index =
-        Arc::new(move |nt: &str| -> usize { non_terminals.iter().position(|n| n == nt).unwrap() });
-
-    let terminals = grammar_config.cfg.get_ordered_terminals_owned();
-
-    let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> usize {
-        terminals
-            .iter()
-            .position(|(trm, kind, _)| *trm == t && kind.behaves_like(k))
-            .unwrap()
-            + FIRST_USER_TOKEN
-    });
+    // The indices returned from this function corresponds to the indices in the result-vector.
+    let non_terminal_index = Arc::new(grammar_config.cfg.get_non_terminal_index_function());
+    // The indices returned from this function are used to create CompiledTerminals.
+    let terminal_index = Arc::new(grammar_config.cfg.get_terminal_index_function());
 
     let nt_for_production: Vec<usize> =
         cfg.get_non_terminal_set()
@@ -147,8 +129,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         for _ in 0..nt_count {
             p.push(DomainType::new(k));
         }
-        for (nt, t) in n {
-            p[pr_count + non_terminal_index(&nt)] = t;
+        for (nt_i, t) in n.iter().enumerate() {
+            p[pr_count + nt_i] = t.clone();
         }
         p.drain(..).map(|t| t.set_k(k)).collect()
     });
@@ -176,17 +158,9 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         trace!("Iteration number {} completed", iterations);
     }
 
-    let (r, n) = result_vector.split_at(pr_count);
+    let (r, k_tuples_of_nt) = result_vector.split_at(pr_count);
 
-    let k_tuples_of_nt = cfg.get_non_terminal_set().iter().enumerate().fold(
-        HashMap::<String, DomainType>::new(),
-        |mut acc, (ni, nt)| {
-            acc.insert(nt.to_string(), n[ni].clone());
-            acc
-        },
-    );
-
-    (r.to_vec(), k_tuples_of_nt)
+    (r.to_vec(), k_tuples_of_nt.to_vec())
 }
 
 ///
@@ -200,7 +174,7 @@ fn combine_production_equation<N, T>(
     k: usize,
 ) -> TransferFunction
 where
-    T: Fn(&str, TerminalKind) -> TerminalIndex + Clone + Send + Sync + 'static,
+    T: Fn(&str, TerminalKind) -> TerminalIndex + Send + Sync + 'static,
     N: Fn(&str) -> usize + Send + 'static,
 {
     let parts = pr

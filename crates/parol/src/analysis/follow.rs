@@ -10,7 +10,7 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, RwLock};
 use std::thread;
@@ -19,8 +19,8 @@ use std::thread;
 /// The set of the follow k terminals
 type DomainType = KTuples;
 
-/// Mapping of non-terminals to KTuples
-pub type FollowSet = BTreeMap<String, DomainType>;
+/// KTuples for non-terminals in non-terminal-index (alphabetical) order
+pub type FollowSet = Vec<DomainType>;
 
 /// The result map is applied to each iteration step.
 /// It is also returned after each iteration step.
@@ -29,12 +29,8 @@ type ResultMap = HashMap<Pos, DomainType>;
 
 /// The type of the function in the equation system
 /// It is called for each non-terminal
-type TransferFunction = Arc<
-    dyn Fn(Arc<ResultMap>, Arc<RwLock<HashMap<String, DomainType>>>) -> DomainType
-        + Send
-        + Sync
-        + 'static,
->;
+type TransferFunction =
+    Arc<dyn Fn(Arc<ResultMap>, Arc<RwLock<Vec<DomainType>>>) -> DomainType + Send + Sync + 'static>;
 
 type EquationSystem = HashMap<Pos, TransferFunction>;
 
@@ -42,8 +38,8 @@ type StepFunction = Arc<
     dyn Fn(
         Arc<EquationSystem>,
         Arc<ResultMap>,
-        Arc<HashMap<Pos, String>>,
-        Arc<RwLock<HashMap<String, DomainType>>>,
+        Arc<HashMap<Pos, usize>>,
+        Arc<RwLock<Vec<DomainType>>>,
     ) -> ResultMap,
 >;
 
@@ -67,25 +63,27 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let start_symbol = cfg.get_start_symbol();
 
-    let non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>> = Arc::new(RwLock::new(
-        cfg.get_non_terminal_set()
+    let non_terminal_results: Arc<RwLock<Vec<DomainType>>> = Arc::new(RwLock::new(
+        cfg.get_non_terminal_positions()
             .iter()
-            .fold(HashMap::new(), |mut acc, nt| {
+            .fold(Vec::new(), |mut acc, (_, nt)| {
                 if nt == start_symbol {
-                    acc.insert(nt.to_string(), DomainType::end(k));
+                    acc.push(DomainType::end(k));
                 } else {
-                    acc.insert(nt.to_string(), DomainType::new(k));
+                    acc.push(DomainType::new(k));
                 }
                 acc
             }),
     ));
 
+    let non_terminal_index_finder = cfg.get_non_terminal_index_function();
+
     let non_terminal_positions = Arc::new(
         cfg.get_non_terminal_positions()
             .iter()
             .filter(|(p, _)| p.sy_index() > 0)
-            .fold(HashMap::<Pos, String>::new(), |mut acc, (p, s)| {
-                acc.insert(*p, s.to_string());
+            .fold(HashMap::<Pos, usize>::new(), |mut acc, (p, s)| {
+                acc.insert(*p, non_terminal_index_finder(s));
                 acc
             }),
     );
@@ -100,6 +98,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                     es,
                     i,
                     pr,
+                    &non_terminal_index_finder,
                     first_k_of_nt.clone(),
                     terminal_index.clone(),
                     k,
@@ -113,8 +112,8 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
     let step_function: StepFunction = Arc::new(
         move |es: Arc<EquationSystem>,
               result_map: Arc<ResultMap>,
-              non_terminal_positions: Arc<HashMap<Pos, String>>,
-              non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
+              non_terminal_positions: Arc<HashMap<Pos, usize>>,
+              non_terminal_results: Arc<RwLock<Vec<DomainType>>>| {
             let (tx, rx) = channel();
             let iter = &mut result_map.iter().map(|(pos, _)| *pos) as &mut dyn Iterator<Item = Pos>;
             let mut new_result_vector = ResultMap::new();
@@ -142,7 +141,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
                     // Also combine the result to the non_terminal_results.
                     let sym = non_terminal_positions.get(&pos).unwrap();
-                    if let Some(set) = non_terminal_results.write().unwrap().get_mut(sym) {
+                    if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
                         *set = set.union(pos_result);
                     }
                 });
@@ -183,7 +182,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
         .unwrap()
         .into_inner()
         .unwrap()
-        .drain()
+        .drain(..)
         .collect::<FollowSet>()
 }
 
@@ -195,7 +194,8 @@ fn update_production_equations<T>(
     mut es: EquationSystem,
     prod_num: usize,
     pr: &Pr,
-    first_k_of_nt: Arc<HashMap<String, DomainType>>,
+    non_terminal_index_finder: &impl Fn(&str) -> usize,
+    first_k_of_nt: Arc<Vec<DomainType>>,
     terminal_index: Arc<T>,
     k: usize,
 ) -> EquationSystem
@@ -276,9 +276,10 @@ where
                     Symbol::N(nt, _, _) => {
                         // trace!("  concat first k of nt: {}:{}", nt, first_of_nt);
                         let first_k_of_nt = first_k_of_nt.clone();
+                        let nt_i = non_terminal_index_finder(&nt);
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
-                                let first_of_nt = first_k_of_nt.get(&nt).unwrap();
+                                let first_of_nt = first_k_of_nt.get(nt_i).unwrap();
                                 result_function(result_map, non_terminal_results)
                                     .k_concat(first_of_nt, k)
                             });
@@ -289,13 +290,13 @@ where
                 }
             }
             // trace!("  concat Follow({}, {})", pr.get_n_str(), k);
-            let nt = pr.get_n_str().to_string();
+            let nt = non_terminal_index_finder(pr.get_n_str());
             es.insert(
                 (prod_num, *symbol_index).into(),
                 Arc::new(
-                    move |result_map, non_terminal_results: Arc<RwLock<HashMap<String, DomainType>>>| {
+                    move |result_map, non_terminal_results: Arc<RwLock<Vec<DomainType>>>| {
                         result_function(result_map, non_terminal_results.clone())
-                            .k_concat(non_terminal_results.read().unwrap().get(&nt).unwrap(), k)
+                            .k_concat(non_terminal_results.read().unwrap().get(nt).unwrap(), k)
                     },
                 ),
             );

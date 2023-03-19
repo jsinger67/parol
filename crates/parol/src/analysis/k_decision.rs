@@ -1,53 +1,49 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
-use crate::GrammarAnalysisError;
+use crate::{GrammarAnalysisError, MAX_K};
 use crate::{GrammarConfig, KTuples};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 use std::rc::Rc;
 
 /// Cache of FirstSets
-pub struct FirstCache(pub Rc<RefCell<HashMap<usize, FirstSet>>>);
+#[derive(Debug, Default)]
+pub struct FirstCache(pub Rc<RefCell<[Option<FirstSet>; MAX_K]>>);
 /// Cache of FollowSets
-pub struct FollowCache(pub Rc<RefCell<HashMap<usize, FollowSet>>>);
+#[derive(Debug, Default)]
+pub struct FollowCache(pub Rc<RefCell<[Option<FollowSet>; MAX_K]>>);
 
 impl FirstCache {
     /// Creates a new item
     pub fn new() -> Self {
-        Self(Rc::new(RefCell::new(HashMap::new())))
+        Self::default()
     }
     /// Utilizes the cache to get a FirstSet
     pub fn get(&self, k: usize, grammar_config: &GrammarConfig) -> FirstSet {
         let exists = {
             let borrowed_entry = self.0.borrow();
-            borrowed_entry.get(&k).is_some()
+            borrowed_entry[k].is_some()
         };
         if exists {
             trace!("FirstCache::get: reusing first set for k={}", k);
-            self.0.borrow().get(&k).unwrap().clone()
+            self.0.borrow().get(k).unwrap().as_ref().unwrap().clone()
         } else {
             trace!("FirstCache::get: calculating first set for k={}...", k);
             let entry = first_k(grammar_config, k, self);
             trace!("finished");
-            self.0.borrow_mut().insert(k, entry);
+            self.0.borrow_mut()[k] = Some(entry);
             self.get(k, grammar_config)
         }
-    }
-}
-
-impl Default for FirstCache {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
 impl FollowCache {
     /// Creates a new item
     pub fn new() -> Self {
-        Self(Rc::new(RefCell::new(HashMap::new())))
+        Self::default()
     }
     /// Utilizes the cache to get a FollowSet
     pub fn get(
@@ -58,24 +54,18 @@ impl FollowCache {
     ) -> FollowSet {
         let exists = {
             let borrowed_entry = self.0.borrow();
-            borrowed_entry.get(&k).is_some()
+            borrowed_entry[k].is_some()
         };
         if exists {
             trace!("FollowCache::get: reusing follow set for k={}", k);
-            self.0.borrow().get(&k).unwrap().clone()
+            self.0.borrow().get(k).unwrap().as_ref().unwrap().clone()
         } else {
             trace!("FollowCache::get: calculating follow set for k={}...", k);
             let entry = follow_k(grammar_config, k, first_cache);
             trace!("finished");
-            self.0.borrow_mut().insert(k, entry);
+            self.0.borrow_mut()[k] = Some(entry);
             self.get(k, grammar_config, first_cache)
         }
-    }
-}
-
-impl Default for FollowCache {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -106,6 +96,7 @@ pub fn decidable(
         // The trivial case - no lookahead is needed.
         Ok(0)
     } else {
+        let non_terminal_index_finder = cfg.get_non_terminal_index_function();
         let mut current_k = 1;
         loop {
             if current_k > max_k {
@@ -121,7 +112,7 @@ pub fn decidable(
                 .collect::<Vec<(ProductionIndex, KTuples)>>();
 
             let cached = follow_cache.get(current_k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.get(non_terminal) {
+            if let Some(follow_set) = cached.get(non_terminal_index_finder(non_terminal)) {
                 let concatenated_k_tuples = k_tuples_of_productions
                     .iter()
                     .map(|(i, t)| (*i, t.clone().k_concat(follow_set, current_k)))
@@ -173,6 +164,7 @@ pub fn calculate_k_tuples(
     follow_cache: &FollowCache,
 ) -> Result<BTreeMap<usize, KTuples>> {
     let cfg = &grammar_config.cfg;
+    let non_terminal_index_finder = cfg.get_non_terminal_index_function();
     cfg.get_non_terminal_set()
         .iter()
         .map(|n| {
@@ -190,7 +182,7 @@ pub fn calculate_k_tuples(
                     .fold(BTreeMap::new(), |mut acc, (pi, _)| {
                         let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
                         let cached = follow_cache.get(k, grammar_config, first_cache);
-                        if let Some(follow_set) = cached.get(&n) {
+                        if let Some(follow_set) = cached.get(non_terminal_index_finder(&n)) {
                             acc.insert(*pi, k_tuples.k_concat(follow_set, k));
                         }
                         acc
@@ -259,6 +251,7 @@ pub fn explain_conflicts(
         // The trivial case - no lookahead is needed, no conflicts can occur.
         Ok(Vec::new())
     } else {
+        let non_terminal_index_finder = cfg.get_non_terminal_index_function();
         let productions = cfg.matching_productions(non_terminal);
         let k_tuples_of_productions = productions
             .iter()
@@ -269,7 +262,7 @@ pub fn explain_conflicts(
             .collect::<Vec<(ProductionIndex, KTuples)>>();
 
         let cached = follow_cache.get(k, grammar_config, first_cache);
-        if let Some(follow_set) = cached.get(non_terminal) {
+        if let Some(follow_set) = cached.get(non_terminal_index_finder(non_terminal)) {
             let concatenated_k_tuples = k_tuples_of_productions
                 .iter()
                 .map(|(i, t)| (*i, t.clone().k_concat(follow_set, k)))

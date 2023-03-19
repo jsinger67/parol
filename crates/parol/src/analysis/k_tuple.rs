@@ -498,6 +498,7 @@ impl KTuple {
                 .inner()
                 .t
                 .iter()
+                .take(self.terminals.inner().i)
                 .map(|t| match t.0 {
                     EOI => "$".to_owned(),
                     NEW_LINE => "NewLine".to_owned(),
@@ -541,13 +542,13 @@ impl Display for KTuple {
 
 impl Hash for KTuple {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.terminals.inner().hash(state)
+        self.terminals.inner().t.hash(state)
     }
 }
 
 impl PartialEq for KTuple {
     fn eq(&self, other: &Self) -> bool {
-        self.terminals.inner().eq(other.terminals.inner())
+        self.terminals.inner().t.eq(&other.terminals.inner().t)
     }
 }
 
