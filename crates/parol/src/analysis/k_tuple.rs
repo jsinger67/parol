@@ -530,7 +530,7 @@ impl Display for KTuple {
                 .inner()
                 .t
                 .iter()
-                .take_while(|t| !t.is_inv())
+                .take(self.terminals.inner().i)
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
                 .join(", "),
