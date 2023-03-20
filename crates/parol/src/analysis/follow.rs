@@ -64,9 +64,9 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
     let start_symbol = cfg.get_start_symbol();
 
     let non_terminal_results: Arc<RwLock<Vec<DomainType>>> = Arc::new(RwLock::new(
-        cfg.get_non_terminal_positions()
+        cfg.get_non_terminal_set()
             .iter()
-            .fold(Vec::new(), |mut acc, (_, nt)| {
+            .fold(Vec::new(), |mut acc, nt| {
                 if nt == start_symbol {
                     acc.push(DomainType::end(k));
                 } else {
