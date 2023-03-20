@@ -213,11 +213,9 @@ impl Terminals {
 
     /// Adds a new terminal to self if max size is not reached yet and if last is not EOI
     pub fn push(&mut self, t: CompiledTerminal) {
-        if self.i < MAX_K {
-            if !matches!(self.last(), Some(CompiledTerminal(EOI))) {
-                self.t[self.i] = t;
-                self.i += 1;
-            }
+        if self.i < MAX_K && !matches!(self.last(), Some(CompiledTerminal(EOI))) {
+            self.t[self.i] = t;
+            self.i += 1;
         }
     }
 
