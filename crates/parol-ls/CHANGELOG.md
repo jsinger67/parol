@@ -5,6 +5,10 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.8.0 - Not released yet
+
+* Using newer and faster `parol 0.20.0`
+
 ## v0.7.0 - 2023-03-06
 
 * Using newer and faster `parol 0.19.0` + `parol_runtime 0.15.0`

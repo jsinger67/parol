@@ -21,8 +21,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.19.1 - Not released yet
+## 0.20.0 - Not released yet
 
+* Most work in this release was dedicated to better performance of `parol`'s generation step
+  * This includes the use of parallel computation of FIST and FOLLOW sets
+  * Some minor changes in more 'inner', but public API, thus the bump to version 0.20.0
 * Include fix of issue [#61](https://github.com/jsinger67/parol/issues/61) via parol_runtime 0.15.1
   * Thanks to [dalance](https://github.com/dalance) for this proposal
 * Improved handling of pre-release mode in test parol_new
