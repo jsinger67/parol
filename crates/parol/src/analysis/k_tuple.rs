@@ -107,12 +107,12 @@ impl Terminals {
         M: Fn(&'s S) -> CompiledTerminal,
     {
         let mut t = <[CompiledTerminal; MAX_K]>::default();
-        let i = others.len();
+        let mut i = 0;
         others
             .iter()
             .take(std::cmp::min(k, MAX_K))
             .enumerate()
-            .for_each(|(i, o)| t[i] = m(o));
+            .for_each(|(n, o)| { t[n] = m(o); i += 1; });
         Self { t, i }
     }
 
@@ -122,12 +122,13 @@ impl Terminals {
     #[must_use]
     pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
         let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut i = 0;
         others
             .iter()
             .take(std::cmp::min(k, MAX_K))
             .enumerate()
-            .for_each(|(i, o)| t[i] = *o);
-        Self { t, i: others.len() }
+            .for_each(|(n, o)| { t[n] = *o; i += 1; });
+        Self { t, i }
     }
 
     /// Returns the length of the collection
@@ -400,13 +401,14 @@ impl KTuple {
             TerminalString::Complete(s) => s,
         };
 
+        let mut i = 0;
         terminals
             .t
             .iter_mut()
             .zip(terms.iter())
             .take(k)
-            .for_each(|(l, r)| *l = CompiledTerminal(*r));
-        terminals.i = std::cmp::min(MAX_K, terms.len());
+            .for_each(|(l, r)| { *l = CompiledTerminal(*r); i += 1; });
+        terminals.i = i;
 
         let terminals = if terminals.is_k_complete(k) {
             TerminalString::Complete(terminals)
@@ -582,13 +584,20 @@ impl Display for KTuple {
 
 impl Hash for KTuple {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        self.terminals.inner().t.hash(state)
+        let self_inner = self.terminals.inner();
+        self_inner.t[0..self_inner.i].hash(state)
     }
 }
 
 impl PartialEq for KTuple {
     fn eq(&self, other: &Self) -> bool {
-        self.terminals.inner().t.eq(&other.terminals.inner().t)
+        let self_inner = self.terminals.inner();
+        let other_inner = other.terminals.inner();
+        if self_inner.i == other_inner.i {
+            self_inner.t[0..self_inner.i].eq(&other_inner.t[0..other_inner.i])
+        } else {
+            false
+        }
     }
 }
 
@@ -630,37 +639,37 @@ mod test {
         }
         {
             let k_tuple =
-                KTuple::new(MAX_K).with_terminal_indices(&[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+                KTuple::new(MAX_K).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
             let mut t = <[CompiledTerminal; MAX_K]>::default();
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(9), t[MAX_K - 1]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
+            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]");
         }
         {
-            let k_tuple = KTuple::new(5).with_terminal_indices(&[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+            let k_tuple = KTuple::new(5).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
             let mut t = <[CompiledTerminal; MAX_K]>::default();
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(4), t[4]);
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(5), t[4]);
             assert_eq!(CompiledTerminal::default(), t[5]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4]");
+            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
 
@@ -683,7 +692,6 @@ mod test {
         {
             let k_tuple = KTuple::from_slice(
                 &[
-                    CompiledTerminal(0),
                     CompiledTerminal(1),
                     CompiledTerminal(2),
                     CompiledTerminal(3),
@@ -694,6 +702,7 @@ mod test {
                     CompiledTerminal(8),
                     CompiledTerminal(9),
                     CompiledTerminal(10),
+                    CompiledTerminal(11),
                 ],
                 MAX_K,
             );
@@ -701,20 +710,19 @@ mod test {
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(9), t[MAX_K - 1]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
+            assert_eq!(expected, k_tuple);
         }
         {
             let k_tuple = KTuple::from_slice(
                 &[
-                    CompiledTerminal(0),
                     CompiledTerminal(1),
                     CompiledTerminal(2),
                     CompiledTerminal(3),
@@ -725,6 +733,7 @@ mod test {
                     CompiledTerminal(8),
                     CompiledTerminal(9),
                     CompiledTerminal(10),
+                    CompiledTerminal(11),
                 ],
                 5,
             );
@@ -732,16 +741,16 @@ mod test {
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(4), t[4]);
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(5), t[4]);
             assert_eq!(CompiledTerminal::default(), t[5]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4]");
+            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
 
@@ -763,7 +772,7 @@ mod test {
         }
         {
             let k_tuple = KTuple::from_slice_with(
-                &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 |t| CompiledTerminal(*t),
                 MAX_K,
             );
@@ -771,19 +780,19 @@ mod test {
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(9), t[MAX_K - 1]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
+            assert_eq!(expected, k_tuple);
         }
         {
             let k_tuple = KTuple::from_slice_with(
-                &[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
                 |t| CompiledTerminal(*t),
                 5,
             );
@@ -791,16 +800,16 @@ mod test {
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i);
+                t[i] = CompiledTerminal(i + 1);
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
                 k,
             };
-            assert_eq!(CompiledTerminal(0), t[0]);
-            assert_eq!(CompiledTerminal(4), t[4]);
+            assert_eq!(CompiledTerminal(1), t[0]);
+            assert_eq!(CompiledTerminal(5), t[4]);
             assert_eq!(CompiledTerminal::default(), t[5]);
-            assert_eq!(expected, k_tuple, "[0, 1, 2, 3, 4]");
+            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
 
