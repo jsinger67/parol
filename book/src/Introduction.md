@@ -11,7 +11,7 @@
 [`parol`](https://github.com/jsinger67/parol) is a parser generator with some unique characteristics.
 
 It is an installable command line tool that can generate complete parsers from a single grammar
-description file.
+description file. `parol` is also a library that you can use in your own crates.
 
 Using a builder API it is easy to integrate the code generation process into your crate's build
 process via a cargo build script (`build.rs`).

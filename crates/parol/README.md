@@ -16,7 +16,8 @@
 
 It's an installable command line tool that can generate complete parsers from a single grammar
 description file including all AST data types you would otherwise had to design by yourself. `parol`
-does this solely by analyzing your language's grammar.
+does this solely by analyzing your language's grammar. `parol` is also a library that you can use in
+your own crates.
 
 You can control the process of AST type generation. First you can mark elements for omission in your
 AST. Also you can specify your own types for language elements.
