@@ -112,7 +112,10 @@ impl Terminals {
             .iter()
             .take(std::cmp::min(k, MAX_K))
             .enumerate()
-            .for_each(|(n, o)| { t[n] = m(o); i += 1; });
+            .for_each(|(n, o)| {
+                t[n] = m(o);
+                i += 1;
+            });
         Self { t, i }
     }
 
@@ -127,7 +130,10 @@ impl Terminals {
             .iter()
             .take(std::cmp::min(k, MAX_K))
             .enumerate()
-            .for_each(|(n, o)| { t[n] = *o; i += 1; });
+            .for_each(|(n, o)| {
+                t[n] = *o;
+                i += 1;
+            });
         Self { t, i }
     }
 
@@ -407,7 +413,10 @@ impl KTuple {
             .iter_mut()
             .zip(terms.iter())
             .take(k)
-            .for_each(|(l, r)| { *l = CompiledTerminal(*r); i += 1; });
+            .for_each(|(l, r)| {
+                *l = CompiledTerminal(*r);
+                i += 1;
+            });
         terminals.i = i;
 
         let terminals = if terminals.is_k_complete(k) {
@@ -655,7 +664,8 @@ mod test {
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]");
         }
         {
-            let k_tuple = KTuple::new(5).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+            let k_tuple =
+                KTuple::new(5).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
             let mut t = <[CompiledTerminal; MAX_K]>::default();
             let i = 5;
             let k = 5;

@@ -9,8 +9,11 @@ use std::fmt::{Display, Error, Formatter};
 pub type StateIndex = usize;
 /// Index type of Productions
 pub type ProductionIndex = usize;
-
-const DO_NOT_CARE: ProductionIndex = ProductionIndex::MAX;
+/// Index type of Productions in generated automata
+pub type CompiledProductionIndex = i32;
+/// Invalid production number
+/// It usually denotes the absence of a valid production number after applying a transition
+pub const INVALID_PROD: CompiledProductionIndex = -1;
 
 ///
 /// Data structure to represent a DFA state
@@ -33,12 +36,12 @@ pub struct DFAState {
     /// When combining two states that are both accepted and have different
     /// production numbers a conflict is detected.
     ///
-    pub prod_num: ProductionIndex,
+    pub prod_num: CompiledProductionIndex,
 }
 
 impl Display for DFAState {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-        let prod_num = if self.prod_num == DO_NOT_CARE {
+        let prod_num = if self.prod_num == INVALID_PROD {
             "".to_owned()
         } else {
             format!(", Pr({})", self.prod_num)
@@ -95,7 +98,7 @@ impl LookaheadDFA {
             states: vec![DFAState {
                 id: 0,
                 accepted: false,
-                prod_num: DO_NOT_CARE,
+                prod_num: INVALID_PROD,
             }],
             transitions: BTreeMap::new(),
             k: 0,
@@ -109,7 +112,7 @@ impl LookaheadDFA {
             // The last created state is always accepting and needs to have a
             // valid production number
             dfa.states[current_state].accepted = true;
-            dfa.states[current_state].prod_num = prod_num;
+            dfa.states[current_state].prod_num = prod_num as i32;
             dfa.k = std::cmp::max(dfa.k, k_tuple.len());
         }
         dfa
@@ -216,12 +219,12 @@ Ambiguous production number prediction
         self.states.push(DFAState {
             id,
             accepted: false,
-            prod_num: DO_NOT_CARE,
+            prod_num: INVALID_PROD,
         });
         id
     }
 
-    fn coin_state(&mut self, id: StateIndex, accepted: bool, prod_num: ProductionIndex) {
+    fn coin_state(&mut self, id: StateIndex, accepted: bool, prod_num: CompiledProductionIndex) {
         self.states[id].accepted = accepted;
         self.states[id].prod_num = prod_num;
     }

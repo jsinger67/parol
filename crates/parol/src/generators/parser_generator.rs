@@ -1,4 +1,5 @@
 use crate::analysis::compiled_la_dfa::CompiledDFA;
+use crate::analysis::lookahead_dfa::CompiledProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig};
 use crate::conversions::dot::render_dfa_dot_string;
@@ -14,7 +15,7 @@ use std::fmt::Debug;
 
 #[derive(Debug, Default)]
 struct Dfa {
-    states: StrVec,
+    prod0: CompiledProductionIndex,
     transitions: StrVec,
     k: usize,
     nt_index: usize,
@@ -24,14 +25,7 @@ struct Dfa {
 impl Dfa {
     fn from_la_dfa(la_dfa: &LookaheadDFA, nt_index: usize, nt_name: String) -> Self {
         let compiled_dfa = CompiledDFA::from_lookahead_dfa(la_dfa);
-        let states =
-            compiled_dfa
-                .states
-                .iter()
-                .fold(StrVec::new(4).first_line_no_indent(), |mut acc, s| {
-                    acc.push(format!("{:?},", s));
-                    acc
-                });
+        let prod0 = compiled_dfa.prod0;
         let transitions = compiled_dfa.transitions.iter().fold(
             StrVec::new(4).first_line_no_indent(),
             |mut acc, t| {
@@ -42,7 +36,7 @@ impl Dfa {
         let k = compiled_dfa.k;
 
         Self {
-            states,
+            prod0,
             transitions,
             k,
             nt_index,
@@ -54,7 +48,7 @@ impl Dfa {
 impl std::fmt::Display for Dfa {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let Dfa {
-            states,
+            prod0,
             transitions,
             k,
             nt_index,
@@ -63,7 +57,7 @@ impl std::fmt::Display for Dfa {
         writeln!(f, r#"/* {nt_index} - "{nt_name}" */"#)?;
         f.write_fmt(ume::ume! {
             LookaheadDFA {
-                states: &[#states],
+                prod0: #prod0,
                 transitions: &[#transitions],
                 k: #k,
             },
