@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.9.0 - Not released yet
+
+* Decoupled the expensive LL(k) analysis to speed up the language server
+* Using newer and faster `parol 0.21.0` + `parol_runtime 0.16.0`
+
 ## 0.8.0 - 2023-03-21
 
 * Using newer and faster `parol 0.20.0` + `parol_runtime 0.15.1`

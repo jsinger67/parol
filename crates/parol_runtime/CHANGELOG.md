@@ -16,6 +16,11 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.16.0 - Not released yet
+
+* More efficient implementation of lookahead DFA
+  * This can also lead to smaller generated parser files up to about 5 percents
+
 ## 0.15.1 - 2023-03-21
 
 * Add new features to support static disabling of log levels during compile time (see issue

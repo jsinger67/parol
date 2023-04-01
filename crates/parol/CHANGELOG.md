@@ -21,6 +21,10 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.21.0 - Not released yet
+
+* Changed code generation to facilitate `parol_runtime`'s newer and more efficient lookahead DFA.
+
 ## 0.20.0 - 2023-03-21
 
 * Most work in this release was dedicated to better performance of `parol`'s generation step
