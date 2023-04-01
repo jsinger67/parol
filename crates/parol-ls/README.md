@@ -26,6 +26,12 @@ The Language Server currently supports
 
 Also problems in your grammar are detected and reported.
 
+<!-- markdownlint-disable Inline HTML -->
+<br>
+<img src="https://github.com/jsinger67/parol/raw/main/crates/parol-ls/images/Example.png" alt="Example">
+<br><br><br>
+<!-- markdownlint-enable Inline HTML -->
+
 This tool is still in early development phase. But it can be used in conjunction with Parol's VSCode
 extension.
 
