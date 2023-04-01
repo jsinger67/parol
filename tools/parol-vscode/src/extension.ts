@@ -79,9 +79,9 @@ async function tryActivate(
     let message = "bootstrap error. ";
 
     message +=
-      'See the logs in "OUTPUT > Parol Language Server Client" (should open automatically). ';
+      'Parol Language Server is not installed. Please consider to install it to improve your experience.';
     message +=
-      'To enable verbose logs use { "parol-ls.trace.extension": true }';
+      '  `cargo install parol-ls`';
 
     log.error("Bootstrap error", err);
     throw new Error(message);

@@ -9,7 +9,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "repository": {
         "url": "https://github.com/jsinger67/parol.git",
         "type": "git",
@@ -19,7 +19,12 @@
     "engines": {
         "vscode": "^1.69.0"
     },
-    "keywords": ["Parol", "Parser generator", "Rust", "Language tool"],
+    "keywords": [
+        "Parol",
+        "Parser generator",
+        "Rust",
+        "Language tool"
+    ],
     "categories": [
         "Programming Languages"
     ],
@@ -69,7 +74,7 @@
         "@types/node": "^18.0.5",
         "@types/vscode": "^1.69.0",
         "@vscode/test-electron": "^2.1.5",
-        "esbuild": "^0.14.49",
+        "esbuild": "0.14.54",
         "eslint": "^8.20.0",
         "prettier": "^2.7.1",
         "vsce": "^2.9.3"
