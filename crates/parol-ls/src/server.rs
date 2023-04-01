@@ -1,5 +1,5 @@
 use derive_new::new;
-use std::{collections::HashMap, error::Error, path::Path};
+use std::{collections::HashMap, error::Error, path::Path, sync::Arc, thread};
 
 use anyhow::anyhow;
 use lsp_server::Message;
@@ -50,7 +50,12 @@ impl Server {
         Ok(())
     }
 
-    pub(crate) fn analyze(&mut self, uri: &Url) -> anyhow::Result<()> {
+    pub(crate) fn analyze(
+        &mut self,
+        uri: Url,
+        version: i32,
+        connection: Arc<lsp_server::Connection>,
+    ) -> anyhow::Result<()> {
         let file_path = uri
             .to_file_path()
             .map_err(|_| anyhow!("Failed interpreting file path {}", uri.path()))?;
@@ -64,7 +69,15 @@ impl Server {
         )?;
         eprintln!("analyze: step 2 - check_grammar");
         let document_state = self.documents.get(uri.path()).unwrap();
-        Self::check_grammar(&document_state.input, &file_path, self.max_k)?;
+        Self::check_grammar(
+            &document_state.input,
+            &file_path,
+            self.max_k,
+            connection,
+            uri,
+            version,
+            document_state.clone(),
+        )?;
         eprintln!("analyze: finished");
         Ok(())
     }
@@ -78,16 +91,31 @@ impl Server {
         GrammarConfig::try_from(parol_grammar)
     }
 
-    pub(crate) fn check_grammar(input: &str, file_name: &Path, max_k: usize) -> anyhow::Result<()> {
+    pub(crate) fn check_grammar(
+        input: &str,
+        file_name: &Path,
+        max_k: usize,
+        connection: Arc<lsp_server::Connection>,
+        uri: Url,
+        version: i32,
+        document_state: DocumentState,
+    ) -> anyhow::Result<()> {
         let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
         let cfg = check_and_transform_grammar(&grammar_config.cfg)?;
         grammar_config.update_cfg(cfg);
-        calculate_lookahead_dfas(&grammar_config, max_k).map(|_| ())
+        let grammar_config = grammar_config.clone();
+        thread::spawn(move || {
+            if let Err(err) = calculate_lookahead_dfas(&grammar_config, max_k) {
+                eprintln!("check_grammar: errors from calculate_lookahead_dfas");
+                let _ = Self::notify_analysis_error(err, connection, uri, version, document_state);
+            }
+        });
+        Ok(())
     }
 
     pub(crate) fn handle_open_document(
         &mut self,
-        connection: &lsp_server::Connection,
+        connection: Arc<lsp_server::Connection>,
         n: lsp_server::Notification,
     ) -> Result<(), Box<dyn Error>> {
         let params: DidOpenTextDocumentParams = n.extract(DidOpenTextDocument::METHOD)?;
@@ -98,42 +126,30 @@ impl Server {
                 ..Default::default()
             },
         );
-        match self.analyze(&params.text_document.uri) {
+        match self.analyze(
+            params.text_document.uri.clone(),
+            params.text_document.version,
+            connection.clone(),
+        ) {
             Ok(()) => {
                 eprintln!("handle_open_document: ok");
-                let result = PublishDiagnosticsParams::new(
+                Self::notify_analysis_ok(
+                    connection,
                     params.text_document.uri,
-                    vec![],
-                    Some(params.text_document.version),
-                );
-                let params = serde_json::to_value(result).unwrap();
-                let method = <PublishDiagnostics as Notification>::METHOD.to_string();
-                connection
-                    .sender
-                    .send(Message::Notification(lsp_server::Notification {
-                        method,
-                        params,
-                    }))?;
+                    params.text_document.version,
+                )?;
             }
             Err(err) => {
                 eprintln!("handle_open_document: error");
                 let path = params.text_document.uri.path();
-                let document_state = self.documents.get(path).unwrap();
-                eprintln!("handle_open_document: document obtained");
-                let result = PublishDiagnosticsParams::new(
-                    params.text_document.uri.clone(),
-                    Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
-                    Some(params.text_document.version),
-                );
-                let params = serde_json::to_value(result).unwrap();
-                let method = <PublishDiagnostics as Notification>::METHOD.to_string();
-                eprintln!("handle_open_document: sending response\n{:?}", params);
-                connection
-                    .sender
-                    .send(Message::Notification(lsp_server::Notification {
-                        method,
-                        params,
-                    }))?;
+                let document_state = self.documents.get(path).unwrap().clone();
+                Self::notify_analysis_error(
+                    err,
+                    connection,
+                    params.text_document.uri,
+                    params.text_document.version,
+                    document_state,
+                )?;
             }
         }
         Ok(())
@@ -141,47 +157,35 @@ impl Server {
 
     pub(crate) fn handle_change_document(
         &mut self,
-        connection: &lsp_server::Connection,
+        connection: Arc<lsp_server::Connection>,
         n: lsp_server::Notification,
     ) -> Result<(), Box<dyn Error>> {
         let params: DidChangeTextDocumentParams = n.extract(DidChangeTextDocument::METHOD)?;
         self.apply_changes(params.text_document.uri.path(), &params.content_changes);
-        match self.analyze(&params.text_document.uri) {
+        match self.analyze(
+            params.text_document.uri.clone(),
+            params.text_document.version,
+            connection.clone(),
+        ) {
             Ok(()) => {
                 eprintln!("handle_change_document: ok");
-                let result = PublishDiagnosticsParams::new(
+                Self::notify_analysis_ok(
+                    connection,
                     params.text_document.uri,
-                    vec![],
-                    Some(params.text_document.version),
-                );
-                let params = serde_json::to_value(result).unwrap();
-                let method = <PublishDiagnostics as Notification>::METHOD.to_string();
-                connection
-                    .sender
-                    .send(Message::Notification(lsp_server::Notification {
-                        method,
-                        params,
-                    }))?;
+                    params.text_document.version,
+                )?;
             }
             Err(err) => {
                 eprintln!("handle_change_document: error");
                 let path = params.text_document.uri.path();
-                let document_state = self.documents.get(path).unwrap();
-                eprintln!("handle_change_document: document obtained");
-                let result = PublishDiagnosticsParams::new(
-                    params.text_document.uri.clone(),
-                    Diagnostics::to_diagnostics(&params.text_document.uri, document_state, err),
-                    Some(params.text_document.version),
-                );
-                let params = serde_json::to_value(result).unwrap();
-                let method = <PublishDiagnostics as Notification>::METHOD.to_string();
-                eprintln!("handle_change_document: sending response\n{:?}", params);
-                connection
-                    .sender
-                    .send(Message::Notification(lsp_server::Notification {
-                        method,
-                        params,
-                    }))?;
+                let document_state = self.documents.get(path).unwrap().clone();
+                Self::notify_analysis_error(
+                    err,
+                    connection,
+                    params.text_document.uri,
+                    params.text_document.version,
+                    document_state,
+                )?;
             }
         }
         Ok(())
@@ -366,5 +370,47 @@ impl Server {
                 });
             }
         }
+    }
+
+    fn notify_analysis_ok(
+        connection: Arc<lsp_server::Connection>,
+        uri: Url,
+        version: i32,
+    ) -> Result<(), Box<dyn Error>> {
+        let result = PublishDiagnosticsParams::new(uri, vec![], Some(version));
+        let params = serde_json::to_value(result).unwrap();
+        let method = <PublishDiagnostics as Notification>::METHOD.to_string();
+        connection
+            .sender
+            .send(Message::Notification(lsp_server::Notification {
+                method,
+                params,
+            }))?;
+        Ok(())
+    }
+
+    fn notify_analysis_error(
+        err: anyhow::Error,
+        connection: Arc<lsp_server::Connection>,
+        uri: Url,
+        version: i32,
+        document_state: DocumentState,
+    ) -> Result<(), Box<dyn Error>> {
+        eprintln!("handle_open_document: document obtained");
+        let result = PublishDiagnosticsParams::new(
+            uri.clone(),
+            Diagnostics::to_diagnostics(&uri, &document_state, err),
+            Some(version),
+        );
+        let params = serde_json::to_value(result).unwrap();
+        let method = <PublishDiagnostics as Notification>::METHOD.to_string();
+        eprintln!("handle_open_document: sending response\n{:?}", params);
+        connection
+            .sender
+            .send(Message::Notification(lsp_server::Notification {
+                method,
+                params,
+            }))?;
+        Ok(())
     }
 }

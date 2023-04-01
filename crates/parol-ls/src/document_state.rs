@@ -7,7 +7,7 @@ use lsp_types::{
 
 use crate::parol_ls_grammar::ParolLsGrammar;
 
-#[derive(Debug, Default, new)]
+#[derive(Debug, Clone, Default, new)]
 pub(crate) struct DocumentState {
     pub(crate) input: String,
     pub(crate) parsed_data: ParolLsGrammar,

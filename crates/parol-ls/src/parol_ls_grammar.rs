@@ -24,7 +24,7 @@ use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 ///
 /// Data structure that implements the semantic actions for our ParolLs grammar
 ///
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct ParolLsGrammar {
     // A hash that maps non-terminals to their productions' left-hand side.
     pub non_terminal_definitions: HashMap<String, Vec<Range>>,

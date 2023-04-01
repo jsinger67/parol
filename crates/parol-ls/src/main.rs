@@ -1,4 +1,5 @@
 use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::Arc;
 use std::{cell::RefCell, error::Error, result::Result};
 
 use crate::handler::RequestHandler;
@@ -76,7 +77,7 @@ macro_rules! request_match {
 
 // Note that this function only sends the request. The response handling is done in the main loop!
 pub(crate) fn send_request<R>(
-    conn: &Connection,
+    conn: Arc<Connection>,
     params: R::Params,
     _server: &RefCell<Server>,
 ) -> Result<(), ServerError>
@@ -97,6 +98,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let args = Arguments::parse();
     eprintln!("Starting parol language server");
     let (connection, io_threads) = Connection::connect((args.ip_address, args.port_number))?;
+    let connection = Arc::new(connection);
 
     // Run the server and wait for the two threads to end (typically by trigger LSP Exit event).
     let server_capabilities = serde_json::to_value(&ServerCapabilities {
@@ -117,14 +119,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         serde_json::from_value(connection.initialize(server_capabilities)?).unwrap();
     let config = Config::new(initialization_params, args);
 
-    main_loop(&connection, config)?;
+    main_loop(connection, config)?;
     io_threads.join()?;
 
     eprintln!("shutting down parol language server");
     Ok(())
 }
 
-fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Error>> {
+fn main_loop(connection: Arc<Connection>, config: Config) -> Result<(), Box<dyn Error>> {
     eprintln!(
         "Initialization params {:#?}",
         config.initialization_params()
@@ -142,7 +144,7 @@ fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Erro
 
     if config.supports_dynamic_registration_for_change_config() {
         send_request::<RegisterCapability>(
-            connection,
+            connection.clone(),
             RegistrationParams {
                 registrations: vec![Registration {
                     id: "workspace/didChangeConfiguration".to_string(),
@@ -189,7 +191,7 @@ fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Erro
                 eprintln!("got response: {:?}", resp);
             }
             Message::Notification(not) => {
-                process_notification(not, connection, &server)?;
+                process_notification(not, connection.clone(), &server)?;
             }
         }
     }
@@ -198,7 +200,7 @@ fn main_loop(connection: &Connection, config: Config) -> Result<(), Box<dyn Erro
 
 fn process_notification(
     not: lsp_server::Notification,
-    connection: &Connection,
+    connection: Arc<Connection>,
     server: &RefCell<Server>,
 ) -> Result<(), Box<dyn Error>> {
     eprintln!("got notification: {:?}", not);
