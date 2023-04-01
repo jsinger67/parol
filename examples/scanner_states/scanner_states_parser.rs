@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
+    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
@@ -93,75 +93,67 @@ pub const NON_TERMINALS: &[&str; 10] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
     /* 0 - "Content" */
     LookaheadDFA {
-        states: &[None, Some(3), Some(4)],
-        transitions: &[DFATransition(0, 5, 1), DFATransition(0, 9, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 5, 1, 3), Trans(0, 9, 2, 4)],
         k: 1,
     },
     /* 1 - "Escaped" */
     LookaheadDFA {
-        states: &[Some(11)],
+        prod0: 11,
         transitions: &[],
         k: 0,
     },
     /* 2 - "EscapedLineEnd" */
     LookaheadDFA {
-        states: &[Some(12)],
+        prod0: 12,
         transitions: &[],
         k: 0,
     },
     /* 3 - "Identifier" */
     LookaheadDFA {
-        states: &[Some(10)],
+        prod0: 10,
         transitions: &[],
         k: 0,
     },
     /* 4 - "NoneQuote" */
     LookaheadDFA {
-        states: &[Some(13)],
+        prod0: 13,
         transitions: &[],
         k: 0,
     },
     /* 5 - "Start" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 6 - "StartList" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
-        transitions: &[
-            DFATransition(0, 0, 2),
-            DFATransition(0, 5, 1),
-            DFATransition(0, 9, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 2), Trans(0, 5, 1, 1), Trans(0, 9, 1, 1)],
         k: 1,
     },
     /* 7 - "StringContent" */
     LookaheadDFA {
-        states: &[None, Some(5), Some(6)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 8, 1),
-            DFATransition(0, 9, 2),
+            Trans(0, 6, 1, 5),
+            Trans(0, 7, 1, 5),
+            Trans(0, 8, 1, 5),
+            Trans(0, 9, 2, 6),
         ],
         k: 1,
     },
     /* 8 - "StringDelimiter" */
     LookaheadDFA {
-        states: &[Some(14)],
+        prod0: 14,
         transitions: &[],
         k: 0,
     },
     /* 9 - "StringElement" */
     LookaheadDFA {
-        states: &[None, Some(7), Some(8), Some(9)],
-        transitions: &[
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 8, 3),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 6, 1, 7), Trans(0, 7, 2, 8), Trans(0, 8, 3, 9)],
         k: 1,
     },
 ];

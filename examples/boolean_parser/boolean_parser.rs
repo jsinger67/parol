@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
+    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
@@ -118,193 +118,185 @@ pub const NON_TERMINALS: &[&str; 25] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 25] = &[
     /* 0 - "AndOp" */
     LookaheadDFA {
-        states: &[Some(21)],
+        prod0: 21,
         transitions: &[],
         k: 0,
     },
     /* 1 - "BinaryOperator" */
     LookaheadDFA {
-        states: &[
-            None,
-            Some(15),
-            Some(16),
-            Some(17),
-            Some(18),
-            Some(19),
-            Some(20),
-        ],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 1),
-            DFATransition(0, 6, 2),
-            DFATransition(0, 7, 3),
-            DFATransition(0, 8, 4),
-            DFATransition(0, 9, 5),
-            DFATransition(0, 10, 6),
+            Trans(0, 5, 1, 15),
+            Trans(0, 6, 2, 16),
+            Trans(0, 7, 3, 17),
+            Trans(0, 8, 4, 18),
+            Trans(0, 9, 5, 19),
+            Trans(0, 10, 6, 20),
         ],
         k: 1,
     },
     /* 2 - "Boolean" */
     LookaheadDFA {
-        states: &[None, Some(12), Some(13)],
-        transitions: &[DFATransition(0, 11, 1), DFATransition(0, 12, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 11, 1, 12), Trans(0, 12, 2, 13)],
         k: 1,
     },
     /* 3 - "Expression" */
     LookaheadDFA {
-        states: &[Some(5)],
+        prod0: 5,
         transitions: &[],
         k: 0,
     },
     /* 4 - "Expressions" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 5 - "ExpressionsList" */
     LookaheadDFA {
-        states: &[None, None, Some(1), Some(2)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 0, 3),
-            DFATransition(0, 14, 1),
-            DFATransition(1, 0, 3),
-            DFATransition(1, 11, 2),
-            DFATransition(1, 12, 2),
-            DFATransition(1, 13, 2),
-            DFATransition(1, 15, 2),
+            Trans(0, 0, 3, 2),
+            Trans(0, 14, 1, -1),
+            Trans(1, 0, 3, 2),
+            Trans(1, 11, 2, 1),
+            Trans(1, 12, 2, 1),
+            Trans(1, 13, 2, 1),
+            Trans(1, 15, 2, 1),
         ],
         k: 2,
     },
     /* 6 - "ExpressionsOpt" */
     LookaheadDFA {
-        states: &[None, Some(3), Some(4)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 14, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 4), Trans(0, 14, 1, 3)],
         k: 1,
     },
     /* 7 - "Factor" */
     LookaheadDFA {
-        states: &[None, Some(34), Some(35)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 11, 1),
-            DFATransition(0, 12, 1),
-            DFATransition(0, 15, 2),
+            Trans(0, 11, 1, 34),
+            Trans(0, 12, 1, 34),
+            Trans(0, 15, 2, 35),
         ],
         k: 1,
     },
     /* 8 - "False" */
     LookaheadDFA {
-        states: &[Some(28)],
+        prod0: 28,
         transitions: &[],
         k: 0,
     },
     /* 9 - "LeftParenthesis" */
     LookaheadDFA {
-        states: &[Some(32)],
+        prod0: 32,
         transitions: &[],
         k: 0,
     },
     /* 10 - "NandOp" */
     LookaheadDFA {
-        states: &[Some(25)],
+        prod0: 25,
         transitions: &[],
         k: 0,
     },
     /* 11 - "NorOp" */
     LookaheadDFA {
-        states: &[Some(24)],
+        prod0: 24,
         transitions: &[],
         k: 0,
     },
     /* 12 - "Not" */
     LookaheadDFA {
-        states: &[Some(29)],
+        prod0: 29,
         transitions: &[],
         k: 0,
     },
     /* 13 - "OrOp" */
     LookaheadDFA {
-        states: &[Some(22)],
+        prod0: 22,
         transitions: &[],
         k: 0,
     },
     /* 14 - "Parenthesized" */
     LookaheadDFA {
-        states: &[Some(30)],
+        prod0: 30,
         transitions: &[],
         k: 0,
     },
     /* 15 - "RightParenthesis" */
     LookaheadDFA {
-        states: &[Some(33)],
+        prod0: 33,
         transitions: &[],
         k: 0,
     },
     /* 16 - "Semicolon" */
     LookaheadDFA {
-        states: &[Some(31)],
+        prod0: 31,
         transitions: &[],
         k: 0,
     },
     /* 17 - "TailExpression" */
     LookaheadDFA {
-        states: &[Some(6)],
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
     /* 18 - "TailExpressionList" */
     LookaheadDFA {
-        states: &[None, Some(7), Some(8)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 0, 2),
-            DFATransition(0, 5, 1),
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 8, 1),
-            DFATransition(0, 9, 1),
-            DFATransition(0, 10, 1),
-            DFATransition(0, 14, 2),
-            DFATransition(0, 16, 2),
+            Trans(0, 0, 2, 8),
+            Trans(0, 5, 1, 7),
+            Trans(0, 6, 1, 7),
+            Trans(0, 7, 1, 7),
+            Trans(0, 8, 1, 7),
+            Trans(0, 9, 1, 7),
+            Trans(0, 10, 1, 7),
+            Trans(0, 14, 2, 8),
+            Trans(0, 16, 2, 8),
         ],
         k: 1,
     },
     /* 19 - "Term" */
     LookaheadDFA {
-        states: &[Some(9)],
+        prod0: 9,
         transitions: &[],
         k: 0,
     },
     /* 20 - "TermOpt" */
     LookaheadDFA {
-        states: &[None, Some(10), Some(11)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 11, 2),
-            DFATransition(0, 12, 2),
-            DFATransition(0, 13, 1),
-            DFATransition(0, 15, 2),
+            Trans(0, 11, 2, 11),
+            Trans(0, 12, 2, 11),
+            Trans(0, 13, 1, 10),
+            Trans(0, 15, 2, 11),
         ],
         k: 1,
     },
     /* 21 - "True" */
     LookaheadDFA {
-        states: &[Some(27)],
+        prod0: 27,
         transitions: &[],
         k: 0,
     },
     /* 22 - "UnaryOperator" */
     LookaheadDFA {
-        states: &[Some(14)],
+        prod0: 14,
         transitions: &[],
         k: 0,
     },
     /* 23 - "XnorOp" */
     LookaheadDFA {
-        states: &[Some(26)],
+        prod0: 26,
         transitions: &[],
         k: 0,
     },
     /* 24 - "XorOp" */
     LookaheadDFA {
-        states: &[Some(23)],
+        prod0: 23,
         transitions: &[],
         k: 0,
     },

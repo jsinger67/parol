@@ -6,9 +6,7 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
@@ -70,53 +68,49 @@ pub const NON_TERMINALS: &[&str; 7] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 7] = &[
     /* 0 - "Items" */
     LookaheadDFA {
-        states: &[Some(3)],
+        prod0: 3,
         transitions: &[],
         k: 0,
     },
     /* 1 - "ItemsList" */
     LookaheadDFA {
-        states: &[None, None, Some(4), Some(5)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 0, 3),
-            DFATransition(0, 5, 1),
-            DFATransition(1, 0, 3),
-            DFATransition(1, 6, 2),
+            Trans(0, 0, 3, 5),
+            Trans(0, 5, 1, -1),
+            Trans(1, 0, 3, 5),
+            Trans(1, 6, 2, 4),
         ],
         k: 2,
     },
     /* 2 - "List" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 3 - "ListOpt" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
-        transitions: &[
-            DFATransition(0, 0, 2),
-            DFATransition(0, 5, 2),
-            DFATransition(0, 6, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 2), Trans(0, 5, 2, 2), Trans(0, 6, 1, 1)],
         k: 1,
     },
     /* 4 - "Num" */
     LookaheadDFA {
-        states: &[Some(6)],
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
     /* 5 - "TrailingComma" */
     LookaheadDFA {
-        states: &[Some(7)],
+        prod0: 7,
         transitions: &[],
         k: 0,
     },
     /* 6 - "TrailingCommaOpt" */
     LookaheadDFA {
-        states: &[None, Some(8), Some(9)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 9), Trans(0, 5, 1, 8)],
         k: 1,
     },
 ];

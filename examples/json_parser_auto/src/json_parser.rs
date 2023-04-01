@@ -6,9 +6,7 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
@@ -105,93 +103,84 @@ pub const NON_TERMINALS: &[&str; 11] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 11] = &[
     /* 0 - "Array" */
     LookaheadDFA {
-        states: &[Some(7)],
+        prod0: 7,
         transitions: &[],
         k: 0,
     },
     /* 1 - "ArrayList" */
     LookaheadDFA {
-        states: &[None, Some(10), Some(11)],
-        transitions: &[DFATransition(0, 7, 1), DFATransition(0, 10, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 1, 10), Trans(0, 10, 2, 11)],
         k: 1,
     },
     /* 2 - "ArraySuffix" */
     LookaheadDFA {
-        states: &[None, Some(8), Some(9)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 1),
-            DFATransition(0, 9, 1),
-            DFATransition(0, 10, 2),
-            DFATransition(0, 11, 1),
-            DFATransition(0, 12, 1),
-            DFATransition(0, 13, 1),
-            DFATransition(0, 14, 1),
-            DFATransition(0, 15, 1),
+            Trans(0, 5, 1, 8),
+            Trans(0, 9, 1, 8),
+            Trans(0, 10, 2, 9),
+            Trans(0, 11, 1, 8),
+            Trans(0, 12, 1, 8),
+            Trans(0, 13, 1, 8),
+            Trans(0, 14, 1, 8),
+            Trans(0, 15, 1, 8),
         ],
         k: 1,
     },
     /* 3 - "Json" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 4 - "Number" */
     LookaheadDFA {
-        states: &[Some(20)],
+        prod0: 20,
         transitions: &[],
         k: 0,
     },
     /* 5 - "Object" */
     LookaheadDFA {
-        states: &[Some(1)],
+        prod0: 1,
         transitions: &[],
         k: 0,
     },
     /* 6 - "ObjectList" */
     LookaheadDFA {
-        states: &[None, Some(4), Some(5)],
-        transitions: &[DFATransition(0, 6, 2), DFATransition(0, 7, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 6, 2, 5), Trans(0, 7, 1, 4)],
         k: 1,
     },
     /* 7 - "ObjectSuffix" */
     LookaheadDFA {
-        states: &[None, Some(2), Some(3)],
-        transitions: &[DFATransition(0, 6, 2), DFATransition(0, 14, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 6, 2, 3), Trans(0, 14, 1, 2)],
         k: 1,
     },
     /* 8 - "Pair" */
     LookaheadDFA {
-        states: &[Some(6)],
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
     /* 9 - "String" */
     LookaheadDFA {
-        states: &[Some(19)],
+        prod0: 19,
         transitions: &[],
         k: 0,
     },
     /* 10 - "Value" */
     LookaheadDFA {
-        states: &[
-            None,
-            Some(12),
-            Some(13),
-            Some(14),
-            Some(15),
-            Some(16),
-            Some(17),
-            Some(18),
-        ],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 3),
-            DFATransition(0, 9, 4),
-            DFATransition(0, 11, 5),
-            DFATransition(0, 12, 6),
-            DFATransition(0, 13, 7),
-            DFATransition(0, 14, 1),
-            DFATransition(0, 15, 2),
+            Trans(0, 5, 3, 14),
+            Trans(0, 9, 4, 15),
+            Trans(0, 11, 5, 16),
+            Trans(0, 12, 6, 17),
+            Trans(0, 13, 7, 18),
+            Trans(0, 14, 1, 12),
+            Trans(0, 15, 2, 13),
         ],
         k: 1,
     },

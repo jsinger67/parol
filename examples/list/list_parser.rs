@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
+    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
@@ -66,42 +66,42 @@ pub const NON_TERMINALS: &[&str; 6] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 6] = &[
     /* 0 - "List" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 1 - "ListOpt" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(4)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 6, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 4), Trans(0, 6, 1, 1)],
         k: 1,
     },
     /* 2 - "ListOpt0" */
     LookaheadDFA {
-        states: &[None, Some(2), Some(3)],
-        transitions: &[DFATransition(0, 0, 2), DFATransition(0, 5, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 3), Trans(0, 5, 1, 2)],
         k: 1,
     },
     /* 3 - "ListRest" */
     LookaheadDFA {
-        states: &[Some(5)],
+        prod0: 5,
         transitions: &[],
         k: 0,
     },
     /* 4 - "ListRestOpt" */
     LookaheadDFA {
-        states: &[None, None, Some(6), Some(7)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 0, 3),
-            DFATransition(0, 5, 1),
-            DFATransition(1, 0, 3),
-            DFATransition(1, 6, 2),
+            Trans(0, 0, 3, 7),
+            Trans(0, 5, 1, -1),
+            Trans(1, 0, 3, 7),
+            Trans(1, 6, 2, 6),
         ],
         k: 2,
     },
     /* 5 - "Num" */
     LookaheadDFA {
-        states: &[Some(8)],
+        prod0: 8,
         transitions: &[],
         k: 0,
     },

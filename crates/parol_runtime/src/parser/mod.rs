@@ -9,6 +9,15 @@ pub type StateIndex = usize;
 pub type ProductionIndex = usize;
 
 ///
+/// Index of a production within the slice of productions of a generated parser
+///
+pub type CompiledProductionIndex = i32;
+
+/// Invalid production number
+/// It usually denotes the absence of a valid production number after applying a transition
+pub const INVALID_PROD: CompiledProductionIndex = -1;
+
+///
 /// Index of a non-terminal within the slice of lookahead automatons of a
 /// generated parser. Also used to index into the slice of non-terminal names
 /// in the generated parser.
@@ -34,7 +43,7 @@ pub use parse_tree_type::ParseTreeType;
 ///
 #[forbid(missing_docs)]
 pub mod lookahead_dfa;
-pub use lookahead_dfa::{DFAState, DFATransition, LookaheadDFA};
+pub use lookahead_dfa::{LookaheadDFA, Trans};
 
 ///
 /// Module with types used in the parse stack.

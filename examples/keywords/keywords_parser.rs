@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, UserActionsTrait,
+    LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
@@ -82,69 +82,61 @@ pub const NON_TERMINALS: &[&str; 10] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 10] = &[
     /* 0 - "Begin" */
     LookaheadDFA {
-        states: &[Some(9)],
+        prod0: 9,
         transitions: &[],
         k: 0,
     },
     /* 1 - "Block" */
     LookaheadDFA {
-        states: &[Some(6)],
+        prod0: 6,
         transitions: &[],
         k: 0,
     },
     /* 2 - "BlockList" */
     LookaheadDFA {
-        states: &[None, Some(7), Some(8)],
-        transitions: &[
-            DFATransition(0, 6, 1),
-            DFATransition(0, 7, 2),
-            DFATransition(0, 8, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 6, 1, 7), Trans(0, 7, 2, 8), Trans(0, 8, 1, 7)],
         k: 1,
     },
     /* 3 - "Declaration" */
     LookaheadDFA {
-        states: &[Some(5)],
+        prod0: 5,
         transitions: &[],
         k: 0,
     },
     /* 4 - "End" */
     LookaheadDFA {
-        states: &[Some(10)],
+        prod0: 10,
         transitions: &[],
         k: 0,
     },
     /* 5 - "Grammar" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 6 - "GrammarList" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
-        transitions: &[
-            DFATransition(0, 0, 2),
-            DFATransition(0, 6, 1),
-            DFATransition(0, 8, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 0, 2, 2), Trans(0, 6, 1, 1), Trans(0, 8, 1, 1)],
         k: 1,
     },
     /* 7 - "Identifier" */
     LookaheadDFA {
-        states: &[Some(12)],
+        prod0: 12,
         transitions: &[],
         k: 0,
     },
     /* 8 - "Items" */
     LookaheadDFA {
-        states: &[None, Some(3), Some(4)],
-        transitions: &[DFATransition(0, 6, 2), DFATransition(0, 8, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 6, 2, 4), Trans(0, 8, 1, 3)],
         k: 1,
     },
     /* 9 - "Var" */
     LookaheadDFA {
-        states: &[Some(11)],
+        prod0: 11,
         transitions: &[],
         k: 0,
     },

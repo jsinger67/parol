@@ -29,7 +29,7 @@ impl Dfa {
         let transitions = compiled_dfa.transitions.iter().fold(
             StrVec::new(4).first_line_no_indent(),
             |mut acc, t| {
-                acc.push(format!("DFATransition{:?},", t));
+                acc.push(format!("Trans{:?},", t));
                 acc
             },
         );
@@ -228,7 +228,7 @@ impl std::fmt::Display for ParserData<'_> {
             use parol_runtime::{ParolError, ParseTree};
             #[allow(unused_imports)]
             use parol_runtime::parser::{
-                ParseTreeType, DFATransition, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait
+                ParseTreeType, Trans, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait
             };
             use std::cell::RefCell;
             use std::path::Path;

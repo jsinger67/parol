@@ -6,9 +6,7 @@
 
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
-use parol_runtime::parser::{
-    DFATransition, LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production,
-};
+use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
 use parol_runtime::{ParolError, ParseTree};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
@@ -444,806 +442,766 @@ pub const NON_TERMINALS: &[&str; 101] = &[
 pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     /* 0 - "Apostrophe" */
     LookaheadDFA {
-        states: &[Some(152)],
+        prod0: 152,
         transitions: &[],
         k: 0,
     },
     /* 1 - "Array" */
     LookaheadDFA {
-        states: &[Some(114)],
+        prod0: 114,
         transitions: &[],
         k: 0,
     },
     /* 2 - "ArrayClose" */
     LookaheadDFA {
-        states: &[Some(129)],
+        prod0: 129,
         transitions: &[],
         k: 0,
     },
     /* 3 - "ArrayOpen" */
     LookaheadDFA {
-        states: &[Some(128)],
+        prod0: 128,
         transitions: &[],
         k: 0,
     },
     /* 4 - "ArrayOpt" */
     LookaheadDFA {
-        states: &[None, Some(115), Some(116)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 19, 1),
-            DFATransition(0, 20, 1),
-            DFATransition(0, 21, 1),
-            DFATransition(0, 25, 1),
-            DFATransition(0, 26, 1),
-            DFATransition(0, 27, 1),
-            DFATransition(0, 28, 1),
-            DFATransition(0, 29, 1),
-            DFATransition(0, 30, 1),
-            DFATransition(0, 31, 1),
-            DFATransition(0, 32, 1),
-            DFATransition(0, 36, 1),
-            DFATransition(0, 37, 2),
-            DFATransition(0, 38, 1),
-            DFATransition(0, 40, 1),
-            DFATransition(0, 43, 1),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 47, 1),
-            DFATransition(0, 50, 1),
-            DFATransition(0, 52, 1),
-            DFATransition(0, 53, 1),
+            Trans(0, 19, 1, 115),
+            Trans(0, 20, 1, 115),
+            Trans(0, 21, 1, 115),
+            Trans(0, 25, 1, 115),
+            Trans(0, 26, 1, 115),
+            Trans(0, 27, 1, 115),
+            Trans(0, 28, 1, 115),
+            Trans(0, 29, 1, 115),
+            Trans(0, 30, 1, 115),
+            Trans(0, 31, 1, 115),
+            Trans(0, 32, 1, 115),
+            Trans(0, 36, 1, 115),
+            Trans(0, 37, 2, 116),
+            Trans(0, 38, 1, 115),
+            Trans(0, 40, 1, 115),
+            Trans(0, 43, 1, 115),
+            Trans(0, 46, 1, 115),
+            Trans(0, 47, 1, 115),
+            Trans(0, 50, 1, 115),
+            Trans(0, 52, 1, 115),
+            Trans(0, 53, 1, 115),
         ],
         k: 1,
     },
     /* 5 - "ArraySep" */
     LookaheadDFA {
-        states: &[Some(122)],
+        prod0: 122,
         transitions: &[],
         k: 0,
     },
     /* 6 - "ArrayTable" */
     LookaheadDFA {
-        states: &[Some(141)],
+        prod0: 141,
         transitions: &[],
         k: 0,
     },
     /* 7 - "ArrayTableClose" */
     LookaheadDFA {
-        states: &[Some(127)],
+        prod0: 127,
         transitions: &[],
         k: 0,
     },
     /* 8 - "ArrayTableOpen" */
     LookaheadDFA {
-        states: &[Some(126)],
+        prod0: 126,
         transitions: &[],
         k: 0,
     },
     /* 9 - "ArrayValues" */
     LookaheadDFA {
-        states: &[Some(117)],
+        prod0: 117,
         transitions: &[],
         k: 0,
     },
     /* 10 - "ArrayValuesSuffix" */
     LookaheadDFA {
-        states: &[None, Some(120), Some(121)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 19, 1),
-            DFATransition(0, 20, 1),
-            DFATransition(0, 21, 1),
-            DFATransition(0, 25, 1),
-            DFATransition(0, 26, 1),
-            DFATransition(0, 27, 1),
-            DFATransition(0, 28, 1),
-            DFATransition(0, 29, 1),
-            DFATransition(0, 30, 1),
-            DFATransition(0, 31, 1),
-            DFATransition(0, 32, 1),
-            DFATransition(0, 36, 1),
-            DFATransition(0, 37, 2),
-            DFATransition(0, 38, 1),
-            DFATransition(0, 40, 1),
-            DFATransition(0, 43, 1),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 47, 1),
-            DFATransition(0, 50, 1),
-            DFATransition(0, 52, 1),
-            DFATransition(0, 53, 1),
+            Trans(0, 19, 1, 120),
+            Trans(0, 20, 1, 120),
+            Trans(0, 21, 1, 120),
+            Trans(0, 25, 1, 120),
+            Trans(0, 26, 1, 120),
+            Trans(0, 27, 1, 120),
+            Trans(0, 28, 1, 120),
+            Trans(0, 29, 1, 120),
+            Trans(0, 30, 1, 120),
+            Trans(0, 31, 1, 120),
+            Trans(0, 32, 1, 120),
+            Trans(0, 36, 1, 120),
+            Trans(0, 37, 2, 121),
+            Trans(0, 38, 1, 120),
+            Trans(0, 40, 1, 120),
+            Trans(0, 43, 1, 120),
+            Trans(0, 46, 1, 120),
+            Trans(0, 47, 1, 120),
+            Trans(0, 50, 1, 120),
+            Trans(0, 52, 1, 120),
+            Trans(0, 53, 1, 120),
         ],
         k: 1,
     },
     /* 11 - "ArrayValuesSuffix0" */
     LookaheadDFA {
-        states: &[None, Some(118), Some(119)],
-        transitions: &[DFATransition(0, 33, 1), DFATransition(0, 37, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 33, 1, 118), Trans(0, 37, 2, 119)],
         k: 1,
     },
     /* 12 - "AsciiNoEscape" */
     LookaheadDFA {
-        states: &[Some(153)],
+        prod0: 153,
         transitions: &[],
         k: 0,
     },
     /* 13 - "BasicChar" */
     LookaheadDFA {
-        states: &[None, Some(33), Some(34)],
-        transitions: &[
-            DFATransition(0, 7, 1),
-            DFATransition(0, 9, 2),
-            DFATransition(0, 51, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 1, 33), Trans(0, 9, 2, 34), Trans(0, 51, 1, 33)],
         k: 1,
     },
     /* 14 - "BasicString" */
     LookaheadDFA {
-        states: &[Some(30)],
+        prod0: 30,
         transitions: &[],
         k: 0,
     },
     /* 15 - "BasicStringList" */
     LookaheadDFA {
-        states: &[None, Some(31), Some(32)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 7, 1),
-            DFATransition(0, 9, 1),
-            DFATransition(0, 46, 2),
-            DFATransition(0, 51, 1),
+            Trans(0, 7, 1, 31),
+            Trans(0, 9, 1, 31),
+            Trans(0, 46, 2, 32),
+            Trans(0, 51, 1, 31),
         ],
         k: 1,
     },
     /* 16 - "BasicUnescaped" */
     LookaheadDFA {
-        states: &[None, Some(35), Some(36)],
-        transitions: &[DFATransition(0, 7, 2), DFATransition(0, 51, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 2, 36), Trans(0, 51, 1, 35)],
         k: 1,
     },
     /* 17 - "BinInt" */
     LookaheadDFA {
-        states: &[Some(98)],
+        prod0: 98,
         transitions: &[],
         k: 0,
     },
     /* 18 - "BinIntContent" */
     LookaheadDFA {
-        states: &[Some(99)],
+        prod0: 99,
         transitions: &[],
         k: 0,
     },
     /* 19 - "BinPrefix" */
     LookaheadDFA {
-        states: &[Some(88)],
+        prod0: 88,
         transitions: &[],
         k: 0,
     },
     /* 20 - "Boolean" */
     LookaheadDFA {
-        states: &[None, Some(100), Some(101)],
-        transitions: &[DFATransition(0, 25, 1), DFATransition(0, 26, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 25, 1, 100), Trans(0, 26, 2, 101)],
         k: 1,
     },
     /* 21 - "DateTime" */
     LookaheadDFA {
-        states: &[None, Some(106), Some(107), Some(108), Some(109)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 29, 1),
-            DFATransition(0, 30, 2),
-            DFATransition(0, 31, 3),
-            DFATransition(0, 32, 4),
+            Trans(0, 29, 1, 106),
+            Trans(0, 30, 2, 107),
+            Trans(0, 31, 3, 108),
+            Trans(0, 32, 4, 109),
         ],
         k: 1,
     },
     /* 22 - "DecInt" */
     LookaheadDFA {
-        states: &[Some(89)],
+        prod0: 89,
         transitions: &[],
         k: 0,
     },
     /* 23 - "DecIntOpt" */
     LookaheadDFA {
-        states: &[None, Some(90), Some(93)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 40, 2),
-            DFATransition(0, 52, 1),
-            DFATransition(0, 53, 1),
+            Trans(0, 40, 2, 93),
+            Trans(0, 52, 1, 90),
+            Trans(0, 53, 1, 90),
         ],
         k: 1,
     },
     /* 24 - "DecIntOptGroup" */
     LookaheadDFA {
-        states: &[None, Some(91), Some(92)],
-        transitions: &[DFATransition(0, 52, 2), DFATransition(0, 53, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 52, 2, 92), Trans(0, 53, 1, 91)],
         k: 1,
     },
     /* 25 - "DotSep" */
     LookaheadDFA {
-        states: &[Some(144)],
+        prod0: 144,
         transitions: &[],
         k: 0,
     },
     /* 26 - "Escape" */
     LookaheadDFA {
-        states: &[Some(38)],
+        prod0: 38,
         transitions: &[],
         k: 0,
     },
     /* 27 - "EscapeSeqChar" */
     LookaheadDFA {
-        states: &[
-            None,
-            Some(39),
-            Some(40),
-            Some(41),
-            Some(42),
-            Some(43),
-            Some(44),
-            Some(45),
-            Some(46),
-            Some(47),
-            Some(48),
-            Some(49),
-        ],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 6, 10),
-            DFATransition(0, 9, 2),
-            DFATransition(0, 10, 3),
-            DFATransition(0, 11, 4),
-            DFATransition(0, 12, 5),
-            DFATransition(0, 13, 6),
-            DFATransition(0, 14, 7),
-            DFATransition(0, 15, 8),
-            DFATransition(0, 16, 9),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 51, 11),
+            Trans(0, 6, 10, 48),
+            Trans(0, 9, 2, 40),
+            Trans(0, 10, 3, 41),
+            Trans(0, 11, 4, 42),
+            Trans(0, 12, 5, 43),
+            Trans(0, 13, 6, 44),
+            Trans(0, 14, 7, 45),
+            Trans(0, 15, 8, 46),
+            Trans(0, 16, 9, 47),
+            Trans(0, 46, 1, 39),
+            Trans(0, 51, 11, 49),
         ],
         k: 1,
     },
     /* 28 - "Escaped" */
     LookaheadDFA {
-        states: &[Some(37)],
+        prod0: 37,
         transitions: &[],
         k: 0,
     },
     /* 29 - "Expression" */
     LookaheadDFA {
-        states: &[None, Some(3), Some(4)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 34, 2),
-            DFATransition(0, 36, 2),
-            DFATransition(0, 41, 1),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 50, 1),
+            Trans(0, 34, 2, 4),
+            Trans(0, 36, 2, 4),
+            Trans(0, 41, 1, 3),
+            Trans(0, 46, 1, 3),
+            Trans(0, 50, 1, 3),
         ],
         k: 1,
     },
     /* 30 - "Float" */
     LookaheadDFA {
-        states: &[None, Some(102), Some(103)],
-        transitions: &[DFATransition(0, 27, 1), DFATransition(0, 28, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 27, 1, 102), Trans(0, 28, 2, 103)],
         k: 1,
     },
     /* 31 - "HexInt" */
     LookaheadDFA {
-        states: &[Some(94)],
+        prod0: 94,
         transitions: &[],
         k: 0,
     },
     /* 32 - "HexIntContent" */
     LookaheadDFA {
-        states: &[Some(95)],
+        prod0: 95,
         transitions: &[],
         k: 0,
     },
     /* 33 - "HexPrefix" */
     LookaheadDFA {
-        states: &[Some(86)],
+        prod0: 86,
         transitions: &[],
         k: 0,
     },
     /* 34 - "InlineTable" */
     LookaheadDFA {
-        states: &[Some(132)],
+        prod0: 132,
         transitions: &[],
         k: 0,
     },
     /* 35 - "InlineTableClose" */
     LookaheadDFA {
-        states: &[Some(136)],
+        prod0: 136,
         transitions: &[],
         k: 0,
     },
     /* 36 - "InlineTableKeyVals" */
     LookaheadDFA {
-        states: &[Some(138)],
+        prod0: 138,
         transitions: &[],
         k: 0,
     },
     /* 37 - "InlineTableKeyValsOpt" */
     LookaheadDFA {
-        states: &[None, Some(139), Some(140)],
-        transitions: &[DFATransition(0, 33, 1), DFATransition(0, 39, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 33, 1, 139), Trans(0, 39, 2, 140)],
         k: 1,
     },
     /* 38 - "InlineTableOpen" */
     LookaheadDFA {
-        states: &[Some(135)],
+        prod0: 135,
         transitions: &[],
         k: 0,
     },
     /* 39 - "InlineTableOpt" */
     LookaheadDFA {
-        states: &[None, Some(133), Some(134)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 39, 2),
-            DFATransition(0, 41, 1),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 50, 1),
+            Trans(0, 39, 2, 134),
+            Trans(0, 41, 1, 133),
+            Trans(0, 46, 1, 133),
+            Trans(0, 50, 1, 133),
         ],
         k: 1,
     },
     /* 40 - "InlineTableSep" */
     LookaheadDFA {
-        states: &[Some(137)],
+        prod0: 137,
         transitions: &[],
         k: 0,
     },
     /* 41 - "Integer" */
     LookaheadDFA {
-        states: &[None, Some(82), Some(83), Some(84), Some(85)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 19, 2),
-            DFATransition(0, 20, 3),
-            DFATransition(0, 21, 4),
-            DFATransition(0, 40, 1),
-            DFATransition(0, 52, 1),
-            DFATransition(0, 53, 1),
+            Trans(0, 19, 2, 83),
+            Trans(0, 20, 3, 84),
+            Trans(0, 21, 4, 85),
+            Trans(0, 40, 1, 82),
+            Trans(0, 52, 1, 82),
+            Trans(0, 53, 1, 82),
         ],
         k: 1,
     },
     /* 42 - "Key" */
     LookaheadDFA {
-        states: &[Some(9)],
+        prod0: 9,
         transitions: &[],
         k: 0,
     },
     /* 43 - "KeyList" */
     LookaheadDFA {
-        states: &[None, Some(12), Some(13)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 8, 2),
-            DFATransition(0, 35, 2),
-            DFATransition(0, 37, 2),
-            DFATransition(0, 42, 1),
+            Trans(0, 8, 2, 13),
+            Trans(0, 35, 2, 13),
+            Trans(0, 37, 2, 13),
+            Trans(0, 42, 1, 12),
         ],
         k: 1,
     },
     /* 44 - "KeySuffix" */
     LookaheadDFA {
-        states: &[None, Some(10), Some(11)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 8, 1),
-            DFATransition(0, 35, 1),
-            DFATransition(0, 37, 1),
-            DFATransition(0, 42, 2),
+            Trans(0, 8, 1, 10),
+            Trans(0, 35, 1, 10),
+            Trans(0, 37, 1, 10),
+            Trans(0, 42, 2, 11),
         ],
         k: 1,
     },
     /* 45 - "KeyVal" */
     LookaheadDFA {
-        states: &[Some(8)],
+        prod0: 8,
         transitions: &[],
         k: 0,
     },
     /* 46 - "KeyValSep" */
     LookaheadDFA {
-        states: &[Some(18)],
+        prod0: 18,
         transitions: &[],
         k: 0,
     },
     /* 47 - "LiteralChar" */
     LookaheadDFA {
-        states: &[None, Some(70), Some(71)],
-        transitions: &[DFATransition(0, 7, 2), DFATransition(0, 18, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 2, 71), Trans(0, 18, 1, 70)],
         k: 1,
     },
     /* 48 - "LiteralCharNoApostrophe" */
     LookaheadDFA {
-        states: &[Some(72)],
+        prod0: 72,
         transitions: &[],
         k: 0,
     },
     /* 49 - "LiteralString" */
     LookaheadDFA {
-        states: &[Some(67)],
+        prod0: 67,
         transitions: &[],
         k: 0,
     },
     /* 50 - "LiteralStringList" */
     LookaheadDFA {
-        states: &[None, Some(68), Some(69)],
-        transitions: &[
-            DFATransition(0, 7, 1),
-            DFATransition(0, 18, 1),
-            DFATransition(0, 50, 2),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 1, 68), Trans(0, 18, 1, 68), Trans(0, 50, 2, 69)],
         k: 1,
     },
     /* 51 - "LocalDate" */
     LookaheadDFA {
-        states: &[Some(112)],
+        prod0: 112,
         transitions: &[],
         k: 0,
     },
     /* 52 - "LocalDateTime" */
     LookaheadDFA {
-        states: &[Some(111)],
+        prod0: 111,
         transitions: &[],
         k: 0,
     },
     /* 53 - "LocalTime" */
     LookaheadDFA {
-        states: &[Some(113)],
+        prod0: 113,
         transitions: &[],
         k: 0,
     },
     /* 54 - "MLBChar" */
     LookaheadDFA {
-        states: &[None, Some(62), Some(63)],
-        transitions: &[
-            DFATransition(0, 7, 1),
-            DFATransition(0, 9, 2),
-            DFATransition(0, 51, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 1, 62), Trans(0, 9, 2, 63), Trans(0, 51, 1, 62)],
         k: 1,
     },
     /* 55 - "MLBContent" */
     LookaheadDFA {
-        states: &[None, Some(59), Some(60), Some(61)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 2),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 9, 1),
-            DFATransition(0, 17, 3),
-            DFATransition(0, 51, 1),
+            Trans(0, 5, 2, 60),
+            Trans(0, 7, 1, 59),
+            Trans(0, 9, 1, 59),
+            Trans(0, 17, 3, 61),
+            Trans(0, 51, 1, 59),
         ],
         k: 1,
     },
     /* 56 - "MLBContentList" */
     LookaheadDFA {
-        states: &[None, Some(56), Some(57)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 1),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 9, 1),
-            DFATransition(0, 17, 1),
-            DFATransition(0, 44, 2),
-            DFATransition(0, 45, 2),
-            DFATransition(0, 51, 1),
+            Trans(0, 5, 1, 56),
+            Trans(0, 7, 1, 56),
+            Trans(0, 9, 1, 56),
+            Trans(0, 17, 1, 56),
+            Trans(0, 44, 2, 57),
+            Trans(0, 45, 2, 57),
+            Trans(0, 51, 1, 56),
         ],
         k: 1,
     },
     /* 57 - "MLBContentList1" */
     LookaheadDFA {
-        states: &[Some(58)],
+        prod0: 58,
         transitions: &[],
         k: 0,
     },
     /* 58 - "MLBEscapedNL" */
     LookaheadDFA {
-        states: &[Some(66)],
+        prod0: 66,
         transitions: &[],
         k: 0,
     },
     /* 59 - "MLBQuotes" */
     LookaheadDFA {
-        states: &[Some(147)],
+        prod0: 147,
         transitions: &[],
         k: 0,
     },
     /* 60 - "MLBUnescaped" */
     LookaheadDFA {
-        states: &[None, Some(64), Some(65)],
-        transitions: &[DFATransition(0, 7, 2), DFATransition(0, 51, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 7, 2, 65), Trans(0, 51, 1, 64)],
         k: 1,
     },
     /* 61 - "MLBasicBody" */
     LookaheadDFA {
-        states: &[Some(53)],
+        prod0: 53,
         transitions: &[],
         k: 0,
     },
     /* 62 - "MLBasicBodyList" */
     LookaheadDFA {
-        states: &[None, Some(54), Some(55)],
-        transitions: &[DFATransition(0, 44, 2), DFATransition(0, 45, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 44, 2, 55), Trans(0, 45, 1, 54)],
         k: 1,
     },
     /* 63 - "MLBasicString" */
     LookaheadDFA {
-        states: &[Some(52)],
+        prod0: 52,
         transitions: &[],
         k: 0,
     },
     /* 64 - "MLBasicStringEnd" */
     LookaheadDFA {
-        states: &[Some(146)],
+        prod0: 146,
         transitions: &[],
         k: 0,
     },
     /* 65 - "MLBasicStringStart" */
     LookaheadDFA {
-        states: &[Some(145)],
+        prod0: 145,
         transitions: &[],
         k: 0,
     },
     /* 66 - "MLLContent" */
     LookaheadDFA {
-        states: &[None, Some(80), Some(81)],
-        transitions: &[
-            DFATransition(0, 5, 2),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 18, 1),
-        ],
+        prod0: -1,
+        transitions: &[Trans(0, 5, 2, 81), Trans(0, 7, 1, 80), Trans(0, 18, 1, 80)],
         k: 1,
     },
     /* 67 - "MLLContentList" */
     LookaheadDFA {
-        states: &[None, Some(77), Some(78)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 5, 1),
-            DFATransition(0, 7, 1),
-            DFATransition(0, 18, 1),
-            DFATransition(0, 48, 2),
-            DFATransition(0, 49, 2),
+            Trans(0, 5, 1, 77),
+            Trans(0, 7, 1, 77),
+            Trans(0, 18, 1, 77),
+            Trans(0, 48, 2, 78),
+            Trans(0, 49, 2, 78),
         ],
         k: 1,
     },
     /* 68 - "MLLContentList1" */
     LookaheadDFA {
-        states: &[Some(79)],
+        prod0: 79,
         transitions: &[],
         k: 0,
     },
     /* 69 - "MLLQuotes" */
     LookaheadDFA {
-        states: &[Some(151)],
+        prod0: 151,
         transitions: &[],
         k: 0,
     },
     /* 70 - "MLLiteralBody" */
     LookaheadDFA {
-        states: &[Some(74)],
+        prod0: 74,
         transitions: &[],
         k: 0,
     },
     /* 71 - "MLLiteralBodyList" */
     LookaheadDFA {
-        states: &[None, Some(75), Some(76)],
-        transitions: &[DFATransition(0, 48, 2), DFATransition(0, 49, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 48, 2, 76), Trans(0, 49, 1, 75)],
         k: 1,
     },
     /* 72 - "MLLiteralString" */
     LookaheadDFA {
-        states: &[Some(73)],
+        prod0: 73,
         transitions: &[],
         k: 0,
     },
     /* 73 - "MLLiteralStringEnd" */
     LookaheadDFA {
-        states: &[Some(150)],
+        prod0: 150,
         transitions: &[],
         k: 0,
     },
     /* 74 - "MLLiteralStringStart" */
     LookaheadDFA {
-        states: &[Some(149)],
+        prod0: 149,
         transitions: &[],
         k: 0,
     },
     /* 75 - "Minus" */
     LookaheadDFA {
-        states: &[Some(154)],
+        prod0: 154,
         transitions: &[],
         k: 0,
     },
     /* 76 - "Newline" */
     LookaheadDFA {
-        states: &[Some(5)],
+        prod0: 5,
         transitions: &[],
         k: 0,
     },
     /* 77 - "NonAscii" */
     LookaheadDFA {
-        states: &[Some(7)],
+        prod0: 7,
         transitions: &[],
         k: 0,
     },
     /* 78 - "NormalFloat" */
     LookaheadDFA {
-        states: &[Some(104)],
+        prod0: 104,
         transitions: &[],
         k: 0,
     },
     /* 79 - "Numeric" */
     LookaheadDFA {
-        states: &[None, Some(28), Some(29)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 19, 2),
-            DFATransition(0, 20, 2),
-            DFATransition(0, 21, 2),
-            DFATransition(0, 27, 1),
-            DFATransition(0, 28, 1),
-            DFATransition(0, 40, 2),
-            DFATransition(0, 52, 2),
-            DFATransition(0, 53, 2),
+            Trans(0, 19, 2, 29),
+            Trans(0, 20, 2, 29),
+            Trans(0, 21, 2, 29),
+            Trans(0, 27, 1, 28),
+            Trans(0, 28, 1, 28),
+            Trans(0, 40, 2, 29),
+            Trans(0, 52, 2, 29),
+            Trans(0, 53, 2, 29),
         ],
         k: 1,
     },
     /* 80 - "OctInt" */
     LookaheadDFA {
-        states: &[Some(96)],
+        prod0: 96,
         transitions: &[],
         k: 0,
     },
     /* 81 - "OctIntContent" */
     LookaheadDFA {
-        states: &[Some(97)],
+        prod0: 97,
         transitions: &[],
         k: 0,
     },
     /* 82 - "OctPrefix" */
     LookaheadDFA {
-        states: &[Some(87)],
+        prod0: 87,
         transitions: &[],
         k: 0,
     },
     /* 83 - "OffsetDateTime" */
     LookaheadDFA {
-        states: &[Some(110)],
+        prod0: 110,
         transitions: &[],
         k: 0,
     },
     /* 84 - "ParolToml" */
     LookaheadDFA {
-        states: &[Some(0)],
+        prod0: 0,
         transitions: &[],
         k: 0,
     },
     /* 85 - "ParolTomlList" */
     LookaheadDFA {
-        states: &[None, Some(1), Some(2)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 0, 2),
-            DFATransition(0, 34, 1),
-            DFATransition(0, 36, 1),
-            DFATransition(0, 41, 1),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 50, 1),
+            Trans(0, 0, 2, 2),
+            Trans(0, 34, 1, 1),
+            Trans(0, 36, 1, 1),
+            Trans(0, 41, 1, 1),
+            Trans(0, 46, 1, 1),
+            Trans(0, 50, 1, 1),
         ],
         k: 1,
     },
     /* 86 - "Plus" */
     LookaheadDFA {
-        states: &[Some(155)],
+        prod0: 155,
         transitions: &[],
         k: 0,
     },
     /* 87 - "QuotationMark" */
     LookaheadDFA {
-        states: &[Some(148)],
+        prod0: 148,
         transitions: &[],
         k: 0,
     },
     /* 88 - "QuotedKey" */
     LookaheadDFA {
-        states: &[None, Some(16), Some(17)],
-        transitions: &[DFATransition(0, 46, 1), DFATransition(0, 50, 2)],
+        prod0: -1,
+        transitions: &[Trans(0, 46, 1, 16), Trans(0, 50, 2, 17)],
         k: 1,
     },
     /* 89 - "SimpleKey" */
     LookaheadDFA {
-        states: &[None, Some(14), Some(15)],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 41, 2),
-            DFATransition(0, 46, 1),
-            DFATransition(0, 50, 1),
+            Trans(0, 41, 2, 15),
+            Trans(0, 46, 1, 14),
+            Trans(0, 50, 1, 14),
         ],
         k: 1,
     },
     /* 90 - "SpecialFloat" */
     LookaheadDFA {
-        states: &[Some(105)],
+        prod0: 105,
         transitions: &[],
         k: 0,
     },
     /* 91 - "StdTable" */
     LookaheadDFA {
-        states: &[Some(125)],
+        prod0: 125,
         transitions: &[],
         k: 0,
     },
     /* 92 - "StdTableClose" */
     LookaheadDFA {
-        states: &[Some(131)],
+        prod0: 131,
         transitions: &[],
         k: 0,
     },
     /* 93 - "StdTableOpen" */
     LookaheadDFA {
-        states: &[Some(130)],
+        prod0: 130,
         transitions: &[],
         k: 0,
     },
     /* 94 - "Table" */
     LookaheadDFA {
-        states: &[None, Some(123), Some(124)],
-        transitions: &[DFATransition(0, 34, 2), DFATransition(0, 36, 1)],
+        prod0: -1,
+        transitions: &[Trans(0, 34, 2, 124), Trans(0, 36, 1, 123)],
         k: 1,
     },
     /* 95 - "Unicode4" */
     LookaheadDFA {
-        states: &[Some(50)],
+        prod0: 50,
         transitions: &[],
         k: 0,
     },
     /* 96 - "Unicode8" */
     LookaheadDFA {
-        states: &[Some(51)],
+        prod0: 51,
         transitions: &[],
         k: 0,
     },
     /* 97 - "UnquotedKey" */
     LookaheadDFA {
-        states: &[Some(143)],
+        prod0: 143,
         transitions: &[],
         k: 0,
     },
     /* 98 - "UnsignedDecInt" */
     LookaheadDFA {
-        states: &[Some(142)],
+        prod0: 142,
         transitions: &[],
         k: 0,
     },
     /* 99 - "Val" */
     LookaheadDFA {
-        states: &[
-            None,
-            Some(19),
-            Some(20),
-            Some(21),
-            Some(22),
-            Some(23),
-            Some(24),
-            Some(25),
-            Some(26),
-            Some(27),
-        ],
+        prod0: -1,
         transitions: &[
-            DFATransition(0, 19, 5),
-            DFATransition(0, 20, 5),
-            DFATransition(0, 21, 5),
-            DFATransition(0, 25, 1),
-            DFATransition(0, 26, 1),
-            DFATransition(0, 27, 5),
-            DFATransition(0, 28, 5),
-            DFATransition(0, 29, 4),
-            DFATransition(0, 30, 4),
-            DFATransition(0, 31, 4),
-            DFATransition(0, 32, 4),
-            DFATransition(0, 36, 2),
-            DFATransition(0, 38, 3),
-            DFATransition(0, 40, 5),
-            DFATransition(0, 43, 7),
-            DFATransition(0, 46, 6),
-            DFATransition(0, 47, 9),
-            DFATransition(0, 50, 8),
-            DFATransition(0, 52, 5),
-            DFATransition(0, 53, 5),
+            Trans(0, 19, 5, 23),
+            Trans(0, 20, 5, 23),
+            Trans(0, 21, 5, 23),
+            Trans(0, 25, 1, 19),
+            Trans(0, 26, 1, 19),
+            Trans(0, 27, 5, 23),
+            Trans(0, 28, 5, 23),
+            Trans(0, 29, 4, 22),
+            Trans(0, 30, 4, 22),
+            Trans(0, 31, 4, 22),
+            Trans(0, 32, 4, 22),
+            Trans(0, 36, 2, 20),
+            Trans(0, 38, 3, 21),
+            Trans(0, 40, 5, 23),
+            Trans(0, 43, 7, 25),
+            Trans(0, 46, 6, 24),
+            Trans(0, 47, 9, 27),
+            Trans(0, 50, 8, 26),
+            Trans(0, 52, 5, 23),
+            Trans(0, 53, 5, 23),
         ],
         k: 1,
     },
     /* 100 - "WsNewline" */
     LookaheadDFA {
-        states: &[Some(6)],
+        prod0: 6,
         transitions: &[],
         k: 0,
     },

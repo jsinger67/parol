@@ -1,3 +1,4 @@
+use crate::parser::INVALID_PROD;
 use crate::{
     FormatToken, LexerError, ProductionIndex, StateIndex, TerminalIndex, TokenStream, TokenVec,
     UnexpectedToken,
@@ -6,19 +7,18 @@ use log::trace;
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
-///
-/// Data structure to represent a DFA state
-///
-/// If the state is accepting the production index is valid and denotes
-/// the resulting production index.
-///
-pub type DFAState = Option<ProductionIndex>;
+use super::CompiledProductionIndex;
 
 ///
-/// The transitions contain tuples: "from-state -> terminal-index -> to-state"
+/// The transitions contain tuples: "from-state -> terminal-index -> to-state -> production index"
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
-pub struct DFATransition(pub StateIndex, pub TerminalIndex, pub StateIndex);
+pub struct Trans(
+    pub StateIndex,
+    pub TerminalIndex,
+    pub StateIndex,
+    pub CompiledProductionIndex,
+);
 
 ///
 /// The lookahead DFA. Used to calculate a certain production number from a
@@ -31,11 +31,9 @@ pub struct DFATransition(pub StateIndex, pub TerminalIndex, pub StateIndex);
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct LookaheadDFA {
-    ///
-    /// States are identified by their index within the slice.
-    /// It corresponds to the state's number
-    ///
-    pub states: &'static [DFAState],
+    /// Contains the production number in state 0, i.e. the state that the automaton is initially in
+    /// without applying any transitions
+    pub prod0: CompiledProductionIndex,
 
     ///
     /// Transitions are sorted
@@ -44,7 +42,7 @@ pub struct LookaheadDFA {
     /// This way it is easy to detect the case where no match exists and to be
     /// able to quickly terminate the search for an applicable transition.
     ///
-    pub transitions: &'static [DFATransition],
+    pub transitions: &'static [Trans],
 
     ///
     /// Maximum number of tokens needed to reach an accepting state
@@ -56,13 +54,9 @@ impl LookaheadDFA {
     ///
     /// Creates a new instance with the given parameters.
     ///
-    pub fn new(
-        states: &'static [DFAState],
-        transitions: &'static [DFATransition],
-        k: usize,
-    ) -> Self {
+    pub fn new(prod0: CompiledProductionIndex, transitions: &'static [Trans], k: usize) -> Self {
         Self {
-            states,
+            prod0,
             transitions,
             k,
         }
@@ -75,12 +69,19 @@ impl LookaheadDFA {
     ///
     pub fn eval(&self, token_stream: &mut TokenStream<'_>) -> Result<ProductionIndex, LexerError> {
         let mut state: StateIndex = 0;
+        let mut prod_num: CompiledProductionIndex = self.prod0;
+        let mut last_prod_num: CompiledProductionIndex = INVALID_PROD;
+
         if self.k > token_stream.k {
             return Err(LexerError::DataError(
                 "Lookahead size mismatch between token stream and Lookahead DFA",
             ));
         }
-        let mut last_accepting_state: Option<StateIndex> = None;
+        let mut last_accepting_state: Option<StateIndex> = if prod_num > INVALID_PROD {
+            Some(state)
+        } else {
+            None
+        };
         for i in 0..self.k {
             // Read the current lookahead token and extract it's type
             let current_lookahead_token = token_stream.lookahead_token_type(i)?;
@@ -117,14 +118,19 @@ impl LookaheadDFA {
                             current_lookahead_token,
                             current_transition.2
                         );
+                        // Set the state to the to-state
                         state = current_transition.2;
-                        if self.states[state].is_some() {
+                        prod_num = current_transition.3;
+                        // Test if the production in this transition is a valid one
+                        // In this case the to-state is an accepting one.
+                        if current_transition.3 > INVALID_PROD {
                             // In case we step too far, we can retrieve the last
                             // accepting state.
                             // Indeed we can step too far because the self.k is the
                             // maximum depth of all subtrees.
-                            last_accepting_state = Some(state);
-                            trace!("State {} accepts", state);
+                            last_accepting_state = Some(current_transition.2);
+                            last_prod_num = current_transition.3;
+                            trace!("State {} accepts", current_transition.2);
                         }
                         break;
                     }
@@ -136,17 +142,18 @@ impl LookaheadDFA {
                 }
             }
         }
-        if let Some(prod_num) = self.states[state] {
+        if prod_num > INVALID_PROD {
             // The state is accepting, we can return the associated production number
             trace!("Predict production {} at state {}", prod_num, state);
-            Ok(prod_num)
+            Ok(prod_num as ProductionIndex)
         } else if let Some(last_state) = last_accepting_state {
+            debug_assert!(last_prod_num > INVALID_PROD);
             trace!(
                 "Predict production {:?} from last accepting state {}",
-                self.states[last_state],
-                state
+                last_prod_num,
+                last_state
             );
-            Ok(self.states[last_state].unwrap())
+            Ok(last_prod_num as ProductionIndex)
         } else {
             trace!(
                 "Production prediction failed at state {} with token {:?}",

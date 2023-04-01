@@ -93,24 +93,24 @@ impl CompiledDFA {
         fn remove_duplicate_at_index(
             kept_index: usize,
             index_to_remove: usize,
-            transitions: &mut Vec<(
+            transitions: &mut [(
                 StateIndex,
                 TerminalIndex,
                 StateIndex,
                 CompiledProductionIndex,
-            )>,
+            )],
         ) {
-            debug_assert!(kept_index < index_to_remove);
+            // debug_assert!(kept_index < index_to_remove);
             transitions.iter_mut().for_each(|t| {
-                if t.0 == index_to_remove {
-                    t.0 = kept_index;
-                } else if t.0 > index_to_remove {
-                    t.0 -= 1;
+                match t.0.cmp(&index_to_remove) {
+                    std::cmp::Ordering::Less => (),
+                    std::cmp::Ordering::Equal => t.0 = kept_index,
+                    std::cmp::Ordering::Greater => t.0 -= 1,
                 }
-                if t.2 == index_to_remove {
-                    t.2 = kept_index;
-                } else if t.2 > index_to_remove {
-                    t.2 -= 1;
+                match t.2.cmp(&index_to_remove) {
+                    std::cmp::Ordering::Less => (),
+                    std::cmp::Ordering::Equal => t.2 = kept_index,
+                    std::cmp::Ordering::Greater => t.2 -= 1,
                 }
             });
         }

@@ -27,9 +27,8 @@ pub use lexer::{
 ///
 pub mod parser;
 pub use parser::{
-    DFAState, DFATransition, LLKParser, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTree,
-    ParseTreeType, ParseType, Production, ProductionIndex, ScannerIndex, StateIndex,
-    UserActionsTrait,
+    LLKParser, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTree, ParseTreeType, ParseType,
+    Production, ProductionIndex, ScannerIndex, StateIndex, Trans, UserActionsTrait,
 };
 
 ///
