@@ -79,9 +79,6 @@
         "prettier": "^2.7.1",
         "vsce": "^2.9.3"
     },
-    "activationEvents": [
-        "onLanguage:parol"
-    ],
     "main": "./out/extension",
     "scripts": {
         "vscode:prepublish": "npm run build-base -- --minify",
