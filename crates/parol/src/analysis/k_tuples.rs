@@ -1,6 +1,9 @@
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use std::{fmt::{Debug, Display, Error, Formatter}, collections::HashSet};
+use std::{
+    collections::HashSet,
+    fmt::{Debug, Display, Error, Formatter},
+};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -27,13 +30,9 @@ impl KTuples {
 
     /// Inserts a KTuple
     pub fn insert(&mut self, tuple: KTuple) {
+        debug_assert!(self.1 >= tuple.k);
         self.2 &= tuple.is_k_complete();
         self.0.insert(tuple);
-    }
-
-    /// Removes a KTuple
-    pub fn remove(&mut self, tuple: &KTuple) {
-        self.0.remove(tuple);
     }
 
     /// Appends another KTuples item to self

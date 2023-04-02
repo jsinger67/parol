@@ -55,5 +55,7 @@ pub use reachability::{
     unreachable_non_terminals,
 };
 
+mod terminals_trie;
+
 /// Module with checks for various token conflict scenarios
 pub mod token_conflicts;
