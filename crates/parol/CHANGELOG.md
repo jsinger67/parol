@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.21.0 - Not released yet
+## 0.21.0 - 2023-04-02
 
 * Changed code generation to facilitate `parol_runtime`'s newer and more efficient lookahead DFA
 * Optimized performance in hash implementation of KTuple
@@ -38,7 +38,6 @@ new minor version numbers. Please note that this is no version handling covered 
 `parol_runtime::ParolError::UserError` for better recognition. This improves output of errors
 reported by the `parol-ls`language server.
 * Removed clippy warnings new in Rust 1.68
-
 
 ## 0.19.0 - 2023-03-06
 
