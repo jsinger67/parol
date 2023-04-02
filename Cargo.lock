@@ -783,6 +783,7 @@ dependencies = [
  "assert_cmd",
  "cfg-if",
  "clap 4.1.8",
+ "criterion",
  "derive_builder",
  "env_logger",
  "function_name",

@@ -1,7 +1,6 @@
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use std::collections::HashSet;
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::{fmt::{Debug, Display, Error, Formatter}, collections::HashSet};
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -38,7 +37,7 @@ impl KTuples {
     }
 
     /// Appends another KTuples item to self
-    pub fn append(&mut self, other: &mut Self) -> bool {
+    pub fn append(&mut self, mut other: Self) -> bool {
         let count = self.0.len();
         for t in other.0.drain() {
             self.insert(t);
@@ -149,7 +148,7 @@ impl KTuples {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.2 {
             let (complete, incomplete): (HashSet<KTuple>, HashSet<KTuple>) =
-                self.0.drain().partition(|t| t.is_k_complete());
+                self.0.into_iter().partition(|t| t.is_k_complete());
             self.0 = complete;
             self.0.extend(
                 incomplete
@@ -178,7 +177,7 @@ impl KTuples {
 
     /// Set the lookahead size
     pub fn set_k(mut self, k: usize) -> Self {
-        self.0 = self.0.drain().map(|t| t.set_k(k)).collect();
+        self.0 = self.0.into_iter().map(|t| t.set_k(k)).collect();
         if k > self.1 {
             self.2 = false;
         } else {

@@ -82,7 +82,12 @@ path = "../../examples/oberon_0/main.rs"
 name = "scanner_states"
 path = "../../examples/scanner_states/main.rs"
 
+[[bench]]
+name = "k_tuples_k_concat_benchmark"
+harness = false
+
 [dev-dependencies]
+criterion = "0.4.0"
 pretty_assertions = "1.3"
 assert_cmd = "2.0"
 tempfile = "3"
