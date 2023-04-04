@@ -829,7 +829,7 @@ dependencies = [
  "regex-syntax",
  "serde",
  "serde_json",
- "syn 1.0.109",
+ "syn 2.0.13",
  "syntree",
  "syntree_layout",
  "tempfile",
