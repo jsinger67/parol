@@ -1,3 +1,8 @@
+use std::{
+    fmt::{Display, Formatter},
+    ops::Index,
+};
+
 use crate::{CompiledTerminal, KTuple, MAX_K};
 
 use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple::Terminals};
@@ -66,12 +71,31 @@ impl Node {
     }
 }
 
+impl Index<usize> for Node {
+    type Output = Node;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.c[index]
+    }
+}
+
 impl Default for Node {
     fn default() -> Self {
         Self {
             t: INVALID,
             c: Default::default(),
         }
+    }
+}
+
+impl Display for Node {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let t = if self.t == INVALID {
+            "ROOT".to_string()
+        } else {
+            self.t.to_string()
+        };
+        write!(f, "{t}")
     }
 }
 
@@ -117,17 +141,25 @@ impl Trie {
         todo!()
     }
 
-    pub(crate) fn terminals(&self) -> TerminalsIter<'_> {
+    pub(crate) fn terminal_tuples(&self) -> TerminalsIter<'_> {
         TerminalsIter::new(self)
+    }
+}
+
+impl Index<usize> for Trie {
+    type Output = Node;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.root[index]
     }
 }
 
 #[derive(Debug)]
 pub(crate) struct TerminalsIter<'a> {
-    // Tuple of the traversed node and the child index
+    // Node stack with tuples of traversed node and child index
     v: Vec<(&'a Node, usize)>,
     // Current node in DFS order
-    n: &'a Node,
+    //n: &'a Node,
     // Next index in node's children
     i: usize,
     // Reference to the trie
@@ -138,33 +170,55 @@ impl<'a> TerminalsIter<'a> {
     pub(crate) fn new(t: &'a Trie) -> Self {
         let mut this = Self {
             v: Vec::with_capacity(MAX_K),
-            n: t.root(),
+            //n: t.root(),
             i: 0,
             t,
         };
-        this.expand(0);
+        this.push("INIT ", t.root(), 0);
+        this.expand(t.root(), 0);
         this
     }
 
-    fn expand(&mut self, mut i: usize) {
-        let mut node = self.n;
-        loop {
-            if node.children().len() <= i {
-                break;
-            }
-            println!("push {} c[{}]", node.terminal(), i);
-            self.v.push((node, i));
-            node = &node.children()[i];
-            i = 0;
+    #[inline]
+    fn push(&mut self, ctx: &str, node: &'a Node, i: usize) {
+        self.v.push((node, i));
+        eprintln!("{}push ({}, i{}), {}", ctx, node, i, self);
+    }
+
+    #[inline]
+    fn pop(&mut self, ctx: &str) -> Option<(&'a Node, usize)> {
+        if let Some((n, i)) = self.v.pop() {
+            eprintln!("{}pop ({}, i{}), {}", ctx, n, i, self);
+            Some((n, i))
+        } else {
+            None
         }
     }
 
+    // From the given node take child with index i and traverse in depth first order.
+    // Push all nodes and their indices on the node stack.
+    fn expand(&mut self, node: &'a Node, mut i: usize) {
+        eprintln!("expand {{");
+        let mut node = node;
+        loop {
+            if node.children().len() <= i {
+                eprintln!("    STOP expand at ({}, i{i})", node);
+                break;
+            }
+            node = &node.children()[i];
+            self.push("    DOWN ", node, i);
+            i = 0;
+        }
+        eprintln!("}}");
+    }
+
+    // Try to advance horizontally
     fn advance(&mut self) {
-        self.v.pop().map(|(n, i)| {
-            println!("pop  {} c[{}]", n.terminal(), i);
+        self.pop("ADVANCE ").map(|(n, mut i)| {
+            i += 1;
             if n.children().len() > i {
-                self.n = n;
-                self.expand(i + 1);
+                self.push("RIGHT ", n, i);
+                self.expand(n, i);
             } else {
                 self.advance();
             }
@@ -177,16 +231,40 @@ impl Iterator for TerminalsIter<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         let result = if self.v.is_empty() {
+            eprintln!("STOP iteration");
             None
         } else {
+            eprintln!(
+                "YIELD [{}]",
+                self.v[1..]
+                    .iter()
+                    .map(|e| e.0.to_string())
+                    .collect::<Vec<String>>()
+                    .join(", ")
+            );
             Some(Terminals::from_slice_with(
-                &self.v,
+                &self.v[1..],
                 self.v.len(),
                 |(n, _)| CompiledTerminal(n.terminal()),
             ))
         };
         self.advance();
         result
+    }
+}
+
+
+impl Display for TerminalsIter<'_> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Stack: [{}]",
+            self.v
+                .iter()
+                .map(|e| format!("({}, i{})", e.0, e.1))
+                .collect::<Vec<String>>()
+                .join(", ")
+        )
     }
 }
 
@@ -250,13 +328,13 @@ mod test {
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t.root().children()[0].is_child(2));
-        assert_eq!(t.root().children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].t, 2);
+        assert!(t[0].is_child(2));
+        assert_eq!(t[0].children().len(), 1);
+        assert_eq!(t[0][0].t, 2);
 
-        assert!(t.root().children()[0].children()[0].is_child(3));
-        assert_eq!(t.root().children()[0].children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].children()[0].t, 3);
+        assert!(t[0][0].is_child(3));
+        assert_eq!(t[0][0].children().len(), 1);
+        assert_eq!(t[0][0][0].t, 3);
     }
 
     #[test]
@@ -275,13 +353,13 @@ mod test {
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t.root().children()[0].is_child(2));
-        assert_eq!(t.root().children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].t, 2);
+        assert!(t[0].is_child(2));
+        assert_eq!(t[0].children().len(), 1);
+        assert_eq!(t[0][0].t, 2);
 
-        assert!(t.root().children()[0].children()[0].is_child(3));
-        assert_eq!(t.root().children()[0].children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].children()[0].t, 3);
+        assert!(t[0][0].is_child(3));
+        assert_eq!(t[0][0].children().len(), 1);
+        assert_eq!(t[0][0][0].t, 3);
     }
 
     #[test]
@@ -300,18 +378,18 @@ mod test {
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t.root().children()[0].is_child(2));
-        assert!(t.root().children()[0].is_child(5));
-        assert_eq!(t.root().children()[0].children().len(), 2);
-        assert_eq!(t.root().children()[0].children()[0].t, 2);
-        assert_eq!(t.root().children()[0].children()[1].t, 5);
+        assert!(t[0].is_child(2));
+        assert!(t[0].is_child(5));
+        assert_eq!(t[0].children().len(), 2);
+        assert_eq!(t[0][0].t, 2);
+        assert_eq!(t[0][1].t, 5);
 
-        assert!(t.root().children()[0].children()[0].is_child(3));
-        assert!(t.root().children()[0].children()[1].is_child(6));
-        assert_eq!(t.root().children()[0].children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[1].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].children()[0].t, 3);
-        assert_eq!(t.root().children()[0].children()[1].children()[0].t, 6);
+        assert!(t[0][0].is_child(3));
+        assert!(t[0][1].is_child(6));
+        assert_eq!(t[0][0].children().len(), 1);
+        assert_eq!(t[0][1].children().len(), 1);
+        assert_eq!(t[0][0][0].t, 3);
+        assert_eq!(t[0][1][0].t, 6);
     }
 
     #[test]
@@ -331,18 +409,18 @@ mod test {
         assert!(t.root().is_child(4));
         assert_eq!(t.root().children().len(), 2);
 
-        assert!(t.root().children()[0].is_child(2));
-        assert!(t.root().children()[1].is_child(5));
-        assert_eq!(t.root().children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].t, 2);
-        assert_eq!(t.root().children()[1].children()[0].t, 5);
+        assert!(t[0].is_child(2));
+        assert!(t[1].is_child(5));
+        assert_eq!(t[0].children().len(), 1);
+        assert_eq!(t[0][0].t, 2);
+        assert_eq!(t[1][0].t, 5);
 
-        assert!(t.root().children()[0].children()[0].is_child(3));
-        assert!(t.root().children()[1].children()[0].is_child(6));
-        assert_eq!(t.root().children()[0].children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[1].children()[0].children().len(), 1);
-        assert_eq!(t.root().children()[0].children()[0].children()[0].t, 3);
-        assert_eq!(t.root().children()[1].children()[0].children()[0].t, 6);
+        assert!(t[0][0].is_child(3));
+        assert!(t[1][0].is_child(6));
+        assert_eq!(t[0][0].children().len(), 1);
+        assert_eq!(t[1][0].children().len(), 1);
+        assert_eq!(t[0][0][0].t, 3);
+        assert_eq!(t[1][0][0].t, 6);
     }
 
     #[test]
@@ -362,11 +440,19 @@ mod test {
         t.insert(&tuple3);
         t.insert(&tuple4);
 
-        for t in t.terminals() {
-            println!(
-                "[{}]",
+        assert_eq!(t[0].t, 1);
+        assert_eq!(t[0][0].t, 2);
+        assert_eq!(t[0][0][0].t, 3);
+        assert_eq!(t[0][0][1].t, 4);
+        assert_eq!(t[1].t, 5);
+        assert_eq!(t[1][0].t, 6);
+        assert_eq!(t[1][0][0].t, 7);
+        assert_eq!(t[1][1].t, 8);
+
+        for t in t.terminal_tuples() {
+            eprintln!(
+                "CONSUME [{}]",
                 t.t.iter()
-                    .skip(1)
                     .take_while(|t| t.0 != INVALID)
                     .map(|e| format!("{}", e))
                     .collect::<Vec<String>>()
