@@ -60,13 +60,14 @@ impl Node {
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
-    pub(crate) fn add_child(&mut self, t: TerminalIndex) -> usize {
+    /// The boolean in the return value ist true on insertion (collection changed)
+    pub(crate) fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
         if let Some(index) = self.child_index(t) {
-            index
+            (index, false)
         } else {
             let idx = self.c.len();
             self.c.push(Node::new(t));
-            idx
+            (idx, true)
         }
     }
 }
@@ -110,6 +111,8 @@ impl PartialEq for Node {
 pub(crate) struct Trie {
     /// The root node's terminal index is always INVALID!
     root: Node,
+    /// The length counter
+    len: usize,
 }
 
 impl Trie {
@@ -123,26 +126,83 @@ impl Trie {
         &self.root
     }
 
+    /// Returns the number of tuples in this [`Trie`].
+    pub fn len(&self) -> usize {
+        // TODO: Calculate the count on insert (via [`Trie::add`])
+        self.len
+    }
+
+    /// Checks if the collection is empty
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Inserts a KTuple
     pub(crate) fn insert(&mut self, tuple: &KTuple) {
-        let Terminals { t, i } = tuple.terminals.inner();
+        self.add(tuple.terminals.inner());
+    }
+
+    /// Inserts a Terminals instance
+    pub(crate) fn add(&mut self, terminals: &Terminals) {
+        let Terminals { t, i } = terminals;
         if t.is_empty() {
             return;
         }
+        let mut changed = false;
         let mut node = &mut self.root;
         for t in &t[0..*i] {
-            let child_index = node.add_child(t.0);
+            let (child_index, inserted) = node.add_child(t.0);
             node = &mut node.children_mut()[child_index];
+            changed |= inserted;
+        }
+        if changed {
+            self.len += 1;
         }
     }
 
     /// Appends another Trie item to self
-    pub fn append(&mut self, mut other: Self) -> bool {
-        todo!()
+    /// Returns true if the insertion actually changed the trie
+    pub fn append(&mut self, other: &Self) -> bool {
+        let len = self.len();
+        other.iter().for_each(|t| self.add(&t));
+        len != self.len()
     }
 
-    pub(crate) fn terminal_tuples(&self) -> TerminalsIter<'_> {
+    /// Creates a union with another KTuples and self
+    pub fn union(&self, other: &Self) -> Self {
+        let mut trie = self.clone();
+        trie.append(&other);
+        trie
+    }
+
+    /// Creates a intersection with another Trie and self
+    pub fn intersection(&self, other: &Self) -> Self {
+        let s1 = self.iter().collect::<Vec<_>>();
+        other
+            .iter()
+            .filter(|t2| s1.iter().find(|t1| t1 == &t2).is_some())
+            .fold(Trie::new(), |mut acc, t| {
+                acc.add(&t);
+                acc
+            })
+    }
+
+    pub(crate) fn iter(&self) -> TerminalsIter<'_> {
         TerminalsIter::new(self)
+    }
+
+    /// Creates an epsilon item, i.e. a set with exactly one epsilon k-tuple
+    pub fn eps(k: usize) -> Self {
+        let mut trie = Trie::new();
+        trie.insert(&KTuple::eps(k));
+        trie
+    }
+
+    /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
+    pub fn end(k: usize) -> Self {
+        let mut trie = Trie::new();
+        trie.insert(&KTuple::end(k));
+        trie
     }
 }
 
@@ -206,7 +266,7 @@ impl<'a> TerminalsIter<'a> {
                 break;
             }
             node = &node.children()[i];
-            self.push("    DOWN ", node, i);
+            self.push("    DOWN ", node, 0);
             i = 0;
         }
         eprintln!("}}");
@@ -253,7 +313,6 @@ impl Iterator for TerminalsIter<'_> {
     }
 }
 
-
 impl Display for TerminalsIter<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -273,9 +332,10 @@ mod test {
     use crate::{
         analysis::{
             compiled_terminal::INVALID,
+            k_tuple::Terminals,
             terminals_trie::{Node, Trie},
         },
-        KTuple,
+        CompiledTerminal, KTuple,
     };
 
     #[test]
@@ -324,6 +384,9 @@ mod test {
         let mut t = Trie::new();
         let tuple1 = KTuple::new(5).with_terminal_indices(&[1, 2, 3]);
         t.insert(&tuple1);
+
+        assert_eq!(1, t.len());
+
         assert_eq!(t.root().t, INVALID);
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
@@ -349,6 +412,9 @@ mod test {
         //     3
         t.insert(&tuple1);
         t.insert(&tuple2);
+
+        assert_eq!(1, t.len());
+
         assert_eq!(t.root().t, INVALID);
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
@@ -374,6 +440,9 @@ mod test {
         //     3  6
         t.insert(&tuple1);
         t.insert(&tuple2);
+
+        assert_eq!(2, t.len());
+
         assert_eq!(t.root().t, INVALID);
         assert!(t.root().is_child(1));
         assert_eq!(t.root().children().len(), 1);
@@ -404,6 +473,9 @@ mod test {
         //     3  6
         t.insert(&tuple1);
         t.insert(&tuple2);
+
+        assert_eq!(2, t.len());
+
         assert_eq!(t.root().t, INVALID);
         assert!(t.root().is_child(1));
         assert!(t.root().is_child(4));
@@ -424,7 +496,7 @@ mod test {
     }
 
     #[test]
-    fn trie_terminals() {
+    fn trie_iter() {
         let mut t = Trie::new();
         let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
         let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
@@ -449,15 +521,48 @@ mod test {
         assert_eq!(t[1][0][0].t, 7);
         assert_eq!(t[1][1].t, 8);
 
-        for t in t.terminal_tuples() {
-            eprintln!(
-                "CONSUME [{}]",
-                t.t.iter()
-                    .take_while(|t| t.0 != INVALID)
-                    .map(|e| format!("{}", e))
-                    .collect::<Vec<String>>()
-                    .join(", "),
-            );
-        }
+        assert_eq!(4, t.len());
+
+        let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
+            .iter()
+            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+            .collect::<Vec<Terminals>>();
+
+        assert_eq!(expected, t.iter().collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn trie_intersection() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[5, 6, 7]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        t1.insert(&tuple3);
+        t1.insert(&tuple4);
+
+        let mut t2 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        //     1
+        //     |
+        //     2
+        //     |
+        //     3
+        t2.insert(&tuple1);
+
+
+        let expected = vec![vec![1, 2, 3]]
+            .iter()
+            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+            .collect::<Vec<Terminals>>();
+
+        assert_eq!(expected, t1.intersection(&t2).iter().collect::<Vec<_>>());
     }
 }
