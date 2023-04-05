@@ -281,7 +281,6 @@ impl Display for Terminals {
     }
 }
 
-
 /// Terminal string with support for k-completeness
 #[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum TerminalString {

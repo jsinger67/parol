@@ -225,3 +225,60 @@ impl PartialEq for KTuples {
         self.0.eq(&other.0)
     }
 }
+
+#[cfg(test)]
+mod test {
+    use crate::{KTuple, KTuples};
+
+    #[test]
+    fn k_tuples_eq_positive() {
+        let tuples1 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+                KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
+            ],
+            6,
+        );
+        let tuples2 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+                KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
+            ],
+            6,
+        );
+        //     t1    t2
+        // ---------------
+        //     1     1
+        //     |     |
+        //     2     2
+        //     | \   | \
+        //     3  4  3  4
+        assert_eq!(tuples1, tuples2);
+    }
+
+    #[test]
+    fn k_tuples_eq_negative() {
+        let tuples1 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+                KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
+            ],
+            6,
+        );
+        let tuples2 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&[5, 6, 7]),
+                KTuple::new(6).with_terminal_indices(&[5, 8]),
+            ],
+            6,
+        );
+        //     t1    t2
+        // ---------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+        assert_ne!(tuples1, tuples2);
+    }
+}

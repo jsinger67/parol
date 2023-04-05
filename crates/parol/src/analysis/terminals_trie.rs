@@ -336,7 +336,7 @@ mod test {
 
     use crate::{
         analysis::{
-            compiled_terminal::{INVALID, EPS},
+            compiled_terminal::{EPS, INVALID},
             k_tuple::Terminals,
             terminals_trie::{Node, Trie},
         },
@@ -663,7 +663,6 @@ mod test {
         //     3  4  7
         assert_eq!(4, t1.len());
 
-
         let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
@@ -717,5 +716,4 @@ mod test {
 
         assert_ne!(t1, t2);
     }
-
 }
