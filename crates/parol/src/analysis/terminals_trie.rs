@@ -245,13 +245,13 @@ impl<'a> TerminalsIter<'a> {
     #[inline]
     fn push(&mut self, ctx: &str, node: &'a Node, i: usize) {
         self.v.push((node, i));
-        eprintln!("{}push ({}, i{}), {}", ctx, node, i, self);
+        // eprintln!("{}push ({}, i{}), {}", ctx, node, i, self);
     }
 
     #[inline]
     fn pop(&mut self, ctx: &str) -> Option<(&'a Node, usize)> {
         if let Some((n, i)) = self.v.pop() {
-            eprintln!("{}pop ({}, i{}), {}", ctx, n, i, self);
+            // eprintln!("{}pop ({}, i{}), {}", ctx, n, i, self);
             Some((n, i))
         } else {
             None
@@ -261,18 +261,18 @@ impl<'a> TerminalsIter<'a> {
     // From the given node take child with index i and traverse in depth first order.
     // Push all nodes and their indices on the node stack.
     fn expand(&mut self, node: &'a Node, mut i: usize) {
-        eprintln!("expand {{");
+        // eprintln!("expand {{");
         let mut node = node;
         loop {
             if node.children().len() <= i {
-                eprintln!("    STOP expand at ({}, i{i})", node);
+                // eprintln!("    STOP expand at ({}, i{i})", node);
                 break;
             }
             node = &node.children()[i];
             self.push("    DOWN ", node, 0);
             i = 0;
         }
-        eprintln!("}}");
+        // eprintln!("}}");
     }
 
     // Try to advance horizontally
@@ -294,17 +294,17 @@ impl Iterator for TerminalsIter<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         let result = if self.v.is_empty() {
-            eprintln!("STOP iteration");
+            // eprintln!("STOP iteration");
             None
         } else {
-            eprintln!(
-                "YIELD [{}]",
-                self.v[1..]
-                    .iter()
-                    .map(|e| e.0.to_string())
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            );
+            // eprintln!(
+            //     "YIELD [{}]",
+            //     self.v[1..]
+            //         .iter()
+            //         .map(|e| e.0.to_string())
+            //         .collect::<Vec<String>>()
+            //         .join(", ")
+            // );
             Some(Terminals::from_slice_with(
                 &self.v[1..],
                 self.v.len(),
