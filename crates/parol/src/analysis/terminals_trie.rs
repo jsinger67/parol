@@ -672,4 +672,50 @@ mod test {
         assert_eq!(expected, t1.iter().collect::<Vec<_>>());
     }
 
+    #[test]
+    fn trie_eq_positive() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        let mut t2 = Trie::new();
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t2.insert(&tuple3);
+        t2.insert(&tuple4);
+        //     t1    t2
+        // ---------------
+        //     1     1
+        //     |     |
+        //     2     2
+        //     | \   | \
+        //     3  4  3  4
+
+        assert_eq!(t1, t2);
+    }
+
+    #[test]
+    fn trie_eq_negative() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        let mut t2 = Trie::new();
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[5, 6, 7]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
+        t2.insert(&tuple3);
+        t2.insert(&tuple4);
+        //     t1    t2
+        // ---------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+
+        assert_ne!(t1, t2);
+    }
+
 }
