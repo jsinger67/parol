@@ -7,7 +7,7 @@ use crate::{CompiledTerminal, KTuple, MAX_K};
 
 use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple::Terminals};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
     t: TerminalIndex,
     c: Vec<Node>,
@@ -100,14 +100,7 @@ impl Display for Node {
     }
 }
 
-// The nodes identity is determined solely by its terminal value
-impl PartialEq for Node {
-    fn eq(&self, other: &Self) -> bool {
-        self.t == other.t
-    }
-}
-
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Eq, PartialEq)]
 pub(crate) struct Trie {
     /// The root node's terminal index is always INVALID!
     root: Node,
@@ -128,7 +121,6 @@ impl Trie {
 
     /// Returns the number of tuples in this [`Trie`].
     pub fn len(&self) -> usize {
-        // TODO: Calculate the count on insert (via [`Trie::add`])
         self.len
     }
 
@@ -187,21 +179,26 @@ impl Trie {
             })
     }
 
+    /// Checks if self and other are disjoint
+    pub fn is_disjoint(&self, other: &Self) -> bool {
+        self.intersection(other).is_empty()
+    }
+
     pub(crate) fn iter(&self) -> TerminalsIter<'_> {
         TerminalsIter::new(self)
     }
 
     /// Creates an epsilon item, i.e. a set with exactly one epsilon k-tuple
-    pub fn eps(k: usize) -> Self {
+    pub fn eps() -> Self {
         let mut trie = Trie::new();
-        trie.insert(&KTuple::eps(k));
+        trie.add(&Terminals::eps());
         trie
     }
 
     /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
-    pub fn end(k: usize) -> Self {
+    pub fn end() -> Self {
         let mut trie = Trie::new();
-        trie.insert(&KTuple::end(k));
+        trie.add(&Terminals::end());
         trie
     }
 }
@@ -211,6 +208,12 @@ impl Index<usize> for Trie {
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.root[index]
+    }
+}
+
+impl Extend<Terminals> for Trie {
+    fn extend<T: IntoIterator<Item = Terminals>>(&mut self, iter: T) {
+        iter.into_iter().for_each(|t| self.add(&t))
     }
 }
 
@@ -329,9 +332,11 @@ impl Display for TerminalsIter<'_> {
 
 #[cfg(test)]
 mod test {
+    use parol_runtime::lexer::EOI;
+
     use crate::{
         analysis::{
-            compiled_terminal::INVALID,
+            compiled_terminal::{INVALID, EPS},
             k_tuple::Terminals,
             terminals_trie::{Node, Trie},
         },
@@ -377,6 +382,21 @@ mod test {
     fn trie_new() {
         let t = Trie::new();
         assert_eq!(t.root(), &Node::default());
+        assert!(t.is_empty());
+    }
+
+    #[test]
+    fn trie_eps() {
+        let t = Trie::eps();
+        assert_eq!(1, t.len());
+        assert_eq!(t[0].t, EPS);
+    }
+
+    #[test]
+    fn trie_end() {
+        let t = Trie::end();
+        assert_eq!(1, t.len());
+        assert_eq!(t[0].t, EOI);
     }
 
     #[test]
@@ -557,7 +577,6 @@ mod test {
         //     3
         t2.insert(&tuple1);
 
-
         let expected = vec![vec![1, 2, 3]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
@@ -565,4 +584,92 @@ mod test {
 
         assert_eq!(expected, t1.intersection(&t2).iter().collect::<Vec<_>>());
     }
+
+    #[test]
+    fn trie_is_disjoint_positive() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        let mut t2 = Trie::new();
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[5, 6, 7]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
+        t2.insert(&tuple3);
+        t2.insert(&tuple4);
+        //     t1    t2
+        // ---------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+
+        assert!(t1.is_disjoint(&t2));
+        assert!(t2.is_disjoint(&t1));
+    }
+
+    #[test]
+    fn trie_is_disjoint_negative() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        let mut t2 = Trie::new();
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
+        t2.insert(&tuple3);
+        t2.insert(&tuple4);
+        //     t1    t2
+        // ---------------
+        //     1     1  5
+        //     |     |  |
+        //     2     2  8
+        //     | \   |
+        //     3  4  4
+
+        assert!(!t1.is_disjoint(&t2));
+        assert!(!t2.is_disjoint(&t1));
+    }
+
+    #[test]
+    fn trie_extend() {
+        let mut t1 = Trie::new();
+        let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
+        let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
+        let mut t2 = Trie::new();
+        let tuple3 = KTuple::new(6).with_terminal_indices(&[5, 6, 7]);
+        let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
+        t2.insert(&tuple3);
+        t2.insert(&tuple4);
+        //     t1    t2
+        // ---------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+
+        t1.extend(t2.iter());
+        //        t1
+        // ----------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+        assert_eq!(4, t1.len());
+
+
+        let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
+            .iter()
+            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+            .collect::<Vec<Terminals>>();
+
+        assert_eq!(expected, t1.iter().collect::<Vec<_>>());
+    }
+
 }
