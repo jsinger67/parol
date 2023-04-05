@@ -265,6 +265,23 @@ impl Index<usize> for Terminals {
     }
 }
 
+impl Display for Terminals {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        write!(
+            f,
+            "[{}(i{})]",
+            self.t
+                .iter()
+                .take(self.i)
+                .map(|e| format!("{}", e))
+                .collect::<Vec<String>>()
+                .join(", "),
+            self.i,
+        )
+    }
+}
+
+
 /// Terminal string with support for k-completeness
 #[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum TerminalString {
@@ -577,14 +594,7 @@ impl Display for KTuple {
         write!(
             f,
             "[{}(i{})](k{})",
-            self.terminals
-                .inner()
-                .t
-                .iter()
-                .take(self.terminals.inner().i)
-                .map(|e| format!("{}", e))
-                .collect::<Vec<String>>()
-                .join(", "),
+            self.terminals.inner(),
             self.terminals.inner().i,
             self.k
         )
