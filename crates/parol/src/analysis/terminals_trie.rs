@@ -100,7 +100,7 @@ impl Display for Node {
     }
 }
 
-#[derive(Debug, Clone, Default, Eq, PartialEq)]
+#[derive(Debug, Clone, Default, Eq)]
 pub(crate) struct Trie {
     /// The root node's terminal index is always INVALID!
     root: Node,
@@ -214,6 +214,12 @@ impl Index<usize> for Trie {
 impl Extend<Terminals> for Trie {
     fn extend<T: IntoIterator<Item = Terminals>>(&mut self, iter: T) {
         iter.into_iter().for_each(|t| self.add(&t))
+    }
+}
+
+impl PartialEq for Trie {
+    fn eq(&self, other: &Self) -> bool {
+        self.len == other.len && self.union(other).len() == self.len()
     }
 }
 
