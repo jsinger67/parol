@@ -66,7 +66,7 @@ name = "basic"
 version = "0.5.0"
 dependencies = [
  "anyhow",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "parol",
@@ -412,6 +412,16 @@ checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
 
 [[package]]
 name = "env_logger"
+version = "0.8.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a19187fea3ac7e84da7dacf48de0c45d63c6a76f9490dae389aead16c243fce3"
+dependencies = [
+ "log",
+ "regex",
+]
+
+[[package]]
+name = "env_logger"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85cdab6a89accf66733ad5a1693a4dcced6aeff64602b634530dd73c1f3ee9f0"
@@ -639,7 +649,7 @@ name = "json_parser"
 version = "0.5.0"
 dependencies = [
  "anyhow",
- "env_logger",
+ "env_logger 0.10.0",
  "log",
  "parol",
  "parol-macros",
@@ -655,7 +665,7 @@ version = "0.4.0"
 dependencies = [
  "anyhow",
  "derive_builder",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "parol",
@@ -762,7 +772,7 @@ name = "oberon2"
 version = "0.3.0"
 dependencies = [
  "anyhow",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "parol",
@@ -815,13 +825,14 @@ dependencies = [
  "clap 4.1.11",
  "criterion",
  "derive_builder",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "num_cpus",
  "owo-colors",
  "parol-macros",
  "parol_runtime",
  "pretty_assertions",
+ "quickcheck",
  "rand",
  "rand_regex",
  "rayon",
@@ -845,7 +856,7 @@ dependencies = [
  "clap 4.1.11",
  "derive-new",
  "derive_builder",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "lsp-server",
@@ -888,7 +899,7 @@ name = "parol_toml"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "env_logger",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "parol",
@@ -1010,6 +1021,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b63bdb0cd06f1f4dedf69b254734f9b45af66e4a031e42a7480257d9898b435"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "quickcheck"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "588f6378e4dd99458b60ec275b4477add41ce4fa9f64dcba6f15adccb19b50d6"
+dependencies = [
+ "env_logger 0.8.4",
+ "log",
+ "rand",
 ]
 
 [[package]]

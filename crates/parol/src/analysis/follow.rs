@@ -114,39 +114,53 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
               result_map: Arc<ResultMap>,
               non_terminal_positions: Arc<HashMap<Pos, usize>>,
               non_terminal_results: Arc<RwLock<Vec<DomainType>>>| {
-            let (tx, rx) = channel();
-            let iter = &mut result_map.iter().map(|(pos, _)| *pos) as &mut dyn Iterator<Item = Pos>;
+            // let (tx, rx) = channel();
+            // let iter = &mut result_map.iter().map(|(pos, _)| *pos) as &mut dyn Iterator<Item = Pos>;
+            // let mut new_result_vector = ResultMap::new();
+            // loop {
+            //     let mut threads = 0;
+            //     iter.take(max_threads).for_each(|pos| {
+            //         threads += 1;
+            //         let tx = tx.clone();
+            //         let es = es.clone();
+            //         let result_map = result_map.clone();
+            //         let non_terminal_results = non_terminal_results.clone();
+
+            //         // Call each function of the equation system...
+            //         thread::spawn(move || {
+            //             tx.send((pos, es[&pos](result_map, non_terminal_results)))
+            //                 .unwrap();
+            //         });
+            //     });
+
+            //     (0..threads).for_each(|_| {
+            //         let (pos, pos_result) = rx.recv().unwrap();
+
+            //         // ...and put the result into the new result vector.
+            //         new_result_vector.insert(pos, pos_result.clone());
+
+            //         // Also combine the result to the non_terminal_results.
+            //         let sym = non_terminal_positions.get(&pos).unwrap();
+            //         if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
+            //             *set = set.union(pos_result);
+            //         }
+            //     });
+            //     if threads == 0 {
+            //         break;
+            //     }
+            // }
+            // new_result_vector
             let mut new_result_vector = ResultMap::new();
-            loop {
-                let mut threads = 0;
-                iter.take(max_threads).for_each(|pos| {
-                    threads += 1;
-                    let tx = tx.clone();
-                    let es = es.clone();
-                    let result_map = result_map.clone();
-                    let non_terminal_results = non_terminal_results.clone();
+            for (pos, _) in result_map.iter() {
+                // Call each function of the equation system and put the
+                // result into the new result vector.
+                let pos_result = es[pos](result_map.clone(), non_terminal_results.clone());
+                new_result_vector.insert(*pos, pos_result.clone());
 
-                    // Call each function of the equation system...
-                    thread::spawn(move || {
-                        tx.send((pos, es[&pos](result_map, non_terminal_results)))
-                            .unwrap();
-                    });
-                });
-
-                (0..threads).for_each(|_| {
-                    let (pos, pos_result) = rx.recv().unwrap();
-
-                    // ...and put the result into the new result vector.
-                    new_result_vector.insert(pos, pos_result.clone());
-
-                    // Also combine the result to the non_terminal_results.
-                    let sym = non_terminal_positions.get(&pos).unwrap();
-                    if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
-                        *set = set.union(pos_result);
-                    }
-                });
-                if threads == 0 {
-                    break;
+                // Also combine the result to the non_terminal_results.
+                let sym = non_terminal_positions.get(pos).unwrap();
+                if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
+                    *set = set.union(pos_result);
                 }
             }
             new_result_vector

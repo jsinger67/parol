@@ -1,9 +1,8 @@
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use std::{
-    collections::HashSet,
-    fmt::{Debug, Display, Error, Formatter},
-};
+use std::fmt::{Debug, Display, Error, Formatter};
+
+use super::terminals_trie::Trie;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -13,17 +12,24 @@ use std::{
 /// A set type consisting of terminal strings (called k-tuples)
 ///
 #[derive(Clone, Default, Eq)]
-pub struct KTuples(pub HashSet<KTuple>, usize, bool);
+pub struct KTuples(Trie, usize, bool);
 
 impl KTuples {
     /// Creates a new item
     pub fn new(k: usize) -> Self {
-        Self(HashSet::new(), k, false)
+        Self(Trie::new(), k, false)
     }
 
     /// Creates a new item from a slice of KTuples
     pub fn of(tuples: &[KTuple], k: usize) -> Self {
-        let mut tuples = Self(tuples.iter().cloned().collect(), k, false);
+        let mut tuples = Self(
+            tuples.iter().fold(Trie::new(), |mut acc, t| {
+                acc.insert(t);
+                acc
+            }),
+            k,
+            false,
+        );
         tuples.update_completeness();
         tuples
     }
@@ -32,24 +38,19 @@ impl KTuples {
     pub fn insert(&mut self, tuple: KTuple) {
         debug_assert!(self.1 >= tuple.k);
         self.2 &= tuple.is_k_complete();
-        self.0.insert(tuple);
+        self.0.insert(&tuple);
     }
 
     /// Appends another KTuples item to self
     pub fn append(&mut self, mut other: Self) -> bool {
         let count = self.0.len();
-        for t in other.0.drain() {
-            self.insert(t);
-        }
+        self.0.append(&other.0);
         count != self.0.len()
     }
 
     /// Creates a union with another KTuples and self
     pub fn union(&self, mut other: Self) -> Self {
-        let unn = other.0.drain().fold(self.0.clone(), |mut acc, t| {
-            acc.insert(t);
-            acc
-        });
+        let unn = self.0.union(&other.0);
         let mut tuples = Self(unn, self.1, false);
         tuples.update_completeness();
         tuples
@@ -57,14 +58,7 @@ impl KTuples {
 
     /// Creates a intersection with another KTuples and self
     pub fn intersection(&self, other: &Self) -> Self {
-        let mut tuples = Self(
-            self.0
-                .intersection(&other.0)
-                .cloned()
-                .collect::<HashSet<KTuple>>(),
-            self.1,
-            false,
-        );
+        let mut tuples = Self(self.0.intersection(&other.0), self.1, false);
         tuples.update_completeness();
         tuples
     }
@@ -86,15 +80,13 @@ impl KTuples {
 
     /// Creates an epsilon item, i.e. a set with exactly one epsilon k-tuple
     pub fn eps(k: usize) -> Self {
-        let mut set = HashSet::new();
-        set.insert(KTuple::eps(k));
+        let set = Trie::eps();
         Self(set, k, false)
     }
 
     /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
     pub fn end(k: usize) -> Self {
-        let mut set = HashSet::new();
-        set.insert(KTuple::end(k));
+        let set = Trie::end();
         Self(set, k, true)
     }
 
@@ -146,14 +138,13 @@ impl KTuples {
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.2 {
-            let (complete, incomplete): (HashSet<KTuple>, HashSet<KTuple>) =
-                self.0.into_iter().partition(|t| t.is_k_complete());
+            let (complete, incomplete): (Trie, Trie) =
+                self.0.iter().partition(|t| t.is_k_complete(k));
             self.0 = complete;
             self.0.extend(
                 incomplete
                     .iter()
-                    .flat_map(|t| other.0.iter().map(move |o| t.clone().k_concat(o, k)))
-                    .collect::<HashSet<KTuple>>(),
+                    .flat_map(|t| other.0.iter().map(move |o| t.clone().k_concat(&o, k))),
             );
             self.update_completeness();
         }
@@ -176,25 +167,21 @@ impl KTuples {
 
     /// Set the lookahead size
     pub fn set_k(mut self, k: usize) -> Self {
-        self.0 = self.0.into_iter().map(|t| t.set_k(k)).collect();
-        if k > self.1 {
-            self.2 = false;
-        } else {
-            self.update_completeness();
-        }
         self.1 = k;
+        self.update_completeness();
         self
     }
 
     /// Returns a sorted representation of self
     pub fn sorted(&self) -> Vec<KTuple> {
-        let mut sorted_k_tuples: Vec<KTuple> = self.0.iter().cloned().collect();
+        let mut sorted_k_tuples: Vec<KTuple> =
+            self.0.iter().map(|t| KTuple::of(t, self.1)).collect();
         sorted_k_tuples.sort_by(|a, b| a.partial_cmp(b).unwrap());
         sorted_k_tuples
     }
 
     fn update_completeness(&mut self) {
-        self.2 = self.0.iter().all(|t| t.is_k_complete());
+        self.2 = self.0.iter().all(|t| t.is_k_complete(self.1));
     }
 }
 

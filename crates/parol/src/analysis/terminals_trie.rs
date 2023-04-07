@@ -339,6 +339,7 @@ impl Display for TerminalsIter<'_> {
 #[cfg(test)]
 mod test {
     use parol_runtime::lexer::EOI;
+    use quickcheck::quickcheck;
 
     use crate::{
         analysis::{
@@ -721,5 +722,65 @@ mod test {
         //     3  4  7
 
         assert_ne!(t1, t2);
+    }
+
+    macro_rules! eq_test {
+        ($($name:ident: $value:expr,)*) => {
+            $(
+                #[test]
+                fn $name() {
+                    let (tuple1, tuple2) = $value;
+                    // Insertion order 1, 2
+                    let mut t1 = Trie::new();
+                    t1.insert(&tuple1);
+                    t1.insert(&tuple2);
+
+                    // Insertion order 2, 1
+                    let mut t2 = Trie::new();
+                    t2.insert(&tuple2);
+                    t2.insert(&tuple1);
+
+                    assert_eq!(t1, t2);
+                }
+            )*
+        };
+    }
+
+    quickcheck! {
+        // Trie::insert is commutative regarding Eq
+        fn prop(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
+            let tuple1 = KTuple::new(k).with_terminal_indices(&t1);
+            let tuple2 = KTuple::new(k).with_terminal_indices(&t2);
+                    // Insertion order 1, 2
+                    let mut t1 = Trie::new();
+                    t1.insert(&tuple1);
+                    t1.insert(&tuple2);
+
+                    // Insertion order 2, 1
+                    let mut t2 = Trie::new();
+                    t2.insert(&tuple2);
+                    t2.insert(&tuple1);
+
+                    t1 == t2
+        }
+    }
+
+    eq_test! {
+        trie_insert_is_commutative_regarding_eq_1: (
+            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+            KTuple::new(6).with_terminal_indices(&[5, 8])
+        ),
+        trie_insert_is_commutative_regarding_eq_2:(
+            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+            KTuple::new(6).with_terminal_indices(&[1, 2, 3])
+        ),
+        trie_insert_is_commutative_regarding_eq_3:(
+            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
+            KTuple::new(6).with_terminal_indices(&[1, 2, 4])
+        ),
+        trie_insert_is_commutative_regarding_eq_4:(
+            KTuple::new(6).with_terminal_indices(&[2, 3]),
+            KTuple::new(6).with_terminal_indices(&[1, 2, 4])
+        ),
     }
 }
