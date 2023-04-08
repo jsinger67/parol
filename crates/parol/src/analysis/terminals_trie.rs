@@ -7,6 +7,18 @@ use crate::{CompiledTerminal, KTuple, MAX_K};
 
 use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple::Terminals};
 
+pub(crate) trait NodeLike {
+    /// Returns a reference to the children of this [`Node`].
+    fn children(&self) -> &[Node];
+    /// Returns a mutable reference to the children of this [`Node`].
+    fn children_mut(&mut self) -> &mut [Node];
+    /// Returns the index of the given terminal is in the node's list of children if it exists
+    fn child_index(&self, t: TerminalIndex) -> Option<usize>;
+    /// Adds a child node if it not already exists and returns the child index of it
+    /// The boolean in the return value ist true on insertion (collection changed)
+    fn add_child(&mut self, t: TerminalIndex) -> (usize, bool);
+}
+
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
     // Node data
@@ -32,26 +44,41 @@ impl Node {
         self.t
     }
 
+    /// Returns the is inner end node property of this [`Node`].
+    /// It is true if node is an end node and if it has children!
+    #[inline]
+    pub(crate) fn is_inner_end_node(&self) -> bool {
+        self.e && !self.c.is_empty()
+    }
+
+    /// Sets the end property of this [`Node`].
+    #[inline]
+    fn set_end(&mut self) {
+        self.e = true
+    }
+}
+
+impl NodeLike for Node {
     /// Returns a reference to the children of this [`Node`].
     #[inline]
-    pub(crate) fn children(&self) -> &[Node] {
+    fn children(&self) -> &[Node] {
         &self.c
     }
 
     /// Returns a mutable reference to the children of this [`Node`].
     #[inline]
-    pub(crate) fn children_mut(&mut self) -> &mut [Node] {
+    fn children_mut(&mut self) -> &mut [Node] {
         &mut self.c
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
-    pub(crate) fn child_index(&self, t: TerminalIndex) -> Option<usize> {
+    fn child_index(&self, t: TerminalIndex) -> Option<usize> {
         self.c.binary_search(&Node::new(t)).ok()
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
     /// The boolean in the return value ist true on insertion (collection changed)
-    pub(crate) fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
+    fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
         if let Some(index) = self.child_index(t) {
             (index, false)
         } else {
@@ -67,19 +94,6 @@ impl Node {
             };
             (idx, true)
         }
-    }
-
-    /// Returns the is inner end node property of this [`Node`].
-    /// It is true if node is an end node and if it has children!
-    #[inline]
-    pub(crate) fn is_inner_end_node(&self) -> bool {
-        self.e && !self.c.is_empty()
-    }
-
-    /// Sets the end property of this [`Node`].
-    #[inline]
-    fn set_end(&mut self) {
-        self.e = true
     }
 }
 
@@ -122,7 +136,7 @@ impl Default for Node {
 impl Display for Node {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let t = if self.t == INVALID {
-            "ROOT".to_string()
+            "INVALID".to_string()
         } else {
             self.t.to_string()
         };
@@ -132,8 +146,8 @@ impl Display for Node {
 
 #[derive(Debug, Clone, Default, Eq)]
 pub(crate) struct Trie {
-    /// The root node's terminal index is always INVALID!
-    root: Node,
+    /// The trie can have multiple roots
+    roots: Vec<Node>,
     /// The length counter
     len: usize,
 }
@@ -142,12 +156,6 @@ impl Trie {
     /// Creates a new [`Trie`].
     pub(crate) fn new() -> Self {
         Trie::default()
-    }
-
-    /// Returns a reference to the root of this [`Trie`].
-    #[inline]
-    pub(crate) fn root(&self) -> &Node {
-        &self.root
     }
 
     /// Returns the number of tuples in this [`Trie`].
@@ -173,9 +181,9 @@ impl Trie {
             return;
         }
         let Terminals { t, i } = terminals;
-        let mut changed = false;
-        let mut node = &mut self.root;
-        for t in &t[0..*i] {
+        let (start_root, mut changed) = self.add_child(t[0].0);
+        let mut node = &mut self.roots[start_root];
+        for t in &t[1..*i] {
             let (child_index, inserted) = node.add_child(t.0);
             node = &mut node.children_mut()[child_index];
             changed |= inserted;
@@ -237,11 +245,50 @@ impl Trie {
     }
 }
 
+impl NodeLike for Trie {
+    /// Returns a reference to the children of this [`Node`].
+    #[inline]
+    fn children(&self) -> &[Node] {
+        &self.roots
+    }
+
+    /// Returns a mutable reference to the children of this [`Node`].
+    #[inline]
+    fn children_mut(&mut self) -> &mut [Node] {
+        &mut self.roots
+    }
+
+    /// Returns the index of the given terminal is in the node's list of children if it exists
+    fn child_index(&self, t: TerminalIndex) -> Option<usize> {
+        self.roots.binary_search(&Node::new(t)).ok()
+    }
+
+    /// Adds a child node if it not already exists and returns the child index of it
+    /// The boolean in the return value ist true on insertion (collection changed)
+    fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
+        if let Some(index) = self.child_index(t) {
+            (index, false)
+        } else {
+            let idx = if let Some(idx) = self.roots.iter().position(|n| n.t > t) {
+                // insert in sort order
+                self.roots.insert(idx, Node::new(t));
+                idx
+            } else {
+                // push at the end
+                let idx = self.roots.len();
+                self.roots.push(Node::new(t));
+                idx
+            };
+            (idx, true)
+        }
+    }
+}
+
 impl Index<usize> for Trie {
     type Output = Node;
 
     fn index(&self, index: usize) -> &Self::Output {
-        &self.root[index]
+        &self.roots[index]
     }
 }
 
@@ -271,8 +318,10 @@ impl<'a> TerminalsIter<'a> {
             v: Vec::with_capacity(MAX_K),
             e: None,
         };
-        this.v.push((t.root(), 0));
-        this.expand(t.root(), 0);
+        if !t.is_empty() {
+            this.v.push((&t.roots[0], 0));
+            this.expand(&t.roots[0], 0);
+        }
         this
     }
 
@@ -313,11 +362,11 @@ impl Iterator for TerminalsIter<'_> {
     type Item = Terminals;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let result = if self.v.len() <= 1 {
+        let result = if self.v.is_empty() {
             None
         } else {
             Some(Terminals::from_slice_with(
-                &self.v[1..],
+                &self.v,
                 self.v.len(),
                 |(n, _)| CompiledTerminal(n.terminal()),
             ))
@@ -361,7 +410,7 @@ mod test {
         analysis::{
             compiled_terminal::{EPS, INVALID},
             k_tuple::Terminals,
-            terminals_trie::{Node, Trie},
+            terminals_trie::{Node, NodeLike, Trie},
         },
         CompiledTerminal, KTuple,
     };
@@ -404,7 +453,7 @@ mod test {
     #[test]
     fn trie_new() {
         let t = Trie::new();
-        assert_eq!(t.root(), &Node::default());
+        assert!(t.roots.is_empty());
         assert!(t.is_empty());
     }
 
@@ -430,7 +479,10 @@ mod test {
                 acc
             })
         }
-        recurse_for_cnt(trie.root())
+        trie.roots.iter().fold(0, |mut acc, node| {
+            acc += recurse_for_cnt(node);
+            acc
+        })
     }
 
     #[test]
@@ -442,9 +494,9 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(1, end_node_count(&t));
 
-        assert_eq!(t.root().t, INVALID);
-        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.root().children().len(), 1);
+        assert!(!t.roots.is_empty());
+        assert!(t.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
@@ -471,9 +523,9 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(1, end_node_count(&t));
 
-        assert_eq!(t.root().t, INVALID);
-        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.root().children().len(), 1);
+        assert!(!t.roots.is_empty());
+        assert!(t.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
@@ -500,9 +552,9 @@ mod test {
         assert_eq!(2, t.len());
         assert_eq!(2, end_node_count(&t));
 
-        assert_eq!(t.root().t, INVALID);
-        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.root().children().len(), 1);
+        assert!(!t.roots.is_empty());
+        assert!(t.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert!(t[0].children().iter().find(|n| n.t == 5).is_some());
@@ -534,10 +586,10 @@ mod test {
         assert_eq!(2, t.len());
         assert_eq!(2, end_node_count(&t));
 
-        assert_eq!(t.root().t, INVALID);
-        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
-        assert!(t.root().children().iter().find(|n| n.t == 4).is_some());
-        assert_eq!(t.root().children().len(), 2);
+        assert!(!t.roots.is_empty());
+        assert!(t.children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.children().iter().find(|n| n.t == 4).is_some());
+        assert_eq!(t.children().len(), 2);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert!(t[1].children().iter().find(|n| n.t == 5).is_some());
@@ -559,6 +611,8 @@ mod test {
         assert_eq!(0, t.len());
         assert_eq!(0, end_node_count(&t));
         assert_eq!(0, t.iter().count());
+        let expected = Vec::<Terminals>::new();
+        assert_eq!(expected, t.iter().collect::<Vec<_>>());
     }
 
     #[test]
@@ -801,10 +855,10 @@ mod test {
 
         let item_count = trie.iter().count();
         let end_node_count = end_node_count(&trie);
-        eprintln!(
-            "{:?} => item_count: {item_count}, end_node_count: {end_node_count}",
-            t1
-        );
+        // eprintln!(
+        //     "{:?} => item_count: {item_count}, end_node_count: {end_node_count}",
+        //     t1
+        // );
         item_count == end_node_count
     }
 }

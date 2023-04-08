@@ -270,24 +270,27 @@ mod test {
         assert_ne!(tuples1, tuples2);
     }
 
-    quickcheck! {
-        // KTuples::insert is commutative regarding Eq
-        fn prop(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
-            let tuples1 = KTuples::of(
-                &vec![
-                    KTuple::new(6).with_terminal_indices(&t1),
-                    KTuple::new(6).with_terminal_indices(&t2),
-                ],
-                k,
-            );
-            let tuples2 = KTuples::of(
-                &vec![
-                    KTuple::new(6).with_terminal_indices(&t2),
-                    KTuple::new(6).with_terminal_indices(&t1),
-                ],
-                k,
-            );
-            tuples1 == tuples2
-        }
+    // KTuples::insert is commutative regarding Eq
+    #[quickcheck]
+    fn k_tuples_insert_is_commutative_regarding_eq(
+        t1: Vec<usize>,
+        t2: Vec<usize>,
+        k: usize,
+    ) -> bool {
+        let tuples1 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&t1),
+                KTuple::new(6).with_terminal_indices(&t2),
+            ],
+            k,
+        );
+        let tuples2 = KTuples::of(
+            &vec![
+                KTuple::new(6).with_terminal_indices(&t2),
+                KTuple::new(6).with_terminal_indices(&t1),
+            ],
+            k,
+        );
+        tuples1 == tuples2
     }
 }
