@@ -27,23 +27,26 @@ impl Node {
     }
 
     /// Returns the terminal of this [`Node`].
+    #[inline]
     pub(crate) fn terminal(&self) -> TerminalIndex {
         self.t
     }
 
     /// Returns a reference to the children of this [`Node`].
+    #[inline]
     pub(crate) fn children(&self) -> &[Node] {
         &self.c
     }
 
     /// Returns a mutable reference to the children of this [`Node`].
+    #[inline]
     pub(crate) fn children_mut(&mut self) -> &mut [Node] {
         &mut self.c
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
     pub(crate) fn child_index(&self, t: TerminalIndex) -> Option<usize> {
-        self.c.iter().position(|n| n.t == t)
+        self.c.binary_search(&Node::new(t)).ok()
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
@@ -52,8 +55,16 @@ impl Node {
         if let Some(index) = self.child_index(t) {
             (index, false)
         } else {
-            let idx = self.c.len();
-            self.c.push(Node::new(t));
+            let idx = if let Some(idx) = self.c.iter().position(|n| n.t > t) {
+                // insert in sort order
+                self.c.insert(idx, Node::new(t));
+                idx
+            } else {
+                // push at the end
+                let idx = self.c.len();
+                self.c.push(Node::new(t));
+                idx
+            };
             (idx, true)
         }
     }
@@ -66,6 +77,7 @@ impl Node {
     }
 
     /// Sets the end property of this [`Node`].
+    #[inline]
     fn set_end(&mut self) {
         self.e = true
     }
@@ -82,6 +94,18 @@ impl Index<usize> for Node {
 impl IndexMut<usize> for Node {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.c[index]
+    }
+}
+
+impl Ord for Node {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.t.cmp(&other.t)
+    }
+}
+
+impl PartialOrd for Node {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.t.partial_cmp(&other.t)
     }
 }
 
@@ -121,16 +145,19 @@ impl Trie {
     }
 
     /// Returns a reference to the root of this [`Trie`].
+    #[inline]
     pub(crate) fn root(&self) -> &Node {
         &self.root
     }
 
     /// Returns the number of tuples in this [`Trie`].
+    #[inline]
     pub fn len(&self) -> usize {
         self.len
     }
 
     /// Checks if the collection is empty
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -774,7 +801,10 @@ mod test {
 
         let item_count = trie.iter().count();
         let end_node_count = end_node_count(&trie);
-        eprintln!("{:?} => item_count: {item_count}, end_node_count: {end_node_count}", t1);
+        eprintln!(
+            "{:?} => item_count: {item_count}, end_node_count: {end_node_count}",
+            t1
+        );
         item_count == end_node_count
     }
 }
