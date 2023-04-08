@@ -97,8 +97,8 @@ impl LookaheadDFA {
         let mut dfa = Self {
             states: vec![DFAState {
                 id: 0,
-                accepted: false,
-                prod_num: INVALID_PROD,
+                accepted: k_tuples.is_empty(),
+                prod_num: if k_tuples.is_empty() { prod_num as i32 } else { INVALID_PROD },
             }],
             transitions: BTreeMap::new(),
             k: 0,

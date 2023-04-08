@@ -1,3 +1,5 @@
+use bitflags::bitflags;
+use parol_runtime::log::trace;
 use std::{
     fmt::{Display, Formatter},
     ops::{Index, IndexMut},
@@ -146,8 +148,8 @@ impl Display for Node {
 
 #[derive(Debug, Clone, Default, Eq)]
 pub(crate) struct Trie {
-    /// The trie can have multiple roots
-    roots: Vec<Node>,
+    /// The root node's terminal index is always INVALID!
+    root: Node,
     /// The length counter
     len: usize,
 }
@@ -182,7 +184,7 @@ impl Trie {
         }
         let Terminals { t, i } = terminals;
         let (start_root, mut changed) = self.add_child(t[0].0);
-        let mut node = &mut self.roots[start_root];
+        let mut node = &mut self.root[start_root];
         for t in &t[1..*i] {
             let (child_index, inserted) = node.add_child(t.0);
             node = &mut node.children_mut()[child_index];
@@ -249,18 +251,18 @@ impl NodeLike for Trie {
     /// Returns a reference to the children of this [`Node`].
     #[inline]
     fn children(&self) -> &[Node] {
-        &self.roots
+        &self.root.c
     }
 
     /// Returns a mutable reference to the children of this [`Node`].
     #[inline]
     fn children_mut(&mut self) -> &mut [Node] {
-        &mut self.roots
+        &mut self.root.c
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
-        self.roots.binary_search(&Node::new(t)).ok()
+        self.root.c.binary_search(&Node::new(t)).ok()
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
@@ -269,14 +271,14 @@ impl NodeLike for Trie {
         if let Some(index) = self.child_index(t) {
             (index, false)
         } else {
-            let idx = if let Some(idx) = self.roots.iter().position(|n| n.t > t) {
+            let idx = if let Some(idx) = self.root.c.iter().position(|n| n.t > t) {
                 // insert in sort order
-                self.roots.insert(idx, Node::new(t));
+                self.root.c.insert(idx, Node::new(t));
                 idx
             } else {
                 // push at the end
-                let idx = self.roots.len();
-                self.roots.push(Node::new(t));
+                let idx = self.root.c.len();
+                self.root.c.push(Node::new(t));
                 idx
             };
             (idx, true)
@@ -288,7 +290,7 @@ impl Index<usize> for Trie {
     type Output = Node;
 
     fn index(&self, index: usize) -> &Self::Output {
-        &self.roots[index]
+        &self.root.c[index]
     }
 }
 
@@ -304,57 +306,85 @@ impl PartialEq for Trie {
     }
 }
 
+bitflags! {
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    struct Flags: u32 {
+        const Default = 0;
+        const EndNode = 0b1;
+        const Iterated = 0b10;
+    }
+}
+
 #[derive(Debug)]
 pub(crate) struct TerminalsIter<'a> {
-    // Node stack with tuples of traversed node and child index
-    v: Vec<(&'a Node, usize)>,
-    // Last inner end node
-    e: Option<&'a Node>,
+    // Stack with triples of traversed node, child index and node flags
+    v: Vec<(&'a Node, usize, Flags)>,
 }
 
 impl<'a> TerminalsIter<'a> {
     pub(crate) fn new(t: &'a Trie) -> Self {
         let mut this = Self {
             v: Vec::with_capacity(MAX_K),
-            e: None,
         };
         if !t.is_empty() {
-            this.v.push((&t.roots[0], 0));
-            this.expand(&t.roots[0], 0);
+            let flags = if t.root[0].e {
+                Flags::EndNode
+            } else {
+                Flags::Default
+            };
+            trace!("Initial expand on {}, i0, flags b{:b}", t.root[0], flags.bits());
+            this.v.push((&t.root, 0, flags));
+            this.expand(&t.root, 0, flags);
         }
         this
     }
 
     // From the given node take child with index i and traverse in depth first order.
     // Push all nodes and their indices on the node stack.
-    fn expand(&mut self, node: &'a Node, mut i: usize) {
+    fn expand(&mut self, node: &'a Node, mut i: usize, flags: Flags) {
         let mut node = node;
         loop {
-            if node.is_inner_end_node() && self.e != Some(node) {
+            if node.is_inner_end_node() && flags & Flags::Iterated == Flags::Default {
                 // Stop on inner end nodes once
-                self.e = Some(node);
+                trace!("Stop on inner end node {node}");
                 break;
             }
             if node.children().len() <= i {
+                trace!("Stop on last child of node {node}");
                 break;
             }
             node = &node.children()[i];
-            self.v.push((node, 0));
+            let flags = if node.e {
+                Flags::EndNode
+            } else {
+                Flags::Default
+            };
+            trace!("Expand on {node}, i{i}, flags b{:b}", flags.bits());
+            self.v.push((node, 0, flags));
             i = 0;
         }
     }
 
     // Try to advance horizontally
     fn advance(&mut self) {
-        if let Some((n, mut i)) = self.v.pop() {
+        if let Some((n, mut i, flags)) = self.v.pop() {
             i += 1;
             if n.children().len() > i {
-                self.v.push((n, i));
-                self.expand(n, i);
+                trace!("Advance on {n}, i{i}, flags b{:b}", flags.bits());
+                self.v.push((n, i, flags));
+                self.expand(n, i, flags);
             } else {
                 self.advance();
             }
         };
+    }
+
+    fn last_is_inner_node(&self) -> bool {
+        if self.v.is_empty() {
+            return false;
+        }
+        let (node, _, flags) = self.v.last().unwrap();
+        *flags & (Flags::EndNode | Flags::Iterated) == Flags::EndNode && !node.c.is_empty()
     }
 }
 
@@ -362,28 +392,26 @@ impl Iterator for TerminalsIter<'_> {
     type Item = Terminals;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let result = if self.v.is_empty() {
-            None
-        } else {
-            Some(Terminals::from_slice_with(
-                &self.v,
-                self.v.len(),
-                |(n, _)| CompiledTerminal(n.terminal()),
-            ))
-        };
-        if result.is_some() {
-            if let Some((n, i)) = self.v.last() {
-                if Some(*n) == self.e && !n.c.is_empty() {
-                    self.expand(n, *i)
-                } else {
-                    self.advance()
-                }
-            } else {
-                self.advance()
-            }
+        if self.v.is_empty() {
+            trace!("Iteration stops");
+            return None;
+        }
+        let result = Some(Terminals::from_slice_with(
+            &self.v[1..],
+            self.v.len(),
+            |(n, _, _)| CompiledTerminal(n.terminal()),
+        ));
+        if self.last_is_inner_node() {
+            // Set the iterated flag
+            let (node, i, flags) = self.v.pop().unwrap();
+            trace!("Set the iterated flag on {node}");
+            let flags = flags | Flags::Iterated;
+            self.v.push((node, i, flags));
+            self.expand(node, i, flags);
         } else {
             self.advance();
         }
+        trace!("next returns {}", result.unwrap());
         result
     }
 }
@@ -453,7 +481,7 @@ mod test {
     #[test]
     fn trie_new() {
         let t = Trie::new();
-        assert!(t.roots.is_empty());
+        assert!(t.root.children().is_empty());
         assert!(t.is_empty());
     }
 
@@ -479,7 +507,7 @@ mod test {
                 acc
             })
         }
-        trie.roots.iter().fold(0, |mut acc, node| {
+        trie.root.c.iter().fold(0, |mut acc, node| {
             acc += recurse_for_cnt(node);
             acc
         })
@@ -494,7 +522,7 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(1, end_node_count(&t));
 
-        assert!(!t.roots.is_empty());
+        assert!(!t.root.children().is_empty());
         assert!(t.children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.children().len(), 1);
 
@@ -523,7 +551,7 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(1, end_node_count(&t));
 
-        assert!(!t.roots.is_empty());
+        assert!(!t.root.children().is_empty());
         assert!(t.children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.children().len(), 1);
 
@@ -552,7 +580,7 @@ mod test {
         assert_eq!(2, t.len());
         assert_eq!(2, end_node_count(&t));
 
-        assert!(!t.roots.is_empty());
+        assert!(!t.root.children().is_empty());
         assert!(t.children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.children().len(), 1);
 
@@ -586,7 +614,7 @@ mod test {
         assert_eq!(2, t.len());
         assert_eq!(2, end_node_count(&t));
 
-        assert!(!t.roots.is_empty());
+        assert!(!t.root.children().is_empty());
         assert!(t.children().iter().find(|n| n.t == 1).is_some());
         assert!(t.children().iter().find(|n| n.t == 4).is_some());
         assert_eq!(t.children().len(), 2);
@@ -612,6 +640,37 @@ mod test {
         assert_eq!(0, end_node_count(&t));
         assert_eq!(0, t.iter().count());
         let expected = Vec::<Terminals>::new();
+        assert_eq!(expected, t.iter().collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn trie_iter_single() {
+        let mut t = Trie::new();
+        t.insert(&KTuple::new(6).with_terminal_indices(&[1]));
+        assert_eq!(1, t.len());
+        assert_eq!(1, end_node_count(&t));
+
+        let expected = vec![vec![1]]
+            .iter()
+            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+            .collect::<Vec<Terminals>>();
+
+        assert_eq!(expected, t.iter().collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn trie_iter_single_plus() {
+        let mut t = Trie::new();
+        t.insert(&KTuple::new(6).with_terminal_indices(&[1]));
+        t.insert(&KTuple::new(6).with_terminal_indices(&[1, 2]));
+        assert_eq!(2, t.len());
+        assert_eq!(2, end_node_count(&t));
+
+        let expected = vec![vec![1], vec![1, 2]]
+            .iter()
+            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+            .collect::<Vec<Terminals>>();
+
         assert_eq!(expected, t.iter().collect::<Vec<_>>());
     }
 
