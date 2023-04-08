@@ -1,5 +1,5 @@
 use bitflags::bitflags;
-use parol_runtime::log::trace;
+// use parol_runtime::log::trace;
 use std::{
     fmt::{Display, Formatter},
     ops::{Index, IndexMut},
@@ -332,7 +332,11 @@ impl<'a> TerminalsIter<'a> {
             } else {
                 Flags::Default
             };
-            trace!("Initial expand on {}, i0, flags b{:b}", t.root[0], flags.bits());
+            // trace!(
+            //     "Initial expand on {}, i0, flags b{:b}",
+            //     t.root[0],
+            //     flags.bits()
+            // );
             this.v.push((&t.root, 0, flags));
             this.expand(&t.root, 0, flags);
         }
@@ -346,11 +350,11 @@ impl<'a> TerminalsIter<'a> {
         loop {
             if node.is_inner_end_node() && flags & Flags::Iterated == Flags::Default {
                 // Stop on inner end nodes once
-                trace!("Stop on inner end node {node}");
+                // trace!("Stop on inner end node {node}");
                 break;
             }
             if node.children().len() <= i {
-                trace!("Stop on last child of node {node}");
+                // trace!("Stop on last child of node {node}");
                 break;
             }
             node = &node.children()[i];
@@ -359,7 +363,7 @@ impl<'a> TerminalsIter<'a> {
             } else {
                 Flags::Default
             };
-            trace!("Expand on {node}, i{i}, flags b{:b}", flags.bits());
+            // trace!("Expand on {node}, i{i}, flags b{:b}", flags.bits());
             self.v.push((node, 0, flags));
             i = 0;
         }
@@ -370,7 +374,7 @@ impl<'a> TerminalsIter<'a> {
         if let Some((n, mut i, flags)) = self.v.pop() {
             i += 1;
             if n.children().len() > i {
-                trace!("Advance on {n}, i{i}, flags b{:b}", flags.bits());
+                // trace!("Advance on {n}, i{i}, flags b{:b}", flags.bits());
                 self.v.push((n, i, flags));
                 self.expand(n, i, flags);
             } else {
@@ -393,7 +397,7 @@ impl Iterator for TerminalsIter<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.v.is_empty() {
-            trace!("Iteration stops");
+            // trace!("Iteration stops");
             return None;
         }
         let result = Some(Terminals::from_slice_with(
@@ -404,14 +408,14 @@ impl Iterator for TerminalsIter<'_> {
         if self.last_is_inner_node() {
             // Set the iterated flag
             let (node, i, flags) = self.v.pop().unwrap();
-            trace!("Set the iterated flag on {node}");
+            // trace!("Set the iterated flag on {node}");
             let flags = flags | Flags::Iterated;
             self.v.push((node, i, flags));
             self.expand(node, i, flags);
         } else {
             self.advance();
         }
-        trace!("next returns {}", result.unwrap());
+        // trace!("next returns {}", result.unwrap());
         result
     }
 }

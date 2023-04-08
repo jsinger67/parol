@@ -98,7 +98,11 @@ impl LookaheadDFA {
             states: vec![DFAState {
                 id: 0,
                 accepted: k_tuples.is_empty(),
-                prod_num: if k_tuples.is_empty() { prod_num as i32 } else { INVALID_PROD },
+                prod_num: if k_tuples.is_empty() {
+                    prod_num as i32
+                } else {
+                    INVALID_PROD
+                },
             }],
             transitions: BTreeMap::new(),
             k: 0,
