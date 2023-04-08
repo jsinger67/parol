@@ -8,9 +8,9 @@ use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
 use parol_runtime::log::trace;
-use std::sync::mpsc::channel;
+// use std::sync::mpsc::channel;
 use std::sync::Arc;
-use std::thread;
+// use std::thread;
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: KTuples for non-terminals in non-terminal-index (alphabetical) order
@@ -81,7 +81,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let equation_system = Arc::new(equation_system);
 
-    let max_threads: usize = num_cpus::get();
+    // let max_threads: usize = num_cpus::get();
 
     let step_function: StepFunction = {
         // let terminals = terminals.clone();
@@ -111,24 +111,25 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 //     }
                 // }
                 // new_result_vector
-            //let mut new_result_vector: ResultVector = result_vector.clone();
-            let mut new_result_vector: ResultVector = vec![DomainType::new(k); result_vector.len()];
-            for pr_i in 0..pr_count {
-                let mut r = es[pr_i](result_vector.clone());
-                // trace!(
-                //     "Result for production {} is {}",
-                //     pr_i,
-                //     r.to_string(&terminals)
-                // );
-                new_result_vector[pr_i] = r.clone();
-                // trace!(
-                //     "Nt index for production {} is {}",
-                //     pr_i,
-                //     pr_count + nt_for_production[pr_i]
-                // );
-                new_result_vector[pr_count + nt_for_production[pr_i]].append(r);
-            }
-            new_result_vector
+                //let mut new_result_vector: ResultVector = result_vector.clone();
+                let mut new_result_vector: ResultVector =
+                    vec![DomainType::new(k); result_vector.len()];
+                for pr_i in 0..pr_count {
+                    let r = es[pr_i](result_vector.clone());
+                    // trace!(
+                    //     "Result for production {} is {}",
+                    //     pr_i,
+                    //     r.to_string(&terminals)
+                    // );
+                    new_result_vector[pr_i] = r.clone();
+                    // trace!(
+                    //     "Nt index for production {} is {}",
+                    //     pr_i,
+                    //     pr_count + nt_for_production[pr_i]
+                    // );
+                    new_result_vector[pr_count + nt_for_production[pr_i]].append(r);
+                }
+                new_result_vector
             },
         )
     };

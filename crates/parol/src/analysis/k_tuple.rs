@@ -26,7 +26,7 @@ pub trait TerminalMappings<T> {
 }
 
 /// An ordered collection of terminals
-#[derive(Debug, Clone, Copy, Default, Hash, Eq, PartialEq)]
+#[derive(Clone, Copy, Default, Hash, Eq, PartialEq)]
 pub struct Terminals {
     // The terminals
     pub(crate) t: [CompiledTerminal; MAX_K],
@@ -278,6 +278,13 @@ impl Display for Terminals {
                 .join(", "),
             self.i,
         )
+    }
+}
+
+impl Debug for Terminals {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        // Forward to Display implementation
+        write!(f, "{}", self)
     }
 }
 

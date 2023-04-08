@@ -42,14 +42,14 @@ impl KTuples {
     }
 
     /// Appends another KTuples item to self
-    pub fn append(&mut self, mut other: Self) -> bool {
+    pub fn append(&mut self, other: Self) -> bool {
         let count = self.0.len();
         self.0.append(&other.0);
         count != self.0.len()
     }
 
     /// Creates a union with another KTuples and self
-    pub fn union(&self, mut other: Self) -> Self {
+    pub fn union(&self, other: Self) -> Self {
         let unn = self.0.union(&other.0);
         let mut tuples = Self(unn, self.1, false);
         tuples.update_completeness();
@@ -144,7 +144,7 @@ impl KTuples {
             self.0.extend(
                 incomplete
                     .iter()
-                    .flat_map(|t| other.0.iter().map(move |o| t.clone().k_concat(&o, k))),
+                    .flat_map(|t| other.0.iter().map(move |o| t.k_concat(&o, k))),
             );
             self.update_completeness();
         }
@@ -216,6 +216,7 @@ impl PartialEq for KTuples {
 #[cfg(test)]
 mod test {
     use crate::{KTuple, KTuples};
+    use quickcheck::quickcheck;
 
     #[test]
     fn k_tuples_eq_positive() {
@@ -267,5 +268,26 @@ mod test {
         //     | \   |
         //     3  4  7
         assert_ne!(tuples1, tuples2);
+    }
+
+    quickcheck! {
+        // KTuples::insert is commutative regarding Eq
+        fn prop(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
+            let tuples1 = KTuples::of(
+                &vec![
+                    KTuple::new(6).with_terminal_indices(&t1),
+                    KTuple::new(6).with_terminal_indices(&t2),
+                ],
+                k,
+            );
+            let tuples2 = KTuples::of(
+                &vec![
+                    KTuple::new(6).with_terminal_indices(&t2),
+                    KTuple::new(6).with_terminal_indices(&t1),
+                ],
+                k,
+            );
+            tuples1 == tuples2
+        }
     }
 }

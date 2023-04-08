@@ -1,6 +1,9 @@
 //!
 //! Main module of this crate
 //!
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
 
 #[macro_use]
 extern crate function_name;

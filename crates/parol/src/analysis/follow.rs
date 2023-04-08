@@ -11,9 +11,9 @@ use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use std::collections::HashMap;
-use std::sync::mpsc::channel;
+// use std::sync::mpsc::channel;
 use std::sync::{Arc, RwLock};
-use std::thread;
+// use std::thread;
 
 /// Result type for each non-terminal:
 /// The set of the follow k terminals
@@ -107,7 +107,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let equation_system = Arc::new(equation_system);
 
-    let max_threads: usize = num_cpus::get();
+    // let max_threads: usize = num_cpus::get();
 
     let step_function: StepFunction = Arc::new(
         move |es: Arc<EquationSystem>,

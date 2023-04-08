@@ -1,6 +1,6 @@
 use std::{
     fmt::{Display, Formatter},
-    ops::Index,
+    ops::{Index, IndexMut},
 };
 
 use crate::{CompiledTerminal, KTuple, MAX_K};
@@ -9,8 +9,12 @@ use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple:
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
+    // Node data
     t: TerminalIndex,
+    // Children
     c: Vec<Node>,
+    // End node
+    e: bool,
 }
 
 impl Node {
@@ -18,15 +22,8 @@ impl Node {
     pub(crate) fn new(t: TerminalIndex) -> Self {
         Self {
             t,
-            c: Default::default(),
+            ..Default::default()
         }
-    }
-
-    pub(crate) fn with_children(mut self, children: &[TerminalIndex]) -> Self {
-        children.iter().for_each(|t| {
-            let _ = self.add_child(*t);
-        });
-        self
     }
 
     /// Returns the terminal of this [`Node`].
@@ -42,16 +39,6 @@ impl Node {
     /// Returns a mutable reference to the children of this [`Node`].
     pub(crate) fn children_mut(&mut self) -> &mut [Node] {
         &mut self.c
-    }
-
-    /// Checks if the given terminal is in the node's list of children
-    pub(crate) fn is_child(&self, t: TerminalIndex) -> bool {
-        self.c.iter().find(|n| n.t == t).is_some()
-    }
-
-    /// Checks if self's terminal is valid
-    pub(crate) fn is_valid(&self) -> bool {
-        self.t != INVALID
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
@@ -70,6 +57,18 @@ impl Node {
             (idx, true)
         }
     }
+
+    /// Returns the is inner end node property of this [`Node`].
+    /// It is true if node is an end node and if it has children!
+    #[inline]
+    pub(crate) fn is_inner_end_node(&self) -> bool {
+        self.e && !self.c.is_empty()
+    }
+
+    /// Sets the end property of this [`Node`].
+    fn set_end(&mut self) {
+        self.e = true
+    }
 }
 
 impl Index<usize> for Node {
@@ -80,11 +79,18 @@ impl Index<usize> for Node {
     }
 }
 
+impl IndexMut<usize> for Node {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.c[index]
+    }
+}
+
 impl Default for Node {
     fn default() -> Self {
         Self {
             t: INVALID,
             c: Default::default(),
+            e: Default::default(),
         }
     }
 }
@@ -136,10 +142,10 @@ impl Trie {
 
     /// Inserts a Terminals instance
     pub(crate) fn add(&mut self, terminals: &Terminals) {
-        let Terminals { t, i } = terminals;
-        if t.is_empty() {
+        if terminals.is_empty() {
             return;
         }
+        let Terminals { t, i } = terminals;
         let mut changed = false;
         let mut node = &mut self.root;
         for t in &t[0..*i] {
@@ -147,6 +153,7 @@ impl Trie {
             node = &mut node.children_mut()[child_index];
             changed |= inserted;
         }
+        node.set_end();
         if changed {
             self.len += 1;
         }
@@ -163,7 +170,7 @@ impl Trie {
     /// Creates a union with another KTuples and self
     pub fn union(&self, other: &Self) -> Self {
         let mut trie = self.clone();
-        trie.append(&other);
+        trie.append(other);
         trie
     }
 
@@ -172,7 +179,7 @@ impl Trie {
         let s1 = self.iter().collect::<Vec<_>>();
         other
             .iter()
-            .filter(|t2| s1.iter().find(|t1| t1 == &t2).is_some())
+            .filter(|t2| s1.iter().any(|t1| t1 == t2))
             .fold(Trie::new(), |mut acc, t| {
                 acc.add(&t);
                 acc
@@ -227,71 +234,51 @@ impl PartialEq for Trie {
 pub(crate) struct TerminalsIter<'a> {
     // Node stack with tuples of traversed node and child index
     v: Vec<(&'a Node, usize)>,
-    // Current node in DFS order
-    //n: &'a Node,
-    // Next index in node's children
-    i: usize,
-    // Reference to the trie
-    t: &'a Trie,
+    // Last inner end node
+    e: Option<&'a Node>,
 }
 
 impl<'a> TerminalsIter<'a> {
     pub(crate) fn new(t: &'a Trie) -> Self {
         let mut this = Self {
             v: Vec::with_capacity(MAX_K),
-            //n: t.root(),
-            i: 0,
-            t,
+            e: None,
         };
-        this.push("INIT ", t.root(), 0);
+        this.v.push((t.root(), 0));
         this.expand(t.root(), 0);
         this
-    }
-
-    #[inline]
-    fn push(&mut self, ctx: &str, node: &'a Node, i: usize) {
-        self.v.push((node, i));
-        // eprintln!("{}push ({}, i{}), {}", ctx, node, i, self);
-    }
-
-    #[inline]
-    fn pop(&mut self, ctx: &str) -> Option<(&'a Node, usize)> {
-        if let Some((n, i)) = self.v.pop() {
-            // eprintln!("{}pop ({}, i{}), {}", ctx, n, i, self);
-            Some((n, i))
-        } else {
-            None
-        }
     }
 
     // From the given node take child with index i and traverse in depth first order.
     // Push all nodes and their indices on the node stack.
     fn expand(&mut self, node: &'a Node, mut i: usize) {
-        // eprintln!("expand {{");
         let mut node = node;
         loop {
+            if node.is_inner_end_node() && self.e != Some(node) {
+                // Stop on inner end nodes once
+                self.e = Some(node);
+                break;
+            }
             if node.children().len() <= i {
-                // eprintln!("    STOP expand at ({}, i{i})", node);
                 break;
             }
             node = &node.children()[i];
-            self.push("    DOWN ", node, 0);
+            self.v.push((node, 0));
             i = 0;
         }
-        // eprintln!("}}");
     }
 
     // Try to advance horizontally
     fn advance(&mut self) {
-        self.pop("ADVANCE ").map(|(n, mut i)| {
+        if let Some((n, mut i)) = self.v.pop() {
             i += 1;
             if n.children().len() > i {
-                self.push("RIGHT ", n, i);
+                self.v.push((n, i));
                 self.expand(n, i);
             } else {
                 self.advance();
             }
-        });
+        };
     }
 }
 
@@ -299,25 +286,28 @@ impl Iterator for TerminalsIter<'_> {
     type Item = Terminals;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let result = if self.v.is_empty() {
-            // eprintln!("STOP iteration");
+        let result = if self.v.len() <= 1 {
             None
         } else {
-            // eprintln!(
-            //     "YIELD [{}]",
-            //     self.v[1..]
-            //         .iter()
-            //         .map(|e| e.0.to_string())
-            //         .collect::<Vec<String>>()
-            //         .join(", ")
-            // );
             Some(Terminals::from_slice_with(
                 &self.v[1..],
                 self.v.len(),
                 |(n, _)| CompiledTerminal(n.terminal()),
             ))
         };
-        self.advance();
+        if result.is_some() {
+            if let Some((n, i)) = self.v.last() {
+                if Some(*n) == self.e && !n.c.is_empty() {
+                    self.expand(n, *i)
+                } else {
+                    self.advance()
+                }
+            } else {
+                self.advance()
+            }
+        } else {
+            self.advance();
+        }
         result
     }
 }
@@ -339,7 +329,6 @@ impl Display for TerminalsIter<'_> {
 #[cfg(test)]
 mod test {
     use parol_runtime::lexer::EOI;
-    use quickcheck::quickcheck;
 
     use crate::{
         analysis::{
@@ -355,14 +344,14 @@ mod test {
         let n = Node::new(42);
         assert_eq!(n.t, 42);
         assert!(n.c.is_empty());
-        assert!(n.is_valid());
+        assert!(n.terminal() != INVALID);
     }
 
     #[test]
     fn node_default() {
         let n = Node::default();
         assert_eq!(n.t, INVALID);
-        assert!(!n.is_valid());
+        assert!(n.terminal() == INVALID);
     }
 
     #[test]
@@ -382,7 +371,7 @@ mod test {
     fn node_is_child() {
         let mut n = Node::new(42);
         n.add_child(7);
-        assert!(n.is_child(7));
+        assert!(n.children().iter().find(|n| n.t == 7).is_some());
     }
 
     #[test]
@@ -406,6 +395,17 @@ mod test {
         assert_eq!(t[0].t, EOI);
     }
 
+    fn end_node_count(trie: &Trie) -> usize {
+        fn recurse_for_cnt(node: &Node) -> usize {
+            let cnt = if node.e { 1 } else { 0 };
+            node.c.iter().fold(cnt, |mut acc, node| {
+                acc += recurse_for_cnt(node);
+                acc
+            })
+        }
+        recurse_for_cnt(trie.root())
+    }
+
     #[test]
     fn trie_insert() {
         let mut t = Trie::new();
@@ -413,16 +413,17 @@ mod test {
         t.insert(&tuple1);
 
         assert_eq!(1, t.len());
+        assert_eq!(1, end_node_count(&t));
 
         assert_eq!(t.root().t, INVALID);
-        assert!(t.root().is_child(1));
+        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t[0].is_child(2));
+        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
 
-        assert!(t[0][0].is_child(3));
+        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
     }
@@ -441,16 +442,17 @@ mod test {
         t.insert(&tuple2);
 
         assert_eq!(1, t.len());
+        assert_eq!(1, end_node_count(&t));
 
         assert_eq!(t.root().t, INVALID);
-        assert!(t.root().is_child(1));
+        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t[0].is_child(2));
+        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
 
-        assert!(t[0][0].is_child(3));
+        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
     }
@@ -469,19 +471,20 @@ mod test {
         t.insert(&tuple2);
 
         assert_eq!(2, t.len());
+        assert_eq!(2, end_node_count(&t));
 
         assert_eq!(t.root().t, INVALID);
-        assert!(t.root().is_child(1));
+        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
         assert_eq!(t.root().children().len(), 1);
 
-        assert!(t[0].is_child(2));
-        assert!(t[0].is_child(5));
+        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
+        assert!(t[0].children().iter().find(|n| n.t == 5).is_some());
         assert_eq!(t[0].children().len(), 2);
         assert_eq!(t[0][0].t, 2);
         assert_eq!(t[0][1].t, 5);
 
-        assert!(t[0][0].is_child(3));
-        assert!(t[0][1].is_child(6));
+        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
+        assert!(t[0][1].children().iter().find(|n| n.t == 6).is_some());
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][1].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
@@ -502,20 +505,21 @@ mod test {
         t.insert(&tuple2);
 
         assert_eq!(2, t.len());
+        assert_eq!(2, end_node_count(&t));
 
         assert_eq!(t.root().t, INVALID);
-        assert!(t.root().is_child(1));
-        assert!(t.root().is_child(4));
+        assert!(t.root().children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.root().children().iter().find(|n| n.t == 4).is_some());
         assert_eq!(t.root().children().len(), 2);
 
-        assert!(t[0].is_child(2));
-        assert!(t[1].is_child(5));
+        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
+        assert!(t[1].children().iter().find(|n| n.t == 5).is_some());
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
         assert_eq!(t[1][0].t, 5);
 
-        assert!(t[0][0].is_child(3));
-        assert!(t[1][0].is_child(6));
+        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
+        assert!(t[1][0].children().iter().find(|n| n.t == 6).is_some());
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[1][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
@@ -523,17 +527,27 @@ mod test {
     }
 
     #[test]
+    fn trie_empty_iter() {
+        let t = Trie::new();
+        assert_eq!(0, t.len());
+        assert_eq!(0, end_node_count(&t));
+        assert_eq!(0, t.iter().count());
+    }
+
+    #[test]
     fn trie_iter() {
         let mut t = Trie::new();
+        let tuple0 = KTuple::new(6).with_terminal_indices(&[1, 2]);
         let tuple1 = KTuple::new(6).with_terminal_indices(&[1, 2, 3]);
         let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 2, 4]);
         let tuple3 = KTuple::new(6).with_terminal_indices(&[5, 6, 7]);
         let tuple4 = KTuple::new(6).with_terminal_indices(&[5, 8]);
         //     1     5
         //     |     | \
-        //     2     6  8
+        //    (2)    6 (8)
         //     | \   |
-        //     3  4  7
+        //    (3)(4)(7)
+        t.insert(&tuple0);
         t.insert(&tuple1);
         t.insert(&tuple2);
         t.insert(&tuple3);
@@ -548,12 +562,19 @@ mod test {
         assert_eq!(t[1][0][0].t, 7);
         assert_eq!(t[1][1].t, 8);
 
-        assert_eq!(4, t.len());
+        assert_eq!(5, t.len());
+        assert_eq!(5, end_node_count(&t));
 
-        let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
-            .iter()
-            .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
-            .collect::<Vec<Terminals>>();
+        let expected = vec![
+            vec![1, 2],
+            vec![1, 2, 3],
+            vec![1, 2, 4],
+            vec![5, 6, 7],
+            vec![5, 8],
+        ]
+        .iter()
+        .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
+        .collect::<Vec<Terminals>>();
 
         assert_eq!(expected, t.iter().collect::<Vec<_>>());
     }
@@ -669,6 +690,7 @@ mod test {
         //     | \   |
         //     3  4  7
         assert_eq!(4, t1.len());
+        assert_eq!(4, end_node_count(&t1));
 
         let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
             .iter()
@@ -724,63 +746,35 @@ mod test {
         assert_ne!(t1, t2);
     }
 
-    macro_rules! eq_test {
-        ($($name:ident: $value:expr,)*) => {
-            $(
-                #[test]
-                fn $name() {
-                    let (tuple1, tuple2) = $value;
-                    // Insertion order 1, 2
-                    let mut t1 = Trie::new();
-                    t1.insert(&tuple1);
-                    t1.insert(&tuple2);
+    // Trie::insert is commutative regarding Eq
+    #[quickcheck]
+    fn trie_insert_is_commutative_regarding_eq(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
+        let tuple1 = KTuple::new(k).with_terminal_indices(&t1);
+        let tuple2 = KTuple::new(k).with_terminal_indices(&t2);
+        // Insertion order 1, 2
+        let mut t1 = Trie::new();
+        t1.insert(&tuple1);
+        t1.insert(&tuple2);
 
-                    // Insertion order 2, 1
-                    let mut t2 = Trie::new();
-                    t2.insert(&tuple2);
-                    t2.insert(&tuple1);
+        // Insertion order 2, 1
+        let mut t2 = Trie::new();
+        t2.insert(&tuple2);
+        t2.insert(&tuple1);
 
-                    assert_eq!(t1, t2);
-                }
-            )*
-        };
+        t1 == t2
     }
 
-    quickcheck! {
-        // Trie::insert is commutative regarding Eq
-        fn prop(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
-            let tuple1 = KTuple::new(k).with_terminal_indices(&t1);
-            let tuple2 = KTuple::new(k).with_terminal_indices(&t2);
-                    // Insertion order 1, 2
-                    let mut t1 = Trie::new();
-                    t1.insert(&tuple1);
-                    t1.insert(&tuple2);
+    // Number of elements should be eq to number of the sum of inner and outer end nodes
+    #[quickcheck]
+    fn trie_item_count_equals_end_node_count(t1: Vec<Vec<usize>>, k: usize) -> bool {
+        let trie = t1.iter().fold(Trie::new(), |mut acc, e| {
+            acc.insert(&KTuple::new(k).with_terminal_indices(e));
+            acc
+        });
 
-                    // Insertion order 2, 1
-                    let mut t2 = Trie::new();
-                    t2.insert(&tuple2);
-                    t2.insert(&tuple1);
-
-                    t1 == t2
-        }
-    }
-
-    eq_test! {
-        trie_insert_is_commutative_regarding_eq_1: (
-            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
-            KTuple::new(6).with_terminal_indices(&[5, 8])
-        ),
-        trie_insert_is_commutative_regarding_eq_2:(
-            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
-            KTuple::new(6).with_terminal_indices(&[1, 2, 3])
-        ),
-        trie_insert_is_commutative_regarding_eq_3:(
-            KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
-            KTuple::new(6).with_terminal_indices(&[1, 2, 4])
-        ),
-        trie_insert_is_commutative_regarding_eq_4:(
-            KTuple::new(6).with_terminal_indices(&[2, 3]),
-            KTuple::new(6).with_terminal_indices(&[1, 2, 4])
-        ),
+        let item_count = trie.iter().count();
+        let end_node_count = end_node_count(&trie);
+        eprintln!("{:?} => item_count: {item_count}, end_node_count: {end_node_count}", t1);
+        item_count == end_node_count
     }
 }
