@@ -93,7 +93,6 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
             .iter()
             .enumerate()
             .fold(EquationSystem::new(), |es, (i, pr)| {
-                // trace!("{}:", pr);
                 update_production_equations(
                     es,
                     i,
@@ -106,6 +105,29 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
             });
 
     let equation_system = Arc::new(equation_system);
+
+    // Single threaded variant
+    // let step_function: StepFunction = Arc::new(
+    //     move |es: Arc<EquationSystem>,
+    //           result_map: Arc<ResultMap>,
+    //           non_terminal_positions: Arc<HashMap<Pos, usize>>,
+    //           non_terminal_results: Arc<RwLock<Vec<DomainType>>>| {
+    //         let mut new_result_vector = ResultMap::new();
+    //         for (pos, _) in result_map.iter() {
+    //             // Call each function of the equation system and put the
+    //             // result into the new result vector.
+    //             let pos_result = es[pos](result_map.clone(), non_terminal_results.clone());
+    //             new_result_vector.insert(*pos, pos_result.clone());
+
+    //             // Also combine the result to the non_terminal_results.
+    //             let sym = non_terminal_positions.get(pos).unwrap();
+    //             if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
+    //                 *set = set.union(pos_result).0;
+    //             }
+    //         }
+    //         new_result_vector
+    //     },
+    // );
 
     // Heuristically tweaked
     let factor = 4;
@@ -152,21 +174,6 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                 }
             }
             new_result_vector
-
-            // let mut new_result_vector = ResultMap::new();
-            // for (pos, _) in result_map.iter() {
-            //     // Call each function of the equation system and put the
-            //     // result into the new result vector.
-            //     let pos_result = es[pos](result_map.clone(), non_terminal_results.clone());
-            //     new_result_vector.insert(*pos, pos_result.clone());
-
-            //     // Also combine the result to the non_terminal_results.
-            //     let sym = non_terminal_positions.get(pos).unwrap();
-            //     if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
-            //         *set = set.union(pos_result).0;
-            //     }
-            // }
-            // new_result_vector
         },
     );
 
@@ -186,7 +193,6 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
             non_terminal_positions.clone(),
             non_terminal_results.clone(),
         );
-        // trace!("\nStep:{}", trace_result_vector(&new_result_vector));
         if new_result_vector == *result_map {
             break;
         }
@@ -249,29 +255,18 @@ where
             acc
         },
     );
-    // trace!(
-    //     "Parts: {}",
-    //     parts
-    //         .iter()
-    //         .map(|(i, s)| format!("{}:{}", i, s))
-    //         .collect::<Vec<String>>()
-    //         .join(", ")
-    // );
 
     // For each non-terminal of the production (parts are separated into strings
     // of terminals and single non-terminals combined with the symbol-index) we
     // have to provide an equation.
     for (part_index, (symbol_index, symbol_string)) in parts.iter().enumerate() {
-        // trace!(" + {}:{}", symbol_index, symbol_string);
         if let Symbol::N(..) = &symbol_string.0[0] {
-            // trace!("  For non-terminal {}", nt);
             let mut result_function: TransferFunction = Arc::new(move |_, _| DomainType::eps(k));
             for (_, symbol_string) in parts.iter().skip(part_index + 1) {
                 let symbol_string_clone = symbol_string.clone();
                 let symbol = symbol_string_clone.0[0].clone();
                 match symbol {
                     Symbol::T(_) => {
-                        // trace!("  concat terminals: {}", symbol_string_clone);
                         let terminal_index = terminal_index.clone();
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
@@ -291,7 +286,6 @@ where
                             });
                     }
                     Symbol::N(nt, _, _) => {
-                        // trace!("  concat first k of nt: {}:{}", nt, first_of_nt);
                         let first_k_of_nt = first_k_of_nt.clone();
                         let nt_i = non_terminal_index_finder(&nt);
                         result_function =
@@ -306,7 +300,6 @@ where
                     Symbol::Pop => (),
                 }
             }
-            // trace!("  concat Follow({}, {})", pr.get_n_str(), k);
             let nt = non_terminal_index_finder(pr.get_n_str());
             es.insert(
                 (prod_num, *symbol_index).into(),
@@ -321,14 +314,4 @@ where
     }
 
     es
-}
-
-#[allow(dead_code)]
-fn trace_result_vector(result_map: &ResultMap) -> String {
-    result_map
-        .iter()
-        .enumerate()
-        .map(|(i, (n, f))| format!("{}({}): {}", i, n, f))
-        .collect::<Vec<String>>()
-        .join("\n")
 }

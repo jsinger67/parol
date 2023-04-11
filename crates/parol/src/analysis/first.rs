@@ -62,13 +62,10 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 acc
             });
 
-    // trace!("nt_for_production: {:?}", nt_for_production);
-
     let equation_system: EquationSystem =
         cfg.pr
             .iter()
             .fold(Vec::with_capacity(pr_count), |mut es, pr| {
-                // trace!("{}:", pr);
                 es.push(combine_production_equation(
                     pr,
                     pr_count,
@@ -81,12 +78,27 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let equation_system = Arc::new(equation_system);
 
+    // Single threaded variant
+    // let step_function: StepFunction = {
+    //     Arc::new(
+    //         move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
+    //             let mut new_result_vector: ResultVector =
+    //                 vec![DomainType::new(k); result_vector.len()];
+    //             for pr_i in 0..pr_count {
+    //                 let r = es[pr_i](result_vector.clone());
+    //                 new_result_vector[pr_i] = r.clone();
+    //                 new_result_vector[pr_count + nt_for_production[pr_i]].append(r);
+    //             }
+    //             new_result_vector
+    //         },
+    //     )
+    // };
+
     // Heuristically tweaked
     let factor = 1;
     let max_threads: usize = num_cpus::get() * factor;
 
     let step_function: StepFunction = {
-        // let terminals = terminals.clone();
         Arc::new(
             move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
                 let (tx, rx) = channel();
@@ -113,25 +125,6 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                     }
                 }
                 new_result_vector
-
-                // let mut new_result_vector: ResultVector =
-                //     vec![DomainType::new(k); result_vector.len()];
-                // for pr_i in 0..pr_count {
-                //     let r = es[pr_i](result_vector.clone());
-                //     // trace!(
-                //     //     "Result for production {} is {}",
-                //     //     pr_i,
-                //     //     r.to_string(&terminals)
-                //     // );
-                //     new_result_vector[pr_i] = r.clone();
-                //     // trace!(
-                //     //     "Nt index for production {} is {}",
-                //     //     pr_i,
-                //     //     pr_count + nt_for_production[pr_i]
-                //     // );
-                //     new_result_vector[pr_count + nt_for_production[pr_i]].append(r);
-                // }
-                // new_result_vector
             },
         )
     };
@@ -158,20 +151,11 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let mut iterations = 0usize;
     loop {
-        // trace!(
-        //     "\nInput\n{}",
-        //     result_vector_to_string(&result_vector, pr_count, &terminals, &non_terminals)
-        // );
         let new_result_vector = Arc::new(step_function(
             equation_system.clone(),
             result_vector.clone(),
         ));
-        // trace!(
-        //     "\nOutput\n{}",
-        //     result_vector_to_string(&new_result_vector, pr_count, &terminals, &non_terminals)
-        // );
         if new_result_vector == result_vector {
-            // trace!("Stopping iteration");
             break;
         }
         result_vector = new_result_vector;
@@ -228,16 +212,8 @@ where
             }
             acc
         });
-    // trace!(
-    //     "Parts: {}",
-    //     parts
-    //         .iter()
-    //         .map(|s| format!("{}", s))
-    //         .collect::<Vec<String>>()
-    //         .join(", ")
-    // );
     let mut result_function: TransferFunction = Arc::new(move |_| DomainType::eps(k));
-    // trace!(" ε");
+
     // For each part of the production (separated into strings of terminals and
     // single non-terminals) we have to provide a part of the equation like this:
     // Fir_k_(p) = p1 + p2 + ... + pn | + is k-concatenation; n number of parts
@@ -285,40 +261,5 @@ fn create_union_access_function(
 ) -> TransferFunction {
     let nt = nt.to_owned();
     let index = non_terminal_index(&nt);
-    Arc::new(move |result_vector: Arc<ResultVector>| {
-        result_vector[pr_count + index].clone()
-        // trace!(
-        //     "Accessing non-terminal union of {}({}): {} (v: {:?})",
-        //     nt,
-        //     index,
-        //     result,
-        //     result_vector,
-        // );
-    })
-}
-
-#[allow(dead_code)]
-fn result_vector_to_string(
-    result_vector: &[DomainType],
-    pr_count: usize,
-    terminals: &[String],
-    non_terminals: &[String],
-) -> String {
-    format!(
-        "Productions:\n{}\nNon-terminals:\n{}",
-        result_vector
-            .iter()
-            .take(pr_count)
-            .enumerate()
-            .map(|(i, f)| format!("{}({})", i, f.to_string(terminals)))
-            .collect::<Vec<String>>()
-            .join("\n"),
-        result_vector
-            .iter()
-            .skip(pr_count)
-            .enumerate()
-            .map(|(i, f)| format!("{}({})", non_terminals[i], f.to_string(terminals)))
-            .collect::<Vec<String>>()
-            .join("\n")
-    )
+    Arc::new(move |result_vector: Arc<ResultVector>| result_vector[pr_count + index].clone())
 }
