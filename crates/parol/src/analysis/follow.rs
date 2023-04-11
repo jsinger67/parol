@@ -107,7 +107,9 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
 
     let equation_system = Arc::new(equation_system);
 
-    let max_threads: usize = num_cpus::get();
+    // Heuristically tweaked
+    let factor = 4;
+    let max_threads: usize = num_cpus::get() * factor;
 
     let step_function: StepFunction = Arc::new(
         move |es: Arc<EquationSystem>,
@@ -142,7 +144,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                     // Also combine the result to the non_terminal_results.
                     let sym = non_terminal_positions.get(&pos).unwrap();
                     if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
-                        *set = set.union(pos_result);
+                        *set = set.union(pos_result).0;
                     }
                 });
                 if threads == 0 {
@@ -161,7 +163,7 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
             //     // Also combine the result to the non_terminal_results.
             //     let sym = non_terminal_positions.get(pos).unwrap();
             //     if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
-            //         *set = set.union(pos_result);
+            //         *set = set.union(pos_result).0;
             //     }
             // }
             // new_result_vector

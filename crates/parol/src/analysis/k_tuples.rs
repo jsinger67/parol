@@ -49,11 +49,11 @@ impl KTuples {
     }
 
     /// Creates a union with another KTuples and self
-    pub fn union(&self, other: Self) -> Self {
-        let unn = self.0.union(&other.0);
+    pub fn union(&self, other: Self) -> (Self, bool) {
+        let (unn, changed) = self.0.union(&other.0);
         let mut tuples = Self(unn, self.1, false);
         tuples.update_completeness();
-        tuples
+        (tuples, changed)
     }
 
     /// Creates a intersection with another KTuples and self

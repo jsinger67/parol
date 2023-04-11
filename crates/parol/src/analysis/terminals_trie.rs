@@ -205,10 +205,10 @@ impl Trie {
     }
 
     /// Creates a union with another KTuples and self
-    pub fn union(&self, other: &Self) -> Self {
+    pub fn union(&self, other: &Self) -> (Self, bool) {
         let mut trie = self.clone();
-        trie.append(other);
-        trie
+        let changed = trie.append(other);
+        (trie, changed)
     }
 
     /// Creates a intersection with another Trie and self
@@ -302,7 +302,7 @@ impl Extend<Terminals> for Trie {
 
 impl PartialEq for Trie {
     fn eq(&self, other: &Self) -> bool {
-        self.len == other.len && self.union(other).len() == self.len()
+        self.len == other.len && self.union(other).0.len() == self.len()
     }
 }
 
@@ -324,7 +324,7 @@ pub(crate) struct TerminalsIter<'a> {
 impl<'a> TerminalsIter<'a> {
     pub(crate) fn new(t: &'a Trie) -> Self {
         let mut this = Self {
-            v: Vec::with_capacity(MAX_K),
+            v: Vec::with_capacity(MAX_K), // Depth of Tie can't exceed MAX_K
         };
         if !t.is_empty() {
             let flags = if t.root[0].e {

@@ -81,7 +81,9 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
 
     let equation_system = Arc::new(equation_system);
 
-    let max_threads: usize = num_cpus::get();
+    // Heuristically tweaked
+    let factor = 1;
+    let max_threads: usize = num_cpus::get() * factor;
 
     let step_function: StepFunction = {
         // let terminals = terminals.clone();

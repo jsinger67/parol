@@ -837,7 +837,6 @@ dependencies = [
  "quickcheck_macros",
  "rand",
  "rand_regex",
- "rayon",
  "regex",
  "regex-syntax",
  "serde",
