@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.21.1 - 2023-04-xx
+## 0.21.1 - 2023-04-13
 
 * Using an own trie implementation instead of a `HashSet<KTuple>` in `KTuples`. This considerably
 increases performance of analysis of complex grammars. For instance,
