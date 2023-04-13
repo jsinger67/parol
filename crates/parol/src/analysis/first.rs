@@ -76,6 +76,11 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 es
             });
 
+    trace!(
+        "Number of equations in equation system for FIRST(k) is {}",
+        equation_system.len()
+    );
+
     let equation_system = Arc::new(equation_system);
 
     // Single threaded variant

@@ -21,6 +21,19 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.21.1 - 2023-04-xx
+
+* Using an own trie implementation instead of a `HashSet<KTuple>` in `KTuples`. This considerably
+increases performance of analysis of complex grammars. For instance,
+[veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)'s grammar which is a
+k(3) grammar with 810 productions now builds on my machine in about 40 seconds instead of about 75
+seconds before. You should know that `parol` therefore solves an equation system with 1154 equations
+to fully calculate the grammar's FOLLOW(k) sets and an another equation system with 810 equations
+to fully calculate the grammar's FIRST(k) sets. But because of the strict separation of grammar
+definition and the implementation of grammar processing (basically via a generated trait) the full
+grammar analysis is only needed when changes in the grammar definitions occur.
+I currently work hard to improve the performance for such complex grammars.
+
 ## 0.21.0 - 2023-04-02
 
 * Changed code generation to facilitate `parol_runtime`'s newer and more efficient lookahead DFA

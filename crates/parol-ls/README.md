@@ -40,7 +40,7 @@ extension.
 Please install this language server on your platform using the following command.
 
 ```shell
-cargo install parol-ls
+cargo install --force parol-ls
 ```
 
 Also check regularly for updates and issue the command above again on demand.

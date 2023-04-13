@@ -104,6 +104,11 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
                 )
             });
 
+    trace!(
+        "Number of equations in equation system for FOLLOW(k) is {}",
+        equation_system.len()
+    );
+
     let equation_system = Arc::new(equation_system);
 
     // Single threaded variant

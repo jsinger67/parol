@@ -81,7 +81,7 @@ async function tryActivate(
     message +=
       'Parol Language Server is not installed. Please consider to install it to improve your experience.';
     message +=
-      '  `cargo install parol-ls`';
+      '  `cargo install --force parol-ls`';
 
     log.error("Bootstrap error", err);
     throw new Error(message);
@@ -190,7 +190,7 @@ function checkForServerUpdate(version: string) {
                 `You have a different version of parol language server installed: ${version}.\n` +
                   `The latest available version at crates.io is ${ver}.\n` +
                   `You can update it by calling:\n` +
-                  "`cargo install parol-ls`",
+                  "`cargo install --force parol-ls`",
                 "Ok"
               )
               .then(() => {}, console.error);

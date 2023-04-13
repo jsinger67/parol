@@ -28,7 +28,7 @@ To be able to use the full Language Server capabilities please install `parol-ls
 using the following command.
 
 ```shell
-cargo install parol-ls
+cargo install --force parol-ls
 ```
 
 Alternatively you can clone the [repository](https://github.com/jsinger67/parol.git) and build the

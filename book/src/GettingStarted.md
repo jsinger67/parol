@@ -79,6 +79,6 @@ automatically if the grammar description file `my_grammar.par` has been changed.
 > to install separately.
 >
 > ```shell
-> cargo install parol-ls
+> cargo install --force parol-ls
 > ```
 >

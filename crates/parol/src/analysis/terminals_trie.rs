@@ -1,5 +1,4 @@
 use bitflags::bitflags;
-// use parol_runtime::log::trace;
 use std::{
     fmt::{Display, Formatter},
     ops::{Index, IndexMut},
@@ -8,18 +7,6 @@ use std::{
 use crate::{CompiledTerminal, KTuple, MAX_K};
 
 use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple::Terminals};
-
-pub(crate) trait NodeLike {
-    /// Returns a reference to the children of this [`Node`].
-    fn children(&self) -> &[Node];
-    /// Returns a mutable reference to the children of this [`Node`].
-    fn children_mut(&mut self) -> &mut [Node];
-    /// Returns the index of the given terminal is in the node's list of children if it exists
-    fn child_index(&self, t: TerminalIndex) -> Option<usize>;
-    /// Adds a child node if it not already exists and returns the child index of it
-    /// The boolean in the return value ist true on insertion (collection changed)
-    fn add_child(&mut self, t: TerminalIndex) -> (usize, bool);
-}
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
@@ -58,9 +45,7 @@ impl Node {
     fn set_end(&mut self) {
         self.e = true
     }
-}
 
-impl NodeLike for Node {
     /// Returns a reference to the children of this [`Node`].
     #[inline]
     fn children(&self) -> &[Node] {
@@ -228,6 +213,7 @@ impl Trie {
         self.intersection(other).is_empty()
     }
 
+    /// Returns an iterator over the elements of this [`Trie`].
     pub(crate) fn iter(&self) -> TerminalsIter<'_> {
         TerminalsIter::new(self)
     }
@@ -244,20 +230,6 @@ impl Trie {
         let mut trie = Trie::new();
         trie.add(&Terminals::end());
         trie
-    }
-}
-
-impl NodeLike for Trie {
-    /// Returns a reference to the children of this [`Node`].
-    #[inline]
-    fn children(&self) -> &[Node] {
-        &self.root.c
-    }
-
-    /// Returns a mutable reference to the children of this [`Node`].
-    #[inline]
-    fn children_mut(&mut self) -> &mut [Node] {
-        &mut self.root.c
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
@@ -332,11 +304,6 @@ impl<'a> TerminalsIter<'a> {
             } else {
                 Flags::Default
             };
-            // trace!(
-            //     "Initial expand on {}, i0, flags b{:b}",
-            //     t.root[0],
-            //     flags.bits()
-            // );
             this.v.push((&t.root, 0, flags));
             this.expand(&t.root, 0, flags);
         }
@@ -350,11 +317,9 @@ impl<'a> TerminalsIter<'a> {
         loop {
             if node.is_inner_end_node() && flags & Flags::Iterated == Flags::Default {
                 // Stop on inner end nodes once
-                // trace!("Stop on inner end node {node}");
                 break;
             }
             if node.children().len() <= i {
-                // trace!("Stop on last child of node {node}");
                 break;
             }
             node = &node.children()[i];
@@ -363,7 +328,6 @@ impl<'a> TerminalsIter<'a> {
             } else {
                 Flags::Default
             };
-            // trace!("Expand on {node}, i{i}, flags b{:b}", flags.bits());
             self.v.push((node, 0, flags));
             i = 0;
         }
@@ -374,7 +338,6 @@ impl<'a> TerminalsIter<'a> {
         if let Some((n, mut i, flags)) = self.v.pop() {
             i += 1;
             if n.children().len() > i {
-                // trace!("Advance on {n}, i{i}, flags b{:b}", flags.bits());
                 self.v.push((n, i, flags));
                 self.expand(n, i, flags);
             } else {
@@ -397,7 +360,6 @@ impl Iterator for TerminalsIter<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.v.is_empty() {
-            // trace!("Iteration stops");
             return None;
         }
         let result = Some(Terminals::from_slice_with(
@@ -408,14 +370,12 @@ impl Iterator for TerminalsIter<'_> {
         if self.last_is_inner_node() {
             // Set the iterated flag
             let (node, i, flags) = self.v.pop().unwrap();
-            // trace!("Set the iterated flag on {node}");
             let flags = flags | Flags::Iterated;
             self.v.push((node, i, flags));
             self.expand(node, i, flags);
         } else {
             self.advance();
         }
-        // trace!("next returns {}", result.unwrap());
         result
     }
 }
@@ -442,7 +402,7 @@ mod test {
         analysis::{
             compiled_terminal::{EPS, INVALID},
             k_tuple::Terminals,
-            terminals_trie::{Node, NodeLike, Trie},
+            terminals_trie::{Node, Trie},
         },
         CompiledTerminal, KTuple,
     };
@@ -527,8 +487,8 @@ mod test {
         assert_eq!(1, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.children().len(), 1);
+        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.root.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
@@ -556,8 +516,8 @@ mod test {
         assert_eq!(1, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.children().len(), 1);
+        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.root.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert_eq!(t[0].children().len(), 1);
@@ -585,8 +545,8 @@ mod test {
         assert_eq!(2, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.children().iter().find(|n| n.t == 1).is_some());
-        assert_eq!(t.children().len(), 1);
+        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert_eq!(t.root.children().len(), 1);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert!(t[0].children().iter().find(|n| n.t == 5).is_some());
@@ -619,9 +579,9 @@ mod test {
         assert_eq!(2, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.children().iter().find(|n| n.t == 1).is_some());
-        assert!(t.children().iter().find(|n| n.t == 4).is_some());
-        assert_eq!(t.children().len(), 2);
+        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.root.children().iter().find(|n| n.t == 4).is_some());
+        assert_eq!(t.root.children().len(), 2);
 
         assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
         assert!(t[1].children().iter().find(|n| n.t == 5).is_some());
