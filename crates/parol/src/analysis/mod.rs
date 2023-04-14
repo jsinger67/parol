@@ -56,6 +56,3 @@ pub use reachability::{
 };
 
 mod terminals_trie;
-
-/// Module with checks for various token conflict scenarios
-pub mod token_conflicts;

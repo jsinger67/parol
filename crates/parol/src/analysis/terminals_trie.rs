@@ -535,9 +535,9 @@ mod test {
         let tuple2 = KTuple::new(6).with_terminal_indices(&[1, 5, 6]);
         //      1
         //     / \
-        //     2  5
-        //     |  |
-        //     3  6
+        //    2   5
+        //    |   |
+        //    3   6
         t.insert(&tuple1);
         t.insert(&tuple2);
 

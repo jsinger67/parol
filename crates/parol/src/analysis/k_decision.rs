@@ -9,12 +9,20 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::rc::Rc;
 
+use super::follow::ResultMap;
+
 /// Cache of FirstSets
 #[derive(Debug, Default)]
 pub struct FirstCache(pub Rc<RefCell<[Option<FirstSet>; MAX_K]>>);
+
+/// A cache entry consisting of a result map for enhanced generation of the next k set and the
+/// follow set for a given k
+#[derive(Debug, Clone)]
+pub struct CacheEntry(pub(crate) ResultMap, pub(crate) FollowSet);
+
 /// Cache of FollowSets
 #[derive(Debug, Default)]
-pub struct FollowCache(pub Rc<RefCell<[Option<FollowSet>; MAX_K]>>);
+pub struct FollowCache(pub Rc<RefCell<[Option<CacheEntry>; MAX_K]>>);
 
 impl FirstCache {
     /// Creates a new item
@@ -51,7 +59,7 @@ impl FollowCache {
         k: usize,
         grammar_config: &GrammarConfig,
         first_cache: &FirstCache,
-    ) -> FollowSet {
+    ) -> CacheEntry {
         let exists = {
             let borrowed_entry = self.0.borrow();
             borrowed_entry[k].is_some()
@@ -61,9 +69,9 @@ impl FollowCache {
             self.0.borrow().get(k).unwrap().as_ref().unwrap().clone()
         } else {
             trace!("FollowCache::get: calculating follow set for k={}...", k);
-            let entry = follow_k(grammar_config, k, first_cache);
+            let (r, f) = follow_k(grammar_config, k, first_cache, self);
             trace!("finished");
-            self.0.borrow_mut()[k] = Some(entry);
+            self.0.borrow_mut()[k] = Some(CacheEntry(r, f));
             self.get(k, grammar_config, first_cache)
         }
     }
@@ -112,7 +120,7 @@ pub fn decidable(
                 .collect::<Vec<(ProductionIndex, KTuples)>>();
 
             let cached = follow_cache.get(current_k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.get(non_terminal_index_finder(non_terminal)) {
+            if let Some(follow_set) = cached.1.get(non_terminal_index_finder(non_terminal)) {
                 let concatenated_k_tuples = k_tuples_of_productions
                     .iter()
                     .map(|(i, t)| (*i, t.clone().k_concat(follow_set, current_k)))
@@ -182,7 +190,7 @@ pub fn calculate_k_tuples(
                     .fold(BTreeMap::new(), |mut acc, (pi, _)| {
                         let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
                         let cached = follow_cache.get(k, grammar_config, first_cache);
-                        if let Some(follow_set) = cached.get(non_terminal_index_finder(&n)) {
+                        if let Some(follow_set) = cached.1.get(non_terminal_index_finder(&n)) {
                             acc.insert(*pi, k_tuples.k_concat(follow_set, k));
                         }
                         acc
@@ -262,7 +270,7 @@ pub fn explain_conflicts(
             .collect::<Vec<(ProductionIndex, KTuples)>>();
 
         let cached = follow_cache.get(k, grammar_config, first_cache);
-        if let Some(follow_set) = cached.get(non_terminal_index_finder(non_terminal)) {
+        if let Some(follow_set) = cached.1.get(non_terminal_index_finder(non_terminal)) {
             let concatenated_k_tuples = k_tuples_of_productions
                 .iter()
                 .map(|(i, t)| (*i, t.clone().k_concat(follow_set, k)))

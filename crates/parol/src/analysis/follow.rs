@@ -5,6 +5,7 @@
 
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
+use crate::analysis::k_decision::CacheEntry;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
 use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
@@ -14,6 +15,8 @@ use std::collections::HashMap;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, RwLock};
 use std::thread;
+
+use super::FollowCache;
 
 /// Result type for each non-terminal:
 /// The set of the follow k terminals
@@ -25,7 +28,7 @@ pub type FollowSet = Vec<DomainType>;
 /// The result map is applied to each iteration step.
 /// It is also returned after each iteration step.
 /// It maps non-terminal positions to follow sets.
-type ResultMap = HashMap<Pos, DomainType>;
+pub(crate) type ResultMap = HashMap<Pos, DomainType>;
 
 /// The type of the function in the equation system
 /// It is called for each non-terminal
@@ -46,7 +49,12 @@ type StepFunction = Arc<
 ///
 /// Calculates the FOLLOW k sets for all non-terminals of the given grammar.
 ///
-pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCache) -> FollowSet {
+pub fn follow_k(
+    grammar_config: &GrammarConfig,
+    k: usize,
+    first_cache: &FirstCache,
+    follow_cache: &FollowCache,
+) -> (ResultMap, FollowSet) {
     let cfg = &grammar_config.cfg;
 
     let terminals = grammar_config.cfg.get_ordered_terminals_owned();
@@ -182,17 +190,22 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
         },
     );
 
-    let mut result_map = Arc::new(non_terminal_positions.iter().fold(
-        ResultMap::new(),
-        |mut acc, (p, _)| {
-            acc.insert(*p, DomainType::new(k));
-            acc
-        },
-    ));
+    let mut result_map = Arc::new(if k <= 1 {
+        non_terminal_positions
+            .iter()
+            .fold(ResultMap::new(), |mut acc, (p, _)| {
+                acc.insert(*p, DomainType::new(k));
+                acc
+            })
+    } else {
+        let CacheEntry(r, _) = follow_cache.get(k - 1, grammar_config, first_cache);
+        r.iter().map(|(p, t)| (*p, t.clone().set_k(k))).collect()
+    });
 
     let mut iterations = 0usize;
+    let mut new_result_vector;
     loop {
-        let new_result_vector = step_function(
+        new_result_vector = step_function(
             equation_system.clone(),
             result_map.clone(),
             non_terminal_positions.clone(),
@@ -206,12 +219,15 @@ pub fn follow_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCac
         trace!("Iteration number {} completed", iterations);
     }
 
-    Arc::try_unwrap(non_terminal_results)
-        .unwrap()
-        .into_inner()
-        .unwrap()
-        .drain(..)
-        .collect::<FollowSet>()
+    (
+        new_result_vector,
+        Arc::try_unwrap(non_terminal_results)
+            .unwrap()
+            .into_inner()
+            .unwrap()
+            .drain(..)
+            .collect::<FollowSet>(),
+    )
 }
 
 ///

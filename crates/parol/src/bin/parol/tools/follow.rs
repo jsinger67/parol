@@ -1,4 +1,5 @@
 use anyhow::{bail, Result};
+use parol::analysis::FollowCache;
 use parol::analysis::follow_k;
 use parol::analysis::FirstCache;
 use parol::generators::generate_terminal_names;
@@ -35,7 +36,8 @@ pub fn main(args: &Args) -> Result<()> {
         .cloned()
         .collect::<Vec<String>>();
     let first_cache = FirstCache::new();
-    let follow_k = follow_k(&grammar_config, max_k, &first_cache);
+    let follow_cache = FollowCache::new();
+    let (_, follow_k) = follow_k(&grammar_config, max_k, &first_cache, &follow_cache);
     for (nt_i, fo) in follow_k.iter().enumerate() {
         println!("  {}: {}", non_terminals[nt_i], fo.to_string(&terminals));
     }
