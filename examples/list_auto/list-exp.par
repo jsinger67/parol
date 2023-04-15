@@ -7,12 +7,12 @@
 %%
 
 /*  0 */ List: ListOpt /* Option */ TrailingComma^ /* Clipped */;
-/*  1 */ ListOpt /* Option<T>::Some */: Items : Numbers;
-/*  2 */ ListOpt /* Option<T>::None */: ;
+/*  1 */ ListOpt /* `Option<T>::Some` */: Items : Numbers;
+/*  2 */ ListOpt /* `Option<T>::None` */: ;
 /*  3 */ Items: Num ItemsList /* Vec */;
-/*  4 */ ItemsList /* Vec<T>::Push */: ","^ /* Clipped */ Num ItemsList;
-/*  5 */ ItemsList /* Vec<T>::New */: ;
+/*  4 */ ItemsList /* `Vec<T>::Push` */: ","^ /* Clipped */ Num ItemsList;
+/*  5 */ ItemsList /* `Vec<T>::New` */: ;
 /*  6 */ Num: "0|[1-9][0-9]*" : Number;
 /*  7 */ TrailingComma: TrailingCommaOpt /* Option */;
-/*  8 */ TrailingCommaOpt /* Option<T>::Some */: ","^ /* Clipped */;
-/*  9 */ TrailingCommaOpt /* Option<T>::None */: ;
+/*  8 */ TrailingCommaOpt /* `Option<T>::Some` */: ","^ /* Clipped */;
+/*  9 */ TrailingCommaOpt /* `Option<T>::None` */: ;

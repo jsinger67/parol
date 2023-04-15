@@ -4,7 +4,7 @@ use std::fmt::{Display, Error, Formatter};
 ///
 /// Symbol strings are special collections of [Symbol]s.
 /// They only contain symbol kinds relevant for operations on grammars.
-/// Especially in contrast to [Rhs] of [Pr] productions they don't contain scanner state
+/// Especially in contrast to [crate::Rhs] of [Pr] productions they don't contain scanner state
 /// instructions like %sc, %push and %pop.
 ///
 #[derive(Debug, Clone, Default, Hash, Eq, PartialEq, Ord, PartialOrd)]

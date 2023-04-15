@@ -10,7 +10,7 @@ module [errors].
 
 If you use parsers generated in [vanilla mode](https://jsinger67.github.io/VanillaMode.html) you
 should understand the types that are handed over to your semantic actions. You will find them in the
-modules [parser::parse_tree_type] and [parser::parse_tree_stack_entry].
+module [parser::parse_tree_type].
  */
 
 ///

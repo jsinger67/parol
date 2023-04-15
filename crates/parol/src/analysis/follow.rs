@@ -37,6 +37,19 @@ type TransferFunction =
 
 type EquationSystem = HashMap<Pos, TransferFunction>;
 
+/// # [`StepFunction`] Documentation
+/// The StepFunction type is a type alias for an `Arc` of a `dyn Fn`  that takes four parameters and
+/// returns a `ResultMap'.
+/// This function is called in each step of the iteration process until the results (the result map
+/// and the non-terminal vector) don't change anymore.
+///
+/// ## Parameters
+///   * `Arc<EquationSystem>` - An `Arc` of an `EquationSystem` struct.
+///   * `Arc<ResultMap>` - An `Arc` of a `ResultMap` struct.
+///   * `Arc<HashMap<Pos, usize>>` - An `Arc` of a `HashMap` of `Pos` and `usize`.
+///   * `Arc<RwLock<Vec<DomainType>>>` - An `Arc` of a `RwLock` of a `Vec` of `DomainType`.
+/// ## Return Value
+/// The `StepFunction` returns a `ResultMap` struct.
 type StepFunction = Arc<
     dyn Fn(
         Arc<EquationSystem>,

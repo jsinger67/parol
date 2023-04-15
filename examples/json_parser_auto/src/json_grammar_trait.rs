@@ -470,7 +470,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;
+    /// ObjectList /* `Vec<T>::Push` */: ","^ /* Clipped */ Pair ObjectList;
     ///
     #[parol_runtime::function_name::named]
     fn object_list_0(
@@ -495,7 +495,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList /* Vec<T>::New */: ;
+    /// ObjectList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn object_list_1(&mut self) -> Result<()> {
@@ -598,7 +598,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;
+    /// ArrayList /* `Vec<T>::Push` */: ","^ /* Clipped */ Value ArrayList;
     ///
     #[parol_runtime::function_name::named]
     fn array_list_0(
@@ -623,7 +623,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList /* Vec<T>::New */: ;
+    /// ArrayList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn array_list_1(&mut self) -> Result<()> {

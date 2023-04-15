@@ -34,7 +34,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ExpressionsList /* Vec<T>::Push */: Semicolon Expression ExpressionsList;
+    /// ExpressionsList /* `Vec<T>::Push` */: Semicolon Expression ExpressionsList;
     ///
     fn expressions_list_0(
         &mut self,
@@ -47,7 +47,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ExpressionsList /* Vec<T>::New */: ;
+    /// ExpressionsList /* `Vec<T>::New` */: ;
     ///
     fn expressions_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -55,7 +55,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ExpressionsOpt /* Option<T>::Some */: Semicolon;
+    /// ExpressionsOpt /* `Option<T>::Some` */: Semicolon;
     ///
     fn expressions_opt_0(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -63,7 +63,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ExpressionsOpt /* Option<T>::None */: ;
+    /// ExpressionsOpt /* `Option<T>::None` */: ;
     ///
     fn expressions_opt_1(&mut self) -> Result<()> {
         Ok(())
@@ -91,7 +91,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// TailExpressionList /* Vec<T>::Push */: BinaryOperator Term TailExpressionList;
+    /// TailExpressionList /* `Vec<T>::Push` */: BinaryOperator Term TailExpressionList;
     ///
     fn tail_expression_list_0(
         &mut self,
@@ -104,7 +104,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// TailExpressionList /* Vec<T>::New */: ;
+    /// TailExpressionList /* `Vec<T>::New` */: ;
     ///
     fn tail_expression_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -120,7 +120,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// TermOpt /* Option<T>::Some */: UnaryOperator;
+    /// TermOpt /* `Option<T>::Some` */: UnaryOperator;
     ///
     fn term_opt_0(&mut self, _unary_operator: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -128,7 +128,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// TermOpt /* Option<T>::None */: ;
+    /// TermOpt /* `Option<T>::None` */: ;
     ///
     fn term_opt_1(&mut self) -> Result<()> {
         Ok(())

@@ -114,7 +114,7 @@ pub struct LLKParser<'t> {
     /// Thus the parse tree doesn't grow much and runtime overhead is diminished.
     /// Useful when enabling production mode and the whole parse tree is not needed.
     ///
-    /// To enable this call the method [trim_parse_tree] on the parser object before parsing.
+    /// To enable this call the method `trim_parse_tree` on the parser object before parsing.
     ///
     trim_parse_tree: bool,
 }

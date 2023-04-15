@@ -884,7 +884,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// CalcList /* Vec<T>::Push */: Instruction ";"^ /* Clipped */ CalcList;
+    /// CalcList /* `Vec<T>::Push` */: Instruction ";"^ /* Clipped */ CalcList;
     ///
     #[parol_runtime::function_name::named]
     fn calc_list_0(
@@ -909,7 +909,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// CalcList /* Vec<T>::New */: ;
+    /// CalcList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn calc_list_1(&mut self) -> Result<()> {
@@ -1204,7 +1204,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// AssignmentList /* Vec<T>::Push */: AssignItem AssignmentList;
+    /// AssignmentList /* `Vec<T>::Push` */: AssignItem AssignmentList;
     ///
     #[parol_runtime::function_name::named]
     fn assignment_list_0(
@@ -1227,7 +1227,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// AssignmentList /* Vec<T>::New */: ;
+    /// AssignmentList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn assignment_list_1(&mut self) -> Result<()> {
@@ -1264,7 +1264,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
+    /// LogicalOrList /* `Vec<T>::Push` */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
     #[parol_runtime::function_name::named]
     fn logical_or_list_0(
@@ -1290,7 +1290,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// LogicalOrList /* Vec<T>::New */: ;
+    /// LogicalOrList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn logical_or_list_1(&mut self) -> Result<()> {
@@ -1328,7 +1328,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp BitwiseOr LogicalAndList;
+    /// LogicalAndList /* `Vec<T>::Push` */: LogicalAndOp BitwiseOr LogicalAndList;
     ///
     #[parol_runtime::function_name::named]
     fn logical_and_list_0(
@@ -1354,7 +1354,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// LogicalAndList /* Vec<T>::New */: ;
+    /// LogicalAndList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn logical_and_list_1(&mut self) -> Result<()> {
@@ -1391,7 +1391,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// BitwiseOrList /* Vec<T>::Push */: BitwiseOrOp BitwiseAnd BitwiseOrList;
+    /// BitwiseOrList /* `Vec<T>::Push` */: BitwiseOrOp BitwiseAnd BitwiseOrList;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_or_list_0(
@@ -1417,7 +1417,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// BitwiseOrList /* Vec<T>::New */: ;
+    /// BitwiseOrList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_or_list_1(&mut self) -> Result<()> {
@@ -1455,7 +1455,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// BitwiseAndList /* Vec<T>::Push */: BitwiseAndOp Equality BitwiseAndList;
+    /// BitwiseAndList /* `Vec<T>::Push` */: BitwiseAndOp Equality BitwiseAndList;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_and_list_0(
@@ -1481,7 +1481,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// BitwiseAndList /* Vec<T>::New */: ;
+    /// BitwiseAndList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_and_list_1(&mut self) -> Result<()> {
@@ -1518,7 +1518,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// EqualityList /* Vec<T>::Push */: EqualityOp Relational EqualityList;
+    /// EqualityList /* `Vec<T>::Push` */: EqualityOp Relational EqualityList;
     ///
     #[parol_runtime::function_name::named]
     fn equality_list_0(
@@ -1544,7 +1544,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// EqualityList /* Vec<T>::New */: ;
+    /// EqualityList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn equality_list_1(&mut self) -> Result<()> {
@@ -1581,7 +1581,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// RelationalList /* Vec<T>::Push */: RelationalOp BitwiseShift RelationalList;
+    /// RelationalList /* `Vec<T>::Push` */: RelationalOp BitwiseShift RelationalList;
     ///
     #[parol_runtime::function_name::named]
     fn relational_list_0(
@@ -1607,7 +1607,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// RelationalList /* Vec<T>::New */: ;
+    /// RelationalList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn relational_list_1(&mut self) -> Result<()> {
@@ -1645,7 +1645,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// BitwiseShiftList /* Vec<T>::Push */: BitwiseShiftOp Summ BitwiseShiftList;
+    /// BitwiseShiftList /* `Vec<T>::Push` */: BitwiseShiftOp Summ BitwiseShiftList;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_shift_list_0(
@@ -1671,7 +1671,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// BitwiseShiftList /* Vec<T>::New */: ;
+    /// BitwiseShiftList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn bitwise_shift_list_1(&mut self) -> Result<()> {
@@ -1745,7 +1745,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// SummList /* Vec<T>::Push */: AddOp Mult SummList;
+    /// SummList /* `Vec<T>::Push` */: AddOp Mult SummList;
     ///
     #[parol_runtime::function_name::named]
     fn summ_list_0(
@@ -1771,7 +1771,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// SummList /* Vec<T>::New */: ;
+    /// SummList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn summ_list_1(&mut self) -> Result<()> {
@@ -1804,7 +1804,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// MultList /* Vec<T>::Push */: MultOp Power MultList;
+    /// MultList /* `Vec<T>::Push` */: MultOp Power MultList;
     ///
     #[parol_runtime::function_name::named]
     fn mult_list_0(
@@ -1830,7 +1830,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// MultList /* Vec<T>::New */: ;
+    /// MultList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn mult_list_1(&mut self) -> Result<()> {
@@ -1867,7 +1867,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// PowerList /* Vec<T>::Push */: PowOp Factor PowerList;
+    /// PowerList /* `Vec<T>::Push` */: PowOp Factor PowerList;
     ///
     #[parol_runtime::function_name::named]
     fn power_list_0(
@@ -1893,7 +1893,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// PowerList /* Vec<T>::New */: ;
+    /// PowerList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn power_list_1(&mut self) -> Result<()> {

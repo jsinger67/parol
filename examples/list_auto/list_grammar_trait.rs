@@ -226,7 +226,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt /* Option<T>::Some */: Items : Numbers;
+    /// ListOpt /* `Option<T>::Some` */: Items : Numbers;
     ///
     #[parol_runtime::function_name::named]
     fn list_opt_0(&mut self, _items: &ParseTreeType<'t>) -> Result<()> {
@@ -244,7 +244,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ListOpt /* Option<T>::None */: ;
+    /// ListOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn list_opt_1(&mut self) -> Result<()> {
@@ -276,7 +276,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ItemsList /* Vec<T>::Push */: ","^ /* Clipped */ Num ItemsList;
+    /// ItemsList /* `Vec<T>::Push` */: ","^ /* Clipped */ Num ItemsList;
     ///
     #[parol_runtime::function_name::named]
     fn items_list_0(
@@ -301,7 +301,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// ItemsList /* Vec<T>::New */: ;
+    /// ItemsList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn items_list_1(&mut self) -> Result<()> {
@@ -349,7 +349,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// TrailingCommaOpt /* Option<T>::Some */: ","^ /* Clipped */;
+    /// TrailingCommaOpt /* `Option<T>::Some` */: ","^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn trailing_comma_opt_0(&mut self, _comma: &ParseTreeType<'t>) -> Result<()> {
@@ -367,7 +367,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// TrailingCommaOpt /* Option<T>::None */: ;
+    /// TrailingCommaOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn trailing_comma_opt_1(&mut self) -> Result<()> {

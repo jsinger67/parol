@@ -5,11 +5,11 @@
 %%
 
 /* 0 */ List: ListOpt /* Option */;
-/* 1 */ ListOpt /* Option<T>::Some */: Num ListRest ListOpt0 /* Option */;
-/* 2 */ ListOpt0 /* Option<T>::Some */: ",";
-/* 3 */ ListOpt0 /* Option<T>::None */: ;
-/* 4 */ ListOpt /* Option<T>::None */: ;
+/* 1 */ ListOpt /* `Option<T>::Some` */: Num ListRest ListOpt0 /* Option */;
+/* 2 */ ListOpt0 /* `Option<T>::Some` */: ",";
+/* 3 */ ListOpt0 /* `Option<T>::None` */: ;
+/* 4 */ ListOpt /* `Option<T>::None` */: ;
 /* 5 */ ListRest: ListRestOpt /* Option */;
-/* 6 */ ListRestOpt /* Option<T>::Some */: "," Num ListRest;
-/* 7 */ ListRestOpt /* Option<T>::None */: ;
+/* 6 */ ListRestOpt /* `Option<T>::Some` */: "," Num ListRest;
+/* 7 */ ListRestOpt /* `Option<T>::None` */: ;
 /* 8 */ Num: "0|[1-9][0-9]*";

@@ -58,7 +58,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList /* Vec<T>::Push */: "," Pair ObjectList;
+    /// ObjectList /* `Vec<T>::Push` */: "," Pair ObjectList;
     ///
     fn object_list_0(
         &mut self,
@@ -71,7 +71,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList /* Vec<T>::New */: ;
+    /// ObjectList /* `Vec<T>::New` */: ;
     ///
     fn object_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -121,7 +121,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList /* Vec<T>::Push */: "," Value ArrayList;
+    /// ArrayList /* `Vec<T>::Push` */: "," Value ArrayList;
     ///
     fn array_list_0(
         &mut self,
@@ -134,7 +134,7 @@ pub trait JsonGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList /* Vec<T>::New */: ;
+    /// ArrayList /* `Vec<T>::New` */: ;
     ///
     fn array_list_1(&mut self) -> Result<()> {
         Ok(())

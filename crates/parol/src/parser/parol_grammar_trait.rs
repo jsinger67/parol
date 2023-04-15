@@ -1084,7 +1084,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// PrologList0 /* Vec<T>::Push */: ScannerState : ScannerConfig PrologList0;
+    /// PrologList0 /* `Vec<T>::Push` */: ScannerState : ScannerConfig PrologList0;
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list0_0(
@@ -1109,7 +1109,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// PrologList0 /* Vec<T>::New */: ;
+    /// PrologList0 /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list0_1(&mut self) -> Result<()> {
@@ -1122,7 +1122,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// PrologList /* Vec<T>::Push */: Declaration PrologList;
+    /// PrologList /* `Vec<T>::Push` */: Declaration PrologList;
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list_0(
@@ -1145,7 +1145,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// PrologList /* Vec<T>::New */: ;
+    /// PrologList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list_1(&mut self) -> Result<()> {
@@ -1436,7 +1436,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;
+    /// GrammarDefinitionList /* `Vec<T>::Push` */: Production GrammarDefinitionList;
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition_list_0(
@@ -1467,7 +1467,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// GrammarDefinitionList /* Vec<T>::New */: ;
+    /// GrammarDefinitionList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition_list_1(&mut self) -> Result<()> {
@@ -1552,7 +1552,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList /* Vec<T>::Push */: '|'^ /* Clipped */ Alternation AlternationsList;
+    /// AlternationsList /* `Vec<T>::Push` */: '|'^ /* Clipped */ Alternation AlternationsList;
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_0(
@@ -1577,7 +1577,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationsList /* Vec<T>::New */: ;
+    /// AlternationsList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_1(&mut self) -> Result<()> {
@@ -1610,7 +1610,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AlternationList /* Vec<T>::Push */: Factor AlternationList;
+    /// AlternationList /* `Vec<T>::Push` */: Factor AlternationList;
     ///
     #[parol_runtime::function_name::named]
     fn alternation_list_0(
@@ -1633,7 +1633,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// AlternationList /* Vec<T>::New */: ;
+    /// AlternationList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn alternation_list_1(&mut self) -> Result<()> {
@@ -1879,7 +1879,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// SimpleTokenOpt /* Option<T>::Some */: ASTControl;
+    /// SimpleTokenOpt /* `Option<T>::Some` */: ASTControl;
     ///
     #[parol_runtime::function_name::named]
     fn simple_token_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -1898,7 +1898,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// SimpleTokenOpt /* Option<T>::None */: ;
+    /// SimpleTokenOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn simple_token_opt_1(&mut self) -> Result<()> {
@@ -1943,7 +1943,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// TokenWithStatesOpt /* Option<T>::Some */: ASTControl;
+    /// TokenWithStatesOpt /* `Option<T>::Some` */: ASTControl;
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -1962,7 +1962,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// TokenWithStatesOpt /* Option<T>::None */: ;
+    /// TokenWithStatesOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states_opt_1(&mut self) -> Result<()> {
@@ -2127,7 +2127,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// NonTerminalOpt /* Option<T>::Some */: ASTControl;
+    /// NonTerminalOpt /* `Option<T>::Some` */: ASTControl;
     ///
     #[parol_runtime::function_name::named]
     fn non_terminal_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -2146,7 +2146,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// NonTerminalOpt /* Option<T>::None */: ;
+    /// NonTerminalOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn non_terminal_opt_1(&mut self) -> Result<()> {
@@ -2205,7 +2205,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;
+    /// ScannerStateList /* `Vec<T>::Push` */: ScannerDirectives ScannerStateList;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state_list_0(
@@ -2228,7 +2228,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// ScannerStateList /* Vec<T>::New */: ;
+    /// ScannerStateList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state_list_1(&mut self) -> Result<()> {
@@ -2268,7 +2268,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// StateListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier StateListList;
+    /// StateListList /* `Vec<T>::Push` */: ','^ /* Clipped */ Identifier StateListList;
     ///
     #[parol_runtime::function_name::named]
     fn state_list_list_0(
@@ -2293,7 +2293,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// StateListList /* Vec<T>::New */: ;
+    /// StateListList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn state_list_list_1(&mut self) -> Result<()> {
@@ -2389,7 +2389,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// ScannerSwitchOpt /* Option<T>::Some */: Identifier;
+    /// ScannerSwitchOpt /* `Option<T>::Some` */: Identifier;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_opt_0(&mut self, _identifier: &ParseTreeType<'t>) -> Result<()> {
@@ -2408,7 +2408,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// ScannerSwitchOpt /* Option<T>::None */: ;
+    /// ScannerSwitchOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_opt_1(&mut self) -> Result<()> {
@@ -2530,7 +2530,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
+    /// UserTypeNameList /* `Vec<T>::Push` */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
     ///
     #[parol_runtime::function_name::named]
     fn user_type_name_list_0(
@@ -2558,7 +2558,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// UserTypeNameList /* Vec<T>::New */: ;
+    /// UserTypeNameList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn user_type_name_list_1(&mut self) -> Result<()> {

@@ -1226,7 +1226,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// BasicList /* Vec<T>::Push */: EndOfLine Line BasicList;
+    /// BasicList /* `Vec<T>::Push` */: EndOfLine Line BasicList;
     ///
     #[parol_runtime::function_name::named]
     fn basic_list_0(
@@ -1252,7 +1252,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// BasicList /* Vec<T>::New */: ;
+    /// BasicList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn basic_list_1(&mut self) -> Result<()> {
@@ -1265,7 +1265,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// BasicOpt0 /* Option<T>::Some */: EndOfLine;
+    /// BasicOpt0 /* `Option<T>::Some` */: EndOfLine;
     ///
     #[parol_runtime::function_name::named]
     fn basic_opt0_0(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
@@ -1284,7 +1284,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// BasicOpt0 /* Option<T>::None */: ;
+    /// BasicOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn basic_opt0_1(&mut self) -> Result<()> {
@@ -1296,7 +1296,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// BasicOpt /* Option<T>::Some */: EndOfLine;
+    /// BasicOpt /* `Option<T>::Some` */: EndOfLine;
     ///
     #[parol_runtime::function_name::named]
     fn basic_opt_0(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
@@ -1315,7 +1315,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// BasicOpt /* Option<T>::None */: ;
+    /// BasicOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn basic_opt_1(&mut self) -> Result<()> {
@@ -1354,7 +1354,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// LineList /* Vec<T>::Push */: <INITIAL, Expr>':'^ /* Clipped */ Statement LineList;
+    /// LineList /* `Vec<T>::Push` */: <INITIAL, Expr>':'^ /* Clipped */ Statement LineList;
     ///
     #[parol_runtime::function_name::named]
     fn line_list_0(
@@ -1379,7 +1379,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// LineList /* Vec<T>::New */: ;
+    /// LineList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn line_list_1(&mut self) -> Result<()> {
@@ -1548,7 +1548,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// RemarkOpt /* Option<T>::Some */: Comment;
+    /// RemarkOpt /* `Option<T>::Some` */: Comment;
     ///
     #[parol_runtime::function_name::named]
     fn remark_opt_0(&mut self, _comment: &ParseTreeType<'t>) -> Result<()> {
@@ -1567,7 +1567,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// RemarkOpt /* Option<T>::None */: ;
+    /// RemarkOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn remark_opt_1(&mut self) -> Result<()> {
@@ -1660,7 +1660,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// AssignmentOpt /* Option<T>::Some */: Let;
+    /// AssignmentOpt /* `Option<T>::Some` */: Let;
     ///
     #[parol_runtime::function_name::named]
     fn assignment_opt_0(&mut self, _let: &ParseTreeType<'t>) -> Result<()> {
@@ -1679,7 +1679,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AssignmentOpt /* Option<T>::None */: ;
+    /// AssignmentOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn assignment_opt_1(&mut self) -> Result<()> {
@@ -1769,7 +1769,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// PrintStatementList /* Vec<T>::Push */: <INITIAL, Expr>','^ /* Clipped */ Expression PrintStatementList;
+    /// PrintStatementList /* `Vec<T>::Push` */: <INITIAL, Expr>','^ /* Clipped */ Expression PrintStatementList;
     ///
     #[parol_runtime::function_name::named]
     fn print_statement_list_0(
@@ -1795,7 +1795,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// PrintStatementList /* Vec<T>::New */: ;
+    /// PrintStatementList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn print_statement_list_1(&mut self) -> Result<()> {
@@ -2332,7 +2332,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// LogicalOrList /* Vec<T>::Push */: LogicalOrOp LogicalAnd LogicalOrList;
+    /// LogicalOrList /* `Vec<T>::Push` */: LogicalOrOp LogicalAnd LogicalOrList;
     ///
     #[parol_runtime::function_name::named]
     fn logical_or_list_0(
@@ -2358,7 +2358,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// LogicalOrList /* Vec<T>::New */: ;
+    /// LogicalOrList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn logical_or_list_1(&mut self) -> Result<()> {
@@ -2396,7 +2396,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// LogicalAndList /* Vec<T>::Push */: LogicalAndOp LogicalNot LogicalAndList;
+    /// LogicalAndList /* `Vec<T>::Push` */: LogicalAndOp LogicalNot LogicalAndList;
     ///
     #[parol_runtime::function_name::named]
     fn logical_and_list_0(
@@ -2422,7 +2422,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// LogicalAndList /* Vec<T>::New */: ;
+    /// LogicalAndList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn logical_and_list_1(&mut self) -> Result<()> {
@@ -2459,7 +2459,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// LogicalNotOpt /* Option<T>::Some */: LogicalNotOp;
+    /// LogicalNotOpt /* `Option<T>::Some` */: LogicalNotOp;
     ///
     #[parol_runtime::function_name::named]
     fn logical_not_opt_0(&mut self, _logical_not_op: &ParseTreeType<'t>) -> Result<()> {
@@ -2478,7 +2478,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// LogicalNotOpt /* Option<T>::None */: ;
+    /// LogicalNotOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn logical_not_opt_1(&mut self) -> Result<()> {
@@ -2514,7 +2514,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// RelationalList /* Vec<T>::Push */: RelationalOp Summation RelationalList;
+    /// RelationalList /* `Vec<T>::Push` */: RelationalOp Summation RelationalList;
     ///
     #[parol_runtime::function_name::named]
     fn relational_list_0(
@@ -2540,7 +2540,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// RelationalList /* Vec<T>::New */: ;
+    /// RelationalList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn relational_list_1(&mut self) -> Result<()> {
@@ -2577,7 +2577,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// SummationList /* Vec<T>::Push */: SummationListGroup Multiplication SummationList;
+    /// SummationList /* `Vec<T>::Push` */: SummationListGroup Multiplication SummationList;
     ///
     #[parol_runtime::function_name::named]
     fn summation_list_0(
@@ -2644,7 +2644,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// SummationList /* Vec<T>::New */: ;
+    /// SummationList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn summation_list_1(&mut self) -> Result<()> {
@@ -2682,7 +2682,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 77:
     ///
-    /// MultiplicationList /* Vec<T>::Push */: MulOp Factor MultiplicationList;
+    /// MultiplicationList /* `Vec<T>::Push` */: MulOp Factor MultiplicationList;
     ///
     #[parol_runtime::function_name::named]
     fn multiplication_list_0(
@@ -2709,7 +2709,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// MultiplicationList /* Vec<T>::New */: ;
+    /// MultiplicationList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn multiplication_list_1(&mut self) -> Result<()> {

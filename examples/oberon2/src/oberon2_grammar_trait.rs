@@ -2879,7 +2879,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// Oberon2Opt /* Option<T>::Some */: ImportList;
+    /// Oberon2Opt /* `Option<T>::Some` */: ImportList;
     ///
     #[parol_runtime::function_name::named]
     fn oberon2_opt_0(&mut self, _import_list: &ParseTreeType<'t>) -> Result<()> {
@@ -2898,7 +2898,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// Oberon2Opt /* Option<T>::None */: ;
+    /// Oberon2Opt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn oberon2_opt_1(&mut self) -> Result<()> {
@@ -2990,7 +2990,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// ImportListList /* Vec<T>::Push */: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList;
+    /// ImportListList /* `Vec<T>::Push` */: ","^ /* Clipped */ ImportListOpt0 /* Option */ Ident ImportListList;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_list_0(
@@ -3018,7 +3018,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// ImportListList /* Vec<T>::New */: ;
+    /// ImportListList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_list_1(&mut self) -> Result<()> {
@@ -3031,7 +3031,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// ImportListOpt0 /* Option<T>::Some */: Ident ":="^ /* Clipped */;
+    /// ImportListOpt0 /* `Option<T>::Some` */: Ident ":="^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_opt0_0(
@@ -3055,7 +3055,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// ImportListOpt0 /* Option<T>::None */: ;
+    /// ImportListOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_opt0_1(&mut self) -> Result<()> {
@@ -3067,7 +3067,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// ImportListOpt /* Option<T>::Some */: Ident ":="^ /* Clipped */;
+    /// ImportListOpt /* `Option<T>::Some` */: Ident ":="^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_opt_0(
@@ -3091,7 +3091,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// ImportListOpt /* Option<T>::None */: ;
+    /// ImportListOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn import_list_opt_1(&mut self) -> Result<()> {
@@ -3127,7 +3127,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// DeclSeqList0 /* Vec<T>::Push */: DeclSeqList0Group DeclSeqList0;
+    /// DeclSeqList0 /* `Vec<T>::Push` */: DeclSeqList0Group DeclSeqList0;
     ///
     #[parol_runtime::function_name::named]
     fn decl_seq_list0_0(
@@ -3203,7 +3203,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// DeclSeqList0 /* Vec<T>::New */: ;
+    /// DeclSeqList0 /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn decl_seq_list0_1(&mut self) -> Result<()> {
@@ -3216,7 +3216,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// DeclSeqList /* Vec<T>::Push */: DeclBlock DeclSeqList;
+    /// DeclSeqList /* `Vec<T>::Push` */: DeclBlock DeclSeqList;
     ///
     #[parol_runtime::function_name::named]
     fn decl_seq_list_0(
@@ -3239,7 +3239,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 30:
     ///
-    /// DeclSeqList /* Vec<T>::New */: ;
+    /// DeclSeqList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn decl_seq_list_1(&mut self) -> Result<()> {
@@ -3334,7 +3334,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// ConstDeclBlockList /* Vec<T>::Push */: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList;
+    /// ConstDeclBlockList /* `Vec<T>::Push` */: ConstDecl ";"^ /* Clipped */ ConstDeclBlockList;
     ///
     #[parol_runtime::function_name::named]
     fn const_decl_block_list_0(
@@ -3360,7 +3360,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// ConstDeclBlockList /* Vec<T>::New */: ;
+    /// ConstDeclBlockList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn const_decl_block_list_1(&mut self) -> Result<()> {
@@ -3400,7 +3400,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// TypeDeclBlockList /* Vec<T>::Push */: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList;
+    /// TypeDeclBlockList /* `Vec<T>::Push` */: TypeDecl ";"^ /* Clipped */ TypeDeclBlockList;
     ///
     #[parol_runtime::function_name::named]
     fn type_decl_block_list_0(
@@ -3426,7 +3426,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// TypeDeclBlockList /* Vec<T>::New */: ;
+    /// TypeDeclBlockList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_decl_block_list_1(&mut self) -> Result<()> {
@@ -3468,7 +3468,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// VarDeclBlockList /* Vec<T>::Push */: VarDecl ";"^ /* Clipped */ VarDeclBlockList;
+    /// VarDeclBlockList /* `Vec<T>::Push` */: VarDecl ";"^ /* Clipped */ VarDeclBlockList;
     ///
     #[parol_runtime::function_name::named]
     fn var_decl_block_list_0(
@@ -3494,7 +3494,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// VarDeclBlockList /* Vec<T>::New */: ;
+    /// VarDeclBlockList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn var_decl_block_list_1(&mut self) -> Result<()> {
@@ -3648,7 +3648,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// ProcedureHeadingOpt0 /* Option<T>::Some */: FormalPars;
+    /// ProcedureHeadingOpt0 /* `Option<T>::Some` */: FormalPars;
     ///
     #[parol_runtime::function_name::named]
     fn procedure_heading_opt0_0(&mut self, _formal_pars: &ParseTreeType<'t>) -> Result<()> {
@@ -3667,7 +3667,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// ProcedureHeadingOpt0 /* Option<T>::None */: ;
+    /// ProcedureHeadingOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn procedure_heading_opt0_1(&mut self) -> Result<()> {
@@ -3679,7 +3679,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// ProcedureHeadingOpt /* Option<T>::Some */: Receiver;
+    /// ProcedureHeadingOpt /* `Option<T>::Some` */: Receiver;
     ///
     #[parol_runtime::function_name::named]
     fn procedure_heading_opt_0(&mut self, _receiver: &ParseTreeType<'t>) -> Result<()> {
@@ -3698,7 +3698,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// ProcedureHeadingOpt /* Option<T>::None */: ;
+    /// ProcedureHeadingOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn procedure_heading_opt_1(&mut self) -> Result<()> {
@@ -3762,7 +3762,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// StatementBlockOpt /* Option<T>::Some */: KwBegin^ /* Clipped */ StatementSeq;
+    /// StatementBlockOpt /* `Option<T>::Some` */: KwBegin^ /* Clipped */ StatementSeq;
     ///
     #[parol_runtime::function_name::named]
     fn statement_block_opt_0(
@@ -3788,7 +3788,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// StatementBlockOpt /* Option<T>::None */: ;
+    /// StatementBlockOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_block_opt_1(&mut self) -> Result<()> {
@@ -3834,7 +3834,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// ForwardDeclOpt0 /* Option<T>::Some */: FormalPars;
+    /// ForwardDeclOpt0 /* `Option<T>::Some` */: FormalPars;
     ///
     #[parol_runtime::function_name::named]
     fn forward_decl_opt0_0(&mut self, _formal_pars: &ParseTreeType<'t>) -> Result<()> {
@@ -3853,7 +3853,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// ForwardDeclOpt0 /* Option<T>::None */: ;
+    /// ForwardDeclOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn forward_decl_opt0_1(&mut self) -> Result<()> {
@@ -3865,7 +3865,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// ForwardDeclOpt /* Option<T>::Some */: Receiver;
+    /// ForwardDeclOpt /* `Option<T>::Some` */: Receiver;
     ///
     #[parol_runtime::function_name::named]
     fn forward_decl_opt_0(&mut self, _receiver: &ParseTreeType<'t>) -> Result<()> {
@@ -3884,7 +3884,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// ForwardDeclOpt /* Option<T>::None */: ;
+    /// ForwardDeclOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn forward_decl_opt_1(&mut self) -> Result<()> {
@@ -3924,7 +3924,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// FormalParsOpt0 /* Option<T>::Some */: ":"^ /* Clipped */ QualIdent;
+    /// FormalParsOpt0 /* `Option<T>::Some` */: ":"^ /* Clipped */ QualIdent;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt0_0(
@@ -3948,7 +3948,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// FormalParsOpt0 /* Option<T>::None */: ;
+    /// FormalParsOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt0_1(&mut self) -> Result<()> {
@@ -3960,7 +3960,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// FormalParsOpt /* Option<T>::Some */: FPSection FormalParsOptList /* Vec */;
+    /// FormalParsOpt /* `Option<T>::Some` */: FPSection FormalParsOptList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt_0(
@@ -3986,7 +3986,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// FormalParsOptList /* Vec<T>::Push */: ";"^ /* Clipped */ FPSection FormalParsOptList;
+    /// FormalParsOptList /* `Vec<T>::Push` */: ";"^ /* Clipped */ FPSection FormalParsOptList;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt_list_0(
@@ -4012,7 +4012,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// FormalParsOptList /* Vec<T>::New */: ;
+    /// FormalParsOptList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt_list_1(&mut self) -> Result<()> {
@@ -4028,7 +4028,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// FormalParsOpt /* Option<T>::None */: ;
+    /// FormalParsOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn formal_pars_opt_1(&mut self) -> Result<()> {
@@ -4073,7 +4073,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// FPSectionList /* Vec<T>::Push */: ","^ /* Clipped */ Ident FPSectionList;
+    /// FPSectionList /* `Vec<T>::Push` */: ","^ /* Clipped */ Ident FPSectionList;
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_list_0(
@@ -4098,7 +4098,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// FPSectionList /* Vec<T>::New */: ;
+    /// FPSectionList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_list_1(&mut self) -> Result<()> {
@@ -4111,7 +4111,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 71:
     ///
-    /// FPSectionOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
+    /// FPSectionOpt /* `Option<T>::Some` */: KwVar^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_opt_0(&mut self, _kw_var: &ParseTreeType<'t>) -> Result<()> {
@@ -4131,7 +4131,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// FPSectionOpt /* Option<T>::None */: ;
+    /// FPSectionOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn f_p_section_opt_1(&mut self) -> Result<()> {
@@ -4171,7 +4171,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 74:
     ///
-    /// ReceiverOpt /* Option<T>::Some */: KwVar^ /* Clipped */;
+    /// ReceiverOpt /* `Option<T>::Some` */: KwVar^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn receiver_opt_0(&mut self, _kw_var: &ParseTreeType<'t>) -> Result<()> {
@@ -4191,7 +4191,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// ReceiverOpt /* Option<T>::None */: ;
+    /// ReceiverOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn receiver_opt_1(&mut self) -> Result<()> {
@@ -4315,7 +4315,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 80:
     ///
-    /// TypeDefList /* Vec<T>::Push */: ";"^ /* Clipped */ FieldList TypeDefList;
+    /// TypeDefList /* `Vec<T>::Push` */: ";"^ /* Clipped */ FieldList TypeDefList;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_list_0(
@@ -4340,7 +4340,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 81:
     ///
-    /// TypeDefList /* Vec<T>::New */: ;
+    /// TypeDefList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_list_1(&mut self) -> Result<()> {
@@ -4407,7 +4407,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 84:
     ///
-    /// TypeDefOpt1 /* Option<T>::Some */: FormalPars;
+    /// TypeDefOpt1 /* `Option<T>::Some` */: FormalPars;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt1_0(&mut self, _formal_pars: &ParseTreeType<'t>) -> Result<()> {
@@ -4426,7 +4426,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 85:
     ///
-    /// TypeDefOpt1 /* Option<T>::None */: ;
+    /// TypeDefOpt1 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt1_1(&mut self) -> Result<()> {
@@ -4438,7 +4438,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 86:
     ///
-    /// TypeDefOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */;
+    /// TypeDefOpt0 /* `Option<T>::Some` */: "\("^ /* Clipped */ QualIdent "\)"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt0_0(
@@ -4464,7 +4464,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 87:
     ///
-    /// TypeDefOpt0 /* Option<T>::None */: ;
+    /// TypeDefOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt0_1(&mut self) -> Result<()> {
@@ -4476,7 +4476,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 88:
     ///
-    /// TypeDefOpt /* Option<T>::Some */: ConstExpr TypeDefOptList /* Vec */;
+    /// TypeDefOpt /* `Option<T>::Some` */: ConstExpr TypeDefOptList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt_0(
@@ -4502,7 +4502,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 89:
     ///
-    /// TypeDefOptList /* Vec<T>::Push */: ","^ /* Clipped */ ConstExpr TypeDefOptList;
+    /// TypeDefOptList /* `Vec<T>::Push` */: ","^ /* Clipped */ ConstExpr TypeDefOptList;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt_list_0(
@@ -4527,7 +4527,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 90:
     ///
-    /// TypeDefOptList /* Vec<T>::New */: ;
+    /// TypeDefOptList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt_list_1(&mut self) -> Result<()> {
@@ -4540,7 +4540,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 91:
     ///
-    /// TypeDefOpt /* Option<T>::None */: ;
+    /// TypeDefOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn type_def_opt_1(&mut self) -> Result<()> {
@@ -4568,7 +4568,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 93:
     ///
-    /// FieldListOpt /* Option<T>::Some */: IdentList ":"^ /* Clipped */ TypeDef;
+    /// FieldListOpt /* `Option<T>::Some` */: IdentList ":"^ /* Clipped */ TypeDef;
     ///
     #[parol_runtime::function_name::named]
     fn field_list_opt_0(
@@ -4595,7 +4595,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 94:
     ///
-    /// FieldListOpt /* Option<T>::None */: ;
+    /// FieldListOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn field_list_opt_1(&mut self) -> Result<()> {
@@ -4632,7 +4632,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 96:
     ///
-    /// StatementSeqList /* Vec<T>::Push */: ";"^ /* Clipped */ Statement StatementSeqList;
+    /// StatementSeqList /* `Vec<T>::Push` */: ";"^ /* Clipped */ Statement StatementSeqList;
     ///
     #[parol_runtime::function_name::named]
     fn statement_seq_list_0(
@@ -4657,7 +4657,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 97:
     ///
-    /// StatementSeqList /* Vec<T>::New */: ;
+    /// StatementSeqList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_seq_list_1(&mut self) -> Result<()> {
@@ -4689,7 +4689,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 99:
     ///
-    /// StatementOpt /* Option<T>::Some */: StatementOptGroup;
+    /// StatementOpt /* `Option<T>::Some` */: StatementOptGroup;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_0(&mut self, _statement_opt_group: &ParseTreeType<'t>) -> Result<()> {
@@ -5076,7 +5076,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 112:
     ///
-    /// StatementOptGroupList /* Vec<T>::Push */: ElsifPart StatementOptGroupList;
+    /// StatementOptGroupList /* `Vec<T>::Push` */: ElsifPart StatementOptGroupList;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_group_list_0(
@@ -5107,7 +5107,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 113:
     ///
-    /// StatementOptGroupList /* Vec<T>::New */: ;
+    /// StatementOptGroupList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_group_list_1(&mut self) -> Result<()> {
@@ -5123,7 +5123,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 114:
     ///
-    /// StatementOptGroupList0 /* Vec<T>::Push */: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0;
+    /// StatementOptGroupList0 /* `Vec<T>::Push` */: "\|"^ /* Clipped */ GuardedDoBlock StatementOptGroupList0;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_group_list0_0(
@@ -5156,7 +5156,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 115:
     ///
-    /// StatementOptGroupList0 /* Vec<T>::New */: ;
+    /// StatementOptGroupList0 /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_group_list0_1(&mut self) -> Result<()> {
@@ -5172,7 +5172,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 116:
     ///
-    /// StatementOpt2 /* Option<T>::Some */: Expr;
+    /// StatementOpt2 /* `Option<T>::Some` */: Expr;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt2_0(&mut self, _expr: &ParseTreeType<'t>) -> Result<()> {
@@ -5191,7 +5191,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 117:
     ///
-    /// StatementOpt2 /* Option<T>::None */: ;
+    /// StatementOpt2 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt2_1(&mut self) -> Result<()> {
@@ -5203,7 +5203,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 118:
     ///
-    /// StatementOpt1 /* Option<T>::Some */: ForStep;
+    /// StatementOpt1 /* `Option<T>::Some` */: ForStep;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt1_0(&mut self, _for_step: &ParseTreeType<'t>) -> Result<()> {
@@ -5222,7 +5222,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 119:
     ///
-    /// StatementOpt1 /* Option<T>::None */: ;
+    /// StatementOpt1 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt1_1(&mut self) -> Result<()> {
@@ -5234,7 +5234,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 120:
     ///
-    /// StatementOpt0 /* Option<T>::Some */: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */;
+    /// StatementOpt0 /* `Option<T>::Some` */: "\("^ /* Clipped */ StatementOpt3 /* Option */ "\)"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt0_0(
@@ -5260,7 +5260,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 121:
     ///
-    /// StatementOpt3 /* Option<T>::Some */: ExprList;
+    /// StatementOpt3 /* `Option<T>::Some` */: ExprList;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt3_0(&mut self, _expr_list: &ParseTreeType<'t>) -> Result<()> {
@@ -5279,7 +5279,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 122:
     ///
-    /// StatementOpt3 /* Option<T>::None */: ;
+    /// StatementOpt3 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt3_1(&mut self) -> Result<()> {
@@ -5291,7 +5291,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 123:
     ///
-    /// StatementOpt0 /* Option<T>::None */: ;
+    /// StatementOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt0_1(&mut self) -> Result<()> {
@@ -5303,7 +5303,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 124:
     ///
-    /// StatementOpt /* Option<T>::None */: ;
+    /// StatementOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn statement_opt_1(&mut self) -> Result<()> {
@@ -5360,7 +5360,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 127:
     ///
-    /// CasesList /* Vec<T>::Push */: "\|"^ /* Clipped */ Case CasesList;
+    /// CasesList /* `Vec<T>::Push` */: "\|"^ /* Clipped */ Case CasesList;
     ///
     #[parol_runtime::function_name::named]
     fn cases_list_0(
@@ -5385,7 +5385,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 128:
     ///
-    /// CasesList /* Vec<T>::New */: ;
+    /// CasesList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn cases_list_1(&mut self) -> Result<()> {
@@ -5478,7 +5478,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 132:
     ///
-    /// OptElsePartEndOpt /* Option<T>::Some */: ElsePart;
+    /// OptElsePartEndOpt /* `Option<T>::Some` */: ElsePart;
     ///
     #[parol_runtime::function_name::named]
     fn opt_else_part_end_opt_0(&mut self, _else_part: &ParseTreeType<'t>) -> Result<()> {
@@ -5497,7 +5497,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 133:
     ///
-    /// OptElsePartEndOpt /* Option<T>::None */: ;
+    /// OptElsePartEndOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn opt_else_part_end_opt_1(&mut self) -> Result<()> {
@@ -5639,7 +5639,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 139:
     ///
-    /// CaseOpt /* Option<T>::Some */: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq;
+    /// CaseOpt /* `Option<T>::Some` */: CaseLabels CaseOptList /* Vec */ ":"^ /* Clipped */ StatementSeq;
     ///
     #[parol_runtime::function_name::named]
     fn case_opt_0(
@@ -5666,7 +5666,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 140:
     ///
-    /// CaseOptList /* Vec<T>::Push */: ","^ /* Clipped */ CaseLabels CaseOptList;
+    /// CaseOptList /* `Vec<T>::Push` */: ","^ /* Clipped */ CaseLabels CaseOptList;
     ///
     #[parol_runtime::function_name::named]
     fn case_opt_list_0(
@@ -5691,7 +5691,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 141:
     ///
-    /// CaseOptList /* Vec<T>::New */: ;
+    /// CaseOptList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn case_opt_list_1(&mut self) -> Result<()> {
@@ -5704,7 +5704,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 142:
     ///
-    /// CaseOpt /* Option<T>::None */: ;
+    /// CaseOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn case_opt_1(&mut self) -> Result<()> {
@@ -5740,7 +5740,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 144:
     ///
-    /// CaseLabelsOpt /* Option<T>::Some */: "\.\." ConstExpr;
+    /// CaseLabelsOpt /* `Option<T>::Some` */: "\.\." ConstExpr;
     ///
     #[parol_runtime::function_name::named]
     fn case_labels_opt_0(
@@ -5765,7 +5765,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 145:
     ///
-    /// CaseLabelsOpt /* Option<T>::None */: ;
+    /// CaseLabelsOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn case_labels_opt_1(&mut self) -> Result<()> {
@@ -5845,7 +5845,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 149:
     ///
-    /// ExprOpt /* Option<T>::Some */: Relation SimpleExpr;
+    /// ExprOpt /* `Option<T>::Some` */: Relation SimpleExpr;
     ///
     #[parol_runtime::function_name::named]
     fn expr_opt_0(
@@ -5867,7 +5867,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 150:
     ///
-    /// ExprOpt /* Option<T>::None */: ;
+    /// ExprOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn expr_opt_1(&mut self) -> Result<()> {
@@ -5907,7 +5907,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 152:
     ///
-    /// SimpleExprList /* Vec<T>::Push */: AddOp Term SimpleExprList;
+    /// SimpleExprList /* `Vec<T>::Push` */: AddOp Term SimpleExprList;
     ///
     #[parol_runtime::function_name::named]
     fn simple_expr_list_0(
@@ -5933,7 +5933,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 153:
     ///
-    /// SimpleExprList /* Vec<T>::New */: ;
+    /// SimpleExprList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn simple_expr_list_1(&mut self) -> Result<()> {
@@ -5946,7 +5946,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 154:
     ///
-    /// SimpleExprOpt /* Option<T>::Some */: SimpleExprOptGroup;
+    /// SimpleExprOpt /* `Option<T>::Some` */: SimpleExprOptGroup;
     ///
     #[parol_runtime::function_name::named]
     fn simple_expr_opt_0(&mut self, _simple_expr_opt_group: &ParseTreeType<'t>) -> Result<()> {
@@ -6003,7 +6003,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 157:
     ///
-    /// SimpleExprOpt /* Option<T>::None */: ;
+    /// SimpleExprOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn simple_expr_opt_1(&mut self) -> Result<()> {
@@ -6035,7 +6035,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 159:
     ///
-    /// TermList /* Vec<T>::Push */: MulOp Factor TermList;
+    /// TermList /* `Vec<T>::Push` */: MulOp Factor TermList;
     ///
     #[parol_runtime::function_name::named]
     fn term_list_0(
@@ -6061,7 +6061,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 160:
     ///
-    /// TermList /* Vec<T>::New */: ;
+    /// TermList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn term_list_1(&mut self) -> Result<()> {
@@ -6237,7 +6237,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 169:
     ///
-    /// FactorOpt /* Option<T>::Some */: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */;
+    /// FactorOpt /* `Option<T>::Some` */: "\("^ /* Clipped */ FactorOpt0 /* Option */ "\)"^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn factor_opt_0(
@@ -6263,7 +6263,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 170:
     ///
-    /// FactorOpt0 /* Option<T>::Some */: ExprList;
+    /// FactorOpt0 /* `Option<T>::Some` */: ExprList;
     ///
     #[parol_runtime::function_name::named]
     fn factor_opt0_0(&mut self, _expr_list: &ParseTreeType<'t>) -> Result<()> {
@@ -6282,7 +6282,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 171:
     ///
-    /// FactorOpt0 /* Option<T>::None */: ;
+    /// FactorOpt0 /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn factor_opt0_1(&mut self) -> Result<()> {
@@ -6294,7 +6294,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 172:
     ///
-    /// FactorOpt /* Option<T>::None */: ;
+    /// FactorOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn factor_opt_1(&mut self) -> Result<()> {
@@ -6331,7 +6331,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 174:
     ///
-    /// SetOpt /* Option<T>::Some */: Element SetOptList /* Vec */;
+    /// SetOpt /* `Option<T>::Some` */: Element SetOptList /* Vec */;
     ///
     #[parol_runtime::function_name::named]
     fn set_opt_0(
@@ -6353,7 +6353,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 175:
     ///
-    /// SetOptList /* Vec<T>::Push */: ","^ /* Clipped */ Element SetOptList;
+    /// SetOptList /* `Vec<T>::Push` */: ","^ /* Clipped */ Element SetOptList;
     ///
     #[parol_runtime::function_name::named]
     fn set_opt_list_0(
@@ -6378,7 +6378,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 176:
     ///
-    /// SetOptList /* Vec<T>::New */: ;
+    /// SetOptList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn set_opt_list_1(&mut self) -> Result<()> {
@@ -6391,7 +6391,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 177:
     ///
-    /// SetOpt /* Option<T>::None */: ;
+    /// SetOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn set_opt_1(&mut self) -> Result<()> {
@@ -6427,7 +6427,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 179:
     ///
-    /// ElementOpt /* Option<T>::Some */: "\.\."^ /* Clipped */ Expr;
+    /// ElementOpt /* `Option<T>::Some` */: "\.\."^ /* Clipped */ Expr;
     ///
     #[parol_runtime::function_name::named]
     fn element_opt_0(
@@ -6451,7 +6451,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 180:
     ///
-    /// ElementOpt /* Option<T>::None */: ;
+    /// ElementOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn element_opt_1(&mut self) -> Result<()> {
@@ -6762,7 +6762,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 198:
     ///
-    /// DesignatorList /* Vec<T>::Push */: DesignatorSuffix DesignatorList;
+    /// DesignatorList /* `Vec<T>::Push` */: DesignatorSuffix DesignatorList;
     ///
     #[parol_runtime::function_name::named]
     fn designator_list_0(
@@ -6785,7 +6785,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 199:
     ///
-    /// DesignatorList /* Vec<T>::New */: ;
+    /// DesignatorList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn designator_list_1(&mut self) -> Result<()> {
@@ -6903,7 +6903,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 204:
     ///
-    /// ExprListList /* Vec<T>::Push */: ","^ /* Clipped */ Expr ExprListList;
+    /// ExprListList /* `Vec<T>::Push` */: ","^ /* Clipped */ Expr ExprListList;
     ///
     #[parol_runtime::function_name::named]
     fn expr_list_list_0(
@@ -6928,7 +6928,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 205:
     ///
-    /// ExprListList /* Vec<T>::New */: ;
+    /// ExprListList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn expr_list_list_1(&mut self) -> Result<()> {
@@ -6965,7 +6965,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 207:
     ///
-    /// IdentListList /* Vec<T>::Push */: ","^ /* Clipped */ IdentDef IdentListList;
+    /// IdentListList /* `Vec<T>::Push` */: ","^ /* Clipped */ IdentDef IdentListList;
     ///
     #[parol_runtime::function_name::named]
     fn ident_list_list_0(
@@ -6990,7 +6990,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 208:
     ///
-    /// IdentListList /* Vec<T>::New */: ;
+    /// IdentListList /* `Vec<T>::New` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn ident_list_list_1(&mut self) -> Result<()> {
@@ -7065,7 +7065,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 212:
     ///
-    /// IdentDefOpt /* Option<T>::Some */: IdentDefOptGroup;
+    /// IdentDefOpt /* `Option<T>::Some` */: IdentDefOptGroup;
     ///
     #[parol_runtime::function_name::named]
     fn ident_def_opt_0(&mut self, _ident_def_opt_group: &ParseTreeType<'t>) -> Result<()> {
@@ -7120,7 +7120,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
 
     /// Semantic action for production 215:
     ///
-    /// IdentDefOpt /* Option<T>::None */: ;
+    /// IdentDefOpt /* `Option<T>::None` */: ;
     ///
     #[parol_runtime::function_name::named]
     fn ident_def_opt_1(&mut self) -> Result<()> {

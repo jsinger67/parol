@@ -146,7 +146,7 @@ pub(crate) enum TypeEntrails {
     Enum,
     /// A variant of an enum with a type
     EnumVariant(SymbolId),
-    /// Will be generated as Vec<T> where T is the type, similar to TypeRef
+    /// Will be generated as `Vec<T>` where T is the type, similar to TypeRef
     Vec(SymbolId),
     /// A trait, normally the semantic actions trait  generated for the user grammar
     Trait,
