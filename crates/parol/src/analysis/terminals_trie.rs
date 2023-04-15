@@ -237,22 +237,15 @@ impl Trie {
         self.root.c.binary_search(&Node::new(t)).ok()
     }
 
-    /// Adds a child node if it not already exists and returns the child index of it
-    /// The boolean in the return value ist true on insertion (collection changed)
+    /// Adds a child node if it not already exists and returns the child index of it.
+    /// The boolean in the return value ist true on insertion, i.e. when the collection has changed.
     fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
         if let Some(index) = self.child_index(t) {
             (index, false)
         } else {
-            let idx = if let Some(idx) = self.root.c.iter().position(|n| n.t > t) {
-                // insert in sort order
-                self.root.c.insert(idx, Node::new(t));
-                idx
-            } else {
-                // push at the end
-                let idx = self.root.c.len();
-                self.root.c.push(Node::new(t));
-                idx
-            };
+            let idx = self.root.c.partition_point(|n| n.t < t);
+            // insert in sort order
+            self.root.c.insert(idx, Node::new(t));
             (idx, true)
         }
     }
