@@ -21,6 +21,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.21.2 - 2023-04-xx
+
+* `follow_k` now uses cached results from step k-1 which results in an improvement of performance
+analyzing complex grammars. In the case of [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)
+we achieve another 25% improvement.
+
 ## 0.21.1 - 2023-04-13
 
 * Using an own trie implementation instead of a `HashSet<KTuple>` in `KTuples`. This considerably

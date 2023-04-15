@@ -940,9 +940,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 130] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 68, 1, -1),
-            Trans(1, 18, 3, 23),
-            Trans(1, 21, 3, 23),
+            Trans(0, 68, 1, 23),
+            Trans(1, 18, 1, 23),
+            Trans(1, 21, 1, 23),
             Trans(1, 22, 2, 22),
         ],
         k: 2,
@@ -951,9 +951,9 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 130] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 68, 1, -1),
-            Trans(1, 18, 3, 21),
-            Trans(1, 21, 3, 21),
+            Trans(0, 68, 1, 21),
+            Trans(1, 18, 1, 21),
+            Trans(1, 21, 1, 21),
             Trans(1, 22, 2, 20),
         ],
         k: 2,

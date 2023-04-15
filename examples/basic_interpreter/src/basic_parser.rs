@@ -248,10 +248,10 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 58] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 0, 3, 2),
-            Trans(0, 9, 1, -1),
-            Trans(1, 0, 3, 2),
-            Trans(1, 6, 2, 1),
+            Trans(0, 0, 2, 2),
+            Trans(0, 9, 2, 2),
+            Trans(2, 0, 2, 2),
+            Trans(2, 6, 1, 1),
         ],
         k: 2,
     },
