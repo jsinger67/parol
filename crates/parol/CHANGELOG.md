@@ -26,6 +26,8 @@ new minor version numbers. Please note that this is no version handling covered 
 * `follow_k` now uses cached results from step k-1 which results in an improvement of performance
 analyzing complex grammars. In the case of [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)
 we achieve another 25% improvement.
+* Fixed clippy warnings
+* Fixed warnings from `cargo doc`
 
 ## 0.21.1 - 2023-04-13
 
