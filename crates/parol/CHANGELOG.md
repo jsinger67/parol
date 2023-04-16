@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.21.2 - 2023-04-xx
+## 0.21.2 - 2023-04-16
 
 * `follow_k` now uses cached results from step k-1 which results in an improvement of performance
 analyzing complex grammars. In the case of [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)
