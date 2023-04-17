@@ -97,7 +97,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let args = Arguments::parse();
     eprintln!("Starting parol language server");
-    let (connection, io_threads) = Connection::connect((args.ip_address, args.port_number))?;
+
+    let (connection, io_threads) = if args.stdio {
+        Connection::stdio()
+    } else {
+        Connection::connect((args.ip_address, args.port_number))?
+    };
     let connection = Arc::new(connection);
 
     // Run the server and wait for the two threads to end (typically by trigger LSP Exit event).
