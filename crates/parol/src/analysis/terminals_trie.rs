@@ -69,16 +69,9 @@ impl Node {
         if let Some(index) = self.child_index(t) {
             (index, false)
         } else {
-            let idx = if let Some(idx) = self.c.iter().position(|n| n.t > t) {
-                // insert in sort order
-                self.c.insert(idx, Node::new(t));
-                idx
-            } else {
-                // push at the end
-                let idx = self.c.len();
-                self.c.push(Node::new(t));
-                idx
-            };
+            let idx = self.c.partition_point(|n| n.t < t);
+            // insert in sort order
+            self.c.insert(idx, Node::new(t));
             (idx, true)
         }
     }
