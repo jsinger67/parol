@@ -30,7 +30,7 @@ impl CompiledDFA {
             .states
             .iter()
             .filter_map(|s| {
-                if s.accepted {
+                if s.is_accepting() {
                     Some((s.id, s.prod_num))
                 } else {
                     None

@@ -26,17 +26,18 @@ pub struct DFAState {
     pub id: StateIndex,
 
     ///
-    /// The state is either accepting or not.
-    ///
-    pub accepted: bool,
-
-    ///
     /// Used to detect conflicts.
     /// A conflict can occur in union operations.
     /// When combining two states that are both accepted and have different
     /// production numbers a conflict is detected.
     ///
     pub prod_num: CompiledProductionIndex,
+}
+
+impl DFAState {
+    pub(crate) fn is_accepting(&self) -> bool {
+        self.prod_num >= 0
+    }
 }
 
 impl Display for DFAState {
@@ -46,7 +47,7 @@ impl Display for DFAState {
         } else {
             format!(", Pr({})", self.prod_num)
         };
-        let accepted = if self.accepted { ", accepting" } else { "" };
+        let accepted = if self.is_accepting() { ", accepting" } else { "" };
         write!(f, "Id({}{}){}", self.id, accepted, prod_num)
     }
 }
@@ -97,7 +98,6 @@ impl LookaheadDFA {
         let mut dfa = Self {
             states: vec![DFAState {
                 id: 0,
-                accepted: k_tuples.is_empty(),
                 prod_num: if k_tuples.is_empty() {
                     prod_num as i32
                 } else {
@@ -115,7 +115,6 @@ impl LookaheadDFA {
             }
             // The last created state is always accepting and needs to have a
             // valid production number
-            dfa.states[current_state].accepted = true;
             dfa.states[current_state].prod_num = prod_num as i32;
             dfa.k = std::cmp::max(dfa.k, k_tuple.len());
         }
@@ -182,11 +181,11 @@ impl LookaheadDFA {
                             .is_none()
                         {
                             changed = true;
-                            let other_state_accepted = other.states[*to_state].accepted;
+                            let other_state_accepted = other.states[*to_state].is_accepting();
                             let other_to_state_prod_num = other.states[*to_state].prod_num;
 
                             let result_state_accepted =
-                                result_union.borrow().states[result_state].accepted;
+                                result_union.borrow().states[result_state].is_accepting();
                             let result_state_prod_num =
                                 result_union.borrow().states[result_state].prod_num;
 
@@ -204,7 +203,6 @@ Ambiguous production number prediction
                             }
                             result_union.borrow_mut().coin_state(
                                 result_state,
-                                result_state_accepted || other_state_accepted,
                                 other_to_state_prod_num,
                             );
                         }
@@ -222,14 +220,12 @@ Ambiguous production number prediction
         let id = self.states.len();
         self.states.push(DFAState {
             id,
-            accepted: false,
             prod_num: INVALID_PROD,
         });
         id
     }
 
-    fn coin_state(&mut self, id: StateIndex, accepted: bool, prod_num: CompiledProductionIndex) {
-        self.states[id].accepted = accepted;
+    fn coin_state(&mut self, id: StateIndex, prod_num: CompiledProductionIndex) {
         self.states[id].prod_num = prod_num;
     }
 
