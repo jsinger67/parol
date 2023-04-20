@@ -48,7 +48,11 @@ impl Display for DFAState {
         } else {
             format!(", Pr({})", self.prod_num)
         };
-        let accepted = if self.is_accepting() { ", accepting" } else { "" };
+        let accepted = if self.is_accepting() {
+            ", accepting"
+        } else {
+            ""
+        };
         write!(f, "Id({}{}){}", self.id, accepted, prod_num)
     }
 }
@@ -204,10 +208,9 @@ Ambiguous production number prediction
                                 );
                                 bail!(message);
                             }
-                            result_union.borrow_mut().coin_state(
-                                result_state,
-                                other_to_state_prod_num,
-                            );
+                            result_union
+                                .borrow_mut()
+                                .coin_state(result_state, other_to_state_prod_num);
                         }
                     }
                 }

@@ -273,8 +273,6 @@ impl Display for Trie {
     }
 }
 
-
-
 bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     struct Flags: u32 {

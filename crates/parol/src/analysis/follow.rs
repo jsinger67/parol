@@ -205,33 +205,38 @@ pub fn follow_k(
         },
     );
 
-    let non_terminal_results: Arc<RwLock<FollowSet>> = Arc::new(RwLock::new(if k <= 1 {
-        cfg.get_non_terminal_set()
-            .iter()
-            .fold(Vec::new(), |mut acc, nt| {
-                if nt == start_symbol {
-                    acc.push(DomainType::end(k));
-                } else {
-                    acc.push(DomainType::new(k));
-                }
-                acc
-            })
+    let (non_terminal_results, mut result_map) = if /*k <= 1*/ true {
+        (
+            Arc::new(RwLock::new(cfg.get_non_terminal_set().iter().fold(
+                Vec::new(),
+                |mut acc, nt| {
+                    if nt == start_symbol {
+                        acc.push(DomainType::end(k));
+                    } else {
+                        acc.push(DomainType::new(k));
+                    }
+                    acc
+                },
+            ))),
+            Arc::new(
+                non_terminal_positions
+                    .iter()
+                    .fold(ResultMap::new(), |mut acc, (p, _)| {
+                        acc.insert(*p, DomainType::new(k));
+                        acc
+                    }),
+            ),
+        )
     } else {
-        let CacheEntry(_, f) = follow_cache.get(k - 1, grammar_config, first_cache);
-        f
-    }));
-
-    let mut result_map = Arc::new(if k <= 1 {
-        non_terminal_positions
-            .iter()
-            .fold(ResultMap::new(), |mut acc, (p, _)| {
-                acc.insert(*p, DomainType::new(k));
+        let CacheEntry(r, f) = follow_cache.get(k - 1, grammar_config, first_cache);
+        (
+            Arc::new(RwLock::new(f.into_iter().fold(Vec::new(), |mut acc, t| {
+                acc.push(t.set_k(k));
                 acc
-            })
-    } else {
-        let CacheEntry(r, _) = follow_cache.get(k - 1, grammar_config, first_cache);
-        r.iter().map(|(p, t)| (*p, t.clone().set_k(k))).collect()
-    });
+            }))),
+            Arc::new(r.iter().map(|(p, t)| (*p, t.clone().set_k(k))).collect()),
+        )
+    };
 
     let mut iterations = 0usize;
     let mut new_result_vector;
