@@ -264,6 +264,17 @@ impl PartialEq for Trie {
     }
 }
 
+impl Display for Trie {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for t in self.iter() {
+            writeln!(f, "{t}")?
+        }
+        Ok(())
+    }
+}
+
+
+
 bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     struct Flags: u32 {

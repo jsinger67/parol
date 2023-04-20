@@ -1,6 +1,7 @@
 use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::KTuples;
 use anyhow::{bail, Result};
+use parol_runtime::log::trace;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};
@@ -107,7 +108,9 @@ impl LookaheadDFA {
             transitions: BTreeMap::new(),
             k: 0,
         };
+        trace!("KTuples for production {prod_num}");
         for k_tuple in &k_tuples.sorted() {
+            trace!("{k_tuple}");
             let mut current_state = 0;
             let tuple = k_tuple.terminals.inner();
             for i in 0..tuple.i {

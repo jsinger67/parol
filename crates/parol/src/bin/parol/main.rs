@@ -69,6 +69,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     if args.range {
         builder.range();
     }
+    if args.verbose {
+        builder.debug_verbose();
+    }
     builder.inner_attributes(args.inner_attributes.clone());
     if let Some(expanded_grammar_file) = &args.expanded {
         if expanded_grammar_file == OsStr::new("--") {
