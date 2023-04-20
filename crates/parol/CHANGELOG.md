@@ -23,7 +23,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ## 0.21.3 -  Not released yet
 
-* Minor performance improvement by using partition_point in [parol::analysis::terminals_trie::Node::add_child]
+* Minor performance improvement by using partition_point in `terminals_trie::Node::add_child`
 
 ## 0.21.2 - 2023-04-16
 
