@@ -391,7 +391,10 @@ impl Display for TerminalsIter<'_> {
 
 #[cfg(test)]
 mod test {
+    use std::collections::HashSet;
+
     use parol_runtime::lexer::EOI;
+    use rand::Rng;
 
     use crate::{
         analysis::{
@@ -399,7 +402,7 @@ mod test {
             k_tuple::Terminals,
             terminals_trie::{Node, Trie},
         },
-        CompiledTerminal, KTuple,
+        CompiledTerminal, KTuple, MAX_K,
     };
 
     #[test]
@@ -595,6 +598,18 @@ mod test {
     #[test]
     fn trie_empty_iter() {
         let t = Trie::new();
+        assert_eq!(0, t.len());
+        assert_eq!(0, end_node_count(&t));
+        assert_eq!(0, t.iter().count());
+        let expected = Vec::<Terminals>::new();
+        assert_eq!(expected, t.iter().collect::<Vec<_>>());
+    }
+
+    // An empty terminal string is not added to the trie
+    #[test]
+    fn trie_iter_empty_single() {
+        let mut t = Trie::new();
+        t.insert(&KTuple::new(6).with_terminal_indices(&[]));
         assert_eq!(0, t.len());
         assert_eq!(0, end_node_count(&t));
         assert_eq!(0, t.iter().count());
@@ -878,5 +893,35 @@ mod test {
         //     t1
         // );
         item_count == end_node_count
+    }
+
+    #[quickcheck]
+    fn trie_behaves_like_hash_set(
+        t: Vec<Vec<u8>>, // We use u8 here to avoid very large integers
+    ) -> bool {
+        // We generate a valid value for k
+        let k = rand::thread_rng().gen_range(0..=MAX_K);
+        // eprintln!("# of tuples: {}, k: {k}", t.len());
+        let (k_tuples, hash_map) = t.iter().fold(
+            (Trie::new(), HashSet::<KTuple>::new()),
+            |(mut acc0, mut acc1), t| {
+                // We only use at most the first MAX_K elements of the tuple
+                let t = &t[..std::cmp::min(k, t.len())];
+                // If k is zero the k_tuple is empty and won't be inserted into the trie
+                if !t.is_empty() {
+                    // eprintln!("k{k}: {:?}({})", t, t.len());
+                    // Here we transform the u8's to usize again
+                    let t = t.iter().map(|u| *u as usize).collect::<Vec<usize>>();
+                    let k_tuple = KTuple::new(k).with_terminal_indices(&t);
+                    acc0.insert(&k_tuple);
+                    acc1.insert(k_tuple);
+                }
+                (acc0, acc1)
+            },
+        );
+        let hash_map_len = hash_map.len();
+        let k_tuples_len = k_tuples.iter().count();
+        // eprintln!("hash set: #{}, k_tuples: #{}", hash_map_len, k_tuples_len);
+        hash_map_len == k_tuples_len
     }
 }

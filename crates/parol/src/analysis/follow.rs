@@ -205,37 +205,31 @@ pub fn follow_k(
         },
     );
 
-    let (mut result_map, non_terminal_results) = if /*k == 0*/ true {
-        (
-            Arc::new(
-                non_terminal_positions
-                    .iter()
-                    .fold(ResultMap::new(), |mut acc, (p, _)| {
-                        acc.insert(*p, DomainType::new(k));
-                        acc
-                    }),
-            ),
-            Arc::new(RwLock::new(cfg.get_non_terminal_set().iter().fold(
-                Vec::new(),
-                |mut acc, nt| {
-                    if nt == start_symbol {
-                        acc.push(DomainType::end(k));
-                    } else {
-                        acc.push(DomainType::new(k));
-                    }
+    let non_terminal_results = Arc::new(RwLock::new(cfg.get_non_terminal_set().iter().fold(
+        Vec::new(),
+        |mut acc, nt| {
+            if nt == start_symbol {
+                acc.push(DomainType::end(k));
+            } else {
+                acc.push(DomainType::new(k));
+            }
+            acc
+        },
+    )));
+
+    let mut result_map = if k == 0 {
+        // k == 0: No previous cache result available
+        Arc::new(
+            non_terminal_positions
+                .iter()
+                .fold(ResultMap::new(), |mut acc, (p, _)| {
+                    acc.insert(*p, DomainType::new(k));
                     acc
-                },
-            ))),
+                }),
         )
     } else {
-        let CacheEntry(r, f) = follow_cache.get(k - 1, grammar_config, first_cache);
-        (
-            Arc::new(r.iter().map(|(p, t)| (*p, t.clone().set_k(k))).collect()),
-            Arc::new(RwLock::new(f.into_iter().fold(Vec::new(), |mut acc, t| {
-                acc.push(t.set_k(k));
-                acc
-            }))),
-        )
+        let CacheEntry(r, _) = follow_cache.get(k - 1, grammar_config, first_cache);
+        Arc::new(r.iter().map(|(p, t)| (*p, t.clone().set_k(k))).collect())
     };
 
     let mut iterations = 0usize;
