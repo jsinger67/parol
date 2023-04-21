@@ -70,17 +70,14 @@ mod tests {
             states: vec![
                 DFAState {
                     id: 0,
-                    accepted: false,
-                    prod_num: 63,
+                    prod_num: -1,
                 },
                 DFAState {
                     id: 1,
-                    accepted: false,
                     prod_num: 64,
                 },
                 DFAState {
                     id: 2,
-                    accepted: true,
                     prod_num: 65,
                 },
             ],
@@ -100,10 +97,10 @@ mod tests {
 
     node [shape=point, style=invis]; ""
     node [shape=ellipse, color=cyan, style=solid];
-    "" -> 0 [label = "Id(0), Pr(63)"];
+    "" -> 0 [label = "Id(0)"];
 
     node [shape=ellipse, color=cyan];
-    1 [label = "Id(1), Pr(64)"];
+    1 [label = "Id(1, accepting), Pr(64)"];
     2 [label = "Id(2, accepting), Pr(65)"];
 
 

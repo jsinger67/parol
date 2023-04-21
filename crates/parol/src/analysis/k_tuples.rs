@@ -11,7 +11,7 @@ use super::terminals_trie::Trie;
 ///
 /// A set type consisting of terminal strings (called k-tuples)
 ///
-#[derive(Clone, Default, Eq)]
+#[derive(Clone, Default, Eq, PartialEq)]
 pub struct KTuples(Trie, usize, bool);
 
 impl KTuples {
@@ -204,12 +204,6 @@ impl Display for KTuples {
                 .join(", "),
             self.1
         )
-    }
-}
-
-impl PartialEq for KTuples {
-    fn eq(&self, other: &Self) -> bool {
-        self.0.eq(&other.0)
     }
 }
 
