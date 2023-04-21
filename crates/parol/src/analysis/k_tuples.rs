@@ -42,14 +42,14 @@ impl KTuples {
     }
 
     /// Appends another KTuples item to self
-    pub fn append(&mut self, other: Self) -> bool {
+    pub fn append(&mut self, other: &Self) -> bool {
         let count = self.0.len();
         self.0.append(&other.0);
         count != self.0.len()
     }
 
     /// Creates a union with another KTuples and self
-    pub fn union(&self, other: Self) -> (Self, bool) {
+    pub fn union(&self, other: &Self) -> (Self, bool) {
         let (unn, changed) = self.0.union(&other.0);
         let mut tuples = Self(unn, self.1, false);
         tuples.update_completeness();

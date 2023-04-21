@@ -227,11 +227,13 @@ impl Terminals {
     }
 
     /// Checks if self is an Epsilon
+    #[inline]
     pub fn is_eps(&self) -> bool {
         self.i == 1 && self.t[0].is_eps()
     }
 
     /// Checks if self is an end-of-input symbol
+    #[inline]
     pub fn is_end(&self) -> bool {
         self.i == 1 && self.t[0].is_end()
     }
@@ -468,7 +470,7 @@ impl KTuple {
     }
 
     ///
-    /// Creates a new object from a slice of other objects
+    /// Creates a new object from a slice of CompiledTerminals
     ///
     pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
         let terminals = Terminals::from_slice(others, k);
