@@ -1652,6 +1652,7 @@ pub struct HexPrefix<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InlineTable<'t> {
     pub inline_table_opt: Option<Box<InlineTableOpt<'t>>>,
+    pub inline_table_opt0: Option<Box<InlineTableOpt0<'t>>>,
 }
 
 ///
@@ -1703,6 +1704,16 @@ pub struct InlineTableOpen<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InlineTableOpt<'t> {
     pub inline_table_key_vals: Box<InlineTableKeyVals<'t>>,
+}
+
+///
+/// Type derived for non-terminal InlineTableOpt0
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct InlineTableOpt0<'t> {
+    pub inline_table_sep: Box<InlineTableSep<'t>>,
 }
 
 ///
@@ -1838,7 +1849,7 @@ pub struct LocalDate<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LocalDateTime<'t> {
-    pub local_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)? */
+    pub local_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]? */
 }
 
 ///
@@ -1848,7 +1859,7 @@ pub struct LocalDateTime<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LocalTime<'t> {
-    pub local_time: Token<'t>, /* [0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)? */
+    pub local_time: Token<'t>, /* [0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)? */
 }
 
 ///
@@ -2157,7 +2168,7 @@ pub struct OctPrefix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct OffsetDateTime<'t> {
-    pub offset_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2}) */
+    pub offset_date_time: Token<'t>, /* [0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)? */
 }
 
 ///
@@ -2297,7 +2308,7 @@ pub struct Unicode8<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UnquotedKey<'t> {
-    pub unquoted_key: Token<'t>, /* [-_A-Za-z0-9]+ */
+    pub unquoted_key: Token<'t>, /* [-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+ */
 }
 
 ///
@@ -2385,6 +2396,7 @@ pub enum ASTType<'t> {
     InlineTableKeyValsOpt(Option<Box<InlineTableKeyValsOpt<'t>>>),
     InlineTableOpen(InlineTableOpen<'t>),
     InlineTableOpt(Option<Box<InlineTableOpt<'t>>>),
+    InlineTableOpt0(Option<Box<InlineTableOpt0<'t>>>),
     InlineTableSep(InlineTableSep<'t>),
     Integer(Integer<'t>),
     Key(Key<'t>),
@@ -4682,7 +4694,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 110:
     ///
-    /// OffsetDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})";
+    /// OffsetDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?";
     ///
     #[parol_runtime::function_name::named]
     fn offset_date_time(&mut self, offset_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4699,7 +4711,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 111:
     ///
-    /// LocalDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
+    /// LocalDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?";
     ///
     #[parol_runtime::function_name::named]
     fn local_date_time(&mut self, local_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4731,7 +4743,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 113:
     ///
-    /// LocalTime: <Val>"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
+    /// LocalTime: <Val>"[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?";
     ///
     #[parol_runtime::function_name::named]
     fn local_time(&mut self, local_time: &ParseTreeType<'t>) -> Result<()> {
@@ -5102,25 +5114,28 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 132:
     ///
-    /// InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableClose^ /* Clipped */;
+    /// InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableOpt0 /* Option */ InlineTableClose^ /* Clipped */;
     ///
     #[parol_runtime::function_name::named]
     fn inline_table(
         &mut self,
         _inline_table_open: &ParseTreeType<'t>,
         _inline_table_opt: &ParseTreeType<'t>,
+        _inline_table_opt0: &ParseTreeType<'t>,
         _inline_table_close: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'inline_table_close'
         self.pop(context);
+        let inline_table_opt0 = pop_item!(self, inline_table_opt0, InlineTableOpt0, context);
         let inline_table_opt = pop_item!(self, inline_table_opt, InlineTableOpt, context);
         // Ignore clipped member 'inline_table_open'
         self.pop(context);
         let inline_table_built = InlineTable {
             // Ignore clipped member 'inline_table_open'
             inline_table_opt,
+            inline_table_opt0,
             // Ignore clipped member 'inline_table_close'
         };
         // Calling user action here
@@ -5130,6 +5145,37 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 133:
+    ///
+    /// InlineTableOpt0 /* `Option<T>::Some` */: InlineTableSep;
+    ///
+    #[parol_runtime::function_name::named]
+    fn inline_table_opt0_0(&mut self, _inline_table_sep: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let inline_table_sep = pop_item!(self, inline_table_sep, InlineTableSep, context);
+        let inline_table_opt0_0_built = InlineTableOpt0 {
+            inline_table_sep: Box::new(inline_table_sep),
+        };
+        self.push(
+            ASTType::InlineTableOpt0(Some(Box::new(inline_table_opt0_0_built))),
+            context,
+        );
+        Ok(())
+    }
+
+    /// Semantic action for production 134:
+    ///
+    /// InlineTableOpt0 /* `Option<T>::None` */: ;
+    ///
+    #[parol_runtime::function_name::named]
+    fn inline_table_opt0_1(&mut self) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        self.push(ASTType::InlineTableOpt0(None), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 135:
     ///
     /// InlineTableOpt /* `Option<T>::Some` */: InlineTableKeyVals;
     ///
@@ -5149,7 +5195,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 134:
+    /// Semantic action for production 136:
     ///
     /// InlineTableOpt /* `Option<T>::None` */: ;
     ///
@@ -5161,7 +5207,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 135:
+    /// Semantic action for production 137:
     ///
     /// InlineTableOpen: <INITIAL, Val>"\u{7B}";
     ///
@@ -5178,7 +5224,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 136:
+    /// Semantic action for production 138:
     ///
     /// InlineTableClose: <INITIAL, Val>"\u{7D}";
     ///
@@ -5195,7 +5241,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 137:
+    /// Semantic action for production 139:
     ///
     /// InlineTableSep: ArraySep;
     ///
@@ -5214,7 +5260,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 138:
+    /// Semantic action for production 140:
     ///
     /// InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
     ///
@@ -5247,7 +5293,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 139:
+    /// Semantic action for production 141:
     ///
     /// InlineTableKeyValsOpt /* `Option<T>::Some` */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
     ///
@@ -5274,7 +5320,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 140:
+    /// Semantic action for production 142:
     ///
     /// InlineTableKeyValsOpt /* `Option<T>::None` */: ;
     ///
@@ -5286,7 +5332,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 141:
+    /// Semantic action for production 143:
     ///
     /// ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
     ///
@@ -5315,7 +5361,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 142:
+    /// Semantic action for production 144:
     ///
     /// UnsignedDecInt: <Val>"0|[1-9]([0-9]|_[0-9])*";
     ///
@@ -5332,9 +5378,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 143:
+    /// Semantic action for production 145:
     ///
-    /// UnquotedKey: "[-_A-Za-z0-9]+";
+    /// UnquotedKey: "[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+";
     ///
     #[parol_runtime::function_name::named]
     fn unquoted_key(&mut self, unquoted_key: &ParseTreeType<'t>) -> Result<()> {
@@ -5348,7 +5394,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 144:
+    /// Semantic action for production 146:
     ///
     /// DotSep: <INITIAL, Val>"\.";
     ///
@@ -5364,7 +5410,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 145:
+    /// Semantic action for production 147:
     ///
     /// MLBasicStringStart: <INITIAL, Val>"\u{22}{3}";
     ///
@@ -5386,7 +5432,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 146:
+    /// Semantic action for production 148:
     ///
     /// MLBasicStringEnd: <MLBString>"\u{22}{3,5}";
     ///
@@ -5408,7 +5454,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 147:
+    /// Semantic action for production 149:
     ///
     /// MLBQuotes: <MLBString>"\u{22}{1,2}";
     ///
@@ -5424,7 +5470,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 148:
+    /// Semantic action for production 150:
     ///
     /// QuotationMark: <INITIAL, Esc, Val, BString>"\u{22}";
     ///
@@ -5440,7 +5486,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 149:
+    /// Semantic action for production 151:
     ///
     /// MLLiteralStringStart: <INITIAL, Val>"\u{27}{3}";
     ///
@@ -5465,7 +5511,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 150:
+    /// Semantic action for production 152:
     ///
     /// MLLiteralStringEnd: <MLLString>"\u{27}{3,5}(?:\r?\n)?";
     ///
@@ -5487,7 +5533,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 151:
+    /// Semantic action for production 153:
     ///
     /// MLLQuotes: <MLLString>"\u{27}{1,2}";
     ///
@@ -5503,7 +5549,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 152:
+    /// Semantic action for production 154:
     ///
     /// Apostrophe: <INITIAL, Val, LString>"\u{27}";
     ///
@@ -5519,7 +5565,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 153:
+    /// Semantic action for production 155:
     ///
     /// AsciiNoEscape: <Esc, BString, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
     ///
@@ -5535,7 +5581,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 154:
+    /// Semantic action for production 156:
     ///
     /// Minus: <Val>"\u{2D}";
     ///
@@ -5551,7 +5597,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 155:
+    /// Semantic action for production 157:
     ///
     /// Plus: <Val>"\u{2B}";
     ///
@@ -5710,30 +5756,32 @@ impl<'t> UserActionsTrait<'t> for ParolTomlGrammarAuto<'t, '_> {
             129 => self.array_close(&children[0]),
             130 => self.std_table_open(&children[0]),
             131 => self.std_table_close(&children[0]),
-            132 => self.inline_table(&children[0], &children[1], &children[2]),
-            133 => self.inline_table_opt_0(&children[0]),
-            134 => self.inline_table_opt_1(),
-            135 => self.inline_table_open(&children[0]),
-            136 => self.inline_table_close(&children[0]),
-            137 => self.inline_table_sep(&children[0]),
-            138 => self.inline_table_key_vals(&children[0], &children[1]),
-            139 => self.inline_table_key_vals_opt_0(&children[0], &children[1]),
-            140 => self.inline_table_key_vals_opt_1(),
-            141 => self.array_table(&children[0], &children[1], &children[2]),
-            142 => self.unsigned_dec_int(&children[0]),
-            143 => self.unquoted_key(&children[0]),
-            144 => self.dot_sep(&children[0]),
-            145 => self.m_l_basic_string_start(&children[0]),
-            146 => self.m_l_basic_string_end(&children[0]),
-            147 => self.m_l_b_quotes(&children[0]),
-            148 => self.quotation_mark(&children[0]),
-            149 => self.m_l_literal_string_start(&children[0]),
-            150 => self.m_l_literal_string_end(&children[0]),
-            151 => self.m_l_l_quotes(&children[0]),
-            152 => self.apostrophe(&children[0]),
-            153 => self.ascii_no_escape(&children[0]),
-            154 => self.minus(&children[0]),
-            155 => self.plus(&children[0]),
+            132 => self.inline_table(&children[0], &children[1], &children[2], &children[3]),
+            133 => self.inline_table_opt0_0(&children[0]),
+            134 => self.inline_table_opt0_1(),
+            135 => self.inline_table_opt_0(&children[0]),
+            136 => self.inline_table_opt_1(),
+            137 => self.inline_table_open(&children[0]),
+            138 => self.inline_table_close(&children[0]),
+            139 => self.inline_table_sep(&children[0]),
+            140 => self.inline_table_key_vals(&children[0], &children[1]),
+            141 => self.inline_table_key_vals_opt_0(&children[0], &children[1]),
+            142 => self.inline_table_key_vals_opt_1(),
+            143 => self.array_table(&children[0], &children[1], &children[2]),
+            144 => self.unsigned_dec_int(&children[0]),
+            145 => self.unquoted_key(&children[0]),
+            146 => self.dot_sep(&children[0]),
+            147 => self.m_l_basic_string_start(&children[0]),
+            148 => self.m_l_basic_string_end(&children[0]),
+            149 => self.m_l_b_quotes(&children[0]),
+            150 => self.quotation_mark(&children[0]),
+            151 => self.m_l_literal_string_start(&children[0]),
+            152 => self.m_l_literal_string_end(&children[0]),
+            153 => self.m_l_l_quotes(&children[0]),
+            154 => self.apostrophe(&children[0]),
+            155 => self.ascii_no_escape(&children[0]),
+            156 => self.minus(&children[0]),
+            157 => self.plus(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

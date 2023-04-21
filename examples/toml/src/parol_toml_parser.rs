@@ -51,10 +51,11 @@ pub const TERMINALS: &[&str; 55] = &[
     r###"[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))"###,
     /* 28 */ r###"[-+]?(nan|inf)"###,
     /* 29 */
-    r###"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})"###,
-    /* 30 */ r###"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"###,
+    r###"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?"###,
+    /* 30 */
+    r###"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?"###,
     /* 31 */ r###"[0-9]{4}-[0-9]{2}-[0-9]{2}"###,
-    /* 32 */ r###"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"###,
+    /* 32 */ r###"[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?"###,
     /* 33 */ r###","###,
     /* 34 */ r###"\u{5B}\u{5B}"###,
     /* 35 */ r###"\u{5D}\u{5D}"###,
@@ -63,7 +64,8 @@ pub const TERMINALS: &[&str; 55] = &[
     /* 38 */ r###"\u{7B}"###,
     /* 39 */ r###"\u{7D}"###,
     /* 40 */ r###"0|[1-9]([0-9]|_[0-9])*"###,
-    /* 41 */ r###"[-_A-Za-z0-9]+"###,
+    /* 41 */
+    r###"[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+"###,
     /* 42 */ r###"\."###,
     /* 43 */ r###"\u{22}{3}"###,
     /* 44 */ r###"\u{22}{3,5}"###,
@@ -333,9 +335,9 @@ const SCANNER_9: (&[&str; 5], &[usize; 1]) = (
     &[24 /* BinIntContent */],
 );
 
-const MAX_K: usize = 1;
+const MAX_K: usize = 2;
 
-pub const NON_TERMINALS: &[&str; 101] = &[
+pub const NON_TERMINALS: &[&str; 102] = &[
     /*   0 */ "Apostrophe",
     /*   1 */ "Array",
     /*   2 */ "ArrayClose",
@@ -376,73 +378,74 @@ pub const NON_TERMINALS: &[&str; 101] = &[
     /*  37 */ "InlineTableKeyValsOpt",
     /*  38 */ "InlineTableOpen",
     /*  39 */ "InlineTableOpt",
-    /*  40 */ "InlineTableSep",
-    /*  41 */ "Integer",
-    /*  42 */ "Key",
-    /*  43 */ "KeyList",
-    /*  44 */ "KeySuffix",
-    /*  45 */ "KeyVal",
-    /*  46 */ "KeyValSep",
-    /*  47 */ "LiteralChar",
-    /*  48 */ "LiteralCharNoApostrophe",
-    /*  49 */ "LiteralString",
-    /*  50 */ "LiteralStringList",
-    /*  51 */ "LocalDate",
-    /*  52 */ "LocalDateTime",
-    /*  53 */ "LocalTime",
-    /*  54 */ "MLBChar",
-    /*  55 */ "MLBContent",
-    /*  56 */ "MLBContentList",
-    /*  57 */ "MLBContentList1",
-    /*  58 */ "MLBEscapedNL",
-    /*  59 */ "MLBQuotes",
-    /*  60 */ "MLBUnescaped",
-    /*  61 */ "MLBasicBody",
-    /*  62 */ "MLBasicBodyList",
-    /*  63 */ "MLBasicString",
-    /*  64 */ "MLBasicStringEnd",
-    /*  65 */ "MLBasicStringStart",
-    /*  66 */ "MLLContent",
-    /*  67 */ "MLLContentList",
-    /*  68 */ "MLLContentList1",
-    /*  69 */ "MLLQuotes",
-    /*  70 */ "MLLiteralBody",
-    /*  71 */ "MLLiteralBodyList",
-    /*  72 */ "MLLiteralString",
-    /*  73 */ "MLLiteralStringEnd",
-    /*  74 */ "MLLiteralStringStart",
-    /*  75 */ "Minus",
-    /*  76 */ "Newline",
-    /*  77 */ "NonAscii",
-    /*  78 */ "NormalFloat",
-    /*  79 */ "Numeric",
-    /*  80 */ "OctInt",
-    /*  81 */ "OctIntContent",
-    /*  82 */ "OctPrefix",
-    /*  83 */ "OffsetDateTime",
-    /*  84 */ "ParolToml",
-    /*  85 */ "ParolTomlList",
-    /*  86 */ "Plus",
-    /*  87 */ "QuotationMark",
-    /*  88 */ "QuotedKey",
-    /*  89 */ "SimpleKey",
-    /*  90 */ "SpecialFloat",
-    /*  91 */ "StdTable",
-    /*  92 */ "StdTableClose",
-    /*  93 */ "StdTableOpen",
-    /*  94 */ "Table",
-    /*  95 */ "Unicode4",
-    /*  96 */ "Unicode8",
-    /*  97 */ "UnquotedKey",
-    /*  98 */ "UnsignedDecInt",
-    /*  99 */ "Val",
-    /* 100 */ "WsNewline",
+    /*  40 */ "InlineTableOpt0",
+    /*  41 */ "InlineTableSep",
+    /*  42 */ "Integer",
+    /*  43 */ "Key",
+    /*  44 */ "KeyList",
+    /*  45 */ "KeySuffix",
+    /*  46 */ "KeyVal",
+    /*  47 */ "KeyValSep",
+    /*  48 */ "LiteralChar",
+    /*  49 */ "LiteralCharNoApostrophe",
+    /*  50 */ "LiteralString",
+    /*  51 */ "LiteralStringList",
+    /*  52 */ "LocalDate",
+    /*  53 */ "LocalDateTime",
+    /*  54 */ "LocalTime",
+    /*  55 */ "MLBChar",
+    /*  56 */ "MLBContent",
+    /*  57 */ "MLBContentList",
+    /*  58 */ "MLBContentList1",
+    /*  59 */ "MLBEscapedNL",
+    /*  60 */ "MLBQuotes",
+    /*  61 */ "MLBUnescaped",
+    /*  62 */ "MLBasicBody",
+    /*  63 */ "MLBasicBodyList",
+    /*  64 */ "MLBasicString",
+    /*  65 */ "MLBasicStringEnd",
+    /*  66 */ "MLBasicStringStart",
+    /*  67 */ "MLLContent",
+    /*  68 */ "MLLContentList",
+    /*  69 */ "MLLContentList1",
+    /*  70 */ "MLLQuotes",
+    /*  71 */ "MLLiteralBody",
+    /*  72 */ "MLLiteralBodyList",
+    /*  73 */ "MLLiteralString",
+    /*  74 */ "MLLiteralStringEnd",
+    /*  75 */ "MLLiteralStringStart",
+    /*  76 */ "Minus",
+    /*  77 */ "Newline",
+    /*  78 */ "NonAscii",
+    /*  79 */ "NormalFloat",
+    /*  80 */ "Numeric",
+    /*  81 */ "OctInt",
+    /*  82 */ "OctIntContent",
+    /*  83 */ "OctPrefix",
+    /*  84 */ "OffsetDateTime",
+    /*  85 */ "ParolToml",
+    /*  86 */ "ParolTomlList",
+    /*  87 */ "Plus",
+    /*  88 */ "QuotationMark",
+    /*  89 */ "QuotedKey",
+    /*  90 */ "SimpleKey",
+    /*  91 */ "SpecialFloat",
+    /*  92 */ "StdTable",
+    /*  93 */ "StdTableClose",
+    /*  94 */ "StdTableOpen",
+    /*  95 */ "Table",
+    /*  96 */ "Unicode4",
+    /*  97 */ "Unicode8",
+    /*  98 */ "UnquotedKey",
+    /*  99 */ "UnsignedDecInt",
+    /* 100 */ "Val",
+    /* 101 */ "WsNewline",
 ];
 
-pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
+pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 102] = &[
     /* 0 - "Apostrophe" */
     LookaheadDFA {
-        prod0: 152,
+        prod0: 154,
         transitions: &[],
         k: 0,
     },
@@ -500,7 +503,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     },
     /* 6 - "ArrayTable" */
     LookaheadDFA {
-        prod0: 141,
+        prod0: 143,
         transitions: &[],
         k: 0,
     },
@@ -558,7 +561,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     },
     /* 12 - "AsciiNoEscape" */
     LookaheadDFA {
-        prod0: 153,
+        prod0: 155,
         transitions: &[],
         k: 0,
     },
@@ -650,7 +653,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     },
     /* 25 - "DotSep" */
     LookaheadDFA {
-        prod0: 144,
+        prod0: 146,
         transitions: &[],
         k: 0,
     },
@@ -728,25 +731,41 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     },
     /* 35 - "InlineTableClose" */
     LookaheadDFA {
-        prod0: 136,
+        prod0: 138,
         transitions: &[],
         k: 0,
     },
     /* 36 - "InlineTableKeyVals" */
     LookaheadDFA {
-        prod0: 138,
+        prod0: 140,
         transitions: &[],
         k: 0,
     },
     /* 37 - "InlineTableKeyValsOpt" */
     LookaheadDFA {
         prod0: -1,
-        transitions: &[Trans(0, 33, 1, 139), Trans(0, 39, 2, 140)],
-        k: 1,
+        transitions: &[
+            Trans(0, 33, 1, -1),
+            Trans(0, 39, 3, -1),
+            Trans(1, 39, 4, 142),
+            Trans(1, 41, 2, 141),
+            Trans(1, 46, 2, 141),
+            Trans(1, 50, 2, 141),
+            Trans(3, 0, 4, 142),
+            Trans(3, 33, 4, 142),
+            Trans(3, 34, 4, 142),
+            Trans(3, 36, 4, 142),
+            Trans(3, 37, 4, 142),
+            Trans(3, 39, 4, 142),
+            Trans(3, 41, 4, 142),
+            Trans(3, 46, 4, 142),
+            Trans(3, 50, 4, 142),
+        ],
+        k: 2,
     },
     /* 38 - "InlineTableOpen" */
     LookaheadDFA {
-        prod0: 135,
+        prod0: 137,
         transitions: &[],
         k: 0,
     },
@@ -754,20 +773,27 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     LookaheadDFA {
         prod0: -1,
         transitions: &[
-            Trans(0, 39, 2, 134),
-            Trans(0, 41, 1, 133),
-            Trans(0, 46, 1, 133),
-            Trans(0, 50, 1, 133),
+            Trans(0, 33, 2, 136),
+            Trans(0, 39, 2, 136),
+            Trans(0, 41, 1, 135),
+            Trans(0, 46, 1, 135),
+            Trans(0, 50, 1, 135),
         ],
         k: 1,
     },
-    /* 40 - "InlineTableSep" */
+    /* 40 - "InlineTableOpt0" */
     LookaheadDFA {
-        prod0: 137,
+        prod0: -1,
+        transitions: &[Trans(0, 33, 1, 133), Trans(0, 39, 2, 134)],
+        k: 1,
+    },
+    /* 41 - "InlineTableSep" */
+    LookaheadDFA {
+        prod0: 139,
         transitions: &[],
         k: 0,
     },
-    /* 41 - "Integer" */
+    /* 42 - "Integer" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -780,13 +806,13 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 42 - "Key" */
+    /* 43 - "Key" */
     LookaheadDFA {
         prod0: 9,
         transitions: &[],
         k: 0,
     },
-    /* 43 - "KeyList" */
+    /* 44 - "KeyList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -797,7 +823,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 44 - "KeySuffix" */
+    /* 45 - "KeySuffix" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -808,67 +834,67 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 45 - "KeyVal" */
+    /* 46 - "KeyVal" */
     LookaheadDFA {
         prod0: 8,
         transitions: &[],
         k: 0,
     },
-    /* 46 - "KeyValSep" */
+    /* 47 - "KeyValSep" */
     LookaheadDFA {
         prod0: 18,
         transitions: &[],
         k: 0,
     },
-    /* 47 - "LiteralChar" */
+    /* 48 - "LiteralChar" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 71), Trans(0, 18, 1, 70)],
         k: 1,
     },
-    /* 48 - "LiteralCharNoApostrophe" */
+    /* 49 - "LiteralCharNoApostrophe" */
     LookaheadDFA {
         prod0: 72,
         transitions: &[],
         k: 0,
     },
-    /* 49 - "LiteralString" */
+    /* 50 - "LiteralString" */
     LookaheadDFA {
         prod0: 67,
         transitions: &[],
         k: 0,
     },
-    /* 50 - "LiteralStringList" */
+    /* 51 - "LiteralStringList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 1, 68), Trans(0, 18, 1, 68), Trans(0, 50, 2, 69)],
         k: 1,
     },
-    /* 51 - "LocalDate" */
+    /* 52 - "LocalDate" */
     LookaheadDFA {
         prod0: 112,
         transitions: &[],
         k: 0,
     },
-    /* 52 - "LocalDateTime" */
+    /* 53 - "LocalDateTime" */
     LookaheadDFA {
         prod0: 111,
         transitions: &[],
         k: 0,
     },
-    /* 53 - "LocalTime" */
+    /* 54 - "LocalTime" */
     LookaheadDFA {
         prod0: 113,
         transitions: &[],
         k: 0,
     },
-    /* 54 - "MLBChar" */
+    /* 55 - "MLBChar" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 1, 62), Trans(0, 9, 2, 63), Trans(0, 51, 1, 62)],
         k: 1,
     },
-    /* 55 - "MLBContent" */
+    /* 56 - "MLBContent" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -880,7 +906,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 56 - "MLBContentList" */
+    /* 57 - "MLBContentList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -894,67 +920,67 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 57 - "MLBContentList1" */
+    /* 58 - "MLBContentList1" */
     LookaheadDFA {
         prod0: 58,
         transitions: &[],
         k: 0,
     },
-    /* 58 - "MLBEscapedNL" */
+    /* 59 - "MLBEscapedNL" */
     LookaheadDFA {
         prod0: 66,
         transitions: &[],
         k: 0,
     },
-    /* 59 - "MLBQuotes" */
+    /* 60 - "MLBQuotes" */
     LookaheadDFA {
-        prod0: 147,
+        prod0: 149,
         transitions: &[],
         k: 0,
     },
-    /* 60 - "MLBUnescaped" */
+    /* 61 - "MLBUnescaped" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 7, 2, 65), Trans(0, 51, 1, 64)],
         k: 1,
     },
-    /* 61 - "MLBasicBody" */
+    /* 62 - "MLBasicBody" */
     LookaheadDFA {
         prod0: 53,
         transitions: &[],
         k: 0,
     },
-    /* 62 - "MLBasicBodyList" */
+    /* 63 - "MLBasicBodyList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 44, 2, 55), Trans(0, 45, 1, 54)],
         k: 1,
     },
-    /* 63 - "MLBasicString" */
+    /* 64 - "MLBasicString" */
     LookaheadDFA {
         prod0: 52,
         transitions: &[],
         k: 0,
     },
-    /* 64 - "MLBasicStringEnd" */
+    /* 65 - "MLBasicStringEnd" */
     LookaheadDFA {
-        prod0: 146,
+        prod0: 148,
         transitions: &[],
         k: 0,
     },
-    /* 65 - "MLBasicStringStart" */
+    /* 66 - "MLBasicStringStart" */
     LookaheadDFA {
-        prod0: 145,
+        prod0: 147,
         transitions: &[],
         k: 0,
     },
-    /* 66 - "MLLContent" */
+    /* 67 - "MLLContent" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 5, 2, 81), Trans(0, 7, 1, 80), Trans(0, 18, 1, 80)],
         k: 1,
     },
-    /* 67 - "MLLContentList" */
+    /* 68 - "MLLContentList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -966,73 +992,73 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 68 - "MLLContentList1" */
+    /* 69 - "MLLContentList1" */
     LookaheadDFA {
         prod0: 79,
         transitions: &[],
         k: 0,
     },
-    /* 69 - "MLLQuotes" */
+    /* 70 - "MLLQuotes" */
     LookaheadDFA {
-        prod0: 151,
+        prod0: 153,
         transitions: &[],
         k: 0,
     },
-    /* 70 - "MLLiteralBody" */
+    /* 71 - "MLLiteralBody" */
     LookaheadDFA {
         prod0: 74,
         transitions: &[],
         k: 0,
     },
-    /* 71 - "MLLiteralBodyList" */
+    /* 72 - "MLLiteralBodyList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 48, 2, 76), Trans(0, 49, 1, 75)],
         k: 1,
     },
-    /* 72 - "MLLiteralString" */
+    /* 73 - "MLLiteralString" */
     LookaheadDFA {
         prod0: 73,
         transitions: &[],
         k: 0,
     },
-    /* 73 - "MLLiteralStringEnd" */
+    /* 74 - "MLLiteralStringEnd" */
     LookaheadDFA {
-        prod0: 150,
+        prod0: 152,
         transitions: &[],
         k: 0,
     },
-    /* 74 - "MLLiteralStringStart" */
+    /* 75 - "MLLiteralStringStart" */
     LookaheadDFA {
-        prod0: 149,
+        prod0: 151,
         transitions: &[],
         k: 0,
     },
-    /* 75 - "Minus" */
+    /* 76 - "Minus" */
     LookaheadDFA {
-        prod0: 154,
+        prod0: 156,
         transitions: &[],
         k: 0,
     },
-    /* 76 - "Newline" */
+    /* 77 - "Newline" */
     LookaheadDFA {
         prod0: 5,
         transitions: &[],
         k: 0,
     },
-    /* 77 - "NonAscii" */
+    /* 78 - "NonAscii" */
     LookaheadDFA {
         prod0: 7,
         transitions: &[],
         k: 0,
     },
-    /* 78 - "NormalFloat" */
+    /* 79 - "NormalFloat" */
     LookaheadDFA {
         prod0: 104,
         transitions: &[],
         k: 0,
     },
-    /* 79 - "Numeric" */
+    /* 80 - "Numeric" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -1047,37 +1073,37 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 80 - "OctInt" */
+    /* 81 - "OctInt" */
     LookaheadDFA {
         prod0: 96,
         transitions: &[],
         k: 0,
     },
-    /* 81 - "OctIntContent" */
+    /* 82 - "OctIntContent" */
     LookaheadDFA {
         prod0: 97,
         transitions: &[],
         k: 0,
     },
-    /* 82 - "OctPrefix" */
+    /* 83 - "OctPrefix" */
     LookaheadDFA {
         prod0: 87,
         transitions: &[],
         k: 0,
     },
-    /* 83 - "OffsetDateTime" */
+    /* 84 - "OffsetDateTime" */
     LookaheadDFA {
         prod0: 110,
         transitions: &[],
         k: 0,
     },
-    /* 84 - "ParolToml" */
+    /* 85 - "ParolToml" */
     LookaheadDFA {
         prod0: 0,
         transitions: &[],
         k: 0,
     },
-    /* 85 - "ParolTomlList" */
+    /* 86 - "ParolTomlList" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -1090,25 +1116,25 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 86 - "Plus" */
+    /* 87 - "Plus" */
     LookaheadDFA {
-        prod0: 155,
+        prod0: 157,
         transitions: &[],
         k: 0,
     },
-    /* 87 - "QuotationMark" */
+    /* 88 - "QuotationMark" */
     LookaheadDFA {
-        prod0: 148,
+        prod0: 150,
         transitions: &[],
         k: 0,
     },
-    /* 88 - "QuotedKey" */
+    /* 89 - "QuotedKey" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 46, 1, 16), Trans(0, 50, 2, 17)],
         k: 1,
     },
-    /* 89 - "SimpleKey" */
+    /* 90 - "SimpleKey" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -1118,61 +1144,61 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 90 - "SpecialFloat" */
+    /* 91 - "SpecialFloat" */
     LookaheadDFA {
         prod0: 105,
         transitions: &[],
         k: 0,
     },
-    /* 91 - "StdTable" */
+    /* 92 - "StdTable" */
     LookaheadDFA {
         prod0: 125,
         transitions: &[],
         k: 0,
     },
-    /* 92 - "StdTableClose" */
+    /* 93 - "StdTableClose" */
     LookaheadDFA {
         prod0: 131,
         transitions: &[],
         k: 0,
     },
-    /* 93 - "StdTableOpen" */
+    /* 94 - "StdTableOpen" */
     LookaheadDFA {
         prod0: 130,
         transitions: &[],
         k: 0,
     },
-    /* 94 - "Table" */
+    /* 95 - "Table" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[Trans(0, 34, 2, 124), Trans(0, 36, 1, 123)],
         k: 1,
     },
-    /* 95 - "Unicode4" */
+    /* 96 - "Unicode4" */
     LookaheadDFA {
         prod0: 50,
         transitions: &[],
         k: 0,
     },
-    /* 96 - "Unicode8" */
+    /* 97 - "Unicode8" */
     LookaheadDFA {
         prod0: 51,
         transitions: &[],
         k: 0,
     },
-    /* 97 - "UnquotedKey" */
+    /* 98 - "UnquotedKey" */
     LookaheadDFA {
-        prod0: 143,
+        prod0: 145,
         transitions: &[],
         k: 0,
     },
-    /* 98 - "UnsignedDecInt" */
+    /* 99 - "UnsignedDecInt" */
     LookaheadDFA {
-        prod0: 142,
+        prod0: 144,
         transitions: &[],
         k: 0,
     },
-    /* 99 - "Val" */
+    /* 100 - "Val" */
     LookaheadDFA {
         prod0: -1,
         transitions: &[
@@ -1199,7 +1225,7 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
         ],
         k: 1,
     },
-    /* 100 - "WsNewline" */
+    /* 101 - "WsNewline" */
     LookaheadDFA {
         prod0: 6,
         transitions: &[],
@@ -1207,172 +1233,172 @@ pub const LOOKAHEAD_AUTOMATA: &[LookaheadDFA; 101] = &[
     },
 ];
 
-pub const PRODUCTIONS: &[Production; 156] = &[
+pub const PRODUCTIONS: &[Production; 158] = &[
     // 0 - ParolToml: ParolTomlList /* Vec */;
     Production {
-        lhs: 84,
-        production: &[ParseType::N(85)],
+        lhs: 85,
+        production: &[ParseType::N(86)],
     },
     // 1 - ParolTomlList: Expression ParolTomlList;
     Production {
-        lhs: 85,
-        production: &[ParseType::N(85), ParseType::N(29)],
+        lhs: 86,
+        production: &[ParseType::N(86), ParseType::N(29)],
     },
     // 2 - ParolTomlList: ;
     Production {
-        lhs: 85,
+        lhs: 86,
         production: &[],
     },
     // 3 - Expression: KeyVal;
     Production {
         lhs: 29,
-        production: &[ParseType::N(45)],
+        production: &[ParseType::N(46)],
     },
     // 4 - Expression: Table;
     Production {
         lhs: 29,
-        production: &[ParseType::N(94)],
+        production: &[ParseType::N(95)],
     },
     // 5 - Newline: "\r?\n";
     Production {
-        lhs: 76,
+        lhs: 77,
         production: &[ParseType::T(5)],
     },
     // 6 - WsNewline: "[ \t]*\r?\n";
     Production {
-        lhs: 100,
+        lhs: 101,
         production: &[ParseType::T(6)],
     },
     // 7 - NonAscii: "[\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}]";
     Production {
-        lhs: 77,
+        lhs: 78,
         production: &[ParseType::T(7)],
     },
     // 8 - KeyVal: Key KeyValSep Push(2) Val Pop;
     Production {
-        lhs: 45,
+        lhs: 46,
         production: &[
             ParseType::Pop,
-            ParseType::N(99),
+            ParseType::N(100),
             ParseType::Push(2),
-            ParseType::N(46),
-            ParseType::N(42),
+            ParseType::N(47),
+            ParseType::N(43),
         ],
     },
     // 9 - Key: SimpleKey KeySuffix;
     Production {
-        lhs: 42,
-        production: &[ParseType::N(44), ParseType::N(89)],
+        lhs: 43,
+        production: &[ParseType::N(45), ParseType::N(90)],
     },
     // 10 - KeySuffix: ;
     Production {
-        lhs: 44,
+        lhs: 45,
         production: &[],
     },
     // 11 - KeySuffix: DotSep SimpleKey KeyList /* Vec */;
     Production {
-        lhs: 44,
-        production: &[ParseType::N(43), ParseType::N(89), ParseType::N(25)],
+        lhs: 45,
+        production: &[ParseType::N(44), ParseType::N(90), ParseType::N(25)],
     },
     // 12 - KeyList: DotSep SimpleKey KeyList;
     Production {
-        lhs: 43,
-        production: &[ParseType::N(43), ParseType::N(89), ParseType::N(25)],
+        lhs: 44,
+        production: &[ParseType::N(44), ParseType::N(90), ParseType::N(25)],
     },
     // 13 - KeyList: ;
     Production {
-        lhs: 43,
+        lhs: 44,
         production: &[],
     },
     // 14 - SimpleKey: QuotedKey;
     Production {
-        lhs: 89,
-        production: &[ParseType::N(88)],
+        lhs: 90,
+        production: &[ParseType::N(89)],
     },
     // 15 - SimpleKey: UnquotedKey;
     Production {
-        lhs: 89,
-        production: &[ParseType::N(97)],
+        lhs: 90,
+        production: &[ParseType::N(98)],
     },
     // 16 - QuotedKey: BasicString;
     Production {
-        lhs: 88,
+        lhs: 89,
         production: &[ParseType::N(14)],
     },
     // 17 - QuotedKey: LiteralString;
     Production {
-        lhs: 88,
-        production: &[ParseType::N(49)],
+        lhs: 89,
+        production: &[ParseType::N(50)],
     },
     // 18 - KeyValSep: "=";
     Production {
-        lhs: 46,
+        lhs: 47,
         production: &[ParseType::T(8)],
     },
     // 19 - Val: Boolean;
     Production {
-        lhs: 99,
+        lhs: 100,
         production: &[ParseType::N(20)],
     },
     // 20 - Val: Array;
     Production {
-        lhs: 99,
+        lhs: 100,
         production: &[ParseType::N(1)],
     },
     // 21 - Val: InlineTable;
     Production {
-        lhs: 99,
+        lhs: 100,
         production: &[ParseType::N(34)],
     },
     // 22 - Val: DateTime;
     Production {
-        lhs: 99,
+        lhs: 100,
         production: &[ParseType::N(21)],
     },
     // 23 - Val: Numeric;
     Production {
-        lhs: 99,
-        production: &[ParseType::N(79)],
+        lhs: 100,
+        production: &[ParseType::N(80)],
     },
     // 24 - Val: BasicString;
     Production {
-        lhs: 99,
+        lhs: 100,
         production: &[ParseType::N(14)],
     },
     // 25 - Val: MLBasicString;
     Production {
-        lhs: 99,
-        production: &[ParseType::N(63)],
+        lhs: 100,
+        production: &[ParseType::N(64)],
     },
     // 26 - Val: LiteralString;
     Production {
-        lhs: 99,
-        production: &[ParseType::N(49)],
+        lhs: 100,
+        production: &[ParseType::N(50)],
     },
     // 27 - Val: MLLiteralString;
     Production {
-        lhs: 99,
-        production: &[ParseType::N(72)],
+        lhs: 100,
+        production: &[ParseType::N(73)],
     },
     // 28 - Numeric: Float;
     Production {
-        lhs: 79,
+        lhs: 80,
         production: &[ParseType::N(30)],
     },
     // 29 - Numeric: Integer;
     Production {
-        lhs: 79,
-        production: &[ParseType::N(41)],
+        lhs: 80,
+        production: &[ParseType::N(42)],
     },
     // 30 - BasicString: QuotationMark Push(3) BasicStringList /* Vec */ Pop QuotationMark;
     Production {
         lhs: 14,
         production: &[
-            ParseType::N(87),
+            ParseType::N(88),
             ParseType::Pop,
             ParseType::N(15),
             ParseType::Push(3),
-            ParseType::N(87),
+            ParseType::N(88),
         ],
     },
     // 31 - BasicStringList: BasicChar BasicStringList;
@@ -1403,7 +1429,7 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 36 - BasicUnescaped: NonAscii;
     Production {
         lhs: 16,
-        production: &[ParseType::N(77)],
+        production: &[ParseType::N(78)],
     },
     // 37 - Escaped: Escape EscapeSeqChar;
     Production {
@@ -1418,7 +1444,7 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 39 - EscapeSeqChar: QuotationMark;
     Production {
         lhs: 27,
-        production: &[ParseType::N(87)],
+        production: &[ParseType::N(88)],
     },
     // 40 - EscapeSeqChar: Escape;
     Production {
@@ -1453,17 +1479,17 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 46 - EscapeSeqChar: Unicode4;
     Production {
         lhs: 27,
-        production: &[ParseType::N(95)],
+        production: &[ParseType::N(96)],
     },
     // 47 - EscapeSeqChar: Unicode8;
     Production {
         lhs: 27,
-        production: &[ParseType::N(96)],
+        production: &[ParseType::N(97)],
     },
     // 48 - EscapeSeqChar: WsNewline;
     Production {
         lhs: 27,
-        production: &[ParseType::N(100)],
+        production: &[ParseType::N(101)],
     },
     // 49 - EscapeSeqChar: AsciiNoEscape;
     Production {
@@ -1472,199 +1498,199 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
     // 50 - Unicode4: "u[0-9a-fA-F]{4}";
     Production {
-        lhs: 95,
+        lhs: 96,
         production: &[ParseType::T(15)],
     },
     // 51 - Unicode8: "U[0-9a-fA-F]{8}";
     Production {
-        lhs: 96,
+        lhs: 97,
         production: &[ParseType::T(16)],
     },
     // 52 - MLBasicString: MLBasicStringStart Push(4) MLBasicBody MLBasicStringEnd Pop;
     Production {
-        lhs: 63,
+        lhs: 64,
         production: &[
             ParseType::Pop,
-            ParseType::N(64),
-            ParseType::N(61),
-            ParseType::Push(4),
             ParseType::N(65),
+            ParseType::N(62),
+            ParseType::Push(4),
+            ParseType::N(66),
         ],
     },
     // 53 - MLBasicBody: MLBContentList MLBasicBodyList /* Vec */;
     Production {
-        lhs: 61,
-        production: &[ParseType::N(62), ParseType::N(56)],
+        lhs: 62,
+        production: &[ParseType::N(63), ParseType::N(57)],
     },
     // 54 - MLBasicBodyList: MLBQuotes MLBContentList1 MLBasicBodyList;
     Production {
-        lhs: 62,
-        production: &[ParseType::N(62), ParseType::N(57), ParseType::N(59)],
+        lhs: 63,
+        production: &[ParseType::N(63), ParseType::N(58), ParseType::N(60)],
     },
     // 55 - MLBasicBodyList: ;
     Production {
-        lhs: 62,
+        lhs: 63,
         production: &[],
     },
     // 56 - MLBContentList: MLBContent MLBContentList;
     Production {
-        lhs: 56,
-        production: &[ParseType::N(56), ParseType::N(55)],
+        lhs: 57,
+        production: &[ParseType::N(57), ParseType::N(56)],
     },
     // 57 - MLBContentList: ;
     Production {
-        lhs: 56,
+        lhs: 57,
         production: &[],
     },
     // 58 - MLBContentList1: MLBContent MLBContentList;
     Production {
-        lhs: 57,
-        production: &[ParseType::N(56), ParseType::N(55)],
+        lhs: 58,
+        production: &[ParseType::N(57), ParseType::N(56)],
     },
     // 59 - MLBContent: MLBChar;
     Production {
-        lhs: 55,
-        production: &[ParseType::N(54)],
+        lhs: 56,
+        production: &[ParseType::N(55)],
     },
     // 60 - MLBContent: Newline;
     Production {
-        lhs: 55,
-        production: &[ParseType::N(76)],
+        lhs: 56,
+        production: &[ParseType::N(77)],
     },
     // 61 - MLBContent: MLBEscapedNL;
     Production {
-        lhs: 55,
-        production: &[ParseType::N(58)],
+        lhs: 56,
+        production: &[ParseType::N(59)],
     },
     // 62 - MLBChar: MLBUnescaped;
     Production {
-        lhs: 54,
-        production: &[ParseType::N(60)],
+        lhs: 55,
+        production: &[ParseType::N(61)],
     },
     // 63 - MLBChar: Push(1) Escaped Pop;
     Production {
-        lhs: 54,
+        lhs: 55,
         production: &[ParseType::Pop, ParseType::N(28), ParseType::Push(1)],
     },
     // 64 - MLBUnescaped: AsciiNoEscape;
     Production {
-        lhs: 60,
+        lhs: 61,
         production: &[ParseType::N(12)],
     },
     // 65 - MLBUnescaped: NonAscii;
     Production {
-        lhs: 60,
-        production: &[ParseType::N(77)],
+        lhs: 61,
+        production: &[ParseType::N(78)],
     },
     // 66 - MLBEscapedNL: "\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";
     Production {
-        lhs: 58,
+        lhs: 59,
         production: &[ParseType::T(17)],
     },
     // 67 - LiteralString: Apostrophe^ /* Clipped */ Push(5) LiteralStringList /* Vec */ Pop Apostrophe^ /* Clipped */;
     Production {
-        lhs: 49,
+        lhs: 50,
         production: &[
             ParseType::N(0),
             ParseType::Pop,
-            ParseType::N(50),
+            ParseType::N(51),
             ParseType::Push(5),
             ParseType::N(0),
         ],
     },
     // 68 - LiteralStringList: LiteralChar LiteralStringList;
     Production {
-        lhs: 50,
-        production: &[ParseType::N(50), ParseType::N(47)],
+        lhs: 51,
+        production: &[ParseType::N(51), ParseType::N(48)],
     },
     // 69 - LiteralStringList: ;
     Production {
-        lhs: 50,
+        lhs: 51,
         production: &[],
     },
     // 70 - LiteralChar: LiteralCharNoApostrophe;
     Production {
-        lhs: 47,
-        production: &[ParseType::N(48)],
+        lhs: 48,
+        production: &[ParseType::N(49)],
     },
     // 71 - LiteralChar: NonAscii;
     Production {
-        lhs: 47,
-        production: &[ParseType::N(77)],
+        lhs: 48,
+        production: &[ParseType::N(78)],
     },
     // 72 - LiteralCharNoApostrophe: "[\t\u{20}-\u{26}\u{28}-\u{7E}]+";
     Production {
-        lhs: 48,
+        lhs: 49,
         production: &[ParseType::T(18)],
     },
     // 73 - MLLiteralString: MLLiteralStringStart^ /* Clipped */ Push(6) MLLiteralBody Pop;
     Production {
-        lhs: 72,
+        lhs: 73,
         production: &[
             ParseType::Pop,
-            ParseType::N(70),
+            ParseType::N(71),
             ParseType::Push(6),
-            ParseType::N(74),
+            ParseType::N(75),
         ],
     },
     // 74 - MLLiteralBody: MLLContentList MLLiteralBodyList /* Vec */ MLLiteralStringEnd^ /* Clipped */;
     Production {
-        lhs: 70,
-        production: &[ParseType::N(73), ParseType::N(71), ParseType::N(67)],
+        lhs: 71,
+        production: &[ParseType::N(74), ParseType::N(72), ParseType::N(68)],
     },
     // 75 - MLLiteralBodyList: MLLQuotes MLLContentList1 MLLiteralBodyList;
     Production {
-        lhs: 71,
-        production: &[ParseType::N(71), ParseType::N(68), ParseType::N(69)],
+        lhs: 72,
+        production: &[ParseType::N(72), ParseType::N(69), ParseType::N(70)],
     },
     // 76 - MLLiteralBodyList: ;
     Production {
-        lhs: 71,
+        lhs: 72,
         production: &[],
     },
     // 77 - MLLContentList: MLLContent MLLContentList;
     Production {
-        lhs: 67,
-        production: &[ParseType::N(67), ParseType::N(66)],
+        lhs: 68,
+        production: &[ParseType::N(68), ParseType::N(67)],
     },
     // 78 - MLLContentList: ;
     Production {
-        lhs: 67,
+        lhs: 68,
         production: &[],
     },
     // 79 - MLLContentList1: MLLContent MLLContentList;
     Production {
-        lhs: 68,
-        production: &[ParseType::N(67), ParseType::N(66)],
+        lhs: 69,
+        production: &[ParseType::N(68), ParseType::N(67)],
     },
     // 80 - MLLContent: LiteralChar;
     Production {
-        lhs: 66,
-        production: &[ParseType::N(47)],
+        lhs: 67,
+        production: &[ParseType::N(48)],
     },
     // 81 - MLLContent: Newline;
     Production {
-        lhs: 66,
-        production: &[ParseType::N(76)],
+        lhs: 67,
+        production: &[ParseType::N(77)],
     },
     // 82 - Integer: DecInt;
     Production {
-        lhs: 41,
+        lhs: 42,
         production: &[ParseType::N(22)],
     },
     // 83 - Integer: HexInt;
     Production {
-        lhs: 41,
+        lhs: 42,
         production: &[ParseType::N(31)],
     },
     // 84 - Integer: OctInt;
     Production {
-        lhs: 41,
-        production: &[ParseType::N(80)],
+        lhs: 42,
+        production: &[ParseType::N(81)],
     },
     // 85 - Integer: BinInt;
     Production {
-        lhs: 41,
+        lhs: 42,
         production: &[ParseType::N(17)],
     },
     // 86 - HexPrefix: "0x";
@@ -1674,7 +1700,7 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
     // 87 - OctPrefix: "0o";
     Production {
-        lhs: 82,
+        lhs: 83,
         production: &[ParseType::T(20)],
     },
     // 88 - BinPrefix: "0b";
@@ -1685,7 +1711,7 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 89 - DecInt: DecIntOpt /* Option */ UnsignedDecInt;
     Production {
         lhs: 22,
-        production: &[ParseType::N(98), ParseType::N(23)],
+        production: &[ParseType::N(99), ParseType::N(23)],
     },
     // 90 - DecIntOpt: DecIntOptGroup;
     Production {
@@ -1695,12 +1721,12 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 91 - DecIntOptGroup: Plus;
     Production {
         lhs: 24,
-        production: &[ParseType::N(86)],
+        production: &[ParseType::N(87)],
     },
     // 92 - DecIntOptGroup: Minus;
     Production {
         lhs: 24,
-        production: &[ParseType::N(75)],
+        production: &[ParseType::N(76)],
     },
     // 93 - DecIntOpt: ;
     Production {
@@ -1724,17 +1750,17 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
     // 96 - OctInt: OctPrefix^ /* Clipped */ Push(8) OctIntContent Pop;
     Production {
-        lhs: 80,
+        lhs: 81,
         production: &[
             ParseType::Pop,
-            ParseType::N(81),
-            ParseType::Push(8),
             ParseType::N(82),
+            ParseType::Push(8),
+            ParseType::N(83),
         ],
     },
     // 97 - OctIntContent: "[0-7]([0-7]|_[0-7])*";
     Production {
-        lhs: 81,
+        lhs: 82,
         production: &[ParseType::T(23)],
     },
     // 98 - BinInt: BinPrefix^ /* Clipped */ Push(9) BinIntContent Pop;
@@ -1765,61 +1791,61 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 102 - Float: NormalFloat;
     Production {
         lhs: 30,
-        production: &[ParseType::N(78)],
+        production: &[ParseType::N(79)],
     },
     // 103 - Float: SpecialFloat;
     Production {
         lhs: 30,
-        production: &[ParseType::N(90)],
+        production: &[ParseType::N(91)],
     },
     // 104 - NormalFloat: "[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))";
     Production {
-        lhs: 78,
+        lhs: 79,
         production: &[ParseType::T(27)],
     },
     // 105 - SpecialFloat: "[-+]?(nan|inf)";
     Production {
-        lhs: 90,
+        lhs: 91,
         production: &[ParseType::T(28)],
     },
     // 106 - DateTime: OffsetDateTime;
     Production {
         lhs: 21,
-        production: &[ParseType::N(83)],
+        production: &[ParseType::N(84)],
     },
     // 107 - DateTime: LocalDateTime;
     Production {
         lhs: 21,
-        production: &[ParseType::N(52)],
+        production: &[ParseType::N(53)],
     },
     // 108 - DateTime: LocalDate;
     Production {
         lhs: 21,
-        production: &[ParseType::N(51)],
+        production: &[ParseType::N(52)],
     },
     // 109 - DateTime: LocalTime;
     Production {
         lhs: 21,
-        production: &[ParseType::N(53)],
+        production: &[ParseType::N(54)],
     },
-    // 110 - OffsetDateTime: "[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})";
+    // 110 - OffsetDateTime: "[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?";
     Production {
-        lhs: 83,
+        lhs: 84,
         production: &[ParseType::T(29)],
     },
-    // 111 - LocalDateTime: "[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
+    // 111 - LocalDateTime: "[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?";
     Production {
-        lhs: 52,
+        lhs: 53,
         production: &[ParseType::T(30)],
     },
     // 112 - LocalDate: "[0-9]{4}-[0-9]{2}-[0-9]{2}";
     Production {
-        lhs: 51,
+        lhs: 52,
         production: &[ParseType::T(31)],
     },
-    // 113 - LocalTime: "[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?";
+    // 113 - LocalTime: "[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?";
     Production {
-        lhs: 53,
+        lhs: 54,
         production: &[ParseType::T(32)],
     },
     // 114 - Array: ArrayOpen^ /* Clipped */ Push(2) ArrayOpt /* Option */ Pop ArrayClose^ /* Clipped */;
@@ -1846,7 +1872,7 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     // 117 - ArrayValues: Val ArrayValuesSuffix0;
     Production {
         lhs: 9,
-        production: &[ParseType::N(11), ParseType::N(99)],
+        production: &[ParseType::N(11), ParseType::N(100)],
     },
     // 118 - ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;
     Production {
@@ -1875,18 +1901,18 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
     // 123 - Table: StdTable;
     Production {
-        lhs: 94,
-        production: &[ParseType::N(91)],
+        lhs: 95,
+        production: &[ParseType::N(92)],
     },
     // 124 - Table: ArrayTable;
     Production {
-        lhs: 94,
+        lhs: 95,
         production: &[ParseType::N(6)],
     },
     // 125 - StdTable: StdTableOpen^ /* Clipped */ Key StdTableClose^ /* Clipped */;
     Production {
-        lhs: 91,
-        production: &[ParseType::N(92), ParseType::N(42), ParseType::N(93)],
+        lhs: 92,
+        production: &[ParseType::N(93), ParseType::N(43), ParseType::N(94)],
     },
     // 126 - ArrayTableOpen: "\u{5B}\u{5B}";
     Production {
@@ -1910,138 +1936,149 @@ pub const PRODUCTIONS: &[Production; 156] = &[
     },
     // 130 - StdTableOpen: ArrayOpen;
     Production {
-        lhs: 93,
+        lhs: 94,
         production: &[ParseType::N(3)],
     },
     // 131 - StdTableClose: ArrayClose;
     Production {
-        lhs: 92,
+        lhs: 93,
         production: &[ParseType::N(2)],
     },
-    // 132 - InlineTable: InlineTableOpen^ /* Clipped */ Push(0) InlineTableOpt /* Option */ Pop InlineTableClose^ /* Clipped */;
+    // 132 - InlineTable: InlineTableOpen^ /* Clipped */ Push(0) InlineTableOpt /* Option */ Pop InlineTableOpt0 /* Option */ InlineTableClose^ /* Clipped */;
     Production {
         lhs: 34,
         production: &[
             ParseType::N(35),
+            ParseType::N(40),
             ParseType::Pop,
             ParseType::N(39),
             ParseType::Push(0),
             ParseType::N(38),
         ],
     },
-    // 133 - InlineTableOpt: InlineTableKeyVals;
+    // 133 - InlineTableOpt0: InlineTableSep;
+    Production {
+        lhs: 40,
+        production: &[ParseType::N(41)],
+    },
+    // 134 - InlineTableOpt0: ;
+    Production {
+        lhs: 40,
+        production: &[],
+    },
+    // 135 - InlineTableOpt: InlineTableKeyVals;
     Production {
         lhs: 39,
         production: &[ParseType::N(36)],
     },
-    // 134 - InlineTableOpt: ;
+    // 136 - InlineTableOpt: ;
     Production {
         lhs: 39,
         production: &[],
     },
-    // 135 - InlineTableOpen: "\u{7B}";
+    // 137 - InlineTableOpen: "\u{7B}";
     Production {
         lhs: 38,
         production: &[ParseType::T(38)],
     },
-    // 136 - InlineTableClose: "\u{7D}";
+    // 138 - InlineTableClose: "\u{7D}";
     Production {
         lhs: 35,
         production: &[ParseType::T(39)],
     },
-    // 137 - InlineTableSep: ArraySep;
+    // 139 - InlineTableSep: ArraySep;
     Production {
-        lhs: 40,
+        lhs: 41,
         production: &[ParseType::N(5)],
     },
-    // 138 - InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
+    // 140 - InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
     Production {
         lhs: 36,
-        production: &[ParseType::N(37), ParseType::N(45)],
+        production: &[ParseType::N(37), ParseType::N(46)],
     },
-    // 139 - InlineTableKeyValsOpt: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
+    // 141 - InlineTableKeyValsOpt: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
     Production {
         lhs: 37,
-        production: &[ParseType::N(36), ParseType::N(40)],
+        production: &[ParseType::N(36), ParseType::N(41)],
     },
-    // 140 - InlineTableKeyValsOpt: ;
+    // 142 - InlineTableKeyValsOpt: ;
     Production {
         lhs: 37,
         production: &[],
     },
-    // 141 - ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
+    // 143 - ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
     Production {
         lhs: 6,
-        production: &[ParseType::N(7), ParseType::N(42), ParseType::N(8)],
+        production: &[ParseType::N(7), ParseType::N(43), ParseType::N(8)],
     },
-    // 142 - UnsignedDecInt: "0|[1-9]([0-9]|_[0-9])*";
+    // 144 - UnsignedDecInt: "0|[1-9]([0-9]|_[0-9])*";
     Production {
-        lhs: 98,
+        lhs: 99,
         production: &[ParseType::T(40)],
     },
-    // 143 - UnquotedKey: "[-_A-Za-z0-9]+";
+    // 145 - UnquotedKey: "[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+";
     Production {
-        lhs: 97,
+        lhs: 98,
         production: &[ParseType::T(41)],
     },
-    // 144 - DotSep: "\.";
+    // 146 - DotSep: "\.";
     Production {
         lhs: 25,
         production: &[ParseType::T(42)],
     },
-    // 145 - MLBasicStringStart: "\u{22}{3}";
+    // 147 - MLBasicStringStart: "\u{22}{3}";
     Production {
-        lhs: 65,
+        lhs: 66,
         production: &[ParseType::T(43)],
     },
-    // 146 - MLBasicStringEnd: "\u{22}{3,5}";
+    // 148 - MLBasicStringEnd: "\u{22}{3,5}";
     Production {
-        lhs: 64,
+        lhs: 65,
         production: &[ParseType::T(44)],
     },
-    // 147 - MLBQuotes: "\u{22}{1,2}";
+    // 149 - MLBQuotes: "\u{22}{1,2}";
     Production {
-        lhs: 59,
+        lhs: 60,
         production: &[ParseType::T(45)],
     },
-    // 148 - QuotationMark: "\u{22}";
+    // 150 - QuotationMark: "\u{22}";
     Production {
-        lhs: 87,
+        lhs: 88,
         production: &[ParseType::T(46)],
     },
-    // 149 - MLLiteralStringStart: "\u{27}{3}";
+    // 151 - MLLiteralStringStart: "\u{27}{3}";
     Production {
-        lhs: 74,
+        lhs: 75,
         production: &[ParseType::T(47)],
     },
-    // 150 - MLLiteralStringEnd: "\u{27}{3,5}(?:\r?\n)?";
+    // 152 - MLLiteralStringEnd: "\u{27}{3,5}(?:\r?\n)?";
     Production {
-        lhs: 73,
+        lhs: 74,
         production: &[ParseType::T(48)],
     },
-    // 151 - MLLQuotes: "\u{27}{1,2}";
+    // 153 - MLLQuotes: "\u{27}{1,2}";
     Production {
-        lhs: 69,
+        lhs: 70,
         production: &[ParseType::T(49)],
     },
-    // 152 - Apostrophe: "\u{27}";
+    // 154 - Apostrophe: "\u{27}";
     Production {
         lhs: 0,
         production: &[ParseType::T(50)],
     },
-    // 153 - AsciiNoEscape: "[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
+    // 155 - AsciiNoEscape: "[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
     Production {
         lhs: 12,
         production: &[ParseType::T(51)],
     },
-    // 154 - Minus: "\u{2D}";
+    // 156 - Minus: "\u{2D}";
     Production {
-        lhs: 75,
+        lhs: 76,
         production: &[ParseType::T(52)],
     },
-    // 155 - Plus: "\u{2B}";
+    // 157 - Plus: "\u{2B}";
     Production {
-        lhs: 86,
+        lhs: 87,
         production: &[ParseType::T(53)],
     },
 ];
@@ -2100,7 +2137,7 @@ where
     T: AsRef<Path>,
 {
     let mut llk_parser = LLKParser::new(
-        84,
+        85,
         LOOKAHEAD_AUTOMATA,
         PRODUCTIONS,
         TERMINAL_NAMES,

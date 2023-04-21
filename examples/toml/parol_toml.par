@@ -1,5 +1,6 @@
 %start ParolToml
 %title "TOML Grammar"
+// New TOML Versions from https://github.com/toml-lang/toml/blob/main/toml.abnf
 %comment "Adapted from https://raw.githubusercontent.com/toml-lang/toml/1.0.0/toml.abnf"
 %line_comment "#"
 %scanner Esc {
@@ -301,11 +302,11 @@ SpecialFloat
     ;
 
 OffsetDateTime
-    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?([Zz]|[-+][0-9]{2}:[0-9]{2})"
+    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?"
     ;
 
 LocalDateTime
-    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"
+    : <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?"
     ;
 
 LocalDate
@@ -313,7 +314,7 @@ LocalDate
     ;
 
 LocalTime
-    : <Val>"[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?"
+    : <Val>"[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?"
     ;
 
 Array
@@ -366,7 +367,7 @@ StdTableClose
 
 // Inline Table
  InlineTable
-    : InlineTableOpen^ %push(INITIAL) [ InlineTableKeyVals ] %pop() InlineTableClose^
+    : InlineTableOpen^ %push(INITIAL) [ InlineTableKeyVals ] %pop()  [ InlineTableSep ] InlineTableClose^
     ;
 
 InlineTableOpen
@@ -396,7 +397,7 @@ InlineTableKeyVals
     ;
 
 UnquotedKey
-    : "[-_A-Za-z0-9]+"
+    : "[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+"
     ;
 
 DotSep
