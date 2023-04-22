@@ -128,6 +128,9 @@ fn extract_grammar_analysis_error(
         GrammarAnalysisError::MaxKExceeded { max_k: _ } => {
             // No additional information attached
         }
+        GrammarAnalysisError::MaxTerminalCountExceeded { terms: _ } => {
+            // No additional information attached
+        }
     }
 }
 

@@ -35,6 +35,13 @@ pub enum GrammarAnalysisError {
         /// Maximum lookahead
         max_k: usize,
     },
+
+    /// Maximum count of terminals (32767) exceeded.
+    #[error("Maximum number of terminal symbols (32767) exceeded: {terms}")]
+    MaxTerminalCountExceeded {
+        /// Used terminals
+        terms: usize,
+    },
 }
 
 /// A single recursive non-terminal

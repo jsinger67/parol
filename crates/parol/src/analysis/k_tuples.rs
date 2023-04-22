@@ -209,7 +209,10 @@ impl Display for KTuples {
 
 #[cfg(test)]
 mod test {
-    use crate::{KTuple, KTuples};
+    use crate::{
+        analysis::{compiled_la_dfa::TerminalIndex, MAX_TERMINAL_COUNT},
+        CompiledTerminal, KTuple, KTuples,
+    };
     use quickcheck::quickcheck;
 
     #[test]
@@ -266,22 +269,25 @@ mod test {
 
     // KTuples::insert is commutative regarding Eq
     #[quickcheck]
-    fn k_tuples_insert_is_commutative_regarding_eq(
-        t1: Vec<usize>,
-        t2: Vec<usize>,
-        k: usize,
-    ) -> bool {
+    fn k_tuples_insert_is_commutative_regarding_eq(t1: Vec<u16>, t2: Vec<u16>, k: usize) -> bool {
+        fn u16_to_compiled_terminal(t: &u16) -> CompiledTerminal {
+            if *t > MAX_TERMINAL_COUNT as u16 {
+                CompiledTerminal((t / 2 - 1) as TerminalIndex)
+            } else {
+                CompiledTerminal(*t as TerminalIndex)
+            }
+        }
         let tuples1 = KTuples::of(
             &vec![
-                KTuple::new(6).with_terminal_indices(&t1),
-                KTuple::new(6).with_terminal_indices(&t2),
+                KTuple::from_slice_with(&t1, u16_to_compiled_terminal, k),
+                KTuple::from_slice_with(&t2, u16_to_compiled_terminal, k),
             ],
             k,
         );
         let tuples2 = KTuples::of(
             &vec![
-                KTuple::new(6).with_terminal_indices(&t2),
-                KTuple::new(6).with_terminal_indices(&t1),
+                KTuple::from_slice_with(&t2, u16_to_compiled_terminal, k),
+                KTuple::from_slice_with(&t1, u16_to_compiled_terminal, k),
             ],
             k,
         );

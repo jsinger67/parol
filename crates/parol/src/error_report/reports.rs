@@ -243,6 +243,19 @@ impl Report for ParolErrorReporter {
                             .with_notes(vec!["Please examine your grammar.".to_string()]),
                     )?);
                 }
+                GrammarAnalysisError::MaxTerminalCountExceeded { terms } => {
+                    return Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!(
+                                "Maximum number of terminal symbols (32767) exceeded: {terms}"
+                            ))
+                            .with_code("parol::analysis::max_terminal_count_32767_exceeded")
+                            .with_notes(vec!["Please examine your grammar.".to_string()]),
+                    )?);
+                }
             }
         } else {
             let result = term::emit(

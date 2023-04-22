@@ -56,3 +56,4 @@ pub use reachability::{
 };
 
 mod terminals_trie;
+pub use terminals_trie::MAX_TERMINAL_COUNT;

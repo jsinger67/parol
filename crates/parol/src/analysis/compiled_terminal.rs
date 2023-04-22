@@ -4,15 +4,17 @@ use crate::{Symbol, Terminal, TerminalKind};
 use parol_runtime::lexer::EOI;
 use std::fmt::{Debug, Display, Error, Formatter};
 
+use super::terminals_trie::MAX_TERMINAL_COUNT;
+
 ///
 /// Epsilon token constant
 /// Can be contained in FIRST sets
 ///
-pub const EPS: TerminalIndex = TerminalIndex::MAX;
+pub const EPS: TerminalIndex = MAX_TERMINAL_COUNT;
 
 ///
 /// Invalid token, used as placeholder and initial value in Default
-pub(crate) const INVALID: TerminalIndex = TerminalIndex::MAX - 1;
+pub(crate) const INVALID: TerminalIndex = MAX_TERMINAL_COUNT - 1;
 
 // ---------------------------------------------------
 // Part of the Public API

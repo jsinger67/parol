@@ -1,7 +1,7 @@
 use anyhow::{bail, Result};
 use parol::analysis::k_decision::{calculate_k_tuples, FirstCache, FollowCache};
 use parol::generators::generate_terminal_names;
-use parol::obtain_grammar_config;
+use parol::{obtain_grammar_config, GrammarAnalysisError};
 use parol::MAX_K;
 use std::path::PathBuf;
 
@@ -24,10 +24,13 @@ pub fn main(args: &Args) -> Result<()> {
     let max_k = args.lookahead;
 
     if max_k > MAX_K {
-        bail!("Maximum lookahead is {}", MAX_K);
+        bail!(GrammarAnalysisError::MaxKExceeded{ max_k: MAX_K});
     }
 
     let terminals = generate_terminal_names(&grammar_config);
+    if terminals.len() > parol::analysis::MAX_TERMINAL_COUNT {
+        bail!(GrammarAnalysisError::MaxTerminalCountExceeded{ terms: terminals.len() })
+    }
     let first_cache = FirstCache::new();
     let follow_cache = FollowCache::new();
     let result = calculate_k_tuples(&grammar_config, max_k, &first_cache, &follow_cache);
