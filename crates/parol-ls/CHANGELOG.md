@@ -6,9 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 file.
 
 
-## 0.11.0 - Not released yet
+## 0.11.0 - 2023-04-24
 
 * Merged PR [#78](https://github.com/jsinger67/parol/pull/78) provided by [AumyF](https://github.com/AumyF).
+* Using bug fixed version `parol 0.21.3`
 
 ## 0.10.0 - 2023-04-13
 
