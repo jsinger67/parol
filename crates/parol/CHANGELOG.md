@@ -21,11 +21,14 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.21.3 -  Not released yet
+## 0.21.3 -  2023-04-24
 
+* Partially revoked bug introduced in 4dd1172 (follow_k now uses cached results from step k-1)
+  * This means a small drawback in performance but this reversion is inevitable
+  * 0.21.2 will therefore be yanked
 * Minor performance improvement by using partition_point in `terminals_trie::Node::add_child`
 
-## 0.21.2 - 2023-04-16
+## 0.21.2 - 2023-04-16 - YANKED
 
 * `follow_k` now uses cached results from step k-1 which results in an improvement of performance
 analyzing complex grammars. In the case of [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)
