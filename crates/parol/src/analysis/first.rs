@@ -122,8 +122,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     //                 });
     //                 (0..threads).for_each(|_| {
     //                     let (pr_i, r) = rx.recv().unwrap();
-    //                     new_result_vector[pr_i] = r.clone();
-    //                     new_result_vector[pr_count + nt_for_production[pr_i]].append(r);
+    //                     new_result_vector[pr_count + nt_for_production[pr_i]].append(&r);
+    //                     new_result_vector[pr_i] = r;
     //                 });
     //                 if threads == 0 {
     //                     break;
