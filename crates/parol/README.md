@@ -182,7 +182,7 @@ additional terms or conditions.
 
 ## Further readings
 
-* [CHANGELOG](https://github.com/jsinger67/parol/blob/main/README.md)
+* [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol/CHANGELOG.md)
 * [The book](https://jsinger67.github.io/)
 
 ## Contributors
