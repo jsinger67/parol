@@ -10,6 +10,7 @@ use parol_macros::{bail, parol};
 
 use parol_runtime::{lexer::Token, once_cell::sync::Lazy, Result};
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use std::collections::BTreeMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write};
@@ -21,7 +22,8 @@ static DEFAULT_PAROL_GRAMMAR: Lazy<ParolGrammar<'static>> = Lazy::new(ParolGramm
 const INITIAL_STATE: usize = 0;
 
 /// A user defined type name
-#[derive(Debug, Clone, Default, Hash, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Hash, Ord, PartialOrd, Eq, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct UserDefinedTypeName(Vec<String>);
 
 impl UserDefinedTypeName {

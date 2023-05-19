@@ -182,8 +182,8 @@ additional terms or conditions.
 
 ## Further readings
 
-* [CHANGELOG](CHANGELOG.md)
-* [The book](../../book/README.md)
+* [CHANGELOG](https://github.com/jsinger67/parol/blob/main/README.md)
+* [The book](https://jsinger67.github.io/)
 
 ## Contributors
 

@@ -1,6 +1,6 @@
 [package]
 name = "parol"
-version = "0.21.3"
+version = "0.21.4"
 authors = ["Jörg Singer <singer.joerg@gmx.de>"]
 description = "LL(k) parser generator for Rust"
 default-run = "parol"
@@ -11,7 +11,7 @@ keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
 license = "MIT OR Apache-2.0"
 edition = "2021"
-exclude = ["/tests", "/data"]
+exclude = ["/tests", "/data", "/bindings"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -36,6 +36,7 @@ syntree = { workspace = true }
 syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 ume = "0.1"
+ts-rs = "6.2.1"
 
 [features]
 default = ["build"]

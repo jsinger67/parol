@@ -7,13 +7,15 @@ use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use std::fmt::{Debug, Display, Error, Formatter};
 
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, SymbolItem, TypeFacade, TypeItem};
 
 /// Index type for Symbols
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct SymbolId(usize);
 
 impl SymbolId {
@@ -29,7 +31,8 @@ impl Display for SymbolId {
 }
 
 /// Scope local index type for SymbolNames
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct ScopedNameId(ScopeId, usize);
 
 impl ScopedNameId {
@@ -45,7 +48,8 @@ impl Display for ScopedNameId {
 }
 
 /// Id type for Scopes
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct ScopeId(usize);
 
 impl Display for ScopeId {
@@ -63,7 +67,8 @@ fn build_indent(amount: usize) -> String {
 ///
 /// Type specificities of a function type
 ///
-#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct Function {
     /// Associated non-terminal
     pub(crate) non_terminal: String,
@@ -107,7 +112,8 @@ impl Function {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) enum MetaSymbolKind {
     Undefined,
     Token,
@@ -128,7 +134,8 @@ impl Display for MetaSymbolKind {
 ///
 /// Type information used for auto-generation
 ///
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
     None,
@@ -246,7 +253,8 @@ impl Default for TypeEntrails {
 ///
 /// Type information used for auto-generation
 ///
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct Type {
     /// The type specificities
     pub(crate) entrails: TypeEntrails,
@@ -324,7 +332,8 @@ impl Type {
 ///
 /// A typed instance, usually a function argument or a struct member
 ///
-#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct Instance {
     /// The scope where the instance resides
     pub(crate) scope: ScopeId,
@@ -394,7 +403,8 @@ impl Instance {
 ///
 /// A more general symbol
 ///
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) enum SymbolKind {
     Type(Type),
     Instance(Instance),
@@ -403,7 +413,8 @@ pub(crate) enum SymbolKind {
 ///
 /// A more general symbol
 ///
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Symbol {
     /// The symbol's id in the symbol table
     pub(crate) my_id: SymbolId,
@@ -482,7 +493,8 @@ impl Symbol {
 ///
 /// Scope with symbols inside
 ///
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub(crate) struct Scope {
     pub(crate) parent: Option<ScopeId>,
     pub(crate) my_id: ScopeId,
@@ -622,7 +634,8 @@ impl Display for Scope {
 /// Especially the deduction of the existence of lifetime parameter on generated types is modelled
 /// as simple as possible.
 ///
-#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct SymbolTable {
     // All symbols, ever created
     pub(crate) symbols: Vec<Symbol>,

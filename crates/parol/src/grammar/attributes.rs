@@ -4,6 +4,7 @@
 use std::fmt::{Debug, Display, Error, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 /// Id type for tracking of optionals during grammar transformation
 #[derive(Debug, Clone, Copy, Hash, Default, PartialEq, Eq, PartialOrd, Ord)]
@@ -22,7 +23,8 @@ where
 ///
 /// Attributes applicable to a production or an alternation
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub enum ProductionAttribute {
     /// No valid attribute, default value
     None,
@@ -81,7 +83,8 @@ where
 ///
 /// Attributes applicable to a grammar symbol
 ///
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub enum SymbolAttribute {
     /// No valid attribute, default value
     None,

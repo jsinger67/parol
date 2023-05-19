@@ -21,6 +21,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.21.4 -  2023-05-19
+
+* Provide typescript bindings for `parol`'s symbol table types. Currently these bindings are used by
+a tool called [parol_symbols](https://github.com/jsinger67/parol_symbols.git) that tries to support
+developers by enabling them to comfortably browse `parol` generated symbols for a given grammar.
+
 ## 0.21.3 -  2023-04-24
 
 * Partially revoked bug introduced in 4dd1172 (follow_k now uses cached results from step k-1)
