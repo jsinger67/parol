@@ -20,6 +20,9 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
+## 0.21.5 -  Not released yet
+
+* Fixed panic if parol is executed without arguments
 
 ## 0.21.4 -  2023-05-19
 

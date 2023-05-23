@@ -180,33 +180,30 @@ fn main() -> Result<std::process::ExitCode> {
             );
             return Ok(std::process::ExitCode::SUCCESS);
         }
-        Err(err) => ParolErrorReporter::report_error(&err, file).unwrap_or(()),
+        Err(err) => ParolErrorReporter::report_error(&err, file.unwrap_or_default()).unwrap_or(()),
     }
     println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
     Ok(std::process::ExitCode::FAILURE)
 }
 
 // We need the file name to support error reporting
-fn extract_file_name(args: &CliArgs) -> PathBuf {
+fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
     if args.subcommand.is_some() {
         match args.subcommand.as_ref().unwrap() {
-            tools::ToolsSubcommands::calculate_k(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::calculate_k_tuples(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::decidable(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::deduce_types(args) => args
-                .grammar_file
-                .as_ref()
-                .map_or(PathBuf::default(), |f| f.to_path_buf()),
-            tools::ToolsSubcommands::first(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::follow(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::format(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::generate(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::left_factor(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::left_recursions(args) => args.grammar_file.to_path_buf(),
-            tools::ToolsSubcommands::new(_) => PathBuf::default(),
-            tools::ToolsSubcommands::productivity(args) => args.grammar_file.to_path_buf(),
+            tools::ToolsSubcommands::calculate_k(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::calculate_k_tuples(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::decidable(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::deduce_types(args) => args.grammar_file.clone(),
+            tools::ToolsSubcommands::first(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::follow(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::format(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::generate(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::left_factor(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::left_recursions(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::new(_) => None,
+            tools::ToolsSubcommands::productivity(args) => Some(args.grammar_file.clone()),
         }
     } else {
-        args.grammar.as_ref().unwrap().to_path_buf()
+        args.grammar.clone()
     }
 }
