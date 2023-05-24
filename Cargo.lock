@@ -883,7 +883,7 @@ dependencies = [
  "rand",
  "rand_regex",
  "regex",
- "regex-syntax 0.6.29",
+ "regex-syntax 0.7.2",
  "serde",
  "serde_json",
  "syn 2.0.16",
