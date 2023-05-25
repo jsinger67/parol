@@ -5,6 +5,18 @@ use super::LookaheadDFA;
 
 pub(crate) type TerminalIndex = usize;
 
+/// A Four-Tuple type consisting of
+/// * Start state index
+/// * Terminal index occurred in start state that triggers the transition
+/// * Result state index
+/// * Possible ProductionIndex
+type CompiledTransition = (
+    StateIndex,
+    TerminalIndex,
+    StateIndex,
+    CompiledProductionIndex,
+);
+
 ///
 /// Internal data structure to represent a CompiledDFA which in turn is used to
 /// generate the parsers source code
@@ -15,12 +27,7 @@ pub(crate) struct CompiledDFA {
     /// without applying any transitions
     pub prod0: CompiledProductionIndex,
     /// Tuples from-state->terminal->to-state->Possible ProductionIndex
-    pub transitions: Vec<(
-        StateIndex,
-        TerminalIndex,
-        StateIndex,
-        CompiledProductionIndex,
-    )>,
+    pub transitions: Vec<CompiledTransition>,
     pub k: usize,
 }
 
@@ -40,36 +47,25 @@ impl CompiledDFA {
 
         let prod0 = *states.get(&0).unwrap_or(&INVALID_PROD);
 
-        let transitions = dfa.transitions.iter().fold(
-            Vec::<(
-                StateIndex,
-                TerminalIndex,
-                StateIndex,
-                CompiledProductionIndex,
-            )>::new(),
-            |mut acc, (ci, t)| {
-                let mut transitions = t.iter().fold(
-                    Vec::<(
-                        StateIndex,
-                        TerminalIndex,
-                        StateIndex,
-                        CompiledProductionIndex,
-                    )>::new(),
-                    |mut acc, (trm, ns)| {
-                        acc.push((
-                            *ci as StateIndex,
-                            *trm,
-                            *ns as StateIndex,
-                            *states.get(ns).unwrap_or(&INVALID_PROD),
-                        ));
-                        acc
-                    },
-                );
-                transitions.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-                acc.append(&mut transitions);
-                acc
-            },
-        );
+        let transitions =
+            dfa.transitions
+                .iter()
+                .fold(Vec::<CompiledTransition>::new(), |mut acc, (ci, t)| {
+                    let mut transitions =
+                        t.iter()
+                            .fold(Vec::<CompiledTransition>::new(), |mut acc, (trm, ns)| {
+                                acc.push((
+                                    *ci as StateIndex,
+                                    *trm,
+                                    *ns as StateIndex,
+                                    *states.get(ns).unwrap_or(&INVALID_PROD),
+                                ));
+                                acc
+                            });
+                    transitions.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
+                    acc.append(&mut transitions);
+                    acc
+                });
 
         let k = dfa.k;
 
@@ -78,6 +74,36 @@ impl CompiledDFA {
             transitions,
             k,
         })
+    }
+
+    fn _minimize(self) -> CompiledDFA {
+        let Self {
+            prod0,
+            mut transitions,
+            k,
+        } = self;
+
+        fn minimize_step(
+            _combined_states: Vec<usize>,
+            _transitions: &[CompiledTransition],
+        ) -> (Vec<usize>, Vec<CompiledTransition>) {
+            // 
+            (vec![], vec![])
+        }
+
+        // let mut combined_states = transitions.iter().filter(|t| t.3 != INVALID_PROD).gr;
+        // let (new_combined_states, mut transitions) = minimize_step(combined_states, &transitions);
+        // combined_states = new_combined_states;
+        // while !combined_states.is_empty() {}
+
+
+        transitions.sort_by_key(|s| (s.0, s.1));
+
+        Self {
+            prod0,
+            transitions,
+            k,
+        }
     }
 
     // Accepting states that yield the same production index can be combined.
@@ -93,12 +119,7 @@ impl CompiledDFA {
         fn remove_duplicate_at_index(
             kept_index: usize,
             index_to_remove: usize,
-            transitions: &mut [(
-                StateIndex,
-                TerminalIndex,
-                StateIndex,
-                CompiledProductionIndex,
-            )],
+            transitions: &mut [CompiledTransition],
         ) {
             // debug_assert!(kept_index < index_to_remove);
             transitions.iter_mut().for_each(|t| {
@@ -121,6 +142,7 @@ impl CompiledDFA {
             for (index1, t1) in transitions.iter().enumerate() {
                 for t2 in transitions.iter().skip(index1 + 1) {
                     // Check for same result production number
+                    // Note that only accepting states carry a valid production number
                     if t1.3 != INVALID_PROD && t1.3 == t2.3 && t1.2 != t2.2 {
                         remove_duplicate_at_index(t1.2, t2.2, &mut transitions);
                         changed = true;
