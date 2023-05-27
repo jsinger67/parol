@@ -284,7 +284,11 @@ impl Display for LookaheadDFA {
             })
             .collect::<Vec<String>>()
             .join("\n");
-        write!(f, "States\n{}\nTransitions:\n{}\n", states, transitions)
+        write!(
+            f,
+            "States\n{}\nTransitions:\n{}\nk:{}\n",
+            states, transitions, self.k
+        )
     }
 }
 

@@ -29,7 +29,10 @@ impl Dfa {
         let transitions = compiled_dfa.transitions.iter().fold(
             StrVec::new(4).first_line_no_indent(),
             |mut acc, t| {
-                acc.push(format!("Trans{:?},", t));
+                acc.push(format!(
+                    "Trans({}, {}, {}, {}),",
+                    t.from_state, t.term, t.to_state, t.prod_num
+                ));
                 acc
             },
         );
@@ -404,6 +407,7 @@ fn generate_dfa_source(la_dfa: &BTreeMap<String, LookaheadDFA>) -> String {
         .iter()
         .enumerate()
         .fold(StrVec::new(0), |mut acc, (i, (n, d))| {
+            trace!("{}", d);
             trace!("{}", render_dfa_dot_string(d, n));
             let dfa = Dfa::from_la_dfa(d, i, n.clone());
             acc.push(format!("{}", dfa));
