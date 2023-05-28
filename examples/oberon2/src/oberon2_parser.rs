@@ -2883,7 +2883,6 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    llk_parser.trim_parse_tree();
     let token_stream =
         RefCell::new(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap());
     // Initialize wrapper

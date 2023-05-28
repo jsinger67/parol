@@ -1,5 +1,7 @@
 use std::collections::BTreeMap;
 
+use parol_runtime::log::trace;
+
 use super::lookahead_dfa::{CompiledProductionIndex, StateIndex, INVALID_PROD};
 use super::LookaheadDFA;
 
@@ -17,17 +19,17 @@ mod adjacency_list {
 
     type StateId = usize;
 
-    #[derive(Debug, Clone, Eq, PartialEq)]
-    struct AdjacencyListEntry {
+    #[derive(Debug, Clone, Eq, PartialEq, Hash)]
+    struct Neighbors {
         // The list is kept sorted to be able to detect equality.
         // This is important because states with the same follower state AND the same terminal set
         // at these transitions can be combined.
         neighbors: Vec<(StateId, TerminalIndex)>,
     }
 
-    impl AdjacencyListEntry {
+    impl Neighbors {
         fn new() -> Self {
-            AdjacencyListEntry {
+            Neighbors {
                 neighbors: Vec::new(),
             }
         }
@@ -53,12 +55,25 @@ mod adjacency_list {
                 self.sort();
             }
         }
+
+        fn append(&mut self, neighbors: &[(StateId, TerminalIndex)]) {
+            let mut changed = false;
+            neighbors.iter().for_each(|n| {
+                if !self.neighbors.contains(n) {
+                    self.neighbors.push(*n);
+                    changed |= true;
+                }
+            });
+            if changed {
+                self.sort();
+            }
+        }
     }
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone, Eq, PartialEq)]
     pub(super) struct AdjacencyList {
         // The actual adjacency list
-        list: HashMap<StateId, AdjacencyListEntry>,
+        list: HashMap<StateId, Neighbors>,
         // A map from state to its resulting production number
         // We use a BTreeMap here because we use this as sorted base for optimization to always get
         // a reproducible result.
@@ -72,12 +87,12 @@ mod adjacency_list {
         fn from(value: CompiledDFA) -> Self {
             let mut list = HashMap::new();
             let mut productions = BTreeMap::new();
-            list.insert(0, AdjacencyListEntry::new());
+            list.insert(0, Neighbors::new());
             productions.insert(0, value.prod0);
 
             for t in &value.transitions {
                 // We use the to-state and the resulting production number
-                list.insert(t.to_state, AdjacencyListEntry::new());
+                list.insert(t.to_state, Neighbors::new());
                 productions.insert(t.to_state, t.prod_num);
             }
 
@@ -98,6 +113,12 @@ mod adjacency_list {
 
     impl AdjacencyList {
         #[inline]
+        pub(super) fn len(&self) -> usize {
+            debug_assert_eq!(self.productions.len(), self.list.len());
+            self.productions.len()
+        }
+
+        #[inline]
         fn remove_state(&mut self, id: StateId) {
             self.list.remove(&id);
             self.productions.remove(&id);
@@ -107,7 +128,7 @@ mod adjacency_list {
             if let Some(e) = self.list.remove(&id) {
                 self.list.insert(new_id, e);
             }
-            for (_, e) in &mut self.list {
+            for e in &mut self.list.values_mut() {
                 e.rename_neighbor(id, new_id);
             }
             if let Some(p) = self.productions.remove(&id) {
@@ -124,15 +145,15 @@ mod adjacency_list {
                 Some(prod_num_of_merge_state),
             ) = (
                 self.list.get(&state_to_keep),
-                self.list.get(&state_to_merge).map(|l| l.clone()),
+                self.list.get(&state_to_merge).cloned(),
                 self.productions.get(&state_to_keep),
                 self.productions.get(&state_to_merge),
             ) {
                 debug_assert_eq!(prod_num_of_keep_state, prod_num_of_merge_state);
                 // Combine the adjacency list of two states in the state to keep
-                self.list
-                    .get_mut(&state_to_keep)
-                    .map(|l| l.neighbors.extend(adj_list_of_merge_state.neighbors));
+                if let Some(l) = self.list.get_mut(&state_to_keep) {
+                    l.append(&adj_list_of_merge_state.neighbors)
+                }
                 // Remove the state to merge
                 self.remove_state(state_to_merge);
                 // Rename the state_to_merge into state_to_keep in all adjacency lists
@@ -163,16 +184,18 @@ mod adjacency_list {
                 self.combine_states(states);
             }
 
+            self.combine_equivalent_states();
+
             self.renumber_states();
         }
 
-        pub(super) fn to_compiled_dfa(self) -> CompiledDFA {
+        pub(super) fn as_compiled_dfa(&self) -> CompiledDFA {
             let mut transitions: Vec<CompiledTransition> = vec![];
-            for (s, l) in self.list {
-                for t in l.neighbors {
+            for (s, l) in &self.list {
+                for t in &l.neighbors {
                     let p = self.productions.get(&t.0).unwrap();
                     transitions.push(CompiledTransition {
-                        from_state: s,
+                        from_state: *s,
                         term: t.1,
                         to_state: t.0,
                         prod_num: *p,
@@ -213,6 +236,38 @@ mod adjacency_list {
                         trace!("renumber_states: {state_to_rename} -> {new}");
                         self.rename_state(state_to_rename, new);
                         changed = true;
+                    }
+                }
+            }
+        }
+
+        fn combine_equivalent_states(&mut self) {
+            let mut changed = true;
+            'NEXT: while changed {
+                changed = false;
+                let combinable_states = self
+                    .list
+                    .iter()
+                    .filter_map(|(s, l)| {
+                        if *self.productions.get(s).unwrap() == INVALID_PROD {
+                            Some((*s, l.clone()))
+                        } else {
+                            None
+                        }
+                    })
+                    .collect::<Vec<(usize, Neighbors)>>();
+                let combinable_groups = group_by(&combinable_states, |(_, l)| l.clone());
+                for g in combinable_groups {
+                    if g.1.len() > 1 {
+                        changed = true;
+                        let states_to_combine =
+                            g.1.iter().fold(VecDeque::new(), |mut acc, (s, _)| {
+                                acc.push_back(*s);
+                                acc
+                            });
+                        trace!("combining equivalent states: {states_to_combine:?}");
+                        self.combine_states(states_to_combine);
+                        continue 'NEXT;
                     }
                 }
             }
@@ -340,7 +395,7 @@ mod adjacency_list {
             assert_eq!(4, adjacency_list.list.len());
             assert_eq!(4, adjacency_list.productions.len());
 
-            let dfa = adjacency_list.to_compiled_dfa();
+            let dfa = adjacency_list.as_compiled_dfa();
             assert_eq!(2, dfa.k);
             assert_eq!(4, dfa.transitions.len());
 
@@ -386,7 +441,7 @@ mod adjacency_list {
             assert_eq!(3, adjacency_list.list.len());
             assert_eq!(3, adjacency_list.productions.len());
 
-            let dfa = adjacency_list.to_compiled_dfa();
+            let dfa = adjacency_list.as_compiled_dfa();
             assert_eq!(2, dfa.k);
             assert_eq!(3, dfa.transitions.len());
 
@@ -447,7 +502,7 @@ mod adjacency_list {
             assert_eq!(3, adjacency_list.list.len());
             assert_eq!(3, adjacency_list.productions.len());
 
-            let dfa = adjacency_list.to_compiled_dfa();
+            let dfa = adjacency_list.as_compiled_dfa();
             assert_eq!(1, dfa.k);
             assert_eq!(16, dfa.transitions.len());
 
@@ -544,8 +599,10 @@ impl CompiledDFA {
 
     fn minimize(self) -> CompiledDFA {
         let mut adjacency_list: adjacency_list::AdjacencyList = self.into();
+        trace!("Before minimization: {}", adjacency_list.len());
         adjacency_list.minimize();
-        adjacency_list.to_compiled_dfa()
+        trace!("After minimization: {}", adjacency_list.len());
+        adjacency_list.as_compiled_dfa()
     }
 
     // Accepting states that yield the same production index can be combined.
