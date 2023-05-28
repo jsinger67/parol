@@ -6,6 +6,8 @@ use super::LookaheadDFA;
 pub(crate) type TerminalIndex = usize;
 
 mod adjacency_list {
+    use parol_runtime::log::trace;
+
     use crate::analysis::compiled_la_dfa::TerminalIndex;
     use crate::analysis::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD};
     use crate::group_by;
@@ -102,6 +104,9 @@ mod adjacency_list {
         }
 
         fn rename_state(&mut self, id: StateId, new_id: StateId) {
+            if let Some(e) = self.list.remove(&id) {
+                self.list.insert(new_id, e);
+            }
             for (_, e) in &mut self.list {
                 e.rename_neighbor(id, new_id);
             }
@@ -182,24 +187,34 @@ mod adjacency_list {
             }
         }
 
-        // Todo: Rethink the algorithm for renumbering to avoid unnecessary rename operations
         fn renumber_states(&mut self) {
-            let sorted_keys: Vec<usize> = self.productions.keys().map(|k| *k).collect();
-            if sorted_keys.is_empty() {
-                return;
+            fn find_first_free_state_number(
+                productions: &BTreeMap<StateId, CompiledProductionIndex>,
+            ) -> Option<usize> {
+                for i in 1..productions.len() {
+                    if !productions.contains_key(&i) {
+                        return Some(i);
+                    }
+                }
+                panic!("No free state number found!");
+                // return None;
             }
-            let offset = *sorted_keys.last().unwrap() + 1;
-            // State 0 shouldn't be renamed, i.e. it should stay state 0!
-            // Therefore we skip the first element.
-            let rename_map: BTreeMap<usize, usize> =
-                sorted_keys.into_iter().enumerate().skip(1).collect();
-            // First rename to new state numbers to avoid deleting existing states while renaming.
-            for (new, old) in &rename_map {
-                self.rename_state(*old, new + offset);
-            }
-            // Then we apply the correct numbering
-            for (new, _) in rename_map {
-                self.rename_state(new + offset, new);
+
+            let mut changed = true;
+            while changed {
+                changed = false;
+                if let Some(state_to_rename) = self
+                    .productions
+                    .iter()
+                    .enumerate()
+                    .find_map(|(i, (p, _))| if *p != i { Some(*p) } else { None })
+                {
+                    if let Some(new) = find_first_free_state_number(&self.productions) {
+                        trace!("renumber_states: {state_to_rename} -> {new}");
+                        self.rename_state(state_to_rename, new);
+                        changed = true;
+                    }
+                }
             }
         }
     }
