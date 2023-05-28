@@ -9,40 +9,59 @@ mod adjacency_list {
     use crate::analysis::compiled_la_dfa::TerminalIndex;
     use crate::analysis::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD};
     use crate::group_by;
-    use std::collections::{HashMap, VecDeque};
+    use std::collections::{BTreeMap, HashMap, VecDeque};
 
     use super::{CompiledDFA, CompiledTransition};
 
     type StateId = usize;
 
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Eq, PartialEq)]
     struct AdjacencyListEntry {
-        neighbors: HashMap<StateId, TerminalIndex>,
+        // The list is kept sorted to be able to detect equality.
+        // This is important because states with the same follower state AND the same terminal set
+        // at these transitions can be combined.
+        neighbors: Vec<(StateId, TerminalIndex)>,
     }
 
     impl AdjacencyListEntry {
         fn new() -> Self {
             AdjacencyListEntry {
-                neighbors: HashMap::new(),
+                neighbors: Vec::new(),
             }
         }
 
+        fn sort(&mut self) {
+            self.neighbors.sort();
+        }
+
         fn add_neighbor(&mut self, neighbor_id: StateId, neighbor_term: TerminalIndex) {
-            self.neighbors.insert(neighbor_id, neighbor_term);
+            self.neighbors.push((neighbor_id, neighbor_term));
+            self.sort();
         }
 
         fn rename_neighbor(&mut self, id: StateId, new_id: StateId) {
-            if let Some(term) = self.neighbors.remove(&id) {
-                self.neighbors.insert(new_id, term);
+            let mut changed = false;
+            for (s, _) in &mut self.neighbors {
+                if s == &id {
+                    *s = new_id;
+                    changed |= true;
+                }
+            }
+            if changed {
+                self.sort();
             }
         }
     }
 
     #[derive(Debug)]
     pub(super) struct AdjacencyList {
+        // The actual adjacency list
         list: HashMap<StateId, AdjacencyListEntry>,
-        productions: HashMap<StateId, CompiledProductionIndex>,
-        prod0: CompiledProductionIndex,
+        // A map from state to its resulting production number
+        // We use a BTreeMap here because we use this as sorted base for optimization to always get
+        // a reproducible result.
+        productions: BTreeMap<StateId, CompiledProductionIndex>,
+        // Lookahead size, only used for conversion back to [CompiledDFA] (to_compiled_dfa)
         k: usize,
     }
 
@@ -50,7 +69,7 @@ mod adjacency_list {
         /// Conversion from CompiledDFA
         fn from(value: CompiledDFA) -> Self {
             let mut list = HashMap::new();
-            let mut productions = HashMap::new();
+            let mut productions = BTreeMap::new();
             list.insert(0, AdjacencyListEntry::new());
             productions.insert(0, value.prod0);
 
@@ -70,7 +89,6 @@ mod adjacency_list {
             AdjacencyList {
                 list,
                 productions,
-                prod0: value.prod0,
                 k: value.k,
             }
         }
@@ -86,6 +104,9 @@ mod adjacency_list {
         fn rename_state(&mut self, id: StateId, new_id: StateId) {
             for (_, e) in &mut self.list {
                 e.rename_neighbor(id, new_id);
+            }
+            if let Some(p) = self.productions.remove(&id) {
+                self.productions.insert(new_id, p);
             }
         }
 
@@ -136,6 +157,8 @@ mod adjacency_list {
                 let states = g.1.iter().map(|s| s.0).collect();
                 self.combine_states(states);
             }
+
+            self.renumber_states();
         }
 
         pub(super) fn to_compiled_dfa(self) -> CompiledDFA {
@@ -153,9 +176,30 @@ mod adjacency_list {
             }
             transitions.sort_by_key(|s| (s.from_state, s.term));
             CompiledDFA {
-                prod0: self.prod0,
+                prod0: *self.productions.get(&0).unwrap(),
                 transitions,
                 k: self.k,
+            }
+        }
+
+        // Todo: Rethink the algorithm for renumbering to avoid unnecessary rename operations
+        fn renumber_states(&mut self) {
+            let sorted_keys: Vec<usize> = self.productions.keys().map(|k| *k).collect();
+            if sorted_keys.is_empty() {
+                return;
+            }
+            let offset = *sorted_keys.last().unwrap() + 1;
+            // State 0 shouldn't be renamed, i.e. it should stay state 0!
+            // Therefore we skip the first element.
+            let rename_map: BTreeMap<usize, usize> =
+                sorted_keys.into_iter().enumerate().skip(1).collect();
+            // First rename to new state numbers to avoid deleting existing states while renaming.
+            for (new, old) in &rename_map {
+                self.rename_state(*old, new + offset);
+            }
+            // Then we apply the correct numbering
+            for (new, _) in rename_map {
+                self.rename_state(new + offset, new);
             }
         }
     }
@@ -205,7 +249,6 @@ mod adjacency_list {
             };
             let adjacency_list: AdjacencyList = dfa.into();
             assert_eq!(2, adjacency_list.k);
-            assert_eq!(-1, adjacency_list.prod0);
             assert_eq!(5, adjacency_list.list.len());
             assert_eq!(5, adjacency_list.productions.len());
             for s in [0, 1, 2, 3, 4] {
@@ -234,27 +277,35 @@ mod adjacency_list {
                 .get(&0)
                 .unwrap()
                 .neighbors
-                .contains_key(&1));
+                .iter()
+                .position(|n| n.0 == 1)
+                .is_some());
             assert!(adjacency_list
                 .list
                 .get(&0)
                 .unwrap()
                 .neighbors
-                .contains_key(&3));
-
+                .iter()
+                .position(|n| n.0 == 3)
+                .is_some());
             assert!(adjacency_list
                 .list
                 .get(&1)
                 .unwrap()
                 .neighbors
-                .contains_key(&2));
+                .iter()
+                .position(|n| n.0 == 2)
+                .is_some());
             assert!(adjacency_list
                 .list
                 .get(&1)
                 .unwrap()
                 .neighbors
-                .contains_key(&4));
+                .iter()
+                .position(|n| n.0 == 4)
+                .is_some());
         }
+
         #[test]
         fn test_minimize() {
             let mut transitions = vec![];
@@ -275,7 +326,6 @@ mod adjacency_list {
             assert_eq!(4, adjacency_list.productions.len());
 
             let dfa = adjacency_list.to_compiled_dfa();
-            assert_eq!(-1, dfa.prod0);
             assert_eq!(2, dfa.k);
             assert_eq!(4, dfa.transitions.len());
 
@@ -299,6 +349,108 @@ mod adjacency_list {
                 .iter()
                 .find(|t| { *t == &trans!(1, 6, 2, 4) })
                 .is_some());
+        }
+
+        #[test]
+        fn test_minimize_multiple_transitions_with_different_terminals() {
+            let mut transitions = vec![];
+            // Taken from example list_auto, Non-terminal ListOpt
+            // In this case we have already a minimal DFA.
+            transitions.push(trans!(0, 0, 2, 2));
+            transitions.push(trans!(0, 5, 2, 2));
+            transitions.push(trans!(0, 6, 1, 1));
+            let dfa = CompiledDFA {
+                prod0: -1,
+                transitions,
+                k: 2,
+            };
+            let mut adjacency_list: AdjacencyList = dfa.into();
+            assert_eq!(3, adjacency_list.list.len());
+            assert_eq!(3, adjacency_list.productions.len());
+            adjacency_list.minimize();
+            assert_eq!(3, adjacency_list.list.len());
+            assert_eq!(3, adjacency_list.productions.len());
+
+            let dfa = adjacency_list.to_compiled_dfa();
+            assert_eq!(2, dfa.k);
+            assert_eq!(3, dfa.transitions.len());
+
+            assert!(dfa
+                .transitions
+                .iter()
+                .find(|t| { *t == &trans!(0, 0, 2, 2) })
+                .is_some());
+            assert!(dfa
+                .transitions
+                .iter()
+                .find(|t| { *t == &trans!(0, 5, 2, 2) })
+                .is_some());
+            assert!(dfa
+                .transitions
+                .iter()
+                .find(|t| { *t == &trans!(0, 6, 1, 1) })
+                .is_some());
+        }
+
+        // To transform a DOT transition:
+        //
+        // (\d+) -> (\d+) \[label = "(\d+)"\];
+        // =>
+        // trans!($1, $3, $2, );
+        //
+        // Then add production manually.
+
+        #[test]
+        fn test_minimize_renumber_states() {
+            let mut transitions = vec![];
+            // Taken from parol, Non-terminal AlternationList
+            transitions.push(trans!(0, 17, 12, 25));
+            transitions.push(trans!(0, 18, 13, 25));
+            transitions.push(trans!(0, 19, 1, 24));
+            transitions.push(trans!(0, 21, 2, 24));
+            transitions.push(trans!(0, 22, 3, 24));
+            transitions.push(trans!(0, 23, 4, 24));
+            transitions.push(trans!(0, 24, 5, 24));
+            transitions.push(trans!(0, 25, 14, 25));
+            transitions.push(trans!(0, 26, 6, 24));
+            transitions.push(trans!(0, 27, 15, 25));
+            transitions.push(trans!(0, 28, 7, 24));
+            transitions.push(trans!(0, 29, 16, 25));
+            transitions.push(trans!(0, 30, 8, 24));
+            transitions.push(trans!(0, 33, 9, 24));
+            transitions.push(trans!(0, 34, 10, 24));
+            transitions.push(trans!(0, 35, 11, 24));
+            let dfa = CompiledDFA {
+                prod0: -1,
+                transitions,
+                k: 1,
+            };
+            let mut adjacency_list: AdjacencyList = dfa.into();
+            assert_eq!(17, adjacency_list.list.len());
+            assert_eq!(17, adjacency_list.productions.len());
+            adjacency_list.minimize();
+            assert_eq!(3, adjacency_list.list.len());
+            assert_eq!(3, adjacency_list.productions.len());
+
+            let dfa = adjacency_list.to_compiled_dfa();
+            assert_eq!(1, dfa.k);
+            assert_eq!(16, dfa.transitions.len());
+
+            // assert!(dfa
+            //     .transitions
+            //     .iter()
+            //     .find(|t| { *t == &trans!(0, 0, 2, 2) })
+            //     .is_some());
+            // assert!(dfa
+            //     .transitions
+            //     .iter()
+            //     .find(|t| { *t == &trans!(0, 5, 2, 2) })
+            //     .is_some());
+            // assert!(dfa
+            //     .transitions
+            //     .iter()
+            //     .find(|t| { *t == &trans!(0, 6, 1, 1) })
+            //     .is_some());
         }
     }
 }
