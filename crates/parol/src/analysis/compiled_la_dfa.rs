@@ -307,11 +307,12 @@ mod adjacency_list {
         // k:2
         #[test]
         fn test_conversion() {
-            let mut transitions = vec![];
-            transitions.push(trans!(0, 0, 3, 5));
-            transitions.push(trans!(0, 5, 1, -1));
-            transitions.push(trans!(1, 0, 4, 5));
-            transitions.push(trans!(1, 6, 2, 4));
+            let transitions = vec![
+                trans!(0, 0, 3, 5),
+                trans!(0, 5, 1, -1),
+                trans!(1, 0, 4, 5),
+                trans!(1, 6, 2, 4),
+            ];
             let dfa = CompiledDFA {
                 prod0: -1,
                 transitions,
@@ -331,58 +332,32 @@ mod adjacency_list {
             {
                 assert_eq!(
                     p,
-                    adjacency_list.productions.get(&s).unwrap(),
+                    adjacency_list.productions.get(s).unwrap(),
                     "at index {}",
                     i
                 );
             }
-            assert_eq!(2, adjacency_list.list.get(&0).unwrap().neighbors.len());
-            assert_eq!(2, adjacency_list.list.get(&1).unwrap().neighbors.len());
-            assert_eq!(0, adjacency_list.list.get(&2).unwrap().neighbors.len());
-            assert_eq!(0, adjacency_list.list.get(&3).unwrap().neighbors.len());
-            assert_eq!(0, adjacency_list.list.get(&4).unwrap().neighbors.len());
+            let adj_list = &adjacency_list.list;
+            assert_eq!(2, adj_list.get(&0).unwrap().neighbors.len());
+            assert_eq!(2, adj_list.get(&1).unwrap().neighbors.len());
+            assert_eq!(0, adj_list.get(&2).unwrap().neighbors.len());
+            assert_eq!(0, adj_list.get(&3).unwrap().neighbors.len());
+            assert_eq!(0, adj_list.get(&4).unwrap().neighbors.len());
 
-            assert!(adjacency_list
-                .list
-                .get(&0)
-                .unwrap()
-                .neighbors
-                .iter()
-                .position(|n| n.0 == 1)
-                .is_some());
-            assert!(adjacency_list
-                .list
-                .get(&0)
-                .unwrap()
-                .neighbors
-                .iter()
-                .position(|n| n.0 == 3)
-                .is_some());
-            assert!(adjacency_list
-                .list
-                .get(&1)
-                .unwrap()
-                .neighbors
-                .iter()
-                .position(|n| n.0 == 2)
-                .is_some());
-            assert!(adjacency_list
-                .list
-                .get(&1)
-                .unwrap()
-                .neighbors
-                .iter()
-                .position(|n| n.0 == 4)
-                .is_some());
+            assert!(adj_list.get(&0).unwrap().neighbors.iter().any(|n| n.0 == 1));
+            assert!(adj_list.get(&0).unwrap().neighbors.iter().any(|n| n.0 == 3));
+            assert!(adj_list.get(&1).unwrap().neighbors.iter().any(|n| n.0 == 2));
+            assert!(adj_list.get(&1).unwrap().neighbors.iter().any(|n| n.0 == 4));
         }
 
         #[test]
         fn test_minimize() {
-            let mut transitions = vec![];
-            transitions.push(trans!(0, 0, 3, 5));
-            transitions.push(trans!(0, 5, 1, -1));
-            transitions.push(trans!(1, 0, 4, 5));
-            transitions.push(trans!(1, 6, 2, 4));
+            let transitions = vec![
+                trans!(0, 0, 3, 5),
+                trans!(0, 5, 1, -1),
+                trans!(1, 0, 4, 5),
+                trans!(1, 6, 2, 4),
+            ];
             let dfa = CompiledDFA {
                 prod0: -1,
                 transitions,
@@ -399,36 +374,20 @@ mod adjacency_list {
             assert_eq!(2, dfa.k);
             assert_eq!(4, dfa.transitions.len());
 
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(0, 0, 3, 5) }));
             assert!(dfa
                 .transitions
                 .iter()
-                .find(|t| { *t == &trans!(0, 0, 3, 5) })
-                .is_some());
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(0, 5, 1, -1) })
-                .is_some());
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(1, 0, 3, 5) })
-                .is_some());
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(1, 6, 2, 4) })
-                .is_some());
+                .any(|t| { *t == trans!(0, 5, 1, -1) }));
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(1, 0, 3, 5) }));
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(1, 6, 2, 4) }));
         }
 
         #[test]
         fn test_minimize_multiple_transitions_with_different_terminals() {
-            let mut transitions = vec![];
             // Taken from example list_auto, Non-terminal ListOpt
             // In this case we have already a minimal DFA.
-            transitions.push(trans!(0, 0, 2, 2));
-            transitions.push(trans!(0, 5, 2, 2));
-            transitions.push(trans!(0, 6, 1, 1));
+            let transitions = vec![trans!(0, 0, 2, 2), trans!(0, 5, 2, 2), trans!(0, 6, 1, 1)];
             let dfa = CompiledDFA {
                 prod0: -1,
                 transitions,
@@ -445,21 +404,9 @@ mod adjacency_list {
             assert_eq!(2, dfa.k);
             assert_eq!(3, dfa.transitions.len());
 
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(0, 0, 2, 2) })
-                .is_some());
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(0, 5, 2, 2) })
-                .is_some());
-            assert!(dfa
-                .transitions
-                .iter()
-                .find(|t| { *t == &trans!(0, 6, 1, 1) })
-                .is_some());
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(0, 0, 2, 2) }));
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(0, 5, 2, 2) }));
+            assert!(dfa.transitions.iter().any(|t| { *t == trans!(0, 6, 1, 1) }));
         }
 
         // To transform a DOT transition:
@@ -472,24 +419,25 @@ mod adjacency_list {
 
         #[test]
         fn test_minimize_renumber_states() {
-            let mut transitions = vec![];
             // Taken from parol, Non-terminal AlternationList
-            transitions.push(trans!(0, 17, 12, 25));
-            transitions.push(trans!(0, 18, 13, 25));
-            transitions.push(trans!(0, 19, 1, 24));
-            transitions.push(trans!(0, 21, 2, 24));
-            transitions.push(trans!(0, 22, 3, 24));
-            transitions.push(trans!(0, 23, 4, 24));
-            transitions.push(trans!(0, 24, 5, 24));
-            transitions.push(trans!(0, 25, 14, 25));
-            transitions.push(trans!(0, 26, 6, 24));
-            transitions.push(trans!(0, 27, 15, 25));
-            transitions.push(trans!(0, 28, 7, 24));
-            transitions.push(trans!(0, 29, 16, 25));
-            transitions.push(trans!(0, 30, 8, 24));
-            transitions.push(trans!(0, 33, 9, 24));
-            transitions.push(trans!(0, 34, 10, 24));
-            transitions.push(trans!(0, 35, 11, 24));
+            let transitions = vec![
+                trans!(0, 17, 12, 25),
+                trans!(0, 18, 13, 25),
+                trans!(0, 19, 1, 24),
+                trans!(0, 21, 2, 24),
+                trans!(0, 22, 3, 24),
+                trans!(0, 23, 4, 24),
+                trans!(0, 24, 5, 24),
+                trans!(0, 25, 14, 25),
+                trans!(0, 26, 6, 24),
+                trans!(0, 27, 15, 25),
+                trans!(0, 28, 7, 24),
+                trans!(0, 29, 16, 25),
+                trans!(0, 30, 8, 24),
+                trans!(0, 33, 9, 24),
+                trans!(0, 34, 10, 24),
+                trans!(0, 35, 11, 24),
+            ];
             let dfa = CompiledDFA {
                 prod0: -1,
                 transitions,
@@ -506,21 +454,81 @@ mod adjacency_list {
             assert_eq!(1, dfa.k);
             assert_eq!(16, dfa.transitions.len());
 
-            // assert!(dfa
-            //     .transitions
-            //     .iter()
-            //     .find(|t| { *t == &trans!(0, 0, 2, 2) })
-            //     .is_some());
-            // assert!(dfa
-            //     .transitions
-            //     .iter()
-            //     .find(|t| { *t == &trans!(0, 5, 2, 2) })
-            //     .is_some());
-            // assert!(dfa
-            //     .transitions
-            //     .iter()
-            //     .find(|t| { *t == &trans!(0, 6, 1, 1) })
-            //     .is_some());
+            let dfa_source = crate::generators::parser_generator::Dfa::from_compiled_dfa(
+                dfa.clone(),
+                0,
+                "AlternationList".to_owned(),
+            );
+
+            let trs = &dfa.transitions;
+
+            assert!(trs.iter().any(|t| { *t == trans!(0, 17, 2, 25) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 18, 2, 25) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 19, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 21, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 22, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 23, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 24, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 25, 2, 25) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 26, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 27, 2, 25) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 28, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 29, 2, 25) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 30, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 33, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 34, 1, 24) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 35, 1, 24) }));
+
+            eprintln!("{dfa_source}");
+        }
+
+        #[test]
+        fn test_minimize_complete() {
+            let transitions = vec![
+                trans!(0, 0, 1, -1),
+                trans!(0, 1, 2, -1),
+                trans!(0, 2, 3, -1),
+                trans!(1, 6, 12, 8),
+                trans!(1, 4, 9, 7),
+                trans!(2, 5, 10, 8),
+                trans!(2, 12, 10, 8),
+                trans!(3, 12, 11, 8),
+                trans!(3, 5, 11, 8),
+            ];
+            let dfa = CompiledDFA {
+                prod0: -1,
+                transitions,
+                k: 2,
+            };
+
+            let mut adjacency_list: AdjacencyList = dfa.into();
+            assert_eq!(8, adjacency_list.list.len());
+            assert_eq!(8, adjacency_list.productions.len());
+            adjacency_list.minimize();
+            assert_eq!(5, adjacency_list.list.len());
+            assert_eq!(5, adjacency_list.productions.len());
+
+            let dfa = adjacency_list.as_compiled_dfa();
+            assert_eq!(2, dfa.k);
+            assert_eq!(7, dfa.transitions.len());
+
+            let dfa_source = crate::generators::parser_generator::Dfa::from_compiled_dfa(
+                dfa.clone(),
+                0,
+                "AlternationList".to_owned(),
+            );
+
+            let trs = &dfa.transitions;
+
+            assert!(trs.iter().any(|t| { *t == trans!(0, 0, 1, -1) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 1, 2, -1) }));
+            assert!(trs.iter().any(|t| { *t == trans!(0, 2, 2, -1) }));
+            assert!(trs.iter().any(|t| { *t == trans!(1, 4, 3, 7) }));
+            assert!(trs.iter().any(|t| { *t == trans!(1, 6, 4, 8) }));
+            assert!(trs.iter().any(|t| { *t == trans!(2, 5, 4, 8) }));
+            assert!(trs.iter().any(|t| { *t == trans!(2, 12, 4, 8) }));
+
+            eprintln!("{dfa_source}");
         }
     }
 }
@@ -603,63 +611,5 @@ impl CompiledDFA {
         adjacency_list.minimize();
         trace!("After minimization: {}", adjacency_list.len());
         adjacency_list.as_compiled_dfa()
-    }
-
-    // Accepting states that yield the same production index can be combined.
-    // When we identify a duplicate state we remove it and let all references to it point to the
-    // earlier found one. This is repeated until no changes can be made this way.
-    fn _optimize(self) -> CompiledDFA {
-        let Self {
-            prod0,
-            mut transitions,
-            k,
-        } = self;
-
-        fn remove_duplicate_at_index(
-            kept_index: usize,
-            index_to_remove: usize,
-            transitions: &mut [CompiledTransition],
-        ) {
-            // debug_assert!(kept_index < index_to_remove);
-            transitions.iter_mut().for_each(|t| {
-                match t.from_state.cmp(&index_to_remove) {
-                    std::cmp::Ordering::Less => (),
-                    std::cmp::Ordering::Equal => t.from_state = kept_index,
-                    std::cmp::Ordering::Greater => t.from_state -= 1,
-                }
-                match t.to_state.cmp(&index_to_remove) {
-                    std::cmp::Ordering::Less => (),
-                    std::cmp::Ordering::Equal => t.to_state = kept_index,
-                    std::cmp::Ordering::Greater => t.to_state -= 1,
-                }
-            });
-        }
-
-        let mut changed = true;
-        'NEXT: while changed {
-            changed = false;
-            for (index1, t1) in transitions.iter().enumerate() {
-                for t2 in transitions.iter().skip(index1 + 1) {
-                    // Check for same result production number
-                    // Note that only accepting states carry a valid production number
-                    if t1.prod_num != INVALID_PROD
-                        && t1.prod_num == t2.prod_num
-                        && t1.to_state != t2.to_state
-                    {
-                        remove_duplicate_at_index(t1.to_state, t2.to_state, &mut transitions);
-                        changed = true;
-                        continue 'NEXT;
-                    }
-                }
-            }
-        }
-
-        transitions.sort_by_key(|s| (s.from_state, s.term));
-
-        Self {
-            prod0,
-            transitions,
-            k,
-        }
     }
 }

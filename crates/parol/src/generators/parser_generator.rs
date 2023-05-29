@@ -14,7 +14,7 @@ use crate::StrVec;
 use std::fmt::Debug;
 
 #[derive(Debug, Default)]
-struct Dfa {
+pub(crate) struct Dfa {
     prod0: CompiledProductionIndex,
     transitions: StrVec,
     k: usize,
@@ -25,6 +25,14 @@ struct Dfa {
 impl Dfa {
     fn from_la_dfa(la_dfa: &LookaheadDFA, nt_index: usize, nt_name: String) -> Self {
         let compiled_dfa = CompiledDFA::from_lookahead_dfa(la_dfa);
+        Dfa::from_compiled_dfa(compiled_dfa, nt_index, nt_name)
+    }
+
+    pub(crate) fn from_compiled_dfa(
+        compiled_dfa: CompiledDFA,
+        nt_index: usize,
+        nt_name: String,
+    ) -> Dfa {
         let prod0 = compiled_dfa.prod0;
         let transitions = compiled_dfa.transitions.iter().fold(
             StrVec::new(4).first_line_no_indent(),

@@ -31,7 +31,7 @@ fn run_examples_test() -> Result<()> {
 
     let grammar = concat!(env!("CARGO_MANIFEST_DIR"), "/src/parser/parol-grammar.par");
     println!("Running parol on its own parol-grammar {grammar}...");
-    run_parol(&["-f", &grammar, "-v"])?;
+    run_parol(&["-f", grammar, "-v"])?;
 
     println!("Running parol on some example grammars...");
     run_parol_examples()?;
@@ -119,7 +119,7 @@ fn run_examples_test() -> Result<()> {
 
 fn build_examples() -> Result<()> {
     Command::new("cargo")
-        .args(&["build", "--examples"])
+        .args(["build", "--examples"])
         .status()
         .map(|_| ())
         .map_err(|e| anyhow!(e))
@@ -143,24 +143,20 @@ fn run(command: &str, args: &[&str]) -> Result<ExitStatus> {
 fn run_parol_examples() -> Result<()> {
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data/valid");
     println!("from folder {path}:");
-    for entry in std::path::Path::new(path).read_dir()? {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "par" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+    for entry in std::path::Path::new(path).read_dir()?.flatten() {
+        if entry.path().extension().unwrap().to_str().unwrap() == "par" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     let path = concat!(env!("CARGO_MANIFEST_DIR"), "/data/invalid");
     println!("from folder {path}:");
-    for entry in std::path::Path::new(path).read_dir()? {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "par" {
-                println!("Parsing {} should fail...", entry.path().display());
-                let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
-                assert!(!exit_status.success());
-            }
+    for entry in std::path::Path::new(path).read_dir()?.flatten() {
+        if entry.path().extension().unwrap().to_str().unwrap() == "par" {
+            println!("Parsing {} should fail...", entry.path().display());
+            let exit_status = run_parol(&["-f", entry.path().to_str().unwrap()])?;
+            assert!(!exit_status.success());
         }
     }
     Ok(())
@@ -173,13 +169,12 @@ fn run_keywords_examples() -> Result<()> {
         "/../../examples/keywords/testfiles/valid"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     for entry in std::path::Path::new(concat!(
@@ -187,13 +182,12 @@ fn run_keywords_examples() -> Result<()> {
         "/../../examples/keywords/testfiles/invalid"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-                println!("Parsing {} should fail...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(!exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
+            println!("Parsing {} should fail...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(!exit_status.success());
         }
     }
     Ok(())
@@ -206,13 +200,12 @@ fn run_keywords2_examples() -> Result<()> {
         "/../../examples/keywords2/testfiles/valid"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "txt" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     Ok(())
@@ -225,13 +218,12 @@ fn run_basic_interpreter_examples() -> Result<()> {
         "/../../examples/basic_interpreter/tests/data/valid"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     for entry in std::path::Path::new(concat!(
@@ -239,13 +231,12 @@ fn run_basic_interpreter_examples() -> Result<()> {
         "/../../examples/basic_interpreter/tests/data/invalid"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
-                println!("Parsing {} should fail...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(!exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "bas" {
+            println!("Parsing {} should fail...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(!exit_status.success());
         }
     }
     Ok(())
@@ -258,13 +249,12 @@ fn run_json_examples() -> Result<()> {
         "/../../examples/json_parser/json"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "json" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "json" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     Ok(())
@@ -277,13 +267,12 @@ fn run_json_auto_examples() -> Result<()> {
         "/../../examples/json_parser/json"
     ))
     .read_dir()?
+    .flatten()
     {
-        if let Ok(entry) = entry {
-            if entry.path().extension().unwrap().to_str().unwrap() == "json" {
-                println!("Parsing {}...", entry.path().display());
-                let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
-                assert!(exit_status.success());
-            }
+        if entry.path().extension().unwrap().to_str().unwrap() == "json" {
+            println!("Parsing {}...", entry.path().display());
+            let exit_status = run(&parser, &[entry.path().to_str().unwrap()])?;
+            assert!(exit_status.success());
         }
     }
     Ok(())

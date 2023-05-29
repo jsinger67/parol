@@ -437,7 +437,7 @@ mod test {
     fn node_is_child() {
         let mut n = Node::new(42);
         n.add_child(7);
-        assert!(n.children().iter().find(|n| n.t == 7).is_some());
+        assert!(n.children().iter().any(|n| n.t == 7));
     }
 
     #[test]
@@ -485,14 +485,14 @@ mod test {
         assert_eq!(1, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.root.children().iter().any(|n| n.t == 1));
         assert_eq!(t.root.children().len(), 1);
 
-        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
+        assert!(t[0].children().iter().any(|n| n.t == 2));
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
 
-        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
+        assert!(t[0][0].children().iter().any(|n| n.t == 3));
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
     }
@@ -514,14 +514,14 @@ mod test {
         assert_eq!(1, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.root.children().iter().any(|n| n.t == 1));
         assert_eq!(t.root.children().len(), 1);
 
-        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
+        assert!(t[0].children().iter().any(|n| n.t == 2));
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
 
-        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
+        assert!(t[0][0].children().iter().any(|n| n.t == 3));
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
     }
@@ -543,17 +543,17 @@ mod test {
         assert_eq!(2, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
+        assert!(t.root.children().iter().any(|n| n.t == 1));
         assert_eq!(t.root.children().len(), 1);
 
-        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
-        assert!(t[0].children().iter().find(|n| n.t == 5).is_some());
+        assert!(t[0].children().iter().any(|n| n.t == 2));
+        assert!(t[0].children().iter().any(|n| n.t == 5));
         assert_eq!(t[0].children().len(), 2);
         assert_eq!(t[0][0].t, 2);
         assert_eq!(t[0][1].t, 5);
 
-        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
-        assert!(t[0][1].children().iter().find(|n| n.t == 6).is_some());
+        assert!(t[0][0].children().iter().any(|n| n.t == 3));
+        assert!(t[0][1].children().iter().any(|n| n.t == 6));
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[0][1].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);
@@ -577,18 +577,18 @@ mod test {
         assert_eq!(2, end_node_count(&t));
 
         assert!(!t.root.children().is_empty());
-        assert!(t.root.children().iter().find(|n| n.t == 1).is_some());
-        assert!(t.root.children().iter().find(|n| n.t == 4).is_some());
+        assert!(t.root.children().iter().any(|n| n.t == 1));
+        assert!(t.root.children().iter().any(|n| n.t == 4));
         assert_eq!(t.root.children().len(), 2);
 
-        assert!(t[0].children().iter().find(|n| n.t == 2).is_some());
-        assert!(t[1].children().iter().find(|n| n.t == 5).is_some());
+        assert!(t[0].children().iter().any(|n| n.t == 2));
+        assert!(t[1].children().iter().any(|n| n.t == 5));
         assert_eq!(t[0].children().len(), 1);
         assert_eq!(t[0][0].t, 2);
         assert_eq!(t[1][0].t, 5);
 
-        assert!(t[0][0].children().iter().find(|n| n.t == 3).is_some());
-        assert!(t[1][0].children().iter().find(|n| n.t == 6).is_some());
+        assert!(t[0][0].children().iter().any(|n| n.t == 3));
+        assert!(t[1][0].children().iter().any(|n| n.t == 6));
         assert_eq!(t[0][0].children().len(), 1);
         assert_eq!(t[1][0].children().len(), 1);
         assert_eq!(t[0][0][0].t, 3);

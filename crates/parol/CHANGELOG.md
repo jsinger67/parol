@@ -23,6 +23,13 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.21.5 -  Not released yet
 
 * Fixed panic if parol is executed without arguments
+* Fixed issue [#93](https://github.com/jsinger67/parol/issues/93)
+  * Fully minimize Lookahead DFAs which decreases size of generated parser source and speeds up
+  parsing runtime
+  * It is especially important for LL(k) grammars with k > 1. For example a DFA in
+  [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)'s grammar could be
+  reduced from 8592 to 49(!) states
+
 
 ## 0.21.4 -  2023-05-19
 

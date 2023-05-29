@@ -137,7 +137,7 @@ fn tokenize_1() {
 }
 
 fn regex_1_benchmark(c: &mut Criterion) {
-    c.bench_function("tokenize_1", |b| b.iter(|| tokenize_1()));
+    c.bench_function("tokenize_1", |b| b.iter(tokenize_1));
 }
 
 criterion_group!(benches, regex_1_benchmark,);

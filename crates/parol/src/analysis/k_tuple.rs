@@ -846,10 +846,10 @@ mod test {
         {
             let k = 1;
             let t = Terminals::from_slice_with(&[1], k, |t| CompiledTerminal(*t));
-            let k_tuple = KTuple::of(t.clone(), k);
+            let k_tuple = KTuple::of(t, k);
             let i = k;
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t.clone(), i }),
+                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
                 k,
             };
             assert_eq!(CompiledTerminal::default(), t.t[1]);
@@ -861,11 +861,11 @@ mod test {
             let t = Terminals::from_slice_with(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], k, |t| {
                 CompiledTerminal(*t)
             });
-            let k_tuple = KTuple::of(t.clone(), k);
+            let k_tuple = KTuple::of(t, k);
             assert_eq!(MAX_K, k_tuple.len());
             let i = k;
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t.clone(), i }),
+                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
                 k,
             };
             assert_eq!(CompiledTerminal(1), t.t[0]);
@@ -877,10 +877,10 @@ mod test {
             let t = Terminals::from_slice_with(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], k, |t| {
                 CompiledTerminal(*t)
             });
-            let k_tuple = KTuple::of(t.clone(), k);
+            let k_tuple = KTuple::of(t, k);
             let i = k;
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t.clone(), i }),
+                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
                 k,
             };
             assert_eq!(CompiledTerminal(1), t.t[0]);

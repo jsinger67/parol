@@ -191,6 +191,6 @@ mod tests {
 
         assert_eq!("老", &s[Range { start: 6, end: 9 }]);
         assert_eq!("虎", &s[Into::<Range<usize>>::into(Span::new(9, 12))]);
-        assert_eq!("L", &s[Into::<Range<usize>>::into(&Span::new(13, 14))]);
+        assert_eq!("L", &s[Into::<Range<usize>>::into(Span::new(13, 14))]);
     }
 }
