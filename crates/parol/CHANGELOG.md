@@ -27,8 +27,9 @@ new minor version numbers. Please note that this is no version handling covered 
   * Fully minimize Lookahead DFAs which decreases size of generated parser source and speeds up
   parsing runtime
   * It is especially important for LL(k) grammars with k > 1. For example a DFA in
-  [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)'s grammar could be
-  reduced from 8592 to 49(!) states
+  [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)'s LL(3) grammar
+  could be reduced from 8592 to 49(!) states. The parser source shorted from nearly 33.000 LOC to
+  less than 15.000 LOC.
 
 
 ## 0.21.4 -  2023-05-19
