@@ -20,7 +20,7 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
-## 0.21.5 -  Not released yet
+## 0.21.5 -  2023-05-29
 
 * Fixed panic if parol is executed without arguments
 * Fixed issue [#93](https://github.com/jsinger67/parol/issues/93)
@@ -28,7 +28,7 @@ new minor version numbers. Please note that this is no version handling covered 
   parsing runtime
   * It is especially important for LL(k) grammars with k > 1. For example a DFA in
   [veryl](https://github.com/dalance/veryl/blob/master/crates/parser/veryl.par)'s LL(3) grammar
-  could be reduced from 8592 to 49(!) states. The parser source shorted from nearly 33.000 LOC to
+  could be reduced from 8592 to 49(!) states. The parser source shortened from nearly 33.000 LOC to
   less than 15.000 LOC.
 
 

@@ -12,7 +12,7 @@ parol_runtime = { version = "0.16.0", features = ["auto_generation"] }
 thiserror = "1.0"
 
 [build-dependencies]
-parol = "0.21.4"
+parol = "0.21.5"
 parol_runtime = { version = "0.16.0", features = ["auto_generation"] }
 
 # For faster builds.
