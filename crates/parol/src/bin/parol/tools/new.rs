@@ -324,17 +324,15 @@ fn generate_grammar_rs(creation_data: &CreationData) -> Result<()> {
 fn generate_test_txt(creation_data: &CreationData) -> Result<()> {
     let mut test_file = creation_data.path.clone();
     test_file.push("test.txt");
-    let crate_name = creation_data.crate_name;
-    let test_content = format!(
-        "\
+    let test_content = "\
 // To run the test please issue:
-// cargo run {crate_name} ./test.txt
+// cargo run ./test.txt
 
     Hello world!
 
 // End
 "
-    );
+    .to_string();
     fs::write(test_file, test_content).context("Error writing test file!")?;
 
     Ok(())
