@@ -1,4 +1,5 @@
 use derive_builder::Builder;
+use parol::generators::NamingHelper;
 
 #[derive(Builder, Debug, Default)]
 pub(crate) struct GrammarRsData<'a> {
@@ -16,6 +17,7 @@ impl std::fmt::Display for GrammarRsData<'_> {
         let grammar_trait_mod = format!("{crate_name}_grammar_trait");
         let grammar_trait = format!("{grammar_name}GrammarTrait");
         let grammar = format!("{grammar_name}Grammar");
+        let grammar_start_symbol = NamingHelper::to_lower_snake_case(grammar_name);
         f.write_fmt(ume::ume! {
             use crate::#grammar_trait_mod::{#grammar_name, #grammar_trait};
             #[allow(unused_imports)]
@@ -37,7 +39,7 @@ impl std::fmt::Display for GrammarRsData<'_> {
         f.write_fmt(ume::ume! {
             #[derive(Debug, Default)]
             pub struct #grammar<'t> {
-                pub #crate_name: Option<#grammar_name<'t>>,
+                pub #grammar_start_symbol: Option<#grammar_name<'t>>,
             }
         })?;
 
@@ -66,8 +68,8 @@ impl std::fmt::Display for GrammarRsData<'_> {
         f.write_fmt(ume::ume! {
             impl Display for #grammar<'_> {
                 fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
-                    match &self.#crate_name {
-                        Some(#crate_name) => writeln!(f, "{}", #crate_name),
+                    match &self.#grammar_start_symbol {
+                        Some(#grammar_start_symbol) => writeln!(f, "{}", #grammar_start_symbol),
                         None => write!(f, "No parse result"),
                     }
                 }
@@ -86,8 +88,8 @@ impl std::fmt::Display for GrammarRsData<'_> {
         f.write_fmt(ume::ume! {
             impl<'t> #grammar_trait<'t> for #grammar<'t> {
                 #comment
-                fn #crate_name(&mut self, arg: &#grammar_name<'t>) -> Result<()> {
-                    self.#crate_name = Some(arg.clone());
+                fn #grammar_start_symbol(&mut self, arg: &#grammar_name<'t>) -> Result<()> {
+                    self.#grammar_start_symbol = Some(arg.clone());
                     Ok(())
                 }
             }

@@ -20,7 +20,12 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
-## 0.21.5 -  2023-05-29
+
+## 0.21.6 - Not released yet
+
+* Fixed a smaller problem with `parol new` that occurs with special module names
+
+## 0.21.5 - 2023-05-29
 
 * Fixed panic if parol is executed without arguments
 * Fixed issue [#93](https://github.com/jsinger67/parol/issues/93)
@@ -32,13 +37,13 @@ new minor version numbers. Please note that this is no version handling covered 
   less than 15.000 LOC.
 
 
-## 0.21.4 -  2023-05-19
+## 0.21.4 - 2023-05-19
 
 * Provide typescript bindings for `parol`'s symbol table types. Currently these bindings are used by
 a tool called [parol_symbols](https://github.com/jsinger67/parol_symbols.git) that tries to support
 developers by enabling them to comfortably browse `parol` generated symbols for a given grammar.
 
-## 0.21.3 -  2023-04-24
+## 0.21.3 - 2023-04-24
 
 * Partially revoked bug introduced in 4dd1172 (follow_k now uses cached results from step k-1)
   * This means a small drawback in performance but this reversion is inevitable
