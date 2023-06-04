@@ -24,6 +24,7 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.21.6 - Not released yet
 
 * Fixed a smaller problem with `parol new` that occurs with special module names
+* Removed clippy warnings new in Rust 1.70
 
 ## 0.21.5 - 2023-05-29
 

@@ -1159,7 +1159,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Self {
             user_grammar,
             item_stack: Vec::new(),
-            phantom: PhantomData::default(),
+            phantom: PhantomData,
         }
     }
 

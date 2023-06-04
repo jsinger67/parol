@@ -277,7 +277,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                 "".into()
             } else {
                 ume::ume! {
-                    phantom: PhantomData::default(),
+                    phantom: PhantomData,
                 }
                 .to_string()
             };

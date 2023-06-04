@@ -149,7 +149,7 @@ impl<'t> BasicGrammar<'t> {
         });
 
         // We need the last line only to be able to abort search for undefine destination in GOTO
-        self.last_line = lines.lines.iter().rev().next().map(|l| *l.0);
+        self.last_line = lines.lines.iter().next_back().map(|l| *l.0);
 
         Ok(lines)
     }
@@ -202,8 +202,7 @@ impl<'t> BasicGrammar<'t> {
                     break;
                 }
             }
-        } else {
-        }
+        } 
         Ok(())
     }
 
