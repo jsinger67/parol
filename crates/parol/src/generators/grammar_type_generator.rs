@@ -93,7 +93,7 @@ impl GrammarTypeInfo {
             TypeEntrails::Struct,
         )?);
 
-        for n in ["new", "push", "pop", "trace_item_stack"] {
+        for n in ["new", "push", "pop", "trace_item_stack", "on_comment"] {
             me.symbol_table.insert_type(
                 me.adapter_grammar_struct_id.unwrap(),
                 n,

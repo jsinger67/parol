@@ -1,6 +1,6 @@
 use crate::snapshot_lib_grammar_trait::{SnapshotLib, SnapshotLibGrammarTrait};
 #[allow(unused_imports)]
-use parol_runtime::Result;
+use parol_runtime::{Result, Token};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -16,6 +16,7 @@ impl SnapshotLibGrammar<'_> {
     pub fn new() -> Self {
         SnapshotLibGrammar::default()
     }
+    pub fn on_comment(&mut self, _token: Token<'_>) {}
 }
 
 impl Display for SnapshotLib<'_> {

@@ -1,6 +1,6 @@
 use crate::list_grammar_trait::ListGrammarTrait;
 use parol_macros::parol;
-use parol_runtime::{ParseTreeType, Result};
+use parol_runtime::{ParseTreeType, Result, Token};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -20,6 +20,8 @@ impl ListGrammar {
     pub fn new() -> Self {
         ListGrammar::default()
     }
+
+    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn push(&mut self, item: DefinitionRange) {
         self.numbers.push(item)

@@ -127,5 +127,7 @@ impl UserActionsTrait<'_> for ListGrammar {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
+    fn on_comment_parsed(&mut self, token: Token<'_>) {
+        self.on_comment(token)
+    }
 }

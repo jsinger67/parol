@@ -1,3 +1,5 @@
+use parol_runtime::Token;
+
 use crate::keywords_grammar_trait::KeywordsGrammarTrait;
 use std::fmt::{Debug, Display, Error, Formatter};
 
@@ -9,8 +11,9 @@ pub struct KeywordsGrammar;
 
 impl KeywordsGrammar {
     pub fn new() -> Self {
-        KeywordsGrammar::default()
+        KeywordsGrammar
     }
+    pub fn on_comment(&mut self, _token: Token<'_>) {}
 }
 
 impl Display for KeywordsGrammar {

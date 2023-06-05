@@ -21,7 +21,7 @@ impl std::fmt::Display for GrammarRsData<'_> {
         f.write_fmt(ume::ume! {
             use crate::#grammar_trait_mod::{#grammar_name, #grammar_trait};
             #[allow(unused_imports)]
-            use parol_runtime::Result;
+            use parol_runtime::{Result, Token};
             use std::fmt::{Debug, Display, Error, Formatter};
         })?;
 
@@ -50,6 +50,7 @@ impl std::fmt::Display for GrammarRsData<'_> {
                 pub fn new() -> Self {
                     #grammar::default()
                 }
+                pub fn on_comment(&mut self, _token: Token<'_>) {}
             }
         })?;
 
