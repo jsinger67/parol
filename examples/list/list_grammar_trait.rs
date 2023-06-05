@@ -11,8 +11,7 @@
 
 use crate::list_grammar::ListGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `ListGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -128,4 +127,5 @@ impl UserActionsTrait<'_> for ListGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

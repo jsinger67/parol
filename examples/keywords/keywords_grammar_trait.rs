@@ -11,8 +11,7 @@
 
 use crate::keywords_grammar::KeywordsGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `KeywordsGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -168,4 +167,5 @@ impl UserActionsTrait<'_> for KeywordsGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

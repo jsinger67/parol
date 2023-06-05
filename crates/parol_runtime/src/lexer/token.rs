@@ -79,6 +79,13 @@ impl<'t> Token<'t> {
     }
 
     ///
+    /// Indicates wether the token is a comment token.
+    ///
+    pub fn is_comment_token(&self) -> bool {
+        self.token_type == LINE_COMMENT || self.token_type == BLOCK_COMMENT
+    }
+
+    ///
     /// Accesses the token's scanned text
     ///
     pub fn text(&self) -> &str {

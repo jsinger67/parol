@@ -11,8 +11,7 @@
 
 use crate::json_grammar::JsonGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `JsonGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -251,4 +250,5 @@ impl UserActionsTrait<'_> for JsonGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

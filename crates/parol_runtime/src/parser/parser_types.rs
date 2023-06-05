@@ -240,6 +240,19 @@ impl<'t> LLKParser<'t> {
         Ok(lookahead_dfa.eval(&mut stream.borrow_mut())?)
     }
 
+    fn handle_comments<'u>(
+        &mut self,
+        stream: &RefCell<TokenStream<'t>>,
+        user_actions: &'u mut dyn UserActionsTrait<'t>,
+    ) -> Result<()> {
+        stream
+            .borrow_mut()
+            .drain_comments()
+            .into_iter()
+            .for_each(|c| user_actions.on_comment_parsed(c));
+        Ok(())
+    }
+
     fn diagnostic_message(&self, msg: &str) -> String {
         trace!("\nParser stack:\n{}\n", self.parser_stack);
         if let Some(prod_num) = self.current_production() {
@@ -308,6 +321,7 @@ impl<'t> LLKParser<'t> {
                         let token = stream.borrow_mut().lookahead(0)?;
                         if token.token_type == t {
                             trace!("Consuming token {}", token);
+                            self.handle_comments(&stream, user_actions)?;
                             stream.borrow_mut().consume()?;
                             self.parser_stack.stack.pop();
                             if !self.trim_parse_tree {

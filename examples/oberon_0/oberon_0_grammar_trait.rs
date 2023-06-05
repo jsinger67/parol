@@ -11,8 +11,7 @@
 
 use crate::oberon_0_grammar::Oberon0Grammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `Oberon0GrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -1325,4 +1324,5 @@ impl UserActionsTrait<'_> for Oberon0Grammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

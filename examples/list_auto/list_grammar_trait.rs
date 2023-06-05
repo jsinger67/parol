@@ -14,7 +14,7 @@ use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
+use parol_runtime::{ParserError, Result, Token};
 use std::marker::PhantomData;
 
 /// Semantic actions trait generated for the user grammar
@@ -405,4 +405,5 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }

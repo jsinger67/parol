@@ -11,8 +11,7 @@
 
 use crate::scanner_states_grammar::ScannerStatesGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `ScannerStatesGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -185,4 +184,5 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

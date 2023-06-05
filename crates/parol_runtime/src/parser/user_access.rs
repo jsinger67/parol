@@ -1,4 +1,4 @@
-use crate::{ParseTreeType, Result};
+use crate::{ParseTreeType, Result, Token};
 
 ///
 /// This trait is used as a coupling point between the generated parser and
@@ -17,4 +17,16 @@ pub trait UserActionsTrait<'t> {
         prod_num: usize,
         children: &[ParseTreeType<'t>],
     ) -> Result<()>;
+
+    ///
+    /// This function is called when a token is parsed that is associated to the
+    /// user defined terminals declared by
+    /// * %line_comment
+    /// and
+    /// * %block_comment
+    /// directives.
+    /// This can improve handling of comments that are not captured by the grammar definition
+    /// itself.
+    ///
+    fn on_comment_parsed(&mut self, token: Token<'t>);
 }

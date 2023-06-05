@@ -11,8 +11,7 @@
 
 use crate::calc_grammar::CalcGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `CalcGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -893,4 +892,5 @@ impl UserActionsTrait<'_> for CalcGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

@@ -11,8 +11,7 @@
 
 use crate::boolean_grammar::BooleanGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
-
+use parol_runtime::{ParserError, Result, Token};
 ///
 /// The `BooleanGrammarTrait` trait is automatically generated for the
 /// given grammar.
@@ -385,4 +384,5 @@ impl UserActionsTrait<'_> for BooleanGrammar {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }

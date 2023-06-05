@@ -2673,4 +2673,5 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             .into()),
         }
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }

@@ -21,11 +21,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.21.6 - Not released yet
+## 0.22.0 - Not released yet
 
 * Fixed a smaller problem with `parol new` that occurs with special module names
 * Removed clippy warnings new in Rust 1.70
 * Fixed exceeded array bounds when MAX_K is used as lookahead size
+* New support for handling of user defined comments (`%line_comment`, `%block_comment`)
 
 ## 0.21.5 - 2023-05-29
 

@@ -37,6 +37,9 @@ pub struct TokenStream<'t> {
     /// Lookahead token buffer, maximum size is k
     pub tokens: Vec<Token<'t>>,
 
+    /// Comment token buffer
+    pub comments: Vec<Token<'t>>,
+
     /// Start position in the input text as byte offset.
     /// Can be greater than zero, if `self` was created during a
     /// scanner state switch before.
@@ -91,6 +94,7 @@ impl<'t> TokenStream<'t> {
             token_iter,
             tokenizers,
             tokens: Vec::with_capacity(k),
+            comments: Vec::new(),
             start_pos: 0,
             pos: 0,
             line: 1,
@@ -178,6 +182,13 @@ impl<'t> TokenStream<'t> {
             self.ensure_buffer();
             Ok(())
         }
+    }
+
+    ///
+    /// Returns and thereby consumes the comments of this [`TokenStream`].
+    ///
+    pub fn drain_comments(&mut self) -> Vec<Token<'t>> {
+        self.comments.drain(0..).collect()
     }
 
     ///
@@ -326,6 +337,9 @@ impl<'t> TokenStream<'t> {
                 if tokens_read >= n {
                     break;
                 }
+            } else if token.is_comment_token() {
+                // Store comment ready for the user
+                self.comments.push(token);
             }
         }
         tokens_read

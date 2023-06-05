@@ -165,11 +165,6 @@ impl std::fmt::Display for UserTraitData<'_> {
             ))?;
         }
         if *auto_generate {
-            if *ast_type_has_lifetime {
-                f.write_fmt(ume::ume!(
-                    use parol_runtime::lexer::Token;
-                ))?;
-            }
             f.write_fmt(ume::ume! {
                 use parol_runtime::derive_builder::Builder;
                 #[allow(unused_imports)]
@@ -188,7 +183,7 @@ impl std::fmt::Display for UserTraitData<'_> {
         }
         f.write_fmt(ume::ume! {
             use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-            use parol_runtime::{ParserError, Result};
+            use parol_runtime::{ParserError, Result, Token};
         })?;
 
         let trait_name = format!("{}Trait", user_type_name);
@@ -351,18 +346,19 @@ impl std::fmt::Display for UserTraitData<'_> {
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
                         }
                     }
+
+                    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
                 }
             })?;
         } else {
             writeln!(
                 f,
                 "
-
-			///
-			/// The `{user_type_name}Trait` trait is automatically generated for the
-			/// given grammar.
-			/// All functions have default implementations.
-			///"
+                ///
+                /// The `{user_type_name}Trait` trait is automatically generated for the
+                /// given grammar.
+                /// All functions have default implementations.
+                ///"
             )?;
             f.write_fmt(ume::ume! {
                 pub trait #trait_name {
@@ -380,6 +376,8 @@ impl std::fmt::Display for UserTraitData<'_> {
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
                         }
                     }
+
+                    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
                 }
             })?;
         }
