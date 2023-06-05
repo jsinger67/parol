@@ -13,7 +13,7 @@ use super::follow::ResultMap;
 
 /// Cache of FirstSets
 #[derive(Debug, Default)]
-pub struct FirstCache(pub Rc<RefCell<[Option<FirstSet>; MAX_K]>>);
+pub struct FirstCache(pub Rc<RefCell<[Option<FirstSet>; MAX_K + 1]>>);
 
 /// A cache entry consisting of a result map for enhanced generation of the next k set and the
 /// follow set for a given k
@@ -22,7 +22,7 @@ pub struct CacheEntry(pub(crate) ResultMap, pub(crate) FollowSet);
 
 /// Cache of FollowSets
 #[derive(Debug, Default)]
-pub struct FollowCache(pub Rc<RefCell<[Option<CacheEntry>; MAX_K]>>);
+pub struct FollowCache(pub Rc<RefCell<[Option<CacheEntry>; MAX_K + 1]>>);
 
 impl FirstCache {
     /// Creates a new item

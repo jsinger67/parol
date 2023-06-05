@@ -25,6 +25,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 * Fixed a smaller problem with `parol new` that occurs with special module names
 * Removed clippy warnings new in Rust 1.70
+* Fixed exceeded array bounds when MAX_K is used as lookahead size
 
 ## 0.21.5 - 2023-05-29
 

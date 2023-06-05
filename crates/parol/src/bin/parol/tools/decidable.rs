@@ -66,7 +66,8 @@ pub fn main(args: &Args) -> Result<()> {
                 println!("    ∩: {}\n", intersection.to_string(&terminals));
             }
         }
-        println!("{} undecidable non-terminal(s)", errors);
+        println!("{} undecidable non-terminal(s):", errors);
+        println!("{}", non_terminals_with_conflicts.join(","));
     } else {
         println!("Grammar is LL{}", actual_k.unwrap());
     }

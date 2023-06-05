@@ -29,7 +29,7 @@ pub trait TerminalMappings<T> {
 #[derive(Clone, Copy, Default, Hash, Eq, PartialEq)]
 pub struct Terminals {
     // The terminals
-    pub(crate) t: [CompiledTerminal; MAX_K],
+    pub(crate) t: [CompiledTerminal; MAX_K + 1],
     // The index of next insertion
     pub(crate) i: usize,
 }
@@ -63,7 +63,7 @@ impl Terminals {
     /// assert_eq!(CompiledTerminal::default(), t[9]);
     /// ```
     pub fn eps() -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         t[0] = CompiledTerminal::eps();
         Self { t, i: 1 }
     }
@@ -82,7 +82,7 @@ impl Terminals {
     /// assert_eq!(CompiledTerminal::default(), t[9]);
     /// ```
     pub fn end() -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         t[0] = CompiledTerminal::end();
         Self { t, i: 1 }
     }
@@ -93,7 +93,7 @@ impl Terminals {
     #[must_use]
     pub fn of(k: usize, other: Self) -> Self {
         let first_len = other.k_len(k);
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         (0..first_len).for_each(|i| t[i] = other.t[i]);
         Self { t, i: first_len }
     }
@@ -106,7 +106,7 @@ impl Terminals {
     where
         M: Fn(&'s S) -> CompiledTerminal,
     {
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         let mut i = 0;
         others
             .iter()
@@ -124,7 +124,7 @@ impl Terminals {
     ///
     #[must_use]
     pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         let mut i = 0;
         others
             .iter()
@@ -636,7 +636,7 @@ mod test {
     use crate::{analysis::k_tuple::EOI, CompiledTerminal, KTuple, MAX_K};
 
     fn term(terminals: &[TerminalIndex], k: usize) -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K]>::default();
+        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
         debug_assert!(k <= MAX_K);
         terminals
             .iter()
@@ -652,7 +652,7 @@ mod test {
     fn check_with_terminal_indices() {
         {
             let k_tuple = KTuple::new(1).with_terminal_indices(&[1]);
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 1;
             let k = 1;
             t[0] = CompiledTerminal(1);
@@ -667,7 +667,7 @@ mod test {
         {
             let k_tuple =
                 KTuple::new(MAX_K).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
@@ -684,7 +684,7 @@ mod test {
         {
             let k_tuple =
                 KTuple::new(5).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
@@ -705,7 +705,7 @@ mod test {
     fn check_from_slice() {
         {
             let k_tuple = KTuple::from_slice(&[CompiledTerminal(1)], 1);
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 1;
             let k = 1;
             t[0] = CompiledTerminal(1);
@@ -734,7 +734,7 @@ mod test {
                 ],
                 MAX_K,
             );
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
@@ -765,7 +765,7 @@ mod test {
                 ],
                 5,
             );
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
@@ -786,7 +786,7 @@ mod test {
     fn check_from_slice_with() {
         {
             let k_tuple = KTuple::from_slice_with(&[1], |t| CompiledTerminal(*t), 1);
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 1;
             let k = 1;
             t[0] = CompiledTerminal(1);
@@ -804,7 +804,7 @@ mod test {
                 |t| CompiledTerminal(*t),
                 MAX_K,
             );
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
@@ -824,7 +824,7 @@ mod test {
                 |t| CompiledTerminal(*t),
                 5,
             );
-            let mut t = <[CompiledTerminal; MAX_K]>::default();
+            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
