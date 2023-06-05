@@ -178,6 +178,7 @@ pub trait CalcGrammarTrait<'t> {
     fn id(&mut self, _arg: &Id<'t>) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2136,5 +2137,8 @@ impl<'t> UserActionsTrait<'t> for CalcGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

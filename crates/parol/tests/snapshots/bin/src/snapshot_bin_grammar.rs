@@ -16,7 +16,6 @@ impl SnapshotBinGrammar<'_> {
     pub fn new() -> Self {
         SnapshotBinGrammar::default()
     }
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 }
 
 impl Display for SnapshotBin<'_> {

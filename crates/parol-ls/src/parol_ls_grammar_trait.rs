@@ -189,6 +189,7 @@ pub trait ParolLsGrammarTrait {
     fn regex(&mut self, _arg: &Regex) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -3196,5 +3197,8 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

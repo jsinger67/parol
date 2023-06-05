@@ -53,6 +53,7 @@ pub trait JsonGrammarTrait<'t> {
     fn number(&mut self, _arg: &Number<'t>) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -834,5 +835,8 @@ impl<'t> UserActionsTrait<'t> for JsonGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

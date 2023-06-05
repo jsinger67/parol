@@ -1,5 +1,5 @@
 use crate::oberon_0_grammar_trait::Oberon0GrammarTrait;
-use parol_runtime::{log::trace, Token};
+use parol_runtime::log::trace;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -26,8 +26,6 @@ impl Oberon0Grammar {
     pub fn new() -> Self {
         Oberon0Grammar::default()
     }
-
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn _push(&mut self, item: Oberon0GrammarItem, context: &str) {
         trace!("push    {}: {}", context, item);

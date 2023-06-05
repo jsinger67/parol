@@ -4,7 +4,7 @@ use crate::calc_grammar_trait::CalcGrammarTrait;
 use crate::errors::CalcError;
 use crate::unary_operator::UnaryOperator;
 use parol_macros::{bail, parol};
-use parol_runtime::{errors::FileSource, log::trace, Location, ParseTreeType, Result, Token};
+use parol_runtime::{errors::FileSource, log::trace, Location, ParseTreeType, Result};
 use std::collections::BTreeMap;
 use std::convert::TryInto;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -91,8 +91,6 @@ impl CalcGrammar {
     pub fn new() -> Self {
         CalcGrammar::default()
     }
-
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn push(&mut self, item: CalcGrammarItem, context: &str) {
         trace!("push    {}: {}", context, item);

@@ -1,6 +1,6 @@
 use crate::scanner_states_grammar_trait::ScannerStatesGrammarTrait;
 use parol_macros::{bail, parol};
-use parol_runtime::{log::trace, ParseTreeType, Result, Token};
+use parol_runtime::{log::trace, ParseTreeType, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -34,8 +34,6 @@ impl ScannerStatesGrammar {
     pub fn new() -> Self {
         ScannerStatesGrammar::default()
     }
-
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn push(&mut self, item: ScannerStatesGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);

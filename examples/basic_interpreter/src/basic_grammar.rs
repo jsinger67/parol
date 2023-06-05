@@ -202,7 +202,7 @@ impl<'t> BasicGrammar<'t> {
                     break;
                 }
             }
-        } 
+        }
         Ok(())
     }
 

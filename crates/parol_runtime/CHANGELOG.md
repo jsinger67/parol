@@ -19,8 +19,10 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.17.0 - Not released yet
 
 * New support for handling of user defined comments (`%line_comment`, `%block_comment`)
-  * The new method `UserActionsTrait::on_comment_parsed` is called in order of appearance each time
+  * The new method `CommentHandler::on_comment_parsed` is called in order of appearance each time
   before the parser consumes a normal token from token stream.
+  * It is default implemented and the user can provide an own implementation if she is interested in
+  comments.
   * It is still a bit under investigation where best call this method during parse process.
 
 ## 0.16.0 - 2023-04-02

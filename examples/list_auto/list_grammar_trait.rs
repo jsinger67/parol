@@ -39,6 +39,7 @@ pub trait ListGrammarTrait {
     fn trailing_comma(&mut self, _arg: &TrailingComma) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -405,5 +406,8 @@ impl<'t> UserActionsTrait<'t> for ListGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

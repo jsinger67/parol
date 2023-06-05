@@ -16,7 +16,6 @@ impl SnapshotLibGrammar<'_> {
     pub fn new() -> Self {
         SnapshotLibGrammar::default()
     }
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 }
 
 impl Display for SnapshotLib<'_> {

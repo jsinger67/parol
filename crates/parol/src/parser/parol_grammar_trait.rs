@@ -10,12 +10,11 @@
 #![allow(clippy::upper_case_acronyms)]
 
 use parol_runtime::derive_builder::Builder;
-use parol_runtime::lexer::Token;
 use parol_runtime::log::trace;
 #[allow(unused_imports)]
 use parol_runtime::parol_macros::{pop_and_reverse_item, pop_item};
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};
-use parol_runtime::{ParserError, Result};
+use parol_runtime::{ParserError, Result, Token};
 
 /// Semantic actions trait generated for the user grammar
 /// All functions have default implementations.
@@ -169,6 +168,7 @@ pub trait ParolGrammarTrait<'t> {
     fn user_type_name(&mut self, _arg: &UserTypeName<'t>) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2673,5 +2673,8 @@ impl<'t> UserActionsTrait<'t> for ParolGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

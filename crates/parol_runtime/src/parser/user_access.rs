@@ -28,5 +28,5 @@ pub trait UserActionsTrait<'t> {
     /// This can improve handling of comments that are not captured by the grammar definition
     /// itself.
     ///
-    fn on_comment_parsed(&mut self, token: Token<'t>);
+    fn on_comment_parsed(&mut self, _token: Token<'t>);
 }

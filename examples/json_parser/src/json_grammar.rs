@@ -4,7 +4,7 @@ use parol_macros::bail;
 use parol_runtime::errors::FileSource;
 use parol_runtime::log::trace;
 use parol_runtime::parser::ParseTreeType;
-use parol_runtime::{ParolError, Result, Token};
+use parol_runtime::{ParolError, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -63,8 +63,6 @@ impl JsonGrammar {
     pub fn new() -> Self {
         JsonGrammar::default()
     }
-
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn push(&mut self, item: JsonGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);

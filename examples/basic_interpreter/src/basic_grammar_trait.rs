@@ -238,6 +238,7 @@ pub trait BasicGrammarTrait<'t> {
     fn factor(&mut self, _arg: &Factor<'t>) -> Result<()> {
         Ok(())
     }
+    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2910,5 +2911,8 @@ impl<'t> UserActionsTrait<'t> for BasicGrammarAuto<'t, '_> {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+
+    fn on_comment_parsed(&mut self, token: Token<'t>) {
+        self.user_grammar.on_comment_parsed(token)
+    }
 }

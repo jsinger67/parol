@@ -197,6 +197,11 @@ impl std::fmt::Display for UserTraitData<'_> {
         );
         if *auto_generate {
             let lifetime = if *ast_type_has_lifetime { "<'t>" } else { "" };
+            let anonymous_lifetime = if *ast_type_has_lifetime {
+                "<'t>"
+            } else {
+                "<'_>"
+            };
             let auto_name = format!("{}Auto", user_type_name);
             writeln!(
                 f,
@@ -209,6 +214,7 @@ impl std::fmt::Display for UserTraitData<'_> {
             f.write_fmt(ume::ume! {
                 pub trait #trait_name #lifetime {
                     #user_trait_functions
+                    fn on_comment_parsed(&mut self, _token: Token #anonymous_lifetime) {}
                 }
             })?;
 
@@ -335,6 +341,7 @@ impl std::fmt::Display for UserTraitData<'_> {
 
             writeln!(f, "\n")?;
             f.write_fmt(ume::ume! {
+                #blank_line
                 impl<'t> UserActionsTrait<'t> for #auto_name<'t, '_> {
                     #call_semantic_action_for_production_number_doc
                     fn call_semantic_action_for_production_number(
@@ -346,8 +353,10 @@ impl std::fmt::Display for UserTraitData<'_> {
                             _ => Err(ParserError::InternalError(format!("Unhandled production number: {}", prod_num)).into()),
                         }
                     }
-
-                    fn on_comment_parsed(&mut self, _token: Token<'t>) {}
+                    #blank_line
+                    fn on_comment_parsed(&mut self, token: Token<'t>) {
+                        self.user_grammar.on_comment_parsed(token)
+                    }
                 }
             })?;
         } else {
@@ -365,6 +374,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                     #trait_functions
                 }
                 #blank_line
+                #blank_line
                 impl UserActionsTrait<'_> for #user_type_name {
                     #call_semantic_action_for_production_number_doc
                     fn call_semantic_action_for_production_number(
@@ -377,8 +387,8 @@ impl std::fmt::Display for UserTraitData<'_> {
                         }
                     }
 
-                    fn on_comment_parsed(&mut self, token: Token<'_>) {
-                        self.on_comment(token)
+                    fn on_comment_parsed(&mut self, _token: Token<'_>) {
+                        // This is currently only supported for auto generate mode
                     }
                 }
             })?;

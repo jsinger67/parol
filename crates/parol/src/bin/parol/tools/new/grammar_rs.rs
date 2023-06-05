@@ -30,11 +30,11 @@ impl std::fmt::Display for GrammarRsData<'_> {
         write!(
             f,
             "
-			///
-			/// Data structure that implements the semantic actions for our {grammar_name} grammar
-			/// !Change this type as needed!
-			///
-		"
+            ///
+            /// Data structure that implements the semantic actions for our {grammar_name} grammar
+            /// !Change this type as needed!
+            ///
+        "
         )?;
         f.write_fmt(ume::ume! {
             #[derive(Debug, Default)]
@@ -50,7 +50,6 @@ impl std::fmt::Display for GrammarRsData<'_> {
                 pub fn new() -> Self {
                     #grammar::default()
                 }
-                pub fn on_comment(&mut self, _token: Token<'_>) {}
             }
         })?;
 
@@ -81,10 +80,10 @@ impl std::fmt::Display for GrammarRsData<'_> {
 
         let comment = format!(
             "
-			// !Adjust your implementation as needed!
+            // !Adjust your implementation as needed!
 
-			/// Semantic action for non-terminal '{grammar_name}'
-		"
+            /// Semantic action for non-terminal '{grammar_name}'
+        "
         );
         f.write_fmt(ume::ume! {
             impl<'t> #grammar_trait<'t> for #grammar<'t> {

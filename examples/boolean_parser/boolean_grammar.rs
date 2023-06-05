@@ -1,7 +1,7 @@
 use crate::boolean_grammar_trait::BooleanGrammarTrait;
 use parol_macros::parol;
 use parol_runtime::parser::ParseTreeType;
-use parol_runtime::{log::trace, Result, Token};
+use parol_runtime::{log::trace, Result};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///
@@ -121,8 +121,6 @@ impl BooleanGrammar {
     pub fn new() -> Self {
         BooleanGrammar::default()
     }
-
-    pub fn on_comment(&mut self, _token: Token<'_>) {}
 
     fn push(&mut self, item: BooleanGrammarItem, context: &str) {
         trace!("push   {}: {}", context, item);
