@@ -369,6 +369,10 @@ impl std::fmt::Display for UserTraitData<'_> {
                 /// All functions have default implementations.
                 ///"
             )?;
+            let supported_comment = r"
+                // This is currently only supported for auto generate mode.
+                // Please, file an issue if need arises.
+                ";
             f.write_fmt(ume::ume! {
                 pub trait #trait_name {
                     #trait_functions
@@ -388,7 +392,7 @@ impl std::fmt::Display for UserTraitData<'_> {
                     }
 
                     fn on_comment_parsed(&mut self, _token: Token<'_>) {
-                        // This is currently only supported for auto generate mode
+                        #supported_comment
                     }
                 }
             })?;

@@ -184,5 +184,8 @@ impl UserActionsTrait<'_> for ScannerStatesGrammar {
             .into()),
         }
     }
-    fn on_comment_parsed(&mut self, _token: Token<'_>) {}
+    fn on_comment_parsed(&mut self, _token: Token<'_>) {
+        // This is currently only supported for auto generate mode
+        // Please, file an issue if need arises.
+    }
 }
