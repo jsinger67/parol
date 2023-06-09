@@ -87,6 +87,15 @@ where
     };
 }
 
+fn clean_build_artifacts(sub: &str) {
+    // The following files could have been created by some language extensions.
+    // To avoid the test to fail because of this we delete the generated elements.
+    // We ignore possible io errors here.
+    let _ = fs::remove_file(snapshot_path(sub).join("Cargo.lock"));
+    let _ = fs::remove_dir_all(snapshot_path(sub).join("target"));
+    let _ = fs::remove_file(snapshot_path(sub).join(format!("snapshot_{sub}-exp.par")));
+}
+
 #[test]
 fn snapshot_lib() {
     let path = tempdir().unwrap();
@@ -96,9 +105,7 @@ fn snapshot_lib() {
         .args(["new", "--lib", "--path", "lib", "--name", "snapshot_lib"])
         .assert()
         .success();
-    fs::remove_file(snapshot_path("lib").join("Cargo.lock")).unwrap();
-    let _ = fs::remove_dir_all(snapshot_path("lib").join("target"));
-    let _ = fs::remove_file(snapshot_path("lib").join("snapshot_lib-exp.par"));
+    clean_build_artifacts("lib");
     diff(path.path().join("lib"), snapshot_path("lib"));
 }
 
@@ -111,9 +118,6 @@ fn snapshot_bin() {
         .args(["new", "--bin", "--path", "bin", "--name", "snapshot_bin"])
         .assert()
         .success();
-    let _ = fs::remove_file(path.path().join("bin").join("snapshot_bin-exp.par"));
-    fs::remove_file(snapshot_path("bin").join("Cargo.lock")).unwrap();
-    let _ = fs::remove_dir_all(snapshot_path("bin").join("target"));
-    let _ = fs::remove_file(snapshot_path("bin").join("snapshot_bin-exp.par"));
+    clean_build_artifacts("bin");
     diff(path.path().join("bin"), snapshot_path("bin"));
 }
