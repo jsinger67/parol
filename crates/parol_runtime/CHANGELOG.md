@@ -16,14 +16,15 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.17.0 - Not released yet
+## 0.17.0 - 2023-06-09
 
 * New support for handling of user defined comments (`%line_comment`, `%block_comment`)
-  * The new method `CommentHandler::on_comment_parsed` is called in order of appearance each time
-  before the parser consumes a normal token from token stream.
+  * This library works in conjunction wit `parol` >= 0.22.0 to work properly
+  * The new method `<UserType>GrammarTrait::on_comment_parsed` is called in order of appearance each
+  time before the parser consumes a normal token from token stream.
   * It is default implemented and the user can provide an own implementation if she is interested in
   comments.
-  * It is still a bit under investigation where best call this method during parse process.
+  * This is a minimal support but can greatly improve the usability. Feed is appreciated.
 
 ## 0.16.0 - 2023-04-02
 
