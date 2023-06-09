@@ -211,9 +211,15 @@ impl std::fmt::Display for UserTraitData<'_> {
                 /// All functions have default implementations."
             )?;
             let user_trait_functions = user_trait_functions.join("\n\n");
+            let on_comment_parsed_comment = r"
+
+                /// This method provides skipped language comments.
+                /// If you need comments please provide your own implementation of this method.
+            ";
             f.write_fmt(ume::ume! {
                 pub trait #trait_name #lifetime {
                     #user_trait_functions
+                    #on_comment_parsed_comment
                     fn on_comment_parsed(&mut self, _token: Token #anonymous_lifetime) {}
                 }
             })?;

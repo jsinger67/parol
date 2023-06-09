@@ -178,6 +178,9 @@ pub trait CalcGrammarTrait<'t> {
     fn id(&mut self, _arg: &Id<'t>) -> Result<()> {
         Ok(())
     }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
     fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 

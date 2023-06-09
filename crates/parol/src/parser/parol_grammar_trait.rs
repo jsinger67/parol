@@ -168,6 +168,9 @@ pub trait ParolGrammarTrait<'t> {
     fn user_type_name(&mut self, _arg: &UserTypeName<'t>) -> Result<()> {
         Ok(())
     }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
     fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 

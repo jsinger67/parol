@@ -39,6 +39,9 @@ pub trait ListGrammarTrait {
     fn trailing_comma(&mut self, _arg: &TrailingComma) -> Result<()> {
         Ok(())
     }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
     fn on_comment_parsed(&mut self, _token: Token<'_>) {}
 }
 

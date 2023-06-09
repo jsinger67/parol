@@ -453,6 +453,9 @@ pub trait ParolTomlGrammarTrait<'t> {
     fn plus(&mut self, _arg: &Plus<'t>) -> Result<()> {
         Ok(())
     }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
     fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 

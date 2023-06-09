@@ -383,6 +383,9 @@ pub trait Oberon2GrammarTrait<'t> {
     fn in_op(&mut self, _arg: &InOp) -> Result<()> {
         Ok(())
     }
+
+    /// This method provides skipped language comments.
+    /// If you need comments please provide your own implementation of this method.
     fn on_comment_parsed(&mut self, _token: Token<'t>) {}
 }
 
