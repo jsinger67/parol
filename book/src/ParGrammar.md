@@ -22,6 +22,19 @@ As opposed to EBNF you use C-like line comments starting with two slashes (//) a
 (/\* ... \*/) in PAR files. This is a result of the close relationship between PAR grammar and
 bison's grammar.
 
+>As of version 0.22.0 `parol` doesn't simply discard language comments. They are provided during
+parse process via a new method `<UserType>GrammarTrait::on_comment_parsed` which is called for each
+single comment in order of their appearance each time before the parser consumes a normal token from
+token stream.
+>
+> The method is default implemented and the user have to provide an own implementation if she is
+interested in language comments.
+>
+>This is a minimal support but can greatly improve the usability. Also note that this comment
+handling is currently only supported in `parols`'s auto-generation mode.
+>
+>Any feedback is appreciated.
+
 ## Case sensitivity
 
 Non-terminals are treated case sensitive, i. e. "list" and "List" are different symbols. But it is
