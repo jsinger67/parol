@@ -21,12 +21,19 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.22.1 - Not released yet
+
+* Ensure deterministic state numbering after minimization of Lookahead DFAs. Before this fix the
+states could be numbered differently after each generation. Although this imposed no problems on the
+functionality of generated parsers nondeterministic output isn't desirable.
+
 ## 0.22.0 - 2023-06-09
 
 * Fixed a smaller problem with `parol new` that occurs with special module names
 * Removed clippy warnings new in Rust 1.70
 * Fixed exceeded array bounds when MAX_K is used as lookahead size
 * New support for handling of user defined comments (`%line_comment`, `%block_comment`)
+  * This fixes issue #107 (Provide better support for language comments)
 
 ## 0.21.5 - 2023-05-29
 

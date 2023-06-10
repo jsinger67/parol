@@ -13,7 +13,7 @@ mod adjacency_list {
     use crate::analysis::compiled_la_dfa::TerminalIndex;
     use crate::analysis::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD};
     use crate::group_by;
-    use std::collections::{BTreeMap, HashMap, VecDeque};
+    use std::collections::{BTreeMap, VecDeque};
 
     use super::{CompiledDFA, CompiledTransition};
 
@@ -72,11 +72,9 @@ mod adjacency_list {
 
     #[derive(Debug, Clone, Eq, PartialEq)]
     pub(super) struct AdjacencyList {
-        // The actual adjacency list
-        list: HashMap<StateId, Neighbors>,
-        // A map from state to its resulting production number
-        // We use a BTreeMap here because we use this as sorted base for optimization to always get
-        // a reproducible result.
+        // The actual adjacency list sorted by state number
+        list: BTreeMap<StateId, Neighbors>,
+        // A map from state to its resulting production number also sorted by state number
         productions: BTreeMap<StateId, CompiledProductionIndex>,
         // Lookahead size, only used for conversion back to [CompiledDFA] (to_compiled_dfa)
         k: usize,
@@ -85,7 +83,7 @@ mod adjacency_list {
     impl From<CompiledDFA> for AdjacencyList {
         /// Conversion from CompiledDFA
         fn from(value: CompiledDFA) -> Self {
-            let mut list = HashMap::new();
+            let mut list = BTreeMap::new();
             let mut productions = BTreeMap::new();
             list.insert(0, Neighbors::new());
             productions.insert(0, value.prod0);
