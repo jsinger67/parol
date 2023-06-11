@@ -97,7 +97,7 @@ pub const TERMINAL_NAMES: &[&str; 38] = &[
     /* 33 */ "PercentSc",
     /* 34 */ "PercentPush",
     /* 35 */ "PercentPop",
-    /* 36 */ "Circumflex",
+    /* 36 */ "CutOperator",
     /* 37 */ "Error",
 ];
 
@@ -142,7 +142,7 @@ const SCANNER_0: (&[&str; 5], &[usize; 32]) = (
         33, /* PercentSc */
         34, /* PercentPush */
         35, /* PercentPop */
-        36, /* Circumflex */
+        36, /* CutOperator */
     ],
 );
 

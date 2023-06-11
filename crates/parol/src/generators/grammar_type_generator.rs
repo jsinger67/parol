@@ -181,7 +181,7 @@ impl GrammarTypeInfo {
         self.terminals = cfg
             .get_ordered_terminals()
             .iter()
-            .map(|(t, _, _)| t.to_string())
+            .map(|(t, k, _)| k.expand(t))
             .collect::<Vec<String>>();
 
         self.terminal_names = self.terminals.iter().fold(Vec::new(), |mut acc, e| {
@@ -413,8 +413,8 @@ impl GrammarTypeInfo {
     pub fn generate_member_name(&self, s: &Symbol) -> (String, String) {
         match s {
             Symbol::N(n, ..) => (NmHlp::to_lower_snake_case(n), String::default()),
-            Symbol::T(Terminal::Trm(t, ..)) => {
-                let terminal_name = &self.terminal_names[self.get_terminal_index(t)];
+            Symbol::T(Terminal::Trm(t, k, ..)) => {
+                let terminal_name = &self.terminal_names[self.get_terminal_index(&k.expand(t))];
                 (NmHlp::to_lower_snake_case(terminal_name), t.to_string())
             }
             _ => panic!("Invalid symbol type {}", s),
@@ -631,9 +631,11 @@ impl GrammarTypeInfo {
             lhs.iter().fold(String::new(), |mut acc, s| {
                 match s {
                     Symbol::N(n, _, _) => acc.push_str(&NmHlp::to_upper_camel_case(n)),
-                    Symbol::T(Terminal::Trm(t, ..)) => acc.push_str(&NmHlp::to_upper_camel_case(
-                        &self.terminal_names[self.get_terminal_index(t)],
-                    )),
+                    Symbol::T(Terminal::Trm(t, k, ..)) => {
+                        acc.push_str(&NmHlp::to_upper_camel_case(
+                            &self.terminal_names[self.get_terminal_index(&k.expand(t))],
+                        ))
+                    }
                     _ => (),
                 }
                 acc

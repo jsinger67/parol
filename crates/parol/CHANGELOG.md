@@ -26,6 +26,13 @@ new minor version numbers. Please note that this is no version handling covered 
 * Ensure deterministic state numbering after minimization of Lookahead DFAs. Before this fix the
 states could be numbered differently after each generation. Although this imposed no problems on the
 functionality of generated parsers nondeterministic output isn't desirable.
+* Fixed problem in terminal name generation when
+  * regex string representation (/.../) is used
+  * the terminal included characters that are automatically escaped (by `regex::escape`) and
+  * the production was meant as a "primary non-terminal for a terminal".
+
+  For more details about this special handling please see the
+  [book](https://jsinger67.github.io/ParGrammar.html#terminal-name-generation).
 
 ## 0.22.0 - 2023-06-09
 
