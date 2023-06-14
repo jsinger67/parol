@@ -15,7 +15,7 @@ exclude = ["/tests", "/data", "/bindings"]
 
 [dependencies]
 anyhow = { workspace = true }
-bitflags = "2.3.1"
+bitflags = "2.3.2"
 cfg-if = "1.0.0"
 clap = { workspace = true }
 derive_builder = { version = "0.12.0" }
