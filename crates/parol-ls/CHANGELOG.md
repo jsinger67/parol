@@ -5,6 +5,13 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.13.0 - Not released yet
+
+* The `Parol Language Server` now supports a single end comment.
+  * This is no restriction of `parol` itself but of the special grammar the language server uses.
+    This grammar captures as much comments as possible from the input grammar.
+    Feedback is appreciated.
+
 ## 0.12.0 - 2023-06-09
 
 * Using newer `parol 0.22.0` + `parol_runtime 0.17.0`

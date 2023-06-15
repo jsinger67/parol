@@ -40,6 +40,15 @@ impl From<&BlockComment> for Rng {
     }
 }
 
+impl From<&Comment> for Rng {
+    fn from(val: &Comment) -> Self {
+        match val {
+            Comment::LineComment(l) => Self::from(&l.line_comment.line_comment),
+            Comment::BlockComment(b) => Self::from(&b.block_comment.block_comment),
+        }
+    }
+}
+
 impl From<&Comments> for Rng {
     fn from(val: &Comments) -> Self {
         Self::from_slice(&val.comments_list)
@@ -48,16 +57,7 @@ impl From<&Comments> for Rng {
 
 impl From<&CommentsList> for Rng {
     fn from(val: &CommentsList) -> Self {
-        Self::from(&*val.comments_list_group)
-    }
-}
-
-impl From<&CommentsListGroup> for Rng {
-    fn from(val: &CommentsListGroup) -> Self {
-        match val {
-            CommentsListGroup::LineComment(lc) => Self::from(&*lc.line_comment),
-            CommentsListGroup::BlockComment(bc) => Self::from(&*bc.block_comment),
-        }
+        Self::from(&*val.comment)
     }
 }
 

@@ -1,13 +1,12 @@
 %start ParolLs
 %title "Parol grammar"
-%comment "Parol's own grammar"
+%comment "Parol's own grammar enhanced with comment processing"
 %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
-
 
 %%
 
 ParolLs
-    : Prolog GrammarDefinition
+    : Prolog GrammarDefinition [ Comment ]
     ;
 
 Prolog
@@ -19,14 +18,14 @@ StartDeclaration
     ;
 
 Declaration
-    : "%title": OwnedToken String Comments
+    : "%title": OwnedToken String Comments 
     | "%comment": OwnedToken String Comments
     | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName Comments
     | ScannerDirectives
     ;
 
 ScannerDirectives
-    : "%line_comment": OwnedToken TokenLiteral Comments
+    : "%line_comment": OwnedToken TokenLiteral Comments 
     | "%block_comment": OwnedToken TokenLiteral TokenLiteral Comments
     | "%auto_newline_off": OwnedToken Comments
     | "%auto_ws_off": OwnedToken Comments
@@ -57,31 +56,31 @@ Alternation
     ;
 
 Factor
-    : Group
+    : Group 
     | Repeat
     | Optional
     | Symbol
     ;
 
 Symbol
-    : NonTerminal
+    : NonTerminal 
     | SimpleToken
     | TokenWithStates
     | ScannerSwitch
     ;
 
 TokenLiteral
-    : String
+    : String 
     | LiteralString
     | Regex
     ;
 
 SimpleToken
-    : TokenLiteral [ASTControl]
+    : TokenLiteral [ ASTControl ]
     ;
 
 TokenWithStates
-    :  "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ASTControl]
+    : "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ ASTControl ]
     ;
 
 Group
@@ -97,7 +96,7 @@ Repeat
     ;
 
 NonTerminal
-    : Identifier [ASTControl]
+    : Identifier [ ASTControl ]
     ;
 
 Identifier
@@ -121,13 +120,14 @@ StateList
     ;
 
 ScannerSwitch
-    : "%sc": OwnedToken "\(": OwnedToken [Identifier] "\)": OwnedToken
+    : "%sc": OwnedToken "\(": OwnedToken [ Identifier ] "\)": OwnedToken 
     | "%push": OwnedToken "\(": OwnedToken Identifier "\)": OwnedToken
     | "%pop": OwnedToken "\(": OwnedToken "\)": OwnedToken
     ;
 
 ASTControl
-    : CutOperator | UserTypeDeclaration
+    : CutOperator 
+    | UserTypeDeclaration
     ;
 
 CutOperator
@@ -142,8 +142,13 @@ UserTypeName
     : Identifier { DoubleColon Identifier }
     ;
 
+Comment
+    : LineComment 
+    | BlockComment
+    ;
+
 Comments
-    : { LineComment | BlockComment }
+    : { Comment }
     ;
 
 LineComment
@@ -157,3 +162,5 @@ BlockComment
 Regex
     : "/(\\/|[^/]|)*?/": OwnedToken
     ;
+
+// End comment

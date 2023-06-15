@@ -3,7 +3,7 @@ use lsp_types::{FormattingOptions, TextEdit};
 use crate::{
     parol_ls_grammar_trait::{
         ASTControl, Alternation, AlternationList, Alternations, AlternationsList, BlockComment,
-        Comments, CommentsList, CommentsListGroup, CutOperator, Declaration, DoubleColon, Factor,
+        Comment, Comments, CommentsList, CutOperator, Declaration, DoubleColon, Factor,
         GrammarDefinition, GrammarDefinitionList, Group, Identifier, LineComment, LiteralString,
         NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
         PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
@@ -150,17 +150,17 @@ impl Fmt for BlockComment {
         self.block_comment.text().to_string()
     }
 }
-impl Fmt for CommentsList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.comments_list_group.txt(options)
+impl Fmt for Comment {
+    fn txt(&self, _options: &FmtOptions) -> String {
+        match self {
+            Comment::LineComment(l) => l.line_comment.line_comment.text().to_string(),
+            Comment::BlockComment(b) => b.block_comment.block_comment.text().to_string(),
+        }
     }
 }
-impl Fmt for CommentsListGroup {
+impl Fmt for CommentsList {
     fn txt(&self, options: &FmtOptions) -> String {
-        match self {
-            CommentsListGroup::LineComment(l) => l.line_comment.txt(options),
-            CommentsListGroup::BlockComment(b) => b.block_comment.txt(options),
-        }
+        self.comment.txt(options)
     }
 }
 impl Fmt for CutOperator {
