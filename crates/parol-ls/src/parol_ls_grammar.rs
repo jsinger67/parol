@@ -69,10 +69,10 @@ impl ParolLsGrammar {
         &'a self,
         non_terminal: &str,
     ) -> Option<&'a Vec<Range>> {
-        eprintln!(
-            "{non_terminal} included: {}",
-            self.non_terminal_definitions.contains_key(non_terminal)
-        );
+        // eprintln!(
+        //     "{non_terminal} included: {}",
+        //     self.non_terminal_definitions.contains_key(non_terminal)
+        // );
         self.non_terminal_definitions.get(non_terminal)
     }
 
@@ -87,7 +87,7 @@ impl ParolLsGrammar {
     }
 
     fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
-        eprintln!("add_non_terminal_ref: {range:?}, {}", token);
+        // eprintln!("add_non_terminal_ref: {range:?}, {}", token);
         self.non_terminals.push((range, token.text().to_string()));
     }
 
@@ -97,7 +97,7 @@ impl ParolLsGrammar {
             .entry(token.text().to_string())
             .or_default();
         let range = location_to_range(&token.location);
-        eprintln!("add_non_terminal_definition: {range:?}, {}", token);
+        // eprintln!("add_non_terminal_definition: {range:?}, {}", token);
         entry.push(range);
         range
     }
@@ -333,7 +333,7 @@ impl ParolLsGrammar {
                 });
             }
         }
-        eprintln!("prepare rename request rejected");
+        // eprintln!("prepare rename request rejected");
         None
     }
 
@@ -516,11 +516,11 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             .identifier
             .text()
             .to_string();
-        let rng: Rng = arg.into();
-        eprintln!("Adding production {nt:?}: {rng:?}");
+        // let rng: Rng = arg.into();
+        // eprintln!("Adding production {nt:?}: {rng:?}");
         let entry = self.productions.entry(nt).or_default();
         entry.push(arg.clone());
-        eprintln!("Length: {}", entry.len());
+        // eprintln!("Length: {}", entry.len());
 
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {

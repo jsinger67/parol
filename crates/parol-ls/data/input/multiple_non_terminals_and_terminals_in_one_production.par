@@ -1,0 +1,6 @@
+%start G
+%%
+G: A "b" C "d" E;
+A: "a";
+C: "c";
+E: "e";

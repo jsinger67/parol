@@ -153,15 +153,21 @@ impl Fmt for Alternations {
 }
 impl Fmt for AlternationsList {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options = options.clone().with_padding(Padding::Both);
-        let alternations_option = options.clone().next_depth();
-        let indent = make_indent(options.nesting_depth);
+        // let comment_options = options.clone().with_padding(Padding::Both);
+        // let alternations_option = options.clone().next_depth();
+        // let indent = make_indent(options.nesting_depth);
+        // format!(
+        //     "\n{}{} {}{}",
+        //     indent,
+        //     self.or,
+        //     handle_comments(&self.comments, &comment_options),
+        //     self.alternation.txt(&alternations_option)
+        // )
         format!(
-            "\n    {}{} {}{}",
-            indent,
+            " {} {}{} ",
             self.or,
-            handle_comments(&self.comments, &comment_options),
-            self.alternation.txt(&alternations_option)
+            handle_comments(&self.comments, options),
+            self.alternation.txt(options)
         )
     }
 }
@@ -231,10 +237,11 @@ impl Fmt for DoubleColon {
 }
 impl Fmt for Factor {
     fn txt(&self, options: &FmtOptions) -> String {
+        let next_depth_option = options.clone().next_depth();
         match self {
-            Factor::Group(g) => g.group.txt(options),
-            Factor::Repeat(r) => r.repeat.txt(options),
-            Factor::Optional(o) => o.optional.txt(options),
+            Factor::Group(g) => g.group.txt(&next_depth_option),
+            Factor::Repeat(r) => r.repeat.txt(&next_depth_option),
+            Factor::Optional(o) => o.optional.txt(&next_depth_option),
             Factor::Symbol(s) => handle_symbol(&s.symbol, options),
         }
     }
@@ -242,7 +249,7 @@ impl Fmt for Factor {
 impl Fmt for GrammarDefinition {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{}{}{}",
+            "\n{}{}{}",
             self.percent_percent,
             self.production.txt(options),
             self.grammar_definition_list
@@ -261,16 +268,17 @@ impl Fmt for GrammarDefinitionList {
 }
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions) -> String {
-        let indent = make_indent(options.nesting_depth);
-        let alternations_option = options.clone().next_depth();
-        let inner_indent = make_indent(alternations_option.nesting_depth);
+        // let indent = make_indent(options.nesting_depth);
+        // let alternations_option = options.clone().next_depth();
+        // let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            "\n{}{}\n{}{}\n{}{}\n",
-            indent,
+            // "\n{}{}\n{}{}\n{}{} ",
+            " {} {} {} ",
+            // indent,
             self.l_paren,
-            inner_indent,
-            self.alternations.txt(&alternations_option),
-            indent,
+            // inner_indent,
+            self.alternations.txt(options),
+            // indent,
             self.r_paren,
         )
     }
@@ -293,10 +301,8 @@ impl Fmt for LiteralString {
 }
 impl Fmt for NonTerminal {
     fn txt(&self, options: &FmtOptions) -> String {
-        let indent = make_indent(options.nesting_depth);
         format!(
-            "{}{}{}",
-            indent,
+            "{}{}",
             self.identifier.identifier,
             self.non_terminal_opt
                 .as_ref()
@@ -311,16 +317,17 @@ impl Fmt for NonTerminalOpt {
 }
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions) -> String {
-        let indent = make_indent(options.nesting_depth);
-        let alternations_option = options.clone().next_depth();
-        let inner_indent = make_indent(alternations_option.nesting_depth);
+        // let indent = make_indent(options.nesting_depth);
+        // let alternations_option = options.clone().next_depth();
+        // let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            "\n{}{}\n{}{}\n{}{}\n",
-            indent,
+            // "\n{}{}\n{}{}\n{}{} ",
+            "{} {} {} ",
+            // indent,
             self.l_bracket,
-            inner_indent,
-            self.alternations.txt(&alternations_option),
-            indent,
+            // inner_indent,
+            self.alternations.txt(options),
+            // indent,
             self.r_bracket,
         )
     }
@@ -336,10 +343,11 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
+        let alternations_text = self.alternations.txt(options);
         format!(
             "\n{} {}\n    {}",
             self.production_l_h_s.txt(options),
-            self.alternations.txt(options).trim(),
+            alternations_text.trim(),
             self.semicolon,
         )
     }
@@ -407,16 +415,22 @@ impl Fmt for Regex {
 }
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions) -> String {
-        let indent = make_indent(options.nesting_depth);
-        let alternations_option = options.clone().next_depth();
-        let inner_indent = make_indent(alternations_option.nesting_depth);
+        // let indent = make_indent(options.nesting_depth);
+        // let alternations_option = options.clone().next_depth();
+        // let inner_indent = make_indent(alternations_option.nesting_depth);
+        // format!(
+        //     "\n{}{}\n{}{}\n{}{} ",
+        //     indent,
+        //     self.l_brace,
+        //     inner_indent,
+        //     self.alternations.txt(&alternations_option),
+        //     indent,
+        //     self.r_brace,
+        // )
         format!(
-            "\n{}{}\n{}{}\n{}{}\n",
-            indent,
+            " {} {} {} ",
             self.l_brace,
-            inner_indent,
-            self.alternations.txt(&alternations_option),
-            indent,
+            self.alternations.txt(options),
             self.r_brace,
         )
     }
@@ -429,7 +443,7 @@ impl Fmt for ScannerDirectives {
 impl Fmt for ScannerState {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {} {}\n{} {}\n",
+            "{} {} {}\n{} {} ",
             self.percent_scanner,
             self.identifier.txt(options),
             self.l_brace,
@@ -481,10 +495,8 @@ impl Fmt for ScannerSwitchOpt {
 }
 impl Fmt for SimpleToken {
     fn txt(&self, options: &FmtOptions) -> String {
-        let indent = make_indent(options.nesting_depth);
         format!(
-            "{}{}{}",
-            indent,
+            "{}{}",
             self.token_literal.txt(options),
             self.simple_token_opt
                 .as_ref()
@@ -502,7 +514,7 @@ impl Fmt for StartDeclaration {
         let comment_options_left = options.clone().with_padding(Padding::Left);
         let comment_options_right = options.clone().with_padding(Padding::Right);
         format!(
-            "{}{} {}{}\n",
+            "{}{} {}{} ",
             handle_comments(&self.comments, &comment_options_right),
             self.percent_start,
             self.identifier.txt(options),
@@ -603,14 +615,14 @@ fn handle_scanner_directives(
     let comment_options = options.clone().with_padding(Padding::Left);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => format!(
-            "{} {}{}\n",
+            "{} {}{} ",
             l.percent_line_underscore_comment,
             l.token_literal.txt(options),
             handle_comments(&l.comments, &comment_options),
         ),
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
             format!(
-                "{} {} {}{}\n",
+                "{} {} {}{} ",
                 b.percent_block_underscore_comment,
                 b.token_literal.txt(options),
                 b.token_literal0.txt(options),
@@ -619,13 +631,13 @@ fn handle_scanner_directives(
         }
 
         ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => format!(
-            "{}{}\n",
+            "{}{} ",
             n.percent_auto_underscore_newline_underscore_off,
             handle_comments(&n.comments, &comment_options),
         ),
 
         ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => format!(
-            "{}{}\n",
+            "{}{} ",
             w.percent_auto_underscore_ws_underscore_off,
             handle_comments(&w.comments, &comment_options),
         ),
@@ -715,6 +727,12 @@ mod test {
     const EXPECTED_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected");
     const ACTUAL_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/actual");
 
+    // Use this to skip certain tests if they are not ready yet
+    const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
+
+    // Use this if you only want to debug a single test
+    const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
+
     #[test]
     fn test_make_indent() {
         assert_eq!(String::default(), make_indent(None));
@@ -729,6 +747,7 @@ mod test {
     #[test]
     fn test_formatting() {
         let mut error_count = 0;
+        let mut tests_run = 0;
         let actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
         fs::DirBuilder::new()
             .recursive(true)
@@ -740,13 +759,18 @@ mod test {
             .unwrap()
             .flatten()
         {
+            if skip_test(&entry.file_name()) {
+                continue;
+            }
             if entry.path().extension().unwrap().to_str().unwrap() == "par" {
                 println!("Parsing {}...", entry.path().display());
                 if !process_single_file(entry.file_name().as_os_str()) {
                     error_count += 1;
                 }
+                tests_run += 1;
             }
         }
+        eprintln!("Found {error_count} formatting error(s) in {tests_run} tests.");
         assert_eq!(0, error_count);
     }
 
@@ -787,5 +811,11 @@ mod test {
                 true
             }
         }
+    }
+
+    fn skip_test(file_name: &OsStr) -> bool {
+        SKIP_LIST.contains(&file_name.to_str().unwrap())
+            || (!SELECTED_TESTS.is_empty()
+                && !SELECTED_TESTS.contains(&file_name.to_str().unwrap()))
     }
 }
