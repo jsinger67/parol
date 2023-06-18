@@ -16,6 +16,7 @@ Cargo.lock
 /data/**/*.svg
 /data/**/*.png
 /data/**/*.dot
+/crates/parol-ls/data/actual/*.par
 
 /examples/**/*.svg
 /examples/**/*.png

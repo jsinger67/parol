@@ -43,14 +43,23 @@ enum Trimming {
     Trim,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone)]
 struct FmtOptions {
     padding: Padding,
     line_end: LineEnd,
     trimming: Trimming,
+    nesting_depth: Option<u8>, // None means inline style
 }
 
 impl FmtOptions {
+    fn new() -> Self {
+        FmtOptions {
+            padding: Padding::default(),
+            line_end: LineEnd::default(),
+            trimming: Trimming::default(),
+            nesting_depth: Some(0),
+        }
+    }
     fn with_padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
         self
@@ -63,12 +72,20 @@ impl FmtOptions {
         self.trimming = trimming;
         self
     }
+    fn next_depth(mut self) -> Self {
+        if let Some(depth) = self.nesting_depth {
+            self.nesting_depth = Some(depth + 1);
+        } else {
+            self.nesting_depth = Some(1);
+        }
+        self
+    }
 }
 
 impl From<&FormattingOptions> for FmtOptions {
     fn from(_: &FormattingOptions) -> Self {
         // TODO: Modify if necessary
-        Self::default()
+        Self::new()
     }
 }
 
@@ -123,7 +140,7 @@ impl Fmt for AlternationList {
 impl Fmt for Alternations {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {}",
+            "{}{}",
             self.alternation.txt(options),
             self.alternations_list
                 .iter()
@@ -137,11 +154,14 @@ impl Fmt for Alternations {
 impl Fmt for AlternationsList {
     fn txt(&self, options: &FmtOptions) -> String {
         let comment_options = options.clone().with_padding(Padding::Both);
+        let alternations_option = options.clone().next_depth();
+        let indent = make_indent(options.nesting_depth);
         format!(
-            "\n    {} {}{}",
+            "\n    {}{} {}{}",
+            indent,
             self.or,
             handle_comments(&self.comments, &comment_options),
-            self.alternation.txt(options)
+            self.alternation.txt(&alternations_option)
         )
     }
 }
@@ -241,14 +261,21 @@ impl Fmt for GrammarDefinitionList {
 }
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions) -> String {
+        let indent = make_indent(options.nesting_depth);
+        let alternations_option = options.clone().next_depth();
+        let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            "{} {}{}\n",
+            "\n{}{}\n{}{}\n{}{}\n",
+            indent,
             self.l_paren,
-            self.alternations.txt(options),
+            inner_indent,
+            self.alternations.txt(&alternations_option),
+            indent,
             self.r_paren,
         )
     }
 }
+
 impl Fmt for Identifier {
     fn txt(&self, _options: &FmtOptions) -> String {
         self.identifier.text().to_string()
@@ -266,8 +293,10 @@ impl Fmt for LiteralString {
 }
 impl Fmt for NonTerminal {
     fn txt(&self, options: &FmtOptions) -> String {
+        let indent = make_indent(options.nesting_depth);
         format!(
-            "{}{}",
+            "{}{}{}",
+            indent,
             self.identifier.identifier,
             self.non_terminal_opt
                 .as_ref()
@@ -282,10 +311,16 @@ impl Fmt for NonTerminalOpt {
 }
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions) -> String {
+        let indent = make_indent(options.nesting_depth);
+        let alternations_option = options.clone().next_depth();
+        let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            "{} {}{}",
+            "\n{}{}\n{}{}\n{}{}\n",
+            indent,
             self.l_bracket,
-            self.alternations.txt(options),
+            inner_indent,
+            self.alternations.txt(&alternations_option),
+            indent,
             self.r_bracket,
         )
     }
@@ -319,13 +354,24 @@ impl Fmt for ProductionLHS {
             .clone()
             .with_line_end(LineEnd::ForceAdd)
             .with_trimming(Trimming::TrimRight);
-        format!(
-            "\n{}{}{}\n    {}",
-            handle_comments(&self.comments, &comment_options_right),
-            self.identifier.identifier,
-            handle_comments(&self.comments0, &comment_options_both),
-            self.colon,
-        )
+        if self.identifier.identifier.text().len() < 5 && self.comments0.comments_list.is_empty() {
+            let padding = " ".repeat(4 - self.identifier.identifier.text().len());
+            format!(
+                "\n{}{}{}{}",
+                handle_comments(&self.comments, &comment_options_right),
+                self.identifier.identifier,
+                padding,
+                self.colon,
+            )
+        } else {
+            format!(
+                "\n{}{}{}\n    {}",
+                handle_comments(&self.comments, &comment_options_right),
+                self.identifier.identifier,
+                handle_comments(&self.comments0, &comment_options_both),
+                self.colon,
+            )
+        }
     }
 }
 impl Fmt for Prolog {
@@ -361,10 +407,16 @@ impl Fmt for Regex {
 }
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions) -> String {
+        let indent = make_indent(options.nesting_depth);
+        let alternations_option = options.clone().next_depth();
+        let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            "{} {}{}",
+            "\n{}{}\n{}{}\n{}{}\n",
+            indent,
             self.l_brace,
-            self.alternations.txt(options),
+            inner_indent,
+            self.alternations.txt(&alternations_option),
+            indent,
             self.r_brace,
         )
     }
@@ -429,8 +481,10 @@ impl Fmt for ScannerSwitchOpt {
 }
 impl Fmt for SimpleToken {
     fn txt(&self, options: &FmtOptions) -> String {
+        let indent = make_indent(options.nesting_depth);
         format!(
-            "{}{}",
+            "{}{}{}",
+            indent,
             self.token_literal.txt(options),
             self.simple_token_opt
                 .as_ref()
@@ -627,5 +681,111 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
         Padding::Left => format!(" {}", line),
         Padding::Right => format!("{} ", line),
         Padding::Both => format!(" {} ", line),
+    }
+}
+
+fn make_indent(nesting_depth: Option<u8>) -> String {
+    if let Some(depth) = nesting_depth {
+        let mut indent = String::with_capacity((depth as usize + 1) * 4);
+        indent.extend("    ".repeat(depth as usize + 1).drain(..));
+        indent
+    } else {
+        // String::from("    ")
+        String::default()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use std::{ffi::OsStr, fs};
+
+    use parol_runtime::Report;
+    use regex::Regex;
+
+    use crate::{
+        format::{make_indent, Fmt, FmtOptions},
+        parol_ls_grammar::ParolLsGrammar,
+        parol_ls_parser::parse,
+    };
+
+    struct LsErrorReporter;
+    impl Report for LsErrorReporter {}
+
+    const INPUT_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/input");
+    const EXPECTED_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected");
+    const ACTUAL_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/actual");
+
+    #[test]
+    fn test_make_indent() {
+        assert_eq!(String::default(), make_indent(None));
+        let options = FmtOptions::new();
+        assert_eq!(String::from("    "), make_indent(options.nesting_depth));
+        assert_eq!(
+            String::from("        "),
+            make_indent(options.next_depth().nesting_depth)
+        );
+    }
+
+    #[test]
+    fn test_formatting() {
+        let mut error_count = 0;
+        let actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
+        fs::DirBuilder::new()
+            .recursive(true)
+            .create(actual_file)
+            .unwrap();
+        println!("from folder {INPUT_FOLDER}:");
+        for entry in std::path::Path::new(INPUT_FOLDER)
+            .read_dir()
+            .unwrap()
+            .flatten()
+        {
+            if entry.path().extension().unwrap().to_str().unwrap() == "par" {
+                println!("Parsing {}...", entry.path().display());
+                if !process_single_file(entry.file_name().as_os_str()) {
+                    error_count += 1;
+                }
+            }
+        }
+        assert_eq!(0, error_count);
+    }
+
+    fn process_single_file(file_name: &OsStr) -> bool {
+        let rx_newline: Regex = Regex::new(r"\r?\n").unwrap();
+
+        let mut input_file = std::path::PathBuf::from(INPUT_FOLDER);
+        input_file.push(file_name);
+        let input_grammar = fs::read_to_string(input_file.clone()).unwrap();
+        let options = FmtOptions::new();
+        let mut grammar = ParolLsGrammar::new();
+
+        if let Err(e) = parse(&input_grammar, input_file.clone(), &mut grammar) {
+            LsErrorReporter::report_error(&e, input_file).unwrap();
+            panic!("Parsing failed!")
+        } else {
+            // We generate the new formatting by calling Fmt::txt()
+            let formatted_grammar = grammar.grammar.unwrap().txt(&options);
+
+            // Only to support debugging we write out the currently generated source
+            let mut actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
+            actual_file.push(file_name);
+            fs::write(actual_file, formatted_grammar.clone()).unwrap();
+
+            // Read the fixed expectation file into a string
+            let mut expected_file = std::path::PathBuf::from(EXPECTED_FOLDER);
+            expected_file.push(file_name);
+            let expected_format = fs::read_to_string(expected_file).unwrap();
+
+            // Compare result with expectation
+            let expected_format = rx_newline.replace_all(&expected_format, "\n");
+            let formatted_grammar = rx_newline.replace_all(&formatted_grammar, "\n");
+
+            if expected_format != formatted_grammar {
+                eprintln!("expecting:\n'{expected_format}'\nreceived:\n'{formatted_grammar}'");
+                false
+            } else {
+                true
+            }
+        }
     }
 }
