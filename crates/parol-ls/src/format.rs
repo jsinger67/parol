@@ -271,7 +271,7 @@ impl Fmt for Factor {
 impl Fmt for GrammarDefinition {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "\n{}{}{}",
+            "{}{}{}",
             self.percent_percent,
             self.production.txt(options),
             self.grammar_definition_list
@@ -378,7 +378,7 @@ impl Fmt for ProductionLHS {
     fn txt(&self, options: &FmtOptions) -> String {
         let comment_options_both = options
             .clone()
-            .with_padding(Padding::Both)
+            .with_padding(Padding::Left)
             .with_trimming(Trimming::TrimRight);
         let comment_options_right = options
             .clone()
@@ -536,7 +536,7 @@ impl Fmt for StartDeclaration {
         let comment_options_left = options.clone().with_padding(Padding::Left);
         let comment_options_right = options.clone().with_padding(Padding::Right);
         format!(
-            "{}{} {}{} ",
+            "{}{} {}{}\n",
             handle_comments(&self.comments, &comment_options_right),
             self.percent_start,
             self.identifier.txt(options),
@@ -770,7 +770,7 @@ mod test {
     const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
     // Use this if you only want to debug a single test
-    const SELECTED_TESTS: &[&str] = &["line_comment_in_production_causes_line_break.par"]; //&["single_group.par"];
+    const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
 
     #[test]
     fn test_make_indent() {
