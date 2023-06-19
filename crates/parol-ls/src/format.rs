@@ -12,7 +12,13 @@ use crate::{
         UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
+    utils::RX_NEW_LINE,
 };
+
+// Todo: Make this a configuration variable
+const MAX_LINE_LENGTH: usize = 100;
+// This is the actual start column for each production (alternation) line
+const START_LINE_OFFSET: usize = 6;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[allow(dead_code)]
@@ -118,9 +124,25 @@ impl Fmt for Alternation {
     fn txt(&self, options: &FmtOptions) -> String {
         self.alternation_list
             .iter()
-            .map(|a| a.txt(options))
-            .collect::<Vec<String>>()
-            .join(" ")
+            .fold(String::new(), |mut acc, e| {
+                let mut next_part = e.txt(options);
+                let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
+                if lines.len() > 1 && lines.last().unwrap().is_empty() {
+                    acc.push_str("     ");
+                } else if lines.len() > 1 {
+                    if lines.last().unwrap().len() + next_part.len() > MAX_LINE_LENGTH {
+                        acc.push_str("\n     ");
+                    }
+                } else if START_LINE_OFFSET + acc.len() + next_part.len() > MAX_LINE_LENGTH {
+                    acc.push_str("\n     ");
+                }
+
+                if !acc.is_empty() && !acc.ends_with('\n') {
+                    acc.push(' ');
+                }
+                acc.extend(next_part.drain(..));
+                acc
+            })
     }
 }
 impl Fmt for AlternationList {
@@ -654,17 +676,33 @@ fn handle_symbol(symbol: &Symbol, options: &FmtOptions) -> String {
 }
 
 fn handle_comments(comments: &Comments, options: &FmtOptions) -> String {
-    let comments = comments
+    let comments_str = comments
         .comments_list
         .iter()
         .fold(String::new(), |mut acc, c| {
             acc.push_str(&c.txt(options));
             acc
         });
-    if comments.is_empty() {
-        comments
+    if comments_str.is_empty() {
+        comments_str
     } else {
-        apply_formatting(comments, options)
+        let options = if let Some(cmt) = comments.comments_list.last() {
+            if let Comment::LineComment(_) = &*cmt.comment {
+                if options.trimming == Trimming::TrimRight {
+                    options
+                        .clone()
+                        .with_trimming(Trimming::Unchanged)
+                        .with_line_end(LineEnd::Unchanged)
+                } else {
+                    options.clone()
+                }
+            } else {
+                options.clone()
+            }
+        } else {
+            options.clone()
+        };
+        apply_formatting(comments_str, &options)
     }
 }
 
@@ -696,6 +734,7 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
     }
 }
 
+#[allow(unused)]
 fn make_indent(nesting_depth: Option<u8>) -> String {
     if let Some(depth) = nesting_depth {
         let mut indent = String::with_capacity((depth as usize + 1) * 4);
@@ -712,12 +751,12 @@ mod test {
     use std::{ffi::OsStr, fs};
 
     use parol_runtime::Report;
-    use regex::Regex;
 
     use crate::{
         format::{make_indent, Fmt, FmtOptions},
         parol_ls_grammar::ParolLsGrammar,
         parol_ls_parser::parse,
+        utils::RX_NEW_LINE,
     };
 
     struct LsErrorReporter;
@@ -731,7 +770,7 @@ mod test {
     const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
     // Use this if you only want to debug a single test
-    const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
+    const SELECTED_TESTS: &[&str] = &["line_comment_in_production_causes_line_break.par"]; //&["single_group.par"];
 
     #[test]
     fn test_make_indent() {
@@ -775,8 +814,6 @@ mod test {
     }
 
     fn process_single_file(file_name: &OsStr) -> bool {
-        let rx_newline: Regex = Regex::new(r"\r?\n").unwrap();
-
         let mut input_file = std::path::PathBuf::from(INPUT_FOLDER);
         input_file.push(file_name);
         let input_grammar = fs::read_to_string(input_file.clone()).unwrap();
@@ -801,8 +838,8 @@ mod test {
             let expected_format = fs::read_to_string(expected_file).unwrap();
 
             // Compare result with expectation
-            let expected_format = rx_newline.replace_all(&expected_format, "\n");
-            let formatted_grammar = rx_newline.replace_all(&formatted_grammar, "\n");
+            let expected_format = RX_NEW_LINE.replace_all(&expected_format, "\n");
+            let formatted_grammar = RX_NEW_LINE.replace_all(&formatted_grammar, "\n");
 
             if expected_format != formatted_grammar {
                 eprintln!("expecting:\n'{expected_format}'\nreceived:\n'{formatted_grammar}'");
