@@ -3,7 +3,6 @@ use crate::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
         ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, UserTypeDeclaration,
     },
-    recursion::RecursionDetection,
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
@@ -226,29 +225,6 @@ impl ParolLsGrammar {
                 });
             }
         }
-    }
-
-    pub(crate) fn _find_left_recursions(&self) -> Vec<Vec<Range>> {
-        let mut recursions = Vec::new();
-        if let Some(grammar) = self.grammar.as_ref() {
-            let production_refs = grammar
-                .grammar_definition
-                .grammar_definition_list
-                .iter()
-                .fold(
-                    vec![&*grammar.grammar_definition.production],
-                    |mut acc, p| {
-                        acc.push(&*p.production);
-                        acc
-                    },
-                );
-            for p in &production_refs {
-                if let Some(r) = p.find_left_recursion(&production_refs) {
-                    recursions.push(r);
-                }
-            }
-        }
-        recursions
     }
 
     pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {

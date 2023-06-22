@@ -9,7 +9,7 @@ use crate::{
         PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
         ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, StateList,
         StateListList, Symbol, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
-        UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        TopLevelAlternations, UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -365,7 +365,7 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_text = self.alternations.txt(options);
+        let alternations_text = self.top_level_alternations.alternations.txt(options);
         format!(
             "\n{} {}\n    {}",
             self.production_l_h_s.txt(options),
@@ -599,6 +599,11 @@ impl Fmt for TokenWithStates {
 impl Fmt for TokenWithStatesOpt {
     fn txt(&self, options: &FmtOptions) -> String {
         self.a_s_t_control.txt(options)
+    }
+}
+impl Fmt for TopLevelAlternations {
+    fn txt(&self, options: &FmtOptions) -> String {
+        self.alternations.txt(options)
     }
 }
 impl Fmt for UserTypeDeclaration {

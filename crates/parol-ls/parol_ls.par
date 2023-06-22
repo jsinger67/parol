@@ -44,7 +44,11 @@ ProductionLHS
     ;
 
 Production
-    : ProductionLHS Alternations ";": OwnedToken
+    : ProductionLHS TopLevelAlternations ";": OwnedToken
+    ;
+
+TopLevelAlternations
+    : Alternations
     ;
 
 Alternations
