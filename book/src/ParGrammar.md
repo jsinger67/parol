@@ -94,7 +94,8 @@ that instructs the name generation to name the terminal "Assign".
 
 ### Terminal representation
 
-As of version 0.14.0 `parol` supports three different styles of terminal representations.
+As of version 0.14.0 `parol` supports three different styles of terminal representations, all of
+them being valid and allowed.
 
 * The legacy syntax (`"..."`). These terminals are treated as if they were regular expressions.
 * New single quoted string literals (`'..'`) are literal or raw strings. The user doesn't need to
