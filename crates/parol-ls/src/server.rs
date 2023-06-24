@@ -1,4 +1,3 @@
-use derive_new::new;
 use std::{collections::HashMap, error::Error, path::Path, sync::Arc, thread};
 
 use anyhow::anyhow;
@@ -21,32 +20,88 @@ use crate::{
     parol_ls_parser::parse,
 };
 
-#[derive(Debug, Default, new)]
+macro_rules! add_boolean_formatting_option {
+    ($self:ident, $( $i:ident ).*, $option_name:ident) => {
+        $($i).*.insert(
+            stringify!($($i).*).to_owned(),
+            lsp_types::FormattingProperty::Bool($self.$option_name),
+        );
+    };
+}
+
+macro_rules! update_number_option {
+    ($self:ident, $props:ident, $option_name:ident, $default:literal) => {
+        if $props.0.contains_key(stringify!($option_name)) {
+            $self.$option_name = serde_json::from_value(
+                $props
+                    .0
+                    .get(stringify!($option_name))
+                    .unwrap_or(&serde_json::Value::Number(serde_json::Number::from(
+                        $default,
+                    )))
+                    .clone(),
+            )?;
+            eprintln!(
+                concat!(stringify!($option_name), ": {}"),
+                $self.$option_name
+            );
+        }
+    };
+}
+
+macro_rules! update_boolean_formatting_option {
+    ($self:ident, $props:ident, $option_name:ident, $default:literal) => {
+        if $props
+            .0
+            .contains_key(concat!("formatting.", stringify!($option_name)))
+        {
+            $self.$option_name = serde_json::from_value(
+                $props
+                    .0
+                    .get(concat!("formatting.", stringify!($option_name)))
+                    .unwrap_or(&serde_json::Value::Bool($default))
+                    .clone(),
+            )?;
+            eprintln!(
+                concat!(stringify!($option_name), ": {}"),
+                $self.$option_name
+            );
+        }
+    };
+}
+
+#[derive(Debug, Default)]
 pub(crate) struct Server {
     /// Any documents the server has handled, indexed by their URL
-    #[new(default)]
     documents: HashMap<String, DocumentState>,
 
     /// Limit for lookahead calculation.
     /// Be careful with high values. The server can get stuck for some grammars.
     max_k: usize,
+
+    /// Add an empty line after each production
+    /// * Formatting option
+    empty_line_after_prod: bool,
+
+    /// Place the semicolon after each production on a new line
+    /// * Formatting option
+    prod_semicolon_on_nl: bool,
 }
 
 impl Server {
+    pub(crate) fn new(max_k: usize) -> Self {
+        Self {
+            max_k,
+            ..Default::default()
+        }
+    }
     pub(crate) fn update_configuration(
         &mut self,
         props: &ConfigProperties,
     ) -> Result<(), serde_json::error::Error> {
-        if props.0.contains_key("max_k") {
-            self.max_k = serde_json::from_value(
-                props
-                    .0
-                    .get("max_k")
-                    .unwrap_or(&serde_json::Value::Null)
-                    .clone(),
-            )?;
-            eprintln!("Using a maximum lookahead of {} now", self.max_k);
-        }
+        update_number_option!(self, props, max_k, 3);
+        update_boolean_formatting_option!(self, props, empty_line_after_prod, true);
+        update_boolean_formatting_option!(self, props, prod_semicolon_on_nl, true);
         Ok(())
     }
 
@@ -285,9 +340,11 @@ impl Server {
 
     pub(crate) fn handle_formatting(
         &self,
-        params: DocumentFormattingParams,
+        mut params: DocumentFormattingParams,
     ) -> Option<Vec<TextEdit>> {
         if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
+            add_boolean_formatting_option!(self, params.options.properties, empty_line_after_prod);
+            add_boolean_formatting_option!(self, params.options.properties, prod_semicolon_on_nl);
             document_state.format(params)
         } else {
             None

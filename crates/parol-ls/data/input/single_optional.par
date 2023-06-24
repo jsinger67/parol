@@ -1,5 +1,5 @@
 %start G
 %%
-G: A B;
+G: [A B];
 A: "a";
 B: "b";

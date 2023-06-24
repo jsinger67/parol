@@ -1,4 +1,4 @@
-use lsp_types::{FormattingOptions, TextEdit};
+use lsp_types::{FormattingOptions, FormattingProperty, TextEdit};
 
 use crate::{
     parol_ls_grammar_trait::{
@@ -9,7 +9,7 @@ use crate::{
         PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
         ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, StateList,
         StateListList, Symbol, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
-        TopLevelAlternations, UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -49,21 +49,28 @@ enum Trimming {
     Trim,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 struct FmtOptions {
     padding: Padding,
     line_end: LineEnd,
     trimming: Trimming,
-    nesting_depth: Option<u8>, // None means inline style
+    nesting_depth: u16,
+
+    /// Add an empty line after each production
+    /// * Formatting option
+    empty_line_after_prod: bool,
+
+    /// Place the semicolon after each production on a new line
+    /// * Formatting option
+    prod_semicolon_on_nl: bool,
 }
 
 impl FmtOptions {
     fn new() -> Self {
         FmtOptions {
-            padding: Padding::default(),
-            line_end: LineEnd::default(),
-            trimming: Trimming::default(),
-            nesting_depth: Some(0),
+            empty_line_after_prod: true,
+            prod_semicolon_on_nl: true,
+            ..Default::default()
         }
     }
     fn with_padding(mut self, padding: Padding) -> Self {
@@ -79,19 +86,34 @@ impl FmtOptions {
         self
     }
     fn next_depth(mut self) -> Self {
-        if let Some(depth) = self.nesting_depth {
-            self.nesting_depth = Some(depth + 1);
-        } else {
-            self.nesting_depth = Some(1);
-        }
+        self.nesting_depth += 1;
         self
     }
 }
 
+macro_rules! add_boolean_formatting_option {
+    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
+        $self.$option_name = if let Some(&FormattingProperty::Bool(val)) = $options
+            .properties
+            .get(concat!("formatting.", stringify!($option_name)))
+        {
+            val
+        } else {
+            $default
+        };
+        eprintln!(
+            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
+            $self.$option_name
+        );
+    };
+}
+
 impl From<&FormattingOptions> for FmtOptions {
-    fn from(_: &FormattingOptions) -> Self {
-        // TODO: Modify if necessary
-        Self::new()
+    fn from(options: &FormattingOptions) -> Self {
+        let mut me = Self::new();
+        add_boolean_formatting_option!(me, options, empty_line_after_prod, true);
+        add_boolean_formatting_option!(me, options, prod_semicolon_on_nl, true);
+        me
     }
 }
 
@@ -122,22 +144,25 @@ impl Fmt for ASTControl {
 }
 impl Fmt for Alternation {
     fn txt(&self, options: &FmtOptions) -> String {
+        let next_option = options.clone().next_depth();
         self.alternation_list
             .iter()
             .fold(String::new(), |mut acc, e| {
-                let mut next_part = e.txt(options);
-                let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
-                if lines.len() > 1 && lines.last().unwrap().is_empty() {
-                    acc.push_str("     ");
-                } else if lines.len() > 1 {
-                    if lines.last().unwrap().len() + next_part.len() > MAX_LINE_LENGTH {
-                        acc.push_str("\n     ");
+                let mut next_part = e.txt(&next_option);
+                if options.nesting_depth == 0 {
+                    // We do the line length control only at top level (i.e. at production level)
+                    let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
+                    if lines.len() > 1 && lines.last().unwrap().is_empty() {
+                        acc.push_str("      ");
+                    } else if lines.len() > 1 {
+                        if lines.last().unwrap().len() + next_part.len() > MAX_LINE_LENGTH {
+                            acc.push_str("\n      ");
+                        }
+                    } else if START_LINE_OFFSET + acc.len() + next_part.len() > MAX_LINE_LENGTH {
+                        acc.push_str("\n      ");
                     }
-                } else if START_LINE_OFFSET + acc.len() + next_part.len() > MAX_LINE_LENGTH {
-                    acc.push_str("\n     ");
                 }
-
-                if !acc.is_empty() && !acc.ends_with('\n') {
+                if !acc.is_empty() && !acc.ends_with(|c| c == '\n' || c == ' ') {
                     acc.push(' ');
                 }
                 acc.extend(next_part.drain(..));
@@ -185,8 +210,14 @@ impl Fmt for AlternationsList {
         //     handle_comments(&self.comments, &comment_options),
         //     self.alternation.txt(&alternations_option)
         // )
+        let delimiter = if options.nesting_depth == 0 {
+            "\n   "
+        } else {
+            ""
+        };
         format!(
-            " {} {}{} ",
+            "{} {} {}{}",
+            delimiter,
             self.or,
             handle_comments(&self.comments, options),
             self.alternation.txt(options)
@@ -290,17 +321,10 @@ impl Fmt for GrammarDefinitionList {
 }
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions) -> String {
-        // let indent = make_indent(options.nesting_depth);
-        // let alternations_option = options.clone().next_depth();
-        // let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            // "\n{}{}\n{}{}\n{}{} ",
-            " {} {} {} ",
-            // indent,
+            "{} {} {}",
             self.l_paren,
-            // inner_indent,
             self.alternations.txt(options),
-            // indent,
             self.r_paren,
         )
     }
@@ -339,17 +363,10 @@ impl Fmt for NonTerminalOpt {
 }
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions) -> String {
-        // let indent = make_indent(options.nesting_depth);
-        // let alternations_option = options.clone().next_depth();
-        // let inner_indent = make_indent(alternations_option.nesting_depth);
         format!(
-            // "\n{}{}\n{}{}\n{}{} ",
-            "{} {} {} ",
-            // indent,
+            "{} {} {}",
             self.l_bracket,
-            // inner_indent,
             self.alternations.txt(options),
-            // indent,
             self.r_bracket,
         )
     }
@@ -365,11 +382,24 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_text = self.top_level_alternations.alternations.txt(options);
+        let alternations_text = self.alternations.txt(options);
+        let semi_nl_opt = if options.prod_semicolon_on_nl {
+            "\n    "
+        } else {
+            ""
+        };
+
+        let prod_nl_opt = if options.empty_line_after_prod {
+            "\n"
+        } else {
+            ""
+        };
         format!(
-            "\n{} {}\n    {}",
+            "{}{} {}{}{}",
+            prod_nl_opt,
             self.production_l_h_s.txt(options),
             alternations_text.trim(),
+            semi_nl_opt,
             self.semicolon,
         )
     }
@@ -437,20 +467,8 @@ impl Fmt for Regex {
 }
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions) -> String {
-        // let indent = make_indent(options.nesting_depth);
-        // let alternations_option = options.clone().next_depth();
-        // let inner_indent = make_indent(alternations_option.nesting_depth);
-        // format!(
-        //     "\n{}{}\n{}{}\n{}{} ",
-        //     indent,
-        //     self.l_brace,
-        //     inner_indent,
-        //     self.alternations.txt(&alternations_option),
-        //     indent,
-        //     self.r_brace,
-        // )
         format!(
-            " {} {} {} ",
+            "{} {} {}",
             self.l_brace,
             self.alternations.txt(options),
             self.r_brace,
@@ -465,7 +483,7 @@ impl Fmt for ScannerDirectives {
 impl Fmt for ScannerState {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {} {}\n{} {} ",
+            "{} {} {}\n{} {}",
             self.percent_scanner,
             self.identifier.txt(options),
             self.l_brace,
@@ -599,11 +617,6 @@ impl Fmt for TokenWithStates {
 impl Fmt for TokenWithStatesOpt {
     fn txt(&self, options: &FmtOptions) -> String {
         self.a_s_t_control.txt(options)
-    }
-}
-impl Fmt for TopLevelAlternations {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.alternations.txt(options)
     }
 }
 impl Fmt for UserTypeDeclaration {
@@ -740,15 +753,10 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
 }
 
 #[allow(unused)]
-fn make_indent(nesting_depth: Option<u8>) -> String {
-    if let Some(depth) = nesting_depth {
-        let mut indent = String::with_capacity((depth as usize + 1) * 4);
-        indent.extend("    ".repeat(depth as usize + 1).drain(..));
-        indent
-    } else {
-        // String::from("    ")
-        String::default()
-    }
+fn make_indent(depth: u16) -> String {
+    let mut indent = String::with_capacity((depth as usize + 1) * 4);
+    indent.extend("    ".repeat(depth as usize + 1).drain(..));
+    indent
 }
 
 #[cfg(test)]
@@ -779,7 +787,7 @@ mod test {
 
     #[test]
     fn test_make_indent() {
-        assert_eq!(String::default(), make_indent(None));
+        assert_eq!(String::from("    "), make_indent(0));
         let options = FmtOptions::new();
         assert_eq!(String::from("    "), make_indent(options.nesting_depth));
         assert_eq!(
