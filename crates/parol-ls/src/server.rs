@@ -21,9 +21,9 @@ use crate::{
 };
 
 macro_rules! add_boolean_formatting_option {
-    ($self:ident, $( $i:ident ).*, $option_name:ident) => {
-        $($i).*.insert(
-            stringify!($($i).*).to_owned(),
+    ($self:ident, $( $i:ident ).+, $option_name:ident) => {
+        $($i).+.insert(
+            concat!("formatting.", stringify!($option_name)).to_owned(),
             lsp_types::FormattingProperty::Bool($self.$option_name),
         );
     };
@@ -35,14 +35,14 @@ macro_rules! update_number_option {
             $self.$option_name = serde_json::from_value(
                 $props
                     .0
-                    .get(stringify!($option_name))
+                    .get(concat!("formatting.", stringify!($option_name)))
                     .unwrap_or(&serde_json::Value::Number(serde_json::Number::from(
                         $default,
                     )))
                     .clone(),
             )?;
             eprintln!(
-                concat!(stringify!($option_name), ": {}"),
+                concat!("formatting.", stringify!($option_name), ": {}"),
                 $self.$option_name
             );
         }
