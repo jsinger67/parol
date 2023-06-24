@@ -43,6 +43,7 @@ export class Config {
         this.configProps.push(new ConfigProperty("max_k", 3));
         this.configProps.push(new ConfigProperty("formatting.empty_line_after_prod", true));
         this.configProps.push(new ConfigProperty("formatting.prod_semicolon_on_nl", true));
+        this.configProps.push(new ConfigProperty("formatting.max_line_length", 100));
         this.loadConfiguration();
     }
 

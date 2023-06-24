@@ -48,6 +48,11 @@
                     "type": "boolean",
                     "markdownDescription": "#### Place the semicolon after each production on a new line\n\nused for code formatting",
                     "default": true
+                },
+                "parol-vscode.formatting.max_line_length": {
+                    "type": "integer",
+                    "markdownDescription": "#### Maximum number of characters per line\n\nused for code formatting",
+                    "default": 100
                 }
             }
         },

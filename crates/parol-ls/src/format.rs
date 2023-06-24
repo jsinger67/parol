@@ -15,8 +15,6 @@ use crate::{
     utils::RX_NEW_LINE,
 };
 
-// Todo: Make this a configuration variable
-const MAX_LINE_LENGTH: usize = 100;
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
 
@@ -57,12 +55,13 @@ struct FmtOptions {
     nesting_depth: u16,
 
     /// Add an empty line after each production
-    /// * Formatting option
     empty_line_after_prod: bool,
 
     /// Place the semicolon after each production on a new line
-    /// * Formatting option
     prod_semicolon_on_nl: bool,
+
+    /// Maximum number of characters per line
+    max_line_length: usize,
 }
 
 impl FmtOptions {
@@ -70,6 +69,7 @@ impl FmtOptions {
         FmtOptions {
             empty_line_after_prod: true,
             prod_semicolon_on_nl: true,
+            max_line_length: 100,
             ..Default::default()
         }
     }
@@ -108,11 +108,29 @@ macro_rules! add_boolean_formatting_option {
     };
 }
 
+macro_rules! add_number_formatting_option {
+    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
+        $self.$option_name = if let Some(&FormattingProperty::Number(val)) = $options
+            .properties
+            .get(concat!("formatting.", stringify!($option_name)))
+        {
+            val as usize
+        } else {
+            $default
+        };
+        eprintln!(
+            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
+            $self.$option_name
+        );
+    };
+}
+
 impl From<&FormattingOptions> for FmtOptions {
     fn from(options: &FormattingOptions) -> Self {
         let mut me = Self::new();
         add_boolean_formatting_option!(me, options, empty_line_after_prod, true);
         add_boolean_formatting_option!(me, options, prod_semicolon_on_nl, true);
+        add_number_formatting_option!(me, options, max_line_length, 100);
         me
     }
 }
@@ -155,10 +173,12 @@ impl Fmt for Alternation {
                     if lines.len() > 1 && lines.last().unwrap().is_empty() {
                         acc.push_str("      ");
                     } else if lines.len() > 1 {
-                        if lines.last().unwrap().len() + next_part.len() > MAX_LINE_LENGTH {
+                        if lines.last().unwrap().len() + next_part.len() > options.max_line_length {
                             acc.push_str("\n      ");
                         }
-                    } else if START_LINE_OFFSET + acc.len() + next_part.len() > MAX_LINE_LENGTH {
+                    } else if START_LINE_OFFSET + acc.len() + next_part.len()
+                        > options.max_line_length
+                    {
                         acc.push_str("\n      ");
                     }
                 }

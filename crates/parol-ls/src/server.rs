@@ -20,53 +20,98 @@ use crate::{
     parol_ls_parser::parse,
 };
 
-macro_rules! add_boolean_formatting_option {
-    ($self:ident, $( $i:ident ).+, $option_name:ident) => {
-        $($i).+.insert(
-            concat!("formatting.", stringify!($option_name)).to_owned(),
-            lsp_types::FormattingProperty::Bool($self.$option_name),
+macro_rules! add_boolean_option {
+    ($self:ident, $( $container:ident ).+, $( $option_name:ident ).+, $member_name:ident) => {
+        $($container).+.insert(
+            stringify!($( $option_name ).+).to_owned(),
+            lsp_types::FormattingProperty::Bool($self.$member_name),
         );
     };
 }
 
+macro_rules! add_boolean_formatting_option {
+    ($self:ident, $( $container:ident ).+, $option_name:ident) => {
+        add_boolean_option!($self, $($container).+, formatting.$option_name, $option_name)
+    };
+}
+
+macro_rules! add_number_option {
+    ($self:ident, $( $container:ident ).+, $( $option_name:ident ).+, $member_name:ident) => {
+        $($container).+.insert(
+            stringify!($( $option_name ).+).to_owned(),
+            lsp_types::FormattingProperty::Number($self.$member_name as i32),
+        );
+    };
+}
+
+macro_rules! add_number_formatting_option {
+    ($self:ident, $( $container:ident ).+, $option_name:ident) => {
+        add_number_option!($self, $($container).+, formatting.$option_name, $option_name)
+    };
+}
+
 macro_rules! update_number_option {
-    ($self:ident, $props:ident, $option_name:ident, $default:literal) => {
-        if $props.0.contains_key(stringify!($option_name)) {
-            $self.$option_name = serde_json::from_value(
+    ($self:ident, $props:ident, $( $option_name:ident ).+, $member_name:ident, $default:literal) => {
+        if $props.0.contains_key(stringify!($($option_name).+)) {
+            $self.$member_name = serde_json::from_value(
                 $props
                     .0
-                    .get(concat!("formatting.", stringify!($option_name)))
+                    .get(stringify!($($option_name).+))
                     .unwrap_or(&serde_json::Value::Number(serde_json::Number::from(
                         $default,
                     )))
                     .clone(),
             )?;
             eprintln!(
-                concat!("formatting.", stringify!($option_name), ": {}"),
-                $self.$option_name
+                concat!(stringify!($($option_name).+), ": {}"),
+                $self.$member_name
+            );
+        }
+    };
+}
+
+macro_rules! update_number_formatting_option {
+    ($self:ident, $props:ident, $member_name:ident, $default:literal) => {
+        update_number_option!(
+            $self,
+            $props,
+            formatting.$member_name,
+            $member_name,
+            $default
+        );
+    };
+}
+
+macro_rules! update_boolean_option {
+    ($self:ident, $props:ident, $( $option_name:ident ).+, $member_name:ident, $default:literal) => {
+        if $props
+            .0
+            .contains_key(stringify!($($option_name).+))
+        {
+            $self.$member_name = serde_json::from_value(
+                $props
+                    .0
+                    .get(stringify!($($option_name).+))
+                    .unwrap_or(&serde_json::Value::Bool($default))
+                    .clone(),
+            )?;
+            eprintln!(
+                concat!(stringify!($($option_name).+), ": {}"),
+                $self.$member_name
             );
         }
     };
 }
 
 macro_rules! update_boolean_formatting_option {
-    ($self:ident, $props:ident, $option_name:ident, $default:literal) => {
-        if $props
-            .0
-            .contains_key(concat!("formatting.", stringify!($option_name)))
-        {
-            $self.$option_name = serde_json::from_value(
-                $props
-                    .0
-                    .get(concat!("formatting.", stringify!($option_name)))
-                    .unwrap_or(&serde_json::Value::Bool($default))
-                    .clone(),
-            )?;
-            eprintln!(
-                concat!(stringify!($option_name), ": {}"),
-                $self.$option_name
-            );
-        }
+    ($self:ident, $props:ident, $member_name:ident, $default:literal) => {
+        update_boolean_option!(
+            $self,
+            $props,
+            formatting.$member_name,
+            $member_name,
+            $default
+        );
     };
 }
 
@@ -86,12 +131,17 @@ pub(crate) struct Server {
     /// Place the semicolon after each production on a new line
     /// * Formatting option
     prod_semicolon_on_nl: bool,
+
+    /// Number of characters per line
+    /// * Formatting option
+    max_line_length: usize,
 }
 
 impl Server {
     pub(crate) fn new(max_k: usize) -> Self {
         Self {
             max_k,
+            max_line_length: 100,
             ..Default::default()
         }
     }
@@ -99,9 +149,10 @@ impl Server {
         &mut self,
         props: &ConfigProperties,
     ) -> Result<(), serde_json::error::Error> {
-        update_number_option!(self, props, max_k, 3);
+        update_number_option!(self, props, max_k, max_k, 3);
         update_boolean_formatting_option!(self, props, empty_line_after_prod, true);
         update_boolean_formatting_option!(self, props, prod_semicolon_on_nl, true);
+        update_number_formatting_option!(self, props, max_line_length, 100);
         Ok(())
     }
 
@@ -345,6 +396,7 @@ impl Server {
         if let Some(document_state) = self.documents.get(params.text_document.uri.path()) {
             add_boolean_formatting_option!(self, params.options.properties, empty_line_after_prod);
             add_boolean_formatting_option!(self, params.options.properties, prod_semicolon_on_nl);
+            add_number_formatting_option!(self, params.options.properties, max_line_length);
             document_state.format(params)
         } else {
             None
