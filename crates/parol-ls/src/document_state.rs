@@ -1,8 +1,7 @@
 use derive_new::new;
 use lsp_types::{
     DocumentFormattingParams, DocumentSymbolParams, DocumentSymbolResponse, Hover, HoverParams,
-    Position, PrepareRenameResponse, Range, RenameParams, TextDocumentPositionParams, Url,
-    WorkspaceEdit,
+    Position, PrepareRenameResponse, RenameParams, TextDocumentPositionParams, Url, WorkspaceEdit,
 };
 
 use crate::parol_ls_grammar::ParolLsGrammar;
@@ -20,10 +19,6 @@ impl DocumentState {
 
     pub(crate) fn clear(&mut self) {
         self.parsed_data = ParolLsGrammar::default()
-    }
-
-    pub(crate) fn _find_left_recursions(&self) -> Vec<Vec<Range>> {
-        self.parsed_data._find_left_recursions()
     }
 
     pub(crate) fn hover(&self, params: HoverParams) -> Hover {

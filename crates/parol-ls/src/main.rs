@@ -16,7 +16,6 @@ mod handler;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
 mod parol_ls_parser;
-mod recursion;
 mod rng;
 mod server;
 mod utils;

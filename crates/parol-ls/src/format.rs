@@ -1,4 +1,4 @@
-use lsp_types::{FormattingOptions, TextEdit};
+use lsp_types::{FormattingOptions, FormattingProperty, TextEdit};
 
 use crate::{
     parol_ls_grammar_trait::{
@@ -12,7 +12,11 @@ use crate::{
         UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
+    utils::RX_NEW_LINE,
 };
+
+// This is the actual start column for each production (alternation) line
+const START_LINE_OFFSET: usize = 6;
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[allow(dead_code)]
@@ -43,14 +47,32 @@ enum Trimming {
     Trim,
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Clone, Default)]
 struct FmtOptions {
     padding: Padding,
     line_end: LineEnd,
     trimming: Trimming,
+    nesting_depth: u16,
+
+    /// Add an empty line after each production
+    empty_line_after_prod: bool,
+
+    /// Place the semicolon after each production on a new line
+    prod_semicolon_on_nl: bool,
+
+    /// Maximum number of characters per line
+    max_line_length: usize,
 }
 
 impl FmtOptions {
+    fn new() -> Self {
+        FmtOptions {
+            empty_line_after_prod: true,
+            prod_semicolon_on_nl: true,
+            max_line_length: 100,
+            ..Default::default()
+        }
+    }
     fn with_padding(mut self, padding: Padding) -> Self {
         self.padding = padding;
         self
@@ -63,12 +85,53 @@ impl FmtOptions {
         self.trimming = trimming;
         self
     }
+    fn next_depth(mut self) -> Self {
+        self.nesting_depth += 1;
+        self
+    }
+}
+
+macro_rules! add_boolean_formatting_option {
+    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
+        $self.$option_name = if let Some(&FormattingProperty::Bool(val)) = $options
+            .properties
+            .get(concat!("formatting.", stringify!($option_name)))
+        {
+            val
+        } else {
+            $default
+        };
+        eprintln!(
+            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
+            $self.$option_name
+        );
+    };
+}
+
+macro_rules! add_number_formatting_option {
+    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
+        $self.$option_name = if let Some(&FormattingProperty::Number(val)) = $options
+            .properties
+            .get(concat!("formatting.", stringify!($option_name)))
+        {
+            val as usize
+        } else {
+            $default
+        };
+        eprintln!(
+            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
+            $self.$option_name
+        );
+    };
 }
 
 impl From<&FormattingOptions> for FmtOptions {
-    fn from(_: &FormattingOptions) -> Self {
-        // TODO: Modify if necessary
-        Self::default()
+    fn from(options: &FormattingOptions) -> Self {
+        let mut me = Self::new();
+        add_boolean_formatting_option!(me, options, empty_line_after_prod, true);
+        add_boolean_formatting_option!(me, options, prod_semicolon_on_nl, true);
+        add_number_formatting_option!(me, options, max_line_length, 100);
+        me
     }
 }
 
@@ -99,11 +162,32 @@ impl Fmt for ASTControl {
 }
 impl Fmt for Alternation {
     fn txt(&self, options: &FmtOptions) -> String {
+        let next_option = options.clone().next_depth();
         self.alternation_list
             .iter()
-            .map(|a| a.txt(options))
-            .collect::<Vec<String>>()
-            .join(" ")
+            .fold(String::new(), |mut acc, e| {
+                let mut next_part = e.txt(&next_option);
+                if options.nesting_depth == 0 {
+                    // We do the line length control only at top level (i.e. at production level)
+                    let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
+                    if lines.len() > 1 && lines.last().unwrap().is_empty() {
+                        acc.push_str("      ");
+                    } else if lines.len() > 1 {
+                        if lines.last().unwrap().len() + next_part.len() > options.max_line_length {
+                            acc.push_str("\n      ");
+                        }
+                    } else if START_LINE_OFFSET + acc.len() + next_part.len()
+                        > options.max_line_length
+                    {
+                        acc.push_str("\n      ");
+                    }
+                }
+                if !acc.is_empty() && !acc.ends_with(|c| c == '\n' || c == ' ') {
+                    acc.push(' ');
+                }
+                acc.extend(next_part.drain(..));
+                acc
+            })
     }
 }
 impl Fmt for AlternationList {
@@ -123,7 +207,7 @@ impl Fmt for AlternationList {
 impl Fmt for Alternations {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {}",
+            "{}{}",
             self.alternation.txt(options),
             self.alternations_list
                 .iter()
@@ -136,11 +220,16 @@ impl Fmt for Alternations {
 }
 impl Fmt for AlternationsList {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options = options.clone().with_padding(Padding::Both);
+        let delimiter = if options.nesting_depth == 0 {
+            "\n   "
+        } else {
+            ""
+        };
         format!(
-            "\n    {} {}{}",
+            "{} {} {}{}",
+            delimiter,
             self.or,
-            handle_comments(&self.comments, &comment_options),
+            handle_comments(&self.comments, options),
             self.alternation.txt(options)
         )
     }
@@ -211,19 +300,26 @@ impl Fmt for DoubleColon {
 }
 impl Fmt for Factor {
     fn txt(&self, options: &FmtOptions) -> String {
+        let next_depth_option = options.clone().next_depth();
         match self {
-            Factor::Group(g) => g.group.txt(options),
-            Factor::Repeat(r) => r.repeat.txt(options),
-            Factor::Optional(o) => o.optional.txt(options),
+            Factor::Group(g) => g.group.txt(&next_depth_option),
+            Factor::Repeat(r) => r.repeat.txt(&next_depth_option),
+            Factor::Optional(o) => o.optional.txt(&next_depth_option),
             Factor::Symbol(s) => handle_symbol(&s.symbol, options),
         }
     }
 }
 impl Fmt for GrammarDefinition {
     fn txt(&self, options: &FmtOptions) -> String {
+        let prod_nl_opt = if options.empty_line_after_prod {
+            ""
+        } else {
+            "\n"
+        };
         format!(
-            "{}{}{}",
+            "{}{}{}{}",
             self.percent_percent,
+            prod_nl_opt,
             self.production.txt(options),
             self.grammar_definition_list
                 .iter()
@@ -242,13 +338,14 @@ impl Fmt for GrammarDefinitionList {
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {}{}\n",
+            "{} {} {}",
             self.l_paren,
             self.alternations.txt(options),
             self.r_paren,
         )
     }
 }
+
 impl Fmt for Identifier {
     fn txt(&self, _options: &FmtOptions) -> String {
         self.identifier.text().to_string()
@@ -283,7 +380,7 @@ impl Fmt for NonTerminalOpt {
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {}{}",
+            "{} {} {}",
             self.l_bracket,
             self.alternations.txt(options),
             self.r_bracket,
@@ -301,10 +398,29 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
+        let mut alternations_text = self.alternations.txt(options);
+        let (semi_nl_opt, alternations_text) = if options.prod_semicolon_on_nl {
+            ("\n    ", alternations_text.trim().to_owned())
+        } else {
+            if alternations_text.ends_with('\n') {
+                // This indicates a line comment at the end of the alternation.
+                // We correct the formatting here to have the semicolon correctly indented.
+                alternations_text.push_str("    ");
+            }
+            ("", alternations_text)
+        };
+
+        let prod_nl_opt = if options.empty_line_after_prod {
+            "\n"
+        } else {
+            ""
+        };
         format!(
-            "\n{} {}\n    {}",
+            "{}{} {}{}{}",
+            prod_nl_opt,
             self.production_l_h_s.txt(options),
-            self.alternations.txt(options).trim(),
+            alternations_text,
+            semi_nl_opt,
             self.semicolon,
         )
     }
@@ -313,19 +429,30 @@ impl Fmt for ProductionLHS {
     fn txt(&self, options: &FmtOptions) -> String {
         let comment_options_both = options
             .clone()
-            .with_padding(Padding::Both)
+            .with_padding(Padding::Left)
             .with_trimming(Trimming::TrimRight);
         let comment_options_right = options
             .clone()
             .with_line_end(LineEnd::ForceAdd)
             .with_trimming(Trimming::TrimRight);
-        format!(
-            "\n{}{}{}\n    {}",
-            handle_comments(&self.comments, &comment_options_right),
-            self.identifier.identifier,
-            handle_comments(&self.comments0, &comment_options_both),
-            self.colon,
-        )
+        if self.identifier.identifier.text().len() < 5 && self.comments0.comments_list.is_empty() {
+            let padding = " ".repeat(4 - self.identifier.identifier.text().len());
+            format!(
+                "\n{}{}{}{}",
+                handle_comments(&self.comments, &comment_options_right),
+                self.identifier.identifier,
+                padding,
+                self.colon,
+            )
+        } else {
+            format!(
+                "\n{}{}{}\n    {}",
+                handle_comments(&self.comments, &comment_options_right),
+                self.identifier.identifier,
+                handle_comments(&self.comments0, &comment_options_both),
+                self.colon,
+            )
+        }
     }
 }
 impl Fmt for Prolog {
@@ -362,7 +489,7 @@ impl Fmt for Regex {
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {}{}",
+            "{} {} {}",
             self.l_brace,
             self.alternations.txt(options),
             self.r_brace,
@@ -377,7 +504,7 @@ impl Fmt for ScannerDirectives {
 impl Fmt for ScannerState {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "{} {} {}\n{} {}\n",
+            "{} {} {}\n{} {}",
             self.percent_scanner,
             self.identifier.txt(options),
             self.l_brace,
@@ -549,14 +676,14 @@ fn handle_scanner_directives(
     let comment_options = options.clone().with_padding(Padding::Left);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => format!(
-            "{} {}{}\n",
+            "{} {}{} ",
             l.percent_line_underscore_comment,
             l.token_literal.txt(options),
             handle_comments(&l.comments, &comment_options),
         ),
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
             format!(
-                "{} {} {}{}\n",
+                "{} {} {}{} ",
                 b.percent_block_underscore_comment,
                 b.token_literal.txt(options),
                 b.token_literal0.txt(options),
@@ -565,13 +692,13 @@ fn handle_scanner_directives(
         }
 
         ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => format!(
-            "{}{}\n",
+            "{}{} ",
             n.percent_auto_underscore_newline_underscore_off,
             handle_comments(&n.comments, &comment_options),
         ),
 
         ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => format!(
-            "{}{}\n",
+            "{}{} ",
             w.percent_auto_underscore_ws_underscore_off,
             handle_comments(&w.comments, &comment_options),
         ),
@@ -588,17 +715,33 @@ fn handle_symbol(symbol: &Symbol, options: &FmtOptions) -> String {
 }
 
 fn handle_comments(comments: &Comments, options: &FmtOptions) -> String {
-    let comments = comments
+    let comments_str = comments
         .comments_list
         .iter()
         .fold(String::new(), |mut acc, c| {
             acc.push_str(&c.txt(options));
             acc
         });
-    if comments.is_empty() {
-        comments
+    if comments_str.is_empty() {
+        comments_str
     } else {
-        apply_formatting(comments, options)
+        let options = if let Some(cmt) = comments.comments_list.last() {
+            if let Comment::LineComment(_) = &*cmt.comment {
+                if options.trimming == Trimming::TrimRight {
+                    options
+                        .clone()
+                        .with_trimming(Trimming::Unchanged)
+                        .with_line_end(LineEnd::Unchanged)
+                } else {
+                    options.clone()
+                }
+            } else {
+                options.clone()
+            }
+        } else {
+            options.clone()
+        };
+        apply_formatting(comments_str, &options)
     }
 }
 
@@ -627,5 +770,123 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
         Padding::Left => format!(" {}", line),
         Padding::Right => format!("{} ", line),
         Padding::Both => format!(" {} ", line),
+    }
+}
+
+#[allow(unused)]
+fn make_indent(depth: u16) -> String {
+    let mut indent = String::with_capacity((depth as usize + 1) * 4);
+    indent.extend("    ".repeat(depth as usize + 1).drain(..));
+    indent
+}
+
+#[cfg(test)]
+mod test {
+    use std::{ffi::OsStr, fs};
+
+    use parol_runtime::Report;
+
+    use crate::{
+        format::{make_indent, Fmt, FmtOptions},
+        parol_ls_grammar::ParolLsGrammar,
+        parol_ls_parser::parse,
+        utils::RX_NEW_LINE,
+    };
+
+    struct LsErrorReporter;
+    impl Report for LsErrorReporter {}
+
+    const INPUT_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/input");
+    const EXPECTED_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected");
+    const ACTUAL_FOLDER: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/data/actual");
+
+    // Use this to skip certain tests if they are not ready yet
+    const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
+
+    // Use this if you only want to debug a single test
+    const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
+
+    #[test]
+    fn test_make_indent() {
+        assert_eq!(String::from("    "), make_indent(0));
+        let options = FmtOptions::new();
+        assert_eq!(String::from("    "), make_indent(options.nesting_depth));
+        assert_eq!(
+            String::from("        "),
+            make_indent(options.next_depth().nesting_depth)
+        );
+    }
+
+    #[test]
+    fn test_formatting() {
+        let mut error_count = 0;
+        let mut tests_run = 0;
+        let actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
+        fs::DirBuilder::new()
+            .recursive(true)
+            .create(actual_file)
+            .unwrap();
+        println!("from folder {INPUT_FOLDER}:");
+        for entry in std::path::Path::new(INPUT_FOLDER)
+            .read_dir()
+            .unwrap()
+            .flatten()
+        {
+            if skip_test(&entry.file_name()) {
+                continue;
+            }
+            if entry.path().extension().unwrap().to_str().unwrap() == "par" {
+                println!("Parsing {}...", entry.path().display());
+                if !process_single_file(entry.file_name().as_os_str()) {
+                    error_count += 1;
+                }
+                tests_run += 1;
+            }
+        }
+        eprintln!("Found {error_count} formatting error(s) in {tests_run} tests.");
+        assert_eq!(0, error_count);
+    }
+
+    fn process_single_file(file_name: &OsStr) -> bool {
+        let mut input_file = std::path::PathBuf::from(INPUT_FOLDER);
+        input_file.push(file_name);
+        let input_grammar = fs::read_to_string(input_file.clone()).unwrap();
+        let options = FmtOptions::new();
+        let mut grammar = ParolLsGrammar::new();
+
+        if let Err(e) = parse(&input_grammar, input_file.clone(), &mut grammar) {
+            LsErrorReporter::report_error(&e, input_file).unwrap();
+            panic!("Parsing failed!")
+        } else {
+            // We generate the new formatting by calling Fmt::txt()
+            let formatted_grammar = grammar.grammar.unwrap().txt(&options);
+
+            // Only to support debugging we write out the currently generated source
+            let mut actual_file = std::path::PathBuf::from(ACTUAL_FOLDER);
+            actual_file.push(file_name);
+            fs::write(actual_file, formatted_grammar.clone()).unwrap();
+
+            // Read the fixed expectation file into a string
+            let mut expected_file = std::path::PathBuf::from(EXPECTED_FOLDER);
+            expected_file.push(file_name);
+            let expected_format = fs::read_to_string(expected_file).unwrap();
+
+            // Compare result with expectation
+            let expected_format = RX_NEW_LINE.replace_all(&expected_format, "\n");
+            let formatted_grammar = RX_NEW_LINE.replace_all(&formatted_grammar, "\n");
+
+            if expected_format != formatted_grammar {
+                eprintln!("expecting:\n'{expected_format}'\nreceived:\n'{formatted_grammar}'");
+                false
+            } else {
+                true
+            }
+        }
+    }
+
+    fn skip_test(file_name: &OsStr) -> bool {
+        SKIP_LIST.contains(&file_name.to_str().unwrap())
+            || (!SELECTED_TESTS.is_empty()
+                && !SELECTED_TESTS.contains(&file_name.to_str().unwrap()))
     }
 }

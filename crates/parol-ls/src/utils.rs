@@ -5,7 +5,7 @@ use regex::Regex;
 
 use crate::rng::Rng;
 
-static RX_NEW_LINE: Lazy<Regex> =
+pub(crate) static RX_NEW_LINE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"\r?\n").expect("error parsing regex: RX_NEW_LINE"));
 
 ///

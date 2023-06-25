@@ -6,161 +6,126 @@
 %%
 
 ParolLs
-    : Prolog GrammarDefinition [ Comment ]
-    ;
+    : Prolog GrammarDefinition [ Comment ];
 
 Prolog
-    : StartDeclaration { Declaration } { ScannerState }
-    ;
+    : StartDeclaration { Declaration } { ScannerState };
 
 StartDeclaration
-    : Comments "%start": OwnedToken Identifier Comments
-    ;
+    : Comments "%start": OwnedToken Identifier Comments;
 
 Declaration
-    : "%title": OwnedToken String Comments 
+    : "%title": OwnedToken String Comments
     | "%comment": OwnedToken String Comments
     | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName Comments
-    | ScannerDirectives
-    ;
+    | ScannerDirectives;
 
 ScannerDirectives
-    : "%line_comment": OwnedToken TokenLiteral Comments 
+    : "%line_comment": OwnedToken TokenLiteral Comments
     | "%block_comment": OwnedToken TokenLiteral TokenLiteral Comments
     | "%auto_newline_off": OwnedToken Comments
-    | "%auto_ws_off": OwnedToken Comments
-    ;
+    | "%auto_ws_off": OwnedToken Comments;
 
 GrammarDefinition
-    : "%%": OwnedToken Production { Production }
-    ;
+    : "%%": OwnedToken Production { Production };
 
 DoubleColon
-    : "::": OwnedToken
-    ;
+    : "::": OwnedToken;
 
 ProductionLHS
-    : Comments Identifier Comments ":": OwnedToken
-    ;
+    : Comments Identifier Comments ":": OwnedToken;
 
 Production
-    : ProductionLHS Alternations ";": OwnedToken
-    ;
+    : ProductionLHS Alternations ";": OwnedToken;
 
 Alternations
-    : Alternation { "\|": OwnedToken Comments Alternation }
-    ;
+    : Alternation { "\|": OwnedToken Comments Alternation };
 
 Alternation
-    : { Factor Comments }
-    ;
+    : { Factor Comments };
 
 Factor
-    : Group 
+    : Group
     | Repeat
     | Optional
-    | Symbol
-    ;
+    | Symbol;
 
 Symbol
-    : NonTerminal 
+    : NonTerminal
     | SimpleToken
     | TokenWithStates
-    | ScannerSwitch
-    ;
+    | ScannerSwitch;
 
 TokenLiteral
-    : String 
+    : String
     | LiteralString
-    | Regex
-    ;
+    | Regex;
 
 SimpleToken
-    : TokenLiteral [ ASTControl ]
-    ;
+    : TokenLiteral [ ASTControl ];
 
 TokenWithStates
-    : "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ ASTControl ]
-    ;
+    : "<": OwnedToken StateList ">": OwnedToken TokenLiteral [ ASTControl ];
 
 Group
-    : "\(": OwnedToken Alternations "\)": OwnedToken
-    ;
+    : "\(": OwnedToken Alternations "\)": OwnedToken;
 
 Optional
-    : "\[": OwnedToken Alternations "\]": OwnedToken
-    ;
+    : "\[": OwnedToken Alternations "\]": OwnedToken;
 
 Repeat
-    : "\{": OwnedToken Alternations "\}": OwnedToken
-    ;
+    : "\{": OwnedToken Alternations "\}": OwnedToken;
 
 NonTerminal
-    : Identifier [ ASTControl ]
-    ;
+    : Identifier [ ASTControl ];
 
 Identifier
-    : "[a-zA-Z_][a-zA-Z0-9_]*": OwnedToken
-    ;
+    : "[a-zA-Z_][a-zA-Z0-9_]*": OwnedToken;
 
 String
-    : "\u{22}(\\.|[^\\])*?\u{22}": OwnedToken
-    ;
+    : "\u{22}(\\.|[^\\])*?\u{22}": OwnedToken;
 
 LiteralString
-    : "'(\\'|[^'])*?'": OwnedToken
-    ;
+    : "'(\\'|[^'])*?'": OwnedToken;
 
 ScannerState
-    : "%scanner": OwnedToken Identifier "\{": OwnedToken { ScannerDirectives } "\}": OwnedToken
-    ;
+    : "%scanner": OwnedToken Identifier "\{": OwnedToken { ScannerDirectives } "\}": OwnedToken;
 
 StateList
-    : Identifier { ",": OwnedToken Identifier }
-    ;
+    : Identifier { ",": OwnedToken Identifier };
 
 ScannerSwitch
-    : "%sc": OwnedToken "\(": OwnedToken [ Identifier ] "\)": OwnedToken 
+    : "%sc": OwnedToken "\(": OwnedToken [ Identifier ] "\)": OwnedToken
     | "%push": OwnedToken "\(": OwnedToken Identifier "\)": OwnedToken
-    | "%pop": OwnedToken "\(": OwnedToken "\)": OwnedToken
-    ;
+    | "%pop": OwnedToken "\(": OwnedToken "\)": OwnedToken;
 
 ASTControl
-    : CutOperator 
-    | UserTypeDeclaration
-    ;
+    : CutOperator
+    | UserTypeDeclaration;
 
 CutOperator
-    : "\^": OwnedToken
-    ;
+    : "\^": OwnedToken;
 
 UserTypeDeclaration
-    : ":": OwnedToken UserTypeName
-    ;
+    : ":": OwnedToken UserTypeName;
 
 UserTypeName
-    : Identifier { DoubleColon Identifier }
-    ;
+    : Identifier { DoubleColon Identifier };
 
 Comment
-    : LineComment 
-    | BlockComment
-    ;
+    : LineComment
+    | BlockComment;
 
 Comments
-    : { Comment }
-    ;
+    : { Comment };
 
 LineComment
-    : "//.*(:?\r\n|\r|\n|$)": OwnedToken
-    ;
+    : "//.*(:?\r\n|\r|\n|$)": OwnedToken;
 
 BlockComment
-    : "(?ms)/\u{2a}.*?\u{2a}/": OwnedToken
-    ;
+    : "(?ms)/\u{2a}.*?\u{2a}/": OwnedToken;
 
 Regex
-    : "/(\\/|[^/]|)*?/": OwnedToken
-    ;
+    : "/(\\/|[^/]|)*?/": OwnedToken;
 
 // End comment

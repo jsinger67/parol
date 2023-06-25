@@ -9,7 +9,7 @@
     "license": "SEE LICENSE IN LICENSE",
     "publisher": "jsinger67",
     "description": "Language extension for `parol`",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "repository": {
         "url": "https://github.com/jsinger67/parol.git",
         "type": "git",
@@ -17,7 +17,7 @@
     },
     "icon": "icons/parol-vscode.png",
     "engines": {
-        "vscode": "^1.69.0"
+        "vscode": "^1.74.0"
     },
     "keywords": [
         "Parol",
@@ -38,6 +38,21 @@
                     "default": 3,
                     "minimum": 1,
                     "maximum": 10
+                },
+                "parol-vscode.formatting.empty_line_after_prod": {
+                    "type": "boolean",
+                    "markdownDescription": "#### Add an empty line after each production\n\nused for code formatting",
+                    "default": true
+                },
+                "parol-vscode.formatting.prod_semicolon_on_nl": {
+                    "type": "boolean",
+                    "markdownDescription": "#### Place the semicolon after each production on a new line\n\nused for code formatting",
+                    "default": true
+                },
+                "parol-vscode.formatting.max_line_length": {
+                    "type": "integer",
+                    "markdownDescription": "#### Maximum number of characters per line\n\nused for code formatting",
+                    "default": 100
                 }
             }
         },

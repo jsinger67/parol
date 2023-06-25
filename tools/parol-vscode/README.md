@@ -34,6 +34,9 @@ cargo install --force parol-ls
 Alternatively you can clone the [repository](https://github.com/jsinger67/parol.git) and build the
 language server from sources.
 
+Changes regarding the Language Server can be viewed here:
+* [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
+
 <!-- markdownlint-disable Inline HTML -->
 <br>
 <img src="https://github.com/jsinger67/parol/raw/main/crates/parol-ls/images/Example.png" alt="Example">

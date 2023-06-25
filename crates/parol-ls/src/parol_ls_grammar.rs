@@ -3,7 +3,6 @@ use crate::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
         ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, UserTypeDeclaration,
     },
-    recursion::RecursionDetection,
     rng::Rng,
     utils::{extract_text_range, location_to_range, to_markdown},
 };
@@ -69,10 +68,10 @@ impl ParolLsGrammar {
         &'a self,
         non_terminal: &str,
     ) -> Option<&'a Vec<Range>> {
-        eprintln!(
-            "{non_terminal} included: {}",
-            self.non_terminal_definitions.contains_key(non_terminal)
-        );
+        // eprintln!(
+        //     "{non_terminal} included: {}",
+        //     self.non_terminal_definitions.contains_key(non_terminal)
+        // );
         self.non_terminal_definitions.get(non_terminal)
     }
 
@@ -87,7 +86,7 @@ impl ParolLsGrammar {
     }
 
     fn add_non_terminal_ref(&mut self, range: Range, token: &OwnedToken) {
-        eprintln!("add_non_terminal_ref: {range:?}, {}", token);
+        // eprintln!("add_non_terminal_ref: {range:?}, {}", token);
         self.non_terminals.push((range, token.text().to_string()));
     }
 
@@ -97,7 +96,7 @@ impl ParolLsGrammar {
             .entry(token.text().to_string())
             .or_default();
         let range = location_to_range(&token.location);
-        eprintln!("add_non_terminal_definition: {range:?}, {}", token);
+        // eprintln!("add_non_terminal_definition: {range:?}, {}", token);
         entry.push(range);
         range
     }
@@ -228,29 +227,6 @@ impl ParolLsGrammar {
         }
     }
 
-    pub(crate) fn _find_left_recursions(&self) -> Vec<Vec<Range>> {
-        let mut recursions = Vec::new();
-        if let Some(grammar) = self.grammar.as_ref() {
-            let production_refs = grammar
-                .grammar_definition
-                .grammar_definition_list
-                .iter()
-                .fold(
-                    vec![&*grammar.grammar_definition.production],
-                    |mut acc, p| {
-                        acc.push(&*p.production);
-                        acc
-                    },
-                );
-            for p in &production_refs {
-                if let Some(r) = p.find_left_recursion(&production_refs) {
-                    recursions.push(r);
-                }
-            }
-        }
-        recursions
-    }
-
     pub(crate) fn hover(&self, params: HoverParams, input: &str) -> Hover {
         let mut value = String::new();
         let ident = self.ident_at_position(params.text_document_position_params.position);
@@ -333,7 +309,7 @@ impl ParolLsGrammar {
                 });
             }
         }
-        eprintln!("prepare rename request rejected");
+        // eprintln!("prepare rename request rejected");
         None
     }
 
@@ -516,11 +492,11 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             .identifier
             .text()
             .to_string();
-        let rng: Rng = arg.into();
-        eprintln!("Adding production {nt:?}: {rng:?}");
+        // let rng: Rng = arg.into();
+        // eprintln!("Adding production {nt:?}: {rng:?}");
         let entry = self.productions.entry(nt).or_default();
         entry.push(arg.clone());
-        eprintln!("Length: {}", entry.len());
+        // eprintln!("Length: {}", entry.len());
 
         #[allow(deprecated)]
         self.symbols.push(DocumentSymbol {
