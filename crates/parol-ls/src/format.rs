@@ -220,16 +220,6 @@ impl Fmt for Alternations {
 }
 impl Fmt for AlternationsList {
     fn txt(&self, options: &FmtOptions) -> String {
-        // let comment_options = options.clone().with_padding(Padding::Both);
-        // let alternations_option = options.clone().next_depth();
-        // let indent = make_indent(options.nesting_depth);
-        // format!(
-        //     "\n{}{} {}{}",
-        //     indent,
-        //     self.or,
-        //     handle_comments(&self.comments, &comment_options),
-        //     self.alternation.txt(&alternations_option)
-        // )
         let delimiter = if options.nesting_depth == 0 {
             "\n   "
         } else {
@@ -321,9 +311,15 @@ impl Fmt for Factor {
 }
 impl Fmt for GrammarDefinition {
     fn txt(&self, options: &FmtOptions) -> String {
+        let prod_nl_opt = if options.empty_line_after_prod {
+            ""
+        } else {
+            "\n"
+        };
         format!(
-            "{}{}{}",
+            "{}{}{}{}",
             self.percent_percent,
+            prod_nl_opt,
             self.production.txt(options),
             self.grammar_definition_list
                 .iter()
@@ -402,11 +398,16 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_text = self.alternations.txt(options);
-        let semi_nl_opt = if options.prod_semicolon_on_nl {
-            "\n    "
+        let mut alternations_text = self.alternations.txt(options);
+        let (semi_nl_opt, alternations_text) = if options.prod_semicolon_on_nl {
+            ("\n    ", alternations_text.trim().to_owned())
         } else {
-            ""
+            if alternations_text.ends_with('\n') {
+                // This indicates a line comment at the end of the alternation.
+                // We correct the formatting here to have the semicolon correctly indented.
+                alternations_text.push_str("    ");
+            }
+            ("", alternations_text)
         };
 
         let prod_nl_opt = if options.empty_line_after_prod {
@@ -418,7 +419,7 @@ impl Fmt for Production {
             "{}{} {}{}{}",
             prod_nl_opt,
             self.production_l_h_s.txt(options),
-            alternations_text.trim(),
+            alternations_text,
             semi_nl_opt,
             self.semicolon,
         )
