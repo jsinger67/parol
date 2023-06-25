@@ -14,7 +14,9 @@
 
 ## ATTENTION - The main branch is subject to constant changes, so the experience can be bumpy
 
-Therefore, please use an officially released version from [crates.io](https://crates.io/crates/parol).
+Therefore, please use an officially released version from
+[crates.io](https://crates.io/crates/parol) or refer to one of the latest
+[tags](https://github.com/jsinger67/parol/tags) applied to main branch.
 
 ---
 
@@ -31,6 +33,11 @@ New changes can be viewed in the change logs of the respective projects.
 * [CHANGELOG parol_runtime](./crates/parol_runtime/CHANGELOG.md)
 * [CHANGELOG parol-macros](./crates/parol-macros/CHANGELOG.md)
 * [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
+
+It also contains the vs-code extension `parol-vscode` which is released on VS Code marketplace
+[parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
+
+* [CHANGELOG parol-vscode](./tools/parol-vscode/CHANGELOG.md)
 
 ---
 
@@ -218,3 +225,4 @@ Thanks to all the contributors for improving this project!
 * [ryo33](https://github.com/ryo33)
 * [dalance](https://github.com/dalance)
 * [udoprog](https://github.com/udoprog)
+* [AumyF](https://github.com/AumyF)

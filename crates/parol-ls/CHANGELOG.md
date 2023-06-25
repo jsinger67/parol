@@ -5,12 +5,23 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 0.13.0 - Not released yet
+## 0.13.0 - 2023-06-25
 
 * The `Parol Language Server` now supports a single end comment.
   * This is no restriction of `parol` itself but of the special grammar the language server uses.
     This grammar captures as much comments as possible from the input grammar.
     Feedback is appreciated.
+* Support of several new formatting options
+  * formatting.empty_line_after_prod
+    * Add an empty line after each production
+  * formatting.prod_semicolon_on_nl
+    * Place the semicolon after each production on a new line
+  * formatting.max_line_length
+    * Maximum number of characters per line
+
+  This requires vs-code extension `parol-vscode` of version >= 	0.1.15.
+* Fix of minor formatting behavior problems, like handling of nested EBNF constructs
+  * This fixes [#114](https://github.com/jsinger67/parol/issues/114)
 
 ## 0.12.0 - 2023-06-09
 
