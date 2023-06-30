@@ -21,7 +21,7 @@ clap = { workspace = true }
 derive_builder = { version = "0.12.0" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
-num_cpus = "1.15.0"
+num_cpus = "1.16.0"
 owo-colors = "3.5.0"
 parol_runtime = { path = "../parol_runtime", version = "0.17.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
