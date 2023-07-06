@@ -21,7 +21,7 @@ syntree_layout = { workspace = true }
 log = { workspace = true }
 once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "0.2.0", optional = true }
-regex-automata = "0.2.0"
+regex-automata = "0.3.0"
 thiserror = { workspace = true }
 
 [dev-dependencies]
