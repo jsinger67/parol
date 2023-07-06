@@ -89,7 +89,7 @@ harness = false
 
 [dev-dependencies]
 criterion = "0.5.1"
-pretty_assertions = "1.3"
+pretty_assertions = "1.4"
 assert_cmd = "2.0"
 tempfile = "3"
 quickcheck = "1.0.3"
