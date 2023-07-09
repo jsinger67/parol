@@ -834,7 +834,7 @@ dependencies = [
  "log",
  "once_cell",
  "parol-macros",
- "regex-automata 0.2.0",
+ "regex-automata 0.3.1",
  "syntree",
  "syntree_layout",
  "thiserror",
@@ -1062,16 +1062,6 @@ name = "regex-automata"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c230d73fb8d8c1b9c0b3135c5142a8acee3a0558fb8db5cf1cb65f8d7862132"
-
-[[package]]
-name = "regex-automata"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9368763f5a9b804326f3af749e16f9abf378d227bcdee7634b13d8f17793782"
-dependencies = [
- "memchr",
- "regex-syntax 0.6.29",
-]
 
 [[package]]
 name = "regex-automata"
