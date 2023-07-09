@@ -16,6 +16,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.17.1 - Not released yet
+
+* Update crate `regex-automata` to version 0.3.2
+
 ## 0.17.0 - 2023-06-09
 
 * New support for handling of user defined comments (`%line_comment`, `%block_comment`)

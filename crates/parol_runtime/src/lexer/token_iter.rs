@@ -1,10 +1,7 @@
 use crate::lexer::{location, Token, Tokenizer, RX_NEW_LINE};
 use location::LocationBuilder;
 use log::trace;
-use regex_automata::{
-    dfa::{dense::DFA, regex::FindLeftmostMatches},
-    util::prefilter,
-};
+use regex_automata::dfa::{dense::DFA, regex::FindMatches};
 use std::{borrow::Cow, path::Path};
 
 ///
@@ -19,7 +16,7 @@ pub struct TokenIter<'t> {
     col: usize,
 
     /// An iterator over left most matches
-    find_iter: FindLeftmostMatches<'static, 't, DFA<Vec<u32>>, prefilter::None>,
+    find_iter: FindMatches<'static, 't, DFA<Vec<u32>>>,
 
     /// The tokenizer itself
     rx: &'static Tokenizer,
@@ -46,7 +43,7 @@ impl<'t> TokenIter<'t> {
         Self {
             line: 1,
             col: 1,
-            find_iter: rx.rx.find_leftmost_iter(input.as_bytes()),
+            find_iter: rx.rx.find_iter(input.as_bytes()),
             rx,
             input,
             k,
@@ -70,9 +67,7 @@ impl<'t> TokenIter<'t> {
     /// Returns a tuple of line count and new column number.
     ///
     pub(crate) fn count_nl(s: &str) -> (usize, usize) {
-        let matches = RX_NEW_LINE
-            .find_leftmost_iter(s.as_bytes())
-            .collect::<Vec<_>>();
+        let matches = RX_NEW_LINE.find_iter(s.as_bytes()).collect::<Vec<_>>();
         let lines = matches.len();
         if let Some(&right_most_match) = matches.last().as_ref() {
             (lines, s.len() - right_most_match.end() + 1)
