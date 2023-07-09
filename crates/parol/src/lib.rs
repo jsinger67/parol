@@ -12,7 +12,6 @@ extern crate function_name;
 extern crate derive_builder;
 
 extern crate rand;
-extern crate rand_regex;
 
 #[cfg(feature = "build")]
 pub mod build;
@@ -62,8 +61,7 @@ pub use error_report::ParolErrorReporter;
 pub mod generators;
 pub use generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
-    GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
-    UserTraitGeneratorBuilder,
+    GrammarConfig, GrammarTypeInfo, ScannerConfig, UserTraitGenerator, UserTraitGeneratorBuilder,
 };
 
 ///

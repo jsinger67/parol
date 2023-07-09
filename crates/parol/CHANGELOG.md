@@ -33,6 +33,9 @@ functionality of generated parsers nondeterministic output isn't desirable.
 
   For more details about this special handling please see the
   [book](https://jsinger67.github.io/ParGrammar.html#terminal-name-generation).
+* Removed subcommand *generate* because of dependency conflicts
+
+  Maybe I find a substitute for the crate `rand_regex` which is sadly no more properly maintained.
 
 ## 0.22.0 - 2023-06-09
 

@@ -197,7 +197,7 @@ fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
             tools::ToolsSubcommands::first(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::follow(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::format(args) => Some(args.grammar_file.clone()),
-            tools::ToolsSubcommands::generate(args) => Some(args.grammar_file.clone()),
+            // tools::ToolsSubcommands::generate(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::left_factor(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::left_recursions(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::new(_) => None,
