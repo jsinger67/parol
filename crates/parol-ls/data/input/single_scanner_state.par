@@ -1,0 +1,6 @@
+%start Scanners
+%comment "Formatting test"
+%line_comment "#"
+%scanner Esc { %auto_newline_off %auto_ws_off }
+%%
+Scanners: <INITIAL, Esc>"xxx";
