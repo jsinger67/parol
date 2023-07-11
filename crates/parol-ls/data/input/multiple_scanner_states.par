@@ -1,7 +1,11 @@
 %start Scanners
 %comment "Formatting test"
 %line_comment '#'
-%scanner Esc { %auto_newline_off %auto_ws_off }
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType1 = UserDefinedTypeName1
+%user_type UserType2 = UserDefinedTypeName2
+%scanner Esc { %auto_newline_off %auto_ws_off %line_comment '//' %block_comment '/*' '*/' }
 %scanner Val { %auto_newline_off %auto_ws_off %line_comment '//' %block_comment '(*' '*)' }
 %%
 Scanners: <INITIAL, Esc, Val>"xxx";

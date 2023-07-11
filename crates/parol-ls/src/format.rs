@@ -590,16 +590,13 @@ impl Fmt for ScannerDirectives {
 impl Fmt for ScannerState {
     fn txt(&self, options: &FmtOptions) -> String {
         format!(
-            "\n{} {} {}\n{}\n{}\n",
+            "\n{} {} {}\n{}{}\n",
             self.percent_scanner,
             self.identifier.txt(options),
             self.l_brace,
             self.scanner_state_list
                 .iter()
                 .fold(String::new(), |mut acc, s| {
-                    if !acc.is_empty() {
-                        acc.push('\n');
-                    }
                     acc.push_str("    ");
                     acc.push_str(&s.txt(options));
                     acc
@@ -765,14 +762,14 @@ fn handle_scanner_directives(
     let comment_options = options.clone().with_padding(Padding::Left);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => format!(
-            "{} {}{}",
+            "{} {}{}\n",
             l.percent_line_underscore_comment,
             l.token_literal.txt(options),
             handle_comments(&l.comments, &comment_options),
         ),
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
             format!(
-                "{} {} {}{}",
+                "{} {} {}{}\n",
                 b.percent_block_underscore_comment,
                 b.token_literal.txt(options),
                 b.token_literal0.txt(options),
@@ -781,13 +778,13 @@ fn handle_scanner_directives(
         }
 
         ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => format!(
-            "{}{}",
+            "{}{}\n",
             n.percent_auto_underscore_newline_underscore_off,
             handle_comments(&n.comments, &comment_options),
         ),
 
         ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => format!(
-            "{}{}",
+            "{}{}\n",
             w.percent_auto_underscore_ws_underscore_off,
             handle_comments(&w.comments, &comment_options),
         ),

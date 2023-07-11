@@ -10,60 +10,51 @@
 
 // The start symbol
 Parol
-    : Prolog GrammarDefinition
-    ;
+    : Prolog GrammarDefinition;
 
 Prolog
-    : StartDeclaration { Declaration } { ScannerState: ScannerConfig }
-    ;
+    : StartDeclaration { Declaration } { ScannerState: ScannerConfig };
 
 StartDeclaration
-    : '%start'^ Identifier
-    ;
+    : '%start'^ Identifier;
 
 Declaration
-    : '%title'^ String 
+    : '%title'^ String
     | '%comment'^ String
     | '%user_type'^ Identifier '='^ UserTypeName: UserType // User type alias definition
-    | ScannerDirectives
-    ;
+    | ScannerDirectives;
 
 ScannerDirectives
-    : '%line_comment'^ TokenLiteral 
+    : '%line_comment'^ TokenLiteral
     | '%block_comment'^ TokenLiteral TokenLiteral
     | '%auto_newline_off'^
-    | '%auto_ws_off'^
-    ;
+    | '%auto_ws_off'^;
 
 GrammarDefinition
-    : '%%'^ Production { Production } // There must be at least one production - with the start symbol
+    : '%%'^ Production
+      { Production } // There must be at least one production - with the start symbol
     ;
 
 DoubleColon
-    : '::'
-    ;
+    : '::';
 
 Production
-    : Identifier ':'^ Alternations ';'^
-    ;
+    : Identifier ':'^ Alternations ';'^;
 
 Alternations
-    : Alternation { '|'^ Alternation }
-    ;
+    : Alternation { '|'^ Alternation };
 
 Alternation
-    : { Factor }
-    ;
+    : { Factor };
 
 Factor
-    : Group 
+    : Group
     | Repeat
     | Optional
-    | Symbol
-    ;
+    | Symbol;
 
 Symbol
-    : NonTerminal // EBNF: Meta-identifier 
+    : NonTerminal // EBNF: Meta-identifier
     | SimpleToken
     | TokenWithStates
     | ScannerSwitch // Instruction to switch to new scanner state
@@ -71,86 +62,71 @@ Symbol
 
 // EBNF: Terminal-string
 TokenLiteral
-    : String // Treated as a regular expression 
+    : String // Treated as a regular expression
     | RawString // Regex meta characters need not to be escaped by the user
     | Regex // Treated as a regular expression
     ;
 
 SimpleToken
-    : TokenLiteral [ ASTControl ]
-    ;
+    : TokenLiteral [ ASTControl ];
 
 TokenWithStates
-    : '<'^ StateList '>'^ TokenLiteral [ ASTControl ]
-    ;
+    : '<'^ StateList '>'^ TokenLiteral [ ASTControl ];
 
 String
-    : /"(\\.|[^\\])*?"/
-    ;
+    : /"(\\.|[^\\])*?"/;
 
 RawString
-    : /'(\\'|[^'])*?'/
-    ;
+    : /'(\\'|[^'])*?'/;
 
 Regex
-    : /\u{2F}(\\.|[^\\]|)*?\u{2F}/ // \u{2F} is /
+    : /\u{2F}(\\.|[^\\])*?\u{2F}/ // \u{2F} is /
     ;
 
 // A non-empty grouping
 Group
-    : '(' Alternations ')'
-    ;
+    : '(' Alternations ')';
 
 // A non-empty optional expression
 Optional
-    : '[' Alternations ']'
-    ;
+    : '[' Alternations ']';
 
 // A non-empty repetition
 Repeat
-    : '{' Alternations '}'
-    ;
+    : '{' Alternations '}';
 
 NonTerminal
-    : Identifier [ ASTControl ]
-    ;
+    : Identifier [ ASTControl ];
 
 Identifier
-    : /[a-zA-Z_][a-zA-Z0-9_]*/
-    ;
+    : /[a-zA-Z_][a-zA-Z0-9_]*/;
 
 // A complete scanner definition
 ScannerState
-    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^
-    ;
+    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^;
 
 // The list of scanner states a terminal symbol is associated with
 StateList
-    : Identifier { ','^ Identifier }
-    ;
+    : Identifier { ','^ Identifier };
 
 ScannerSwitch
-    : '%sc'^ '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state 
+    : '%sc'^ '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state
     | '%push'^ '('^ Identifier ')'^ // Identifier of scanner state is mandatory
     | '%pop'^ '('^ ')'^ // Parentheses are also mandatory
     ;
 
 ASTControl
-    : CutOperator 
-    | UserTypeDeclaration
-    ;
+    : CutOperator
+    | UserTypeDeclaration;
 
 // Prevents the symbol from being propagated to the AST in auto-gen
 CutOperator
-    : '^'^
-    ;
+    : '^'^;
 
 // Assigns the user type to a symbol
 UserTypeDeclaration
-    : ':'^ UserTypeName: UserType
-    ;
+    : ':'^ UserTypeName: UserType;
 
 // A valid Rust qualified name
 UserTypeName
-    : Identifier { DoubleColon^ Identifier }
-    ;
+    : Identifier { DoubleColon^ Identifier };

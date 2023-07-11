@@ -451,45 +451,45 @@ pub struct TokenLiteralRegex {
 ///
 /// Type derived for production 61
 ///
-/// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
+/// ScannerSwitch: "%sc" : OwnedToken '(' : OwnedToken ScannerSwitchOpt /* Option */ ')' : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
     pub percent_sc: crate::parol_ls_grammar::OwnedToken, /* %sc */
-    pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* \( */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* ( */
     pub scanner_switch_opt: Option<Box<ScannerSwitchOpt>>,
-    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
 ///
 /// Type derived for production 62
 ///
-/// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
+/// ScannerSwitch: "%push" : OwnedToken '(' : OwnedToken Identifier ')' : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentPushLParenIdentifierRParen {
     pub percent_push: crate::parol_ls_grammar::OwnedToken, /* %push */
-    pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* \( */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* ( */
     pub identifier: Box<Identifier>,
-    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
 ///
 /// Type derived for production 63
 ///
-/// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
+/// ScannerSwitch: "%pop" : OwnedToken '(' : OwnedToken ')' : OwnedToken;
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentPopLParenRParen {
     pub percent_pop: crate::parol_ls_grammar::OwnedToken, /* %pop */
-    pub l_paren: crate::parol_ls_grammar::OwnedToken,     /* \( */
-    pub r_paren: crate::parol_ls_grammar::OwnedToken,     /* \) */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken,     /* ( */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken,     /* ) */
 }
 
 ///
@@ -594,7 +594,7 @@ pub struct Alternations {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationsList {
-    pub or: crate::parol_ls_grammar::OwnedToken, /* \| */
+    pub or: crate::parol_ls_grammar::OwnedToken, /* | */
     pub comments: Box<Comments>,
     pub alternation: Box<Alternation>,
 }
@@ -606,7 +606,7 @@ pub struct AlternationsList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BlockComment {
-    pub block_comment: crate::parol_ls_grammar::OwnedToken, /* (?ms)/\u{2a}.*?\u{2a}/ */
+    pub block_comment: crate::parol_ls_grammar::OwnedToken, /* (?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms) */
 }
 
 ///
@@ -646,7 +646,7 @@ pub struct CommentsList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CutOperator {
-    pub cut_operator: crate::parol_ls_grammar::OwnedToken, /* \^ */
+    pub cut_operator: crate::parol_ls_grammar::OwnedToken, /* ^ */
 }
 
 ///
@@ -714,9 +714,9 @@ pub struct GrammarDefinitionList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Group {
-    pub l_paren: crate::parol_ls_grammar::OwnedToken, /* \( */
+    pub l_paren: crate::parol_ls_grammar::OwnedToken, /* ( */
     pub alternations: Box<Alternations>,
-    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* \) */
+    pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
 ///
@@ -736,7 +736,7 @@ pub struct Identifier {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LineComment {
-    pub line_comment: crate::parol_ls_grammar::OwnedToken, /* //.*(:?\r\n|\r|\n|$) */
+    pub line_comment: crate::parol_ls_grammar::OwnedToken, /* \u{2f}\u{2f}.*(:?\r\n|\r|\n|$) */
 }
 
 ///
@@ -777,9 +777,9 @@ pub struct NonTerminalOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Optional {
-    pub l_bracket: crate::parol_ls_grammar::OwnedToken, /* \[ */
+    pub l_bracket: crate::parol_ls_grammar::OwnedToken, /* [ */
     pub alternations: Box<Alternations>,
-    pub r_bracket: crate::parol_ls_grammar::OwnedToken, /* \] */
+    pub r_bracket: crate::parol_ls_grammar::OwnedToken, /* ] */
 }
 
 ///
@@ -868,7 +868,7 @@ pub struct PrologList0 {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Regex {
-    pub regex: crate::parol_ls_grammar::OwnedToken, /* /(\\/|[^/]|)*?/ */
+    pub regex: crate::parol_ls_grammar::OwnedToken, /* \u{2f}(\\.|[^\\])*?\u{2f} */
 }
 
 ///
@@ -878,9 +878,9 @@ pub struct Regex {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Repeat {
-    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* \{ */
+    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* { */
     pub alternations: Box<Alternations>,
-    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* \} */
+    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* } */
 }
 
 ///
@@ -912,9 +912,9 @@ pub enum ScannerDirectives {
 pub struct ScannerState {
     pub percent_scanner: crate::parol_ls_grammar::OwnedToken, /* %scanner */
     pub identifier: Box<Identifier>,
-    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* \{ */
+    pub l_brace: crate::parol_ls_grammar::OwnedToken, /* { */
     pub scanner_state_list: Vec<ScannerStateList>,
-    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* \} */
+    pub r_brace: crate::parol_ls_grammar::OwnedToken, /* } */
 }
 
 ///
@@ -1011,7 +1011,7 @@ pub struct StateListList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct String {
-    pub string: crate::parol_ls_grammar::OwnedToken, /* \u{22}(\\.|[^\\])*?\u{22} */
+    pub string: crate::parol_ls_grammar::OwnedToken, /* "(\\.|[^\\])*?" */
 }
 
 ///
@@ -1881,7 +1881,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AlternationsList /* `Vec<T>::Push` */: "\|" : OwnedToken Comments Alternation AlternationsList;
+    /// AlternationsList /* `Vec<T>::Push` */: '|' : OwnedToken Comments Alternation AlternationsList;
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_0(
@@ -2321,7 +2321,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// Group: "\(" : OwnedToken Alternations "\)" : OwnedToken;
+    /// Group: '(' : OwnedToken Alternations ')' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn group(
@@ -2354,7 +2354,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// Optional: "\[" : OwnedToken Alternations "\]" : OwnedToken;
+    /// Optional: '[' : OwnedToken Alternations ']' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn optional(
@@ -2387,7 +2387,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// Repeat: "\{" : OwnedToken Alternations "\}" : OwnedToken;
+    /// Repeat: '{' : OwnedToken Alternations '}' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn repeat(
@@ -2475,7 +2475,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// Identifier: "[a-zA-Z_][a-zA-Z0-9_]*" : OwnedToken;
+    /// Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn identifier(&mut self, identifier: &ParseTreeType<'t>) -> Result<()> {
@@ -2494,7 +2494,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// String: "\u{22}(\\.|[^\\])*?\u{22}" : OwnedToken;
+    /// String: /"(\\.|[^\\])*?"/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -2513,7 +2513,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// LiteralString: "'(\\'|[^'])*?'" : OwnedToken;
+    /// LiteralString: /'(\\'|[^'])*?'/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn literal_string(&mut self, literal_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2532,7 +2532,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// ScannerState: "%scanner" : OwnedToken Identifier "\{" : OwnedToken ScannerStateList /* Vec */ "\}" : OwnedToken;
+    /// ScannerState: "%scanner" : OwnedToken Identifier '{' : OwnedToken ScannerStateList /* Vec */ '}' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state(
@@ -2680,7 +2680,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// ScannerSwitch: "%sc" : OwnedToken "\(" : OwnedToken ScannerSwitchOpt /* Option */ "\)" : OwnedToken;
+    /// ScannerSwitch: "%sc" : OwnedToken '(' : OwnedToken ScannerSwitchOpt /* Option */ ')' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_0(
@@ -2721,7 +2721,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// ScannerSwitch: "%push" : OwnedToken "\(" : OwnedToken Identifier "\)" : OwnedToken;
+    /// ScannerSwitch: "%push" : OwnedToken '(' : OwnedToken Identifier ')' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_1(
@@ -2762,7 +2762,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// ScannerSwitch: "%pop" : OwnedToken "\(" : OwnedToken "\)" : OwnedToken;
+    /// ScannerSwitch: "%pop" : OwnedToken '(' : OwnedToken ')' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_2(
@@ -2869,7 +2869,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// CutOperator: "\^" : OwnedToken;
+    /// CutOperator: '^' : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn cut_operator(&mut self, cut_operator: &ParseTreeType<'t>) -> Result<()> {
@@ -3077,7 +3077,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// LineComment: "//.*(:?\r\n|\r|\n|$)" : OwnedToken;
+    /// LineComment: /\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn line_comment(&mut self, line_comment: &ParseTreeType<'t>) -> Result<()> {
@@ -3096,7 +3096,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 79:
     ///
-    /// BlockComment: "(?ms)/\u{2a}.*?\u{2a}/" : OwnedToken;
+    /// BlockComment: /(?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms)/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn block_comment(&mut self, block_comment: &ParseTreeType<'t>) -> Result<()> {
@@ -3115,7 +3115,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 80:
     ///
-    /// Regex: "/(\\/|[^/]|)*?/" : OwnedToken;
+    /// Regex: /\u{2f}(\\.|[^\\])*?\u{2f}/ : OwnedToken;
     ///
     #[parol_runtime::function_name::named]
     fn regex(&mut self, regex: &ParseTreeType<'t>) -> Result<()> {

@@ -48,7 +48,7 @@ pub const TERMINALS: &[&str; 40] = &[
     /* 25 */ r###"\{"###,
     /* 26 */ r###"\}"###,
     /* 27 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
-    /* 28 */ r###"\u{22}(\\.|[^\\])*?\u{22}"###,
+    /* 28 */ r###""(\\.|[^\\])*?""###,
     /* 29 */ r###"'(\\'|[^'])*?'"###,
     /* 30 */ r###"%scanner"###,
     /* 31 */ r###","###,
@@ -56,9 +56,9 @@ pub const TERMINALS: &[&str; 40] = &[
     /* 33 */ r###"%push"###,
     /* 34 */ r###"%pop"###,
     /* 35 */ r###"\^"###,
-    /* 36 */ r###"//.*(:?\r\n|\r|\n|$)"###,
-    /* 37 */ r###"(?ms)/\u{2a}.*?\u{2a}/"###,
-    /* 38 */ r###"/(\\/|[^/]|)*?/"###,
+    /* 36 */ r###"\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)"###,
+    /* 37 */ r###"(?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms)"###,
+    /* 38 */ r###"\u{2f}(\\.|[^\\])*?\u{2f}"###,
     /* 39 */ ERROR_TOKEN,
 ];
 
@@ -860,7 +860,7 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 3,
         production: &[ParseType::N(4), ParseType::N(1)],
     },
-    // 24 - AlternationsList: "\|" Comments Alternation AlternationsList;
+    // 24 - AlternationsList: '|' Comments Alternation AlternationsList;
     Production {
         lhs: 4,
         production: &[
@@ -981,17 +981,17 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 45,
         production: &[],
     },
-    // 46 - Group: "\(" Alternations "\)";
+    // 46 - Group: '(' Alternations ')';
     Production {
         lhs: 15,
         production: &[ParseType::T(22), ParseType::N(3), ParseType::T(21)],
     },
-    // 47 - Optional: "\[" Alternations "\]";
+    // 47 - Optional: '[' Alternations ']';
     Production {
         lhs: 21,
         production: &[ParseType::T(24), ParseType::N(3), ParseType::T(23)],
     },
-    // 48 - Repeat: "\{" Alternations "\}";
+    // 48 - Repeat: '{' Alternations '}';
     Production {
         lhs: 30,
         production: &[ParseType::T(26), ParseType::N(3), ParseType::T(25)],
@@ -1011,22 +1011,22 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 20,
         production: &[],
     },
-    // 52 - Identifier: "[a-zA-Z_][a-zA-Z0-9_]*";
+    // 52 - Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
     Production {
         lhs: 16,
         production: &[ParseType::T(27)],
     },
-    // 53 - String: "\u{22}(\\.|[^\\])*?\u{22}";
+    // 53 - String: /"(\\.|[^\\])*?"/;
     Production {
         lhs: 41,
         production: &[ParseType::T(28)],
     },
-    // 54 - LiteralString: "'(\\'|[^'])*?'";
+    // 54 - LiteralString: /'(\\'|[^'])*?'/;
     Production {
         lhs: 18,
         production: &[ParseType::T(29)],
     },
-    // 55 - ScannerState: "%scanner" Identifier "\{" ScannerStateList /* Vec */ "\}";
+    // 55 - ScannerState: "%scanner" Identifier '{' ScannerStateList /* Vec */ '}';
     Production {
         lhs: 32,
         production: &[
@@ -1062,7 +1062,7 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 40,
         production: &[],
     },
-    // 61 - ScannerSwitch: "%sc" "\(" ScannerSwitchOpt /* Option */ "\)";
+    // 61 - ScannerSwitch: "%sc" '(' ScannerSwitchOpt /* Option */ ')';
     Production {
         lhs: 34,
         production: &[
@@ -1072,7 +1072,7 @@ pub const PRODUCTIONS: &[Production; 81] = &[
             ParseType::T(32),
         ],
     },
-    // 62 - ScannerSwitch: "%push" "\(" Identifier "\)";
+    // 62 - ScannerSwitch: "%push" '(' Identifier ')';
     Production {
         lhs: 34,
         production: &[
@@ -1082,7 +1082,7 @@ pub const PRODUCTIONS: &[Production; 81] = &[
             ParseType::T(33),
         ],
     },
-    // 63 - ScannerSwitch: "%pop" "\(" "\)";
+    // 63 - ScannerSwitch: "%pop" '(' ')';
     Production {
         lhs: 34,
         production: &[ParseType::T(22), ParseType::T(21), ParseType::T(34)],
@@ -1107,7 +1107,7 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 0,
         production: &[ParseType::N(46)],
     },
-    // 68 - CutOperator: "\^";
+    // 68 - CutOperator: '^';
     Production {
         lhs: 9,
         production: &[ParseType::T(35)],
@@ -1157,17 +1157,17 @@ pub const PRODUCTIONS: &[Production; 81] = &[
         lhs: 8,
         production: &[],
     },
-    // 78 - LineComment: "//.*(:?\r\n|\r|\n|$)";
+    // 78 - LineComment: /\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)/;
     Production {
         lhs: 17,
         production: &[ParseType::T(36)],
     },
-    // 79 - BlockComment: "(?ms)/\u{2a}.*?\u{2a}/";
+    // 79 - BlockComment: /(?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms)/;
     Production {
         lhs: 5,
         production: &[ParseType::T(37)],
     },
-    // 80 - Regex: "/(\\/|[^/]|)*?/";
+    // 80 - Regex: /\u{2f}(\\.|[^\\])*?\u{2f}/;
     Production {
         lhs: 29,
         production: &[ParseType::T(38)],

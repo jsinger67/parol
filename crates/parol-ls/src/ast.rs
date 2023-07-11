@@ -162,7 +162,16 @@ impl From<&Optional> for Rng {
 
 impl From<&ParolLs> for Rng {
     fn from(val: &ParolLs) -> Self {
-        Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition))
+        let rng = Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition));
+        val.parol_ls_opt
+            .as_ref()
+            .map_or(rng, |parol_ls_opt| rng.extend(Self::from(&**parol_ls_opt)))
+    }
+}
+
+impl From<&ParolLsOpt> for Rng {
+    fn from(val: &ParolLsOpt) -> Self {
+        Self::from(&*val.comment)
     }
 }
 
