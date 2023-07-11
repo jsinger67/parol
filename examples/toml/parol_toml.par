@@ -4,6 +4,7 @@
 %comment "Adapted from https://raw.githubusercontent.com/toml-lang/toml/1.0.0/toml.abnf"
 %line_comment "#"
 
+
 %scanner Esc {
     %auto_newline_off
     %auto_ws_off
@@ -390,4 +391,3 @@ Minus
 
 Plus: <Val>"\u{2B}" // +
     ;
-

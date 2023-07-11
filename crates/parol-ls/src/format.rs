@@ -6,11 +6,11 @@ use crate::{
         ASTControl, Alternation, AlternationList, Alternations, AlternationsList, BlockComment,
         Comment, Comments, CommentsList, CutOperator, Declaration, DoubleColon, Factor,
         GrammarDefinition, GrammarDefinitionList, Group, Identifier, LineComment, LiteralString,
-        NonTerminal, NonTerminalOpt, Optional, ParolLs, Production, ProductionLHS, Prolog,
-        PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState, ScannerStateList,
-        ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt, StartDeclaration, StateList,
-        StateListList, Symbol, TokenLiteral, TokenWithStates, TokenWithStatesOpt,
-        UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        NonTerminal, NonTerminalOpt, Optional, ParolLs, ParolLsOpt, Production, ProductionLHS,
+        Prolog, PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState,
+        ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt,
+        StartDeclaration, StateList, StateListList, Symbol, TokenLiteral, TokenWithStates,
+        TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -466,12 +466,26 @@ impl Fmt for ParolLs {
         } else {
             "\n"
         };
+        let nl_end = if self.parol_ls_opt.is_some() {
+            "\n"
+        } else {
+            ""
+        };
         format!(
-            "{}{}{}",
+            "{}{}{}{}{}",
             prolog,
             nl_opt,
             self.grammar_definition.txt(options),
+            nl_end,
+            self.parol_ls_opt
+                .as_ref()
+                .map_or(String::default(), |c| c.txt(options))
         )
+    }
+}
+impl Fmt for ParolLsOpt {
+    fn txt(&self, options: &FmtOptions) -> String {
+        self.comment.txt(options)
     }
 }
 impl Fmt for Production {

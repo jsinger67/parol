@@ -120,8 +120,7 @@ Comments
     : { Comment };
 
 LineComment
-    : /\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)/: OwnedToken
-    ;
+    : /\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)/: OwnedToken;
 
 BlockComment
     : /(?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms)/: OwnedToken;

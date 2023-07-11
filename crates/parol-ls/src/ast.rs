@@ -165,7 +165,9 @@ impl From<&ParolLs> for Rng {
         let rng = Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition));
         val.parol_ls_opt
             .as_ref()
-            .map_or(rng, |parol_ls_opt| rng.extend(Self::from(&**parol_ls_opt)))
+            .map_or(rng.extend_to_end(), |parol_ls_opt| {
+                rng.extend(Self::from(&**parol_ls_opt))
+            })
     }
 }
 

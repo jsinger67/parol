@@ -1,6 +1,6 @@
 use crate::parol_ls_grammar::OwnedToken;
 use derive_new::new;
-use lsp_types::Range;
+use lsp_types::{Position, Range};
 
 use crate::utils::location_to_range;
 
@@ -37,6 +37,14 @@ impl Rng {
             self.0.end = right.0.end;
             self
         }
+    }
+
+    pub(crate) fn extend_to_end(mut self) -> Rng {
+        self.0.end = Position {
+            line: u32::MAX,
+            character: u32::MAX,
+        };
+        self
     }
 
     pub(crate) fn from_slice<'a, T>(slc: &'a [T]) -> Self
