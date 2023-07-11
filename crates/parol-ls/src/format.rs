@@ -19,8 +19,13 @@ use crate::{
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
 
-pub(crate) static RX_DOUBLE_NEW_LINE_END: Lazy<regex::Regex> = Lazy::new(|| {
+pub(crate) static RX_DOUBLE_NEW_LINE: Lazy<regex::Regex> = Lazy::new(|| {
     regex::Regex::new(r"\r?\n\r?\n$").expect("error parsing regex: RX_DOUBLE_NEW_LINE")
+});
+
+pub(crate) static RX_NEW_LINES_AFTER_LINE_COMMENT: Lazy<regex::Regex> = Lazy::new(|| {
+    regex::Regex::new(r"//.*(\r?\n)+$")
+        .expect("error parsing regex: RX_NEW_LINES_AFTER_LINE_COMMENT")
 });
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
@@ -131,6 +136,29 @@ macro_rules! add_number_formatting_option {
     };
 }
 
+struct Line;
+
+impl Line {
+    fn ends_with_space(line: &str) -> bool {
+        line.ends_with(' ')
+    }
+
+    fn ends_with_nl(line: &str) -> bool {
+        line.ends_with(|c| c == '\n' || c == '\r')
+    }
+    fn ends_with_double_nl(line: &str) -> bool {
+        RX_DOUBLE_NEW_LINE.is_match(line)
+    }
+
+    // fn ends_with_nl_wo_line_comment(line: &str) -> bool {
+    //     Self::ends_with_nl(line) && !RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
+    // }
+
+    fn ends_with_nls_after_line_comment(line: &str) -> bool {
+        RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
+    }
+}
+
 impl From<&FormattingOptions> for FmtOptions {
     fn from(options: &FormattingOptions) -> Self {
         let mut me = Self::new();
@@ -169,7 +197,8 @@ impl Fmt for ASTControl {
 impl Fmt for Alternation {
     fn txt(&self, options: &FmtOptions) -> String {
         let next_option = options.clone().next_depth();
-        self.alternation_list
+        let mut alternation_str = self
+            .alternation_list
             .iter()
             .fold(String::new(), |mut acc, e| {
                 let mut next_part = e.txt(&next_option);
@@ -188,12 +217,16 @@ impl Fmt for Alternation {
                         acc.push_str("\n      ");
                     }
                 }
-                if !acc.is_empty() && !acc.ends_with(|c| c == '\n' || c == '\r' || c == ' ') {
+                if !acc.is_empty() && !Line::ends_with_nl(&acc) && !Line::ends_with_space(&acc) {
                     acc.push(' ');
                 }
                 acc.extend(next_part.drain(..));
                 acc
-            })
+            });
+        if options.nesting_depth == 0 && !Line::ends_with_nl(&alternation_str) {
+            alternation_str.push('\n');
+        }
+        alternation_str
     }
 }
 impl Fmt for AlternationList {
@@ -214,13 +247,9 @@ impl Fmt for Alternations {
     fn txt(&self, options: &FmtOptions) -> String {
         let alternation_str = self.alternation.txt(options);
         let delimiter = if options.nesting_depth == 0
-            && !alternation_str.ends_with(|c| c == '\n' || c == '\r')
+            || Line::ends_with_nls_after_line_comment(&alternation_str)
         {
-            if options.prod_semicolon_on_nl {
-                "\n"
-            } else {
-                ""
-            }
+            ""
         } else {
             " "
         };
@@ -244,23 +273,25 @@ impl Fmt for AlternationsList {
         let right_padding = if options.nesting_depth == 0 {
             // Normally we add a newline after each top level alternation except the newline is
             // already attached (usually due to line comment handling)
-            if !alternation_str.ends_with(|c| c == '\n' || c == '\r') {
+            if Line::ends_with_nls_after_line_comment(&alternation_str) {
+                ""
+            } else if !Line::ends_with_nl(&alternation_str) {
                 "\n"
             } else {
                 ""
             }
         } else {
             // In levels other than the top level we concat alternations with a single whitespace
-            if alternation_str.ends_with(' ') {
+            if Line::ends_with_space(&alternation_str) {
                 ""
             } else {
                 " "
             }
         };
         let left_padding = if options.nesting_depth == 0 {
-            "\n    "
+            "    "
         } else {
-            " "
+            ""
         };
         format!(
             "{}{}{} {}{}",
@@ -370,7 +401,7 @@ impl Fmt for GrammarDefinitionList {
 impl Fmt for Group {
     fn txt(&self, options: &FmtOptions) -> String {
         let alternations_str = self.alternations.txt(options);
-        let sep = if alternations_str.ends_with(' ') {
+        let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
@@ -416,7 +447,7 @@ impl Fmt for NonTerminalOpt {
 impl Fmt for Optional {
     fn txt(&self, options: &FmtOptions) -> String {
         let alternations_str = self.alternations.txt(options);
-        let sep = if alternations_str.ends_with(' ') {
+        let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
@@ -430,7 +461,7 @@ impl Fmt for Optional {
 impl Fmt for ParolLs {
     fn txt(&self, options: &FmtOptions) -> String {
         let prolog = self.prolog.txt(options);
-        let nl_opt = if RX_DOUBLE_NEW_LINE_END.is_match(&prolog) {
+        let nl_opt = if Line::ends_with_double_nl(&prolog) {
             ""
         } else {
             "\n"
@@ -445,18 +476,20 @@ impl Fmt for ParolLs {
 }
 impl Fmt for Production {
     fn txt(&self, options: &FmtOptions) -> String {
-        let mut alternations_text = self.alternations.txt(options);
-        let (semi_nl_opt, alternations_text) = if options.prod_semicolon_on_nl {
-            ("\n    ", alternations_text.trim().to_owned())
+        let mut alternations_str = self.alternations.txt(options);
+        let (semi_nl_opt, alternations_str) = if options.prod_semicolon_on_nl
+            || Line::ends_with_nls_after_line_comment(&alternations_str)
+        {
+            ("\n    ", alternations_str.trim().to_owned())
         } else {
-            if alternations_text.ends_with(|c| c == '\n' || c == '\r') {
+            if Line::ends_with_nls_after_line_comment(&alternations_str) {
                 // This indicates a line comment at the end of the alternation.
                 // We correct the formatting here to have the semicolon correctly indented.
-                alternations_text.push_str("    ");
+                alternations_str.push_str("    ");
             } else {
-                alternations_text = alternations_text.trim_end().to_owned();
+                alternations_str = alternations_str.trim_end().to_owned();
             }
-            ("", alternations_text)
+            ("", alternations_str)
         };
 
         let prod_nl_opt = if options.empty_line_after_prod {
@@ -467,7 +500,7 @@ impl Fmt for Production {
         format!(
             "{} {}{}{}{}",
             self.production_l_h_s.txt(options),
-            alternations_text,
+            alternations_str,
             semi_nl_opt,
             self.semicolon,
             prod_nl_opt,
@@ -538,7 +571,7 @@ impl Fmt for Regex {
 impl Fmt for Repeat {
     fn txt(&self, options: &FmtOptions) -> String {
         let alternations_str = self.alternations.txt(options);
-        let sep = if alternations_str.ends_with(' ') {
+        let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
@@ -860,7 +893,7 @@ mod test {
     // Use this to skip certain tests if they are not ready yet
     const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
-    // Use this if you only want to debug a single test
+    // Use this if you only want to debug a view tests
     const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
 
     const TEST_DATA: &[(FmtOptions, &str)] = &[
