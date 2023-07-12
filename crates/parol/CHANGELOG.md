@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.22.1 - Not released yet
+## 0.22.1 - 2023-07-12
 
 * Ensure deterministic state numbering after minimization of Lookahead DFAs. Before this fix the
 states could be numbered differently after each generation. Although this imposed no problems on the

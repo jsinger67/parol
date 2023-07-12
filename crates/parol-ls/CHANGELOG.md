@@ -5,6 +5,16 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.14.0 - 2023-07-12
+
+* This release is dedicated to code formatting. A lot of tests have been added to ensure a more
+consistent formatting over different configuration settings.
+
+Please file an issue against formatting if you encounter any problem or have suggestions.
+
+In later releases I plan to refactor the whole formatting algorithm and incorporate the comment
+handling provided by `parol_runtime@0.17`.
+
 ## 0.13.0 - 2023-06-25
 
 * The `Parol Language Server` now supports a single end comment.

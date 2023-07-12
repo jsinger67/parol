@@ -16,7 +16,7 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.17.1 - Not released yet
+## 0.17.1 - 2023-07-12
 
 * Update crate `regex-automata` to version 0.3.2
 

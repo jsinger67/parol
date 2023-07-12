@@ -150,10 +150,6 @@ impl Line {
         RX_DOUBLE_NEW_LINE.is_match(line)
     }
 
-    // fn ends_with_nl_wo_line_comment(line: &str) -> bool {
-    //     Self::ends_with_nl(line) && !RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
-    // }
-
     fn ends_with_nls_after_line_comment(line: &str) -> bool {
         RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
     }

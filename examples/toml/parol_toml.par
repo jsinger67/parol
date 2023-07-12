@@ -1,49 +1,39 @@
 %start ParolToml
 %title "TOML Grammar" // New TOML Versions from https://github.com/toml-lang/toml/blob/main/toml.abnf
-
 %comment "Adapted from https://raw.githubusercontent.com/toml-lang/toml/1.0.0/toml.abnf"
 %line_comment "#"
-
 
 %scanner Esc {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner Val {
     %line_comment "#"
 }
-
 %scanner BString {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner MLBString {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner LString {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner MLLString {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner HexInt {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner OctInt {
     %auto_newline_off
     %auto_ws_off
 }
-
 %scanner BinInt {
     %auto_newline_off
     %auto_ws_off
