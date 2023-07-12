@@ -1,0 +1,6 @@
+/*
+   BC1
+*/
+%start OptionalAlternatives
+%%
+OptionalAlternatives: [ "x" | "y" | "z" ];

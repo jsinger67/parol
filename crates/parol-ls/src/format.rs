@@ -672,14 +672,23 @@ impl Fmt for SimpleTokenOpt {
 }
 impl Fmt for StartDeclaration {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options_left = options.clone().with_padding(Padding::Left);
-        let comment_options_right = options.clone().with_padding(Padding::Right);
+        let comment_options_top = if let Some(last_comment) = self.comments.comments_list.last() {
+            match &*last_comment.comment {
+                Comment::BlockComment(_) => {
+                    options.clone().with_line_end(LineEnd::ForceSingleNewline)
+                }
+                Comment::LineComment(_) => options.clone(),
+            }
+        } else {
+            options.clone()
+        };
+        let comment_options_bottom = options.clone().with_padding(Padding::Left);
         format!(
             "{}{} {}{}\n",
-            handle_comments(&self.comments, &comment_options_right),
+            handle_comments(&self.comments, &comment_options_top),
             self.percent_start,
             self.identifier.txt(options),
-            handle_comments(&self.comments0, &comment_options_left),
+            handle_comments(&self.comments0, &comment_options_bottom),
         )
     }
 }
