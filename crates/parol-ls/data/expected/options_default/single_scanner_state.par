@@ -6,7 +6,6 @@
 %user_type UserType1 = UserDefinedTypeName1
 %user_type UserType2 = UserDefinedTypeName2
 
-
 %scanner Esc {
     %auto_newline_off
     %auto_ws_off

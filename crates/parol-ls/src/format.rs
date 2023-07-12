@@ -333,26 +333,51 @@ impl Fmt for Declaration {
             .with_padding(Padding::Left)
             .with_trimming(Trimming::TrimRight);
         match self {
-            Declaration::PercentTitleStringComments(title) => format!(
-                "{} {}{}\n",
-                title.percent_title,
-                title.string.txt(options),
-                handle_comments(&title.comments, &comment_options),
-            ),
-            Declaration::PercentCommentStringComments(comment) => format!(
-                "{} {}{}\n",
-                comment.percent_comment,
-                comment.string.txt(options),
-                handle_comments(&comment.comments, &comment_options),
-            ),
-            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
+            Declaration::PercentTitleStringComments(title) => {
+                let end_comment = handle_comments(&title.comments, &comment_options);
+                let nl = if Line::ends_with_nl(&end_comment) {
+                    ""
+                } else {
+                    "\n"
+                };
                 format!(
-                    "{} {} {} {}{}\n",
+                    "{} {}{}{}",
+                    title.percent_title,
+                    title.string.txt(options),
+                    end_comment,
+                    nl,
+                )
+            }
+            Declaration::PercentCommentStringComments(comment) => {
+                let end_comment = handle_comments(&comment.comments, &comment_options);
+                let nl = if Line::ends_with_nl(&end_comment) {
+                    ""
+                } else {
+                    "\n"
+                };
+                format!(
+                    "{} {}{}{}",
+                    comment.percent_comment,
+                    comment.string.txt(options),
+                    end_comment,
+                    nl,
+                )
+            }
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
+                let end_comment = handle_comments(&user_type.comments, &comment_options);
+                let nl = if Line::ends_with_nl(&end_comment) {
+                    ""
+                } else {
+                    "\n"
+                };
+                format!(
+                    "{} {} {} {}{}{}",
                     user_type.percent_user_underscore_type,
                     user_type.identifier.txt(options),
                     user_type.equ,
                     user_type.user_type_name.txt(options),
-                    handle_comments(&user_type.comments, &comment_options),
+                    end_comment,
+                    nl,
                 )
             }
             Declaration::ScannerDirectives(scanner_directives) => {
@@ -603,11 +628,17 @@ impl Fmt for ScannerDirectives {
 }
 impl Fmt for ScannerState {
     fn txt(&self, options: &FmtOptions) -> String {
+        let nl_after_opening_brace = if self.scanner_state_list.is_empty() {
+            ""
+        } else {
+            "\n"
+        };
         format!(
-            "\n{} {} {}\n{}{}\n",
+            "{} {} {}{}{}{}\n",
             self.percent_scanner,
             self.identifier.txt(options),
             self.l_brace,
+            nl_after_opening_brace,
             self.scanner_state_list
                 .iter()
                 .fold(String::new(), |mut acc, s| {
@@ -672,23 +703,30 @@ impl Fmt for SimpleTokenOpt {
 }
 impl Fmt for StartDeclaration {
     fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options_top = if let Some(last_comment) = self.comments.comments_list.last() {
-            match &*last_comment.comment {
-                Comment::BlockComment(_) => {
-                    options.clone().with_line_end(LineEnd::ForceSingleNewline)
-                }
-                Comment::LineComment(_) => options.clone(),
-            }
-        } else {
+        let comment_options_top = if self.comments.comments_list.is_empty() {
             options.clone()
+        } else {
+            options.clone().with_line_end(LineEnd::ForceSingleNewline)
         };
-        let comment_options_bottom = options.clone().with_padding(Padding::Left);
+        let (delim_after_comment_button, comment_options_bottom) =
+            if self.comments0.comments_list.is_empty() {
+                ("\n", options.clone())
+            } else {
+                (
+                    "",
+                    options
+                        .clone()
+                        .with_line_end(LineEnd::ForceSingleNewline)
+                        .with_padding(Padding::Left),
+                )
+            };
         format!(
-            "{}{} {}{}\n",
+            "{}{} {}{}{}",
             handle_comments(&self.comments, &comment_options_top),
             self.percent_start,
             self.identifier.txt(options),
             handle_comments(&self.comments0, &comment_options_bottom),
+            delim_after_comment_button,
         )
     }
 }
@@ -784,33 +822,63 @@ fn handle_scanner_directives(
 ) -> String {
     let comment_options = options.clone().with_padding(Padding::Left);
     match scanner_directives {
-        ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => format!(
-            "{} {}{}\n",
-            l.percent_line_underscore_comment,
-            l.token_literal.txt(options),
-            handle_comments(&l.comments, &comment_options),
-        ),
-        ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
+        ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => {
+            let end_comment = handle_comments(&l.comments, &comment_options);
+            let nl = if Line::ends_with_nl(&end_comment) {
+                ""
+            } else {
+                "\n"
+            };
             format!(
-                "{} {} {}{}\n",
+                "{} {}{}{}",
+                l.percent_line_underscore_comment,
+                l.token_literal.txt(options),
+                end_comment,
+                nl,
+            )
+        }
+        ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
+            let end_comment = handle_comments(&b.comments, &comment_options);
+            let nl = if Line::ends_with_nl(&end_comment) {
+                ""
+            } else {
+                "\n"
+            };
+            format!(
+                "{} {} {}{}{}",
                 b.percent_block_underscore_comment,
                 b.token_literal.txt(options),
                 b.token_literal0.txt(options),
-                handle_comments(&b.comments, &comment_options),
+                end_comment,
+                nl,
             )
         }
 
-        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => format!(
-            "{}{}\n",
-            n.percent_auto_underscore_newline_underscore_off,
-            handle_comments(&n.comments, &comment_options),
-        ),
+        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => {
+            let end_comment = handle_comments(&n.comments, &comment_options);
+            let nl = if Line::ends_with_nl(&end_comment) {
+                ""
+            } else {
+                "\n"
+            };
+            format!(
+                "{}{}{}",
+                n.percent_auto_underscore_newline_underscore_off, end_comment, nl,
+            )
+        }
 
-        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => format!(
-            "{}{}\n",
-            w.percent_auto_underscore_ws_underscore_off,
-            handle_comments(&w.comments, &comment_options),
-        ),
+        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => {
+            let end_comment = handle_comments(&w.comments, &comment_options);
+            let nl = if Line::ends_with_nl(&end_comment) {
+                ""
+            } else {
+                "\n"
+            };
+            format!(
+                "{}{}{}",
+                w.percent_auto_underscore_ws_underscore_off, end_comment, nl,
+            )
+        }
     }
 }
 

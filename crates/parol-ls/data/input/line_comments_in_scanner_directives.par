@@ -1,0 +1,15 @@
+%start Scanners // LC1
+%comment "Formatting test" // LC2
+%line_comment "#" // LC3
+%line_comment '//' // LC4
+%block_comment '/*' '*/' // LC5
+%user_type UserType1 = UserDefinedTypeName1 // LC6
+%user_type UserType2 = UserDefinedTypeName2 // LC7
+%scanner Esc {
+    %auto_newline_off  // LC8
+    %auto_ws_off // LC9
+    %line_comment '//' // LC10
+    %block_comment '/*' '*/' // LC11
+}
+%%
+Scanners: <INITIAL, Esc>"xxx";
