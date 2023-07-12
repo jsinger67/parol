@@ -53,4 +53,4 @@ It is licensed under MIT and Apache-2.0. Thanks a lot and kudos!
 
 ## Further readings
 
-* [CHANGELOG](./CHANGELOG.md)
+* [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol-ls/CHANGELOG.md)
