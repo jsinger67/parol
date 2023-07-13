@@ -12,16 +12,14 @@ pub(crate) static RX_NEW_LINE: Lazy<Regex> =
 /// Converts `parol_runtime::lexer::Location` to a `lsp_types::Range`.
 ///
 pub(crate) fn location_to_range(location: &Location) -> Range {
-    let start_char = location.start_column as u32 - 1;
-    let end_char = start_char + location.length as u32;
     Range {
         start: Position {
             line: location.start_line as u32 - 1,
-            character: start_char,
+            character: location.start_column as u32 - 1,
         },
         end: Position {
             line: location.end_line as u32 - 1,
-            character: end_char,
+            character: location.end_column as u32 - 1,
         },
     }
 }

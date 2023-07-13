@@ -17,7 +17,7 @@ use parol::TerminalKind;
 use parol_runtime::lexer::Token;
 #[allow(unused_imports)]
 use parol_runtime::Result;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
 ///
@@ -39,6 +39,8 @@ pub struct ParolLsGrammar {
     pub symbols: Vec<DocumentSymbol>,
 
     pub grammar: Option<ParolLs>,
+
+    pub comments: VecDeque<OwnedToken>,
 }
 
 impl ParolLsGrammar {
@@ -116,7 +118,7 @@ impl ParolLsGrammar {
 
     fn add_scanner_symbols(symbols: &mut Vec<DocumentSymbol>, arg: &ScannerDirectives) {
         match arg {
-            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(line_comment) => {
+            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(line_comment) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: line_comment
@@ -144,7 +146,7 @@ impl ParolLsGrammar {
                     }]),
                 });
             }
-            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
+            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(
                 block_comment,
             ) => {
                 #[allow(deprecated)]
@@ -186,7 +188,7 @@ impl ParolLsGrammar {
                     ]),
                 });
             }
-            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(auto_newline) => {
+            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(auto_newline) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: auto_newline
@@ -205,7 +207,7 @@ impl ParolLsGrammar {
                     children: None,
                 });
             }
-            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(auto_ws) => {
+            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(auto_ws) => {
                 #[allow(deprecated)]
                 symbols.push(DocumentSymbol {
                     name: auto_ws
@@ -319,6 +321,7 @@ impl ParolLsGrammar {
                 <&parol_ls_grammar_trait::ParolLs as crate::format::Format>::format(
                     &grammar,
                     &params.options,
+                    self.comments.clone(),
                 ),
             )
         } else {
@@ -391,7 +394,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
     /// Semantic action for non-terminal 'Declaration'
     fn declaration(&mut self, arg: &Declaration) -> Result<()> {
         match arg {
-            Declaration::PercentTitleStringComments(title) => {
+            Declaration::PercentTitleString(title) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
                     name: title.percent_title.text().to_string(),
@@ -413,7 +416,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::PercentCommentStringComments(comment) => {
+            Declaration::PercentCommentString(comment) => {
                 #[allow(deprecated)]
                 self.symbols.push(DocumentSymbol {
                     name: comment.percent_comment.text().to_string(),
@@ -435,9 +438,7 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
                     }]),
                 });
             }
-            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(
-                user_type_def,
-            ) => {
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type_def) => {
                 let token = &user_type_def.identifier.identifier;
                 let range: Rng = arg.into();
                 let range = self.add_user_type_definition(token, range.into());
@@ -553,6 +554,10 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
         let range = location_to_range(&token.location);
         self.add_user_type_ref(range, token);
         Ok(())
+    }
+
+    fn on_comment_parsed(&mut self, token: Token<'_>) {
+        self.comments.push_back(OwnedToken(token.into_owned()))
     }
 }
 

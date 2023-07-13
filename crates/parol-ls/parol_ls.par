@@ -1,30 +1,32 @@
 %start ParolLs
 %title "Parol grammar"
 %comment "Parol's own grammar enhanced with comment processing"
+%line_comment '//'
+%block_comment '/*' '*/'
 %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken
 
 %%
 
 ParolLs
-    : Prolog GrammarDefinition [ Comment ];
+    : Prolog GrammarDefinition;
 
 Prolog
     : StartDeclaration { Declaration } { ScannerState };
 
 StartDeclaration
-    : Comments "%start": OwnedToken Identifier Comments;
+    : "%start": OwnedToken Identifier;
 
 Declaration
-    : "%title": OwnedToken String Comments
-    | "%comment": OwnedToken String Comments
-    | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName Comments
+    : "%title": OwnedToken String
+    | "%comment": OwnedToken String
+    | "%user_type": OwnedToken Identifier "=": OwnedToken UserTypeName
     | ScannerDirectives;
 
 ScannerDirectives
-    : "%line_comment": OwnedToken TokenLiteral Comments
-    | "%block_comment": OwnedToken TokenLiteral TokenLiteral Comments
-    | "%auto_newline_off": OwnedToken Comments
-    | "%auto_ws_off": OwnedToken Comments;
+    : "%line_comment": OwnedToken TokenLiteral
+    | "%block_comment": OwnedToken TokenLiteral TokenLiteral
+    | "%auto_newline_off": OwnedToken
+    | "%auto_ws_off": OwnedToken;
 
 GrammarDefinition
     : "%%": OwnedToken Production { Production };
@@ -33,16 +35,16 @@ DoubleColon
     : "::": OwnedToken;
 
 ProductionLHS
-    : Comments Identifier Comments ":": OwnedToken;
+    : Identifier ":": OwnedToken;
 
 Production
     : ProductionLHS Alternations ";": OwnedToken;
 
 Alternations
-    : Alternation { '|': OwnedToken Comments Alternation };
+    : Alternation { '|': OwnedToken Alternation };
 
 Alternation
-    : { Factor Comments };
+    : { Factor };
 
 Factor
     : Group
@@ -111,19 +113,6 @@ UserTypeDeclaration
 
 UserTypeName
     : Identifier { DoubleColon Identifier };
-
-Comment
-    : LineComment
-    | BlockComment;
-
-Comments
-    : { Comment };
-
-LineComment
-    : /\u{2f}\u{2f}.*(:?\r\n|\r|\n|$)/: OwnedToken;
-
-BlockComment
-    : /(?ms)\u{2f}\u{2a}.*?\u{2a}\u{2f}(?-ms)/: OwnedToken;
 
 Regex
     : /\u{2f}(\\.|[^\\])*?\u{2f}/: OwnedToken // \u{2f} is /

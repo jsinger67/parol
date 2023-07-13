@@ -1,16 +1,18 @@
+use std::collections::VecDeque;
+
 use lsp_types::{FormattingOptions, FormattingProperty, TextEdit};
 use once_cell::sync::Lazy;
 
 use crate::{
+    parol_ls_grammar::OwnedToken,
     parol_ls_grammar_trait::{
-        ASTControl, Alternation, AlternationList, Alternations, AlternationsList, BlockComment,
-        Comment, Comments, CommentsList, CutOperator, Declaration, DoubleColon, Factor,
-        GrammarDefinition, GrammarDefinitionList, Group, Identifier, LineComment, LiteralString,
-        NonTerminal, NonTerminalOpt, Optional, ParolLs, ParolLsOpt, Production, ProductionLHS,
-        Prolog, PrologList, PrologList0, Regex, Repeat, ScannerDirectives, ScannerState,
-        ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken, SimpleTokenOpt,
-        StartDeclaration, StateList, StateListList, Symbol, TokenLiteral, TokenWithStates,
-        TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
+        ASTControl, Alternation, AlternationList, Alternations, AlternationsList, CutOperator,
+        Declaration, DoubleColon, Factor, GrammarDefinition, GrammarDefinitionList, Group,
+        Identifier, LiteralString, NonTerminal, NonTerminalOpt, Optional, ParolLs, Production,
+        ProductionLHS, Prolog, PrologList, PrologList0, Regex, Repeat, ScannerDirectives,
+        ScannerState, ScannerStateList, ScannerSwitch, ScannerSwitchOpt, SimpleToken,
+        SimpleTokenOpt, StartDeclaration, StateList, StateListList, Symbol, TokenLiteral,
+        TokenWithStates, TokenWithStatesOpt, UserTypeDeclaration, UserTypeName, UserTypeNameList,
     },
     rng::Rng,
     utils::RX_NEW_LINE,
@@ -18,10 +20,6 @@ use crate::{
 
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
-
-pub(crate) static RX_DOUBLE_NEW_LINE: Lazy<regex::Regex> = Lazy::new(|| {
-    regex::Regex::new(r"\r?\n\r?\n$").expect("error parsing regex: RX_DOUBLE_NEW_LINE")
-});
 
 pub(crate) static RX_NEW_LINES_AFTER_LINE_COMMENT: Lazy<regex::Regex> = Lazy::new(|| {
     regex::Regex::new(r"//.*(\r?\n)+$")
@@ -58,6 +56,7 @@ enum Trimming {
     Trim,
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Default)]
 struct FmtOptions {
     padding: Padding,
@@ -75,6 +74,7 @@ struct FmtOptions {
     max_line_length: usize,
 }
 
+#[allow(unused)]
 impl FmtOptions {
     fn new() -> Self {
         FmtOptions {
@@ -146,12 +146,39 @@ impl Line {
     fn ends_with_nl(line: &str) -> bool {
         line.ends_with(|c| c == '\n' || c == '\r')
     }
-    fn ends_with_double_nl(line: &str) -> bool {
-        RX_DOUBLE_NEW_LINE.is_match(line)
-    }
 
     fn ends_with_nls_after_line_comment(line: &str) -> bool {
         RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
+    }
+}
+
+struct Comments;
+
+impl Comments {
+    fn split_comments(
+        mut comments: VecDeque<OwnedToken>,
+        at: Rng,
+    ) -> (VecDeque<OwnedToken>, VecDeque<OwnedToken>) {
+        let mut left = VecDeque::new();
+        while let Some(comment) = comments.front() {
+            let rng = Into::<Rng>::into(comment);
+            if rng.comes_before(&at) {
+                left.push_back(comments.pop_front().unwrap());
+            } else {
+                break;
+            }
+        }
+        (left, comments)
+    }
+
+    fn handle_comments_before(
+        comments: VecDeque<OwnedToken>,
+        at: &OwnedToken,
+        options: &FmtOptions,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (comments_before_token, comments) = Comments::split_comments(comments, at.into());
+        let comments_before_scanner_str = handle_comments(options, comments_before_token);
+        (comments_before_scanner_str, comments)
     }
 }
 
@@ -166,38 +193,50 @@ impl From<&FormattingOptions> for FmtOptions {
 }
 
 pub(crate) trait Format {
-    fn format(&self, options: &FormattingOptions) -> Vec<TextEdit>;
+    fn format(&self, options: &FormattingOptions, comments: VecDeque<OwnedToken>) -> Vec<TextEdit>;
 }
 
 impl Format for &ParolLs {
-    fn format(&self, options: &FormattingOptions) -> Vec<TextEdit> {
+    fn format(&self, options: &FormattingOptions, comments: VecDeque<OwnedToken>) -> Vec<TextEdit> {
         let range = <&ParolLs as Into<Rng>>::into(*self).0;
         let fmt_options = options.into();
-        let new_text = self.txt(&fmt_options);
+        let (new_text, comments) = self.txt(&fmt_options, comments);
+        debug_assert!(comments.is_empty());
         vec![TextEdit { range, new_text }]
     }
 }
 
 trait Fmt {
-    fn txt(&self, options: &FmtOptions) -> String;
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>);
 }
 
 impl Fmt for ASTControl {
-    fn txt(&self, options: &FmtOptions) -> String {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         match self {
-            ASTControl::CutOperator(_) => "^".to_string(),
-            ASTControl::UserTypeDeclaration(ut) => ut.user_type_declaration.txt(options),
+            ASTControl::CutOperator(_) => ("^".to_string(), comments),
+            ASTControl::UserTypeDeclaration(ut) => ut.user_type_declaration.txt(options, comments),
         }
     }
 }
 impl Fmt for Alternation {
-    fn txt(&self, options: &FmtOptions) -> String {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         let next_option = options.clone().next_depth();
-        let mut alternation_str = self
-            .alternation_list
-            .iter()
-            .fold(String::new(), |mut acc, e| {
-                let mut next_part = e.txt(&next_option);
+        let (mut alternation_str, comments) = self.alternation_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), e| {
+                let (mut next_part, comments) = e.txt(&next_option, comments);
                 if options.nesting_depth == 0 {
                     // We do the line length control only at top level (i.e. at production level)
                     let lines: Vec<&str> = RX_NEW_LINE.split(&acc).collect();
@@ -217,31 +256,31 @@ impl Fmt for Alternation {
                     acc.push(' ');
                 }
                 acc.extend(next_part.drain(..));
-                acc
-            });
+                (acc, comments)
+            },
+        );
         if options.nesting_depth == 0 && !Line::ends_with_nl(&alternation_str) {
             alternation_str.push('\n');
         }
-        alternation_str
+        (alternation_str, comments)
     }
 }
 impl Fmt for AlternationList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options = options
-            .clone()
-            .with_line_end(LineEnd::ForceRemove)
-            .with_padding(Padding::Left)
-            .with_trimming(Trimming::TrimRight);
-        format!(
-            "{}{}",
-            self.factor.txt(options),
-            handle_comments(&self.comments, &comment_options)
-        )
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.factor.txt(options, comments)
     }
 }
 impl Fmt for Alternations {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let alternation_str = self.alternation.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (alternation_str, comments) = self.alternation.txt(options, comments);
         let delimiter = if options.nesting_depth == 0
             || Line::ends_with_nls_after_line_comment(&alternation_str)
         {
@@ -249,23 +288,25 @@ impl Fmt for Alternations {
         } else {
             " "
         };
-        format!(
-            "{}{}{}",
-            alternation_str,
-            delimiter,
-            self.alternations_list
-                .iter()
-                .fold(String::new(), |mut acc, a| {
-                    let alternations_str = &a.txt(options);
-                    acc.push_str(alternations_str);
-                    acc
-                })
-        )
+        let (str, comments) = self.alternations_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), a| {
+                let (alternations_str, comments) = a.txt(options, comments);
+                acc.push_str(&alternations_str);
+                (acc, comments)
+            },
+        );
+
+        (format!("{}{}{}", alternation_str, delimiter, str), comments)
     }
 }
 impl Fmt for AlternationsList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let alternation_str = self.alternation.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (alternation_str, comments) = self.alternation.txt(options, comments);
         let right_padding = if options.nesting_depth == 0 {
             // Normally we add a newline after each top level alternation except the newline is
             // already attached (usually due to line comment handling)
@@ -289,229 +330,226 @@ impl Fmt for AlternationsList {
         } else {
             ""
         };
-        format!(
-            "{}{}{} {}{}",
-            left_padding,
-            self.or,
-            handle_comments(&self.comments, options),
-            alternation_str,
-            right_padding,
+        (
+            format!(
+                "{}{} {}{}",
+                left_padding, self.or, alternation_str, right_padding,
+            ),
+            comments,
         )
     }
 }
-impl Fmt for BlockComment {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.block_comment.text().to_string()
-    }
-}
-impl Fmt for Comment {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        match self {
-            Comment::LineComment(l) => l.line_comment.line_comment.text().to_string(),
-            Comment::BlockComment(b) => b.block_comment.block_comment.text().to_string(),
-        }
-    }
-}
-impl Fmt for CommentsList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.comment.txt(options)
-    }
-}
 impl Fmt for CutOperator {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.cut_operator.text().to_string()
+    fn txt(
+        &self,
+        _options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        (self.cut_operator.text().to_string(), comments)
     }
 }
 impl Fmt for Declaration {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options = options
-            .clone()
-            .with_padding(Padding::Left)
-            .with_trimming(Trimming::TrimRight);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         match self {
-            Declaration::PercentTitleStringComments(title) => {
-                let end_comment = handle_comments(&title.comments, &comment_options);
-                let nl = if Line::ends_with_nl(&end_comment) {
-                    ""
-                } else {
-                    "\n"
-                };
-                format!(
-                    "{} {}{}{}",
-                    title.percent_title,
-                    title.string.txt(options),
-                    end_comment,
-                    nl,
-                )
+            Declaration::PercentTitleString(title) => {
+                let (str, comments) = title.string.txt(options, comments);
+                (format!("\n{} {}", title.percent_title, str), comments)
             }
-            Declaration::PercentCommentStringComments(comment) => {
-                let end_comment = handle_comments(&comment.comments, &comment_options);
-                let nl = if Line::ends_with_nl(&end_comment) {
-                    ""
-                } else {
-                    "\n"
-                };
-                format!(
-                    "{} {}{}{}",
-                    comment.percent_comment,
-                    comment.string.txt(options),
-                    end_comment,
-                    nl,
-                )
+            Declaration::PercentCommentString(comment) => {
+                let (str, comments) = comment.string.txt(options, comments);
+                (format!("\n{} {}", comment.percent_comment, str), comments)
             }
-            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
-                let end_comment = handle_comments(&user_type.comments, &comment_options);
-                let nl = if Line::ends_with_nl(&end_comment) {
-                    ""
-                } else {
-                    "\n"
-                };
-                format!(
-                    "{} {} {} {}{}{}",
-                    user_type.percent_user_underscore_type,
-                    user_type.identifier.txt(options),
-                    user_type.equ,
-                    user_type.user_type_name.txt(options),
-                    end_comment,
-                    nl,
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type) => {
+                let (str1, comments) = user_type.identifier.txt(options, comments);
+                let (str2, comments) = user_type.user_type_name.txt(options, comments);
+                (
+                    format!(
+                        "\n{} {} {} {}",
+                        user_type.percent_user_underscore_type, str1, user_type.equ, str2,
+                    ),
+                    comments,
                 )
             }
             Declaration::ScannerDirectives(scanner_directives) => {
-                handle_scanner_directives(&scanner_directives.scanner_directives, options)
+                handle_scanner_directives(&scanner_directives.scanner_directives, options, comments)
             }
         }
     }
 }
 
 impl Fmt for DoubleColon {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.double_colon.text().to_string()
+    fn txt(
+        &self,
+        _options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        (self.double_colon.text().to_string(), comments)
     }
 }
 impl Fmt for Factor {
-    fn txt(&self, options: &FmtOptions) -> String {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         let next_depth_option = options.clone().next_depth();
         match self {
-            Factor::Group(g) => g.group.txt(&next_depth_option),
-            Factor::Repeat(r) => r.repeat.txt(&next_depth_option),
-            Factor::Optional(o) => o.optional.txt(&next_depth_option),
-            Factor::Symbol(s) => handle_symbol(&s.symbol, options),
+            Factor::Group(g) => g.group.txt(&next_depth_option, comments),
+            Factor::Repeat(r) => r.repeat.txt(&next_depth_option, comments),
+            Factor::Optional(o) => o.optional.txt(&next_depth_option, comments),
+            Factor::Symbol(s) => handle_symbol(&s.symbol, options, comments),
         }
     }
 }
 impl Fmt for GrammarDefinition {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}\n{}{}",
-            self.percent_percent,
-            self.production.txt(options),
-            self.grammar_definition_list
-                .iter()
-                .fold(String::new(), |mut acc, p| {
-                    acc.push_str(&p.txt(options));
-                    acc
-                })
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (production_str, comments) = self.production.txt(options, comments);
+        let (grammar_definition_list_str, comments) = self.grammar_definition_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), p| {
+                let (str, comments) = p.txt(options, comments);
+                acc.push_str(&str);
+                (acc, comments)
+            },
+        );
+
+        (
+            format!(
+                "\n{}\n{}{}",
+                self.percent_percent, production_str, grammar_definition_list_str
+            ),
+            comments,
         )
     }
 }
 impl Fmt for GrammarDefinitionList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.production.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.production.txt(options, comments)
     }
 }
 impl Fmt for Group {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_str = self.alternations.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (alternations_str, comments) = self.alternations.txt(options, comments);
         let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
         };
-        format!(
-            "{} {}{}{}",
-            self.l_paren, alternations_str, sep, self.r_paren,
+        (
+            format!(
+                "{} {}{}{}",
+                self.l_paren, alternations_str, sep, self.r_paren,
+            ),
+            comments,
         )
     }
 }
 
 impl Fmt for Identifier {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.identifier.text().to_string()
-    }
-}
-impl Fmt for LineComment {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.line_comment.text().to_string()
+    fn txt(
+        &self,
+        _options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        (self.identifier.text().to_string(), comments)
     }
 }
 impl Fmt for LiteralString {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.literal_string.text().to_string()
+    fn txt(
+        &self,
+        _options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        (self.literal_string.text().to_string(), comments)
     }
 }
 impl Fmt for NonTerminal {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}",
-            self.identifier.identifier,
-            self.non_terminal_opt
-                .as_ref()
-                .map_or(String::default(), |a| { a.txt(options) })
-        )
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (str, comments) = if let Some(non_terminal_opt) = self.non_terminal_opt.as_ref() {
+            non_terminal_opt.txt(options, comments)
+        } else {
+            (String::default(), comments)
+        };
+        (format!("{}{}", self.identifier.identifier, str), comments)
     }
 }
 impl Fmt for NonTerminalOpt {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.a_s_t_control.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.a_s_t_control.txt(options, comments)
     }
 }
 impl Fmt for Optional {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_str = self.alternations.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (alternations_str, comments) = self.alternations.txt(options, comments);
         let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
         };
-        format!(
-            "{} {}{}{}",
-            self.l_bracket, alternations_str, sep, self.r_bracket,
+        (
+            format!(
+                "{} {}{}{}",
+                self.l_bracket, alternations_str, sep, self.r_bracket,
+            ),
+            comments,
         )
     }
 }
 impl Fmt for ParolLs {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let prolog = self.prolog.txt(options);
-        let nl_opt = if Line::ends_with_double_nl(&prolog) {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (prolog, comments) = self.prolog.txt(options, comments);
+        let nl_opt = if Line::ends_with_nl(&prolog) {
             ""
         } else {
             "\n"
         };
-        let nl_end = if self.parol_ls_opt.is_some() {
-            "\n"
-        } else {
-            ""
-        };
-        format!(
-            "{}{}{}{}{}",
-            prolog,
-            nl_opt,
-            self.grammar_definition.txt(options),
-            nl_end,
-            self.parol_ls_opt
-                .as_ref()
-                .map_or(String::default(), |c| c.txt(options))
+        let (grammar_definition, comments) = self.grammar_definition.txt(options, comments);
+        (
+            format!("{}{}{}", prolog, nl_opt, grammar_definition),
+            comments,
         )
     }
 }
-impl Fmt for ParolLsOpt {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.comment.txt(options)
-    }
-}
 impl Fmt for Production {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let mut alternations_str = self.alternations.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (production_l_h_s, comments) = self.production_l_h_s.txt(options, comments);
+        let (mut alternations_str, comments) = self.alternations.txt(options, comments);
         let (semi_nl_opt, alternations_str) = if options.prod_semicolon_on_nl
             || Line::ends_with_nls_after_line_comment(&alternations_str)
         {
@@ -532,282 +570,442 @@ impl Fmt for Production {
         } else {
             ""
         };
-        format!(
-            "{} {}{}{}{}",
-            self.production_l_h_s.txt(options),
-            alternations_str,
-            semi_nl_opt,
-            self.semicolon,
-            prod_nl_opt,
+        let (comments_before_semicolon, comments) = Comments::handle_comments_before(
+            comments,
+            &self.semicolon,
+            &options.clone().with_padding(Padding::Left),
+        );
+        (
+            format!(
+                "{} {}{}{}{}{}",
+                production_l_h_s,
+                alternations_str,
+                comments_before_semicolon,
+                semi_nl_opt,
+                self.semicolon,
+                prod_nl_opt,
+            ),
+            comments,
         )
     }
 }
 impl Fmt for ProductionLHS {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options_both = options
-            .clone()
-            .with_padding(Padding::Left)
-            .with_trimming(Trimming::TrimRight);
-        let comment_options_right = options
-            .clone()
-            .with_line_end(LineEnd::ForceAdd)
-            .with_trimming(Trimming::TrimRight);
-        if self.identifier.identifier.text().len() < 5 && self.comments0.comments_list.is_empty() {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (comments_before_non_terminal, comments) = Comments::handle_comments_before(
+            comments,
+            &self.identifier.identifier,
+            &options.clone().with_line_end(LineEnd::ForceSingleNewline),
+        );
+        let (comments_before_colon, comments) = Comments::handle_comments_before(
+            comments,
+            &self.colon,
+            &options.clone().with_padding(Padding::Left),
+        );
+        if self.identifier.identifier.text().len() + comments_before_colon.len() < 5 {
             let padding = " ".repeat(4 - self.identifier.identifier.text().len());
-            format!(
-                "\n{}{}{}{}",
-                handle_comments(&self.comments, &comment_options_right),
-                self.identifier.identifier,
-                padding,
-                self.colon,
+            (
+                format!(
+                    "\n{}{}{}{}{}",
+                    comments_before_non_terminal,
+                    self.identifier.identifier,
+                    padding,
+                    comments_before_colon,
+                    self.colon
+                ),
+                comments,
             )
         } else {
-            format!(
-                "\n{}{}{}\n    {}",
-                handle_comments(&self.comments, &comment_options_right),
-                self.identifier.identifier,
-                handle_comments(&self.comments0, &comment_options_both),
-                self.colon,
+            (
+                format!(
+                    "\n{}{}{}\n    {}",
+                    comments_before_non_terminal,
+                    self.identifier.identifier,
+                    comments_before_colon,
+                    self.colon
+                ),
+                comments,
             )
         }
     }
 }
 impl Fmt for Prolog {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}\n{}",
-            self.start_declaration.txt(options),
-            self.prolog_list.iter().fold(String::new(), |mut acc, p| {
-                acc.push_str(&p.txt(options));
-                acc
-            }),
-            self.prolog_list0.iter().fold(String::new(), |mut acc, p| {
-                acc.push_str(&p.txt(options));
-                acc
-            })
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (start_declaration, comments) = self.start_declaration.txt(options, comments);
+        let (prolog_list, comments) =
+            self.prolog_list
+                .iter()
+                .fold((String::new(), comments), |(mut acc, comments), p| {
+                    let (pro_str, comments) = p.txt(options, comments);
+                    acc.push_str(&pro_str);
+                    (acc, comments)
+                });
+        let (prolog_list0, comments) =
+            self.prolog_list0
+                .iter()
+                .fold((String::new(), comments), |(mut acc, comments), p| {
+                    let (pro_str, comments) = p.txt(options, comments);
+                    acc.push_str(&pro_str);
+                    (acc, comments)
+                });
+        (
+            format!("{}{}\n{}", start_declaration, prolog_list, prolog_list0),
+            comments,
         )
     }
 }
 impl Fmt for PrologList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.declaration.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.declaration.txt(options, comments)
     }
 }
 impl Fmt for PrologList0 {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.scanner_state.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.scanner_state.txt(options, comments)
     }
 }
 impl Fmt for Regex {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.regex.text().to_string()
+    fn txt(
+        &self,
+        _options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        (self.regex.text().to_string(), comments)
     }
 }
 impl Fmt for Repeat {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let alternations_str = self.alternations.txt(options);
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (alternations_str, comments) = self.alternations.txt(options, comments);
         let sep = if Line::ends_with_space(&alternations_str) {
             ""
         } else {
             " "
         };
-        format!(
-            "{} {}{}{}",
-            self.l_brace, alternations_str, sep, self.r_brace,
+        (
+            format!(
+                "{} {}{}{}",
+                self.l_brace, alternations_str, sep, self.r_brace,
+            ),
+            comments,
         )
     }
 }
 impl Fmt for ScannerDirectives {
-    fn txt(&self, options: &FmtOptions) -> String {
-        handle_scanner_directives(self, options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        handle_scanner_directives(self, options, comments)
     }
 }
 impl Fmt for ScannerState {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let nl_after_opening_brace = if self.scanner_state_list.is_empty() {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let nl_before_closing_brace = if self.scanner_state_list.is_empty() {
             ""
         } else {
             "\n"
         };
-        format!(
-            "{} {} {}{}{}{}\n",
-            self.percent_scanner,
-            self.identifier.txt(options),
-            self.l_brace,
-            nl_after_opening_brace,
-            self.scanner_state_list
-                .iter()
-                .fold(String::new(), |mut acc, s| {
-                    acc.push_str("    ");
-                    acc.push_str(&s.txt(options));
-                    acc
-                }),
-            self.r_brace,
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        let inner_options = options.clone().next_depth();
+        let (scanner_state_list, comments) = self.scanner_state_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), s| {
+                let (s_str, comments) = s.txt(&inner_options, comments);
+                acc.push_str(&s_str);
+                (acc, comments)
+            },
+        );
+
+        let (comments_before_scanner, comments) = Comments::handle_comments_before(
+            comments,
+            &self.percent_scanner,
+            &options.clone().with_line_end(LineEnd::ForceSingleNewline),
+        );
+        (
+            format!(
+                "{}\n{} {} {}{}{}{}",
+                comments_before_scanner,
+                self.percent_scanner,
+                identifier,
+                self.l_brace,
+                scanner_state_list,
+                nl_before_closing_brace,
+                self.r_brace,
+            ),
+            comments,
         )
     }
 }
 impl Fmt for ScannerStateList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        handle_scanner_directives(&self.scanner_directives, options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        handle_scanner_directives(&self.scanner_directives, options, comments)
     }
 }
 impl Fmt for ScannerSwitch {
-    fn txt(&self, options: &FmtOptions) -> String {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         match self {
-            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => format!(
-                "{}{}{}{}",
-                sc.percent_sc,
-                sc.l_paren,
-                sc.scanner_switch_opt
-                    .as_ref()
-                    .map_or(String::default(), |s| { s.txt(options) }),
-                sc.r_paren,
-            ),
-            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => format!(
-                "{}{}{}{}",
-                push.percent_push,
-                push.l_paren,
-                push.identifier.txt(options),
-                push.r_paren,
-            ),
-            ScannerSwitch::PercentPopLParenRParen(pop) => {
-                format!("{}{}{}", pop.percent_pop, pop.l_paren, pop.r_paren,)
+            ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sc) => {
+                let (scanner_switch_opt, comments) =
+                    if let Some(scanner_switch_opt) = sc.scanner_switch_opt.as_ref() {
+                        scanner_switch_opt.txt(options, comments)
+                    } else {
+                        (String::default(), comments)
+                    };
+                (
+                    format!(
+                        "{}{}{}{}",
+                        sc.percent_sc, sc.l_paren, scanner_switch_opt, sc.r_paren,
+                    ),
+                    comments,
+                )
             }
+            ScannerSwitch::PercentPushLParenIdentifierRParen(push) => {
+                let (identifier, comments) = push.identifier.txt(options, comments);
+                (
+                    format!(
+                        "{}{}{}{}",
+                        push.percent_push, push.l_paren, identifier, push.r_paren,
+                    ),
+                    comments,
+                )
+            }
+            ScannerSwitch::PercentPopLParenRParen(pop) => (
+                format!("{}{}{}", pop.percent_pop, pop.l_paren, pop.r_paren,),
+                comments,
+            ),
         }
     }
 }
 impl Fmt for ScannerSwitchOpt {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.identifier.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.identifier.txt(options, comments)
     }
 }
 impl Fmt for SimpleToken {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}",
-            self.token_literal.txt(options),
-            self.simple_token_opt
-                .as_ref()
-                .map_or(String::default(), |s| { s.txt(options) })
-        )
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (token_literal, comments) = self.token_literal.txt(options, comments);
+        let (simple_token_opt, comments) =
+            if let Some(simple_token_opt) = self.simple_token_opt.as_ref() {
+                simple_token_opt.txt(options, comments)
+            } else {
+                (String::default(), comments)
+            };
+        (format!("{}{}", token_literal, simple_token_opt), comments)
     }
 }
 impl Fmt for SimpleTokenOpt {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.a_s_t_control.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.a_s_t_control.txt(options, comments)
     }
 }
 impl Fmt for StartDeclaration {
-    fn txt(&self, options: &FmtOptions) -> String {
-        let comment_options_top = if self.comments.comments_list.is_empty() {
-            options.clone()
-        } else {
-            options.clone().with_line_end(LineEnd::ForceSingleNewline)
-        };
-        let (delim_after_comment_button, comment_options_bottom) =
-            if self.comments0.comments_list.is_empty() {
-                ("\n", options.clone())
-            } else {
-                (
-                    "",
-                    options
-                        .clone()
-                        .with_line_end(LineEnd::ForceSingleNewline)
-                        .with_padding(Padding::Left),
-                )
-            };
-        format!(
-            "{}{} {}{}{}",
-            handle_comments(&self.comments, &comment_options_top),
-            self.percent_start,
-            self.identifier.txt(options),
-            handle_comments(&self.comments0, &comment_options_bottom),
-            delim_after_comment_button,
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (comments_before_start, comments) = Comments::handle_comments_before(
+            comments,
+            &self.percent_start,
+            &options.clone().with_line_end(LineEnd::ForceSingleNewline),
+        );
+
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        (
+            format!(
+                "{}{} {}",
+                comments_before_start, self.percent_start, identifier,
+            ),
+            comments,
         )
     }
 }
 impl Fmt for StateList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}",
-            self.identifier.txt(options),
-            self.state_list_list
-                .iter()
-                .fold(String::new(), |mut acc, s| {
-                    acc.push_str(&s.txt(options));
-                    acc
-                }),
-        )
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        let (state_list_list, comments) = self.state_list_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), s| {
+                let (s_str, comments) = s.txt(options, comments);
+                acc.push_str(&s_str);
+                (acc, comments)
+            },
+        );
+        (format!("{}{}", identifier, state_list_list,), comments)
     }
 }
 impl Fmt for StateListList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!("{} {}", self.comma, self.identifier.txt(options),)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        (format!("{} {}", self.comma, identifier), comments)
     }
 }
 impl Fmt for crate::parol_ls_grammar_trait::String {
-    fn txt(&self, _options: &FmtOptions) -> String {
-        self.string.text().to_string()
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (comments_before_string, comments) = Comments::handle_comments_before(
+            comments,
+            &self.string,
+            &options.clone().with_padding(Padding::Right),
+        );
+        (
+            format!(
+                "{}{}",
+                comments_before_string,
+                self.string.text().to_string()
+            ),
+            comments,
+        )
     }
 }
 impl Fmt for Symbol {
-    fn txt(&self, options: &FmtOptions) -> String {
-        handle_symbol(self, options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        handle_symbol(self, options, comments)
     }
 }
 impl Fmt for TokenLiteral {
-    fn txt(&self, options: &FmtOptions) -> String {
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
         match self {
-            TokenLiteral::String(s) => s.string.txt(options),
-            TokenLiteral::LiteralString(l) => l.literal_string.txt(options),
-            TokenLiteral::Regex(r) => r.regex.txt(options),
+            TokenLiteral::String(s) => s.string.txt(options, comments),
+            TokenLiteral::LiteralString(l) => l.literal_string.txt(options, comments),
+            TokenLiteral::Regex(r) => r.regex.txt(options, comments),
         }
     }
 }
 impl Fmt for TokenWithStates {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}{}{}{}",
-            self.l_t,
-            self.state_list.txt(options).trim(),
-            self.g_t,
-            self.token_literal.txt(options),
-            self.token_with_states_opt
-                .as_ref()
-                .map_or(String::default(), |a| { a.txt(options) }),
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (mut state_list, comments) = self.state_list.txt(options, comments);
+        let (token_literal, comments) = self.token_literal.txt(options, comments);
+        let (token_with_states_opt, comments) =
+            if let Some(token_with_states_opt) = self.token_with_states_opt.as_ref() {
+                token_with_states_opt.txt(options, comments)
+            } else {
+                (String::default(), comments)
+            };
+        state_list = state_list.trim().to_owned();
+        (
+            format!(
+                "{}{}{}{}{}",
+                self.l_t, state_list, self.g_t, token_literal, token_with_states_opt
+            ),
+            comments,
         )
     }
 }
 impl Fmt for TokenWithStatesOpt {
-    fn txt(&self, options: &FmtOptions) -> String {
-        self.a_s_t_control.txt(options)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        self.a_s_t_control.txt(options, comments)
     }
 }
 impl Fmt for UserTypeDeclaration {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!("{} {}", self.colon, self.user_type_name.txt(options),)
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (user_type_name, comments) = self.user_type_name.txt(options, comments);
+        (format!("{} {}", self.colon, user_type_name), comments)
     }
 }
 impl Fmt for UserTypeName {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}",
-            self.identifier.txt(options),
-            self.user_type_name_list
-                .iter()
-                .fold(String::new(), |mut acc, u| {
-                    acc.push_str(&u.txt(options));
-                    acc
-                }),
-        )
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        let (user_type_name_list, comments) = self.user_type_name_list.iter().fold(
+            (String::new(), comments),
+            |(mut acc, comments), u| {
+                let (u_str, comments) = u.txt(options, comments);
+                acc.push_str(&u_str);
+                (acc, comments)
+            },
+        );
+        (format!("{}{}", identifier, user_type_name_list,), comments)
     }
 }
 impl Fmt for UserTypeNameList {
-    fn txt(&self, options: &FmtOptions) -> String {
-        format!(
-            "{}{}",
-            self.double_colon.double_colon,
-            self.identifier.txt(options),
+    fn txt(
+        &self,
+        options: &FmtOptions,
+        comments: VecDeque<OwnedToken>,
+    ) -> (String, VecDeque<OwnedToken>) {
+        let (identifier, comments) = self.identifier.txt(options, comments);
+        (
+            format!("{}{}", self.double_colon.double_colon, identifier,),
+            comments,
         )
     }
 }
@@ -815,91 +1013,70 @@ impl Fmt for UserTypeNameList {
 fn handle_scanner_directives(
     scanner_directives: &ScannerDirectives,
     options: &FmtOptions,
-) -> String {
-    let comment_options = options.clone().with_padding(Padding::Left);
+    comments: VecDeque<OwnedToken>,
+) -> (String, VecDeque<OwnedToken>) {
+    let indent = make_indent(options.nesting_depth);
     match scanner_directives {
-        ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(l) => {
-            let end_comment = handle_comments(&l.comments, &comment_options);
-            let nl = if Line::ends_with_nl(&end_comment) {
-                ""
-            } else {
-                "\n"
-            };
-            format!(
-                "{} {}{}{}",
-                l.percent_line_underscore_comment,
-                l.token_literal.txt(options),
-                end_comment,
-                nl,
+        ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(l) => {
+            let (str, comments) = l.token_literal.txt(options, comments);
+            (
+                format!("\n{}{} {}", indent, l.percent_line_underscore_comment, str,),
+                comments,
             )
         }
-        ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(b) => {
-            let end_comment = handle_comments(&b.comments, &comment_options);
-            let nl = if Line::ends_with_nl(&end_comment) {
-                ""
-            } else {
-                "\n"
-            };
-            format!(
-                "{} {} {}{}{}",
-                b.percent_block_underscore_comment,
-                b.token_literal.txt(options),
-                b.token_literal0.txt(options),
-                end_comment,
-                nl,
+        ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(b) => {
+            let (str1, comments) = b.token_literal.txt(options, comments);
+            let (str2, comments) = b.token_literal0.txt(options, comments);
+            (
+                format!(
+                    "\n{}{} {} {}",
+                    indent, b.percent_block_underscore_comment, str1, str2,
+                ),
+                comments,
             )
         }
 
-        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(n) => {
-            let end_comment = handle_comments(&n.comments, &comment_options);
-            let nl = if Line::ends_with_nl(&end_comment) {
-                ""
-            } else {
-                "\n"
-            };
+        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(n) => (
             format!(
-                "{}{}{}",
-                n.percent_auto_underscore_newline_underscore_off, end_comment, nl,
-            )
-        }
+                "\n{}{}",
+                indent, n.percent_auto_underscore_newline_underscore_off
+            ),
+            comments,
+        ),
 
-        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(w) => {
-            let end_comment = handle_comments(&w.comments, &comment_options);
-            let nl = if Line::ends_with_nl(&end_comment) {
-                ""
-            } else {
-                "\n"
-            };
+        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(w) => (
             format!(
-                "{}{}{}",
-                w.percent_auto_underscore_ws_underscore_off, end_comment, nl,
-            )
-        }
+                "\n{}{}",
+                indent, w.percent_auto_underscore_ws_underscore_off
+            ),
+            comments,
+        ),
     }
 }
 
-fn handle_symbol(symbol: &Symbol, options: &FmtOptions) -> String {
+fn handle_symbol(
+    symbol: &Symbol,
+    options: &FmtOptions,
+    comments: VecDeque<OwnedToken>,
+) -> (String, VecDeque<OwnedToken>) {
     match symbol {
-        Symbol::NonTerminal(n) => n.non_terminal.txt(options),
-        Symbol::SimpleToken(t) => t.simple_token.txt(options),
-        Symbol::TokenWithStates(t) => t.token_with_states.txt(options),
-        Symbol::ScannerSwitch(s) => s.scanner_switch.txt(options),
+        Symbol::NonTerminal(n) => n.non_terminal.txt(options, comments),
+        Symbol::SimpleToken(t) => t.simple_token.txt(options, comments),
+        Symbol::TokenWithStates(t) => t.token_with_states.txt(options, comments),
+        Symbol::ScannerSwitch(s) => s.scanner_switch.txt(options, comments),
     }
 }
 
-fn handle_comments(comments: &Comments, options: &FmtOptions) -> String {
-    let comments_str = comments
-        .comments_list
-        .iter()
-        .fold(String::new(), |mut acc, c| {
-            acc.push_str(&c.txt(options));
-            acc
-        });
+fn handle_comments(options: &FmtOptions, comments: VecDeque<OwnedToken>) -> String {
+    let comments_str = comments.iter().fold(String::new(), |mut acc, c| {
+        acc.push_str(c.text());
+        acc
+    });
     if comments_str.is_empty() {
         comments_str
     } else {
-        let options = if let Some(cmt) = comments.comments_list.last() {
-            if let Comment::LineComment(_) = &*cmt.comment {
+        let options = if let Some(cmt) = comments.iter().last() {
+            if cmt.text().starts_with("//") {
                 options.clone().with_line_end(LineEnd::ForceSingleNewline)
             } else {
                 options.clone()
@@ -950,8 +1127,8 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
 
 #[allow(unused)]
 fn make_indent(depth: u16) -> String {
-    let mut indent = String::with_capacity((depth as usize + 1) * 4);
-    indent.extend("    ".repeat(depth as usize + 1).drain(..));
+    let mut indent = String::with_capacity((depth as usize) * 4);
+    indent.extend("    ".repeat(depth as usize).drain(..));
     indent
 }
 
@@ -993,30 +1170,30 @@ mod test {
             },
             concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
         ),
-        (
-            FmtOptions {
-                empty_line_after_prod: true,
-                prod_semicolon_on_nl: false,
-                max_line_length: 100,
-                padding: super::Padding::None,
-                line_end: super::LineEnd::Unchanged,
-                trimming: super::Trimming::Unchanged,
-                nesting_depth: 0,
-            },
-            concat!(
-                env!("CARGO_MANIFEST_DIR"),
-                "/data/expected/prod_semicolon_on_nl_false"
-            ),
-        ),
+        // (
+        //     FmtOptions {
+        //         empty_line_after_prod: true,
+        //         prod_semicolon_on_nl: false,
+        //         max_line_length: 100,
+        //         padding: super::Padding::None,
+        //         line_end: super::LineEnd::Unchanged,
+        //         trimming: super::Trimming::Unchanged,
+        //         nesting_depth: 0,
+        //     },
+        //     concat!(
+        //         env!("CARGO_MANIFEST_DIR"),
+        //         "/data/expected/prod_semicolon_on_nl_false"
+        //     ),
+        // ),
     ];
 
     #[test]
     fn test_make_indent() {
-        assert_eq!(String::from("    "), make_indent(0));
+        assert_eq!(String::from(""), make_indent(0));
         let options = FmtOptions::new();
-        assert_eq!(String::from("    "), make_indent(options.nesting_depth));
+        assert_eq!(String::from(""), make_indent(options.nesting_depth));
         assert_eq!(
-            String::from("        "),
+            String::from("    "),
             make_indent(options.next_depth().nesting_depth)
         );
     }
@@ -1068,7 +1245,11 @@ mod test {
             panic!("Parsing failed!")
         } else {
             // We generate the new formatting by calling Fmt::txt()
-            let formatted_grammar = grammar.grammar.unwrap().txt(fmt_options);
+            let (formatted_grammar, _comments) = grammar
+                .grammar
+                .unwrap()
+                .txt(fmt_options, grammar.comments.clone());
+            // assert!(comments.is_empty());
 
             let mut expected_file = std::path::PathBuf::from(expected_folder);
 

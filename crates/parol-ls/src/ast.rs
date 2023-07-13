@@ -18,7 +18,7 @@ impl From<&Alternation> for Rng {
 
 impl From<&AlternationList> for Rng {
     fn from(val: &AlternationList) -> Self {
-        Self::from(&*val.factor).extend(Self::from(&*val.comments))
+        Self::from(&*val.factor)
     }
 }
 
@@ -34,33 +34,6 @@ impl From<&AlternationsList> for Rng {
     }
 }
 
-impl From<&BlockComment> for Rng {
-    fn from(val: &BlockComment) -> Self {
-        Self::from(&val.block_comment)
-    }
-}
-
-impl From<&Comment> for Rng {
-    fn from(val: &Comment) -> Self {
-        match val {
-            Comment::LineComment(l) => Self::from(&l.line_comment.line_comment),
-            Comment::BlockComment(b) => Self::from(&b.block_comment.block_comment),
-        }
-    }
-}
-
-impl From<&Comments> for Rng {
-    fn from(val: &Comments) -> Self {
-        Self::from_slice(&val.comments_list)
-    }
-}
-
-impl From<&CommentsList> for Rng {
-    fn from(val: &CommentsList) -> Self {
-        Self::from(&*val.comment)
-    }
-}
-
 impl From<&CutOperator> for Rng {
     fn from(val: &CutOperator) -> Self {
         Self::from(&val.cut_operator)
@@ -70,18 +43,15 @@ impl From<&CutOperator> for Rng {
 impl From<&Declaration> for Rng {
     fn from(val: &Declaration) -> Self {
         match val {
-            Declaration::PercentTitleStringComments(title) => Self::from(&title.percent_title)
-                .extend(Self::from(&*title.string))
-                .extend(Self::from(&*title.comments)),
-            Declaration::PercentCommentStringComments(comment) => {
-                Self::from(&comment.percent_comment)
-                    .extend(Self::from(&*comment.string))
-                    .extend(Self::from(&*comment.comments))
+            Declaration::PercentTitleString(title) => {
+                Self::from(&title.percent_title).extend(Self::from(&*title.string))
             }
-            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeNameComments(user_type) => {
+            Declaration::PercentCommentString(comment) => {
+                Self::from(&comment.percent_comment).extend(Self::from(&*comment.string))
+            }
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type) => {
                 Self::from(&user_type.percent_user_underscore_type)
                     .extend(Self::from(&*user_type.user_type_name))
-                    .extend(Self::from(&*user_type.comments))
             }
             Declaration::ScannerDirectives(scanner) => Self::from(&*scanner.scanner_directives),
         }
@@ -131,12 +101,6 @@ impl From<&Identifier> for Rng {
     }
 }
 
-impl From<&LineComment> for Rng {
-    fn from(val: &LineComment) -> Self {
-        Self::from(&val.line_comment)
-    }
-}
-
 impl From<&NonTerminal> for Rng {
     fn from(val: &NonTerminal) -> Self {
         let rng = Self::from(&val.identifier.identifier);
@@ -162,18 +126,7 @@ impl From<&Optional> for Rng {
 
 impl From<&ParolLs> for Rng {
     fn from(val: &ParolLs) -> Self {
-        let rng = Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition));
-        val.parol_ls_opt
-            .as_ref()
-            .map_or(rng.extend_to_end(), |parol_ls_opt| {
-                rng.extend(Self::from(&**parol_ls_opt))
-            })
-    }
-}
-
-impl From<&ParolLsOpt> for Rng {
-    fn from(val: &ParolLsOpt) -> Self {
-        Self::from(&*val.comment)
+        Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition))
     }
 }
 
@@ -185,9 +138,7 @@ impl From<&Production> for Rng {
 
 impl From<&ProductionLHS> for Rng {
     fn from(val: &ProductionLHS) -> Self {
-        Self::from(&*val.comments)
-            .extend(Self::from(&val.identifier.identifier))
-            .extend(Self::from(&val.colon))
+        Self::from(&val.identifier.identifier).extend(Self::from(&val.colon))
     }
 }
 
@@ -220,23 +171,19 @@ impl From<&Repeat> for Rng {
 impl From<&ScannerDirectives> for Rng {
     fn from(val: &ScannerDirectives) -> Self {
         match val {
-            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteralComments(lc) => {
+            ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(lc) => {
                 Self::from(&lc.percent_line_underscore_comment)
                     .extend(Self::from(&*lc.token_literal))
-                    .extend(Self::from(&*lc.comments))
             }
-            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteralComments(
-                bc,
-            ) => Self::from(&bc.percent_block_underscore_comment)
-                .extend(Self::from(&*bc.token_literal0))
-                .extend(Self::from(&*bc.comments)),
-            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOffComments(auto_nl) => {
+            ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(bc) => {
+                Self::from(&bc.percent_block_underscore_comment)
+                    .extend(Self::from(&*bc.token_literal0))
+            }
+            ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(auto_nl) => {
                 Self::from(&auto_nl.percent_auto_underscore_newline_underscore_off)
-                    .extend(Self::from(&*auto_nl.comments))
             }
-            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOffComments(auto_ws) => {
+            ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(auto_ws) => {
                 Self::from(&auto_ws.percent_auto_underscore_ws_underscore_off)
-                    .extend(Self::from(&*auto_ws.comments))
             }
         }
     }
@@ -295,10 +242,7 @@ impl From<&SimpleTokenOpt> for Rng {
 
 impl From<&StartDeclaration> for Rng {
     fn from(val: &StartDeclaration) -> Self {
-        Self::from(&*val.comments)
-            .extend(Self::from(&val.percent_start))
-            .extend(Self::from(&val.identifier.identifier))
-            .extend(Self::from(&*val.comments0))
+        Self::from(&val.percent_start).extend(Self::from(&val.identifier.identifier))
     }
 }
 

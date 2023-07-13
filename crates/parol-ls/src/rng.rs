@@ -15,6 +15,7 @@ use crate::utils::location_to_range;
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, new)]
 pub(crate) struct Rng(pub(crate) Range);
 
+#[allow(unused)]
 impl Rng {
     /// Specially handled empty range.
     /// Can be found on optional elements or empty lists.
@@ -45,6 +46,13 @@ impl Rng {
             character: u32::MAX,
         };
         self
+    }
+
+    /// Tests if self comes completely before other
+    pub(crate) fn comes_before(&self, other: &Self) -> bool {
+        self.0.end.line < other.0.start.line
+            || (self.0.end.line == other.0.start.line
+                && self.0.end.character <= other.0.start.character)
     }
 
     pub(crate) fn from_slice<'a, T>(slc: &'a [T]) -> Self
@@ -117,5 +125,31 @@ mod tests {
         assert_eq!(empty_rng, empty_rng.extend(empty_rng));
         assert_eq!(rng1, empty_rng.extend(rng1));
         assert_eq!(rng1, rng1.extend(empty_rng));
+    }
+
+    #[test]
+    fn test_comes_before() {
+        let rng1 = Rng::new(Range {
+            start: Position::new(0, 0),
+            end: Position::new(0, 5),
+        });
+        let rng2 = Rng::new(Range {
+            start: Position::new(0, 12),
+            end: Position::new(0, 15),
+        });
+        let rng3 = Rng::new(Range {
+            start: Position::new(1, 12),
+            end: Position::new(1, 15),
+        });
+        let rng4 = Rng::new(Range {
+            start: Position::new(0, 0),
+            end: Position::new(0, 4),
+        });
+        assert!(rng1.comes_before(&rng2));
+        assert!(rng1.comes_before(&rng3));
+        assert!(rng2.comes_before(&rng3));
+        assert!(!rng2.comes_before(&rng1));
+        assert!(!rng3.comes_before(&rng1));
+        assert!(!rng1.comes_before(&rng4));
     }
 }
