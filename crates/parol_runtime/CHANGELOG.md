@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Be aware that this project is still v0.y.z which means that anything can change anytime:
 
->"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The public API SHOULD NOT be considered stable."
+>"4. Major version zero (0.y.z) is for initial development. Anything MAY change at any time. The
+> public API SHOULD NOT be considered stable."
 >
 >(Semantic Versioning Specification)
 
@@ -15,6 +16,8 @@ Be aware that this project is still v0.y.z which means that anything can change 
 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
+
+## 0.17.2 - Not released yet
 
 ## 0.17.1 - 2023-07-12
 

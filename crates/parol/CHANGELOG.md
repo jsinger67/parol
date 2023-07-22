@@ -21,6 +21,12 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.22.2 - Not released yet
+
+* Cleaner generation of raw strings in parser source. Especially hash characters in raw string
+prefixes and postfixes are now generated only when and as much as needed.
+* Removed clippy warnings new in Rust 1.7.1
+
 ## 0.22.1 - 2023-07-12
 
 * Ensure deterministic state numbering after minimization of Lookahead DFAs. Before this fix the
