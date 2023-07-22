@@ -24,8 +24,8 @@ pub const TERMINALS: &[&str; 8] = &[
     /* 2 */ UNMATCHABLE_TOKEN,
     /* 3 */ UNMATCHABLE_TOKEN,
     /* 4 */ UNMATCHABLE_TOKEN,
-    /* 5 */ r###","###,
-    /* 6 */ r###"0|[1-9][0-9]*"###,
+    /* 5 */ r",",
+    /* 6 */ r"0|[1-9][0-9]*",
     /* 7 */ ERROR_TOKEN,
 ];
 

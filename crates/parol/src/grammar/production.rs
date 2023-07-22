@@ -155,13 +155,12 @@ impl Pr {
             s,
             self.1
                 .iter()
-                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
-                    if let Ok(mut acc) = acc {
-                        acc.push(s.format(scanner_state_resolver, user_type_resolver)?);
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
+                .try_fold(Vec::new(), |mut acc: Vec<String>, s| {
+                    s.format(scanner_state_resolver, user_type_resolver)
+                        .map(|s| {
+                            acc.push(s);
+                            acc
+                        })
                 })
                 .map(|v| v.join(" "))?
         ))

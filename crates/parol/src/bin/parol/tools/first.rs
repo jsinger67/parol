@@ -48,7 +48,7 @@ pub fn main(args: &Args) -> Result<()> {
         .iter()
         .cloned()
         .collect::<Vec<String>>();
-    let first_k_per_nt: Vec<KTuples> = first_k_per_nt.drain(..).collect();
+    let first_k_per_nt: Vec<KTuples> = std::mem::take(&mut first_k_per_nt);
     for (nt_i, fi) in first_k_per_nt.iter().enumerate() {
         println!("  {}: {}", non_terminals[nt_i], fi.to_string(&terminals));
     }

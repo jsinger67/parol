@@ -24,11 +24,11 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  2 */ UNMATCHABLE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
-    /*  5 */ r###";"###,
-    /*  6 */ r###"[a-zA-Z_][a-zA-Z0-9_]*"###,
-    /*  7 */ r###"(?i)(?-u:\b)Begin(?-u:\b)"###,
-    /*  8 */ r###"(?i)(?-u:\b)End(?-u:\b)"###,
-    /*  9 */ r###"(?i)(?-u:\b)Var(?-u:\b)"###,
+    /*  5 */ r";",
+    /*  6 */ r"[a-zA-Z_][a-zA-Z0-9_]*",
+    /*  7 */ r"(?i)(?-u:\b)Begin(?-u:\b)",
+    /*  8 */ r"(?i)(?-u:\b)End(?-u:\b)",
+    /*  9 */ r"(?i)(?-u:\b)Var(?-u:\b)",
     /* 10 */ ERROR_TOKEN,
 ];
 

@@ -235,13 +235,12 @@ impl GrammarTypeInfo {
     ) -> Result<SymbolId> {
         if alternatives.len() == 2 {
             let semantics = alternatives.iter().fold(
-                Ok(Vec::new()),
-                |res: Result<Vec<ProductionAttribute>>, (_, p)| {
-                    let mut res = res?;
+                Vec::new(),
+                |mut res: Vec<ProductionAttribute>, (_, p)| {
                     res.push(p.2);
-                    Ok(res)
+                    res
                 },
-            )?;
+            );
             if semantics[0] == ProductionAttribute::AddToCollection
                 || semantics[0] == ProductionAttribute::CollectionStart
                 || semantics[0] == ProductionAttribute::OptionalNone
@@ -282,12 +281,13 @@ impl GrammarTypeInfo {
         let mut vector_typed_non_terminal_opt = None;
         let mut option_typed_non_terminal_opt = None;
 
-        let actions = self.matching_actions(nt).iter().fold(
-            Ok(Vec::new()),
-            |res: Result<Vec<(SymbolId, ProductionAttribute)>>, a| {
-                let mut res = res?;
-                res.push((*a, self.symbol_table.function_type_semantic(*a)?));
-                Ok(res)
+        let actions = self.matching_actions(nt).iter().try_fold(
+            Vec::new(),
+            |mut res: Vec<(SymbolId, ProductionAttribute)>, a| {
+                self.symbol_table.function_type_semantic(*a).map(|t| {
+                    res.push((*a, t));
+                    res
+                })
             },
         )?;
 
@@ -441,17 +441,16 @@ impl GrammarTypeInfo {
             .clone();
         if let TypeEntrails::Function(function_entrails) = entrails {
             let prod = &grammar_config.cfg[function_entrails.prod_num];
-            let mut types = prod.get_r().iter().filter(|s| s.is_t() || s.is_n()).fold(
-                Ok(Vec::new()),
-                |acc, s| {
-                    acc.and_then(|mut acc| {
-                        self.deduce_type_of_symbol(s).map(|t| {
-                            acc.push((t, s.attribute()));
-                            acc
-                        })
+            let mut types = prod
+                .get_r()
+                .iter()
+                .filter(|s| s.is_t() || s.is_n())
+                .try_fold(Vec::new(), |mut acc, s| {
+                    self.deduce_type_of_symbol(s).map(|t| {
+                        acc.push((t, s.attribute()));
+                        acc
                     })
-                },
-            )?;
+                })?;
 
             if function_entrails.sem == ProductionAttribute::AddToCollection {
                 let ref_mut_last_type = &mut types.last_mut().unwrap().0;
@@ -461,11 +460,11 @@ impl GrammarTypeInfo {
                 };
             }
 
-            self.generate_member_names(prod.get_r())
+            let result = self
+                .generate_member_names(prod.get_r())
                 .iter()
                 .zip(types.drain(..))
-                .fold(Ok(()), |acc, ((n, r), (t, a))| {
-                    acc?;
+                .try_for_each(|((n, r), (t, a))| {
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
@@ -491,7 +490,8 @@ impl GrammarTypeInfo {
                     self.symbol_table
                         .insert_instance(function_id, n, type_id, used, a, r.to_string())
                         .map(|_| Ok(()))?
-                })
+                });
+            result
         } else {
             bail!("No function!")
         }

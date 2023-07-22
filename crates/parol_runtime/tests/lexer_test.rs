@@ -41,8 +41,8 @@ const TERMINALS: &[&str; 12] = &[
     /*  6 */ r###"%%"###,
     /*  7 */ r###":"###,
     /*  8 */ r###";"###,
-    /*  9 */ r###"[a-zA-Z_]\w*"###,
-    /* 10 */ r###""([^\\]|(\\.))*?""###,
+    /*  9 */ r"[a-zA-Z_]\w*",
+    /* 10 */ r#""([^\\]|(\\.))*?""#,
     /* 11 */ ERROR_TOKEN,
 ];
 
@@ -51,7 +51,7 @@ const SCANNER_0: &[&str; 5] = &[
     /*  1 */ NEW_LINE_TOKEN, // token::NEW_LINE
     /*  2 */ WHITESPACE_TOKEN, // token::WHITESPACE
     /*  3 */ r###"//.*"###, // token::LINE_COMMENT
-    /*  4 */ r###"(?m)(/\*(.|[\r\n])*?\*/)(?-m)"###, // token::BLOCK_COMMENT
+    /*  4 */ r"(?m)(/\*(.|[\r\n])*?\*/)(?-m)", // token::BLOCK_COMMENT
 ];
 
 static TOKENIZERS: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {

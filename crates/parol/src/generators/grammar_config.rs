@@ -276,7 +276,7 @@ mod test {
 
         let scanner_config = ScannerConfig::default()
             .with_line_comments(vec!["//".to_owned()])
-            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
+            .with_block_comments(vec![(r"/\*".to_owned(), r"\*/".to_owned())]);
 
         let grammar_config = GrammarConfig::new(g, 1)
             .with_title(title)
@@ -286,7 +286,7 @@ mod test {
         let augment_terminals = grammar_config.generate_augmented_terminals();
 
         assert_eq!(
-            vec![
+            [
                 "UNMATCHABLE_TOKEN",
                 "UNMATCHABLE_TOKEN",
                 "UNMATCHABLE_TOKEN",
@@ -307,12 +307,12 @@ mod test {
             .generate_build_information(&grammar_config.cfg);
 
         assert_eq!(
-            vec![
+            [
                 "UNMATCHABLE_TOKEN",
                 "NEW_LINE_TOKEN",
                 "WHITESPACE_TOKEN",
-                r###"(//.*(\r\n|\r|\n|$))"###,
-                r###"((?ms)/\*.*?\*/)"###,
+                r"(//.*(\r\n|\r|\n|$))",
+                r"((?ms)/\*.*?\*/)"
             ]
             .iter()
             .map(|t| (*t).to_owned())
@@ -361,15 +361,15 @@ mod test {
             augment_terminals: augmented_terminals!["r", "d"],
         },
         TestData {
-            input: r#"%start A %% A: B /r/; B: C /\d/; C: A /d/;"#,
+            input: r"%start A %% A: B /r/; B: C /\d/; C: A /d/;",
             augment_terminals: augmented_terminals!["r", r"\d", "d"],
         },
         TestData {
-            input: r#"%start A %% A: B /r/; B: C /\s/; C: A /d/;"#,
+            input: r"%start A %% A: B /r/; B: C /\s/; C: A /d/;",
             augment_terminals: augmented_terminals!["r", r"\s", "d"],
         },
         TestData {
-            input: r#"%start A %% A: B /r/; B: C '\s'; C: A /d/;"#,
+            input: r"%start A %% A: B /r/; B: C '\s'; C: A /d/;",
             augment_terminals: augmented_terminals!["r", r"\\s", "d"],
         },
     ];

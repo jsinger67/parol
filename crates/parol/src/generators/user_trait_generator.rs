@@ -374,8 +374,7 @@ impl<'a> UserTraitGenerator<'a> {
 
     pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
         let mut processed_non_terminals: HashSet<String> = HashSet::new();
-        self.productions.iter().fold(Ok(()), |acc: Result<()>, p| {
-            acc?;
+        self.productions.iter().try_for_each(|p| {
             if !processed_non_terminals.contains(&p.lhs) {
                 type_info.add_user_action(&p.lhs)?;
                 processed_non_terminals.insert(p.lhs.to_string());
@@ -477,6 +476,7 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     /// Generates the file with the user actions trait.
     ///
+    #[allow(clippy::manual_try_fold)]
     pub fn generate_user_trait_source<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,

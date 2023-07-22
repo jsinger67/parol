@@ -35,7 +35,7 @@ impl Diagnostics {
                         extract_grammar_analysis_error(
                             e,
                             &located_document_state,
-                            &mut range,
+                            &range,
                             &mut related_information,
                         );
                     } else if let Some(e) = err.downcast_ref::<ParolParserError>() {
@@ -71,7 +71,7 @@ impl Diagnostics {
 fn extract_grammar_analysis_error(
     error: &GrammarAnalysisError,
     located_document_state: &LocatedDocumentState,
-    range: &mut Range,
+    range: &Range,
     related_information: &mut Vec<DiagnosticRelatedInformation>,
 ) {
     match error {

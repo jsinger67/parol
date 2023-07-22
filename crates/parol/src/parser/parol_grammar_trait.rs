@@ -710,7 +710,7 @@ pub struct RawString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Regex<'t> {
-    pub regex: Token<'t>, /* \u{2F}(\\.|[^\\]|)*?\u{2F} */
+    pub regex: Token<'t>, /* \u{2F}(\\.|[^\\])*?\u{2F} */
 }
 
 ///
@@ -2009,7 +2009,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
+    /// Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;
     ///
     #[parol_runtime::function_name::named]
     fn regex(&mut self, regex: &ParseTreeType<'t>) -> Result<()> {

@@ -10,17 +10,17 @@ use regex_automata::{dfa::regex::Regex, PatternID};
 /// comments you could mark the regex on index token::BLOCK_COMMENT as
 /// unmatchable.
 ///
-pub const UNMATCHABLE_TOKEN: &str = r###"\w\b\w"###;
+pub const UNMATCHABLE_TOKEN: &str = r"\w\b\w";
 
 ///
 /// Regular expression for new lines
 ///
-pub const NEW_LINE_TOKEN: &str = r###"\r\n|\r|\n"###;
+pub const NEW_LINE_TOKEN: &str = r"\r\n|\r|\n";
 
 ///
 /// Regular expression for any whitespace except newline characters
 ///
-pub const WHITESPACE_TOKEN: &str = r###"[\s--\r\n]+"###;
+pub const WHITESPACE_TOKEN: &str = r"[\s--\r\n]+";
 
 ///
 /// Regular expression that matches any other token. With this you can detect

@@ -103,13 +103,10 @@ impl Display for ParseStack {
             .iter()
             .rev()
             .enumerate()
-            .fold(Ok(()), |acc, (i, e)| match acc {
-                Ok(()) => match e {
-                    ParseType::T(t) => writeln!(f, "{} - T({})", i, self.decode_terminal(*t)),
-                    ParseType::N(n) => writeln!(f, "{} - N({})", i, self.decode_non_terminal(*n)),
-                    _ => writeln!(f, "{} - {}", i, e),
-                },
-                Err(_) => acc,
+            .try_for_each(|(i, e)| match e {
+                ParseType::T(t) => writeln!(f, "{} - T({})", i, self.decode_terminal(*t)),
+                ParseType::N(n) => writeln!(f, "{} - N({})", i, self.decode_non_terminal(*n)),
+                _ => writeln!(f, "{} - {}", i, e),
             })
     }
 }

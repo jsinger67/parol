@@ -31,7 +31,10 @@ impl ScannerBuildInfo {
                     let e = match e.as_str() {
                         "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN"
                         | "ERROR_TOKEN" => e.to_owned(),
-                        _ => format!(r####"r###"{}"###"####, e),
+                        _ => {
+                            let hashes = determine_hashes_for_raw_string(e);
+                            format!(r#"r{}"{}"{}"#, hashes, e, hashes)
+                        }
                     };
                     acc.push(format!("/* {:w$} */ {},", i, e, w = width));
                     acc
@@ -48,6 +51,16 @@ impl ScannerBuildInfo {
             terminal_indices,
         }
     }
+}
+
+fn determine_hashes_for_raw_string(e: &str) -> String {
+    let mut pattern = r#"""#.to_string();
+    let mut count = 0;
+    while e.contains(&pattern) {
+        pattern.push('#');
+        count += 1;
+    }
+    "#".repeat(count)
 }
 
 #[derive(Debug, Default)]
@@ -81,7 +94,10 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
                     "UNMATCHABLE_TOKEN" | "NEW_LINE_TOKEN" | "WHITESPACE_TOKEN" | "ERROR_TOKEN" => {
                         e.to_owned()
                     }
-                    _ => format!(r####"r###"{}"###"####, e),
+                    _ => {
+                        let hashes = determine_hashes_for_raw_string(e);
+                        format!(r#"r{}"{}"{}"#, hashes, e, hashes)
+                    }
                 };
                 acc.push(format!("/* {:w$} */ {},", i, e, w = width));
                 acc

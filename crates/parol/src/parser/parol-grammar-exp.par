@@ -53,7 +53,7 @@
 /* 42 */ TokenWithStatesOpt /* `Option<T>::None` */: ;
 /* 43 */ String: /"(\\.|[^\\])*?"/;
 /* 44 */ RawString: /'(\\'|[^'])*?'/;
-/* 45 */ Regex: /\u{2F}(\\.|[^\\]|)*?\u{2F}/;
+/* 45 */ Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;
 /* 46 */ Group: '(' Alternations ')';
 /* 47 */ Optional: '[' Alternations ']';
 /* 48 */ Repeat: '{' Alternations '}';
