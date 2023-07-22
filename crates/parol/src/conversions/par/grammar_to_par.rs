@@ -76,13 +76,12 @@ pub fn render_par_string(
             .cfg
             .pr
             .iter()
-            .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
-                if let Ok(mut acc) = acc {
-                    acc.push(p.format(&scanner_state_resolver, &user_type_resolver)?);
-                    Ok(acc)
-                } else {
-                    acc
-                }
+            .try_fold(Vec::new(), |mut acc: Vec<String>, p| {
+                p.format(&scanner_state_resolver, &user_type_resolver)
+                    .map(|s| {
+                        acc.push(s);
+                        acc
+                    })
             })?;
 
     if add_index_comment {

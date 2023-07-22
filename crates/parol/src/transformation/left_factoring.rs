@@ -151,12 +151,13 @@ pub fn left_factor(g: &Cfg) -> Cfg {
     let format_productions = |pr: &[Pr]| -> Result<String> {
         Ok(pr
             .iter()
-            .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, p| {
-                if let Ok(mut acc) = acc {
-                    acc.push(p.format(&scanner_state_resolver, &user_type_resolver)?);
-                    Ok(acc)
-                } else {
-                    acc
+            .try_fold(Vec::new(), |mut acc: Vec<String>, p| {
+                match p.format(&scanner_state_resolver, &user_type_resolver) {
+                    Ok(p) => {
+                        acc.push(p);
+                        Ok(acc)
+                    }
+                    Err(e) => Err(e),
                 }
             })?
             .join("\n"))
@@ -179,12 +180,13 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         let format_symbols = |symbols: &[Symbol]| -> Result<String> {
             Ok(symbols
                 .iter()
-                .fold(Ok(Vec::new()), |acc: Result<Vec<String>>, s| {
-                    if let Ok(mut acc) = acc {
-                        acc.push(s.format(state_resolver, user_type_resolver)?);
-                        Ok(acc)
-                    } else {
-                        acc
+                .try_fold(Vec::new(), |mut acc: Vec<String>, s| {
+                    match s.format(state_resolver, user_type_resolver) {
+                        Ok(s) => {
+                            acc.push(s);
+                            Ok(acc)
+                        }
+                        Err(e) => Err(e),
                     }
                 })?
                 .join(" "))

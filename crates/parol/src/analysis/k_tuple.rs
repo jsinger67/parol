@@ -251,11 +251,7 @@ impl Ord for Terminals {
 
 impl PartialOrd for Terminals {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match self.i.partial_cmp(&other.i) {
-            Some(core::cmp::Ordering::Equal) => {}
-            ord => return ord,
-        }
-        self.t[0..self.i].partial_cmp(&other.t[0..other.i])
+        Some(self.cmp(other))
     }
 }
 

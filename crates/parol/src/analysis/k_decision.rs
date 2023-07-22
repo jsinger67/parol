@@ -152,19 +152,22 @@ pub fn calculate_k(
     follow_cache: &FollowCache,
 ) -> Result<usize> {
     let cfg = &grammar_config.cfg;
-    cfg.get_non_terminal_set()
+    Ok(cfg
+        .get_non_terminal_set()
         .iter()
-        .map(|n| decidable(grammar_config, n, max_k, first_cache, follow_cache))
-        .fold(Ok(0), |k, r| match (&k, &r) {
-            (Err(_), _) => k, // The first error is retained
-            (Ok(max_k), Ok(current_k)) => Ok(std::cmp::max(*max_k, *current_k)),
-            (Ok(_), Err(_)) => r, // The first error occurred here
-        })
+        .map(|n| decidable(grammar_config, n, max_k, first_cache, follow_cache).unwrap_or(max_k))
+        .fold(0, std::cmp::max))
+    // .fold(Ok(0), |k, r| match (&k, &r) {
+    //     (Err(_), _) => k, // The first error is retained
+    //     (Ok(max_k), Ok(current_k)) => Ok(std::cmp::max(*max_k, *current_k)),
+    //     (Ok(_), Err(_)) => r, // The first error occurred here
+    // })
 }
 
 ///
 /// Calculates lookahead tuples for all productions, where max_k is the limit.
 ///
+#[allow(clippy::manual_try_fold)]
 pub fn calculate_k_tuples(
     grammar_config: &GrammarConfig,
     max_k: usize,
@@ -220,23 +223,20 @@ pub fn calculate_lookahead_dfas(
 
     let k_tuples_of_productions =
         calculate_k_tuples(grammar_config, max_k, &first_cache, &follow_cache)?;
-    k_tuples_of_productions
-        .iter()
-        .fold(Ok(BTreeMap::new()), |acc, (i, t)| {
-            if let Ok(mut acc) = acc {
-                let nt = cfg[*i].get_n();
-                let dfa = LookaheadDFA::from_k_tuples(t, *i);
-                if let Some(found_dfa) = acc.remove(&nt) {
-                    let united_dfa = found_dfa.unite(&dfa)?;
-                    acc.insert(nt, united_dfa);
-                } else {
-                    acc.insert(nt, dfa);
-                }
-                Ok(acc)
+    k_tuples_of_productions.iter().try_fold(
+        BTreeMap::<String, LookaheadDFA>::new(),
+        |mut acc, (i, t)| {
+            let nt = cfg[*i].get_n();
+            let dfa = LookaheadDFA::from_k_tuples(t, *i);
+            if let Some(found_dfa) = acc.remove(&nt) {
+                let united_dfa = found_dfa.unite(&dfa)?;
+                acc.insert(nt, united_dfa);
             } else {
-                acc
+                acc.insert(nt, dfa);
             }
-        })
+            Ok(acc)
+        },
+    )
 }
 
 ///

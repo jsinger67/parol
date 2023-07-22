@@ -143,27 +143,24 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
         .map(|_| ())?;
 
     // Add dependencies
-    DEPENDENCIES
-        .iter()
-        .fold(Ok(()), |res: Result<()>, cargo_args| {
-            res?;
-            if !cargo_args[1].contains('-') {
-                Command::new("cargo")
-                    .current_dir(&creation_data.path)
-                    .args(*cargo_args)
-                    .status()
-                    .map(|_| ())
-                    .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
-            } else {
-                let cargo_args = "add parol --build --git https://github.com/jsinger67/parol.git";
-                Command::new("cargo")
-                    .current_dir(&creation_data.path)
-                    .args(cargo_args.split(' '))
-                    .status()
-                    .map(|_| ())
-                    .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
-            }
-        })?;
+    DEPENDENCIES.iter().try_for_each(|cargo_args| {
+        if !cargo_args[1].contains('-') {
+            Command::new("cargo")
+                .current_dir(&creation_data.path)
+                .args(*cargo_args)
+                .status()
+                .map(|_| ())
+                .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
+        } else {
+            let cargo_args = "add parol --build --git https://github.com/jsinger67/parol.git";
+            Command::new("cargo")
+                .current_dir(&creation_data.path)
+                .args(cargo_args.split(' '))
+                .status()
+                .map(|_| ())
+                .context("Maybe you have to install cargo-edit: `cargo install cargo-edit`?")
+        }
+    })?;
 
     // Add dependency to syntree_layout
     if creation_data.tree_gen {

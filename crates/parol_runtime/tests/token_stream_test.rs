@@ -24,11 +24,11 @@ pub const TERMINALS: &[&str; 11] = &[
     /*  2 */ UNMATCHABLE_TOKEN,
     /*  3 */ UNMATCHABLE_TOKEN,
     /*  4 */ UNMATCHABLE_TOKEN,
-    /*  5 */ r###"[a-zA-Z_]\w*"###,
-    /*  6 */ r###"\u{5c}[\u{22}\u{5c}bfnt]"###,
-    /*  7 */ r###"\u{5c}[\s^\n\r]*\r?\n"###,
-    /*  8 */ r###"[^\u{22}\u{5c}]+"###,
-    /*  9 */ r###"\u{22}"###,
+    /*  5 */ r"[a-zA-Z_]\w*",
+    /*  6 */ r"\u{5c}[\u{22}\u{5c}bfnt]",
+    /*  7 */ r"\u{5c}[\s^\n\r]*\r?\n",
+    /*  8 */ r"[^\u{22}\u{5c}]+",
+    /*  9 */ r"\u{22}",
     /* 10 */ ERROR_TOKEN,
 ];
 
@@ -38,8 +38,8 @@ const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
         /*  2 */ WHITESPACE_TOKEN,
-        /*  3 */ r###"(//.*(\r\n|\r|\n|$))"###,
-        /*  4 */ r###"((?ms)/\*.*?\*/)"###,
+        /*  3 */ r"(//.*(\r\n|\r|\n|$))",
+        /*  4 */ r"((?ms)/\*.*?\*/)",
     ],
     &[5 /* Identifier */, 9 /* StringDelimiter */],
 );

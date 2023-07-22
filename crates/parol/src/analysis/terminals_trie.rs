@@ -99,7 +99,7 @@ impl Ord for Node {
 
 impl PartialOrd for Node {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.t.partial_cmp(&other.t)
+        Some(self.cmp(other))
     }
 }
 
@@ -624,7 +624,7 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(1, end_node_count(&t));
 
-        let expected = vec![vec![1]]
+        let expected = [vec![1]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
             .collect::<Vec<Terminals>>();
@@ -640,7 +640,7 @@ mod test {
         assert_eq!(2, t.len());
         assert_eq!(2, end_node_count(&t));
 
-        let expected = vec![vec![1], vec![1, 2]]
+        let expected = [vec![1], vec![1, 2]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
             .collect::<Vec<Terminals>>();
@@ -679,7 +679,7 @@ mod test {
         assert_eq!(5, t.len());
         assert_eq!(5, end_node_count(&t));
 
-        let expected = vec![
+        let expected = [
             vec![1, 2],
             vec![1, 2, 3],
             vec![1, 2, 4],
@@ -719,7 +719,7 @@ mod test {
         //     3
         t2.insert(&tuple1);
 
-        let expected = vec![vec![1, 2, 3]]
+        let expected = [vec![1, 2, 3]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
             .collect::<Vec<Terminals>>();
@@ -806,7 +806,7 @@ mod test {
         assert_eq!(4, t1.len());
         assert_eq!(4, end_node_count(&t1));
 
-        let expected = vec![vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
+        let expected = [vec![1, 2, 3], vec![1, 2, 4], vec![5, 6, 7], vec![5, 8]]
             .iter()
             .map(|v| Terminals::from_slice_with(v, 6, |t| CompiledTerminal(*t)))
             .collect::<Vec<Terminals>>();

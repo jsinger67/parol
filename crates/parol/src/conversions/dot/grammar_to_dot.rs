@@ -169,7 +169,7 @@ mod test {
 
         let scanner_config = ScannerConfig::default()
             .with_line_comments(vec!["//".to_owned()])
-            .with_block_comments(vec![(r#"/\*"#.to_owned(), r#"\*/"#.to_owned())]);
+            .with_block_comments(vec![(r"/\*".to_owned(), r"\*/".to_owned())]);
 
         let grammar_config = GrammarConfig::new(g, 1)
             .with_title(title)
