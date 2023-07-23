@@ -1,6 +1,7 @@
 use crate::generate_name;
 use crate::generators::{generate_terminal_name, GrammarConfig};
 use anyhow::Result;
+use parol_runtime::TerminalIndex;
 
 use crate::StrVec;
 use std::fmt::Debug;
@@ -21,7 +22,7 @@ impl ScannerBuildInfo {
         terminal_names: &[String],
         width: usize,
         special_tokens: &[String],
-        terminal_indices: &[usize],
+        terminal_indices: &[TerminalIndex],
     ) -> Self {
         let special_tokens =
             special_tokens
@@ -40,7 +41,7 @@ impl ScannerBuildInfo {
                     acc
                 });
         let terminal_indices = terminal_indices.iter().fold(StrVec::new(8), |mut acc, e| {
-            acc.push(format!(r#"{}, /* {} */"#, e, terminal_names[*e]));
+            acc.push(format!(r#"{}, /* {} */"#, e, terminal_names[*e as usize]));
             acc
         });
         Self {
@@ -138,7 +139,7 @@ pub fn generate_lexer_source(grammar_config: &GrammarConfig) -> Result<String> {
             .fold(Vec::new(), |mut acc, (i, e)| {
                 let n = generate_name(
                     &acc,
-                    generate_terminal_name(e, Some(i), &grammar_config.cfg),
+                    generate_terminal_name(e, Some(i as TerminalIndex), &grammar_config.cfg),
                 );
                 acc.push(n);
                 acc
@@ -186,7 +187,7 @@ pub fn generate_terminal_names(grammar_config: &GrammarConfig) -> Vec<String> {
         .fold(Vec::new(), |mut acc, (i, e)| {
             let n = generate_name(
                 &acc,
-                generate_terminal_name(e, Some(i), &grammar_config.cfg),
+                generate_terminal_name(e, Some(i as TerminalIndex), &grammar_config.cfg),
             );
             acc.push(n);
             acc
@@ -234,7 +235,7 @@ impl std::fmt::Display for ScannerBuildInfo {
         writeln!(f, r#"/* SCANNER_{scanner_index}: "{scanner_name}" */"#)?;
         let scanner_name = format!("SCANNER_{}", scanner_index);
         f.write_fmt(ume::ume! {
-            const #scanner_name: (&[&str; 5], &[usize; #terminal_index_count]) = (
+            const #scanner_name: (&[&str; 5], &[TerminalIndex; #terminal_index_count]) = (
                 &[#special_tokens], &[#terminal_indices],
             );
         })

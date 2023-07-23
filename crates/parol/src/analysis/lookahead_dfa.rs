@@ -1,7 +1,7 @@
-use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::KTuples;
 use anyhow::{bail, Result};
 use parol_runtime::log::trace;
+use parol_runtime::TerminalIndex;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::{Display, Error, Formatter};

@@ -88,8 +88,8 @@ impl ParseStack {
         }
     }
 
-    fn decode_terminal(&self, terminal_index: usize) -> &'static str {
-        self.terminal_names[terminal_index]
+    fn decode_terminal(&self, terminal_index: TerminalIndex) -> &'static str {
+        self.terminal_names[terminal_index as usize]
     }
 
     fn decode_non_terminal(&self, non_terminal_index: usize) -> &'static str {

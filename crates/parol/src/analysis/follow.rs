@@ -3,7 +3,6 @@
 //! FOLLOW k of productions and non-terminals
 //!
 
-use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::k_decision::CacheEntry;
 use crate::analysis::FirstCache;
@@ -11,6 +10,7 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
+use parol_runtime::TerminalIndex;
 use std::collections::HashMap;
 use std::sync::mpsc::channel;
 use std::sync::{Arc, RwLock};
@@ -87,11 +87,11 @@ pub fn follow_k(
 
     let terminals = grammar_config.cfg.get_ordered_terminals_owned();
 
-    let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> usize {
-        terminals
+    let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> TerminalIndex {
+        (terminals
             .iter()
             .position(|(trm, kind, _)| *trm == t && kind.behaves_like(k))
-            .unwrap()
+            .unwrap() as TerminalIndex)
             + FIRST_USER_TOKEN
     });
 

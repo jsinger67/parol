@@ -6,7 +6,7 @@ use regex_automata::dfa::regex::Regex;
 ///
 /// Type used for token types the user provides.
 ///
-pub type TerminalIndex = usize;
+pub type TerminalIndex = u16;
 
 ///
 /// Module with common formatting trait

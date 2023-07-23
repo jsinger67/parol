@@ -5,7 +5,7 @@ use parol_runtime::lexer::tokenizer::{
     ERROR_TOKEN, NEW_LINE_TOKEN, UNMATCHABLE_TOKEN, WHITESPACE_TOKEN,
 };
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::{FileSource, Token, TokenStream, Tokenizer};
+use parol_runtime::{FileSource, TerminalIndex, Token, TokenStream, Tokenizer};
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
@@ -33,7 +33,7 @@ pub const TERMINALS: &[&str; 11] = &[
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
+const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
@@ -45,7 +45,7 @@ const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
 );
 
 /* SCANNER_1: "String" */
-const SCANNER_1: (&[&str; 5], &[usize; 4]) = (
+const SCANNER_1: (&[&str; 5], &[TerminalIndex; 4]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,

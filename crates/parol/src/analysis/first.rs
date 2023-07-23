@@ -3,11 +3,11 @@
 //! FIRSTk of productions and non-terminals
 //!
 
-use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
 use parol_runtime::log::trace;
+use parol_runtime::TerminalIndex;
 // use std::sync::mpsc::channel;
 use std::sync::Arc;
 // use std::thread;

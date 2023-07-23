@@ -9,7 +9,7 @@ use parol_runtime::once_cell::sync::Lazy;
 use parol_runtime::parser::{
     LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans, UserActionsTrait,
 };
-use parol_runtime::{ParolError, ParseTree};
+use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
@@ -41,7 +41,7 @@ pub const TERMINAL_NAMES: &[&str; 8] = &[
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 2]) = (
+const SCANNER_0: (&[&str; 5], &[TerminalIndex; 2]) = (
     &[
         /* 0 */ UNMATCHABLE_TOKEN,
         /* 1 */ NEW_LINE_TOKEN,

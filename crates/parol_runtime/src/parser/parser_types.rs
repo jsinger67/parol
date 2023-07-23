@@ -39,7 +39,7 @@ impl Production {
             .rev()
             .map(|s| match s {
                 ParseType::N(n) => non_terminal_names[*n].to_owned(),
-                ParseType::T(t) => format!(r#""{}""#, terminal_names[*t]),
+                ParseType::T(t) => format!(r#""{}""#, terminal_names[*t as usize]),
                 ParseType::S(s) => format!("%sc({})", s),
                 ParseType::Push(s) => format!("%push({})", s),
                 ParseType::Pop => "%pop".to_string(),
@@ -332,7 +332,7 @@ impl<'t> LLKParser<'t> {
                             self.parse_tree_stack.push(ParseTreeType::T(token));
                         } else {
                             let mut expected_tokens = TokenVec::default();
-                            expected_tokens.push(self.terminal_names[t].to_string());
+                            expected_tokens.push(self.terminal_names[t as usize].to_string());
                             return Err(ParserError::PredictionErrorWithExpectations {
                                 cause: self.diagnostic_message(
                                     format!(
@@ -347,7 +347,7 @@ impl<'t> LLKParser<'t> {
                                 error_location: Box::new((&token).into()),
                                 unexpected_tokens: vec![UnexpectedToken::new(
                                     "LA(1)".to_owned(),
-                                    self.terminal_names[token.token_type].to_owned(),
+                                    self.terminal_names[token.token_type as usize].to_owned(),
                                     &token,
                                 )],
                                 expected_tokens,

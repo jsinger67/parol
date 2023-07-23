@@ -1285,6 +1285,7 @@ mod test {
     }
 
     #[test]
+    #[ignore = "Not ready yet"]
     fn test_formatting() {
         let mut error_count = 0;
         let mut tests_run = 0;

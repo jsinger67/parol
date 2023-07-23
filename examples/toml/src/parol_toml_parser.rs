@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree};
+use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
@@ -139,7 +139,7 @@ pub const TERMINAL_NAMES: &[&str; 55] = &[
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 14]) = (
+const SCANNER_0: (&[&str; 5], &[TerminalIndex; 14]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
@@ -166,7 +166,7 @@ const SCANNER_0: (&[&str; 5], &[usize; 14]) = (
 );
 
 /* SCANNER_1: "Esc" */
-const SCANNER_1: (&[&str; 5], &[usize; 11]) = (
+const SCANNER_1: (&[&str; 5], &[TerminalIndex; 11]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -190,7 +190,7 @@ const SCANNER_1: (&[&str; 5], &[usize; 11]) = (
 );
 
 /* SCANNER_2: "Val" */
-const SCANNER_2: (&[&str; 5], &[usize; 25]) = (
+const SCANNER_2: (&[&str; 5], &[TerminalIndex; 25]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ NEW_LINE_TOKEN,
@@ -228,7 +228,7 @@ const SCANNER_2: (&[&str; 5], &[usize; 25]) = (
 );
 
 /* SCANNER_3: "BString" */
-const SCANNER_3: (&[&str; 5], &[usize; 4]) = (
+const SCANNER_3: (&[&str; 5], &[TerminalIndex; 4]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -245,7 +245,7 @@ const SCANNER_3: (&[&str; 5], &[usize; 4]) = (
 );
 
 /* SCANNER_4: "MLBString" */
-const SCANNER_4: (&[&str; 5], &[usize; 7]) = (
+const SCANNER_4: (&[&str; 5], &[TerminalIndex; 7]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -265,7 +265,7 @@ const SCANNER_4: (&[&str; 5], &[usize; 7]) = (
 );
 
 /* SCANNER_5: "LString" */
-const SCANNER_5: (&[&str; 5], &[usize; 3]) = (
+const SCANNER_5: (&[&str; 5], &[TerminalIndex; 3]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -281,7 +281,7 @@ const SCANNER_5: (&[&str; 5], &[usize; 3]) = (
 );
 
 /* SCANNER_6: "MLLString" */
-const SCANNER_6: (&[&str; 5], &[usize; 5]) = (
+const SCANNER_6: (&[&str; 5], &[TerminalIndex; 5]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -299,7 +299,7 @@ const SCANNER_6: (&[&str; 5], &[usize; 5]) = (
 );
 
 /* SCANNER_7: "HexInt" */
-const SCANNER_7: (&[&str; 5], &[usize; 1]) = (
+const SCANNER_7: (&[&str; 5], &[TerminalIndex; 1]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -311,7 +311,7 @@ const SCANNER_7: (&[&str; 5], &[usize; 1]) = (
 );
 
 /* SCANNER_8: "OctInt" */
-const SCANNER_8: (&[&str; 5], &[usize; 1]) = (
+const SCANNER_8: (&[&str; 5], &[TerminalIndex; 1]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -323,7 +323,7 @@ const SCANNER_8: (&[&str; 5], &[usize; 1]) = (
 );
 
 /* SCANNER_9: "BinInt" */
-const SCANNER_9: (&[&str; 5], &[usize; 1]) = (
+const SCANNER_9: (&[&str; 5], &[TerminalIndex; 1]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,

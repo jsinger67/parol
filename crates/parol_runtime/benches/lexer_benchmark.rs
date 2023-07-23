@@ -1,7 +1,7 @@
 use std::{borrow::Cow, cell::RefCell, path::Path};
 
 use criterion::{criterion_group, criterion_main, Criterion};
-use parol_runtime::{once_cell::sync::Lazy, TokenStream, Tokenizer};
+use parol_runtime::{once_cell::sync::Lazy, TerminalIndex, TokenStream, Tokenizer};
 
 const LEXER_INPUT: &str = include_str!("./input_1.txt");
 
@@ -108,7 +108,7 @@ const SCANNER_SPECIFICS: &[&str] = &[
     /*  4 */ parol_runtime::lexer::tokenizer::UNMATCHABLE_TOKEN,
 ];
 
-const SCANNER_TERMINAL_INDICES: &[usize] = &[
+const SCANNER_TERMINAL_INDICES: &[TerminalIndex] = &[
     5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
     30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53,
     54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
@@ -116,7 +116,7 @@ const SCANNER_TERMINAL_INDICES: &[usize] = &[
 ];
 
 const MAX_K: usize = 3;
-const ERROR_TOKEN_INDEX: usize = 90;
+const ERROR_TOKEN_INDEX: TerminalIndex = 90;
 
 static TOKENIZERS_1: Lazy<Vec<(&'static str, Tokenizer)>> = Lazy::new(|| {
     vec![(

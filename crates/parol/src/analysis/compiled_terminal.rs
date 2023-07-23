@@ -1,7 +1,7 @@
-use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::analysis::k_tuple::TerminalMappings;
 use crate::{Symbol, Terminal, TerminalKind};
 use parol_runtime::lexer::EOI;
+use parol_runtime::TerminalIndex;
 use std::fmt::{Debug, Display, Error, Formatter};
 
 ///

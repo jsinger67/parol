@@ -1,4 +1,5 @@
 use bitflags::bitflags;
+use parol_runtime::TerminalIndex;
 use std::{
     fmt::{Display, Formatter},
     ops::{Index, IndexMut},
@@ -6,7 +7,7 @@ use std::{
 
 use crate::{CompiledTerminal, KTuple, MAX_K};
 
-use super::{compiled_la_dfa::TerminalIndex, compiled_terminal::INVALID, k_tuple::Terminals};
+use super::{compiled_terminal::INVALID, k_tuple::Terminals};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
@@ -393,7 +394,7 @@ impl Display for TerminalsIter<'_> {
 mod test {
     use std::collections::HashSet;
 
-    use parol_runtime::lexer::EOI;
+    use parol_runtime::{lexer::EOI, TerminalIndex};
     use rand::Rng;
 
     use crate::{
@@ -862,7 +863,11 @@ mod test {
 
     // Trie::insert is commutative regarding Eq
     #[quickcheck]
-    fn trie_insert_is_commutative_regarding_eq(t1: Vec<usize>, t2: Vec<usize>, k: usize) -> bool {
+    fn trie_insert_is_commutative_regarding_eq(
+        t1: Vec<TerminalIndex>,
+        t2: Vec<TerminalIndex>,
+        k: usize,
+    ) -> bool {
         let tuple1 = KTuple::new(k).with_terminal_indices(&t1);
         let tuple2 = KTuple::new(k).with_terminal_indices(&t2);
         // Insertion order 1, 2
@@ -880,7 +885,7 @@ mod test {
 
     // Number of elements should be eq to number of the sum of inner and outer end nodes
     #[quickcheck]
-    fn trie_item_count_equals_end_node_count(t1: Vec<Vec<usize>>, k: usize) -> bool {
+    fn trie_item_count_equals_end_node_count(t1: Vec<Vec<TerminalIndex>>, k: usize) -> bool {
         let trie = t1.iter().fold(Trie::new(), |mut acc, e| {
             acc.insert(&KTuple::new(k).with_terminal_indices(e));
             acc
@@ -911,7 +916,10 @@ mod test {
                 if !t.is_empty() {
                     // eprintln!("k{k}: {:?}({})", t, t.len());
                     // Here we transform the u8's to usize again
-                    let t = t.iter().map(|u| *u as usize).collect::<Vec<usize>>();
+                    let t = t
+                        .iter()
+                        .map(|u| *u as TerminalIndex)
+                        .collect::<Vec<TerminalIndex>>();
                     let k_tuple = KTuple::new(k).with_terminal_indices(&t);
                     acc0.insert(&k_tuple);
                     acc1.insert(k_tuple);

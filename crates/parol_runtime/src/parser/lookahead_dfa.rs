@@ -190,7 +190,7 @@ impl LookaheadDFA {
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),
-                    terminal_names[token_type].to_owned(),
+                    terminal_names[token_type as usize].to_owned(),
                     token,
                 ));
                 state = self.transitions[transition].2;
@@ -200,13 +200,13 @@ impl LookaheadDFA {
                 );
                 unexpected_tokens.push(UnexpectedToken::new(
                     format!("LA({})", lookahead + 1),
-                    terminal_names[token_type].to_owned(),
+                    terminal_names[token_type as usize].to_owned(),
                     token,
                 ));
                 expected_tokens = self.transitions.iter().filter(|t| t.0 == state).fold(
                     expected_tokens,
                     |mut acc, t| {
-                        acc.push(format!(r#""{}""#, terminal_names[t.1]));
+                        acc.push(format!(r#""{}""#, terminal_names[t.1 as usize]));
                         acc
                     },
                 );

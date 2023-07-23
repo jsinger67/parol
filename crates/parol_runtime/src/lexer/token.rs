@@ -132,7 +132,7 @@ impl Display for Token<'_> {
 
 impl FormatToken for Token<'_> {
     fn format(&self, terminal_names: &'static [&'static str]) -> String {
-        let name = terminal_names[self.token_type];
+        let name = terminal_names[self.token_type as usize];
         format!(
             "'{}'({}) at {}",
             self.text.escape_default(),

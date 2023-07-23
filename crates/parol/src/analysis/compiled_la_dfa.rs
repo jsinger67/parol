@@ -1,16 +1,15 @@
 use std::collections::BTreeMap;
 
 use parol_runtime::log::trace;
+use parol_runtime::TerminalIndex;
 
 use super::lookahead_dfa::{CompiledProductionIndex, StateIndex, INVALID_PROD};
 use super::LookaheadDFA;
 
-pub(crate) type TerminalIndex = usize;
-
 mod adjacency_list {
     use parol_runtime::log::trace;
+    use parol_runtime::TerminalIndex;
 
-    use crate::analysis::compiled_la_dfa::TerminalIndex;
     use crate::analysis::lookahead_dfa::{CompiledProductionIndex, INVALID_PROD};
     use crate::group_by;
     use std::collections::{BTreeMap, VecDeque};

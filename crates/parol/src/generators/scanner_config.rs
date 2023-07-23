@@ -1,5 +1,5 @@
 use crate::Cfg;
-use parol_runtime::lexer::FIRST_USER_TOKEN;
+use parol_runtime::{lexer::FIRST_USER_TOKEN, TerminalIndex};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 // ---------------------------------------------------
@@ -89,7 +89,10 @@ impl ScannerConfig {
     /// comments etc.) and the indices of the terminals that are valid in this
     /// scanner.
     ///
-    pub fn generate_build_information(&self, cfg: &Cfg) -> (Vec<String>, Vec<usize>, String) {
+    pub fn generate_build_information(
+        &self,
+        cfg: &Cfg,
+    ) -> (Vec<String>, Vec<TerminalIndex>, String) {
         let mut scanner_specific = vec![
             "UNMATCHABLE_TOKEN".to_owned(),
             if self.auto_newline {
@@ -134,7 +137,7 @@ impl ScannerConfig {
                 .enumerate()
                 .fold(Vec::new(), |mut acc, (i, (_, _, s))| {
                     if s.contains(&self.scanner_state) {
-                        acc.push(i + FIRST_USER_TOKEN);
+                        acc.push(i as TerminalIndex + FIRST_USER_TOKEN);
                     }
                     acc
                 });

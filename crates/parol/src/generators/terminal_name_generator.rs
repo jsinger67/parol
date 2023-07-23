@@ -1,7 +1,7 @@
-use crate::analysis::compiled_la_dfa::TerminalIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::{Cfg, Symbol, Terminal};
 use parol_runtime::lexer::{BLOCK_COMMENT, EOI, LINE_COMMENT, NEW_LINE, WHITESPACE};
+use parol_runtime::TerminalIndex;
 
 /// Generates a terminal name from a terminal definition
 /// The parameter of type `Option<TerminalIndex>` is used to handle fixed terminal indices like EOI.

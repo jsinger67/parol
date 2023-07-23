@@ -210,19 +210,20 @@ impl Display for KTuples {
 #[cfg(test)]
 mod test {
     use crate::{KTuple, KTuples};
+    use parol_runtime::TerminalIndex;
     use quickcheck::quickcheck;
 
     #[test]
     fn k_tuples_eq_positive() {
         let tuples1 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
                 KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
             ],
             6,
         );
         let tuples2 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
                 KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
             ],
@@ -241,14 +242,14 @@ mod test {
     #[test]
     fn k_tuples_eq_negative() {
         let tuples1 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&[1, 2, 3]),
                 KTuple::new(6).with_terminal_indices(&[1, 2, 4]),
             ],
             6,
         );
         let tuples2 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&[5, 6, 7]),
                 KTuple::new(6).with_terminal_indices(&[5, 8]),
             ],
@@ -267,19 +268,19 @@ mod test {
     // KTuples::insert is commutative regarding Eq
     #[quickcheck]
     fn k_tuples_insert_is_commutative_regarding_eq(
-        t1: Vec<usize>,
-        t2: Vec<usize>,
+        t1: Vec<TerminalIndex>,
+        t2: Vec<TerminalIndex>,
         k: usize,
     ) -> bool {
         let tuples1 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&t1),
                 KTuple::new(6).with_terminal_indices(&t2),
             ],
             k,
         );
         let tuples2 = KTuples::of(
-            &vec![
+            &[
                 KTuple::new(6).with_terminal_indices(&t2),
                 KTuple::new(6).with_terminal_indices(&t1),
             ],

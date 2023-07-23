@@ -8,6 +8,7 @@ use crate::{Pr, Symbol, Terminal};
 use anyhow::{anyhow, Result};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
+use parol_runtime::TerminalIndex;
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::StrVec;
@@ -112,8 +113,9 @@ impl Production {
     ) -> Self {
         let get_non_terminal_index =
             |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
-        let get_terminal_index =
-            |tr: &str| terminals.iter().position(|t| *t == tr).unwrap() + FIRST_USER_TOKEN;
+        let get_terminal_index = |tr: &str| {
+            terminals.iter().position(|t| *t == tr).unwrap() as TerminalIndex + FIRST_USER_TOKEN
+        };
         let lhs = get_non_terminal_index(pr.get_n_str());
         let production =
             pr.get_r()
@@ -236,7 +238,7 @@ impl std::fmt::Display for ParserData<'_> {
         f.write_fmt(ume::ume! {
             use parol_runtime::{TokenStream, Tokenizer};
             use parol_runtime::once_cell::sync::Lazy;
-            use parol_runtime::{ParolError, ParseTree};
+            use parol_runtime::{ParolError, ParseTree, TerminalIndex};
             #[allow(unused_imports)]
             use parol_runtime::parser::{
                 ParseTreeType, Trans, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait

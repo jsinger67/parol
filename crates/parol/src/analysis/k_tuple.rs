@@ -1,4 +1,5 @@
-use crate::analysis::compiled_la_dfa::TerminalIndex;
+use parol_runtime::TerminalIndex;
+
 use crate::analysis::compiled_terminal::EPS;
 use crate::{CompiledTerminal, MAX_K};
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -578,7 +579,7 @@ impl KTuple {
                     LINE_COMMENT => "LineComment".to_owned(),
                     BLOCK_COMMENT => "BlockComment".to_owned(),
                     EPS => "\u{03B5}".to_owned(),
-                    _ => terminals[t.0].to_string(),
+                    _ => terminals[t.0 as usize].to_string(),
                 })
                 .collect::<Vec<String>>()
                 .join(", ")
@@ -667,7 +668,7 @@ mod test {
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
@@ -684,7 +685,7 @@ mod test {
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
@@ -734,7 +735,7 @@ mod test {
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
@@ -765,7 +766,7 @@ mod test {
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
@@ -804,7 +805,7 @@ mod test {
             let i = MAX_K;
             let k = MAX_K;
             (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),
@@ -824,7 +825,7 @@ mod test {
             let i = 5;
             let k = 5;
             (0..5).for_each(|i| {
-                t[i] = CompiledTerminal(i + 1);
+                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
             });
             let expected = KTuple {
                 terminals: TerminalString::Incomplete(Terminals { t, i }),

@@ -7,7 +7,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 #[allow(unused_imports)]
 use parol_runtime::parser::{LLKParser, LookaheadDFA, ParseTreeType, ParseType, Production, Trans};
-use parol_runtime::{ParolError, ParseTree};
+use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{TokenStream, Tokenizer};
 use std::cell::RefCell;
 use std::path::Path;
@@ -88,7 +88,7 @@ pub const TERMINAL_NAMES: &[&str; 32] = &[
 ];
 
 /* SCANNER_0: "INITIAL" */
-const SCANNER_0: (&[&str; 5], &[usize; 13]) = (
+const SCANNER_0: (&[&str; 5], &[TerminalIndex; 13]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -114,7 +114,7 @@ const SCANNER_0: (&[&str; 5], &[usize; 13]) = (
 );
 
 /* SCANNER_1: "Cmnt" */
-const SCANNER_1: (&[&str; 5], &[usize; 1]) = (
+const SCANNER_1: (&[&str; 5], &[TerminalIndex; 1]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,
@@ -126,7 +126,7 @@ const SCANNER_1: (&[&str; 5], &[usize; 1]) = (
 );
 
 /* SCANNER_2: "Expr" */
-const SCANNER_2: (&[&str; 5], &[usize; 18]) = (
+const SCANNER_2: (&[&str; 5], &[TerminalIndex; 18]) = (
     &[
         /*  0 */ UNMATCHABLE_TOKEN,
         /*  1 */ UNMATCHABLE_TOKEN,

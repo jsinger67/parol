@@ -1,6 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
 use parol_runtime::once_cell::sync::Lazy;
+use parol_runtime::TerminalIndex;
 use regex::Regex;
 use std::collections::HashSet;
 use std::collections::{BTreeMap, BTreeSet};
@@ -112,16 +113,16 @@ impl Cfg {
     /// Generates a function that returns the terminal index (in ordered of occurrence) for given
     /// terminal string and terminal kind
     ///
-    pub fn get_terminal_index_function(&self) -> impl Fn(&str, TerminalKind) -> usize {
+    pub fn get_terminal_index_function(&self) -> impl Fn(&str, TerminalKind) -> TerminalIndex {
         let vec = self
             .get_ordered_terminals_owned()
             .into_iter()
             .map(|(s, k, _)| (s, k))
             .collect::<Vec<(String, TerminalKind)>>();
         move |t: &str, k: TerminalKind| {
-            vec.iter()
+            (vec.iter()
                 .position(|(t0, k0)| t == t0 && k.behaves_like(*k0))
-                .unwrap()
+                .unwrap()) as TerminalIndex
                 + parol_runtime::lexer::FIRST_USER_TOKEN
         }
     }
