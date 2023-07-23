@@ -1,7 +1,6 @@
 use std::collections::VecDeque;
 
 use lsp_types::{FormattingOptions, FormattingProperty, TextEdit};
-use once_cell::sync::Lazy;
 
 use crate::{
     parol_ls_grammar::OwnedToken,
@@ -21,10 +20,10 @@ use crate::{
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
 
-pub(crate) static RX_NEW_LINES_AFTER_LINE_COMMENT: Lazy<regex::Regex> = Lazy::new(|| {
-    regex::Regex::new(r"//.*(\r?\n)+$")
-        .expect("error parsing regex: RX_NEW_LINES_AFTER_LINE_COMMENT")
-});
+// pub(crate) static RX_NEW_LINES_AFTER_LINE_COMMENT: Lazy<regex::Regex> = Lazy::new(|| {
+//     regex::Regex::new(r"//.*(\r?\n)+$")
+//         .expect("error parsing regex: RX_NEW_LINES_AFTER_LINE_COMMENT")
+// });
 
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 #[allow(dead_code)]
@@ -147,9 +146,9 @@ impl Line {
         line.ends_with(|c| c == '\n' || c == '\r')
     }
 
-    fn ends_with_nls_after_line_comment(line: &str) -> bool {
-        RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
-    }
+    // fn ends_with_nls_after_line_comment(line: &str) -> bool {
+    //     RX_NEW_LINES_AFTER_LINE_COMMENT.is_match(line)
+    // }
 }
 
 struct Comments;
@@ -280,24 +279,31 @@ impl Fmt for Alternations {
         options: &FmtOptions,
         comments: VecDeque<OwnedToken>,
     ) -> (String, VecDeque<OwnedToken>) {
-        let (alternation_str, comments) = self.alternation.txt(options, comments);
-        let delimiter = if options.nesting_depth == 0
-            || Line::ends_with_nls_after_line_comment(&alternation_str)
-        {
-            ""
-        } else {
-            " "
-        };
-        let (str, comments) = self.alternations_list.iter().fold(
-            (String::new(), comments),
+        let (first_alternation_str, comments) = self.alternation.txt(options, comments);
+        let (all_alternations_str, comments) = self.alternations_list.iter().fold(
+            (first_alternation_str, comments),
             |(mut acc, comments), a| {
+                let (comments_before_or, comments) = Comments::handle_comments_before(
+                    comments,
+                    &a.or,
+                    &options.clone().with_padding(Padding::Right),
+                );
+
+                if Line::ends_with_nl(&acc) && !comments_before_or.is_empty() {
+                    // Pull the comment on the line with the alternation.
+                    acc = acc.trim_end().to_owned();
+                    // Add a space between alternation_str and the line comment.
+                    acc.push(' ');
+                    acc.push_str(&comments_before_or);
+                }
+
                 let (alternations_str, comments) = a.txt(options, comments);
                 acc.push_str(&alternations_str);
                 (acc, comments)
             },
         );
-
-        (format!("{}{}{}", alternation_str, delimiter, str), comments)
+        let delimiter = ""; //if options.nesting_depth == 0 { "" } else { " " };
+        (format!("{}{}", delimiter, all_alternations_str), comments)
     }
 }
 impl Fmt for AlternationsList {
@@ -307,28 +313,11 @@ impl Fmt for AlternationsList {
         comments: VecDeque<OwnedToken>,
     ) -> (String, VecDeque<OwnedToken>) {
         let (alternation_str, comments) = self.alternation.txt(options, comments);
-        let right_padding = if options.nesting_depth == 0 {
-            // Normally we add a newline after each top level alternation except the newline is
-            // already attached (usually due to line comment handling)
-            if Line::ends_with_nls_after_line_comment(&alternation_str) {
-                ""
-            } else if !Line::ends_with_nl(&alternation_str) {
-                "\n"
-            } else {
-                ""
-            }
-        } else {
-            // In levels other than the top level we concat alternations with a single whitespace
-            if Line::ends_with_space(&alternation_str) {
-                ""
-            } else {
-                " "
-            }
-        };
+        let right_padding = "";
         let left_padding = if options.nesting_depth == 0 {
             "    "
         } else {
-            ""
+            " "
         };
         (
             format!(
@@ -354,22 +343,64 @@ impl Fmt for Declaration {
         options: &FmtOptions,
         comments: VecDeque<OwnedToken>,
     ) -> (String, VecDeque<OwnedToken>) {
+        let mut delim = "";
         match self {
             Declaration::PercentTitleString(title) => {
+                let (comments_before_token, comments) = Comments::handle_comments_before(
+                    comments,
+                    &title.percent_title,
+                    &options.clone().with_padding(Padding::Left),
+                );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
                 let (str, comments) = title.string.txt(options, comments);
-                (format!("\n{} {}", title.percent_title, str), comments)
-            }
-            Declaration::PercentCommentString(comment) => {
-                let (str, comments) = comment.string.txt(options, comments);
-                (format!("\n{} {}", comment.percent_comment, str), comments)
-            }
-            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type) => {
-                let (str1, comments) = user_type.identifier.txt(options, comments);
-                let (str2, comments) = user_type.user_type_name.txt(options, comments);
                 (
                     format!(
-                        "\n{} {} {} {}",
-                        user_type.percent_user_underscore_type, str1, user_type.equ, str2,
+                        "{}{}{} {}",
+                        comments_before_token, delim, title.percent_title, str
+                    ),
+                    comments,
+                )
+            }
+            Declaration::PercentCommentString(comment) => {
+                let (comments_before_token, comments) = Comments::handle_comments_before(
+                    comments,
+                    &comment.percent_comment,
+                    &options.clone().with_padding(Padding::Left),
+                );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                let (str, comments) = comment.string.txt(options, comments);
+                (
+                    format!(
+                        "{}{}{} {}",
+                        comments_before_token, delim, comment.percent_comment, str
+                    ),
+                    comments,
+                )
+            }
+            Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type) => {
+                let (comments_before_token, comments) = Comments::handle_comments_before(
+                    comments,
+                    &user_type.percent_user_underscore_type,
+                    &options.clone().with_padding(Padding::Left),
+                );
+                let (str1, comments) = user_type.identifier.txt(options, comments);
+                let (str2, comments) = user_type.user_type_name.txt(options, comments);
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                (
+                    format!(
+                        "{}{}{} {} {} {}",
+                        comments_before_token,
+                        delim,
+                        user_type.percent_user_underscore_type,
+                        str1,
+                        user_type.equ,
+                        str2,
                     ),
                     comments,
                 )
@@ -485,12 +516,29 @@ impl Fmt for NonTerminal {
         options: &FmtOptions,
         comments: VecDeque<OwnedToken>,
     ) -> (String, VecDeque<OwnedToken>) {
-        let (str, comments) = if let Some(non_terminal_opt) = self.non_terminal_opt.as_ref() {
-            non_terminal_opt.txt(options, comments)
-        } else {
-            (String::default(), comments)
-        };
-        (format!("{}{}", self.identifier.identifier, str), comments)
+        let (ast_control_str, comments) =
+            if let Some(non_terminal_opt) = self.non_terminal_opt.as_ref() {
+                non_terminal_opt.txt(options, comments)
+            } else {
+                (String::default(), comments)
+            };
+
+        let (comments_before_identifier, comments) = Comments::handle_comments_before(
+            comments,
+            &self.identifier.identifier,
+            &options.clone().with_padding(Padding::Right),
+        );
+        let mut delim = String::new();
+        if Line::ends_with_nl(&comments_before_identifier) {
+            delim = "      ".to_owned();
+        }
+        (
+            format!(
+                "{}{}{}{}",
+                comments_before_identifier, delim, self.identifier.identifier, ast_control_str
+            ),
+            comments,
+        )
     }
 }
 impl Fmt for NonTerminalOpt {
@@ -550,31 +598,26 @@ impl Fmt for Production {
     ) -> (String, VecDeque<OwnedToken>) {
         let (production_l_h_s, comments) = self.production_l_h_s.txt(options, comments);
         let (mut alternations_str, comments) = self.alternations.txt(options, comments);
-        let (semi_nl_opt, alternations_str) = if options.prod_semicolon_on_nl
-            || Line::ends_with_nls_after_line_comment(&alternations_str)
-        {
-            ("\n    ", alternations_str.trim().to_owned())
-        } else {
-            if Line::ends_with_nls_after_line_comment(&alternations_str) {
-                // This indicates a line comment at the end of the alternation.
-                // We correct the formatting here to have the semicolon correctly indented.
-                alternations_str.push_str("    ");
-            } else {
-                alternations_str = alternations_str.trim_end().to_owned();
+        let (mut comments_before_semicolon, comments) = Comments::handle_comments_before(
+            comments,
+            &self.semicolon,
+            &options.clone().with_padding(Padding::Left),
+        );
+
+        let mut semi_nl_opt = "";
+        if options.prod_semicolon_on_nl {
+            alternations_str = alternations_str.trim_end().to_owned();
+            if Line::ends_with_nl(&comments_before_semicolon) {
+                comments_before_semicolon = comments_before_semicolon.trim_end().to_owned();
             }
-            ("", alternations_str)
-        };
+            semi_nl_opt = "\n    ";
+        }
 
         let prod_nl_opt = if options.empty_line_after_prod {
             "\n"
         } else {
             ""
         };
-        let (comments_before_semicolon, comments) = Comments::handle_comments_before(
-            comments,
-            &self.semicolon,
-            &options.clone().with_padding(Padding::Left),
-        );
         (
             format!(
                 "{} {}{}{}{}{}",
@@ -904,11 +947,7 @@ impl Fmt for crate::parol_ls_grammar_trait::String {
             &options.clone().with_padding(Padding::Right),
         );
         (
-            format!(
-                "{}{}",
-                comments_before_string,
-                self.string.text().to_string()
-            ),
+            format!("{}{}", comments_before_string, self.string.text()),
             comments,
         )
     }
@@ -1015,42 +1054,81 @@ fn handle_scanner_directives(
     options: &FmtOptions,
     comments: VecDeque<OwnedToken>,
 ) -> (String, VecDeque<OwnedToken>) {
-    let indent = make_indent(options.nesting_depth);
+    let mut indent = make_indent(options.nesting_depth);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(l) => {
-            let (str, comments) = l.token_literal.txt(options, comments);
+            let (comments_before_token, comments) = Comments::handle_comments_before(
+                comments,
+                &l.percent_line_underscore_comment,
+                &options.clone().with_padding(Padding::Left),
+            );
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
+            let (comment_str, comments) = l.token_literal.txt(options, comments);
             (
-                format!("\n{}{} {}", indent, l.percent_line_underscore_comment, str,),
+                format!(
+                    "{}{}{} {}",
+                    comments_before_token, indent, l.percent_line_underscore_comment, comment_str,
+                ),
                 comments,
             )
         }
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(b) => {
+            let (comments_before_token, comments) = Comments::handle_comments_before(
+                comments,
+                &b.percent_block_underscore_comment,
+                &options.clone().with_padding(Padding::Left),
+            );
             let (str1, comments) = b.token_literal.txt(options, comments);
             let (str2, comments) = b.token_literal0.txt(options, comments);
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
             (
                 format!(
-                    "\n{}{} {} {}",
-                    indent, b.percent_block_underscore_comment, str1, str2,
+                    "{}{}{} {} {}",
+                    comments_before_token, indent, b.percent_block_underscore_comment, str1, str2,
                 ),
                 comments,
             )
         }
 
-        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(n) => (
-            format!(
-                "\n{}{}",
-                indent, n.percent_auto_underscore_newline_underscore_off
-            ),
-            comments,
-        ),
+        ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(n) => {
+            let (comments_before_token, comments) = Comments::handle_comments_before(
+                comments,
+                &n.percent_auto_underscore_newline_underscore_off,
+                &options.clone().with_padding(Padding::Left),
+            );
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
+            (
+                format!(
+                    "{}{}{}",
+                    comments_before_token, indent, n.percent_auto_underscore_newline_underscore_off
+                ),
+                comments,
+            )
+        }
 
-        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(w) => (
-            format!(
-                "\n{}{}",
-                indent, w.percent_auto_underscore_ws_underscore_off
-            ),
-            comments,
-        ),
+        ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(w) => {
+            let (comments_before_token, comments) = Comments::handle_comments_before(
+                comments,
+                &w.percent_auto_underscore_ws_underscore_off,
+                &options.clone().with_padding(Padding::Left),
+            );
+            if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                indent.insert(0, '\n');
+            };
+            (
+                format!(
+                    "{}{}{}",
+                    comments_before_token, indent, w.percent_auto_underscore_ws_underscore_off
+                ),
+                comments,
+            )
+        }
     }
 }
 
@@ -1117,7 +1195,15 @@ fn apply_formatting(line: String, options: &FmtOptions) -> String {
         match options.padding {
             Padding::None => line,
             Padding::Left => format!(" {}", line),
-            Padding::Right => format!("{} ", line),
+            Padding::Right => {
+                // Don't add a space character if the line already ends with a newline
+                // TODO: Maybe we should expand this to all whitespace characters
+                if Line::ends_with_nl(&line) {
+                    line
+                } else {
+                    format!("{} ", line)
+                }
+            }
             Padding::Both => format!(" {} ", line),
         }
     } else {
@@ -1170,21 +1256,21 @@ mod test {
             },
             concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
         ),
-        // (
-        //     FmtOptions {
-        //         empty_line_after_prod: true,
-        //         prod_semicolon_on_nl: false,
-        //         max_line_length: 100,
-        //         padding: super::Padding::None,
-        //         line_end: super::LineEnd::Unchanged,
-        //         trimming: super::Trimming::Unchanged,
-        //         nesting_depth: 0,
-        //     },
-        //     concat!(
-        //         env!("CARGO_MANIFEST_DIR"),
-        //         "/data/expected/prod_semicolon_on_nl_false"
-        //     ),
-        // ),
+        (
+            FmtOptions {
+                empty_line_after_prod: true,
+                prod_semicolon_on_nl: false,
+                max_line_length: 100,
+                padding: super::Padding::None,
+                line_end: super::LineEnd::Unchanged,
+                trimming: super::Trimming::Unchanged,
+                nesting_depth: 0,
+            },
+            concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/data/expected/prod_semicolon_on_nl_false"
+            ),
+        ),
     ];
 
     #[test]
