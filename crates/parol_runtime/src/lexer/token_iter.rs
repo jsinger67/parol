@@ -10,12 +10,12 @@ use std::{borrow::Cow, path::Path};
 ///
 pub struct TokenIter<'t> {
     /// Line number, starting with 1
-    line: usize,
+    line: u32,
 
     /// Column number, starting with 1
-    col: usize,
+    col: u32,
 
-    /// An iterator over left most matches
+    /// An iterator over token matches
     find_iter: FindMatches<'static, 't, DFA<Vec<u32>>>,
 
     /// The tokenizer itself
@@ -52,7 +52,7 @@ impl<'t> TokenIter<'t> {
     }
 
     ///
-    pub fn with_position(mut self, line: usize, column: usize) -> Self {
+    pub fn with_position(mut self, line: u32, column: u32) -> Self {
         self.line = line;
         self.col = column;
         self
@@ -66,11 +66,11 @@ impl<'t> TokenIter<'t> {
     ///
     /// Returns a tuple of line count and new column number.
     ///
-    pub(crate) fn count_nl(s: &str) -> (usize, usize) {
+    pub(crate) fn count_nl(s: &str) -> (u32, u32) {
         let matches = RX_NEW_LINE.find_iter(s.as_bytes()).collect::<Vec<_>>();
-        let lines = matches.len();
+        let lines = matches.len() as u32;
         if let Some(&right_most_match) = matches.last().as_ref() {
-            (lines, s.len() - right_most_match.end() + 1)
+            (lines, (s.len() - right_most_match.end()) as u32 + 1)
         } else {
             // Column number 0 means invalid
             (lines, 0)
@@ -85,7 +85,7 @@ impl<'t> Iterator for TokenIter<'t> {
             let token_type = self.rx.terminal_index_of_pattern(multi_match.pattern());
             // The token's text is taken from the match
             let text = &self.input[multi_match.range()];
-            let length = text.len();
+            let length = text.len() as u32;
             // The token position is calculated from the matched text
             let start_line = self.line;
             let start_column = self.col;

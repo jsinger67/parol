@@ -12,24 +12,24 @@ use derive_builder::Builder;
 pub struct Location {
     /// Position information: line number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub start_line: usize,
+    pub start_line: u32,
 
     /// Position information: column number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub start_column: usize,
+    pub start_column: u32,
 
     /// Position information: line number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub end_line: usize,
+    pub end_line: u32,
 
     /// Position information: column number, starting by 1
     /// A value of 0 indicates an invalid position, for instance for EOF token.
-    pub end_column: usize,
+    pub end_column: u32,
 
     /// Length of the matched input terminal
     /// A value of 0 indicates a virtual token, for instance an EOF token.
     /// Be careful: User tokens with length 0 are always invalid!!!
-    pub length: usize,
+    pub length: u32,
 
     /// Start position in the input stream as byte offset at last scanner switching.
     #[builder(default)]
@@ -58,10 +58,10 @@ impl Display for Location {
 
 impl From<&Location> for Range<usize> {
     fn from(location: &Location) -> Self {
-        let start = location.scanner_switch_pos + location.offset - location.length;
+        let start = location.scanner_switch_pos + location.offset - location.length as usize;
         Range {
             start,
-            end: start + location.length,
+            end: start + location.length as usize,
         }
     }
 }

@@ -50,13 +50,13 @@ pub struct TokenStream<'t> {
     pos: usize,
 
     /// Line number of last consumed token. Needed for scanner switching. Is initially 1.
-    line: usize,
+    line: u32,
 
     /// Columns after last consumed token. Needed for scanner switching. Is initially 1.
-    column: usize,
+    column: u32,
 
     /// Index of the current scanner state, is 0 initially.
-    pub current_scanner_index: usize,
+    pub current_scanner_index: ScannerIndex,
 
     /// Scanner stack to support push and pop operations for scanner configurations
     scanner_stack: Vec<ScannerIndex>,
