@@ -9,6 +9,11 @@ use regex_automata::dfa::regex::Regex;
 pub type TerminalIndex = u16;
 
 ///
+/// Type used for token numbers in tokens.
+///
+pub type TokenNumber = u32;
+
+///
 /// Module with common formatting trait
 ///
 pub mod format_token;

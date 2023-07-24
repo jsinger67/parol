@@ -1,4 +1,7 @@
-use crate::lexer::{location, Token, Tokenizer, RX_NEW_LINE};
+use crate::{
+    lexer::{location, Token, Tokenizer, RX_NEW_LINE},
+    TokenNumber,
+};
 use location::LocationBuilder;
 use log::trace;
 use regex_automata::dfa::{dense::DFA, regex::FindMatches};
@@ -29,6 +32,8 @@ pub struct TokenIter<'t> {
 
     /// The name of the input file
     pub file_name: Cow<'static, Path>,
+
+    token_number: TokenNumber,
 }
 
 impl<'t> TokenIter<'t> {
@@ -48,6 +53,7 @@ impl<'t> TokenIter<'t> {
             input,
             k,
             file_name: file_name.into(),
+            token_number: 0,
         }
     }
 
@@ -110,7 +116,8 @@ impl<'t> Iterator for TokenIter<'t> {
                 .file_name(self.file_name.clone())
                 .build()
             {
-                let token = Token::with(text, token_type, location);
+                let token = Token::with(text, token_type, location, self.token_number);
+                self.token_number += 1;
                 trace!("{}, newline count: {}", token, new_lines);
                 Some(token)
             } else {
@@ -121,7 +128,7 @@ impl<'t> Iterator for TokenIter<'t> {
         } else if self.k > 0 {
             self.k -= 1;
             trace!("EOI");
-            Some(Token::eoi())
+            Some(Token::eoi(self.token_number))
         } else {
             trace!("Normal end of iteration");
             None

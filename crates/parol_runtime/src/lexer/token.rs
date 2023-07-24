@@ -1,10 +1,9 @@
-use crate::lexer::{FormatToken, TerminalIndex};
-use crate::{Span, ToSpan};
+use crate::{FormatToken, Span, TerminalIndex, ToSpan};
 use std::borrow::Cow;
 use std::convert::From;
 use std::fmt::{Debug, Display, Error, Formatter};
 
-use super::Location;
+use super::{Location, TokenNumber};
 
 //
 // Special token constants the lexer has to deal with regularly.
@@ -42,24 +41,34 @@ pub struct Token<'t> {
 
     /// Position information
     pub location: Location,
+
+    /// Unique token number that allows ordering of tokens from different contexts, e.g. comment
+    /// tokens can be intermingled with normal tokens.
+    pub token_number: TokenNumber,
 }
 
 impl<'t> Token<'t> {
     ///
     /// Creates an End-Of-Input token
     ///
-    pub fn eoi() -> Self {
+    pub fn eoi(token_number: TokenNumber) -> Self {
         Self {
             text: EOI_TOKEN.into(),
             token_type: EOI,
             location: Location::default(),
+            token_number,
         }
     }
 
     ///
     /// Creates a token with given values.
     ///
-    pub fn with<T>(text: T, token_type: TerminalIndex, location: Location) -> Self
+    pub fn with<T>(
+        text: T,
+        token_type: TerminalIndex,
+        location: Location,
+        token_number: TokenNumber,
+    ) -> Self
     where
         T: Into<Cow<'t, str>>,
     {
@@ -67,6 +76,7 @@ impl<'t> Token<'t> {
             text: text.into(),
             token_type,
             location,
+            token_number,
         }
     }
 
@@ -100,6 +110,7 @@ impl<'t> Token<'t> {
             text: Cow::Owned(self.text.clone().into_owned()),
             token_type: self.token_type,
             location: self.location.clone(),
+            token_number: self.token_number,
         }
     }
 
@@ -111,6 +122,7 @@ impl<'t> Token<'t> {
             text: Cow::Owned(self.text.into_owned()),
             token_type: self.token_type,
             location: self.location,
+            token_number: self.token_number,
         }
     }
 }
@@ -134,10 +146,11 @@ impl FormatToken for Token<'_> {
     fn format(&self, terminal_names: &'static [&'static str]) -> String {
         let name = terminal_names[self.token_type as usize];
         format!(
-            "'{}'({}) at {}",
+            "'{}'({}) at {}[{}]",
             self.text.escape_default(),
             name,
             self.location,
+            self.token_number,
         )
     }
 }
