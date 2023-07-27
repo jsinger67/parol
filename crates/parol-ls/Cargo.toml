@@ -29,7 +29,7 @@ parol = { path = "../parol", version = "0.22.1" }
 parol_runtime = { path = "../parol_runtime", version = "0.17.1", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 regex = { workspace = true }
-serde = "1.0.176"
+serde = "1.0.177"
 serde_json = "1.0.104"
 thiserror = { workspace = true }
 
