@@ -96,11 +96,11 @@ fn lexer_token_production() {
                 .file_name(token_stream.borrow().file_name.clone())
                 .build()
                 .unwrap(),
-            134
+            79
         ),
         tok
     );
-    assert_eq!(Token::eoi(138), token_stream.borrow().tokens[0]);
+    assert_eq!(Token::eoi(80), token_stream.borrow().tokens[0]);
 }
 
 #[test]
