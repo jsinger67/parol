@@ -126,7 +126,11 @@ impl From<&Optional> for Rng {
 
 impl From<&ParolLs> for Rng {
     fn from(val: &ParolLs) -> Self {
-        Self::from(&*val.prolog).extend(Self::from(&*val.grammar_definition))
+        // We want to ensure that the whole text is replaced with the newly formatted text.
+        // Thus we extend the range to maximum.
+        Self::from(&*val.prolog)
+            .extend(Self::from(&*val.grammar_definition))
+            .extend_to_end()
     }
 }
 
