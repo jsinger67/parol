@@ -1,0 +1,12 @@
+%start G
+
+%%
+
+G   : A12345678 B12345678 // Semicolon should be placed on new line after a line comment
+    ;
+A12345678
+    : "a"
+    ;
+B12345678
+    : "b"
+    ;

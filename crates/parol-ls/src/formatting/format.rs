@@ -15,7 +15,7 @@ use crate::{
     utils::RX_NEW_LINE,
 };
 
-use super::{comments::Comments, FmtOptions, Indent, Line, LineEnd, Padding};
+use super::{Comments, FmtOptions, Indent, Line, LineEnd, Padding};
 
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
@@ -442,8 +442,8 @@ impl Fmt for Production {
         );
 
         let mut semi_nl_opt = "";
-        if options.prod_semicolon_on_nl {
-            alternations_str = alternations_str.trim_end().to_owned();
+        alternations_str = alternations_str.trim_end().to_owned();
+        if options.prod_semicolon_on_nl || Line::ends_with_nl(&comments_before_semicolon) {
             if Line::ends_with_nl(&comments_before_semicolon) {
                 comments_before_semicolon = comments_before_semicolon.trim_end().to_owned();
             }
@@ -936,7 +936,7 @@ mod test {
     use parol_runtime::Report;
 
     use crate::{
-        formatting::{Fmt, FmtOptions, LineEnd, Padding, Trimming},
+        formatting::{fmt_options::Trimming, format::Fmt, FmtOptions, LineEnd, Padding},
         parol_ls_grammar::ParolLsGrammar,
         parol_ls_parser::parse,
         utils::RX_NEW_LINE,
@@ -952,7 +952,7 @@ mod test {
     const SKIP_LIST: &[&str] = &[]; //&["complex1.par"];
 
     // Use this if you only want to debug a view tests
-    const SELECTED_TESTS: &[&str] = &["line_comments_in_scanner_directives.par"]; //&["single_group.par"];
+    const SELECTED_TESTS: &[&str] = &[]; //&["single_group.par"];
 
     const TEST_DATA: &[(FmtOptions, &str)] = &[
         (
@@ -967,21 +967,36 @@ mod test {
             },
             concat!(env!("CARGO_MANIFEST_DIR"), "/data/expected/options_default"),
         ),
-        // (
-        //     FmtOptions {
-        //         empty_line_after_prod: true,
-        //         prod_semicolon_on_nl: false,
-        //         max_line_length: 100,
-        //         padding: Padding::None,
-        //         line_end: LineEnd::Unchanged,
-        //         trimming: Trimming::Unchanged,
-        //         nesting_depth: 0,
-        //     },
-        //     concat!(
-        //         env!("CARGO_MANIFEST_DIR"),
-        //         "/data/expected/prod_semicolon_on_nl_false"
-        //     ),
-        // ),
+        (
+            FmtOptions {
+                empty_line_after_prod: true,
+                prod_semicolon_on_nl: false,
+                max_line_length: 100,
+                padding: Padding::None,
+                line_end: LineEnd::Unchanged,
+                trimming: Trimming::Unchanged,
+                nesting_depth: 0,
+            },
+            concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/data/expected/prod_semicolon_on_nl_false"
+            ),
+        ),
+        (
+            FmtOptions {
+                empty_line_after_prod: false,
+                prod_semicolon_on_nl: true,
+                max_line_length: 100,
+                padding: Padding::None,
+                line_end: LineEnd::Unchanged,
+                trimming: Trimming::Unchanged,
+                nesting_depth: 0,
+            },
+            concat!(
+                env!("CARGO_MANIFEST_DIR"),
+                "/data/expected/empty_line_after_prod_false"
+            ),
+        ),
     ];
 
     #[test]
