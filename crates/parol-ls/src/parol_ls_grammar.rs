@@ -565,6 +565,12 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
 #[derive(Debug, Clone)]
 pub struct OwnedToken(Token<'static>);
 
+impl OwnedToken {
+    pub(crate) fn is_line_comment(&self) -> bool {
+        self.text().starts_with("//")
+    }
+}
+
 impl<'t> TryFrom<&Token<'t>> for OwnedToken {
     type Error = anyhow::Error;
 

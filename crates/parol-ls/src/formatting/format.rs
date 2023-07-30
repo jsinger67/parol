@@ -68,7 +68,11 @@ pub(crate) trait Format {
     fn format(&self, options: &FormattingOptions, comments: Comments) -> Vec<TextEdit>;
 }
 
-impl UserTypeName {
+trait LastToken {
+    fn get_last_token(&self) -> &OwnedToken;
+}
+
+impl LastToken for UserTypeName {
     fn get_last_token(&self) -> &OwnedToken {
         if self.user_type_name_list.is_empty() {
             &self.identifier.identifier
@@ -79,6 +83,16 @@ impl UserTypeName {
                 .unwrap()
                 .identifier
                 .identifier
+        }
+    }
+}
+
+impl LastToken for TokenLiteral {
+    fn get_last_token(&self) -> &OwnedToken {
+        match self {
+            TokenLiteral::String(s) => &s.string.string,
+            TokenLiteral::LiteralString(l) => &l.literal_string.literal_string,
+            TokenLiteral::Regex(r) => &r.regex.regex,
         }
     }
 }
@@ -151,7 +165,7 @@ impl Fmt for Alternations {
         let (all_alternations_str, comments) = self.alternations_list.iter().fold(
             (first_alternation_str, comments),
             |(mut acc, comments), a| {
-                let (comments_before_or, comments) = Comments::handle_comments_before(
+                let (comments_before_or, comments) = Comments::format_comments_before(
                     comments,
                     &a.or,
                     &options.clone().with_padding(Padding::Right),
@@ -202,7 +216,7 @@ impl Fmt for Declaration {
         let mut delim = "";
         match self {
             Declaration::PercentTitleString(title) => {
-                let (comments_before_token, comments) = Comments::handle_comments_before(
+                let (comments_before_token, comments) = Comments::format_comments_before(
                     comments,
                     &title.percent_title,
                     &options.clone().with_padding(Padding::Left),
@@ -220,7 +234,7 @@ impl Fmt for Declaration {
                 )
             }
             Declaration::PercentCommentString(comment) => {
-                let (comments_before_token, comments) = Comments::handle_comments_before(
+                let (comments_before_token, comments) = Comments::format_comments_before(
                     comments,
                     &comment.percent_comment,
                     &options.clone().with_padding(Padding::Left),
@@ -238,7 +252,9 @@ impl Fmt for Declaration {
                 )
             }
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(user_type) => {
-                let (comments_before_token, comments) = Comments::handle_comments_before(
+                // "%user_type" Identifier "=" UserTypeName;
+                // %user_type UserType1 = UserDefinedTypeName1 // comment
+                let (comments_before_token, comments) = Comments::format_comments_before(
                     comments,
                     &user_type.percent_user_underscore_type,
                     &options
@@ -248,14 +264,15 @@ impl Fmt for Declaration {
                 );
                 let (alias_name, comments) = user_type.identifier.txt(options, comments);
                 let (orig_type_name, comments) = user_type.user_type_name.txt(options, comments);
-                let (following_comment, comments) = Comments::get_immediately_following_comment(
-                    comments,
-                    user_type.user_type_name.get_last_token(),
-                    &options
-                        .clone()
-                        .with_padding(Padding::Left)
-                        .with_line_end(LineEnd::ForceRemove),
-                );
+                let (following_comment, comments) =
+                    Comments::formatted_immediately_following_comment(
+                        comments,
+                        user_type.user_type_name.get_last_token(),
+                        &options
+                            .clone()
+                            .with_padding(Padding::Left)
+                            .with_line_end(LineEnd::ForceRemove),
+                    );
                 if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
                     delim = "\n";
                 };
@@ -359,7 +376,7 @@ impl Fmt for NonTerminal {
                 (String::default(), comments)
             };
 
-        let (comments_before_identifier, comments) = Comments::handle_comments_before(
+        let (comments_before_identifier, comments) = Comments::format_comments_before(
             comments,
             &self.identifier.identifier,
             &options.clone().with_padding(Padding::Right),
@@ -418,7 +435,7 @@ impl Fmt for Production {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (production_l_h_s, comments) = self.production_l_h_s.txt(options, comments);
         let (mut alternations_str, comments) = self.alternations.txt(options, comments);
-        let (mut comments_before_semicolon, comments) = Comments::handle_comments_before(
+        let (mut comments_before_semicolon, comments) = Comments::format_comments_before(
             comments,
             &self.semicolon,
             &options.clone().with_padding(Padding::Left),
@@ -454,12 +471,12 @@ impl Fmt for Production {
 }
 impl Fmt for ProductionLHS {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        let (comments_before_non_terminal, comments) = Comments::handle_comments_before(
+        let (comments_before_non_terminal, comments) = Comments::format_comments_before(
             comments,
             &self.identifier.identifier,
             &options.clone().with_line_end(LineEnd::ForceSingleNewline),
         );
-        let (comments_before_colon, comments) = Comments::handle_comments_before(
+        let (comments_before_colon, comments) = Comments::format_comments_before(
             comments,
             &self.colon,
             &options.clone().with_padding(Padding::Left),
@@ -571,7 +588,7 @@ impl Fmt for ScannerState {
             },
         );
 
-        let (comments_before_scanner, comments) = Comments::handle_comments_before(
+        let (comments_before_scanner, comments) = Comments::format_comments_before(
             comments,
             &self.percent_scanner,
             &options.clone().with_line_end(LineEnd::ForceSingleNewline),
@@ -655,7 +672,7 @@ impl Fmt for SimpleTokenOpt {
 }
 impl Fmt for StartDeclaration {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        let (comments_before_start, comments) = Comments::handle_comments_before(
+        let (comments_before_start, comments) = Comments::format_comments_before(
             comments,
             &self.percent_start,
             &options.clone().with_line_end(LineEnd::ForceSingleNewline),
@@ -693,7 +710,7 @@ impl Fmt for StateListList {
 }
 impl Fmt for crate::parol_ls_grammar_trait::String {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
-        let (comments_before_string, comments) = Comments::handle_comments_before(
+        let (comments_before_string, comments) = Comments::format_comments_before(
             comments,
             &self.string,
             &options.clone().with_padding(Padding::Right),
@@ -763,6 +780,7 @@ impl Fmt for UserTypeName {
         (format!("{}{}", identifier, user_type_name_list,), comments)
     }
 }
+
 impl Fmt for UserTypeNameList {
     fn txt(&self, options: &FmtOptions, comments: Comments) -> (String, Comments) {
         let (identifier, comments) = self.identifier.txt(options, comments);
@@ -781,7 +799,7 @@ fn handle_scanner_directives(
     let mut indent = Indent::make_indent(options.nesting_depth);
     match scanner_directives {
         ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(l) => {
-            let (comments_before_token, comments) = Comments::handle_comments_before(
+            let (comments_before_token, comments) = Comments::format_comments_before(
                 comments,
                 &l.percent_line_underscore_comment,
                 &options.clone().with_padding(Padding::Left),
@@ -790,16 +808,28 @@ fn handle_scanner_directives(
                 indent.insert(0, '\n');
             };
             let (comment_str, comments) = l.token_literal.txt(options, comments);
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                l.token_literal.get_last_token(),
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
             (
                 format!(
-                    "{}{}{} {}",
-                    comments_before_token, indent, l.percent_line_underscore_comment, comment_str,
+                    "{}{}{} {}{}",
+                    comments_before_token,
+                    indent,
+                    l.percent_line_underscore_comment,
+                    comment_str,
+                    following_comment,
                 ),
                 comments,
             )
         }
         ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(b) => {
-            let (comments_before_token, comments) = Comments::handle_comments_before(
+            let (comments_before_token, comments) = Comments::format_comments_before(
                 comments,
                 &b.percent_block_underscore_comment,
                 &options.clone().with_padding(Padding::Left),
@@ -809,17 +839,30 @@ fn handle_scanner_directives(
             if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
                 indent.insert(0, '\n');
             };
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                b.token_literal0.get_last_token(),
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
             (
                 format!(
-                    "{}{}{} {} {}",
-                    comments_before_token, indent, b.percent_block_underscore_comment, str1, str2,
+                    "{}{}{} {} {}{}",
+                    comments_before_token,
+                    indent,
+                    b.percent_block_underscore_comment,
+                    str1,
+                    str2,
+                    following_comment,
                 ),
                 comments,
             )
         }
 
         ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(n) => {
-            let (comments_before_token, comments) = Comments::handle_comments_before(
+            let (comments_before_token, comments) = Comments::format_comments_before(
                 comments,
                 &n.percent_auto_underscore_newline_underscore_off,
                 &options.clone().with_padding(Padding::Left),
@@ -827,27 +870,49 @@ fn handle_scanner_directives(
             if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
                 indent.insert(0, '\n');
             };
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                &n.percent_auto_underscore_newline_underscore_off,
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
             (
                 format!(
-                    "{}{}{}",
-                    comments_before_token, indent, n.percent_auto_underscore_newline_underscore_off
+                    "{}{}{}{}",
+                    comments_before_token,
+                    indent,
+                    n.percent_auto_underscore_newline_underscore_off,
+                    following_comment
                 ),
                 comments,
             )
         }
 
         ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(w) => {
-            let (comments_before_token, comments) = comments.handle_comments_before(
+            let (comments_before_token, comments) = comments.format_comments_before(
                 &w.percent_auto_underscore_ws_underscore_off,
                 &options.clone().with_padding(Padding::Left),
             );
             if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
                 indent.insert(0, '\n');
             };
+            let (following_comment, comments) = Comments::formatted_immediately_following_comment(
+                comments,
+                &w.percent_auto_underscore_ws_underscore_off,
+                &options
+                    .clone()
+                    .with_padding(Padding::Left)
+                    .with_line_end(LineEnd::ForceRemove),
+            );
             (
                 format!(
-                    "{}{}{}",
-                    comments_before_token, indent, w.percent_auto_underscore_ws_underscore_off
+                    "{}{}{}{}",
+                    comments_before_token,
+                    indent,
+                    w.percent_auto_underscore_ws_underscore_off,
+                    following_comment
                 ),
                 comments,
             )

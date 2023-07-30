@@ -18,7 +18,7 @@ impl From<OwnedToken> for Comments {
 }
 
 impl Comments {
-    pub(crate) fn handle_comments_before(
+    pub(crate) fn format_comments_before(
         self,
         at: &OwnedToken,
         options: &FmtOptions,
@@ -29,7 +29,7 @@ impl Comments {
     }
 
     // Finds an immediately following comment on the same line
-    pub(crate) fn get_immediately_following_comment(
+    pub(crate) fn formatted_immediately_following_comment(
         mut self,
         at: &OwnedToken,
         options: &FmtOptions,
@@ -40,9 +40,9 @@ impl Comments {
             t.token_number == comment_token_number && t.location.start_line == at_line
         }) {
             let comment_token = self.comments.remove(pos).unwrap();
-            let comments_before_token: Comments = comment_token.into();
-            let comments_before_scanner_str = comments_before_token.handle_comments(options);
-            (comments_before_scanner_str, self)
+            let following_comment_token: Comments = comment_token.into();
+            let following_comment_str = following_comment_token.handle_comments(options);
+            (following_comment_str, self)
         } else {
             (String::default(), self)
         }
@@ -57,7 +57,7 @@ impl Comments {
             comments_str
         } else {
             let options = if let Some(cmt) = self.comments.iter().last() {
-                if cmt.text().starts_with("//") {
+                if cmt.is_line_comment() && options.line_end != LineEnd::ForceRemove {
                     options.clone().with_line_end(LineEnd::ForceSingleNewline)
                 } else {
                     options.clone()
