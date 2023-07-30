@@ -84,6 +84,7 @@ impl<'t> Token<'t> {
     /// Indicates wether the token is normally skipped by the TokenStream.
     /// The behavior is independent from the language.
     ///
+    #[inline]
     pub fn is_skip_token(&self) -> bool {
         self.token_type > EOI && self.token_type < FIRST_USER_TOKEN
     }
@@ -91,6 +92,7 @@ impl<'t> Token<'t> {
     ///
     /// Indicates wether the token is a comment token.
     ///
+    #[inline]
     pub fn is_comment_token(&self) -> bool {
         self.token_type == LINE_COMMENT || self.token_type == BLOCK_COMMENT
     }

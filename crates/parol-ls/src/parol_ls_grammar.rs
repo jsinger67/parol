@@ -1,4 +1,5 @@
 use crate::{
+    formatting::Comments,
     parol_ls_grammar_trait::{
         self, Declaration, NonTerminal, ParolLs, ParolLsGrammarTrait, Production, ProductionLHS,
         ScannerDirectives, ScannerState, StartDeclaration, TokenLiteral, UserTypeDeclaration,
@@ -17,7 +18,7 @@ use parol::TerminalKind;
 use parol_runtime::lexer::Token;
 #[allow(unused_imports)]
 use parol_runtime::Result;
-use std::collections::{HashMap, VecDeque};
+use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter, Write as _};
 
 ///
@@ -40,7 +41,7 @@ pub struct ParolLsGrammar {
 
     pub grammar: Option<ParolLs>,
 
-    pub comments: VecDeque<OwnedToken>,
+    pub(crate) comments: Comments,
 }
 
 impl ParolLsGrammar {
@@ -318,7 +319,7 @@ impl ParolLsGrammar {
     pub(crate) fn format(&self, params: DocumentFormattingParams) -> Option<Vec<TextEdit>> {
         if let Some(ref grammar) = self.grammar {
             Some(
-                <&parol_ls_grammar_trait::ParolLs as crate::format::Format>::format(
+                <&parol_ls_grammar_trait::ParolLs as crate::formatting::Format>::format(
                     &grammar,
                     &params.options,
                     self.comments.clone(),

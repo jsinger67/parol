@@ -117,7 +117,9 @@ impl<'t> Iterator for TokenIter<'t> {
                 .build()
             {
                 let token = Token::with(text, token_type, location, self.token_number);
-                self.token_number += 1;
+                if !token.is_skip_token() || token.is_comment_token() {
+                    self.token_number += 1;
+                }
                 trace!("{}, newline count: {}", token, new_lines);
                 Some(token)
             } else {

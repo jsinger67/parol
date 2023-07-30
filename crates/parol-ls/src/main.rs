@@ -11,7 +11,7 @@ mod convert_to_rng;
 pub mod diagnostics;
 pub mod document_state;
 pub mod errors;
-mod format;
+mod formatting;
 mod handler;
 pub mod parol_ls_grammar;
 mod parol_ls_grammar_trait;
