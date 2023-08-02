@@ -21,13 +21,13 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.22.2 - Not released yet
+## 0.23.0 - 2023-08-02
 
 * Cleaner generation of raw strings in parser source. Especially hash characters in raw string
 prefixes and postfixes are now generated only when and as much as needed. This fixes clippy message
 "unnecessary hashes around raw string literal"
-
 * Removed clippy warnings new in Rust 1.7.1
+* Using new version of `parol_runtime`
 
 ## 0.22.1 - 2023-07-12
 
