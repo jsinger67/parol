@@ -167,7 +167,6 @@ pub fn calculate_k(
 ///
 /// Calculates lookahead tuples for all productions, where max_k is the limit.
 ///
-#[allow(clippy::manual_try_fold)]
 pub fn calculate_k_tuples(
     grammar_config: &GrammarConfig,
     max_k: usize,

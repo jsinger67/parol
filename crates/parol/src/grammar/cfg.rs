@@ -254,7 +254,6 @@ impl Cfg {
     /// Returns the relative index of a production within its alternatives.
     /// Used for auto generation to get a more stable generation experience.
     ///
-    #[allow(clippy::manual_try_fold)]
     pub fn get_alternation_index_of_production(
         &self,
         prod_num: ProductionIndex,

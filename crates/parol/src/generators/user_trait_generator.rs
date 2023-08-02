@@ -476,7 +476,6 @@ impl<'a> UserTraitGenerator<'a> {
     ///
     /// Generates the file with the user actions trait.
     ///
-    #[allow(clippy::manual_try_fold)]
     pub fn generate_user_trait_source<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
