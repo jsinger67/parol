@@ -26,7 +26,7 @@ lsp-server = "0.7.2"
 lsp-types = "0.94.0"
 once_cell = { workspace = true }
 parol = { path = "../parol", version = "0.22.1" }
-parol_runtime = { path = "../parol_runtime", version = "0.17.1", features = ["auto_generation"] }
+parol_runtime = { path = "../parol_runtime", version = "0.18.0", features = ["auto_generation"] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 regex = { workspace = true }
 serde = "1.0.180"

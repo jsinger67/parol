@@ -17,7 +17,15 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.17.2 - Not released yet
+## 0.18.0 - 2023-08-02
+
+* To minimize the size of tokens the types of some members of `Token` have been changed from usize
+to u32.
+  * This is a BREAKING CHANGE! Sorry for inconvenience.
+* To support the new comment handling feature more generally I added a new member
+`Token::token_number` which is actually an index. So if you use tokens provided by
+ `<UserType>GrammarTrait::on_comment_parsed` you can now determine where exactly the comment token
+ has been scanned in the input relatively to other normal tokens.
 
 ## 0.17.1 - 2023-07-12
 
