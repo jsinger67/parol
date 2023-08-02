@@ -1,4 +1,4 @@
-use lsp_types::{FormattingOptions, FormattingProperty, TextEdit};
+use lsp_types::{FormattingOptions, TextEdit};
 
 use crate::{
     parol_ls_grammar::OwnedToken,
@@ -19,50 +19,6 @@ use super::{Comments, FmtOptions, Indent, Line, LineEnd, Padding};
 
 // This is the actual start column for each production (alternation) line
 const START_LINE_OFFSET: usize = 6;
-
-macro_rules! add_boolean_formatting_option {
-    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
-        $self.$option_name = if let Some(&FormattingProperty::Bool(val)) = $options
-            .properties
-            .get(concat!("formatting.", stringify!($option_name)))
-        {
-            val
-        } else {
-            $default
-        };
-        eprintln!(
-            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
-            $self.$option_name
-        );
-    };
-}
-
-macro_rules! add_number_formatting_option {
-    ($self:ident, $options:ident, $option_name:ident, $default:literal) => {
-        $self.$option_name = if let Some(&FormattingProperty::Number(val)) = $options
-            .properties
-            .get(concat!("formatting.", stringify!($option_name)))
-        {
-            val as usize
-        } else {
-            $default
-        };
-        eprintln!(
-            concat!("FmtOptions: ", stringify!($option_name), ": {}"),
-            $self.$option_name
-        );
-    };
-}
-
-impl From<&FormattingOptions> for FmtOptions {
-    fn from(options: &FormattingOptions) -> Self {
-        let mut me = Self::new();
-        add_boolean_formatting_option!(me, options, empty_line_after_prod, true);
-        add_boolean_formatting_option!(me, options, prod_semicolon_on_nl, true);
-        add_number_formatting_option!(me, options, max_line_length, 100);
-        me
-    }
-}
 
 pub(crate) trait Format {
     fn format(&self, options: &FormattingOptions, comments: Comments) -> Vec<TextEdit>;
