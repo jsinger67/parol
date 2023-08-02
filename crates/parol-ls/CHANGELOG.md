@@ -5,6 +5,11 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.15.0 -  2023-08-02
+
+* Refactoring of formatting algorithm using the new comment handling feature provided by
+`parol_runtime`. If you experience strange shifts of comments please file an issue.
+
 ## 0.14.0 - 2023-07-12
 
 * This release is dedicated to code formatting. A lot of tests have been added to ensure a more
