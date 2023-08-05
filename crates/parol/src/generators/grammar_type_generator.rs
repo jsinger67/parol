@@ -75,7 +75,10 @@ impl GrammarTypeInfo {
 
         // Insert the Semantic Actions Trait into the global scope
         me.user_action_trait_id = Some(me.symbol_table.insert_global_type(
-            &format!("{}Trait", NmHlp::to_upper_camel_case(grammar_type_name)),
+            &format!(
+                "{}GrammarTrait",
+                NmHlp::to_upper_camel_case(grammar_type_name)
+            ),
             TypeEntrails::Trait,
         )?);
 
@@ -87,9 +90,12 @@ impl GrammarTypeInfo {
             TypeEntrails::Function(Function::default()),
         )?;
 
-        // Insert the fix <GrammarName>Auto struct into the global scope
+        // Insert the fix <GrammarName>GrammarAuto struct into the global scope
         me.adapter_grammar_struct_id = Some(me.symbol_table.insert_global_type(
-            &format!("{}Auto", NmHlp::to_upper_camel_case(grammar_type_name)),
+            &format!(
+                "{}GrammarAuto",
+                NmHlp::to_upper_camel_case(grammar_type_name)
+            ),
             TypeEntrails::Struct,
         )?);
 
