@@ -395,7 +395,11 @@ impl<'a> UserTraitGenerator<'a> {
                 type_info.symbol_table.lifetime(symbol_id)
             ))
         } else {
-            Err(anyhow!("Can't find type of argument {}", non_terminal))
+            Err(anyhow!(
+                "Can't find type of argument {} (type {})",
+                non_terminal,
+                type_name
+            ))
         }
     }
 
@@ -653,7 +657,8 @@ impl<'a> UserTraitGenerator<'a> {
                 |acc: Result<StrVec>, (nt, fn_id)| {
                     if let Ok(mut acc) = acc {
                         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-                        let fn_arguments = Self::generate_user_action_args(nt, type_info)?;
+                        let fn_arguments = Self::generate_user_action_args(nt, type_info)
+                            .map_err(|e| anyhow!("{e} in {fn_name}"))?;
                         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
                             .fn_name(fn_name)
                             .non_terminal(nt.to_string())
