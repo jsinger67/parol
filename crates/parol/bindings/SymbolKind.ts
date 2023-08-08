@@ -2,4 +2,4 @@
 import type { Instance } from "./Instance";
 import type { Type } from "./Type";
 
-export type SymbolKind = { Type: Type } | { Instance: Instance };
+export type SymbolKind = { "Type": Type } | { "Instance": Instance };

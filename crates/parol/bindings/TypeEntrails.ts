@@ -4,4 +4,4 @@ import type { MetaSymbolKind } from "./MetaSymbolKind";
 import type { SymbolId } from "./SymbolId";
 import type { UserDefinedTypeName } from "./UserDefinedTypeName";
 
-export type TypeEntrails = "None" | "Token" | { Box: SymbolId } | "Struct" | "Enum" | { EnumVariant: SymbolId } | { Vec: SymbolId } | "Trait" | { Function: Function } | { Option: SymbolId } | { Clipped: MetaSymbolKind } | { UserDefinedType: [MetaSymbolKind, UserDefinedTypeName] };
+export type TypeEntrails = "None" | "Token" | { "Box": SymbolId } | "Struct" | "Enum" | { "EnumVariant": SymbolId } | { "Vec": SymbolId } | "Trait" | { "Function": Function } | { "Option": SymbolId } | { "Clipped": MetaSymbolKind } | { "UserDefinedType": [MetaSymbolKind, UserDefinedTypeName] };
