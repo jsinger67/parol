@@ -21,6 +21,13 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.23.1 - Not released yet
+
+* Fixed issue [#166](https://github.com/jsinger67/parol/issues/166) reported by @nblei
+  * Removed an aggressive optimization step in the phase of grammar transformation
+  (`eliminate_duplicates`)
+
+
 ## 0.23.0 - 2023-08-02
 
 * Cleaner generation of raw strings in parser source. Especially hash characters in raw string

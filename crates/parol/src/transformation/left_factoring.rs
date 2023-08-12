@@ -20,7 +20,7 @@ fn apply_rule_transformation<'a>(
     trans: impl Fn(Vec<Pr>) -> Vec<Pr>,
 ) -> TransformationOperand<'a> {
     let TransformationOperand {
-        modified: _,
+        mut modified,
         mut pr,
         state_resolver,
         user_type_resolver,
@@ -33,20 +33,13 @@ fn apply_rule_transformation<'a>(
         let mut upper_rules = pr.split_off(rule_index);
         pr.append(&mut trans(affected_rules));
         pr.append(&mut upper_rules);
-
-        TransformationOperand {
-            modified: true,
-            pr,
-            state_resolver,
-            user_type_resolver,
-        }
-    } else {
-        TransformationOperand {
-            modified: false,
-            pr,
-            state_resolver,
-            user_type_resolver,
-        }
+        modified = true;
+    }
+    TransformationOperand {
+        modified,
+        pr,
+        state_resolver,
+        user_type_resolver,
     }
 }
 
@@ -276,17 +269,20 @@ pub fn left_factor(g: &Cfg) -> Cfg {
         prefixes.iter().fold(operand, &factor_out_prefix)
     }
 
+    let mut iteration = 0;
+
     // $env:RUST_LOG="parol::transformation::left_factoring=trace"
     trace!(
-        "\n{}",
+        "Iteration {iteration}\n{}",
         format_productions(&operand.pr).expect("format failed")
     );
 
     while operand.modified {
         operand.modified = false;
+        iteration += 1;
         operand = factor_out(operand);
         trace!(
-            "\n{}",
+            "Iteration {iteration}\n{}",
             format_productions(&operand.pr).expect("format failed")
         );
     }

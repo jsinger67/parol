@@ -628,79 +628,6 @@ fn eliminate_groups(opd: TransformationOperand) -> TransformationOperand {
     }
 }
 
-fn eliminate_duplicates(opd: TransformationOperand) -> TransformationOperand {
-    fn find_productions_with_same_rhs(
-        productions: &[Production],
-    ) -> Option<(ProductionIndex, ProductionIndex)> {
-        for i in 0..productions.len() {
-            for j in 0..productions.len() {
-                if i != j && productions[i].rhs == productions[j].rhs {
-                    let (i, j) = if i < j { (i, j) } else { (j, i) };
-                    let first = &productions[i].lhs;
-                    let duplicate = &productions[j].lhs;
-                    if productions.iter().filter(|pr| &pr.lhs == first).count() == 1
-                        && productions.iter().filter(|pr| &pr.lhs == duplicate).count() == 1
-                    {
-                        return Some((i, j));
-                    }
-                }
-            }
-        }
-        None
-    }
-    // -------------------------------------------------------------------------
-    // Replace the all occurrences of the LHS of the second production within
-    // all productions RHS.
-    // Then Remove the second production.
-    // -------------------------------------------------------------------------
-    fn eliminate_single_duplicate(
-        productions: &mut Vec<Production>,
-        production_index_1: ProductionIndex,
-        production_index_2: ProductionIndex,
-    ) {
-        let to_find = productions[production_index_2].lhs.clone();
-        let replace_with = productions[production_index_1].lhs.clone();
-
-        #[allow(clippy::needless_range_loop)]
-        for pi in 0..productions.len() {
-            if pi != production_index_2 {
-                let pr = &mut productions[pi];
-                debug_assert!(pr.rhs.0.len() == 1, "Only one single Alternation expected!");
-                for s in &mut pr.rhs.0[0].0 {
-                    if let Factor::NonTerminal(n, ..) = s {
-                        if n == &to_find {
-                            *s = Factor::default_non_terminal(replace_with.clone());
-                        }
-                    }
-                }
-            }
-        }
-
-        productions.remove(production_index_2);
-    }
-    fn eliminate_duplicate(productions: &mut Vec<Production>) -> bool {
-        if let Some((production_index_1, production_index_2)) =
-            find_productions_with_same_rhs(productions)
-        {
-            eliminate_single_duplicate(productions, production_index_1, production_index_2);
-            true
-        } else {
-            false
-        }
-    }
-
-    let mut modified = opd.modified;
-    let mut productions = opd.productions;
-
-    while eliminate_duplicate(&mut productions) {
-        modified |= true;
-    }
-    TransformationOperand {
-        modified,
-        productions,
-    }
-}
-
 // -------------------------------------------------------------------------
 // Guidelines:
 // After applying all transformation inner (sub-) expressions should be factored out.
@@ -735,12 +662,6 @@ pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<
     while operand.modified {
         operand.modified = false;
         operand = trans_fn(operand);
-    }
-
-    operand.modified = true;
-    while operand.modified {
-        operand.modified = false;
-        operand = eliminate_duplicates(operand);
     }
 
     finalize(operand.productions)
