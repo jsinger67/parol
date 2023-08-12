@@ -21,9 +21,10 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.23.1 - Not released yet
+## 0.23.1 - 2023-08-12
 
-* Fixed issue [#166](https://github.com/jsinger67/parol/issues/166) reported by @nblei
+* Fixed issue [#166](https://github.com/jsinger67/parol/issues/166) reported by
+[nblei](https://github.com/nblei)
   * Removed an aggressive optimization step in the phase of grammar transformation
   (`eliminate_duplicates`)
 
