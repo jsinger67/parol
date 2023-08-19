@@ -17,6 +17,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.18.1 - Not released yet
+
+* Providing location information on EOI tokens now to support error reporting
+
 ## 0.18.0 - 2023-08-02
 
 * To minimize the size of tokens the types of some members of `Token` have been changed from usize

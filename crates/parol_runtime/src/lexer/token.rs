@@ -80,6 +80,11 @@ impl<'t> Token<'t> {
         }
     }
 
+    /// Change the location of the token after it's creation
+    pub fn with_location(&mut self, location: Location) {
+        self.location = location;
+    }
+
     ///
     /// Indicates wether the token is normally skipped by the TokenStream.
     /// The behavior is independent from the language.

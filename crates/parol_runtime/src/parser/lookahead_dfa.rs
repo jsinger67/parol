@@ -206,7 +206,7 @@ impl LookaheadDFA {
                 expected_tokens = self.transitions.iter().filter(|t| t.0 == state).fold(
                     expected_tokens,
                     |mut acc, t| {
-                        acc.push(format!(r#""{}""#, terminal_names[t.1 as usize]));
+                        acc.push(terminal_names[t.1 as usize].to_owned());
                         acc
                     },
                 );

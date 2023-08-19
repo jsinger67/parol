@@ -1,6 +1,6 @@
 use crate::{
     lexer::{location, Token, Tokenizer, RX_NEW_LINE},
-    TokenNumber,
+    Location, TokenNumber,
 };
 use location::LocationBuilder;
 use log::trace;
@@ -34,6 +34,8 @@ pub struct TokenIter<'t> {
     pub file_name: Cow<'static, Path>,
 
     token_number: TokenNumber,
+
+    last_location: Option<Location>,
 }
 
 impl<'t> TokenIter<'t> {
@@ -54,6 +56,7 @@ impl<'t> TokenIter<'t> {
             k,
             file_name: file_name.into(),
             token_number: 0,
+            last_location: None,
         }
     }
 
@@ -116,6 +119,7 @@ impl<'t> Iterator for TokenIter<'t> {
                 .file_name(self.file_name.clone())
                 .build()
             {
+                self.last_location = Some(location.clone());
                 let token = Token::with(text, token_type, location, self.token_number);
                 if !token.is_skip_token() || token.is_comment_token() {
                     self.token_number += 1;
@@ -128,9 +132,15 @@ impl<'t> Iterator for TokenIter<'t> {
                 None
             }
         } else if self.k > 0 {
+            // Return at most k EOI tokens
             self.k -= 1;
             trace!("EOI");
-            Some(Token::eoi(self.token_number))
+            let mut eoi = Token::eoi(self.token_number);
+            if let Some(location) = self.last_location.as_mut() {
+                location.end_column += 1;
+                eoi.with_location(location.clone());
+            }
+            Some(eoi)
         } else {
             trace!("Normal end of iteration");
             None
