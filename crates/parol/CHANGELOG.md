@@ -21,6 +21,10 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.23.2 - Not released yet
+
+* Fixed bug in `parol new` when `--tree` option is used
+
 ## 0.23.1 - 2023-08-12
 
 * Fixed issue [#166](https://github.com/jsinger67/parol/issues/166) reported by
