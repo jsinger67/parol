@@ -100,7 +100,21 @@ fn lexer_token_production() {
         ),
         tok
     );
-    assert_eq!(Token::eoi(80), token_stream.borrow().tokens[0]);
+    assert_eq!(
+        Token::eoi(80).with_location(
+            LocationBuilder::default()
+                .start_line(21)
+                .start_column(1)
+                .end_line(22)
+                .end_column(2)
+                .length(1)
+                .offset(548)
+                .file_name(token_stream.borrow().file_name.clone())
+                .build()
+                .unwrap()
+        ),
+        token_stream.borrow().tokens[0]
+    );
 }
 
 #[test]

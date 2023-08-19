@@ -138,7 +138,7 @@ impl<'t> Iterator for TokenIter<'t> {
             let mut eoi = Token::eoi(self.token_number);
             if let Some(location) = self.last_location.as_mut() {
                 location.end_column += 1;
-                eoi.with_location(location.clone());
+                eoi = eoi.with_location(location.clone());
             }
             Some(eoi)
         } else {
