@@ -24,6 +24,15 @@ new minor version numbers. Please note that this is no version handling covered 
 ## 0.23.2 - Not released yet
 
 * Fixed bug in `parol new` when `--tree` option is used
+* Reenable subcommand `generate` (see v0.5.3 - 2022-01-02 for original introduction)
+
+  You can now run endless stress tests like in this example using a *powershell* one-liner again:
+
+  ```powershell
+  while ($true) {parol generate -f ./examples/json_parser_auto/json-exp.par | Set-Content "$env:Temp/x.json"; .\target\debug\json_parser_auto "$env:Temp/x.json" -q; if (-not $?) { break } }
+  ```
+
+  Also you can use the [parol::LanguageGenerator] in your tests to achieve a similar effect.
 
 ## 0.23.1 - 2023-08-12
 

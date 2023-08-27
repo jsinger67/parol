@@ -59,6 +59,10 @@ pub(crate) struct CliArgs {
     #[arg(short, long)]
     pub verbose: bool,
 
+    /// Decreased verbosity
+    #[arg(short, long)]
+    pub quiet: bool,
+
     /// Generate range information for AST types
     #[arg(short, long)]
     pub range: bool,
