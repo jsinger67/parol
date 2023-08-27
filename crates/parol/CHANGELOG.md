@@ -33,6 +33,7 @@ new minor version numbers. Please note that this is no version handling covered 
   ```
 
   Also you can use the [parol::LanguageGenerator] in your tests to achieve a similar effect.
+* Fixed clippy warnings
 
 ## 0.23.1 - 2023-08-12
 

@@ -517,56 +517,20 @@ impl<'a> UserTraitGenerator<'a> {
                         None
                     }
                 })
-                .fold(Ok(StrVec::new(0)), |acc: Result<StrVec>, (t, f)| {
-                    if let Ok(mut acc) = acc {
-                        let mut comment = StrVec::new(0);
-                        comment.push(String::default());
-                        comment.push(format!("Type derived for production {}", f.prod_num));
-                        comment.push(String::default());
-                        comment.push(f.prod_string);
-                        comment.push(String::default());
-                        Self::format_type(*t, &type_info.symbol_table, comment)?
-                            .into_iter()
-                            .for_each(|s| acc.push(s));
-                        if config.range() {
-                            acc.push(Self::generate_range_calculation(
-                                *t,
-                                &type_info.symbol_table,
-                            )?);
-                        }
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
+                .try_fold(StrVec::new(0), |acc, (t, f)| {
+                    Self::generate_single_production_output_type(f, t, type_info, acc, config)
                 })?
         } else {
             StrVec::new(0)
         };
 
         let non_terminal_types = if config.auto_generate() {
-            type_info.non_terminal_types.iter().fold(
-                Ok(StrVec::new(0)),
-                |acc: Result<StrVec>, (s, t)| {
-                    if let Ok(mut acc) = acc {
-                        let mut comment = StrVec::new(0);
-                        comment.push(String::default());
-                        comment.push(format!("Type derived for non-terminal {}", s));
-                        comment.push(String::default());
-                        Self::format_type(*t, &type_info.symbol_table, comment)?
-                            .into_iter()
-                            .for_each(|s| acc.push(s));
-                        if config.range() {
-                            acc.push(Self::generate_range_calculation(
-                                *t,
-                                &type_info.symbol_table,
-                            )?);
-                        }
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
-                },
-            )?
+            type_info
+                .non_terminal_types
+                .iter()
+                .try_fold(StrVec::new(0), |acc, (s, t)| {
+                    Self::generate_single_non_terminal_type(s, t, type_info, acc, config)
+                })?
         } else {
             StrVec::new(0)
         };
@@ -588,88 +552,20 @@ impl<'a> UserTraitGenerator<'a> {
             )?;
         }
 
-        let trait_functions = type_info.adapter_actions.iter().fold(
-            Ok(StrVec::new(0).first_line_no_indent()),
-            |acc: Result<StrVec>, a| {
-                if let Ok(mut acc) = acc {
-                    let action_id = *a.1;
-                    let fn_type = type_info.symbol_table.symbol_as_type(action_id);
-                    let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
-                    let function = type_info.symbol_table.symbol_as_function(action_id)?;
-                    let prod_num = function.prod_num;
-                    let prod_string = function.prod_string;
-                    let fn_arguments = self.generate_inner_action_args(
-                        config,
-                        action_id,
-                        &type_info.symbol_table,
-                    )?;
-                    let mut code = StrVec::new(8);
-                    self.generate_context(config, &mut code);
-                    self.generate_token_assignments(
-                        config,
-                        &mut code,
-                        action_id,
-                        &type_info.symbol_table,
-                    )?;
-                    self.generate_stack_pops(
-                        config,
-                        &mut code,
-                        action_id,
-                        &type_info.symbol_table,
-                    )?;
-                    self.generate_result_builder(config, &mut code, action_id, type_info)?;
-                    self.generate_push_semantic(
-                        config,
-                        &mut code,
-                        action_id,
-                        &type_info.symbol_table,
-                    )?;
-                    self.generate_user_action_call(config, &mut code, action_id, type_info)?;
-                    self.generate_stack_push(
-                        config,
-                        &mut code,
-                        action_id,
-                        &type_info.symbol_table,
-                    )?;
-                    let user_trait_function_data = UserTraitFunctionDataBuilder::default()
-                        .fn_name(fn_name)
-                        .prod_num(prod_num)
-                        .fn_arguments(fn_arguments)
-                        .prod_string(prod_string)
-                        .named(config.auto_generate())
-                        .code(code)
-                        .inner(true)
-                        .build()
-                        .unwrap();
-                    acc.push(format!("{}", user_trait_function_data));
-                    Ok(acc)
-                } else {
-                    acc
-                }
-            },
-        )?;
+        let trait_functions = type_info
+            .adapter_actions
+            .iter()
+            .try_fold(StrVec::new(0).first_line_no_indent(), |acc, a| {
+                self.generate_single_trait_function(a, type_info, config, acc)
+            })?;
 
         let user_trait_functions = if config.auto_generate() {
             trace!("parol_grammar.item_stack:\n{:?}", self.productions);
 
-            type_info.user_actions.iter().fold(
-                Ok(StrVec::new(0).first_line_no_indent()),
-                |acc: Result<StrVec>, (nt, fn_id)| {
-                    if let Ok(mut acc) = acc {
-                        let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-                        let fn_arguments = Self::generate_user_action_args(nt, type_info)
-                            .map_err(|e| anyhow!("{e} in {fn_name}"))?;
-                        let user_trait_function_data = UserTraitFunctionDataBuilder::default()
-                            .fn_name(fn_name)
-                            .non_terminal(nt.to_string())
-                            .fn_arguments(fn_arguments)
-                            .build()
-                            .unwrap();
-                        acc.push(format!("{}", user_trait_function_data));
-                        Ok(acc)
-                    } else {
-                        acc
-                    }
+            type_info.user_actions.iter().try_fold(
+                StrVec::new(0).first_line_no_indent(),
+                |acc, (nt, fn_id)| {
+                    Self::generate_single_user_trait_function(type_info, fn_id, nt, acc)
                 },
             )?
         } else {
@@ -678,27 +574,15 @@ impl<'a> UserTraitGenerator<'a> {
 
         trace!("user_trait_functions:\n{}", user_trait_functions);
 
-        let trait_caller = self.grammar_config.cfg.pr.iter().enumerate().fold(
-            Ok(StrVec::new(12)),
-            |acc: Result<StrVec>, (i, p)| {
-                if let Ok(mut acc) = acc {
-                    let fn_type_id = type_info.adapter_actions.get(&i).unwrap();
-                    let fn_type = type_info.symbol_table.symbol_as_type(*fn_type_id);
-                    let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
-                    let fn_arguments = Self::generate_caller_argument_list(p);
-                    let user_trait_function_data = UserTraitCallerFunctionDataBuilder::default()
-                        .fn_name(fn_name)
-                        .prod_num(i)
-                        .fn_arguments(fn_arguments)
-                        .build()
-                        .unwrap();
-                    acc.push(format!("{}", user_trait_function_data));
-                    Ok(acc)
-                } else {
-                    acc
-                }
-            },
-        )?;
+        let trait_caller = self
+            .grammar_config
+            .cfg
+            .pr
+            .iter()
+            .enumerate()
+            .try_fold(StrVec::new(12), |acc, (i, p)| {
+                Self::generate_single_user_action_call(type_info, i, p, acc)
+            })?;
         // $env:RUST_LOG="parol::generators::user_trait_generator=trace"
         trace!("// Type information:");
         trace!("{}", type_info);
@@ -729,6 +613,43 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(format!("{}", user_trait_data))
     }
 
+    fn generate_single_trait_function<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+        &self,
+        a: (&usize, &SymbolId),
+        type_info: &GrammarTypeInfo,
+        config: &C,
+        mut acc: StrVec,
+    ) -> std::result::Result<StrVec, anyhow::Error> {
+        let action_id = *a.1;
+        let fn_type = type_info.symbol_table.symbol_as_type(action_id);
+        let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
+        let function = type_info.symbol_table.symbol_as_function(action_id)?;
+        let prod_num = function.prod_num;
+        let prod_string = function.prod_string;
+        let fn_arguments =
+            self.generate_inner_action_args(config, action_id, &type_info.symbol_table)?;
+        let mut code = StrVec::new(8);
+        self.generate_context(config, &mut code);
+        self.generate_token_assignments(config, &mut code, action_id, &type_info.symbol_table)?;
+        self.generate_stack_pops(config, &mut code, action_id, &type_info.symbol_table)?;
+        self.generate_result_builder(config, &mut code, action_id, type_info)?;
+        self.generate_push_semantic(config, &mut code, action_id, &type_info.symbol_table)?;
+        self.generate_user_action_call(config, &mut code, action_id, type_info)?;
+        self.generate_stack_push(config, &mut code, action_id, &type_info.symbol_table)?;
+        let user_trait_function_data = UserTraitFunctionDataBuilder::default()
+            .fn_name(fn_name)
+            .prod_num(prod_num)
+            .fn_arguments(fn_arguments)
+            .prod_string(prod_string)
+            .named(config.auto_generate())
+            .code(code)
+            .inner(true)
+            .build()
+            .unwrap();
+        acc.push(format!("{}", user_trait_function_data));
+        Ok(acc)
+    }
+
     // ---------------------------------------------------
     // Part of the Public API
     // *Changes will affect crate's version according to semver*
@@ -743,5 +664,94 @@ impl<'a> UserTraitGenerator<'a> {
             .productions(productions)
             .build()
             .map_err(|e| anyhow!("Builder error!: {}", e))
+    }
+
+    fn generate_single_non_terminal_type<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+        s: &String,
+        t: &SymbolId,
+        type_info: &GrammarTypeInfo,
+        mut acc: StrVec,
+        config: &C,
+    ) -> std::result::Result<StrVec, anyhow::Error> {
+        let mut comment = StrVec::new(0);
+        comment.push(String::default());
+        comment.push(format!("Type derived for non-terminal {}", s));
+        comment.push(String::default());
+        Self::format_type(*t, &type_info.symbol_table, comment)?
+            .into_iter()
+            .for_each(|s| acc.push(s));
+        if config.range() {
+            acc.push(Self::generate_range_calculation(
+                *t,
+                &type_info.symbol_table,
+            )?);
+        }
+        Ok(acc)
+    }
+
+    fn generate_single_production_output_type<
+        C: CommonGeneratorConfig + UserTraitGeneratorConfig,
+    >(
+        f: super::symbol_table::Function,
+        t: &SymbolId,
+        type_info: &GrammarTypeInfo,
+        mut acc: StrVec,
+        config: &C,
+    ) -> std::result::Result<StrVec, anyhow::Error> {
+        let mut comment = StrVec::new(0);
+        comment.push(String::default());
+        comment.push(format!("Type derived for production {}", f.prod_num));
+        comment.push(String::default());
+        comment.push(f.prod_string);
+        comment.push(String::default());
+        Self::format_type(*t, &type_info.symbol_table, comment)?
+            .into_iter()
+            .for_each(|s| acc.push(s));
+        if config.range() {
+            acc.push(Self::generate_range_calculation(
+                *t,
+                &type_info.symbol_table,
+            )?);
+        }
+        Ok(acc)
+    }
+
+    fn generate_single_user_trait_function(
+        type_info: &GrammarTypeInfo,
+        fn_id: &SymbolId,
+        nt: &String,
+        mut acc: StrVec,
+    ) -> std::result::Result<StrVec, anyhow::Error> {
+        let fn_name = type_info.symbol_table.type_name(*fn_id)?;
+        let fn_arguments = Self::generate_user_action_args(nt, type_info)
+            .map_err(|e| anyhow!("{e} in {fn_name}"))?;
+        let user_trait_function_data = UserTraitFunctionDataBuilder::default()
+            .fn_name(fn_name)
+            .non_terminal(nt.to_string())
+            .fn_arguments(fn_arguments)
+            .build()
+            .unwrap();
+        acc.push(format!("{}", user_trait_function_data));
+        Ok(acc)
+    }
+
+    fn generate_single_user_action_call(
+        type_info: &GrammarTypeInfo,
+        i: usize,
+        p: &Pr,
+        mut acc: StrVec,
+    ) -> std::result::Result<StrVec, anyhow::Error> {
+        let fn_type_id = type_info.adapter_actions.get(&i).unwrap();
+        let fn_type = type_info.symbol_table.symbol_as_type(*fn_type_id);
+        let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
+        let fn_arguments = Self::generate_caller_argument_list(p);
+        let user_trait_function_data = UserTraitCallerFunctionDataBuilder::default()
+            .fn_name(fn_name)
+            .prod_num(i)
+            .fn_arguments(fn_arguments)
+            .build()
+            .unwrap();
+        acc.push(format!("{}", user_trait_function_data));
+        Ok(acc)
     }
 }

@@ -174,7 +174,7 @@ pub fn calculate_k_tuples(
     follow_cache: &FollowCache,
 ) -> Result<BTreeMap<usize, KTuples>> {
     let cfg = &grammar_config.cfg;
-    let non_terminal_index_finder = cfg.get_non_terminal_index_function();
+    let non_terminal_index_finder = Rc::new(cfg.get_non_terminal_index_function());
     cfg.get_non_terminal_set()
         .iter()
         .map(|n| {
@@ -183,25 +183,43 @@ pub fn calculate_k_tuples(
                 decidable(grammar_config, n, max_k, first_cache, follow_cache),
             )
         })
-        .fold(Ok(BTreeMap::new()), |acc, (n, r)| match (acc, r) {
-            (Err(e), _) => Err(e),
-            (Ok(mut m), Ok(k)) => {
-                let productions = cfg.matching_productions(&n);
-                let mut k_tuples = productions
-                    .iter()
-                    .fold(BTreeMap::new(), |mut acc, (pi, _)| {
-                        let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
-                        let cached = follow_cache.get(k, grammar_config, first_cache);
-                        if let Some(follow_set) = cached.1.get(non_terminal_index_finder(&n)) {
-                            acc.insert(*pi, k_tuples.k_concat(follow_set, k));
-                        }
-                        acc
-                    });
-                m.append(&mut k_tuples);
-                Ok(m)
-            }
-            (_, Err(e)) => Err(anyhow!(e.to_string())),
+        .try_fold(BTreeMap::new(), |acc, (nt, r)| {
+            r.and_then(|k| {
+                calculate_tuples_for_non_terminal(
+                    nt,
+                    k,
+                    grammar_config,
+                    first_cache,
+                    follow_cache,
+                    non_terminal_index_finder.clone(),
+                    acc,
+                )
+            })
         })
+}
+
+fn calculate_tuples_for_non_terminal(
+    nt: String,
+    k: usize,
+    grammar_config: &GrammarConfig,
+    first_cache: &FirstCache,
+    follow_cache: &FollowCache,
+    non_terminal_index_finder: Rc<impl Fn(&str) -> usize>,
+    mut m: BTreeMap<usize, KTuples>,
+) -> std::result::Result<BTreeMap<usize, KTuples>, anyhow::Error> {
+    let productions = grammar_config.cfg.matching_productions(&nt);
+    let mut k_tuples = productions
+        .iter()
+        .fold(BTreeMap::new(), |mut acc, (pi, _)| {
+            let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
+            let cached = follow_cache.get(k, grammar_config, first_cache);
+            if let Some(follow_set) = cached.1.get(non_terminal_index_finder(&nt)) {
+                acc.insert(*pi, k_tuples.k_concat(follow_set, k));
+            }
+            acc
+        });
+    m.append(&mut k_tuples);
+    Ok(m)
 }
 
 // ---------------------------------------------------
