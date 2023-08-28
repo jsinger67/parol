@@ -263,18 +263,8 @@ impl Cfg {
         } else {
             self.matching_productions(self.pr[prod_num].get_n_str())
                 .iter()
-                .enumerate()
-                .fold(
-                    Err("Internal error accessing productions"),
-                    |acc, (rel_i, (i, _))| {
-                        if acc.is_err() && *i == prod_num {
-                            Ok(rel_i)
-                        } else {
-                            // Already found
-                            acc
-                        }
-                    },
-                )
+                .position(|(i, _)| *i == prod_num)
+                .ok_or("Invalid production number!")
         }
     }
 

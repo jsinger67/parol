@@ -19,9 +19,8 @@ pub mod grammar_type_generator;
 pub use grammar_type_generator::GrammarTypeInfo;
 
 /// Module with the language generator
-/// DISABLED because of version conflicts. Crate `rand_regex` still depends on `regex-syntax@0.6`
-// pub mod language_generator;
-// pub use language_generator::LanguageGenerator;
+pub mod language_generator;
+pub use language_generator::LanguageGenerator;
 
 /// Module with the lexer generator
 pub mod lexer_generator;

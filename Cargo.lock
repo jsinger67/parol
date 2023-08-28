@@ -773,6 +773,7 @@ dependencies = [
  "quickcheck",
  "quickcheck_macros",
  "rand",
+ "rand_regex",
  "regex",
  "regex-syntax",
  "serde",
@@ -994,6 +995,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
 dependencies = [
  "getrandom",
+]
+
+[[package]]
+name = "rand_regex"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8276e2c4e37f1907c587794d9b8b3334e1d44f36e05f8c13d61c50c19c264ae2"
+dependencies = [
+ "rand",
+ "regex-syntax",
 ]
 
 [[package]]

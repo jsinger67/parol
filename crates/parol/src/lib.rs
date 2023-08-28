@@ -61,7 +61,8 @@ pub use error_report::ParolErrorReporter;
 pub mod generators;
 pub use generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
-    GrammarConfig, GrammarTypeInfo, ScannerConfig, UserTraitGenerator, UserTraitGeneratorBuilder,
+    GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
+    UserTraitGeneratorBuilder,
 };
 
 ///

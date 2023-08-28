@@ -168,22 +168,38 @@ fn main() -> Result<std::process::ExitCode> {
     env_logger::try_init().map_err(|e| parol!(e))?;
     trace!("env logger started");
 
-    let args = CliArgs::parse();
+    let mut args = CliArgs::parse();
     let file = extract_file_name(&args);
+    post_process_args(&mut args);
     match run(&args) {
         Ok(millis) => {
-            println!(
-                "{} {} ({} milliseconds)",
-                "Parol".bright_blue(),
-                "succeeded".bright_green(),
-                millis
-            );
+            if !args.quiet {
+                println!(
+                    "{} {} ({} milliseconds)",
+                    "Parol".bright_blue(),
+                    "succeeded".bright_green(),
+                    millis
+                );
+            }
             return Ok(std::process::ExitCode::SUCCESS);
         }
         Err(err) => ParolErrorReporter::report_error(&err, file.unwrap_or_default()).unwrap_or(()),
     }
-    println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
+    if !args.quiet {
+        println!("{} {}", "Parol".bright_blue(), "failed".bright_red());
+    }
     Ok(std::process::ExitCode::FAILURE)
+}
+
+fn post_process_args(args: &mut CliArgs) {
+    if matches!(
+        args.subcommand.as_ref(),
+        Some(&tools::ToolsSubcommands::generate(_))
+    ) {
+        // We really don't want any output other than the generated source.
+        // Thus we set the quite flag implicitly.
+        args.quiet = true;
+    }
 }
 
 // We need the file name to support error reporting
@@ -197,7 +213,7 @@ fn extract_file_name(args: &CliArgs) -> Option<PathBuf> {
             tools::ToolsSubcommands::first(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::follow(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::format(args) => Some(args.grammar_file.clone()),
-            // tools::ToolsSubcommands::generate(args) => Some(args.grammar_file.clone()),
+            tools::ToolsSubcommands::generate(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::left_factor(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::left_recursions(args) => Some(args.grammar_file.clone()),
             tools::ToolsSubcommands::new(_) => None,

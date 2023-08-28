@@ -40,6 +40,7 @@ declare_tools!(
     first,
     follow,
     format,
+    generate,
     left_factor,
     left_recursions,
     new,

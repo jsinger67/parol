@@ -34,10 +34,10 @@ fn main() -> Result<()> {
         match parse(&input, &file_name, &mut json_grammar) {
             Ok(_) => {
                 let elapsed_time = now.elapsed();
-                println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                 if args.len() > 2 && args[2] == "-q" {
                     Ok(())
                 } else {
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\n{}", json_grammar);
                     Ok(())
                 }
