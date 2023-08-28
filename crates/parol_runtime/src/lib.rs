@@ -36,7 +36,8 @@ pub use parser::{
 ///
 pub mod errors;
 pub use errors::{
-    FileSource, LexerError, ParolError, ParserError, Report, Result, TokenVec, UnexpectedToken,
+    FileSource, LexerError, ParolError, ParserError, Report, Result, SyntaxError, TokenVec,
+    UnexpectedToken,
 };
 
 // re-export

@@ -12,15 +12,14 @@ pub enum ParserError {
     #[error(transparent)]
     TreeError { source: syntree::Error },
 
-    #[error("{cause}Expecting one of {expected_tokens}")]
-    PredictionErrorWithExpectations {
-        cause: String,
-        input: Box<FileSource>,
-        error_location: Box<Location>,
-        unexpected_tokens: Vec<UnexpectedToken>,
-        expected_tokens: TokenVec,
-        source: Option<Box<ParolError>>,
-    },
+    #[error("Error in generated source: {0}")]
+    DataError(&'static str),
+
+    #[error("Error in input: {cause}")]
+    PredictionError { cause: String },
+
+    #[error("Syntax error(s) {entries:?}")]
+    SyntaxErrors { entries: Vec<SyntaxError> },
 
     #[error("Unprocessed input is left after parsing has finished")]
     UnprocessedInput {
@@ -41,12 +40,6 @@ pub enum ParserError {
 
 #[derive(Error, Debug)]
 pub enum LexerError {
-    #[error("Error in generated source: {0}")]
-    DataError(&'static str),
-
-    #[error("Error in input: {cause}")]
-    PredictionError { cause: String },
-
     #[error("No valid token read")]
     TokenBufferEmptyError,
 
@@ -71,6 +64,17 @@ pub enum ParolError {
     LexerError(#[from] LexerError),
     #[error(transparent)]
     UserError(#[from] anyhow::Error),
+}
+
+#[derive(Error, Debug)]
+#[error("{cause}Expecting one of {expected_tokens}")]
+pub struct SyntaxError {
+    pub cause: String,
+    pub input: Box<FileSource>,
+    pub error_location: Box<Location>,
+    pub unexpected_tokens: Vec<UnexpectedToken>,
+    pub expected_tokens: TokenVec,
+    pub source: Option<Box<ParolError>>,
 }
 
 #[derive(Debug)]

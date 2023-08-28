@@ -1,7 +1,7 @@
 use crate::parser::INVALID_PROD;
 use crate::{
-    FormatToken, LexerError, ProductionIndex, StateIndex, TerminalIndex, TokenStream, TokenVec,
-    UnexpectedToken,
+    FormatToken, LexerError, ParolError, ParserError, ProductionIndex, StateIndex, TerminalIndex,
+    TokenStream, TokenVec, UnexpectedToken,
 };
 use log::trace;
 use std::cmp::Ordering;
@@ -67,15 +67,16 @@ impl LookaheadDFA {
     /// Retrieves the lookahead tokens from the TokenStream object without
     /// consuming any of them.
     ///
-    pub fn eval(&self, token_stream: &mut TokenStream<'_>) -> Result<ProductionIndex, LexerError> {
+    pub fn eval(&self, token_stream: &mut TokenStream<'_>) -> Result<ProductionIndex, ParolError> {
         let mut state: StateIndex = 0;
         let mut prod_num: CompiledProductionIndex = self.prod0;
         let mut last_prod_num: CompiledProductionIndex = INVALID_PROD;
 
         if self.k > token_stream.k {
-            return Err(LexerError::DataError(
+            return Err(ParserError::DataError(
                 "Lookahead size mismatch between token stream and Lookahead DFA",
-            ));
+            )
+            .into());
         }
         let mut last_accepting_state: Option<StateIndex> = if prod_num > INVALID_PROD {
             Some(state)
@@ -160,9 +161,10 @@ impl LookaheadDFA {
                 state,
                 token_stream.lookahead(0)
             );
-            return Err(LexerError::PredictionError {
+            return Err(ParserError::PredictionError {
                 cause: format!("Production prediction failed at state {}", state),
-            });
+            }
+            .into());
         }
     }
 
