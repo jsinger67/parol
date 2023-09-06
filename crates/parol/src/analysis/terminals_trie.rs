@@ -11,10 +11,10 @@ use super::{compiled_terminal::INVALID, k_tuple::Terminals};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) struct Node {
-    // Node data
-    t: TerminalIndex,
     // Children
     c: Vec<Node>,
+    // Node data
+    t: TerminalIndex,
     // End node
     e: bool,
 }
@@ -61,7 +61,7 @@ impl Node {
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
-        self.c.binary_search(&Node::new(t)).ok()
+        self.c.iter().position(|n| n.t == t)
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
@@ -228,11 +228,11 @@ impl Trie {
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
-        self.root.c.binary_search(&Node::new(t)).ok()
+        self.root.child_index(t)
     }
 
     /// Adds a child node if it not already exists and returns the child index of it.
-    /// The boolean in the return value ist true on insertion, i.e. when the collection has changed.
+    /// The boolean in the return value is true on insertion, i.e. when the collection has changed.
     fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
         if let Some(index) = self.child_index(t) {
             (index, false)
@@ -692,6 +692,28 @@ mod test {
         .collect::<Vec<Terminals>>();
 
         assert_eq!(expected, t.iter().collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn trie_iter_transports_k_complete() {
+        let mut t = Trie::new();
+        t.insert(&KTuple::new(3).with_terminal_indices(&[1, 2, 3]));
+        t.insert(&KTuple::new(3).with_terminal_indices(&[1, 2, 4]));
+        t.insert(&KTuple::new(3).with_terminal_indices(&[5, 6, 7]));
+        t.insert(&KTuple::new(3).with_terminal_indices(&[5, 8]));
+        //     t
+        // ---------------
+        //     1     5
+        //     |     | \
+        //     2     6  8
+        //     | \   |
+        //     3  4  7
+
+        t.iter()
+            .for_each(|t| assert!(t.len() != 3 || t.is_k_complete(3)));
+
+        assert_eq!(3, t.iter().filter(|t| t.is_k_complete(3)).count());
+        assert_eq!(1, t.iter().filter(|t| !t.is_k_complete(3)).count());
     }
 
     #[test]
