@@ -8,9 +8,7 @@ use crate::grammar::symbol_string::SymbolString;
 use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
-// use std::sync::mpsc::channel;
 use std::sync::Arc;
-// use std::thread;
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: KTuples for non-terminals in non-terminal-index (alphabetical) order
@@ -106,7 +104,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     // let step_function: StepFunction = {
     //     Arc::new(
     //         move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
-    //             let (tx, rx) = channel();
+    //             let (tx, rx) = std::sync::mpsc::channel();
     //             let iter = &mut (0..pr_count) as &mut dyn Iterator<Item = usize>;
     //             let mut new_result_vector = vec![DomainType::new(k); result_vector.len()];
     //             loop {
@@ -116,7 +114,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     //                     let tx = tx.clone();
     //                     let es = es.clone();
     //                     let result_vector = result_vector.clone();
-    //                     thread::spawn(move || {
+    //                     std::thread::spawn(move || {
     //                         tx.send((pr_i, es[pr_i](result_vector))).unwrap();
     //                     });
     //                 });
