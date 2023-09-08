@@ -109,7 +109,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// Provides at maximum k tokens lookahead relative to the current read
     /// position.
-    /// If successful it returns an owned token from buffer position self.pos + n
+    /// If successful it returns an cloned token from buffer position self.pos + n
     ///
     pub fn lookahead(&mut self, n: usize) -> Result<Token<'t>, LexerError> {
         if n > self.k {
@@ -153,7 +153,7 @@ impl<'t> TokenStream<'t> {
     ///
     /// The token's positions are captured to support scanner switching.
     ///
-    pub fn consume(&mut self) -> Result<(), LexerError> {
+    pub fn consume(&mut self) -> Result<Token<'t>, LexerError> {
         self.ensure_buffer();
         if self.tokens.is_empty() {
             Err(LexerError::InternalError(
@@ -178,9 +178,9 @@ impl<'t> TokenStream<'t> {
                 self.line,
                 self.column,
             );
-            self.tokens.remove(0);
+            let token = self.tokens.remove(0);
             self.ensure_buffer();
-            Ok(())
+            Ok(token)
         }
     }
 

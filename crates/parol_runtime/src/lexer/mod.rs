@@ -14,6 +14,18 @@ pub type TerminalIndex = u16;
 pub type TokenNumber = u32;
 
 ///
+/// Invalid token number
+/// These tokens have been inserted by the parser during error recovery.
+/// They have no valid index within the original token stream.
+/// ATTENTION: This could lead to invalid array index access.
+/// TODO:
+/// Maybe create a special token type that is used in error recovery scenarios and that can't
+/// be confused with normal tokens.
+/// Or ensure that such tokens never leave the parser.
+///
+pub const INVALID_TOKEN_NUMBER: TokenNumber = TokenNumber::MAX;
+
+///
 /// Module with common formatting trait
 ///
 pub mod format_token;

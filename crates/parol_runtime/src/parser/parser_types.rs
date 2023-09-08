@@ -117,6 +117,11 @@ pub struct LLKParser<'t> {
     /// To enable this call the method `trim_parse_tree` on the parser object before parsing.
     ///
     trim_parse_tree: bool,
+
+    ///
+    /// The parser can generate multiple syntax errors during the course of recovering from an error
+    ///
+    error_entries: Vec<SyntaxError>,
 }
 
 impl<'t> LLKParser<'t> {
@@ -140,6 +145,7 @@ impl<'t> LLKParser<'t> {
             terminal_names,
             non_terminal_names,
             trim_parse_tree: false,
+            error_entries: Vec::new(),
         }
     }
 
@@ -164,6 +170,11 @@ impl<'t> LLKParser<'t> {
             }
         }
         None
+    }
+
+    #[inline]
+    fn add_error(&mut self, error: SyntaxError) {
+        self.error_entries.push(error)
     }
 
     fn push_production(
@@ -287,28 +298,26 @@ impl<'t> LLKParser<'t> {
                 let (message, unexpected_tokens, expected_tokens) = self.lookahead_automata
                     [self.start_symbol_index]
                     .build_error(self.terminal_names, &stream.borrow())?;
-                return Err(ParserError::SyntaxErrors {
-                    entries: vec![SyntaxError {
-                        cause: self.diagnostic_message(
-                            format!(
-                                "{}\nat non-terminal \"{}\" \n\
-                                        Current scanner is {}",
-                                message,
-                                nt_name,
-                                &stream.borrow().current_scanner(),
-                            )
-                            .as_str(),
-                        ),
-                        input: Box::new(FileSource::from_stream(&stream.borrow())),
-                        error_location: unexpected_tokens
-                            .get(0)
-                            .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
-                        unexpected_tokens,
-                        expected_tokens,
-                        source: Some(Box::new(source)),
-                    }],
-                }
-                .into());
+                self.add_error(SyntaxError {
+                    cause: self.diagnostic_message(
+                        format!(
+                            "{}\nat non-terminal \"{}\" \n\
+                                    Current scanner is {}",
+                            message,
+                            nt_name,
+                            &stream.borrow().current_scanner(),
+                        )
+                        .as_str(),
+                    ),
+                    input: Box::new(FileSource::from_stream(&stream.borrow())),
+                    error_location: unexpected_tokens
+                        .get(0)
+                        .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
+                    unexpected_tokens,
+                    expected_tokens,
+                    source: Some(Box::new(source)),
+                });
+                self.recover_from_prediction_error()?
             }
         };
 
@@ -335,29 +344,27 @@ impl<'t> LLKParser<'t> {
                         } else {
                             let mut expected_tokens = TokenVec::default();
                             expected_tokens.push(self.terminal_names[t as usize].to_string());
-                            return Err(ParserError::SyntaxErrors {
-                                entries: vec![SyntaxError {
-                                    cause: self.diagnostic_message(
-                                        format!(
-                                            "Found \"{}\" \n\
-                                                Current scanner is {}",
-                                            token.format(self.terminal_names),
-                                            stream.borrow().current_scanner(),
-                                        )
-                                        .as_str(),
-                                    ),
-                                    input: Box::new(FileSource::from_stream(&stream.borrow())),
-                                    error_location: Box::new((&token).into()),
-                                    unexpected_tokens: vec![UnexpectedToken::new(
-                                        "LA(1)".to_owned(),
-                                        self.terminal_names[token.token_type as usize].to_owned(),
-                                        &token,
-                                    )],
-                                    expected_tokens,
-                                    source: None,
-                                }],
-                            }
-                            .into());
+                            self.add_error(SyntaxError {
+                                cause: self.diagnostic_message(
+                                    format!(
+                                        "Found \"{}\" \n\
+                                            Current scanner is {}",
+                                        token.format(self.terminal_names),
+                                        stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
+                                ),
+                                input: Box::new(FileSource::from_stream(&stream.borrow())),
+                                error_location: Box::new((&token).into()),
+                                unexpected_tokens: vec![UnexpectedToken::new(
+                                    "LA(1)".to_owned(),
+                                    self.terminal_names[token.token_type as usize].to_owned(),
+                                    &token,
+                                )],
+                                expected_tokens,
+                                source: None,
+                            });
+                            self.recover_from_token_mismatch()?;
                         }
                     }
                     ParseType::N(n) => match self.predict_production(n, &stream) {
@@ -370,30 +377,28 @@ impl<'t> LLKParser<'t> {
                             let (message, unexpected_tokens, expected_tokens) = self
                                 .lookahead_automata[n]
                                 .build_error(self.terminal_names, &stream.borrow())?;
-                            return Err(ParserError::SyntaxErrors {
-                                entries: vec![SyntaxError {
-                                    cause: self.diagnostic_message(
-                                        format!(
-                                            "{}\nat non-terminal \"{}\" \n\
+                            self.add_error(SyntaxError {
+                                cause: self.diagnostic_message(
+                                    format!(
+                                        "{}\nat non-terminal \"{}\" \n\
                                                     Current scanner is {}",
-                                            message,
-                                            nt_name,
-                                            &stream.borrow().current_scanner(),
-                                        )
-                                        .as_str(),
-                                    ),
-                                    input: Box::new(FileSource::from_stream(&stream.borrow())),
-                                    error_location: unexpected_tokens
-                                        .get(0)
-                                        .map_or(Box::<Location>::default(), |t| {
-                                            Box::new(t.token.clone())
-                                        }),
-                                    unexpected_tokens,
-                                    expected_tokens,
-                                    source: Some(Box::new(source)),
-                                }],
-                            }
-                            .into());
+                                        message,
+                                        nt_name,
+                                        &stream.borrow().current_scanner(),
+                                    )
+                                    .as_str(),
+                                ),
+                                input: Box::new(FileSource::from_stream(&stream.borrow())),
+                                error_location: unexpected_tokens
+                                    .get(0)
+                                    .map_or(Box::<Location>::default(), |t| {
+                                        Box::new(t.token.clone())
+                                    }),
+                                unexpected_tokens,
+                                expected_tokens,
+                                source: Some(Box::new(source)),
+                            });
+                            self.recover_from_prediction_error()?;
                         }
                     },
                     ParseType::S(s) => {
@@ -441,9 +446,29 @@ impl<'t> LLKParser<'t> {
             })
             .into())
         } else {
+            if !self.error_entries.is_empty() {
+                return Err(ParserError::SyntaxErrors {
+                    entries: self.error_entries.drain(..).collect(),
+                }
+                .into());
+            }
             Ok(tree_builder
                 .build()
                 .map_err(|source| ParserError::TreeError { source })?)
         }
+    }
+
+    fn recover_from_prediction_error(&mut self) -> Result<ProductionIndex> {
+        if !self.error_entries.is_empty() {
+            return Err(ParserError::SyntaxErrors {
+                entries: self.error_entries.drain(..).collect(),
+            }
+            .into());
+        }
+        todo!()
+    }
+
+    fn recover_from_token_mismatch(&mut self) -> Result<()> {
+        todo!()
     }
 }
