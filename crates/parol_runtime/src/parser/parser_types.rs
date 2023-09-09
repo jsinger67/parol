@@ -1,10 +1,13 @@
 use crate::{
     FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeType,
-    ParseType, ParserError, ProductionIndex, Result, SyntaxError, TokenStream, TokenVec,
-    UnexpectedToken, UserActionsTrait,
+    ParseType, ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream,
+    TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
-use std::cell::RefCell;
+use std::{
+    cell::{Ref, RefCell, RefMut},
+    ops::Range,
+};
 use syntree::{Builder, Tree};
 
 ///
@@ -264,8 +267,12 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn diagnostic_message(&self, msg: &str) -> String {
-        trace!("\nParser stack:\n{}\n", self.parser_stack);
+    fn diagnostic_message(&self, msg: &str, stream: Ref<'_, TokenStream<'t>>) -> String {
+        trace!(
+            "\nParser stack:\n{}\n{}",
+            self.parser_stack,
+            stream.diagnostic_message()
+        );
         if let Some(prod_num) = self.current_production() {
             format!(
                 "{}\n\
@@ -308,6 +315,7 @@ impl<'t> LLKParser<'t> {
                             &stream.borrow().current_scanner(),
                         )
                         .as_str(),
+                        stream.borrow(),
                     ),
                     input: Box::new(FileSource::from_stream(&stream.borrow())),
                     error_location: unexpected_tokens
@@ -317,7 +325,7 @@ impl<'t> LLKParser<'t> {
                     expected_tokens,
                     source: Some(Box::new(source)),
                 });
-                self.recover_from_prediction_error()?
+                self.recover_from_prediction_error(self.start_symbol_index)?
             }
         };
 
@@ -353,6 +361,7 @@ impl<'t> LLKParser<'t> {
                                         stream.borrow().current_scanner(),
                                     )
                                     .as_str(),
+                                    stream.borrow(),
                                 ),
                                 input: Box::new(FileSource::from_stream(&stream.borrow())),
                                 error_location: Box::new((&token).into()),
@@ -364,7 +373,7 @@ impl<'t> LLKParser<'t> {
                                 expected_tokens,
                                 source: None,
                             });
-                            self.recover_from_token_mismatch()?;
+                            self.recover_from_token_mismatch(stream.borrow_mut())?;
                         }
                     }
                     ParseType::N(n) => match self.predict_production(n, &stream) {
@@ -387,6 +396,7 @@ impl<'t> LLKParser<'t> {
                                         &stream.borrow().current_scanner(),
                                     )
                                     .as_str(),
+                                    stream.borrow(),
                                 ),
                                 input: Box::new(FileSource::from_stream(&stream.borrow())),
                                 error_location: unexpected_tokens
@@ -398,7 +408,7 @@ impl<'t> LLKParser<'t> {
                                 expected_tokens,
                                 source: Some(Box::new(source)),
                             });
-                            self.recover_from_prediction_error()?;
+                            self.recover_from_prediction_error(n)?;
                         }
                     },
                     ParseType::S(s) => {
@@ -421,6 +431,7 @@ impl<'t> LLKParser<'t> {
                                         &stream.borrow().current_scanner(),
                                     )
                                     .as_str(),
+                                    stream.borrow(),
                                 ),
                                 input: FileSource::from_stream(&stream.borrow()),
                                 source,
@@ -458,7 +469,10 @@ impl<'t> LLKParser<'t> {
         }
     }
 
-    fn recover_from_prediction_error(&mut self) -> Result<ProductionIndex> {
+    fn recover_from_prediction_error(
+        &mut self,
+        _non_terminal: NonTerminalIndex,
+    ) -> Result<ProductionIndex> {
         if !self.error_entries.is_empty() {
             return Err(ParserError::SyntaxErrors {
                 entries: self.error_entries.drain(..).collect(),
@@ -468,7 +482,50 @@ impl<'t> LLKParser<'t> {
         todo!()
     }
 
-    fn recover_from_token_mismatch(&mut self) -> Result<()> {
-        todo!()
+    fn recover_from_token_mismatch(
+        &mut self,
+        mut stream: RefMut<'_, TokenStream<'t>>,
+    ) -> Result<()> {
+        stream.ensure_buffer();
+        let scanned_token_types = stream.token_types();
+        let expected_token_types = self.parser_stack.expected_token_types();
+        trace!("LA: [{scanned_token_types:?}]");
+        trace!("PS: [{expected_token_types:?}]");
+
+        if let Some((r1, r2)) =
+            Self::calculate_match_ranges(&scanned_token_types, &expected_token_types)
+        {
+            trace!("Match ranges are {r1:?}, {r2:?}");
+            if r1.start == r2.start {
+                (0..r1.start).rev().for_each(|i| {
+                    stream.replace_token_type_at(i, expected_token_types[i]);
+                    // self.add_error(error);
+                });
+                trace!("{}", stream.diagnostic_message());
+                return Ok(());
+            }
+        }
+
+        if !self.error_entries.is_empty() {
+            return Err(ParserError::SyntaxErrors {
+                entries: self.error_entries.drain(..).collect(),
+            }
+            .into());
+        }
+        Ok(())
+    }
+
+    fn calculate_match_ranges(
+        act: &[TerminalIndex],
+        exp: &[TerminalIndex],
+    ) -> Option<(Range<usize>, Range<usize>)> {
+        for i in 0..act.len() {
+            for j in 0..exp.len() {
+                if act[i..] == exp[j..] {
+                    return Some((i..act.len(), j..exp.len()));
+                }
+            }
+        }
+        None
     }
 }

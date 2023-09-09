@@ -349,7 +349,7 @@ impl<'t> TokenStream<'t> {
     /// The function fills the lookahead buffer (self.tokens) with k tokens.
     /// It returns the number of tokens read.
     ///
-    fn ensure_buffer(&mut self) -> usize {
+    pub(crate) fn ensure_buffer(&mut self) -> usize {
         let fill_len = self.tokens.len();
         if fill_len < self.k {
             // Fill buffer to lookahead size k
@@ -374,5 +374,27 @@ impl<'t> TokenStream<'t> {
             self.k,
         )
         .with_position(self.line, self.column)
+    }
+
+    pub(crate) fn token_types(&self) -> Vec<TerminalIndex> {
+        self.tokens.iter().map(|t| t.token_type).collect::<Vec<_>>()
+    }
+
+    pub(crate) fn diagnostic_message(&self) -> String {
+        format!(
+            "Lookahead buffer:\n[\n  {}\n]\n",
+            self.tokens
+                .iter()
+                .enumerate()
+                .map(|(i, t)| format!("LA[{i}]: ({t})"))
+                .collect::<Vec<String>>()
+                .join(",\n  ")
+        )
+    }
+
+    pub(crate) fn replace_token_type_at(&mut self, index: usize, token_type: TerminalIndex) {
+        if self.tokens.len() > index {
+            self.tokens[index].token_type = token_type;
+        }
     }
 }

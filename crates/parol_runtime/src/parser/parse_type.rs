@@ -95,6 +95,27 @@ impl ParseStack {
     fn decode_non_terminal(&self, non_terminal_index: usize) -> &'static str {
         self.non_terminal_names[non_terminal_index]
     }
+
+    /// Returns all relevant tokens that are already expected (i.e. resolved) from the parse stack
+    /// The strategy is to only take terminal indices as long no non-terminal (with unresolved
+    /// content) or any scanner switch instructions is found. End of production markers are ignored.
+    pub(crate) fn expected_token_types(&self) -> Vec<TerminalIndex> {
+        self.stack
+            .iter()
+            .rev()
+            .take_while(|e| {
+                dbg!(e);
+                matches!(e, ParseType::E(_)) || matches!(e, ParseType::T(_))
+            })
+            .filter_map(|e| {
+                dbg!(e);
+                match e {
+                    ParseType::T(t) => Some(*t),
+                    _ => None,
+                }
+            })
+            .collect::<Vec<_>>()
+    }
 }
 
 impl Display for ParseStack {
