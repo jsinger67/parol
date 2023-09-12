@@ -65,3 +65,9 @@ pub use parser_types::{LLKParser, ParseTree, Production};
 #[forbid(missing_docs)]
 pub mod user_access;
 pub use user_access::UserActionsTrait;
+
+///
+/// Module with recovery algorithms
+///
+pub(crate) mod recovery;
+// pub(crate) use recovery::Recovery;

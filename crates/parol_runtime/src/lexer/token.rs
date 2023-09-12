@@ -86,6 +86,12 @@ impl<'t> Token<'t> {
         self
     }
 
+    /// Change the location of the token after it's creation
+    pub fn with_type(mut self, token_type: TerminalIndex) -> Self {
+        self.token_type = token_type;
+        self
+    }
+
     ///
     /// Indicates wether the token is normally skipped by the TokenStream.
     /// The behavior is independent from the language.

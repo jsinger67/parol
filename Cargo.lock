@@ -821,6 +821,7 @@ dependencies = [
  "codespan-reporting",
  "criterion",
  "derive_builder",
+ "env_logger 0.10.0",
  "function_name",
  "log",
  "once_cell",

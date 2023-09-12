@@ -103,16 +103,10 @@ impl ParseStack {
         self.stack
             .iter()
             .rev()
-            .take_while(|e| {
-                dbg!(e);
-                matches!(e, ParseType::E(_)) || matches!(e, ParseType::T(_))
-            })
-            .filter_map(|e| {
-                dbg!(e);
-                match e {
-                    ParseType::T(t) => Some(*t),
-                    _ => None,
-                }
+            .take_while(|e| matches!(e, ParseType::E(_)) || matches!(e, ParseType::T(_)))
+            .filter_map(|e| match e {
+                ParseType::T(t) => Some(*t),
+                _ => None,
             })
             .collect::<Vec<_>>()
     }

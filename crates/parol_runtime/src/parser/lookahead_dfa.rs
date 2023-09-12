@@ -12,6 +12,10 @@ use super::CompiledProductionIndex;
 ///
 /// The transitions contain tuples: "from-state -> terminal-index -> to-state -> production index"
 ///
+/// The CompiledProductionIndex is the production number that can be chosen when the to-state is
+/// reached and the value is valid. The value is valid if it's not INVALID_PROD which denotes
+/// that the to-state is not an accepting one.
+///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct Trans(
     pub StateIndex,
@@ -31,8 +35,8 @@ pub struct Trans(
 ///
 #[derive(Debug, Default, Clone, Eq, PartialEq)]
 pub struct LookaheadDFA {
-    /// Contains the production number in state 0, i.e. the state that the automaton is initially in
-    /// without applying any transitions
+    /// Contains the production number in initial state 0. If the automaton has not transitions this
+    /// number will be returned.
     pub prod0: CompiledProductionIndex,
 
     ///
@@ -157,9 +161,9 @@ impl LookaheadDFA {
             Ok(last_prod_num as ProductionIndex)
         } else {
             trace!(
-                "Production prediction failed at state {} with token {:?}",
+                "Production prediction failed at state {} with tokens {:?}",
                 state,
-                token_stream.lookahead(0)
+                token_stream.token_types()
             );
             return Err(ParserError::PredictionError {
                 cause: format!("Production prediction failed at state {}", state),

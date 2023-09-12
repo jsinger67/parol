@@ -26,6 +26,7 @@ thiserror = { workspace = true }
 
 [dev-dependencies]
 criterion = "0.5.1"
+env_logger = "0.10.0"
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 
 [[bench]]

@@ -1,13 +1,10 @@
 use crate::{
-    FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex, ParseStack, ParseTreeType,
-    ParseType, ParserError, ProductionIndex, Result, SyntaxError, TerminalIndex, TokenStream,
-    TokenVec, UnexpectedToken, UserActionsTrait,
+    parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
+    ParseStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
+    TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
-use std::{
-    cell::{Ref, RefCell, RefMut},
-    ops::Range,
-};
+use std::cell::{Ref, RefCell, RefMut};
 use syntree::{Builder, Tree};
 
 ///
@@ -482,6 +479,7 @@ impl<'t> LLKParser<'t> {
         todo!()
     }
 
+    // Sync input tokens with expected tokens if possible
     fn recover_from_token_mismatch(
         &mut self,
         mut stream: RefMut<'_, TokenStream<'t>>,
@@ -492,18 +490,22 @@ impl<'t> LLKParser<'t> {
         trace!("LA: [{scanned_token_types:?}]");
         trace!("PS: [{expected_token_types:?}]");
 
-        if let Some((r1, r2)) =
-            Self::calculate_match_ranges(&scanned_token_types, &expected_token_types)
+        if let Some((act, exp)) =
+            Recovery::calculate_match_ranges(&scanned_token_types, &expected_token_types)
         {
-            trace!("Match ranges are {r1:?}, {r2:?}");
-            if r1.start == r2.start {
-                (0..r1.start).rev().for_each(|i| {
+            trace!("Match ranges are {act:?}, {exp:?}");
+            if act.start <= exp.start {
+                (0..act.start).for_each(|i| {
                     stream.replace_token_type_at(i, expected_token_types[i]);
-                    // self.add_error(error);
                 });
                 trace!("{}", stream.diagnostic_message());
-                return Ok(());
             }
+            if act.start < exp.start {
+                (act.start..exp.start)
+                    .for_each(|i| stream.insert_token_at(i, expected_token_types[i]));
+                trace!("{}", stream.diagnostic_message());
+            }
+            return Ok(());
         }
 
         if !self.error_entries.is_empty() {
@@ -513,19 +515,5 @@ impl<'t> LLKParser<'t> {
             .into());
         }
         Ok(())
-    }
-
-    fn calculate_match_ranges(
-        act: &[TerminalIndex],
-        exp: &[TerminalIndex],
-    ) -> Option<(Range<usize>, Range<usize>)> {
-        for i in 0..act.len() {
-            for j in 0..exp.len() {
-                if act[i..] == exp[j..] {
-                    return Some((i..act.len(), j..exp.len()));
-                }
-            }
-        }
-        None
     }
 }
