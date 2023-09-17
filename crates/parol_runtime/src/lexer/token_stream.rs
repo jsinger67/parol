@@ -1,5 +1,5 @@
 use crate::parser::ScannerIndex;
-use crate::{LexerError, TerminalIndex, Token, TokenIter, Tokenizer};
+use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, Tokenizer};
 use log::trace;
 use std::borrow::Cow;
 
@@ -407,9 +407,27 @@ impl<'t> TokenStream<'t> {
 
     pub(crate) fn insert_token_at(&mut self, index: usize, token_type: TerminalIndex) {
         if self.tokens.len() >= index {
-            trace!("inserting token {} at index {}", token_type, index,);
-            self.tokens
-                .insert(index, Token::default().with_type(token_type));
+            trace!("inserting token {} at index {}", token_type, index);
+            let location = if self.tokens.len() > index {
+                self.tokens[index].location.clone()
+            } else {
+                LocationBuilder::default()
+                    .start_line(self.line)
+                    .start_column(self.column)
+                    .end_line(self.line)
+                    .end_column(self.column)
+                    .length(0)
+                    .offset(self.start_pos + self.pos)
+                    .file_name(self.file_name.clone())
+                    .build()
+                    .unwrap()
+            };
+            self.tokens.insert(
+                index,
+                Token::default()
+                    .with_type(token_type)
+                    .with_location(location),
+            );
         }
     }
 }

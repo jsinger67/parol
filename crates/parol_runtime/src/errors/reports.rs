@@ -150,6 +150,7 @@ pub trait Report {
                     entries.iter().try_for_each(
                         |SyntaxError {
                              cause,
+                             error_location,
                              unexpected_tokens,
                              expected_tokens,
                              source,
@@ -159,7 +160,9 @@ pub trait Report {
                             if let Some(source) = source {
                                 Self::report_error(source, file_name.as_ref())?;
                             }
-                            let range =
+                            let range = if unexpected_tokens.is_empty() {
+                                (&**error_location).into()
+                            } else {
                                 unexpected_tokens
                                     .iter()
                                     .fold(Range::default(), |mut acc, un| {
@@ -168,7 +171,8 @@ pub trait Report {
                                         let acc_span: Span = acc.into();
                                         acc = (acc_span + un_span).into();
                                         acc
-                                    });
+                                    })
+                            };
                             let unexpected_tokens_labels =
                                 unexpected_tokens.iter().fold(vec![], |mut acc, un| {
                                     acc.push(

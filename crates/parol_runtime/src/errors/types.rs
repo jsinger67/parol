@@ -82,6 +82,11 @@ impl SyntaxError {
         self.cause = cause.to_owned();
         self
     }
+
+    pub(crate) fn with_location(mut self, location: Location) -> Self {
+        self.error_location = Box::new(location);
+        self
+    }
 }
 
 #[derive(Debug)]

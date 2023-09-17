@@ -1,7 +1,7 @@
 use crate::{
     parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
     ParseStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    TerminalIndex, Token, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
 use std::{cell::RefCell, rc::Rc};
@@ -248,7 +248,7 @@ impl<'t> LLKParser<'t> {
         stream: Rc<RefCell<TokenStream<'t>>>,
     ) -> Result<ProductionIndex> {
         let lookahead_dfa = &self.lookahead_automata[non_terminal];
-        lookahead_dfa.eval(&mut stream.borrow_mut())
+        lookahead_dfa.eval(&mut stream.borrow_mut(), non_terminal)
     }
 
     fn handle_comments<'u>(
@@ -482,22 +482,27 @@ impl<'t> LLKParser<'t> {
             return result;
         }
 
-        // if !possible_terminal_strings.is_empty() {
-        //     // Steamroller tactics: sync with the first possible token string
-        //     trace!("Force sync with {:?}", possible_terminal_strings[0]);
-        //     self.sync_token_stream(
-        //         scanned_token_types,
-        //         possible_terminal_strings[0].clone(),
-        //         stream.clone(),
-        //     )?;
-        //     return self.predict_production(self.start_symbol_index, stream);
-        // }
-        // trace!("Can't recover prediction error");
+        if !possible_terminal_strings.is_empty() {
+            // Steamroller tactics: sync with the first possible token string
+            trace!("Force sync with {:?}", possible_terminal_strings[0]);
+            self.sync_token_stream(
+                scanned_token_types,
+                possible_terminal_strings[0].clone(),
+                stream.clone(),
+            )?;
+            return self.predict_production(self.start_symbol_index, stream);
+        }
+
         trace!(
             "{}",
             self.diagnostic_message("Can't recover prediction error", stream.clone())
         );
-        self.add_error(SyntaxError::default().with_cause("Can't recover"));
+        let current_token = stream.borrow_mut().lookahead(0).unwrap_or(Token::default());
+        self.add_error(
+            SyntaxError::default()
+                .with_cause("Can't recover")
+                .with_location(current_token.location.clone()),
+        );
         Err(ParserError::SyntaxErrors {
             entries: self.error_entries.drain(..).collect(),
         }
@@ -549,39 +554,45 @@ impl<'t> LLKParser<'t> {
             return Ok(());
         }
 
-        self.add_error(SyntaxError::default().with_cause("Can't adjust"));
-        Err(ParserError::SyntaxErrors {
-            entries: self.error_entries.drain(..).collect(),
-        }
-        .into())
+        // let current_token = stream.borrow_mut().lookahead(0).unwrap_or(Token::default());
+        // self.add_error(
+        //     SyntaxError::default()
+        //         .with_cause("Can't adjust")
+        //         .with_location(current_token.location.clone()),
+        // );
+        // Err(ParserError::SyntaxErrors {
+        //     entries: self.error_entries.drain(..).collect(),
+        // }
+        // .into())
+
         // Steamroller tactics: sync with the expected token string
-        // trace!("Force sync with {:?}", expected_token_types);
-        // self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
+        trace!("Force sync with {:?}", expected_token_types);
+        self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
 
-    // fn sync_token_stream(
-    //     &mut self,
-    //     scanned_token_types: Vec<TerminalIndex>,
-    //     expected_token_types: Vec<TerminalIndex>,
-    //     stream: Rc<RefCell<TokenStream<'t>>>,
-    // ) -> Result<()> {
-    //     let mut replaced = false;
-    //     scanned_token_types
-    //         .iter()
-    //         .zip(expected_token_types.iter())
-    //         .enumerate()
-    //         .for_each(|(i, (_, exp_t))| {
-    //             replaced = true;
-    //             stream.borrow_mut().replace_token_type_at(i, *exp_t);
-    //         });
-    //     if replaced {
-    //         Ok(())
-    //     } else {
-    //         self.add_error(SyntaxError::default().with_cause("Can't sync"));
-    //         Err(ParserError::SyntaxErrors {
-    //             entries: self.error_entries.drain(..).collect(),
-    //         }
-    //         .into())
-    //     }
-    // }
+    fn sync_token_stream(
+        &mut self,
+        scanned_token_types: Vec<TerminalIndex>,
+        expected_token_types: Vec<TerminalIndex>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
+    ) -> Result<()> {
+        let mut replaced = false;
+        scanned_token_types
+            .iter()
+            .zip(expected_token_types.iter())
+            .enumerate()
+            .for_each(|(i, (_, exp_t))| {
+                replaced = true;
+                stream.borrow_mut().replace_token_type_at(i, *exp_t);
+            });
+        if replaced {
+            Ok(())
+        } else {
+            self.add_error(SyntaxError::default().with_cause("Can't sync"));
+            Err(ParserError::SyntaxErrors {
+                entries: self.error_entries.drain(..).collect(),
+            }
+            .into())
+        }
+    }
 }
