@@ -394,12 +394,20 @@ impl<'t> TokenStream<'t> {
 
     pub(crate) fn replace_token_type_at(&mut self, index: usize, token_type: TerminalIndex) {
         if self.tokens.len() > index {
-            self.tokens[index] = Token::default().with_type(token_type);
+            trace!(
+                "replacing token {} at index {} by {}",
+                self.tokens[index],
+                index,
+                token_type
+            );
+            // self.tokens[index] = Token::default().with_type(token_type);
+            self.tokens[index].token_type = token_type;
         }
     }
 
     pub(crate) fn insert_token_at(&mut self, index: usize, token_type: TerminalIndex) {
         if self.tokens.len() >= index {
+            trace!("inserting token {} at index {}", token_type, index,);
             self.tokens
                 .insert(index, Token::default().with_type(token_type));
         }

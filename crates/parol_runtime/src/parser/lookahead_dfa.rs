@@ -166,7 +166,10 @@ impl LookaheadDFA {
                 token_stream.token_types()
             );
             return Err(ParserError::PredictionError {
-                cause: format!("Production prediction failed at state {}", state),
+                cause: format!(
+                    "Production prediction failed at state {}, trying to recover...",
+                    state
+                ),
             }
             .into());
         }

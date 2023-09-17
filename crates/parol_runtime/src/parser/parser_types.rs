@@ -1,10 +1,10 @@
 use crate::{
     parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
     ParseStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
-use std::cell::{Ref, RefCell, RefMut};
+use std::{cell::RefCell, rc::Rc};
 use syntree::{Builder, Tree};
 
 ///
@@ -245,7 +245,7 @@ impl<'t> LLKParser<'t> {
     fn predict_production(
         &mut self,
         non_terminal: NonTerminalIndex,
-        stream: &RefCell<TokenStream<'t>>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
     ) -> Result<ProductionIndex> {
         let lookahead_dfa = &self.lookahead_automata[non_terminal];
         lookahead_dfa.eval(&mut stream.borrow_mut())
@@ -264,11 +264,11 @@ impl<'t> LLKParser<'t> {
         Ok(())
     }
 
-    fn diagnostic_message(&self, msg: &str, stream: Ref<'_, TokenStream<'t>>) -> String {
+    fn diagnostic_message(&self, msg: &str, stream: Rc<RefCell<TokenStream<'t>>>) -> String {
         trace!(
             "\nParser stack:\n{}\n{}",
             self.parser_stack,
-            stream.diagnostic_message()
+            stream.borrow().diagnostic_message()
         );
         if let Some(prod_num) = self.current_production() {
             format!(
@@ -292,37 +292,18 @@ impl<'t> LLKParser<'t> {
     ///
     pub fn parse<'u>(
         &mut self,
-        stream: RefCell<TokenStream<'t>>,
+        stream: TokenStream<'t>,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<ParseTree<'t>> {
-        let prod_num = match self.predict_production(self.start_symbol_index, &stream) {
+        let stream = Rc::new(RefCell::new(stream));
+        let prod_num = match self.predict_production(self.start_symbol_index, stream.clone()) {
             Ok(prod_num) => prod_num,
             Err(source) => {
-                let nt_name = self.non_terminal_names[self.start_symbol_index];
-                let (message, unexpected_tokens, expected_tokens) = self.lookahead_automata
-                    [self.start_symbol_index]
-                    .build_error(self.terminal_names, &stream.borrow())?;
-                self.add_error(SyntaxError {
-                    cause: self.diagnostic_message(
-                        format!(
-                            "{}\nat non-terminal \"{}\" \n\
-                                    Current scanner is {}",
-                            message,
-                            nt_name,
-                            &stream.borrow().current_scanner(),
-                        )
-                        .as_str(),
-                        stream.borrow(),
-                    ),
-                    input: Box::new(FileSource::from_stream(&stream.borrow())),
-                    error_location: unexpected_tokens
-                        .get(0)
-                        .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
-                    unexpected_tokens,
-                    expected_tokens,
-                    source: Some(Box::new(source)),
-                });
-                self.recover_from_prediction_error(self.start_symbol_index)?
+                match self.handle_prediction_error(self.start_symbol_index, stream.clone(), source)
+                {
+                    Ok(p) => p,
+                    Err(e) => return Err(e),
+                }
             }
         };
 
@@ -347,65 +328,16 @@ impl<'t> LLKParser<'t> {
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));
                         } else {
-                            let mut expected_tokens = TokenVec::default();
-                            expected_tokens.push(self.terminal_names[t as usize].to_string());
-                            self.add_error(SyntaxError {
-                                cause: self.diagnostic_message(
-                                    format!(
-                                        "Found \"{}\" \n\
-                                            Current scanner is {}",
-                                        token.format(self.terminal_names),
-                                        stream.borrow().current_scanner(),
-                                    )
-                                    .as_str(),
-                                    stream.borrow(),
-                                ),
-                                input: Box::new(FileSource::from_stream(&stream.borrow())),
-                                error_location: Box::new((&token).into()),
-                                unexpected_tokens: vec![UnexpectedToken::new(
-                                    "LA(1)".to_owned(),
-                                    self.terminal_names[token.token_type as usize].to_owned(),
-                                    &token,
-                                )],
-                                expected_tokens,
-                                source: None,
-                            });
-                            self.recover_from_token_mismatch(stream.borrow_mut())?;
+                            self.handle_token_mismatch(t, token, stream.clone())?;
                         }
                     }
-                    ParseType::N(n) => match self.predict_production(n, &stream) {
+                    ParseType::N(n) => match self.predict_production(n, stream.clone()) {
                         Ok(prod_num) => {
                             self.parser_stack.stack.pop();
                             self.push_production(&mut tree_builder, prod_num)?;
                         }
                         Err(source) => {
-                            let nt_name = self.non_terminal_names[n];
-                            let (message, unexpected_tokens, expected_tokens) = self
-                                .lookahead_automata[n]
-                                .build_error(self.terminal_names, &stream.borrow())?;
-                            self.add_error(SyntaxError {
-                                cause: self.diagnostic_message(
-                                    format!(
-                                        "{}\nat non-terminal \"{}\" \n\
-                                                    Current scanner is {}",
-                                        message,
-                                        nt_name,
-                                        &stream.borrow().current_scanner(),
-                                    )
-                                    .as_str(),
-                                    stream.borrow(),
-                                ),
-                                input: Box::new(FileSource::from_stream(&stream.borrow())),
-                                error_location: unexpected_tokens
-                                    .get(0)
-                                    .map_or(Box::<Location>::default(), |t| {
-                                        Box::new(t.token.clone())
-                                    }),
-                                unexpected_tokens,
-                                expected_tokens,
-                                source: Some(Box::new(source)),
-                            });
-                            self.recover_from_prediction_error(n)?;
+                            self.handle_prediction_error(n, stream.clone(), source)?;
                         }
                     },
                     ParseType::S(s) => {
@@ -428,7 +360,7 @@ impl<'t> LLKParser<'t> {
                                         &stream.borrow().current_scanner(),
                                     )
                                     .as_str(),
-                                    stream.borrow(),
+                                    stream.clone(),
                                 ),
                                 input: FileSource::from_stream(&stream.borrow()),
                                 source,
@@ -466,54 +398,190 @@ impl<'t> LLKParser<'t> {
         }
     }
 
+    fn handle_token_mismatch(
+        &mut self,
+        t: u16,
+        token: crate::Token<'_>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
+    ) -> Result<()> {
+        let mut expected_tokens = TokenVec::default();
+        expected_tokens.push(self.terminal_names[t as usize].to_string());
+        self.add_error(SyntaxError {
+            cause: self.diagnostic_message(
+                format!(
+                    "Found \"{}\" \n\
+                                            Current scanner is {}",
+                    token.format(self.terminal_names),
+                    stream.borrow().current_scanner(),
+                )
+                .as_str(),
+                stream.clone(),
+            ),
+            input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
+            error_location: Box::new((&token).into()),
+            unexpected_tokens: vec![UnexpectedToken::new(
+                "LA(1)".to_owned(),
+                self.terminal_names[token.token_type as usize].to_owned(),
+                &token,
+            )],
+            expected_tokens,
+            source: None,
+        });
+        self.recover_from_token_mismatch(stream.clone())
+    }
+
+    fn handle_prediction_error(
+        &mut self,
+        n: usize,
+        stream: Rc<RefCell<TokenStream<'t>>>,
+        source: crate::ParolError,
+    ) -> Result<ProductionIndex> {
+        let nt_name = self.non_terminal_names[n];
+        let (message, unexpected_tokens, expected_tokens) =
+            self.lookahead_automata[n].build_error(self.terminal_names, &stream.borrow())?;
+        self.add_error(SyntaxError {
+            cause: self.diagnostic_message(
+                format!(
+                    "{}\nat non-terminal \"{}\" \n\
+                                            Current scanner is {}",
+                    message,
+                    nt_name,
+                    stream.borrow().current_scanner(),
+                )
+                .as_str(),
+                stream.clone(),
+            ),
+            input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
+            error_location: unexpected_tokens
+                .get(0)
+                .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
+            unexpected_tokens,
+            expected_tokens,
+            source: Some(Box::new(source)),
+        });
+        self.recover_from_prediction_error(n, stream.clone())
+    }
+
     fn recover_from_prediction_error(
         &mut self,
-        _non_terminal: NonTerminalIndex,
+        non_terminal: NonTerminalIndex,
+        stream: Rc<RefCell<TokenStream<'t>>>,
     ) -> Result<ProductionIndex> {
-        if !self.error_entries.is_empty() {
-            return Err(ParserError::SyntaxErrors {
-                entries: self.error_entries.drain(..).collect(),
-            }
-            .into());
+        let scanned_token_types = stream.borrow().token_types();
+        let la_dfa = &self.lookahead_automata[non_terminal];
+        let mut possible_terminal_strings =
+            Recovery::restore_terminal_strings(la_dfa.transitions, la_dfa.prod0);
+
+        if let Some(expected_token_types) =
+            Recovery::minimal_token_difference(&scanned_token_types, &mut possible_terminal_strings)
+        {
+            trace!("Sync with {:?}", expected_token_types);
+            self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())?;
+            let result = self.predict_production(self.start_symbol_index, stream);
+            trace!("recovering with production {:?}", result);
+            return result;
         }
-        todo!()
+
+        // if !possible_terminal_strings.is_empty() {
+        //     // Steamroller tactics: sync with the first possible token string
+        //     trace!("Force sync with {:?}", possible_terminal_strings[0]);
+        //     self.sync_token_stream(
+        //         scanned_token_types,
+        //         possible_terminal_strings[0].clone(),
+        //         stream.clone(),
+        //     )?;
+        //     return self.predict_production(self.start_symbol_index, stream);
+        // }
+        // trace!("Can't recover prediction error");
+        trace!(
+            "{}",
+            self.diagnostic_message("Can't recover prediction error", stream.clone())
+        );
+        self.add_error(SyntaxError::default().with_cause("Can't recover"));
+        Err(ParserError::SyntaxErrors {
+            entries: self.error_entries.drain(..).collect(),
+        }
+        .into())
     }
 
     // Sync input tokens with expected tokens if possible
-    fn recover_from_token_mismatch(
-        &mut self,
-        mut stream: RefMut<'_, TokenStream<'t>>,
-    ) -> Result<()> {
-        stream.ensure_buffer();
-        let scanned_token_types = stream.token_types();
+    fn recover_from_token_mismatch(&mut self, stream: Rc<RefCell<TokenStream<'t>>>) -> Result<()> {
+        stream.borrow_mut().ensure_buffer();
+        let scanned_token_types = stream.borrow().token_types();
         let expected_token_types = self.parser_stack.expected_token_types();
         trace!("LA: [{scanned_token_types:?}]");
         trace!("PS: [{expected_token_types:?}]");
 
+        self.adjust_token_stream(scanned_token_types, expected_token_types, stream.clone())
+    }
+
+    fn adjust_token_stream(
+        &mut self,
+        scanned_token_types: Vec<TerminalIndex>,
+        expected_token_types: Vec<TerminalIndex>,
+        stream: Rc<RefCell<TokenStream<'t>>>,
+    ) -> Result<()> {
         if let Some((act, exp)) =
             Recovery::calculate_match_ranges(&scanned_token_types, &expected_token_types)
         {
             trace!("Match ranges are {act:?}, {exp:?}");
             if act.start <= exp.start {
                 (0..act.start).for_each(|i| {
-                    stream.replace_token_type_at(i, expected_token_types[i]);
+                    stream
+                        .borrow_mut()
+                        .replace_token_type_at(i, expected_token_types[i]);
                 });
-                trace!("{}", stream.diagnostic_message());
+                trace!("{}", stream.borrow().diagnostic_message());
             }
             if act.start < exp.start {
-                (act.start..exp.start)
-                    .for_each(|i| stream.insert_token_at(i, expected_token_types[i]));
-                trace!("{}", stream.diagnostic_message());
+                (act.start..exp.start).for_each(|i| {
+                    stream
+                        .borrow_mut()
+                        .insert_token_at(i, expected_token_types[i])
+                });
+                trace!("{}", stream.borrow().diagnostic_message());
+            }
+            if act.start > exp.start {
+                (exp.start..act.start).try_for_each(|_| -> Result<()> {
+                    Ok(stream.borrow_mut().consume().map(|_| ())?)
+                })?;
             }
             return Ok(());
         }
 
-        if !self.error_entries.is_empty() {
-            return Err(ParserError::SyntaxErrors {
-                entries: self.error_entries.drain(..).collect(),
-            }
-            .into());
+        self.add_error(SyntaxError::default().with_cause("Can't adjust"));
+        Err(ParserError::SyntaxErrors {
+            entries: self.error_entries.drain(..).collect(),
         }
-        Ok(())
+        .into())
+        // Steamroller tactics: sync with the expected token string
+        // trace!("Force sync with {:?}", expected_token_types);
+        // self.sync_token_stream(scanned_token_types, expected_token_types, stream.clone())
     }
+
+    // fn sync_token_stream(
+    //     &mut self,
+    //     scanned_token_types: Vec<TerminalIndex>,
+    //     expected_token_types: Vec<TerminalIndex>,
+    //     stream: Rc<RefCell<TokenStream<'t>>>,
+    // ) -> Result<()> {
+    //     let mut replaced = false;
+    //     scanned_token_types
+    //         .iter()
+    //         .zip(expected_token_types.iter())
+    //         .enumerate()
+    //         .for_each(|(i, (_, exp_t))| {
+    //             replaced = true;
+    //             stream.borrow_mut().replace_token_type_at(i, *exp_t);
+    //         });
+    //     if replaced {
+    //         Ok(())
+    //     } else {
+    //         self.add_error(SyntaxError::default().with_cause("Can't sync"));
+    //         Err(ParserError::SyntaxErrors {
+    //             entries: self.error_entries.drain(..).collect(),
+    //         }
+    //         .into())
+    //     }
+    // }
 }

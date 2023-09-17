@@ -1,8 +1,15 @@
-use std::ops::Range;
+use std::{
+    cmp::max,
+    collections::{BTreeMap, HashSet},
+    ops::Range,
+};
 
 use log::trace;
+use petgraph::{algo::all_simple_paths, prelude::DiGraph, visit::IntoNodeReferences};
 
-use crate::TerminalIndex;
+use crate::{TerminalIndex, Trans};
+
+use super::{CompiledProductionIndex, INVALID_PROD};
 
 pub(crate) struct Recovery;
 
@@ -49,10 +56,10 @@ impl Recovery {
             result
         };
 
-        trace!("exp: {exp:?}");
-        for (i, c) in m.iter().enumerate() {
-            trace!("{}: {c:?}", act[i]);
-        }
+        // trace!("exp: {exp:?}");
+        // for (i, c) in m.iter().enumerate() {
+        //     trace!("{}: {c:?}", act[i]);
+        // }
 
         let mut result = None;
         let mut a_start = None;
@@ -95,14 +102,95 @@ impl Recovery {
         trace!("result: {result:?}");
         result
     }
+
+    // This function returns the first terminal string that matches the current scanned token types
+    // with a maximum range.
+    pub(crate) fn minimal_token_difference(
+        scanned_token_types: &[TerminalIndex],
+        possible_terminal_strings: &mut Vec<Vec<TerminalIndex>>,
+    ) -> Option<Vec<TerminalIndex>> {
+        trace!("scanned_token_types: {scanned_token_types:?}");
+        trace!("possible_terminal_strings: {possible_terminal_strings:?}");
+        let mut max_match_length = 0;
+        let mut max_match_index = None;
+        for (i, terminal_string) in possible_terminal_strings.iter().enumerate() {
+            if let Some((r, _)) = Self::calculate_match_ranges(scanned_token_types, terminal_string)
+            {
+                let match_length = max(0, r.end - r.start);
+                if match_length > max_match_length {
+                    max_match_length = match_length;
+                    max_match_index = Some(i);
+                }
+            }
+        }
+        max_match_index.map(|i| possible_terminal_strings.remove(i))
+    }
+
+    // This function uses the lookahead DFA (transitions and production number in state 0) of a
+    // certain non-terminal to recalculate the possible token strings that lead to an end state.
+    // Although this is an expensive calculation it is only done in case of error recovery.
+    // For the sake of simplicity I use `petgraph` here for now.
+    pub(crate) fn restore_terminal_strings(
+        transitions: &[Trans],
+        prod0: CompiledProductionIndex,
+    ) -> Vec<Vec<TerminalIndex>> {
+        let mut result = Vec::new();
+        let mut nodes = HashSet::<(usize, bool)>::new();
+        let root_key = (0, prod0 != INVALID_PROD);
+        nodes.insert(root_key);
+        for t in transitions {
+            nodes.insert((t.2, t.3 != INVALID_PROD));
+        }
+        let mut node_indices = BTreeMap::new();
+        let mut graph = DiGraph::<(usize, bool), TerminalIndex>::new();
+        for n in &nodes {
+            let idx = graph.add_node(*n);
+            node_indices.insert(n, idx);
+        }
+        for t in transitions {
+            let k0 = nodes
+                .get(&(t.0, true))
+                .or_else(|| nodes.get(&(t.0, false)))
+                .unwrap();
+            let k1 = nodes
+                .get(&(t.2, true))
+                .or_else(|| nodes.get(&(t.2, false)))
+                .unwrap();
+            graph.add_edge(
+                *node_indices.get(&k0).unwrap(),
+                *node_indices.get(&k1).unwrap(),
+                t.1,
+            );
+        }
+
+        let root_node_index = *node_indices.get(&root_key).unwrap();
+        for end_node in graph.node_references().filter(|n| n.1 .1) {
+            for path in all_simple_paths::<Vec<_>, _>(&graph, root_node_index, end_node.0, 0, None)
+            {
+                let mut terminal_string = Vec::new();
+                let mut prev_node_index = root_node_index;
+                for node_index in path.iter().skip(1) {
+                    let edge_index = graph.find_edge(prev_node_index, *node_index).unwrap();
+                    let edge = graph[edge_index];
+                    terminal_string.push(edge);
+                    prev_node_index = *node_index;
+                }
+                result.push(terminal_string);
+            }
+        }
+
+        result
+    }
 }
 
+// To see trace output during tests use this call
+// cargo test -p parol_runtime --tests recovery -- --nocapture
 #[cfg(test)]
 mod test {
-    use super::*;
-    use std::sync::Once;
+    use quickcheck_macros::quickcheck;
 
-    static INIT: Once = Once::new();
+    use super::*;
+    use std::cmp::max;
 
     type TestData = &'static [(
         (&'static [TerminalIndex], &'static [TerminalIndex]),
@@ -110,6 +198,7 @@ mod test {
     )];
     #[test]
     fn test_calculate_match_ranges() {
+        let _ = env_logger::builder().is_test(true).try_init();
         let test_data: TestData = &[
             ((&[1, 2], &[0, 2]), Some((1..2, 1..2))),
             ((&[7, 8, 9, 10], &[8, 8, 9, 10]), Some((1..4, 1..4))),
@@ -122,7 +211,6 @@ mod test {
             ((&[6, 7, 8, 9, 11], &[8, 8, 9, 10]), None),
             ((&[6, 7, 8, 9, 10], &[8, 8, 9, 10, 11]), Some((2..5, 1..4))),
         ];
-        INIT.call_once(env_logger::init);
         for (i, d) in test_data.iter().enumerate() {
             assert_eq!(
                 d.1,
@@ -130,6 +218,36 @@ mod test {
                 "test case {i} failed for input {:?}",
                 d.0
             );
+        }
+    }
+
+    #[test]
+    fn test_restore_terminal_strings() {
+        let _ = env_logger::builder().is_test(true).try_init();
+        // k(2) example taken from examples\basic_interpreter\src\basic_parser.rs
+        /* 4 - "BasicList" */
+        let transitions = &[
+            Trans(0, 0, 3, 2),
+            Trans(0, 9, 1, -1),
+            Trans(1, 0, 3, 2),
+            Trans(1, 6, 2, 1),
+        ];
+        let terminal_strings = Recovery::restore_terminal_strings(transitions, -1);
+        trace!("Terminal strings: {terminal_strings:?}");
+        assert_eq!(3, terminal_strings.len());
+        assert!(terminal_strings.contains(&vec![0]));
+        assert!(terminal_strings.contains(&vec![9, 0]));
+        assert!(terminal_strings.contains(&vec![9, 6]));
+    }
+
+    #[quickcheck]
+    fn length_of_match_ranges_are_equal(t1: Vec<TerminalIndex>, t2: Vec<TerminalIndex>) -> bool {
+        if let Some((r1, r2)) = Recovery::calculate_match_ranges(&t1, &t2) {
+            let l1 = max(0, r1.end - r1.start);
+            let l2 = max(0, r2.end - r2.start);
+            l1 == l2
+        } else {
+            true
         }
     }
 }

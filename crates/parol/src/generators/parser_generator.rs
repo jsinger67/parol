@@ -243,7 +243,6 @@ impl std::fmt::Display for ParserData<'_> {
             use parol_runtime::parser::{
                 ParseTreeType, Trans, LLKParser, LookaheadDFA, ParseType, Production, #user_action_trait
             };
-            use std::cell::RefCell;
             use std::path::Path;
         })?;
 
@@ -319,11 +318,9 @@ impl std::fmt::Display for ParserData<'_> {
                     NON_TERMINALS,
                 );
                 #enable_trimming
-                let token_stream = RefCell::new(
-                    TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
-                );
                 #auto_wrapper
-                llk_parser.parse(token_stream, #mut_ref_user_actions)
+                llk_parser.parse(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+                    #mut_ref_user_actions)
             }
         })
     }

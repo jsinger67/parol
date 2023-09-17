@@ -16,18 +16,21 @@ anyhow = { workspace = true }
 codespan-reporting = "0.11.1"
 derive_builder = { workspace = true }
 function_name = { workspace = true }
-syntree = { workspace = true }
-syntree_layout = { workspace = true }
 log = { workspace = true }
 once_cell = { workspace = true }
 parol-macros = { path = "../parol-macros", version = "0.2.0", optional = true }
+petgraph = "0.6.4"
 regex-automata = "0.3.8"
+syntree = { workspace = true }
+syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
 criterion = "0.5.1"
 env_logger = "0.10.0"
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
+quickcheck = "1.0.3"
+quickcheck_macros = "1.0.0"
 
 [[bench]]
 name = "lexer_benchmark"

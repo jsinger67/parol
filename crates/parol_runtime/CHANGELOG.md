@@ -17,9 +17,14 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.18.1 - Not released yet
+## 0.19.0 - Not released yet
 
+* Please note that this version is incompatible with previous versions and works only with
+`parol 0.24`
 * Providing location information on EOI tokens now to support error reporting
+* Supports basic error recovery strategies in generated errors
+  * Token mismatch and production prediction both handles synchronization of input token stream
+   with expected input to enable further parsing
 
 ## 0.18.0 - 2023-08-02
 

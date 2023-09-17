@@ -146,57 +146,67 @@ pub trait Report {
                         .with_code("parol_runtime::lookahead::production_prediction_error")
                         .with_notes(vec![cause.to_string()]),
                 )?),
-                ParserError::SyntaxErrors { entries } => entries.iter().try_for_each(
-                    |SyntaxError {
-                         cause,
-                         unexpected_tokens,
-                         expected_tokens,
-                         source,
-                         ..
-                     }| {
-                        if let Some(source) = source {
-                            Self::report_error(source, file_name.as_ref())?;
-                        }
-                        let range =
-                            unexpected_tokens
-                                .iter()
-                                .fold(Range::default(), |mut acc, un| {
-                                    let un_span: Span =
-                                        (Into::<Range<usize>>::into(&un.token)).into();
-                                    let acc_span: Span = acc.into();
-                                    acc = (acc_span + un_span).into();
+                ParserError::SyntaxErrors { entries } => {
+                    entries.iter().try_for_each(
+                        |SyntaxError {
+                             cause,
+                             unexpected_tokens,
+                             expected_tokens,
+                             source,
+                             ..
+                         }|
+                         -> anyhow::Result<()> {
+                            if let Some(source) = source {
+                                Self::report_error(source, file_name.as_ref())?;
+                            }
+                            let range =
+                                unexpected_tokens
+                                    .iter()
+                                    .fold(Range::default(), |mut acc, un| {
+                                        let un_span: Span =
+                                            (Into::<Range<usize>>::into(&un.token)).into();
+                                        let acc_span: Span = acc.into();
+                                        acc = (acc_span + un_span).into();
+                                        acc
+                                    });
+                            let unexpected_tokens_labels =
+                                unexpected_tokens.iter().fold(vec![], |mut acc, un| {
+                                    acc.push(
+                                        Label::secondary(
+                                            file_id,
+                                            Into::<Range<usize>>::into(&un.token),
+                                        )
+                                        .with_message(un.token_type.clone()),
+                                    );
                                     acc
                                 });
-                        let unexpected_tokens_labels =
-                            unexpected_tokens.iter().fold(vec![], |mut acc, un| {
-                                acc.push(
-                                    Label::secondary(
-                                        file_id,
-                                        Into::<Range<usize>>::into(&un.token),
-                                    )
-                                    .with_message(un.token_type.clone()),
-                                );
-                                acc
-                            });
-                        Ok(term::emit(
-                            &mut writer.lock(),
-                            &config,
-                            &files,
-                            &Diagnostic::error()
-                                .with_message("Syntax error")
-                                .with_code("parol_runtime::parser::syntax_error")
-                                .with_labels(vec![
-                                    Label::primary(file_id, range).with_message("Found")
-                                ])
-                                .with_labels(unexpected_tokens_labels)
-                                .with_notes(vec![
-                                    "Expecting one of".to_string(),
-                                    expected_tokens.to_string(),
-                                ])
-                                .with_notes(vec![cause.to_string()]),
-                        )?)
-                    },
-                ),
+                            Ok(term::emit(
+                                &mut writer.lock(),
+                                &config,
+                                &files,
+                                &Diagnostic::error()
+                                    .with_message("Syntax error")
+                                    .with_code("parol_runtime::parser::syntax_error")
+                                    .with_labels(vec![
+                                        Label::primary(file_id, range).with_message("Found")
+                                    ])
+                                    .with_labels(unexpected_tokens_labels)
+                                    .with_notes(vec![
+                                        "Expecting one of".to_string(),
+                                        expected_tokens.to_string(),
+                                    ])
+                                    .with_notes(vec![cause.to_string()]),
+                            )?)
+                        },
+                    )?;
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{} syntax error(s) found", entries.len())),
+                    )?)
+                }
                 ParserError::UnprocessedInput { last_token, .. } => {
                     let un_span: Span = (Into::<Range<usize>>::into(&**last_token)).into();
                     Ok(term::emit(

@@ -66,15 +66,22 @@ pub enum ParolError {
     UserError(#[from] anyhow::Error),
 }
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, Default)]
 #[error("{cause}Expecting one of {expected_tokens}")]
 pub struct SyntaxError {
     pub cause: String,
-    pub input: Box<FileSource>,
+    pub input: Option<Box<FileSource>>,
     pub error_location: Box<Location>,
     pub unexpected_tokens: Vec<UnexpectedToken>,
     pub expected_tokens: TokenVec,
     pub source: Option<Box<ParolError>>,
+}
+
+impl SyntaxError {
+    pub(crate) fn with_cause(mut self, cause: &str) -> Self {
+        self.cause = cause.to_owned();
+        self
+    }
 }
 
 #[derive(Debug)]

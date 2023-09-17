@@ -11,7 +11,6 @@ use parol_runtime::parser::{
 };
 use parol_runtime::{ParolError, ParseTree, TerminalIndex};
 use parol_runtime::{TokenStream, Tokenizer};
-use std::cell::RefCell;
 use std::path::Path;
 
 use parol_runtime::lexer::tokenizer::{
@@ -1161,7 +1160,8 @@ where
         TERMINAL_NAMES,
         NON_TERMINALS,
     );
-    let token_stream =
-        RefCell::new(TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap());
-    llk_parser.parse(token_stream, user_actions)
+    llk_parser.parse(
+        TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
+        user_actions,
+    )
 }
