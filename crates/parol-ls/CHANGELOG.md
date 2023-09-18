@@ -5,7 +5,13 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 0.15.0 -  2023-08-02
+## 0.16.0 - 2023-09-18
+
+* This release is dedicated to the new error recovery feature in generated parsers.
+ The language server itself benefits from this feature and can continue parsing of par files beyond
+ the first syntax error. This should improve the overall user experience.
+
+## 0.15.0 - 2023-08-02
 
 * Refactoring of formatting algorithm using the new comment handling feature provided by
 `parol_runtime`. If you experience strange shifts of comments please file an issue.

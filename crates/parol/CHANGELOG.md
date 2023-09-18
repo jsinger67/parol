@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.23.2 - Not released yet
+## 0.24.0 - 2023-09-18
 
 * Fixed bug in `parol new` when `--tree` option is used
 * Reenable subcommand `generate` (see v0.5.3 - 2022-01-02 for original introduction)
@@ -34,6 +34,13 @@ new minor version numbers. Please note that this is no version handling covered 
 
   Also you can use the [parol::LanguageGenerator] in your tests to achieve a similar effect.
 * Fixed clippy warnings
+* Providing error recovery supported by `parol_runtime` 0.19.0 in all generated parsers now!
+
+  This is a huge improvement because parsers now usually don't stop after encountering the first
+  syntax error. They now try hard to sync with the input and continue parsing.
+
+  Related changes introduces some INCOMPATIBILITIES in error handling. Usually generating the
+  parsers should help here. In case of problems please open a discussion or file an issue.
 
 ## 0.23.1 - 2023-08-12
 

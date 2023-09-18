@@ -8,12 +8,12 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0"
 env_logger = "0.10.0"
-parol_runtime = { version = "0.18.0", features = ["auto_generation"] }
+parol_runtime = { version = "0.19.0", features = ["auto_generation"] }
 thiserror = "1.0"
 
 [build-dependencies]
-parol = "0.23.1"
-parol_runtime = { version = "0.18.0", features = ["auto_generation"] }
+parol = "0.24.0"
+parol_runtime = { version = "0.19.0", features = ["auto_generation"] }
 
 # For faster builds.
 [profile.dev.build-override]
