@@ -311,7 +311,7 @@ impl<'t> LLKParser<'t> {
 
         self.push_production(&mut tree_builder, prod_num)?;
 
-        while !self.input_accepted() {
+        'WHILE: while !self.input_accepted() {
             if let Some(entry) = self.parser_stack.stack.last().cloned() {
                 match entry {
                     ParseType::T(t) => {
@@ -327,8 +327,11 @@ impl<'t> LLKParser<'t> {
                                     .map_err(|source| ParserError::TreeError { source })?;
                             }
                             self.parse_tree_stack.push(ParseTreeType::T(token));
-                        } else {
-                            self.handle_token_mismatch(t, token, stream.clone())?;
+                        } else if self
+                            .handle_token_mismatch(t, token, stream.clone())
+                            .is_err()
+                        {
+                            break 'WHILE;
                         }
                     }
                     ParseType::N(n) => match self.predict_production(n, stream.clone()) {
@@ -337,7 +340,12 @@ impl<'t> LLKParser<'t> {
                             self.push_production(&mut tree_builder, prod_num)?;
                         }
                         Err(source) => {
-                            self.handle_prediction_error(n, stream.clone(), source)?;
+                            if self
+                                .handle_prediction_error(n, stream.clone(), source)
+                                .is_err()
+                            {
+                                break 'WHILE;
+                            }
                         }
                     },
                     ParseType::S(s) => {
@@ -379,6 +387,12 @@ impl<'t> LLKParser<'t> {
             }
         }
 
+        if !self.error_entries.is_empty() {
+            return Err(ParserError::SyntaxErrors {
+                entries: self.error_entries.drain(..).collect(),
+            }
+            .into());
+        }
         if !stream.borrow().all_input_consumed() {
             Err((ParserError::UnprocessedInput {
                 input: Box::new(FileSource::from_stream(&stream.borrow())),
@@ -386,12 +400,6 @@ impl<'t> LLKParser<'t> {
             })
             .into())
         } else {
-            if !self.error_entries.is_empty() {
-                return Err(ParserError::SyntaxErrors {
-                    entries: self.error_entries.drain(..).collect(),
-                }
-                .into());
-            }
             Ok(tree_builder
                 .build()
                 .map_err(|source| ParserError::TreeError { source })?)
@@ -409,7 +417,7 @@ impl<'t> LLKParser<'t> {
         self.add_error(SyntaxError {
             cause: self.diagnostic_message(
                 format!(
-                    "Found \"{}\" \n\
+                    "Syntax error: found {} \n\
                                             Current scanner is {}",
                     token.format(self.terminal_names),
                     stream.borrow().current_scanner(),
@@ -531,19 +539,19 @@ impl<'t> LLKParser<'t> {
         {
             trace!("Match ranges are {act:?}, {exp:?}");
             if act.start <= exp.start {
-                (0..act.start).for_each(|i| {
-                    stream
+                (0..act.start).try_for_each(|i| -> Result<()> {
+                    Ok(stream
                         .borrow_mut()
-                        .replace_token_type_at(i, expected_token_types[i]);
-                });
+                        .replace_token_type_at(i, expected_token_types[i])?)
+                })?;
                 trace!("{}", stream.borrow().diagnostic_message());
             }
             if act.start < exp.start {
-                (act.start..exp.start).for_each(|i| {
-                    stream
+                (act.start..exp.start).try_for_each(|i| -> Result<()> {
+                    Ok(stream
                         .borrow_mut()
-                        .insert_token_at(i, expected_token_types[i])
-                });
+                        .insert_token_at(i, expected_token_types[i])?)
+                })?;
                 trace!("{}", stream.borrow().diagnostic_message());
             }
             if act.start > exp.start {
@@ -553,17 +561,6 @@ impl<'t> LLKParser<'t> {
             }
             return Ok(());
         }
-
-        // let current_token = stream.borrow_mut().lookahead(0).unwrap_or(Token::default());
-        // self.add_error(
-        //     SyntaxError::default()
-        //         .with_cause("Can't adjust")
-        //         .with_location(current_token.location.clone()),
-        // );
-        // Err(ParserError::SyntaxErrors {
-        //     entries: self.error_entries.drain(..).collect(),
-        // }
-        // .into())
 
         // Steamroller tactics: sync with the expected token string
         trace!("Force sync with {:?}", expected_token_types);
@@ -581,10 +578,10 @@ impl<'t> LLKParser<'t> {
             .iter()
             .zip(expected_token_types.iter())
             .enumerate()
-            .for_each(|(i, (_, exp_t))| {
+            .try_for_each(|(i, (_, exp_t))| -> Result<()> {
                 replaced = true;
-                stream.borrow_mut().replace_token_type_at(i, *exp_t);
-            });
+                Ok(stream.borrow_mut().replace_token_type_at(i, *exp_t)?)
+            })?;
         if replaced {
             Ok(())
         } else {

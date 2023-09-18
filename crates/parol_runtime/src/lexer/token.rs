@@ -160,11 +160,8 @@ impl FormatToken for Token<'_> {
     fn format(&self, terminal_names: &'static [&'static str]) -> String {
         let name = terminal_names[self.token_type as usize];
         format!(
-            "'{}'({}) at {}[{}]",
-            self.text.escape_default(),
-            name,
-            self.location,
-            self.token_number,
+            "{} ({}) at {}[{}]",
+            self.text, name, self.location, self.token_number,
         )
     }
 }

@@ -18,7 +18,7 @@ pub enum ParserError {
     #[error("Error in input: {cause}")]
     PredictionError { cause: String },
 
-    #[error("Syntax error(s) {entries:?}")]
+    #[error("Syntax error(s)")]
     SyntaxErrors { entries: Vec<SyntaxError> },
 
     #[error("Unprocessed input is left after parsing has finished")]
@@ -54,6 +54,9 @@ pub enum LexerError {
 
     #[error("pop_scanner: Tried to pop from an empty scanner stack!")]
     ScannerStackEmptyError,
+
+    #[error("{0}")]
+    RecoveryError(String),
 }
 
 #[derive(Error, Debug)]
@@ -67,7 +70,7 @@ pub enum ParolError {
 }
 
 #[derive(Error, Debug, Default)]
-#[error("{cause}Expecting one of {expected_tokens}")]
+#[error("{cause}")]
 pub struct SyntaxError {
     pub cause: String,
     pub input: Option<Box<FileSource>>,
@@ -104,6 +107,12 @@ impl UnexpectedToken {
             token_type,
             token,
         }
+    }
+}
+
+impl Display for UnexpectedToken {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}: {}", self.name, self.token_type, self.token)
     }
 }
 

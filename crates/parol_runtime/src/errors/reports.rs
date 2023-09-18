@@ -114,6 +114,14 @@ pub trait Report {
                                 .to_string(),
                         ]),
                 )?),
+                LexerError::RecoveryError(e) => Ok(term::emit(
+                    &mut writer.lock(),
+                    &config,
+                    &files,
+                    &Diagnostic::bug()
+                        .with_message(format!("Lexer recovery error: {e}"))
+                        .with_code("parol_runtime::lexer::recovery"),
+                )?),
             }
         };
 
@@ -160,18 +168,10 @@ pub trait Report {
                             if let Some(source) = source {
                                 Self::report_error(source, file_name.as_ref())?;
                             }
-                            let range = if unexpected_tokens.is_empty() {
+                            let range: Range<usize> = if unexpected_tokens.is_empty() {
                                 (&**error_location).into()
                             } else {
-                                unexpected_tokens
-                                    .iter()
-                                    .fold(Range::default(), |mut acc, un| {
-                                        let un_span: Span =
-                                            (Into::<Range<usize>>::into(&un.token)).into();
-                                        let acc_span: Span = acc.into();
-                                        acc = (acc_span + un_span).into();
-                                        acc
-                                    })
+                                (&unexpected_tokens[0].token).into()
                             };
                             let unexpected_tokens_labels =
                                 unexpected_tokens.iter().fold(vec![], |mut acc, un| {
@@ -196,10 +196,9 @@ pub trait Report {
                                     ])
                                     .with_labels(unexpected_tokens_labels)
                                     .with_notes(vec![
-                                        "Expecting one of".to_string(),
-                                        expected_tokens.to_string(),
-                                    ])
-                                    .with_notes(vec![cause.to_string()]),
+                                        format!("Expecting {}", expected_tokens),
+                                        cause.to_string(),
+                                    ]),
                             )?)
                         },
                     )?;

@@ -1,6 +1,8 @@
-use lsp_types::{Diagnostic, DiagnosticRelatedInformation, Location, Range, Url};
+use lsp_types::{
+    Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Range, Url,
+};
 use parol::{GrammarAnalysisError, ParolParserError};
-use parol_runtime::ParolError;
+use parol_runtime::{ParolError, ParserError, SyntaxError};
 use std::fmt::Write as _;
 
 use crate::{
@@ -27,7 +29,12 @@ impl Diagnostics {
         // Extract additional information from certain errors
         if let Some(e) = err.downcast_ref::<ParolError>() {
             match e {
-                ParolError::ParserError(_) => (),
+                ParolError::ParserError(err) => {
+                    if let ParserError::SyntaxErrors { entries } = err {
+                        extract_syntax_errors(entries, &mut diagnostics, uri);
+                        return diagnostics;
+                    }
+                }
                 ParolError::LexerError(_) => (),
                 ParolError::UserError(err) => {
                     if let Some(e) = err.downcast_ref::<GrammarAnalysisError>() {
@@ -65,6 +72,54 @@ impl Diagnostics {
         };
         diagnostics.push(diagnostic);
         diagnostics
+    }
+}
+
+fn extract_syntax_errors(entries: &[SyntaxError], diagnostics: &mut Vec<Diagnostic>, uri: &Url) {
+    for e in entries {
+        let range = if e.unexpected_tokens.is_empty() {
+            location_to_range(&e.error_location)
+        } else {
+            e.unexpected_tokens
+                .iter()
+                .fold(Range::default(), |mut acc, un| {
+                    if acc.start == lsp_types::Position::default() {
+                        acc.start = lsp_types::Position {
+                            line: un.token.start_line,
+                            character: un.token.start_column,
+                        };
+                        acc.end = lsp_types::Position {
+                            line: un.token.end_line,
+                            character: un.token.end_column,
+                        };
+                    }
+                    acc
+                })
+        };
+        let mut related_information: Vec<DiagnosticRelatedInformation> = vec![];
+        for u in &e.unexpected_tokens {
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(&u.token, uri),
+                message: format!("Unexpected token {}", u),
+            })
+        }
+        related_information.push(DiagnosticRelatedInformation {
+            location: location_to_location(&e.unexpected_tokens[0].token, uri),
+            message: format!("Expecting {}", e.expected_tokens),
+        });
+        diagnostics.push(Diagnostic {
+            range,
+            severity: Some(DiagnosticSeverity::ERROR),
+            code: Some(lsp_types::NumberOrString::String(
+                "parol_runtime::parser::syntax_error".to_owned(),
+            )),
+            code_description: None,
+            source: e.source.as_ref().map(|s| s.to_string()),
+            message: e.cause.clone(),
+            related_information: Some(related_information),
+            tags: None,
+            data: None,
+        });
     }
 }
 

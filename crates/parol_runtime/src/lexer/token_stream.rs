@@ -1,3 +1,4 @@
+use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
 use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, Tokenizer};
 use log::trace;
@@ -392,7 +393,11 @@ impl<'t> TokenStream<'t> {
         )
     }
 
-    pub(crate) fn replace_token_type_at(&mut self, index: usize, token_type: TerminalIndex) {
+    pub(crate) fn replace_token_type_at(
+        &mut self,
+        index: usize,
+        token_type: TerminalIndex,
+    ) -> Result<(), LexerError> {
         if self.tokens.len() > index {
             trace!(
                 "replacing token {} at index {} by {}",
@@ -400,12 +405,24 @@ impl<'t> TokenStream<'t> {
                 index,
                 token_type
             );
-            // self.tokens[index] = Token::default().with_type(token_type);
-            self.tokens[index].token_type = token_type;
+            if (self.tokens[index].token_type) == EOI {
+                Err(LexerError::RecoveryError("Can't replace EOI".to_owned()))
+            } else {
+                self.tokens[index].token_type = token_type;
+                Ok(())
+            }
+        } else {
+            Err(LexerError::RecoveryError(
+                "Can't replace beyond token buffer".to_owned(),
+            ))
         }
     }
 
-    pub(crate) fn insert_token_at(&mut self, index: usize, token_type: TerminalIndex) {
+    pub(crate) fn insert_token_at(
+        &mut self,
+        index: usize,
+        token_type: TerminalIndex,
+    ) -> Result<(), LexerError> {
         if self.tokens.len() >= index {
             trace!("inserting token {} at index {}", token_type, index);
             let location = if self.tokens.len() > index {
@@ -428,6 +445,11 @@ impl<'t> TokenStream<'t> {
                     .with_type(token_type)
                     .with_location(location),
             );
+            Ok(())
+        } else {
+            Err(LexerError::RecoveryError(format!(
+                "Can't insert in token buffer at position {index}"
+            )))
         }
     }
 }
