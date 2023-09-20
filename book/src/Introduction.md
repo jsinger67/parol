@@ -42,5 +42,5 @@ during the process of parsing.
 and a [Language Server](https://github.com/jsinger67/parol/tree/main/crates/parol-ls).
 
 As of version 0.24.0 generated parsers can recover from syntax errors automatically. This means that
-the parser usually doesn't not stop parsing the input after the first syntax error occurs, and
+the parser usually does not stop parsing the input after the first syntax error occurs, and
 instead tries to synchronize with the input in order to continue the analysis accordingly.

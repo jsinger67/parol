@@ -25,7 +25,7 @@ Thanks to [dalance](https://github.com/dalance) for reporting
 First you need to understand that the necessity to frequently generate the parser from a given
 grammar is drastically diminished in `parol` because of its design.
 That means `parol` generates besides the data structures for your grammar only an interface and the
-plumping to call its method.
+plumping to call its methods.
 This cuts the dependencies for parser generation from any code you write to process your grammar,
 i.e. the interface's implementation.
 
@@ -40,13 +40,13 @@ the generated parser and the user trait under source control.
 The next thing you should understand is that you should design your grammar to be LL(k) with k as
 minimal as possible. I know, this can be hard but will pay out in the end.
 
-Also try to optimize your grammar for the following goals:
-* Minimal number of productions
+Also try to optimize your grammar for the goal "Minimal number of productions". This can be often
+broken down to these constraints:
 * Avoid productions that only rename a non-terminal, i.e. the ones in the form
     ```parol
     A: B;
     ```
-* Try to disambiguate your productions, i.e. avoid duplications with the following form
+* Try to disambiguate your productions, i.e. avoid duplications that have the following form
     ```parol
     A: X Y Z;
     B: X Y Z;
@@ -61,5 +61,5 @@ time and effort to convert it to a working right recursive one.
 `parol` currently provides no special support for this phase except that it is able to detect left
 recursions in your grammar.
 
-I may provide support for parts of this problem in the future, for instance for direct left
+I may provide support for parts of this problem in the future, for instance to remove direct left
 recursions somehow.
