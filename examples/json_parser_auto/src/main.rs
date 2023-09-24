@@ -38,7 +38,7 @@ fn main() -> Result<()> {
                     Ok(())
                 } else {
                     println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-                    println!("Success!\n{}", json_grammar);
+                    // println!("Success!\n{}", json_grammar);
                     Ok(())
                 }
             }

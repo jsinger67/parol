@@ -2,9 +2,9 @@ use crate::lexer::EOI;
 use crate::parser::ScannerIndex;
 use crate::{LexerError, LocationBuilder, TerminalIndex, Token, TokenIter, Tokenizer};
 use log::trace;
-use std::borrow::Cow;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 ///
 /// The TokenStream<'t> type is the interface the parser actually uses.
@@ -22,7 +22,7 @@ pub struct TokenStream<'t> {
     pub(crate) input: &'t str,
 
     /// The name of the input file
-    pub file_name: Cow<'static, Path>,
+    pub file_name: Arc<PathBuf>,
 
     /// The index of the error token, obtained from the tokenizer
     error_token_type: TerminalIndex,
@@ -80,7 +80,7 @@ impl<'t> TokenStream<'t> {
     where
         T: AsRef<Path>,
     {
-        let file_name: Cow<Path> = file_name.as_ref().to_owned().into();
+        let file_name = Arc::new(file_name.as_ref().to_owned());
         let token_iter = TokenIter::new(&tokenizers[0].1, input, file_name.clone(), k);
 
         // issue #54 "Lookahead exceeds token buffer length" with simple grammar:

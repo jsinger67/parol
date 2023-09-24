@@ -5,7 +5,7 @@ use crate::{
 use location::LocationBuilder;
 use log::trace;
 use regex_automata::dfa::{dense::DFA, regex::FindMatches};
-use std::{borrow::Cow, path::Path};
+use std::{path::PathBuf, sync::Arc};
 
 ///
 /// The TokenIter type provides iterator functionality for Token<'t> objects.
@@ -31,7 +31,7 @@ pub struct TokenIter<'t> {
     k: usize,
 
     /// The name of the input file
-    pub file_name: Cow<'static, Path>,
+    pub file_name: Arc<PathBuf>,
 
     token_number: TokenNumber,
 
@@ -43,10 +43,7 @@ impl<'t> TokenIter<'t> {
     /// This function creates a token iterator from a tokenizer and an input.
     /// k determines the number of lookahead tokens the stream shall support.
     ///
-    pub fn new<T>(rx: &'static Tokenizer, input: &'t str, file_name: T, k: usize) -> Self
-    where
-        T: Into<Cow<'static, Path>>,
-    {
+    pub fn new(rx: &'static Tokenizer, input: &'t str, file_name: Arc<PathBuf>, k: usize) -> Self {
         Self {
             line: 1,
             col: 1,
@@ -54,7 +51,7 @@ impl<'t> TokenIter<'t> {
             rx,
             input,
             k,
-            file_name: file_name.into(),
+            file_name: file_name.clone(),
             token_number: 0,
             last_location: None,
         }

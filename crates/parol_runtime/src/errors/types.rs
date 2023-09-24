@@ -1,8 +1,8 @@
 use crate::lexer::token_stream::TokenStream;
 use crate::lexer::{Location, Token};
-use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
-use std::path::Path;
+use std::path::PathBuf;
+use std::sync::Arc;
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, ParolError>;
@@ -143,16 +143,13 @@ impl Display for TokenVec {
 
 #[derive(Debug)]
 pub struct FileSource {
-    pub file_name: Cow<'static, Path>,
+    pub file_name: Arc<PathBuf>,
     pub input: String,
 }
 
 impl FileSource {
-    pub fn try_new<T>(file_name: T) -> std::result::Result<Self, std::io::Error>
-    where
-        T: Into<Cow<'static, Path>>,
-    {
-        let file_name: Cow<Path> = file_name.into();
+    pub fn try_new(file_name: Arc<PathBuf>) -> std::result::Result<Self, std::io::Error> {
+        let file_name = file_name.clone();
         let input = std::fs::read_to_string(&*file_name)?;
         Ok(Self { file_name, input })
     }

@@ -1,7 +1,7 @@
-use std::borrow::Cow;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::ops::Range;
-use std::path::Path;
+use std::path::PathBuf;
+use std::sync::Arc;
 
 use derive_builder::Builder;
 
@@ -39,7 +39,7 @@ pub struct Location {
     pub offset: usize,
 
     /// The name of the input file
-    pub file_name: Cow<'static, Path>,
+    pub file_name: Arc<PathBuf>,
 }
 
 impl Display for Location {
