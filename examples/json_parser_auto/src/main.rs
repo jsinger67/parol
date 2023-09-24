@@ -37,8 +37,8 @@ fn main() -> Result<()> {
                 if args.len() > 2 && args[2] == "-q" {
                     Ok(())
                 } else {
+                    println!("Success!\n{}", json_grammar);
                     println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
-                    // println!("Success!\n{}", json_grammar);
                     Ok(())
                 }
             }
