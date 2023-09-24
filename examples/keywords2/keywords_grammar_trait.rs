@@ -20,7 +20,7 @@ use parol_runtime::{ParserError, Result, Token};
 pub trait KeywordsGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// Grammar: GrammarList /* Vec */;
+    /// `Grammar: GrammarList /* Vec */;`
     ///
     fn grammar(&mut self, _grammar_list: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -28,7 +28,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// GrammarList /* `Vec<T>::Push` */: Items GrammarList;
+    /// `GrammarList /* Vec<T>::Push */: Items GrammarList;`
     ///
     fn grammar_list_0(
         &mut self,
@@ -40,7 +40,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// GrammarList /* `Vec<T>::New` */: ;
+    /// `GrammarList /* Vec<T>::New */: ;`
     ///
     fn grammar_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -48,7 +48,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// Items: Declaration;
+    /// `Items: Declaration;`
     ///
     fn items_0(&mut self, _declaration: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -56,7 +56,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// Items: Block;
+    /// `Items: Block;`
     ///
     fn items_1(&mut self, _block: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -64,7 +64,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// Declaration: Var %sc(Identifier) Identifier %sc() ";";
+    /// `Declaration: Var %sc(Identifier) Identifier %sc() ";";`
     ///
     fn declaration(
         &mut self,
@@ -77,7 +77,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// Block: Begin BlockList /* Vec */ End;
+    /// `Block: Begin BlockList /* Vec */ End;`
     ///
     fn block(
         &mut self,
@@ -90,7 +90,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// BlockList /* `Vec<T>::Push` */: Items BlockList;
+    /// `BlockList /* Vec<T>::Push */: Items BlockList;`
     ///
     fn block_list_0(&mut self, _items: &ParseTreeType, _block_list: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -98,7 +98,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// BlockList /* `Vec<T>::New` */: ;
+    /// `BlockList /* Vec<T>::New */: ;`
     ///
     fn block_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -106,7 +106,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
+    /// `Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";`
     ///
     fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -114,7 +114,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// Begin: "(?i)(?-u:\b)Begin(?-u:\b)";
+    /// `Begin: "(?i)(?-u:\b)Begin(?-u:\b)";`
     ///
     fn begin(&mut self, _begin: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -122,7 +122,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// End: "(?i)(?-u:\b)End(?-u:\b)";
+    /// `End: "(?i)(?-u:\b)End(?-u:\b)";`
     ///
     fn end(&mut self, _end: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -130,7 +130,7 @@ pub trait KeywordsGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// Var: "(?i)(?-u:\b)Var(?-u:\b)";
+    /// `Var: "(?i)(?-u:\b)Var(?-u:\b)";`
     ///
     fn var(&mut self, _var: &ParseTreeType) -> Result<()> {
         Ok(())

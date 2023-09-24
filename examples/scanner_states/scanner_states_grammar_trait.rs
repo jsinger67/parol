@@ -20,7 +20,7 @@ use parol_runtime::{ParserError, Result, Token};
 pub trait ScannerStatesGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// Start: StartList /* Vec */;
+    /// `Start: StartList /* Vec */;`
     ///
     fn start(&mut self, _start_list: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -28,7 +28,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// StartList /* `Vec<T>::Push` */: Content StartList;
+    /// `StartList /* Vec<T>::Push */: Content StartList;`
     ///
     fn start_list_0(
         &mut self,
@@ -40,7 +40,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// StartList /* `Vec<T>::New` */: ;
+    /// `StartList /* Vec<T>::New */: ;`
     ///
     fn start_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -48,7 +48,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// Content: Identifier;
+    /// `Content: Identifier;`
     ///
     fn content_0(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -56,7 +56,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();
+    /// `Content: StringDelimiter %push(String) StringContent StringDelimiter %pop();`
     ///
     fn content_1(
         &mut self,
@@ -69,7 +69,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// StringContent: StringElement StringContent;
+    /// `StringContent: StringElement StringContent;`
     ///
     fn string_content_0(
         &mut self,
@@ -81,7 +81,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// StringContent: ;
+    /// `StringContent: ;`
     ///
     fn string_content_1(&mut self) -> Result<()> {
         Ok(())
@@ -89,7 +89,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// StringElement: Escaped;
+    /// `StringElement: Escaped;`
     ///
     fn string_element_0(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -97,7 +97,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// StringElement: EscapedLineEnd;
+    /// `StringElement: EscapedLineEnd;`
     ///
     fn string_element_1(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -105,7 +105,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// StringElement: NoneQuote;
+    /// `StringElement: NoneQuote;`
     ///
     fn string_element_2(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -113,7 +113,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// Identifier: "[a-zA-Z_]\w*";
+    /// `Identifier: "[a-zA-Z_]\w*";`
     ///
     fn identifier(&mut self, _identifier: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -121,7 +121,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";
+    /// `Escaped: <String>"\u{5c}[\u{22}\u{5c}bfnt]";`
     ///
     fn escaped(&mut self, _escaped: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -129,7 +129,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";
+    /// `EscapedLineEnd: <String>"\u{5c}[\s^\n\r]*\r?\n";`
     ///
     fn escaped_line_end(&mut self, _escaped_line_end: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -137,7 +137,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// NoneQuote: <String>"[^\u{22}\u{5c}]+";
+    /// `NoneQuote: <String>"[^\u{22}\u{5c}]+";`
     ///
     fn none_quote(&mut self, _none_quote: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -145,7 +145,7 @@ pub trait ScannerStatesGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// StringDelimiter: <INITIAL, String>"\u{22}";
+    /// `StringDelimiter: <INITIAL, String>"\u{22}";`
     ///
     fn string_delimiter(&mut self, _string_delimiter: &ParseTreeType) -> Result<()> {
         Ok(())

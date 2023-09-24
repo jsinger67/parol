@@ -7,14 +7,14 @@
 %%
 
 /*  0 */ Grammar: GrammarList /* Vec */;
-/*  1 */ GrammarList /* `Vec<T>::Push` */: Items GrammarList;
-/*  2 */ GrammarList /* `Vec<T>::New` */: ;
+/*  1 */ GrammarList /* Vec<T>::Push */: Items GrammarList;
+/*  2 */ GrammarList /* Vec<T>::New */: ;
 /*  3 */ Items: Declaration;
 /*  4 */ Items: Block;
 /*  5 */ Declaration: Var %sc(Identifier) Identifier %sc() ";";
 /*  6 */ Block: Begin BlockList /* Vec */ End;
-/*  7 */ BlockList /* `Vec<T>::Push` */: Items BlockList;
-/*  8 */ BlockList /* `Vec<T>::New` */: ;
+/*  7 */ BlockList /* Vec<T>::Push */: Items BlockList;
+/*  8 */ BlockList /* Vec<T>::New */: ;
 /*  9 */ Identifier: <Identifier>"[a-zA-Z_][a-zA-Z0-9_]*";
 /* 10 */ Begin: "(?i)(?-u:\b)Begin(?-u:\b)";
 /* 11 */ End: "(?i)(?-u:\b)End(?-u:\b)";

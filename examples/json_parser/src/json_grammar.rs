@@ -117,7 +117,7 @@ impl Display for JsonGrammar {
 impl JsonGrammarTrait for JsonGrammar {
     /// Semantic action for production 1:
     ///
-    /// Object: "\{" ObjectSuffix;
+    /// `Object: "\{" ObjectSuffix;`
     ///
     fn object(
         &mut self,
@@ -137,7 +137,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}";
+    /// `ObjectSuffix: Pair ObjectList /* Vec */ "\}";`
     ///
     fn object_suffix_0(
         &mut self,
@@ -158,7 +158,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 3:
     ///
-    /// ObjectSuffix: "\}";
+    /// `ObjectSuffix: "\}";`
     ///
     fn object_suffix_1(&mut self, _r_brace: &ParseTreeType<'_>) -> Result<()> {
         let context = "object_suffix_1";
@@ -168,7 +168,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList /* Vec<T>::Push */: "," Pair ObjectList;
+    /// `ObjectList /* Vec<T>::Push */: "," Pair ObjectList;`
     ///
     fn object_list_0(
         &mut self,
@@ -189,7 +189,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList /* Vec<T>::New */: ;
+    /// `ObjectList /* Vec<T>::New */: ;`
     ///
     fn object_list_1(&mut self) -> Result<()> {
         let context = "object_list_1";
@@ -199,7 +199,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 6:
     ///
-    /// Pair: String ":" Value;
+    /// `Pair: String ":" Value;`
     ///
     fn pair(
         &mut self,
@@ -219,7 +219,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 7:
     ///
-    /// Array: "\[" ArraySuffix;
+    /// `Array: "\[" ArraySuffix;`
     ///
     fn array(
         &mut self,
@@ -239,7 +239,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 8:
     ///
-    /// ArraySuffix: Value ArrayList /* Vec */ "\]";
+    /// `ArraySuffix: Value ArrayList /* Vec */ "\]";`
     ///
     fn array_suffix_0(
         &mut self,
@@ -260,7 +260,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 9:
     ///
-    /// ArraySuffix: "\]";
+    /// `ArraySuffix: "\]";`
     ///
     fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType<'_>) -> Result<()> {
         let context = "array_suffix_1";
@@ -270,7 +270,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList /* Vec<T>::Push */: "," Value ArrayList;
+    /// `ArrayList /* Vec<T>::Push */: "," Value ArrayList;`
     ///
     fn array_list_0(
         &mut self,
@@ -291,7 +291,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList /* Vec<T>::New */: ;
+    /// `ArrayList /* Vec<T>::New */: ;`
     ///
     fn array_list_1(&mut self) -> Result<()> {
         let context = "array_list_11";
@@ -301,7 +301,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 16:
     ///
-    /// Value: "true";
+    /// `Value: "true";`
     ///
     fn value_4(&mut self, _true: &ParseTreeType<'_>) -> Result<()> {
         let context = "value_4";
@@ -311,7 +311,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 17:
     ///
-    /// Value: "false";
+    /// `Value: "false";`
     ///
     fn value_5(&mut self, _false: &ParseTreeType<'_>) -> Result<()> {
         let context = "value_5";
@@ -321,7 +321,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 18:
     ///
-    /// Value: "null";
+    /// `Value: "null";`
     ///
     fn value_6(&mut self, _null: &ParseTreeType<'_>) -> Result<()> {
         let context = "value_6";
@@ -331,7 +331,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 19:
     ///
-    /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
+    /// `String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";`
     ///
     fn string(&mut self, string: &ParseTreeType<'_>) -> Result<()> {
         let context = "string";
@@ -342,7 +342,7 @@ impl JsonGrammarTrait for JsonGrammar {
 
     /// Semantic action for production 20:
     ///
-    /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
+    /// `Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";`
     ///
     fn number(&mut self, number: &ParseTreeType<'_>) -> Result<()> {
         let context = "number_20";

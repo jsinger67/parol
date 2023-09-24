@@ -20,7 +20,7 @@ use parol_runtime::{ParserError, Result, Token};
 pub trait ListGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// List: ListOpt /* Option */;
+    /// `List: ListOpt /* Option */;`
     ///
     fn list(&mut self, _list_opt: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -28,7 +28,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ListOpt /* `Option<T>::Some` */: Num ListRest ListOpt0 /* Option */;
+    /// `ListOpt /* Option<T>::Some */: Num ListRest ListOpt0 /* Option */;`
     ///
     fn list_opt_0(
         &mut self,
@@ -41,7 +41,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ListOpt0 /* `Option<T>::Some` */: ",";
+    /// `ListOpt0 /* Option<T>::Some */: ",";`
     ///
     fn list_opt0_0(&mut self, _comma: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -49,7 +49,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ListOpt0 /* `Option<T>::None` */: ;
+    /// `ListOpt0 /* Option<T>::None */: ;`
     ///
     fn list_opt0_1(&mut self) -> Result<()> {
         Ok(())
@@ -57,7 +57,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ListOpt /* `Option<T>::None` */: ;
+    /// `ListOpt /* Option<T>::None */: ;`
     ///
     fn list_opt_1(&mut self) -> Result<()> {
         Ok(())
@@ -65,7 +65,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// ListRest: ListRestOpt /* Option */;
+    /// `ListRest: ListRestOpt /* Option */;`
     ///
     fn list_rest(&mut self, _list_rest_opt: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -73,7 +73,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// ListRestOpt /* `Option<T>::Some` */: "," Num ListRest;
+    /// `ListRestOpt /* Option<T>::Some */: "," Num ListRest;`
     ///
     fn list_rest_opt_0(
         &mut self,
@@ -86,7 +86,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// ListRestOpt /* `Option<T>::None` */: ;
+    /// `ListRestOpt /* Option<T>::None */: ;`
     ///
     fn list_rest_opt_1(&mut self) -> Result<()> {
         Ok(())
@@ -94,7 +94,7 @@ pub trait ListGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// Num: "0|[1-9][0-9]*";
+    /// `Num: "0|[1-9][0-9]*";`
     ///
     fn num(&mut self, _num: &ParseTreeType) -> Result<()> {
         Ok(())

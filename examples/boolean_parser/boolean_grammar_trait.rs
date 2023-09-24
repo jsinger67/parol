@@ -20,7 +20,7 @@ use parol_runtime::{ParserError, Result, Token};
 pub trait BooleanGrammarTrait {
     /// Semantic action for production 0:
     ///
-    /// Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;
+    /// `Expressions: Expression ExpressionsList /* Vec */ ExpressionsOpt /* Option */;`
     ///
     fn expressions(
         &mut self,
@@ -33,7 +33,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 1:
     ///
-    /// ExpressionsList /* `Vec<T>::Push` */: Semicolon Expression ExpressionsList;
+    /// `ExpressionsList /* Vec<T>::Push */: Semicolon Expression ExpressionsList;`
     ///
     fn expressions_list_0(
         &mut self,
@@ -46,7 +46,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 2:
     ///
-    /// ExpressionsList /* `Vec<T>::New` */: ;
+    /// `ExpressionsList /* Vec<T>::New */: ;`
     ///
     fn expressions_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -54,7 +54,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 3:
     ///
-    /// ExpressionsOpt /* `Option<T>::Some` */: Semicolon;
+    /// `ExpressionsOpt /* Option<T>::Some */: Semicolon;`
     ///
     fn expressions_opt_0(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -62,7 +62,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 4:
     ///
-    /// ExpressionsOpt /* `Option<T>::None` */: ;
+    /// `ExpressionsOpt /* Option<T>::None */: ;`
     ///
     fn expressions_opt_1(&mut self) -> Result<()> {
         Ok(())
@@ -70,7 +70,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 5:
     ///
-    /// Expression: Term TailExpression;
+    /// `Expression: Term TailExpression;`
     ///
     fn expression(
         &mut self,
@@ -82,7 +82,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 6:
     ///
-    /// TailExpression: TailExpressionList /* Vec */;
+    /// `TailExpression: TailExpressionList /* Vec */;`
     ///
     fn tail_expression(&mut self, _tail_expression_list: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -90,7 +90,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 7:
     ///
-    /// TailExpressionList /* `Vec<T>::Push` */: BinaryOperator Term TailExpressionList;
+    /// `TailExpressionList /* Vec<T>::Push */: BinaryOperator Term TailExpressionList;`
     ///
     fn tail_expression_list_0(
         &mut self,
@@ -103,7 +103,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 8:
     ///
-    /// TailExpressionList /* `Vec<T>::New` */: ;
+    /// `TailExpressionList /* Vec<T>::New */: ;`
     ///
     fn tail_expression_list_1(&mut self) -> Result<()> {
         Ok(())
@@ -111,7 +111,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 9:
     ///
-    /// Term: TermOpt /* Option */ Factor;
+    /// `Term: TermOpt /* Option */ Factor;`
     ///
     fn term(&mut self, _term_opt: &ParseTreeType, _factor: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -119,7 +119,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 10:
     ///
-    /// TermOpt /* `Option<T>::Some` */: UnaryOperator;
+    /// `TermOpt /* Option<T>::Some */: UnaryOperator;`
     ///
     fn term_opt_0(&mut self, _unary_operator: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -127,7 +127,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 11:
     ///
-    /// TermOpt /* `Option<T>::None` */: ;
+    /// `TermOpt /* Option<T>::None */: ;`
     ///
     fn term_opt_1(&mut self) -> Result<()> {
         Ok(())
@@ -135,7 +135,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 12:
     ///
-    /// Boolean: True;
+    /// `Boolean: True;`
     ///
     fn boolean_0(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -143,7 +143,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 13:
     ///
-    /// Boolean: False;
+    /// `Boolean: False;`
     ///
     fn boolean_1(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -151,7 +151,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 14:
     ///
-    /// UnaryOperator: Not;
+    /// `UnaryOperator: Not;`
     ///
     fn unary_operator(&mut self, _not: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -159,7 +159,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 15:
     ///
-    /// BinaryOperator: AndOp;
+    /// `BinaryOperator: AndOp;`
     ///
     fn binary_operator_0(&mut self, _and_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -167,7 +167,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 16:
     ///
-    /// BinaryOperator: OrOp;
+    /// `BinaryOperator: OrOp;`
     ///
     fn binary_operator_1(&mut self, _or_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -175,7 +175,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 17:
     ///
-    /// BinaryOperator: XorOp;
+    /// `BinaryOperator: XorOp;`
     ///
     fn binary_operator_2(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -183,7 +183,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 18:
     ///
-    /// BinaryOperator: NorOp;
+    /// `BinaryOperator: NorOp;`
     ///
     fn binary_operator_3(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -191,7 +191,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 19:
     ///
-    /// BinaryOperator: NandOp;
+    /// `BinaryOperator: NandOp;`
     ///
     fn binary_operator_4(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -199,7 +199,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 20:
     ///
-    /// BinaryOperator: XnorOp;
+    /// `BinaryOperator: XnorOp;`
     ///
     fn binary_operator_5(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -207,7 +207,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 21:
     ///
-    /// AndOp: "(?i)AND";
+    /// `AndOp: "(?i)AND";`
     ///
     fn and_op(&mut self, _and_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -215,7 +215,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 22:
     ///
-    /// OrOp: "(?i)OR";
+    /// `OrOp: "(?i)OR";`
     ///
     fn or_op(&mut self, _or_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -223,7 +223,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 23:
     ///
-    /// XorOp: "(?i)XOR";
+    /// `XorOp: "(?i)XOR";`
     ///
     fn xor_op(&mut self, _xor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -231,7 +231,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 24:
     ///
-    /// NorOp: "(?i)NOR";
+    /// `NorOp: "(?i)NOR";`
     ///
     fn nor_op(&mut self, _nor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -239,7 +239,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 25:
     ///
-    /// NandOp: "(?i)NAND";
+    /// `NandOp: "(?i)NAND";`
     ///
     fn nand_op(&mut self, _nand_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -247,7 +247,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 26:
     ///
-    /// XnorOp: "(?i)XNOR";
+    /// `XnorOp: "(?i)XNOR";`
     ///
     fn xnor_op(&mut self, _xnor_op: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -255,7 +255,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 27:
     ///
-    /// True: "(?i)TRUE";
+    /// `True: "(?i)TRUE";`
     ///
     fn r#true(&mut self, _true: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -263,7 +263,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 28:
     ///
-    /// False: "(?i)FALSE";
+    /// `False: "(?i)FALSE";`
     ///
     fn r#false(&mut self, _false: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -271,7 +271,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 29:
     ///
-    /// Not: "(?i)NOT";
+    /// `Not: "(?i)NOT";`
     ///
     fn not(&mut self, _not: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -279,7 +279,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 30:
     ///
-    /// Parenthesized: LeftParenthesis Expression RightParenthesis;
+    /// `Parenthesized: LeftParenthesis Expression RightParenthesis;`
     ///
     fn parenthesized(
         &mut self,
@@ -292,7 +292,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 31:
     ///
-    /// Semicolon: ";";
+    /// `Semicolon: ";";`
     ///
     fn semicolon(&mut self, _semicolon: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -300,7 +300,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 32:
     ///
-    /// LeftParenthesis: "\(";
+    /// `LeftParenthesis: "\(";`
     ///
     fn left_parenthesis(&mut self, _left_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -308,7 +308,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 33:
     ///
-    /// RightParenthesis: "\)";
+    /// `RightParenthesis: "\)";`
     ///
     fn right_parenthesis(&mut self, _right_parenthesis: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -316,7 +316,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 34:
     ///
-    /// Factor: Boolean;
+    /// `Factor: Boolean;`
     ///
     fn factor_0(&mut self, _boolean: &ParseTreeType) -> Result<()> {
         Ok(())
@@ -324,7 +324,7 @@ pub trait BooleanGrammarTrait {
 
     /// Semantic action for production 35:
     ///
-    /// Factor: Parenthesized;
+    /// `Factor: Parenthesized;`
     ///
     fn factor_1(&mut self, _parenthesized: &ParseTreeType) -> Result<()> {
         Ok(())

@@ -467,7 +467,7 @@ pub trait ParolTomlGrammarTrait<'t> {
 ///
 /// Type derived for production 3
 ///
-/// Expression: KeyVal;
+/// `Expression: KeyVal;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -479,7 +479,7 @@ pub struct ExpressionKeyVal<'t> {
 ///
 /// Type derived for production 4
 ///
-/// Expression: Table;
+/// `Expression: Table;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -491,7 +491,7 @@ pub struct ExpressionTable<'t> {
 ///
 /// Type derived for production 10
 ///
-/// KeySuffix: ;
+/// `KeySuffix: ;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -501,7 +501,7 @@ pub struct KeySuffixKeySuffixEmpty {}
 ///
 /// Type derived for production 11
 ///
-/// KeySuffix: DotSep SimpleKey KeyList /* Vec */;
+/// `KeySuffix: DotSep SimpleKey KeyList /* Vec */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -515,7 +515,7 @@ pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
 ///
 /// Type derived for production 14
 ///
-/// SimpleKey: QuotedKey;
+/// `SimpleKey: QuotedKey;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -527,7 +527,7 @@ pub struct SimpleKeyQuotedKey<'t> {
 ///
 /// Type derived for production 15
 ///
-/// SimpleKey: UnquotedKey;
+/// `SimpleKey: UnquotedKey;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -539,7 +539,7 @@ pub struct SimpleKeyUnquotedKey<'t> {
 ///
 /// Type derived for production 16
 ///
-/// QuotedKey: BasicString;
+/// `QuotedKey: BasicString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -551,7 +551,7 @@ pub struct QuotedKeyBasicString<'t> {
 ///
 /// Type derived for production 17
 ///
-/// QuotedKey: LiteralString;
+/// `QuotedKey: LiteralString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -563,7 +563,7 @@ pub struct QuotedKeyLiteralString<'t> {
 ///
 /// Type derived for production 19
 ///
-/// Val: Boolean;
+/// `Val: Boolean;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -575,7 +575,7 @@ pub struct ValBoolean<'t> {
 ///
 /// Type derived for production 20
 ///
-/// Val: Array;
+/// `Val: Array;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -587,7 +587,7 @@ pub struct ValArray<'t> {
 ///
 /// Type derived for production 21
 ///
-/// Val: InlineTable;
+/// `Val: InlineTable;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -599,7 +599,7 @@ pub struct ValInlineTable<'t> {
 ///
 /// Type derived for production 22
 ///
-/// Val: DateTime;
+/// `Val: DateTime;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -611,7 +611,7 @@ pub struct ValDateTime<'t> {
 ///
 /// Type derived for production 23
 ///
-/// Val: Numeric;
+/// `Val: Numeric;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -623,7 +623,7 @@ pub struct ValNumeric<'t> {
 ///
 /// Type derived for production 24
 ///
-/// Val: BasicString;
+/// `Val: BasicString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -635,7 +635,7 @@ pub struct ValBasicString<'t> {
 ///
 /// Type derived for production 25
 ///
-/// Val: MLBasicString;
+/// `Val: MLBasicString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -647,7 +647,7 @@ pub struct ValMLBasicString<'t> {
 ///
 /// Type derived for production 26
 ///
-/// Val: LiteralString;
+/// `Val: LiteralString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -659,7 +659,7 @@ pub struct ValLiteralString<'t> {
 ///
 /// Type derived for production 27
 ///
-/// Val: MLLiteralString;
+/// `Val: MLLiteralString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -671,7 +671,7 @@ pub struct ValMLLiteralString<'t> {
 ///
 /// Type derived for production 28
 ///
-/// Numeric: Float;
+/// `Numeric: Float;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -683,7 +683,7 @@ pub struct NumericFloat<'t> {
 ///
 /// Type derived for production 29
 ///
-/// Numeric: Integer;
+/// `Numeric: Integer;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -695,7 +695,7 @@ pub struct NumericInteger<'t> {
 ///
 /// Type derived for production 33
 ///
-/// BasicChar: BasicUnescaped;
+/// `BasicChar: BasicUnescaped;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -707,7 +707,7 @@ pub struct BasicCharBasicUnescaped<'t> {
 ///
 /// Type derived for production 34
 ///
-/// BasicChar: %push(Esc) Escaped %pop();
+/// `BasicChar: %push(Esc) Escaped %pop();`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -719,7 +719,7 @@ pub struct BasicCharEscaped<'t> {
 ///
 /// Type derived for production 35
 ///
-/// BasicUnescaped: AsciiNoEscape;
+/// `BasicUnescaped: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -731,7 +731,7 @@ pub struct BasicUnescapedAsciiNoEscape<'t> {
 ///
 /// Type derived for production 36
 ///
-/// BasicUnescaped: NonAscii;
+/// `BasicUnescaped: NonAscii;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -743,7 +743,7 @@ pub struct BasicUnescapedNonAscii<'t> {
 ///
 /// Type derived for production 39
 ///
-/// EscapeSeqChar: QuotationMark;
+/// `EscapeSeqChar: QuotationMark;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -755,7 +755,7 @@ pub struct EscapeSeqCharQuotationMark<'t> {
 ///
 /// Type derived for production 40
 ///
-/// EscapeSeqChar: Escape;
+/// `EscapeSeqChar: Escape;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -767,7 +767,7 @@ pub struct EscapeSeqCharEscape<'t> {
 ///
 /// Type derived for production 41
 ///
-/// EscapeSeqChar: <Esc>"b";
+/// `EscapeSeqChar: <Esc>"b";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -779,7 +779,7 @@ pub struct EscapeSeqCharB<'t> {
 ///
 /// Type derived for production 42
 ///
-/// EscapeSeqChar: <Esc>"f";
+/// `EscapeSeqChar: <Esc>"f";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -791,7 +791,7 @@ pub struct EscapeSeqCharF<'t> {
 ///
 /// Type derived for production 43
 ///
-/// EscapeSeqChar: <Esc>"n";
+/// `EscapeSeqChar: <Esc>"n";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -803,7 +803,7 @@ pub struct EscapeSeqCharN<'t> {
 ///
 /// Type derived for production 44
 ///
-/// EscapeSeqChar: <Esc>"r";
+/// `EscapeSeqChar: <Esc>"r";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -815,7 +815,7 @@ pub struct EscapeSeqCharR<'t> {
 ///
 /// Type derived for production 45
 ///
-/// EscapeSeqChar: <Esc>"t";
+/// `EscapeSeqChar: <Esc>"t";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -827,7 +827,7 @@ pub struct EscapeSeqCharT<'t> {
 ///
 /// Type derived for production 46
 ///
-/// EscapeSeqChar: Unicode4;
+/// `EscapeSeqChar: Unicode4;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -839,7 +839,7 @@ pub struct EscapeSeqCharUnicode4<'t> {
 ///
 /// Type derived for production 47
 ///
-/// EscapeSeqChar: Unicode8;
+/// `EscapeSeqChar: Unicode8;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -851,7 +851,7 @@ pub struct EscapeSeqCharUnicode8<'t> {
 ///
 /// Type derived for production 48
 ///
-/// EscapeSeqChar: WsNewline;
+/// `EscapeSeqChar: WsNewline;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -863,7 +863,7 @@ pub struct EscapeSeqCharWsNewline<'t> {
 ///
 /// Type derived for production 49
 ///
-/// EscapeSeqChar: AsciiNoEscape;
+/// `EscapeSeqChar: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -875,7 +875,7 @@ pub struct EscapeSeqCharAsciiNoEscape<'t> {
 ///
 /// Type derived for production 56
 ///
-/// MLBContentList: MLBContent MLBContentList;
+/// `MLBContentList: MLBContent MLBContentList;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -888,7 +888,7 @@ pub struct MLBContentListMLBContentMLBContentList<'t> {
 ///
 /// Type derived for production 57
 ///
-/// MLBContentList: ;
+/// `MLBContentList: ;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -898,7 +898,7 @@ pub struct MLBContentListMLBContentListEmpty {}
 ///
 /// Type derived for production 59
 ///
-/// MLBContent: MLBChar;
+/// `MLBContent: MLBChar;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -910,7 +910,7 @@ pub struct MLBContentMLBChar<'t> {
 ///
 /// Type derived for production 60
 ///
-/// MLBContent: Newline;
+/// `MLBContent: Newline;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -922,7 +922,7 @@ pub struct MLBContentNewline<'t> {
 ///
 /// Type derived for production 61
 ///
-/// MLBContent: MLBEscapedNL;
+/// `MLBContent: MLBEscapedNL;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -934,7 +934,7 @@ pub struct MLBContentMLBEscapedNL<'t> {
 ///
 /// Type derived for production 62
 ///
-/// MLBChar: MLBUnescaped;
+/// `MLBChar: MLBUnescaped;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -946,7 +946,7 @@ pub struct MLBCharMLBUnescaped<'t> {
 ///
 /// Type derived for production 63
 ///
-/// MLBChar: %push(Esc) Escaped %pop();
+/// `MLBChar: %push(Esc) Escaped %pop();`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -958,7 +958,7 @@ pub struct MLBCharEscaped<'t> {
 ///
 /// Type derived for production 64
 ///
-/// MLBUnescaped: AsciiNoEscape;
+/// `MLBUnescaped: AsciiNoEscape;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -970,7 +970,7 @@ pub struct MLBUnescapedAsciiNoEscape<'t> {
 ///
 /// Type derived for production 65
 ///
-/// MLBUnescaped: NonAscii;
+/// `MLBUnescaped: NonAscii;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -982,7 +982,7 @@ pub struct MLBUnescapedNonAscii<'t> {
 ///
 /// Type derived for production 70
 ///
-/// LiteralChar: LiteralCharNoApostrophe;
+/// `LiteralChar: LiteralCharNoApostrophe;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -994,7 +994,7 @@ pub struct LiteralCharLiteralCharNoApostrophe<'t> {
 ///
 /// Type derived for production 71
 ///
-/// LiteralChar: NonAscii;
+/// `LiteralChar: NonAscii;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1006,7 +1006,7 @@ pub struct LiteralCharNonAscii<'t> {
 ///
 /// Type derived for production 77
 ///
-/// MLLContentList: MLLContent MLLContentList;
+/// `MLLContentList: MLLContent MLLContentList;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1019,7 +1019,7 @@ pub struct MLLContentListMLLContentMLLContentList<'t> {
 ///
 /// Type derived for production 78
 ///
-/// MLLContentList: ;
+/// `MLLContentList: ;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1029,7 +1029,7 @@ pub struct MLLContentListMLLContentListEmpty {}
 ///
 /// Type derived for production 80
 ///
-/// MLLContent: LiteralChar;
+/// `MLLContent: LiteralChar;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1041,7 +1041,7 @@ pub struct MLLContentLiteralChar<'t> {
 ///
 /// Type derived for production 81
 ///
-/// MLLContent: Newline;
+/// `MLLContent: Newline;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1053,7 +1053,7 @@ pub struct MLLContentNewline<'t> {
 ///
 /// Type derived for production 82
 ///
-/// Integer: DecInt;
+/// `Integer: DecInt;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1065,7 +1065,7 @@ pub struct IntegerDecInt<'t> {
 ///
 /// Type derived for production 83
 ///
-/// Integer: HexInt;
+/// `Integer: HexInt;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1077,7 +1077,7 @@ pub struct IntegerHexInt<'t> {
 ///
 /// Type derived for production 84
 ///
-/// Integer: OctInt;
+/// `Integer: OctInt;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1089,7 +1089,7 @@ pub struct IntegerOctInt<'t> {
 ///
 /// Type derived for production 85
 ///
-/// Integer: BinInt;
+/// `Integer: BinInt;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1101,7 +1101,7 @@ pub struct IntegerBinInt<'t> {
 ///
 /// Type derived for production 91
 ///
-/// DecIntOptGroup: Plus;
+/// `DecIntOptGroup: Plus;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1113,7 +1113,7 @@ pub struct DecIntOptGroupPlus<'t> {
 ///
 /// Type derived for production 92
 ///
-/// DecIntOptGroup: Minus;
+/// `DecIntOptGroup: Minus;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1125,7 +1125,7 @@ pub struct DecIntOptGroupMinus<'t> {
 ///
 /// Type derived for production 100
 ///
-/// Boolean: <Val>"true";
+/// `Boolean: <Val>"true";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1137,7 +1137,7 @@ pub struct BooleanTrue<'t> {
 ///
 /// Type derived for production 101
 ///
-/// Boolean: <Val>"false";
+/// `Boolean: <Val>"false";`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1149,7 +1149,7 @@ pub struct BooleanFalse<'t> {
 ///
 /// Type derived for production 102
 ///
-/// Float: NormalFloat;
+/// `Float: NormalFloat;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1161,7 +1161,7 @@ pub struct FloatNormalFloat<'t> {
 ///
 /// Type derived for production 103
 ///
-/// Float: SpecialFloat;
+/// `Float: SpecialFloat;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1173,7 +1173,7 @@ pub struct FloatSpecialFloat<'t> {
 ///
 /// Type derived for production 106
 ///
-/// DateTime: OffsetDateTime;
+/// `DateTime: OffsetDateTime;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1185,7 +1185,7 @@ pub struct DateTimeOffsetDateTime<'t> {
 ///
 /// Type derived for production 107
 ///
-/// DateTime: LocalDateTime;
+/// `DateTime: LocalDateTime;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1197,7 +1197,7 @@ pub struct DateTimeLocalDateTime<'t> {
 ///
 /// Type derived for production 108
 ///
-/// DateTime: LocalDate;
+/// `DateTime: LocalDate;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1209,7 +1209,7 @@ pub struct DateTimeLocalDate<'t> {
 ///
 /// Type derived for production 109
 ///
-/// DateTime: LocalTime;
+/// `DateTime: LocalTime;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1221,7 +1221,7 @@ pub struct DateTimeLocalTime<'t> {
 ///
 /// Type derived for production 118
 ///
-/// ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;
+/// `ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1233,7 +1233,7 @@ pub struct ArrayValuesSuffix0ArraySepArrayValuesSuffix<'t> {
 ///
 /// Type derived for production 119
 ///
-/// ArrayValuesSuffix0: ;
+/// `ArrayValuesSuffix0: ;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1243,7 +1243,7 @@ pub struct ArrayValuesSuffix0ArrayValuesSuffix0Empty {}
 ///
 /// Type derived for production 120
 ///
-/// ArrayValuesSuffix: ArrayValues;
+/// `ArrayValuesSuffix: ArrayValues;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1255,7 +1255,7 @@ pub struct ArrayValuesSuffixArrayValues<'t> {
 ///
 /// Type derived for production 121
 ///
-/// ArrayValuesSuffix: ;
+/// `ArrayValuesSuffix: ;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1265,7 +1265,7 @@ pub struct ArrayValuesSuffixArrayValuesSuffixEmpty {}
 ///
 /// Type derived for production 123
 ///
-/// Table: StdTable;
+/// `Table: StdTable;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1277,7 +1277,7 @@ pub struct TableStdTable<'t> {
 ///
 /// Type derived for production 124
 ///
-/// Table: ArrayTable;
+/// `Table: ArrayTable;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -2524,7 +2524,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// ParolToml: ParolTomlList /* Vec */;
+    /// `ParolToml: ParolTomlList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn parol_toml(&mut self, _parol_toml_list: &ParseTreeType<'t>) -> Result<()> {
@@ -2540,7 +2540,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// ParolTomlList /* `Vec<T>::Push` */: Expression ParolTomlList;
+    /// `ParolTomlList /* Vec<T>::Push */: Expression ParolTomlList;`
     ///
     #[parol_runtime::function_name::named]
     fn parol_toml_list_0(
@@ -2563,7 +2563,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ParolTomlList /* `Vec<T>::New` */: ;
+    /// `ParolTomlList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn parol_toml_list_1(&mut self) -> Result<()> {
@@ -2576,7 +2576,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// Expression: KeyVal;
+    /// `Expression: KeyVal;`
     ///
     #[parol_runtime::function_name::named]
     fn expression_0(&mut self, _key_val: &ParseTreeType<'t>) -> Result<()> {
@@ -2595,7 +2595,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// Expression: Table;
+    /// `Expression: Table;`
     ///
     #[parol_runtime::function_name::named]
     fn expression_1(&mut self, _table: &ParseTreeType<'t>) -> Result<()> {
@@ -2614,7 +2614,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// Newline: <MLBString, MLLString>"\r?\n";
+    /// `Newline: <MLBString, MLLString>"\r?\n";`
     ///
     #[parol_runtime::function_name::named]
     fn newline(&mut self, newline: &ParseTreeType<'t>) -> Result<()> {
@@ -2630,7 +2630,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// WsNewline: <Esc>"[ \t]*\r?\n";
+    /// `WsNewline: <Esc>"[ \t]*\r?\n";`
     ///
     #[parol_runtime::function_name::named]
     fn ws_newline(&mut self, ws_newline: &ParseTreeType<'t>) -> Result<()> {
@@ -2646,7 +2646,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// NonAscii: <BString, MLBString, LString, MLLString>"[\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}]";
+    /// `NonAscii: <BString, MLBString, LString, MLLString>"[\u{80}-\u{D7FF}\u{E000}-\u{10FFFF}]";`
     ///
     #[parol_runtime::function_name::named]
     fn non_ascii(&mut self, non_ascii: &ParseTreeType<'t>) -> Result<()> {
@@ -2662,7 +2662,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// KeyVal: Key KeyValSep %push(Val) Val %pop();
+    /// `KeyVal: Key KeyValSep %push(Val) Val %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn key_val(
@@ -2689,7 +2689,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Key: SimpleKey KeySuffix;
+    /// `Key: SimpleKey KeySuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn key(
@@ -2713,7 +2713,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// KeySuffix: ;
+    /// `KeySuffix: ;`
     ///
     #[parol_runtime::function_name::named]
     fn key_suffix_0(&mut self) -> Result<()> {
@@ -2727,7 +2727,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// KeySuffix: DotSep SimpleKey KeyList /* Vec */;
+    /// `KeySuffix: DotSep SimpleKey KeyList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn key_suffix_1(
@@ -2753,7 +2753,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// KeyList /* `Vec<T>::Push` */: DotSep SimpleKey KeyList;
+    /// `KeyList /* Vec<T>::Push */: DotSep SimpleKey KeyList;`
     ///
     #[parol_runtime::function_name::named]
     fn key_list_0(
@@ -2779,7 +2779,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// KeyList /* `Vec<T>::New` */: ;
+    /// `KeyList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn key_list_1(&mut self) -> Result<()> {
@@ -2792,7 +2792,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// SimpleKey: QuotedKey;
+    /// `SimpleKey: QuotedKey;`
     ///
     #[parol_runtime::function_name::named]
     fn simple_key_0(&mut self, _quoted_key: &ParseTreeType<'t>) -> Result<()> {
@@ -2811,7 +2811,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// SimpleKey: UnquotedKey;
+    /// `SimpleKey: UnquotedKey;`
     ///
     #[parol_runtime::function_name::named]
     fn simple_key_1(&mut self, _unquoted_key: &ParseTreeType<'t>) -> Result<()> {
@@ -2830,7 +2830,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// QuotedKey: BasicString;
+    /// `QuotedKey: BasicString;`
     ///
     #[parol_runtime::function_name::named]
     fn quoted_key_0(&mut self, _basic_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2849,7 +2849,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// QuotedKey: LiteralString;
+    /// `QuotedKey: LiteralString;`
     ///
     #[parol_runtime::function_name::named]
     fn quoted_key_1(&mut self, _literal_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2868,7 +2868,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// KeyValSep: <INITIAL, Val>"=";
+    /// `KeyValSep: <INITIAL, Val>"=";`
     ///
     #[parol_runtime::function_name::named]
     fn key_val_sep(&mut self, key_val_sep: &ParseTreeType<'t>) -> Result<()> {
@@ -2884,7 +2884,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Val: Boolean;
+    /// `Val: Boolean;`
     ///
     #[parol_runtime::function_name::named]
     fn val_0(&mut self, _boolean: &ParseTreeType<'t>) -> Result<()> {
@@ -2903,7 +2903,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// Val: Array;
+    /// `Val: Array;`
     ///
     #[parol_runtime::function_name::named]
     fn val_1(&mut self, _array: &ParseTreeType<'t>) -> Result<()> {
@@ -2922,7 +2922,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// Val: InlineTable;
+    /// `Val: InlineTable;`
     ///
     #[parol_runtime::function_name::named]
     fn val_2(&mut self, _inline_table: &ParseTreeType<'t>) -> Result<()> {
@@ -2941,7 +2941,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// Val: DateTime;
+    /// `Val: DateTime;`
     ///
     #[parol_runtime::function_name::named]
     fn val_3(&mut self, _date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -2960,7 +2960,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// Val: Numeric;
+    /// `Val: Numeric;`
     ///
     #[parol_runtime::function_name::named]
     fn val_4(&mut self, _numeric: &ParseTreeType<'t>) -> Result<()> {
@@ -2979,7 +2979,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// Val: BasicString;
+    /// `Val: BasicString;`
     ///
     #[parol_runtime::function_name::named]
     fn val_5(&mut self, _basic_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2998,7 +2998,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// Val: MLBasicString;
+    /// `Val: MLBasicString;`
     ///
     #[parol_runtime::function_name::named]
     fn val_6(&mut self, _m_l_basic_string: &ParseTreeType<'t>) -> Result<()> {
@@ -3017,7 +3017,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// Val: LiteralString;
+    /// `Val: LiteralString;`
     ///
     #[parol_runtime::function_name::named]
     fn val_7(&mut self, _literal_string: &ParseTreeType<'t>) -> Result<()> {
@@ -3036,7 +3036,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// Val: MLLiteralString;
+    /// `Val: MLLiteralString;`
     ///
     #[parol_runtime::function_name::named]
     fn val_8(&mut self, _m_l_literal_string: &ParseTreeType<'t>) -> Result<()> {
@@ -3055,7 +3055,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// Numeric: Float;
+    /// `Numeric: Float;`
     ///
     #[parol_runtime::function_name::named]
     fn numeric_0(&mut self, _float: &ParseTreeType<'t>) -> Result<()> {
@@ -3074,7 +3074,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// Numeric: Integer;
+    /// `Numeric: Integer;`
     ///
     #[parol_runtime::function_name::named]
     fn numeric_1(&mut self, _integer: &ParseTreeType<'t>) -> Result<()> {
@@ -3093,7 +3093,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 30:
     ///
-    /// BasicString: QuotationMark %push(BString) BasicStringList /* Vec */ %pop() QuotationMark;
+    /// `BasicString: QuotationMark %push(BString) BasicStringList /* Vec */ %pop() QuotationMark;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_string(
@@ -3121,7 +3121,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// BasicStringList /* `Vec<T>::Push` */: BasicChar BasicStringList;
+    /// `BasicStringList /* Vec<T>::Push */: BasicChar BasicStringList;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_string_list_0(
@@ -3144,7 +3144,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// BasicStringList /* `Vec<T>::New` */: ;
+    /// `BasicStringList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_string_list_1(&mut self) -> Result<()> {
@@ -3157,7 +3157,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 33:
     ///
-    /// BasicChar: BasicUnescaped;
+    /// `BasicChar: BasicUnescaped;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_char_0(&mut self, _basic_unescaped: &ParseTreeType<'t>) -> Result<()> {
@@ -3176,7 +3176,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// BasicChar: %push(Esc) Escaped %pop();
+    /// `BasicChar: %push(Esc) Escaped %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn basic_char_1(&mut self, _escaped: &ParseTreeType<'t>) -> Result<()> {
@@ -3195,7 +3195,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// BasicUnescaped: AsciiNoEscape;
+    /// `BasicUnescaped: AsciiNoEscape;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_unescaped_0(&mut self, _ascii_no_escape: &ParseTreeType<'t>) -> Result<()> {
@@ -3215,7 +3215,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// BasicUnescaped: NonAscii;
+    /// `BasicUnescaped: NonAscii;`
     ///
     #[parol_runtime::function_name::named]
     fn basic_unescaped_1(&mut self, _non_ascii: &ParseTreeType<'t>) -> Result<()> {
@@ -3235,7 +3235,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// Escaped: Escape EscapeSeqChar;
+    /// `Escaped: Escape EscapeSeqChar;`
     ///
     #[parol_runtime::function_name::named]
     fn escaped(
@@ -3259,7 +3259,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// Escape: <Esc, BString, MLBString>"\u{5C}";
+    /// `Escape: <Esc, BString, MLBString>"\u{5C}";`
     ///
     #[parol_runtime::function_name::named]
     fn escape(&mut self, escape: &ParseTreeType<'t>) -> Result<()> {
@@ -3275,7 +3275,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// EscapeSeqChar: QuotationMark;
+    /// `EscapeSeqChar: QuotationMark;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_0(&mut self, _quotation_mark: &ParseTreeType<'t>) -> Result<()> {
@@ -3295,7 +3295,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// EscapeSeqChar: Escape;
+    /// `EscapeSeqChar: Escape;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_1(&mut self, _escape: &ParseTreeType<'t>) -> Result<()> {
@@ -3315,7 +3315,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// EscapeSeqChar: <Esc>"b";
+    /// `EscapeSeqChar: <Esc>"b";`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_2(&mut self, b: &ParseTreeType<'t>) -> Result<()> {
@@ -3333,7 +3333,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// EscapeSeqChar: <Esc>"f";
+    /// `EscapeSeqChar: <Esc>"f";`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_3(&mut self, f: &ParseTreeType<'t>) -> Result<()> {
@@ -3351,7 +3351,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// EscapeSeqChar: <Esc>"n";
+    /// `EscapeSeqChar: <Esc>"n";`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_4(&mut self, n: &ParseTreeType<'t>) -> Result<()> {
@@ -3369,7 +3369,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// EscapeSeqChar: <Esc>"r";
+    /// `EscapeSeqChar: <Esc>"r";`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_5(&mut self, r: &ParseTreeType<'t>) -> Result<()> {
@@ -3387,7 +3387,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// EscapeSeqChar: <Esc>"t";
+    /// `EscapeSeqChar: <Esc>"t";`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_6(&mut self, t: &ParseTreeType<'t>) -> Result<()> {
@@ -3405,7 +3405,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// EscapeSeqChar: Unicode4;
+    /// `EscapeSeqChar: Unicode4;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_7(&mut self, _unicode4: &ParseTreeType<'t>) -> Result<()> {
@@ -3425,7 +3425,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// EscapeSeqChar: Unicode8;
+    /// `EscapeSeqChar: Unicode8;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_8(&mut self, _unicode8: &ParseTreeType<'t>) -> Result<()> {
@@ -3445,7 +3445,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// EscapeSeqChar: WsNewline;
+    /// `EscapeSeqChar: WsNewline;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_9(&mut self, _ws_newline: &ParseTreeType<'t>) -> Result<()> {
@@ -3465,7 +3465,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// EscapeSeqChar: AsciiNoEscape;
+    /// `EscapeSeqChar: AsciiNoEscape;`
     ///
     #[parol_runtime::function_name::named]
     fn escape_seq_char_10(&mut self, _ascii_no_escape: &ParseTreeType<'t>) -> Result<()> {
@@ -3485,7 +3485,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// Unicode4: <Esc>"u[0-9a-fA-F]{4}";
+    /// `Unicode4: <Esc>"u[0-9a-fA-F]{4}";`
     ///
     #[parol_runtime::function_name::named]
     fn unicode4(&mut self, unicode4: &ParseTreeType<'t>) -> Result<()> {
@@ -3501,7 +3501,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// Unicode8: <Esc>"U[0-9a-fA-F]{8}";
+    /// `Unicode8: <Esc>"U[0-9a-fA-F]{8}";`
     ///
     #[parol_runtime::function_name::named]
     fn unicode8(&mut self, unicode8: &ParseTreeType<'t>) -> Result<()> {
@@ -3517,7 +3517,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// MLBasicString: MLBasicStringStart %push(MLBString) MLBasicBody MLBasicStringEnd %pop();
+    /// `MLBasicString: MLBasicStringStart %push(MLBString) MLBasicBody MLBasicStringEnd %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_string(
@@ -3546,7 +3546,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// MLBasicBody: MLBContentList MLBasicBodyList /* Vec */;
+    /// `MLBasicBody: MLBContentList MLBasicBodyList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_body(
@@ -3571,7 +3571,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// MLBasicBodyList /* `Vec<T>::Push` */: MLBQuotes MLBContentList1 MLBasicBodyList;
+    /// `MLBasicBodyList /* Vec<T>::Push */: MLBQuotes MLBContentList1 MLBasicBodyList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_body_list_0(
@@ -3598,7 +3598,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// MLBasicBodyList /* `Vec<T>::New` */: ;
+    /// `MLBasicBodyList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_body_list_1(&mut self) -> Result<()> {
@@ -3614,7 +3614,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// MLBContentList: MLBContent MLBContentList;
+    /// `MLBContentList: MLBContent MLBContentList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_list_0(
@@ -3641,7 +3641,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// MLBContentList: ;
+    /// `MLBContentList: ;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_list_1(&mut self) -> Result<()> {
@@ -3659,7 +3659,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// MLBContentList1: MLBContent MLBContentList;
+    /// `MLBContentList1: MLBContent MLBContentList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_list1(
@@ -3684,7 +3684,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// MLBContent: MLBChar;
+    /// `MLBContent: MLBChar;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_0(&mut self, _m_l_b_char: &ParseTreeType<'t>) -> Result<()> {
@@ -3703,7 +3703,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// MLBContent: Newline;
+    /// `MLBContent: Newline;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_1(&mut self, _newline: &ParseTreeType<'t>) -> Result<()> {
@@ -3722,7 +3722,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// MLBContent: MLBEscapedNL;
+    /// `MLBContent: MLBEscapedNL;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_content_2(&mut self, _m_l_b_escaped_n_l: &ParseTreeType<'t>) -> Result<()> {
@@ -3741,7 +3741,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// MLBChar: MLBUnescaped;
+    /// `MLBChar: MLBUnescaped;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_char_0(&mut self, _m_l_b_unescaped: &ParseTreeType<'t>) -> Result<()> {
@@ -3760,7 +3760,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// MLBChar: %push(Esc) Escaped %pop();
+    /// `MLBChar: %push(Esc) Escaped %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_char_1(&mut self, _escaped: &ParseTreeType<'t>) -> Result<()> {
@@ -3779,7 +3779,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// MLBUnescaped: AsciiNoEscape;
+    /// `MLBUnescaped: AsciiNoEscape;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_unescaped_0(&mut self, _ascii_no_escape: &ParseTreeType<'t>) -> Result<()> {
@@ -3799,7 +3799,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// MLBUnescaped: NonAscii;
+    /// `MLBUnescaped: NonAscii;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_unescaped_1(&mut self, _non_ascii: &ParseTreeType<'t>) -> Result<()> {
@@ -3819,7 +3819,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// MLBEscapedNL: <MLBString>"\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";
+    /// `MLBEscapedNL: <MLBString>"\u{5C}[ \t]*\r?\n([ \t]|\r?\n)*";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_escaped_n_l(&mut self, m_l_b_escaped_n_l: &ParseTreeType<'t>) -> Result<()> {
@@ -3836,7 +3836,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// LiteralString: Apostrophe^ /* Clipped */ %push(LString) LiteralStringList /* Vec */ %pop() Apostrophe^ /* Clipped */;
+    /// `LiteralString: Apostrophe^ /* Clipped */ %push(LString) LiteralStringList /* Vec */ %pop() Apostrophe^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_string(
@@ -3866,7 +3866,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// LiteralStringList /* `Vec<T>::Push` */: LiteralChar LiteralStringList;
+    /// `LiteralStringList /* Vec<T>::Push */: LiteralChar LiteralStringList;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_string_list_0(
@@ -3890,7 +3890,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// LiteralStringList /* `Vec<T>::New` */: ;
+    /// `LiteralStringList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_string_list_1(&mut self) -> Result<()> {
@@ -3906,7 +3906,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// LiteralChar: LiteralCharNoApostrophe;
+    /// `LiteralChar: LiteralCharNoApostrophe;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_char_0(&mut self, _literal_char_no_apostrophe: &ParseTreeType<'t>) -> Result<()> {
@@ -3930,7 +3930,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 71:
     ///
-    /// LiteralChar: NonAscii;
+    /// `LiteralChar: NonAscii;`
     ///
     #[parol_runtime::function_name::named]
     fn literal_char_1(&mut self, _non_ascii: &ParseTreeType<'t>) -> Result<()> {
@@ -3949,7 +3949,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 72:
     ///
-    /// LiteralCharNoApostrophe: <LString, MLLString>"[\t\u{20}-\u{26}\u{28}-\u{7E}]+";
+    /// `LiteralCharNoApostrophe: <LString, MLLString>"[\t\u{20}-\u{26}\u{28}-\u{7E}]+";`
     ///
     #[parol_runtime::function_name::named]
     fn literal_char_no_apostrophe(
@@ -3974,7 +3974,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 73:
     ///
-    /// MLLiteralString: MLLiteralStringStart^ /* Clipped */ %push(MLLString) MLLiteralBody %pop();
+    /// `MLLiteralString: MLLiteralStringStart^ /* Clipped */ %push(MLLString) MLLiteralBody %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_string(
@@ -4000,7 +4000,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 74:
     ///
-    /// MLLiteralBody: MLLContentList MLLiteralBodyList /* Vec */ MLLiteralStringEnd^ /* Clipped */;
+    /// `MLLiteralBody: MLLContentList MLLiteralBodyList /* Vec */ MLLiteralStringEnd^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_body(
@@ -4030,7 +4030,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 75:
     ///
-    /// MLLiteralBodyList /* `Vec<T>::Push` */: MLLQuotes MLLContentList1 MLLiteralBodyList;
+    /// `MLLiteralBodyList /* Vec<T>::Push */: MLLQuotes MLLContentList1 MLLiteralBodyList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_body_list_0(
@@ -4057,7 +4057,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 76:
     ///
-    /// MLLiteralBodyList /* `Vec<T>::New` */: ;
+    /// `MLLiteralBodyList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_body_list_1(&mut self) -> Result<()> {
@@ -4073,7 +4073,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 77:
     ///
-    /// MLLContentList: MLLContent MLLContentList;
+    /// `MLLContentList: MLLContent MLLContentList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_content_list_0(
@@ -4100,7 +4100,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 78:
     ///
-    /// MLLContentList: ;
+    /// `MLLContentList: ;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_content_list_1(&mut self) -> Result<()> {
@@ -4118,7 +4118,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 79:
     ///
-    /// MLLContentList1: MLLContent MLLContentList;
+    /// `MLLContentList1: MLLContent MLLContentList;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_content_list1(
@@ -4143,7 +4143,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 80:
     ///
-    /// MLLContent: LiteralChar;
+    /// `MLLContent: LiteralChar;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_content_0(&mut self, _literal_char: &ParseTreeType<'t>) -> Result<()> {
@@ -4162,7 +4162,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 81:
     ///
-    /// MLLContent: Newline;
+    /// `MLLContent: Newline;`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_content_1(&mut self, _newline: &ParseTreeType<'t>) -> Result<()> {
@@ -4181,7 +4181,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 82:
     ///
-    /// Integer: DecInt;
+    /// `Integer: DecInt;`
     ///
     #[parol_runtime::function_name::named]
     fn integer_0(&mut self, _dec_int: &ParseTreeType<'t>) -> Result<()> {
@@ -4200,7 +4200,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 83:
     ///
-    /// Integer: HexInt;
+    /// `Integer: HexInt;`
     ///
     #[parol_runtime::function_name::named]
     fn integer_1(&mut self, _hex_int: &ParseTreeType<'t>) -> Result<()> {
@@ -4219,7 +4219,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 84:
     ///
-    /// Integer: OctInt;
+    /// `Integer: OctInt;`
     ///
     #[parol_runtime::function_name::named]
     fn integer_2(&mut self, _oct_int: &ParseTreeType<'t>) -> Result<()> {
@@ -4238,7 +4238,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 85:
     ///
-    /// Integer: BinInt;
+    /// `Integer: BinInt;`
     ///
     #[parol_runtime::function_name::named]
     fn integer_3(&mut self, _bin_int: &ParseTreeType<'t>) -> Result<()> {
@@ -4257,7 +4257,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 86:
     ///
-    /// HexPrefix: <Val>"0x";
+    /// `HexPrefix: <Val>"0x";`
     ///
     #[parol_runtime::function_name::named]
     fn hex_prefix(&mut self, hex_prefix: &ParseTreeType<'t>) -> Result<()> {
@@ -4273,7 +4273,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 87:
     ///
-    /// OctPrefix: <Val>"0o";
+    /// `OctPrefix: <Val>"0o";`
     ///
     #[parol_runtime::function_name::named]
     fn oct_prefix(&mut self, oct_prefix: &ParseTreeType<'t>) -> Result<()> {
@@ -4289,7 +4289,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 88:
     ///
-    /// BinPrefix: <Val>"0b";
+    /// `BinPrefix: <Val>"0b";`
     ///
     #[parol_runtime::function_name::named]
     fn bin_prefix(&mut self, bin_prefix: &ParseTreeType<'t>) -> Result<()> {
@@ -4305,7 +4305,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 89:
     ///
-    /// DecInt: DecIntOpt /* Option */ UnsignedDecInt;
+    /// `DecInt: DecIntOpt /* Option */ UnsignedDecInt;`
     ///
     #[parol_runtime::function_name::named]
     fn dec_int(
@@ -4329,7 +4329,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 90:
     ///
-    /// DecIntOpt /* `Option<T>::Some` */: DecIntOptGroup;
+    /// `DecIntOpt /* Option<T>::Some */: DecIntOptGroup;`
     ///
     #[parol_runtime::function_name::named]
     fn dec_int_opt_0(&mut self, _dec_int_opt_group: &ParseTreeType<'t>) -> Result<()> {
@@ -4348,7 +4348,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 91:
     ///
-    /// DecIntOptGroup: Plus;
+    /// `DecIntOptGroup: Plus;`
     ///
     #[parol_runtime::function_name::named]
     fn dec_int_opt_group_0(&mut self, _plus: &ParseTreeType<'t>) -> Result<()> {
@@ -4365,7 +4365,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 92:
     ///
-    /// DecIntOptGroup: Minus;
+    /// `DecIntOptGroup: Minus;`
     ///
     #[parol_runtime::function_name::named]
     fn dec_int_opt_group_1(&mut self, _minus: &ParseTreeType<'t>) -> Result<()> {
@@ -4382,7 +4382,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 93:
     ///
-    /// DecIntOpt /* `Option<T>::None` */: ;
+    /// `DecIntOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn dec_int_opt_1(&mut self) -> Result<()> {
@@ -4394,7 +4394,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 94:
     ///
-    /// HexInt: HexPrefix^ /* Clipped */ %push(HexInt) HexIntContent %pop();
+    /// `HexInt: HexPrefix^ /* Clipped */ %push(HexInt) HexIntContent %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn hex_int(
@@ -4419,7 +4419,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 95:
     ///
-    /// HexIntContent: <HexInt>"[0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])*";
+    /// `HexIntContent: <HexInt>"[0-9a-fA-F]([0-9a-fA-F]|_[0-9a-fA-F])*";`
     ///
     #[parol_runtime::function_name::named]
     fn hex_int_content(&mut self, hex_int_content: &ParseTreeType<'t>) -> Result<()> {
@@ -4435,7 +4435,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 96:
     ///
-    /// OctInt: OctPrefix^ /* Clipped */ %push(OctInt) OctIntContent %pop();
+    /// `OctInt: OctPrefix^ /* Clipped */ %push(OctInt) OctIntContent %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn oct_int(
@@ -4460,7 +4460,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 97:
     ///
-    /// OctIntContent: <OctInt>"[0-7]([0-7]|_[0-7])*";
+    /// `OctIntContent: <OctInt>"[0-7]([0-7]|_[0-7])*";`
     ///
     #[parol_runtime::function_name::named]
     fn oct_int_content(&mut self, oct_int_content: &ParseTreeType<'t>) -> Result<()> {
@@ -4476,7 +4476,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 98:
     ///
-    /// BinInt: BinPrefix^ /* Clipped */ %push(BinInt) BinIntContent %pop();
+    /// `BinInt: BinPrefix^ /* Clipped */ %push(BinInt) BinIntContent %pop();`
     ///
     #[parol_runtime::function_name::named]
     fn bin_int(
@@ -4501,7 +4501,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 99:
     ///
-    /// BinIntContent: <BinInt>"[01]([01]|_[01])*";
+    /// `BinIntContent: <BinInt>"[01]([01]|_[01])*";`
     ///
     #[parol_runtime::function_name::named]
     fn bin_int_content(&mut self, bin_int_content: &ParseTreeType<'t>) -> Result<()> {
@@ -4517,7 +4517,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 100:
     ///
-    /// Boolean: <Val>"true";
+    /// `Boolean: <Val>"true";`
     ///
     #[parol_runtime::function_name::named]
     fn boolean_0(&mut self, r#true: &ParseTreeType<'t>) -> Result<()> {
@@ -4534,7 +4534,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 101:
     ///
-    /// Boolean: <Val>"false";
+    /// `Boolean: <Val>"false";`
     ///
     #[parol_runtime::function_name::named]
     fn boolean_1(&mut self, r#false: &ParseTreeType<'t>) -> Result<()> {
@@ -4551,7 +4551,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 102:
     ///
-    /// Float: NormalFloat;
+    /// `Float: NormalFloat;`
     ///
     #[parol_runtime::function_name::named]
     fn float_0(&mut self, _normal_float: &ParseTreeType<'t>) -> Result<()> {
@@ -4570,7 +4570,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 103:
     ///
-    /// Float: SpecialFloat;
+    /// `Float: SpecialFloat;`
     ///
     #[parol_runtime::function_name::named]
     fn float_1(&mut self, _special_float: &ParseTreeType<'t>) -> Result<()> {
@@ -4589,7 +4589,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 104:
     ///
-    /// NormalFloat: <Val>"[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))";
+    /// `NormalFloat: <Val>"[-+]?(?:0|[1-9](?:[0-9]|_[0-9])*)(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*|(?:\.[0-9](?:[0-9]|_[0-9])*(?:[eE][-+]?[0-9](?:[0-9]|_[0-9])*)?))";`
     ///
     #[parol_runtime::function_name::named]
     fn normal_float(&mut self, normal_float: &ParseTreeType<'t>) -> Result<()> {
@@ -4605,7 +4605,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 105:
     ///
-    /// SpecialFloat: <Val>"[-+]?(nan|inf)";
+    /// `SpecialFloat: <Val>"[-+]?(nan|inf)";`
     ///
     #[parol_runtime::function_name::named]
     fn special_float(&mut self, special_float: &ParseTreeType<'t>) -> Result<()> {
@@ -4621,7 +4621,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 106:
     ///
-    /// DateTime: OffsetDateTime;
+    /// `DateTime: OffsetDateTime;`
     ///
     #[parol_runtime::function_name::named]
     fn date_time_0(&mut self, _offset_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4640,7 +4640,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 107:
     ///
-    /// DateTime: LocalDateTime;
+    /// `DateTime: LocalDateTime;`
     ///
     #[parol_runtime::function_name::named]
     fn date_time_1(&mut self, _local_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4659,7 +4659,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 108:
     ///
-    /// DateTime: LocalDate;
+    /// `DateTime: LocalDate;`
     ///
     #[parol_runtime::function_name::named]
     fn date_time_2(&mut self, _local_date: &ParseTreeType<'t>) -> Result<()> {
@@ -4678,7 +4678,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 109:
     ///
-    /// DateTime: LocalTime;
+    /// `DateTime: LocalTime;`
     ///
     #[parol_runtime::function_name::named]
     fn date_time_3(&mut self, _local_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4697,7 +4697,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 110:
     ///
-    /// OffsetDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?";
+    /// `OffsetDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?([Zz]|[-+][0-9]{2}(:[0-9]{2})?)?";`
     ///
     #[parol_runtime::function_name::named]
     fn offset_date_time(&mut self, offset_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4714,7 +4714,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 111:
     ///
-    /// LocalDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?";
+    /// `LocalDateTime: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt ][0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?[Zz]?";`
     ///
     #[parol_runtime::function_name::named]
     fn local_date_time(&mut self, local_date_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4730,7 +4730,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 112:
     ///
-    /// LocalDate: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}";
+    /// `LocalDate: <Val>"[0-9]{4}-[0-9]{2}-[0-9]{2}";`
     ///
     #[parol_runtime::function_name::named]
     fn local_date(&mut self, local_date: &ParseTreeType<'t>) -> Result<()> {
@@ -4746,7 +4746,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 113:
     ///
-    /// LocalTime: <Val>"[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?";
+    /// `LocalTime: <Val>"[0-9]{2}:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?";`
     ///
     #[parol_runtime::function_name::named]
     fn local_time(&mut self, local_time: &ParseTreeType<'t>) -> Result<()> {
@@ -4762,7 +4762,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 114:
     ///
-    /// Array: ArrayOpen^ /* Clipped */ %push(Val) ArrayOpt /* Option */ %pop() ArrayClose^ /* Clipped */;
+    /// `Array: ArrayOpen^ /* Clipped */ %push(Val) ArrayOpt /* Option */ %pop() ArrayClose^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array(
@@ -4791,7 +4791,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 115:
     ///
-    /// ArrayOpt /* `Option<T>::Some` */: ArrayValues;
+    /// `ArrayOpt /* Option<T>::Some */: ArrayValues;`
     ///
     #[parol_runtime::function_name::named]
     fn array_opt_0(&mut self, _array_values: &ParseTreeType<'t>) -> Result<()> {
@@ -4810,7 +4810,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 116:
     ///
-    /// ArrayOpt /* `Option<T>::None` */: ;
+    /// `ArrayOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn array_opt_1(&mut self) -> Result<()> {
@@ -4822,7 +4822,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 117:
     ///
-    /// ArrayValues: Val ArrayValuesSuffix0;
+    /// `ArrayValues: Val ArrayValuesSuffix0;`
     ///
     #[parol_runtime::function_name::named]
     fn array_values(
@@ -4847,7 +4847,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 118:
     ///
-    /// ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;
+    /// `ArrayValuesSuffix0: ArraySep^ /* Clipped */ ArrayValuesSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn array_values_suffix0_0(
@@ -4875,7 +4875,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 119:
     ///
-    /// ArrayValuesSuffix0: ;
+    /// `ArrayValuesSuffix0: ;`
     ///
     #[parol_runtime::function_name::named]
     fn array_values_suffix0_1(&mut self) -> Result<()> {
@@ -4893,7 +4893,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 120:
     ///
-    /// ArrayValuesSuffix: ArrayValues;
+    /// `ArrayValuesSuffix: ArrayValues;`
     ///
     #[parol_runtime::function_name::named]
     fn array_values_suffix_0(&mut self, _array_values: &ParseTreeType<'t>) -> Result<()> {
@@ -4914,7 +4914,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 121:
     ///
-    /// ArrayValuesSuffix: ;
+    /// `ArrayValuesSuffix: ;`
     ///
     #[parol_runtime::function_name::named]
     fn array_values_suffix_1(&mut self) -> Result<()> {
@@ -4932,7 +4932,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 122:
     ///
-    /// ArraySep: <INITIAL, Val>",";
+    /// `ArraySep: <INITIAL, Val>",";`
     ///
     #[parol_runtime::function_name::named]
     fn array_sep(&mut self, array_sep: &ParseTreeType<'t>) -> Result<()> {
@@ -4948,7 +4948,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 123:
     ///
-    /// Table: StdTable;
+    /// `Table: StdTable;`
     ///
     #[parol_runtime::function_name::named]
     fn table_0(&mut self, _std_table: &ParseTreeType<'t>) -> Result<()> {
@@ -4967,7 +4967,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 124:
     ///
-    /// Table: ArrayTable;
+    /// `Table: ArrayTable;`
     ///
     #[parol_runtime::function_name::named]
     fn table_1(&mut self, _array_table: &ParseTreeType<'t>) -> Result<()> {
@@ -4986,7 +4986,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 125:
     ///
-    /// StdTable: StdTableOpen^ /* Clipped */ Key StdTableClose^ /* Clipped */;
+    /// `StdTable: StdTableOpen^ /* Clipped */ Key StdTableClose^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn std_table(
@@ -5015,7 +5015,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 126:
     ///
-    /// ArrayTableOpen: "\u{5B}\u{5B}";
+    /// `ArrayTableOpen: "\u{5B}\u{5B}";`
     ///
     #[parol_runtime::function_name::named]
     fn array_table_open(&mut self, array_table_open: &ParseTreeType<'t>) -> Result<()> {
@@ -5032,7 +5032,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 127:
     ///
-    /// ArrayTableClose: "\u{5D}\u{5D}";
+    /// `ArrayTableClose: "\u{5D}\u{5D}";`
     ///
     #[parol_runtime::function_name::named]
     fn array_table_close(&mut self, array_table_close: &ParseTreeType<'t>) -> Result<()> {
@@ -5049,7 +5049,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 128:
     ///
-    /// ArrayOpen: <INITIAL, Val>"\u{5B}";
+    /// `ArrayOpen: <INITIAL, Val>"\u{5B}";`
     ///
     #[parol_runtime::function_name::named]
     fn array_open(&mut self, array_open: &ParseTreeType<'t>) -> Result<()> {
@@ -5065,7 +5065,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 129:
     ///
-    /// ArrayClose: <INITIAL, Val>"\u{5D}";
+    /// `ArrayClose: <INITIAL, Val>"\u{5D}";`
     ///
     #[parol_runtime::function_name::named]
     fn array_close(&mut self, array_close: &ParseTreeType<'t>) -> Result<()> {
@@ -5081,7 +5081,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 130:
     ///
-    /// StdTableOpen: ArrayOpen;
+    /// `StdTableOpen: ArrayOpen;`
     ///
     #[parol_runtime::function_name::named]
     fn std_table_open(&mut self, _array_open: &ParseTreeType<'t>) -> Result<()> {
@@ -5099,7 +5099,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 131:
     ///
-    /// StdTableClose: ArrayClose;
+    /// `StdTableClose: ArrayClose;`
     ///
     #[parol_runtime::function_name::named]
     fn std_table_close(&mut self, _array_close: &ParseTreeType<'t>) -> Result<()> {
@@ -5117,7 +5117,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 132:
     ///
-    /// InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableOpt0 /* Option */ InlineTableClose^ /* Clipped */;
+    /// `InlineTable: InlineTableOpen^ /* Clipped */ %push(INITIAL) InlineTableOpt /* Option */ %pop() InlineTableOpt0 /* Option */ InlineTableClose^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table(
@@ -5149,7 +5149,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 133:
     ///
-    /// InlineTableOpt0 /* `Option<T>::Some` */: InlineTableSep;
+    /// `InlineTableOpt0 /* Option<T>::Some */: InlineTableSep;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_opt0_0(&mut self, _inline_table_sep: &ParseTreeType<'t>) -> Result<()> {
@@ -5168,7 +5168,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 134:
     ///
-    /// InlineTableOpt0 /* `Option<T>::None` */: ;
+    /// `InlineTableOpt0 /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_opt0_1(&mut self) -> Result<()> {
@@ -5180,7 +5180,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 135:
     ///
-    /// InlineTableOpt /* `Option<T>::Some` */: InlineTableKeyVals;
+    /// `InlineTableOpt /* Option<T>::Some */: InlineTableKeyVals;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_opt_0(&mut self, _inline_table_key_vals: &ParseTreeType<'t>) -> Result<()> {
@@ -5200,7 +5200,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 136:
     ///
-    /// InlineTableOpt /* `Option<T>::None` */: ;
+    /// `InlineTableOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_opt_1(&mut self) -> Result<()> {
@@ -5212,7 +5212,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 137:
     ///
-    /// InlineTableOpen: <INITIAL, Val>"\u{7B}";
+    /// `InlineTableOpen: <INITIAL, Val>"\u{7B}";`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_open(&mut self, inline_table_open: &ParseTreeType<'t>) -> Result<()> {
@@ -5229,7 +5229,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 138:
     ///
-    /// InlineTableClose: <INITIAL, Val>"\u{7D}";
+    /// `InlineTableClose: <INITIAL, Val>"\u{7D}";`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_close(&mut self, inline_table_close: &ParseTreeType<'t>) -> Result<()> {
@@ -5246,7 +5246,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 139:
     ///
-    /// InlineTableSep: ArraySep;
+    /// `InlineTableSep: ArraySep;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_sep(&mut self, _array_sep: &ParseTreeType<'t>) -> Result<()> {
@@ -5265,7 +5265,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 140:
     ///
-    /// InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;
+    /// `InlineTableKeyVals: KeyVal InlineTableKeyValsOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_key_vals(
@@ -5298,7 +5298,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 141:
     ///
-    /// InlineTableKeyValsOpt /* `Option<T>::Some` */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;
+    /// `InlineTableKeyValsOpt /* Option<T>::Some */: InlineTableSep^ /* Clipped */ InlineTableKeyVals;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_key_vals_opt_0(
@@ -5325,7 +5325,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 142:
     ///
-    /// InlineTableKeyValsOpt /* `Option<T>::None` */: ;
+    /// `InlineTableKeyValsOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn inline_table_key_vals_opt_1(&mut self) -> Result<()> {
@@ -5337,7 +5337,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 143:
     ///
-    /// ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;
+    /// `ArrayTable: ArrayTableOpen^ /* Clipped */ Key ArrayTableClose^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array_table(
@@ -5366,7 +5366,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 144:
     ///
-    /// UnsignedDecInt: <Val>"0|[1-9]([0-9]|_[0-9])*";
+    /// `UnsignedDecInt: <Val>"0|[1-9]([0-9]|_[0-9])*";`
     ///
     #[parol_runtime::function_name::named]
     fn unsigned_dec_int(&mut self, unsigned_dec_int: &ParseTreeType<'t>) -> Result<()> {
@@ -5383,7 +5383,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 145:
     ///
-    /// UnquotedKey: "[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+";
+    /// `UnquotedKey: "[-_A-Za-z0-9\u{B2}\u{B3}\u{B9}\u{BC}-\u{BE}\u{C0}-\u{D6}\u{D8}-\u{F6}\u{F8}-\u{37D}\u{37F}-\u{1FFF}\u{200C}-\u{200D}\u{203F}-\u{2040}\u{2070}-\u{218F}\u{2460}-\u{24FF}\u{2C00}-\u{2FEF}\u{3001}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFFD}\u{10000}-\u{EFFFF}]+";`
     ///
     #[parol_runtime::function_name::named]
     fn unquoted_key(&mut self, unquoted_key: &ParseTreeType<'t>) -> Result<()> {
@@ -5399,7 +5399,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 146:
     ///
-    /// DotSep: <INITIAL, Val>"\.";
+    /// `DotSep: <INITIAL, Val>"\.";`
     ///
     #[parol_runtime::function_name::named]
     fn dot_sep(&mut self, dot_sep: &ParseTreeType<'t>) -> Result<()> {
@@ -5415,7 +5415,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 147:
     ///
-    /// MLBasicStringStart: <INITIAL, Val>"\u{22}{3}";
+    /// `MLBasicStringStart: <INITIAL, Val>"\u{22}{3}";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_string_start(&mut self, m_l_basic_string_start: &ParseTreeType<'t>) -> Result<()> {
@@ -5437,7 +5437,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 148:
     ///
-    /// MLBasicStringEnd: <MLBString>"\u{22}{3,5}";
+    /// `MLBasicStringEnd: <MLBString>"\u{22}{3,5}";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_basic_string_end(&mut self, m_l_basic_string_end: &ParseTreeType<'t>) -> Result<()> {
@@ -5459,7 +5459,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 149:
     ///
-    /// MLBQuotes: <MLBString>"\u{22}{1,2}";
+    /// `MLBQuotes: <MLBString>"\u{22}{1,2}";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_b_quotes(&mut self, m_l_b_quotes: &ParseTreeType<'t>) -> Result<()> {
@@ -5475,7 +5475,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 150:
     ///
-    /// QuotationMark: <INITIAL, Esc, Val, BString>"\u{22}";
+    /// `QuotationMark: <INITIAL, Esc, Val, BString>"\u{22}";`
     ///
     #[parol_runtime::function_name::named]
     fn quotation_mark(&mut self, quotation_mark: &ParseTreeType<'t>) -> Result<()> {
@@ -5491,7 +5491,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 151:
     ///
-    /// MLLiteralStringStart: <INITIAL, Val>"\u{27}{3}";
+    /// `MLLiteralStringStart: <INITIAL, Val>"\u{27}{3}";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_string_start(
@@ -5516,7 +5516,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 152:
     ///
-    /// MLLiteralStringEnd: <MLLString>"\u{27}{3,5}(?:\r?\n)?";
+    /// `MLLiteralStringEnd: <MLLString>"\u{27}{3,5}(?:\r?\n)?";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_literal_string_end(&mut self, m_l_literal_string_end: &ParseTreeType<'t>) -> Result<()> {
@@ -5538,7 +5538,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 153:
     ///
-    /// MLLQuotes: <MLLString>"\u{27}{1,2}";
+    /// `MLLQuotes: <MLLString>"\u{27}{1,2}";`
     ///
     #[parol_runtime::function_name::named]
     fn m_l_l_quotes(&mut self, m_l_l_quotes: &ParseTreeType<'t>) -> Result<()> {
@@ -5554,7 +5554,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 154:
     ///
-    /// Apostrophe: <INITIAL, Val, LString>"\u{27}";
+    /// `Apostrophe: <INITIAL, Val, LString>"\u{27}";`
     ///
     #[parol_runtime::function_name::named]
     fn apostrophe(&mut self, apostrophe: &ParseTreeType<'t>) -> Result<()> {
@@ -5570,7 +5570,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 155:
     ///
-    /// AsciiNoEscape: <Esc, BString, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";
+    /// `AsciiNoEscape: <Esc, BString, MLBString>"[ \t\u{21}\u{23}-\u{5B}\u{5D}-\u{7E}]+";`
     ///
     #[parol_runtime::function_name::named]
     fn ascii_no_escape(&mut self, ascii_no_escape: &ParseTreeType<'t>) -> Result<()> {
@@ -5586,7 +5586,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 156:
     ///
-    /// Minus: <Val>"\u{2D}";
+    /// `Minus: <Val>"\u{2D}";`
     ///
     #[parol_runtime::function_name::named]
     fn minus(&mut self, minus: &ParseTreeType<'t>) -> Result<()> {
@@ -5602,7 +5602,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 157:
     ///
-    /// Plus: <Val>"\u{2B}";
+    /// `Plus: <Val>"\u{2B}";`
     ///
     #[parol_runtime::function_name::named]
     fn plus(&mut self, plus: &ParseTreeType<'t>) -> Result<()> {

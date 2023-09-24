@@ -702,7 +702,7 @@ impl<'a> UserTraitGenerator<'a> {
         comment.push(String::default());
         comment.push(format!("Type derived for production {}", f.prod_num));
         comment.push(String::default());
-        comment.push(f.prod_string);
+        comment.push(format!("`{}`", f.prod_string));
         comment.push(String::default());
         Self::format_type(*t, &type_info.symbol_table, comment)?
             .into_iter()

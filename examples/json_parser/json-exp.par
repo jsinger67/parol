@@ -8,14 +8,14 @@
 /*  1 */ Object: "\{" ObjectSuffix;
 /*  2 */ ObjectSuffix: Pair ObjectList /* Vec */ "\}";
 /*  3 */ ObjectSuffix: "\}";
-/*  4 */ ObjectList /* `Vec<T>::Push` */: "," Pair ObjectList;
-/*  5 */ ObjectList /* `Vec<T>::New` */: ;
+/*  4 */ ObjectList /* Vec<T>::Push */: "," Pair ObjectList;
+/*  5 */ ObjectList /* Vec<T>::New */: ;
 /*  6 */ Pair: String ":" Value;
 /*  7 */ Array: "\[" ArraySuffix;
 /*  8 */ ArraySuffix: Value ArrayList /* Vec */ "\]";
 /*  9 */ ArraySuffix: "\]";
-/* 10 */ ArrayList /* `Vec<T>::Push` */: "," Value ArrayList;
-/* 11 */ ArrayList /* `Vec<T>::New` */: ;
+/* 10 */ ArrayList /* Vec<T>::Push */: "," Value ArrayList;
+/* 11 */ ArrayList /* Vec<T>::New */: ;
 /* 12 */ Value: String;
 /* 13 */ Value: Number;
 /* 14 */ Value: Object;

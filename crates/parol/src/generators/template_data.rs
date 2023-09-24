@@ -57,7 +57,7 @@ impl std::fmt::Display for UserTraitFunctionData {
                 "
                 /// Semantic action for production {prod_num}:
                 ///
-                /// {prod_string}
+                /// `{prod_string}`
                 ///"
             )?;
         } else {

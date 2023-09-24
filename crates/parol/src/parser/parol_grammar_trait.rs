@@ -182,7 +182,7 @@ pub trait ParolGrammarTrait<'t> {
 ///
 /// Type derived for production 7
 ///
-/// Declaration: '%title'^ /* Clipped */ String;
+/// `Declaration: '%title'^ /* Clipped */ String;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -194,7 +194,7 @@ pub struct DeclarationPercentTitleString<'t> {
 ///
 /// Type derived for production 8
 ///
-/// Declaration: '%comment'^ /* Clipped */ String;
+/// `Declaration: '%comment'^ /* Clipped */ String;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -206,7 +206,7 @@ pub struct DeclarationPercentCommentString<'t> {
 ///
 /// Type derived for production 9
 ///
-/// Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;
+/// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -219,7 +219,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName<'t> {
 ///
 /// Type derived for production 10
 ///
-/// Declaration: ScannerDirectives;
+/// `Declaration: ScannerDirectives;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -231,7 +231,7 @@ pub struct DeclarationScannerDirectives<'t> {
 ///
 /// Type derived for production 11
 ///
-/// ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
+/// `ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -243,7 +243,7 @@ pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral<'t> {
 ///
 /// Type derived for production 12
 ///
-/// ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
+/// `ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -256,7 +256,7 @@ pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLitera
 ///
 /// Type derived for production 13
 ///
-/// ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
+/// `ScannerDirectives: '%auto_newline_off'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -266,7 +266,7 @@ pub struct ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff {}
 ///
 /// Type derived for production 14
 ///
-/// ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
+/// `ScannerDirectives: '%auto_ws_off'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -276,7 +276,7 @@ pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {}
 ///
 /// Type derived for production 26
 ///
-/// Factor: Group;
+/// `Factor: Group;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -288,7 +288,7 @@ pub struct FactorGroup<'t> {
 ///
 /// Type derived for production 27
 ///
-/// Factor: Repeat;
+/// `Factor: Repeat;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -300,7 +300,7 @@ pub struct FactorRepeat<'t> {
 ///
 /// Type derived for production 28
 ///
-/// Factor: Optional;
+/// `Factor: Optional;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -312,7 +312,7 @@ pub struct FactorOptional<'t> {
 ///
 /// Type derived for production 29
 ///
-/// Factor: Symbol;
+/// `Factor: Symbol;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -324,7 +324,7 @@ pub struct FactorSymbol<'t> {
 ///
 /// Type derived for production 30
 ///
-/// Symbol: NonTerminal;
+/// `Symbol: NonTerminal;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -336,7 +336,7 @@ pub struct SymbolNonTerminal<'t> {
 ///
 /// Type derived for production 31
 ///
-/// Symbol: SimpleToken;
+/// `Symbol: SimpleToken;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -348,7 +348,7 @@ pub struct SymbolSimpleToken<'t> {
 ///
 /// Type derived for production 32
 ///
-/// Symbol: TokenWithStates;
+/// `Symbol: TokenWithStates;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -360,7 +360,7 @@ pub struct SymbolTokenWithStates<'t> {
 ///
 /// Type derived for production 33
 ///
-/// Symbol: ScannerSwitch;
+/// `Symbol: ScannerSwitch;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -372,7 +372,7 @@ pub struct SymbolScannerSwitch<'t> {
 ///
 /// Type derived for production 34
 ///
-/// TokenLiteral: String;
+/// `TokenLiteral: String;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -384,7 +384,7 @@ pub struct TokenLiteralString<'t> {
 ///
 /// Type derived for production 35
 ///
-/// TokenLiteral: RawString;
+/// `TokenLiteral: RawString;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -396,7 +396,7 @@ pub struct TokenLiteralRawString<'t> {
 ///
 /// Type derived for production 36
 ///
-/// TokenLiteral: Regex;
+/// `TokenLiteral: Regex;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -408,7 +408,7 @@ pub struct TokenLiteralRegex<'t> {
 ///
 /// Type derived for production 59
 ///
-/// ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
+/// `ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -420,7 +420,7 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
 ///
 /// Type derived for production 60
 ///
-/// ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
+/// `ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -432,7 +432,7 @@ pub struct ScannerSwitchPercentPushLParenIdentifierRParen<'t> {
 ///
 /// Type derived for production 61
 ///
-/// ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
+/// `ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -442,7 +442,7 @@ pub struct ScannerSwitchPercentPopLParenRParen {}
 ///
 /// Type derived for production 64
 ///
-/// ASTControl: CutOperator;
+/// `ASTControl: CutOperator;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -454,7 +454,7 @@ pub struct ASTControlCutOperator {
 ///
 /// Type derived for production 65
 ///
-/// ASTControl: UserTypeDeclaration;
+/// `ASTControl: UserTypeDeclaration;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -1036,7 +1036,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// Parol: Prolog GrammarDefinition;
+    /// `Parol: Prolog GrammarDefinition;`
     ///
     #[parol_runtime::function_name::named]
     fn parol(
@@ -1060,7 +1060,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;
+    /// `Prolog: StartDeclaration PrologList /* Vec */ PrologList0 /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog(
@@ -1087,7 +1087,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// PrologList0 /* `Vec<T>::Push` */: ScannerState : ScannerConfig PrologList0;
+    /// `PrologList0 /* Vec<T>::Push */: ScannerState : ScannerConfig PrologList0;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list0_0(
@@ -1112,7 +1112,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// PrologList0 /* `Vec<T>::New` */: ;
+    /// `PrologList0 /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list0_1(&mut self) -> Result<()> {
@@ -1125,7 +1125,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// PrologList /* `Vec<T>::Push` */: Declaration PrologList;
+    /// `PrologList /* Vec<T>::Push */: Declaration PrologList;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list_0(
@@ -1148,7 +1148,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// PrologList /* `Vec<T>::New` */: ;
+    /// `PrologList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn prolog_list_1(&mut self) -> Result<()> {
@@ -1161,7 +1161,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// StartDeclaration: '%start'^ /* Clipped */ Identifier;
+    /// `StartDeclaration: '%start'^ /* Clipped */ Identifier;`
     ///
     #[parol_runtime::function_name::named]
     fn start_declaration(
@@ -1185,7 +1185,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Declaration: '%title'^ /* Clipped */ String;
+    /// `Declaration: '%title'^ /* Clipped */ String;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_0(
@@ -1209,7 +1209,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// Declaration: '%comment'^ /* Clipped */ String;
+    /// `Declaration: '%comment'^ /* Clipped */ String;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_1(
@@ -1233,7 +1233,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;
+    /// `Declaration: '%user_type'^ /* Clipped */ Identifier '='^ /* Clipped */ UserTypeName : UserType;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_2(
@@ -1265,7 +1265,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// Declaration: ScannerDirectives;
+    /// `Declaration: ScannerDirectives;`
     ///
     #[parol_runtime::function_name::named]
     fn declaration_3(&mut self, _scanner_directives: &ParseTreeType<'t>) -> Result<()> {
@@ -1284,7 +1284,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;
+    /// `ScannerDirectives: '%line_comment'^ /* Clipped */ TokenLiteral;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_0(
@@ -1314,7 +1314,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;
+    /// `ScannerDirectives: '%block_comment'^ /* Clipped */ TokenLiteral TokenLiteral;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_1(
@@ -1349,7 +1349,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// ScannerDirectives: '%auto_newline_off'^ /* Clipped */;
+    /// `ScannerDirectives: '%auto_newline_off'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_2(
@@ -1378,7 +1378,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// ScannerDirectives: '%auto_ws_off'^ /* Clipped */;
+    /// `ScannerDirectives: '%auto_ws_off'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_directives_3(
@@ -1404,7 +1404,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;
+    /// `GrammarDefinition: '%%'^ /* Clipped */ Production GrammarDefinitionList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition(
@@ -1439,7 +1439,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// GrammarDefinitionList /* `Vec<T>::Push` */: Production GrammarDefinitionList;
+    /// `GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;`
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition_list_0(
@@ -1470,7 +1470,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// GrammarDefinitionList /* `Vec<T>::New` */: ;
+    /// `GrammarDefinitionList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn grammar_definition_list_1(&mut self) -> Result<()> {
@@ -1486,7 +1486,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// DoubleColon: '::';
+    /// `DoubleColon: '::';`
     ///
     #[parol_runtime::function_name::named]
     fn double_colon(&mut self, double_colon: &ParseTreeType<'t>) -> Result<()> {
@@ -1502,7 +1502,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// Production: Identifier ':'^ /* Clipped */ Alternations ';'^ /* Clipped */;
+    /// `Production: Identifier ':'^ /* Clipped */ Alternations ';'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn production(
@@ -1530,7 +1530,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// Alternations: Alternation AlternationsList /* Vec */;
+    /// `Alternations: Alternation AlternationsList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn alternations(
@@ -1555,7 +1555,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 21:
     ///
-    /// AlternationsList /* `Vec<T>::Push` */: '|'^ /* Clipped */ Alternation AlternationsList;
+    /// `AlternationsList /* Vec<T>::Push */: '|'^ /* Clipped */ Alternation AlternationsList;`
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_0(
@@ -1580,7 +1580,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 22:
     ///
-    /// AlternationsList /* `Vec<T>::New` */: ;
+    /// `AlternationsList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn alternations_list_1(&mut self) -> Result<()> {
@@ -1596,7 +1596,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 23:
     ///
-    /// Alternation: AlternationList /* Vec */;
+    /// `Alternation: AlternationList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn alternation(&mut self, _alternation_list: &ParseTreeType<'t>) -> Result<()> {
@@ -1613,7 +1613,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 24:
     ///
-    /// AlternationList /* `Vec<T>::Push` */: Factor AlternationList;
+    /// `AlternationList /* Vec<T>::Push */: Factor AlternationList;`
     ///
     #[parol_runtime::function_name::named]
     fn alternation_list_0(
@@ -1636,7 +1636,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 25:
     ///
-    /// AlternationList /* `Vec<T>::New` */: ;
+    /// `AlternationList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn alternation_list_1(&mut self) -> Result<()> {
@@ -1649,7 +1649,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 26:
     ///
-    /// Factor: Group;
+    /// `Factor: Group;`
     ///
     #[parol_runtime::function_name::named]
     fn factor_0(&mut self, _group: &ParseTreeType<'t>) -> Result<()> {
@@ -1668,7 +1668,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 27:
     ///
-    /// Factor: Repeat;
+    /// `Factor: Repeat;`
     ///
     #[parol_runtime::function_name::named]
     fn factor_1(&mut self, _repeat: &ParseTreeType<'t>) -> Result<()> {
@@ -1687,7 +1687,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 28:
     ///
-    /// Factor: Optional;
+    /// `Factor: Optional;`
     ///
     #[parol_runtime::function_name::named]
     fn factor_2(&mut self, _optional: &ParseTreeType<'t>) -> Result<()> {
@@ -1706,7 +1706,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 29:
     ///
-    /// Factor: Symbol;
+    /// `Factor: Symbol;`
     ///
     #[parol_runtime::function_name::named]
     fn factor_3(&mut self, _symbol: &ParseTreeType<'t>) -> Result<()> {
@@ -1725,7 +1725,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 30:
     ///
-    /// Symbol: NonTerminal;
+    /// `Symbol: NonTerminal;`
     ///
     #[parol_runtime::function_name::named]
     fn symbol_0(&mut self, _non_terminal: &ParseTreeType<'t>) -> Result<()> {
@@ -1744,7 +1744,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 31:
     ///
-    /// Symbol: SimpleToken;
+    /// `Symbol: SimpleToken;`
     ///
     #[parol_runtime::function_name::named]
     fn symbol_1(&mut self, _simple_token: &ParseTreeType<'t>) -> Result<()> {
@@ -1763,7 +1763,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 32:
     ///
-    /// Symbol: TokenWithStates;
+    /// `Symbol: TokenWithStates;`
     ///
     #[parol_runtime::function_name::named]
     fn symbol_2(&mut self, _token_with_states: &ParseTreeType<'t>) -> Result<()> {
@@ -1782,7 +1782,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 33:
     ///
-    /// Symbol: ScannerSwitch;
+    /// `Symbol: ScannerSwitch;`
     ///
     #[parol_runtime::function_name::named]
     fn symbol_3(&mut self, _scanner_switch: &ParseTreeType<'t>) -> Result<()> {
@@ -1801,7 +1801,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 34:
     ///
-    /// TokenLiteral: String;
+    /// `TokenLiteral: String;`
     ///
     #[parol_runtime::function_name::named]
     fn token_literal_0(&mut self, _string: &ParseTreeType<'t>) -> Result<()> {
@@ -1820,7 +1820,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 35:
     ///
-    /// TokenLiteral: RawString;
+    /// `TokenLiteral: RawString;`
     ///
     #[parol_runtime::function_name::named]
     fn token_literal_1(&mut self, _raw_string: &ParseTreeType<'t>) -> Result<()> {
@@ -1839,7 +1839,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 36:
     ///
-    /// TokenLiteral: Regex;
+    /// `TokenLiteral: Regex;`
     ///
     #[parol_runtime::function_name::named]
     fn token_literal_2(&mut self, _regex: &ParseTreeType<'t>) -> Result<()> {
@@ -1858,7 +1858,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 37:
     ///
-    /// SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;
+    /// `SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
     fn simple_token(
@@ -1882,7 +1882,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 38:
     ///
-    /// SimpleTokenOpt /* `Option<T>::Some` */: ASTControl;
+    /// `SimpleTokenOpt /* Option<T>::Some */: ASTControl;`
     ///
     #[parol_runtime::function_name::named]
     fn simple_token_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -1901,7 +1901,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 39:
     ///
-    /// SimpleTokenOpt /* `Option<T>::None` */: ;
+    /// `SimpleTokenOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn simple_token_opt_1(&mut self) -> Result<()> {
@@ -1913,7 +1913,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 40:
     ///
-    /// TokenWithStates: '<'^ /* Clipped */ StateList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;
+    /// `TokenWithStates: '<'^ /* Clipped */ StateList '>'^ /* Clipped */ TokenLiteral TokenWithStatesOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states(
@@ -1946,7 +1946,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 41:
     ///
-    /// TokenWithStatesOpt /* `Option<T>::Some` */: ASTControl;
+    /// `TokenWithStatesOpt /* Option<T>::Some */: ASTControl;`
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -1965,7 +1965,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 42:
     ///
-    /// TokenWithStatesOpt /* `Option<T>::None` */: ;
+    /// `TokenWithStatesOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn token_with_states_opt_1(&mut self) -> Result<()> {
@@ -1977,7 +1977,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 43:
     ///
-    /// String: /"(\\.|[^\\])*?"/;
+    /// `String: /"(\\.|[^\\])*?"/;`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -1993,7 +1993,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 44:
     ///
-    /// RawString: /'(\\'|[^'])*?'/;
+    /// `RawString: /'(\\'|[^'])*?'/;`
     ///
     #[parol_runtime::function_name::named]
     fn raw_string(&mut self, raw_string: &ParseTreeType<'t>) -> Result<()> {
@@ -2009,7 +2009,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 45:
     ///
-    /// Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;
+    /// `Regex: /\u{2F}(\\.|[^\\])*?\u{2F}/;`
     ///
     #[parol_runtime::function_name::named]
     fn regex(&mut self, regex: &ParseTreeType<'t>) -> Result<()> {
@@ -2025,7 +2025,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 46:
     ///
-    /// Group: '(' Alternations ')';
+    /// `Group: '(' Alternations ')';`
     ///
     #[parol_runtime::function_name::named]
     fn group(
@@ -2052,7 +2052,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 47:
     ///
-    /// Optional: '[' Alternations ']';
+    /// `Optional: '[' Alternations ']';`
     ///
     #[parol_runtime::function_name::named]
     fn optional(
@@ -2079,7 +2079,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 48:
     ///
-    /// Repeat: '{' Alternations '}';
+    /// `Repeat: '{' Alternations '}';`
     ///
     #[parol_runtime::function_name::named]
     fn repeat(
@@ -2106,7 +2106,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 49:
     ///
-    /// NonTerminal: Identifier NonTerminalOpt /* Option */;
+    /// `NonTerminal: Identifier NonTerminalOpt /* Option */;`
     ///
     #[parol_runtime::function_name::named]
     fn non_terminal(
@@ -2130,7 +2130,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 50:
     ///
-    /// NonTerminalOpt /* `Option<T>::Some` */: ASTControl;
+    /// `NonTerminalOpt /* Option<T>::Some */: ASTControl;`
     ///
     #[parol_runtime::function_name::named]
     fn non_terminal_opt_0(&mut self, _a_s_t_control: &ParseTreeType<'t>) -> Result<()> {
@@ -2149,7 +2149,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 51:
     ///
-    /// NonTerminalOpt /* `Option<T>::None` */: ;
+    /// `NonTerminalOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn non_terminal_opt_1(&mut self) -> Result<()> {
@@ -2161,7 +2161,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 52:
     ///
-    /// Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;
+    /// `Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/;`
     ///
     #[parol_runtime::function_name::named]
     fn identifier(&mut self, identifier: &ParseTreeType<'t>) -> Result<()> {
@@ -2177,7 +2177,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 53:
     ///
-    /// ScannerState: '%scanner'^ /* Clipped */ Identifier '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;
+    /// `ScannerState: '%scanner'^ /* Clipped */ Identifier '{'^ /* Clipped */ ScannerStateList /* Vec */ '}'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state(
@@ -2208,7 +2208,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 54:
     ///
-    /// ScannerStateList /* `Vec<T>::Push` */: ScannerDirectives ScannerStateList;
+    /// `ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state_list_0(
@@ -2231,7 +2231,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 55:
     ///
-    /// ScannerStateList /* `Vec<T>::New` */: ;
+    /// `ScannerStateList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_state_list_1(&mut self) -> Result<()> {
@@ -2247,7 +2247,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 56:
     ///
-    /// StateList: Identifier StateListList /* Vec */;
+    /// `StateList: Identifier StateListList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn state_list(
@@ -2271,7 +2271,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 57:
     ///
-    /// StateListList /* `Vec<T>::Push` */: ','^ /* Clipped */ Identifier StateListList;
+    /// `StateListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier StateListList;`
     ///
     #[parol_runtime::function_name::named]
     fn state_list_list_0(
@@ -2296,7 +2296,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 58:
     ///
-    /// StateListList /* `Vec<T>::New` */: ;
+    /// `StateListList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn state_list_list_1(&mut self) -> Result<()> {
@@ -2309,7 +2309,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 59:
     ///
-    /// ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
+    /// `ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_0(
@@ -2338,7 +2338,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
+    /// `ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_1(
@@ -2367,7 +2367,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
+    /// `ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_2(
@@ -2392,7 +2392,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// ScannerSwitchOpt /* `Option<T>::Some` */: Identifier;
+    /// `ScannerSwitchOpt /* Option<T>::Some */: Identifier;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_opt_0(&mut self, _identifier: &ParseTreeType<'t>) -> Result<()> {
@@ -2411,7 +2411,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 63:
     ///
-    /// ScannerSwitchOpt /* `Option<T>::None` */: ;
+    /// `ScannerSwitchOpt /* Option<T>::None */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_opt_1(&mut self) -> Result<()> {
@@ -2423,7 +2423,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 64:
     ///
-    /// ASTControl: CutOperator;
+    /// `ASTControl: CutOperator;`
     ///
     #[parol_runtime::function_name::named]
     fn a_s_t_control_0(&mut self, _cut_operator: &ParseTreeType<'t>) -> Result<()> {
@@ -2442,7 +2442,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 65:
     ///
-    /// ASTControl: UserTypeDeclaration;
+    /// `ASTControl: UserTypeDeclaration;`
     ///
     #[parol_runtime::function_name::named]
     fn a_s_t_control_1(&mut self, _user_type_declaration: &ParseTreeType<'t>) -> Result<()> {
@@ -2462,7 +2462,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 66:
     ///
-    /// CutOperator: '^'^ /* Clipped */;
+    /// `CutOperator: '^'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn cut_operator(&mut self, _cut_operator: &ParseTreeType<'t>) -> Result<()> {
@@ -2479,7 +2479,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 67:
     ///
-    /// UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : UserType;
+    /// `UserTypeDeclaration: ':'^ /* Clipped */ UserTypeName : UserType;`
     ///
     #[parol_runtime::function_name::named]
     fn user_type_declaration(
@@ -2508,7 +2508,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 68:
     ///
-    /// UserTypeName: Identifier UserTypeNameList /* Vec */;
+    /// `UserTypeName: Identifier UserTypeNameList /* Vec */;`
     ///
     #[parol_runtime::function_name::named]
     fn user_type_name(
@@ -2533,7 +2533,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 69:
     ///
-    /// UserTypeNameList /* `Vec<T>::Push` */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;
+    /// `UserTypeNameList /* Vec<T>::Push */: DoubleColon^ /* Clipped */ Identifier UserTypeNameList;`
     ///
     #[parol_runtime::function_name::named]
     fn user_type_name_list_0(
@@ -2561,7 +2561,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 70:
     ///
-    /// UserTypeNameList /* `Vec<T>::New` */: ;
+    /// `UserTypeNameList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn user_type_name_list_1(&mut self) -> Result<()> {

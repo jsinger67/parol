@@ -67,7 +67,7 @@ pub trait JsonGrammarTrait<'t> {
 ///
 /// Type derived for production 2
 ///
-/// ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
+/// `ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -80,7 +80,7 @@ pub struct ObjectSuffixPairObjectListRBrace<'t> {
 ///
 /// Type derived for production 3
 ///
-/// ObjectSuffix: "\}"^ /* Clipped */;
+/// `ObjectSuffix: "\}"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -90,7 +90,7 @@ pub struct ObjectSuffixRBrace {}
 ///
 /// Type derived for production 8
 ///
-/// ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
+/// `ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -103,7 +103,7 @@ pub struct ArraySuffixValueArrayListRBracket<'t> {
 ///
 /// Type derived for production 9
 ///
-/// ArraySuffix: "\]"^ /* Clipped */;
+/// `ArraySuffix: "\]"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -113,7 +113,7 @@ pub struct ArraySuffixRBracket {}
 ///
 /// Type derived for production 12
 ///
-/// Value: String;
+/// `Value: String;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -125,7 +125,7 @@ pub struct ValueString<'t> {
 ///
 /// Type derived for production 13
 ///
-/// Value: Number;
+/// `Value: Number;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -137,7 +137,7 @@ pub struct ValueNumber<'t> {
 ///
 /// Type derived for production 14
 ///
-/// Value: Object;
+/// `Value: Object;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -149,7 +149,7 @@ pub struct ValueObject<'t> {
 ///
 /// Type derived for production 15
 ///
-/// Value: Array;
+/// `Value: Array;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -161,7 +161,7 @@ pub struct ValueArray<'t> {
 ///
 /// Type derived for production 16
 ///
-/// Value: "true"^ /* Clipped */;
+/// `Value: "true"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -171,7 +171,7 @@ pub struct ValueTrue {}
 ///
 /// Type derived for production 17
 ///
-/// Value: "false"^ /* Clipped */;
+/// `Value: "false"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -181,7 +181,7 @@ pub struct ValueFalse {}
 ///
 /// Type derived for production 18
 ///
-/// Value: "null"^ /* Clipped */;
+/// `Value: "null"^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
@@ -391,7 +391,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 0:
     ///
-    /// Json: Value;
+    /// `Json: Value;`
     ///
     #[parol_runtime::function_name::named]
     fn json(&mut self, _value: &ParseTreeType<'t>) -> Result<()> {
@@ -409,7 +409,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 1:
     ///
-    /// Object: "\{"^ /* Clipped */ ObjectSuffix;
+    /// `Object: "\{"^ /* Clipped */ ObjectSuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn object(
@@ -432,7 +432,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 2:
     ///
-    /// ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;
+    /// `ObjectSuffix: Pair ObjectList /* Vec */ "\}"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn object_suffix_0(
@@ -457,7 +457,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 3:
     ///
-    /// ObjectSuffix: "\}"^ /* Clipped */;
+    /// `ObjectSuffix: "\}"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn object_suffix_1(&mut self, _r_brace: &ParseTreeType<'t>) -> Result<()> {
@@ -473,7 +473,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 4:
     ///
-    /// ObjectList /* `Vec<T>::Push` */: ","^ /* Clipped */ Pair ObjectList;
+    /// `ObjectList /* Vec<T>::Push */: ","^ /* Clipped */ Pair ObjectList;`
     ///
     #[parol_runtime::function_name::named]
     fn object_list_0(
@@ -498,7 +498,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 5:
     ///
-    /// ObjectList /* `Vec<T>::New` */: ;
+    /// `ObjectList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn object_list_1(&mut self) -> Result<()> {
@@ -511,7 +511,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 6:
     ///
-    /// Pair: String ":"^ /* Clipped */ Value;
+    /// `Pair: String ":"^ /* Clipped */ Value;`
     ///
     #[parol_runtime::function_name::named]
     fn pair(
@@ -537,7 +537,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 7:
     ///
-    /// Array: "\["^ /* Clipped */ ArraySuffix;
+    /// `Array: "\["^ /* Clipped */ ArraySuffix;`
     ///
     #[parol_runtime::function_name::named]
     fn array(
@@ -560,7 +560,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 8:
     ///
-    /// ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;
+    /// `ArraySuffix: Value ArrayList /* Vec */ "\]"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array_suffix_0(
@@ -585,7 +585,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 9:
     ///
-    /// ArraySuffix: "\]"^ /* Clipped */;
+    /// `ArraySuffix: "\]"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType<'t>) -> Result<()> {
@@ -601,7 +601,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// ArrayList /* `Vec<T>::Push` */: ","^ /* Clipped */ Value ArrayList;
+    /// `ArrayList /* Vec<T>::Push */: ","^ /* Clipped */ Value ArrayList;`
     ///
     #[parol_runtime::function_name::named]
     fn array_list_0(
@@ -626,7 +626,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 11:
     ///
-    /// ArrayList /* `Vec<T>::New` */: ;
+    /// `ArrayList /* Vec<T>::New */: ;`
     ///
     #[parol_runtime::function_name::named]
     fn array_list_1(&mut self) -> Result<()> {
@@ -639,7 +639,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 12:
     ///
-    /// Value: String;
+    /// `Value: String;`
     ///
     #[parol_runtime::function_name::named]
     fn value_0(&mut self, _string: &ParseTreeType<'t>) -> Result<()> {
@@ -658,7 +658,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 13:
     ///
-    /// Value: Number;
+    /// `Value: Number;`
     ///
     #[parol_runtime::function_name::named]
     fn value_1(&mut self, _number: &ParseTreeType<'t>) -> Result<()> {
@@ -677,7 +677,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 14:
     ///
-    /// Value: Object;
+    /// `Value: Object;`
     ///
     #[parol_runtime::function_name::named]
     fn value_2(&mut self, _object: &ParseTreeType<'t>) -> Result<()> {
@@ -696,7 +696,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 15:
     ///
-    /// Value: Array;
+    /// `Value: Array;`
     ///
     #[parol_runtime::function_name::named]
     fn value_3(&mut self, _array: &ParseTreeType<'t>) -> Result<()> {
@@ -715,7 +715,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 16:
     ///
-    /// Value: "true"^ /* Clipped */;
+    /// `Value: "true"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_4(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
@@ -733,7 +733,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 17:
     ///
-    /// Value: "false"^ /* Clipped */;
+    /// `Value: "false"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_5(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
@@ -751,7 +751,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 18:
     ///
-    /// Value: "null"^ /* Clipped */;
+    /// `Value: "null"^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn value_6(&mut self, _null: &ParseTreeType<'t>) -> Result<()> {
@@ -769,7 +769,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 19:
     ///
-    /// String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";
+    /// `String: "\u{0022}(?:\\[\u{0022}\\/bfnrt]|u[0-9a-fA-F]{4}|[^\u{0022}\\\u0000-\u001F])*\u{0022}";`
     ///
     #[parol_runtime::function_name::named]
     fn string(&mut self, string: &ParseTreeType<'t>) -> Result<()> {
@@ -785,7 +785,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 20:
     ///
-    /// Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";
+    /// `Number: "-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?(?:0|[1-9][0-9]*)?)?";`
     ///
     #[parol_runtime::function_name::named]
     fn number(&mut self, number: &ParseTreeType<'t>) -> Result<()> {
