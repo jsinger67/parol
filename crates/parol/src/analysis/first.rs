@@ -132,7 +132,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     //     )
     // };
 
-    let mut result_vector = Arc::new(if k <= 1 {
+    let mut result_vector = Arc::new(if k == 0 {
         (0..pr_count + nt_count).fold(Vec::with_capacity(pr_count + nt_count), |mut acc, i| {
             if i < pr_count {
                 acc.push(DomainType::new(k));

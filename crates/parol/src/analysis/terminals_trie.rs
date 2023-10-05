@@ -60,8 +60,15 @@ impl Node {
     }
 
     /// Returns the index of the given terminal is in the node's list of children if it exists
+    #[allow(clippy::manual_find)]
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
-        self.c.iter().position(|n| n.t == t)
+        let l = self.c.len();
+        for i in 0..l {
+            if self.c[i].t == t {
+                return Some(i);
+            }
+        }
+        None
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
