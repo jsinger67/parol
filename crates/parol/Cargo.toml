@@ -37,6 +37,7 @@ syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 ts-rs = "7.0.0"
 ume = "0.1"
+rayon = "1.8.0"
 
 [features]
 default = ["build"]
