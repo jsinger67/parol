@@ -132,13 +132,14 @@ pub fn follow_k(
 
     let equation_system = Arc::new(equation_system);
 
-    // Single threaded variant
     let step_function: StepFunction = Arc::new(
         move |es: Arc<EquationSystem>,
               result_map: Arc<ResultMap>,
               non_terminal_positions: Arc<HashMap<Pos, usize>>,
               non_terminal_results: Arc<RwLock<FollowSet>>| {
             let new_result_vector = Arc::new(RwLock::new(ResultMap::new()));
+
+            // We use multiple threads here with the help of rayon's parallel iterator.
             result_map.par_iter().for_each(|(pos, _)| {
                 // Call each function of the equation system
                 let pos_result = es[pos](result_map.clone(), non_terminal_results.clone());
@@ -158,57 +159,6 @@ pub fn follow_k(
                 .unwrap()
         },
     );
-
-    // Heuristically tweaked
-    // let factor = 4;
-    // let max_threads: usize = num_cpus::get() * factor;
-
-    // let step_function: StepFunction = Arc::new(
-    //     move |es: Arc<EquationSystem>,
-    //           result_map: Arc<ResultMap>,
-    //           non_terminal_positions: Arc<HashMap<Pos, usize>>,
-    //           non_terminal_results: Arc<RwLock<FollowSet>>| {
-    //         let (tx, rx) = std::sync::mpsc::channel();
-    //         let iter = &mut result_map.iter().map(|(pos, _)| *pos) as &mut dyn Iterator<Item = Pos>;
-    //         let mut new_result_vector = ResultMap::new();
-    //         loop {
-    //             let mut threads = 0;
-    //             // We take chunks of length `max_thread` from the iterator over the result map and
-    //             // spawn a thread for each element of the current chunk.
-    //             iter.take(max_threads).for_each(|pos| {
-    //                 threads += 1;
-    //                 let tx = tx.clone();
-    //                 let es = es.clone();
-    //                 let result_map = result_map.clone();
-    //                 let non_terminal_results = non_terminal_results.clone();
-
-    //                 // Call each function of the equation system...
-    //                 std::thread::spawn(move || {
-    //                     tx.send((pos, es[&pos](result_map, non_terminal_results)))
-    //                         .unwrap();
-    //                 });
-    //             });
-
-    //             (0..threads).for_each(|_| {
-    //                 let (pos, pos_result) = rx.recv().unwrap();
-
-    //                 // Also combine the result to the non_terminal_results.
-    //                 let sym = non_terminal_positions.get(&pos).unwrap();
-    //                 if let Some(set) = non_terminal_results.write().unwrap().get_mut(*sym) {
-    //                     *set = set.union(&pos_result).0;
-    //                 }
-
-    //                 // ...and put the result into the new result vector.
-    //                 new_result_vector.insert(pos, pos_result);
-    //             });
-    //             if threads == 0 {
-    //                 // No threads could be created because the iteration of the result map ended.
-    //                 break;
-    //             }
-    //         }
-    //         new_result_vector
-    //     },
-    // );
 
     let non_terminal_results = Arc::new(RwLock::new(cfg.get_non_terminal_set().iter().fold(
         Vec::new(),
