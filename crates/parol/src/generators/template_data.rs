@@ -1,4 +1,5 @@
 use crate::StrVec;
+use std::fmt::Write;
 
 #[derive(Builder, Debug, Default)]
 pub(crate) struct UserTraitCallerFunctionData {
@@ -426,10 +427,10 @@ impl std::fmt::Display for NonTerminalTypeStruct {
         for comment in comment {
             writeln!(f, "/// {}", comment)?
         }
-        let members = members
-            .iter()
-            .map(|member| format!("pub {}\n", member))
-            .collect::<String>();
+        let members = members.iter().fold(String::new(), |mut output, member| {
+            let _ = writeln!(output, "pub {member}");
+            output
+        });
         f.write_fmt(ume::ume! {
             #[allow(dead_code)]
             #[derive(Builder, Debug, Clone)]

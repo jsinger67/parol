@@ -1,7 +1,7 @@
 use crate::{
     parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
     ParseStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, Token, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
 use std::{cell::RefCell, rc::Rc};
@@ -505,7 +505,7 @@ impl<'t> LLKParser<'t> {
             "{}",
             self.diagnostic_message("Can't recover prediction error", stream.clone())
         );
-        let current_token = stream.borrow_mut().lookahead(0).unwrap_or(Token::default());
+        let current_token = stream.borrow_mut().lookahead(0).unwrap_or_default();
         self.add_error(
             SyntaxError::default()
                 .with_cause("Can't recover")

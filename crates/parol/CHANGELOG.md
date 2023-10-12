@@ -21,6 +21,11 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 024.1 - Not released yet
+
+* Using `rayon`'s parallel iterator in FOLLOW(k) calculation to be more scalable
+* Removed clippy warnings new in Rust 1.73
+
 ## 0.24.0 - 2023-09-18
 
 * Fixed bug in `parol new` when `--tree` option is used
@@ -55,7 +60,7 @@ new minor version numbers. Please note that this is no version handling covered 
 * Cleaner generation of raw strings in parser source. Especially hash characters in raw string
 prefixes and postfixes are now generated only when and as much as needed. This fixes clippy message
 "unnecessary hashes around raw string literal"
-* Removed clippy warnings new in Rust 1.7.1
+* Removed clippy warnings new in Rust 1.71
 * Using new version of `parol_runtime`
 
 ## 0.22.1 - 2023-07-12
