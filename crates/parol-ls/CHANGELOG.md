@@ -5,6 +5,12 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
+## 0.17.0 - 2023-10-22
+
+* Update references to `parol_runtime@0.20` and `parol@0.25`. Please, see
+[CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) and
+[CHANGELOG parol](../parol/CHANGELOG.md) for details.
+
 ## 0.16.0 - 2023-09-18
 
 * This release is dedicated to the new error recovery feature in generated parsers.

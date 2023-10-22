@@ -17,7 +17,7 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
-## 0.20.0 -  Not released yet
+## 0.20.0 -  2023-10-22
 
 * Improved performance in scanner
   * Imposes some BREAKING CHANGES in types `Location`, `TokenIter`, `TokenStream` and `FileSource`

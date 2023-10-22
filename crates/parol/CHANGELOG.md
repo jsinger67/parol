@@ -21,8 +21,10 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 024.1 - Not released yet
+## 0.25.0 - 2023-10-22
 
+* Using `parol_runtime` 0.20.0 which introduced braking changes. Please, see
+[CHANGELOG parol_runtime](../parol_runtime/CHANGELOG.md) for details.
 * Using `rayon`'s parallel iterator in FOLLOW(k) calculation to be more scalable
 * Removed clippy warnings new in Rust 1.73
 
