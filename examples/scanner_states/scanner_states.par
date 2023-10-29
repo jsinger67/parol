@@ -6,7 +6,7 @@
 %line_comment "//"
 %block_comment "/\*" "\*/"
 
-// Her we introduce a new scanner state 'String'
+// Here we introduce a new scanner state 'String'
 %scanner String {
     %auto_newline_off
     %auto_ws_off
