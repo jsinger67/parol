@@ -50,6 +50,7 @@ in much faster parsers.
 * are generated from **a single grammar description** file.
 * can generate types that resemble the AST of your grammar automatically. Semantic actions are then
 called with these types. This greatly improves the development process and makes it less error-prone.
+* As of version 0.24.0 generated parsers can recover from syntax errors automatically
 
 ## Other properties of `parol`
 

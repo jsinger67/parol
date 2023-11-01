@@ -227,3 +227,4 @@ Thanks to all the contributors for improving this project!
 * [dalance](https://github.com/dalance)
 * [udoprog](https://github.com/udoprog)
 * [AumyF](https://github.com/AumyF)
+* [yui-knk](https://github.com/yui-knk)
