@@ -195,3 +195,4 @@ Thanks to all the contributors for improving this project!
 * [ryo33](https://github.com/ryo33)
 * [dalance](https://github.com/dalance)
 * [udoprog](https://github.com/udoprog)
+* [yui-knk](https://github.com/yui-knk)
