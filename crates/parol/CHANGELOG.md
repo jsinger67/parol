@@ -20,6 +20,10 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
+## 0.25.1 - Not released yet
+
+* Fixed issue [#225](https://github.com/jsinger67/parol/issues/225)
+  * New function `parol::test_support::acceptor_test`
 
 ## 0.25.0 - 2023-10-22
 

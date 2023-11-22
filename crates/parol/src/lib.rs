@@ -72,6 +72,12 @@ pub mod parser;
 pub use parser::{parse, ParolGrammar, ParolParserError};
 
 ///
+/// Module with test template(s)
+///
+#[forbid(missing_docs)]
+pub mod test_support;
+
+///
 /// Module with functionalities for grammar transformation
 ///
 #[forbid(missing_docs)]
