@@ -91,7 +91,10 @@ mod test {
 
     use super::acceptor_test;
 
+    // To run this test, execute the following command:
+    // cargo test -- --ignored --test test_acceptor_test
     #[test]
+    #[ignore = "Long running test!"]
     fn test_acceptor_test() {
         // Please note that this environment variable is only set if cargo executes the tests!
         let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -101,6 +104,6 @@ mod test {
             .join("examples")
             .join("list")
             .join("list.par");
-        acceptor_test(grammar_file_path, 5, Some(5_000));
+        acceptor_test(grammar_file_path, 250, Some(100_000));
     }
 }
