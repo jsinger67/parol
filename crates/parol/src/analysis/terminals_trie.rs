@@ -42,9 +42,12 @@ impl Node {
     }
 
     /// Sets the end property of this [`Node`].
+    /// Returns true if the end value did change
     #[inline]
-    fn set_end(&mut self) {
-        self.e = true
+    fn set_end(&mut self) -> bool {
+        let old_end = self.e;
+        self.e = true;
+        !old_end
     }
 
     /// Returns a reference to the children of this [`Node`].
@@ -176,7 +179,7 @@ impl Trie {
             node = &mut node.children_mut()[child_index];
             changed |= inserted;
         }
-        node.set_end();
+        changed |= node.set_end();
         if changed {
             self.len += 1;
         }
@@ -275,7 +278,7 @@ impl PartialEq for Trie {
 impl Display for Trie {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for t in self.iter() {
-            writeln!(f, "{t}")?
+            writeln!(f, "{t}")?;
         }
         Ok(())
     }
@@ -318,7 +321,7 @@ impl<'a> TerminalsIter<'a> {
     fn expand(&mut self, node: &'a Node, mut i: usize, flags: Flags) {
         let mut node = node;
         loop {
-            if node.is_inner_end_node() && flags & Flags::Iterated == Flags::Default {
+            if node.is_inner_end_node() && (flags & Flags::Iterated) == Flags::Default {
                 // Stop on inner end nodes once
                 break;
             }
@@ -354,7 +357,7 @@ impl<'a> TerminalsIter<'a> {
             return false;
         }
         let (node, _, flags) = self.v.last().unwrap();
-        *flags & (Flags::EndNode | Flags::Iterated) == Flags::EndNode && !node.c.is_empty()
+        (*flags & (Flags::EndNode | Flags::Iterated)) == Flags::EndNode && !node.c.is_empty()
     }
 }
 

@@ -418,7 +418,10 @@ impl KTuple {
     ///
     pub fn new(k: usize) -> Self {
         let terminals = TerminalString::Incomplete(Terminals::new());
-        Self { terminals, k }
+        Self {
+            terminals,
+            k: std::cmp::min(k, MAX_K),
+        }
     }
 
     /// Used for debugging only
