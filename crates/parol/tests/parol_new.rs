@@ -97,6 +97,7 @@ fn clean_build_artifacts(sub: &str) {
 }
 
 #[test]
+#[ignore = "Can fail depending on the cargo version used."]
 fn snapshot_lib() {
     let path = tempdir().unwrap();
     Command::cargo_bin("parol")
@@ -110,6 +111,7 @@ fn snapshot_lib() {
 }
 
 #[test]
+#[ignore = "Can fail depending on the cargo version used."]
 fn snapshot_bin() {
     let path = tempdir().unwrap();
     Command::cargo_bin("parol")
