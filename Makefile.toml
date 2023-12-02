@@ -1,6 +1,19 @@
 [env]
 PAROL_TARGET = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/debug/parol"
 
+[tasks.default]
+alias = "build"
+
+[tasks.build]
+dependencies = ["generate_parol", "generate_examples"]
+command = "cargo"
+args = ["build"]
+
+[tasks.test]
+command = "cargo"
+dependencies = ["build"]
+args = ["test"]
+
 [tasks.build_parol]
 workspace = false
 command = "cargo"
