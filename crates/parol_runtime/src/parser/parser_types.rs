@@ -4,7 +4,7 @@ use crate::{
     TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
-use std::{cell::RefCell, rc::Rc};
+use std::{cell::RefCell, cmp::Ord, rc::Rc};
 use syntree::{Builder, Tree};
 
 ///
@@ -538,26 +538,29 @@ impl<'t> LLKParser<'t> {
             Recovery::calculate_match_ranges(&scanned_token_types, &expected_token_types)
         {
             trace!("Match ranges are {act:?}, {exp:?}");
-            if act.start <= exp.start {
-                (0..act.start).try_for_each(|i| -> Result<()> {
-                    Ok(stream
-                        .borrow_mut()
-                        .replace_token_type_at(i, expected_token_types[i])?)
-                })?;
-                trace!("{}", stream.borrow().diagnostic_message());
-            }
-            if act.start < exp.start {
-                (act.start..exp.start).try_for_each(|i| -> Result<()> {
-                    Ok(stream
-                        .borrow_mut()
-                        .insert_token_at(i, expected_token_types[i])?)
-                })?;
-                trace!("{}", stream.borrow().diagnostic_message());
-            }
-            if act.start > exp.start {
-                (exp.start..act.start).try_for_each(|_| -> Result<()> {
-                    Ok(stream.borrow_mut().consume().map(|_| ())?)
-                })?;
+            match act.start.cmp(&exp.start) {
+                std::cmp::Ordering::Less => {
+                    (act.start..exp.start).try_for_each(|i| -> Result<()> {
+                        Ok(stream
+                            .borrow_mut()
+                            .insert_token_at(i, expected_token_types[i])?)
+                    })?;
+                    trace!("{}", stream.borrow().diagnostic_message());
+                }
+                std::cmp::Ordering::Equal => {
+                    (0..act.start).try_for_each(|i| -> Result<()> {
+                        Ok(stream
+                            .borrow_mut()
+                            .replace_token_type_at(i, expected_token_types[i])?)
+                    })?;
+                    trace!("{}", stream.borrow().diagnostic_message());
+                }
+                std::cmp::Ordering::Greater => {
+                    (exp.start..act.start).try_for_each(|_| -> Result<()> {
+                        trace!("Consuming superfluous token");
+                        Ok(stream.borrow_mut().consume().map(|_| ())?)
+                    })?;
+                }
             }
             return Ok(());
         }
