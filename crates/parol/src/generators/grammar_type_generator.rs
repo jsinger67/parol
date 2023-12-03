@@ -82,14 +82,6 @@ impl GrammarTypeInfo {
             TypeEntrails::Trait,
         )?);
 
-        // Insert the fix 'init' function into the user action trait to avoid name clashes with a
-        // possible non-terminal 'Init'
-        me.symbol_table.insert_type(
-            me.user_action_trait_id.unwrap(),
-            "init",
-            TypeEntrails::Function(Function::default()),
-        )?;
-
         // Insert the fix <GrammarName>GrammarAuto struct into the global scope
         me.adapter_grammar_struct_id = Some(me.symbol_table.insert_global_type(
             &format!(
