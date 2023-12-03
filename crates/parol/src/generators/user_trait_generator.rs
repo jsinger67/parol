@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use super::grammar_type_generator::GrammarTypeInfo;
 use super::symbol_table::{MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
@@ -373,14 +371,20 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
-        let mut processed_non_terminals: HashSet<String> = HashSet::new();
-        self.productions.iter().try_for_each(|p| {
-            if !processed_non_terminals.contains(&p.lhs) {
-                type_info.add_user_action(&p.lhs)?;
-                processed_non_terminals.insert(p.lhs.to_string());
-            }
-            Ok(())
-        })
+        self.productions
+            .iter()
+            .fold(Vec::<&str>::new(), |mut acc, p| {
+                let lhs: &str = &p.lhs;
+                if !acc.contains(&lhs) {
+                    acc.push(lhs);
+                }
+                acc
+            })
+            .iter()
+            .try_for_each(|n| {
+                type_info.add_user_action(n)?;
+                Ok(())
+            })
     }
 
     fn generate_user_action_args(

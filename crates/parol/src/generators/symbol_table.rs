@@ -139,27 +139,23 @@ impl Display for MetaSymbolKind {
 pub(crate) enum TypeEntrails {
     /// Not specified, used as prototype during generation
     None,
-    // Unit type ()
-    //Unit,
     /// Will be generated as Token structure
     Token,
     /// A type with Box semantic
     Box(SymbolId),
-    // A type name (without Box semantic)
-    //TypeName,
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
     Enum,
-    /// A variant of an enum with a type
+    /// A variant of an enum with a type specified by SymbolId
     EnumVariant(SymbolId),
-    /// Will be generated as `Vec<T>` where T is the type, similar to TypeRef
+    /// Will be generated as `Vec<T>` where T is the type specified by SymbolId
     Vec(SymbolId),
-    /// A trait, normally the semantic actions trait  generated for the user grammar
+    /// A trait, normally the semantic actions trait generated for the user grammar
     Trait,
     /// A trait function
     Function(Function),
-    /// An Option type
+    /// An Option type of a type specified by SymbolId
     Option(SymbolId),
     /// An invisible type
     Clipped(MetaSymbolKind),

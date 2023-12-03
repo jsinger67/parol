@@ -100,8 +100,27 @@ impl GrammarTypeInfo {
         }
 
         // Insert the fix Token type the global scope, simply to avoid name clashes
-        me.symbol_table
+        let token_type_id = me
+            .symbol_table
             .insert_global_type("Token", TypeEntrails::Token)?;
+
+        // Insert the fix 'on_comment_parsed' function into the user action trait to avoid name
+        // clashes with a possible non-terminal 'OnCommentParsed'
+        let on_comment_parsed_id = me.symbol_table.insert_type(
+            me.user_action_trait_id.unwrap(),
+            "on_comment_parsed",
+            TypeEntrails::Function(Function::default()),
+        )?;
+        let function_type_id = me.symbol_table.symbol_as_type(on_comment_parsed_id).my_id();
+        me.symbol_table.insert_instance(
+            function_type_id,
+            "token",
+            token_type_id,
+            true,
+            SymbolAttribute::None,
+            "Called on skipped language comments".to_owned(),
+        )?;
+
         Ok(me)
     }
 
@@ -655,39 +674,23 @@ impl Display for GrammarTypeInfo {
         for (p, i) in &self.production_types {
             writeln!(
                 f,
-                "Prod: {}: {} /* {} */",
-                p,
-                i,
+                "Prod: {p}: {i} /* {} */",
                 self.symbol_table.symbol(*i).name()
             )?;
         }
         writeln!(f, "// Non-terminal types:")?;
         for (n, i) in &self.non_terminal_types {
-            writeln!(
-                f,
-                "{}: {} /* {} */",
-                n,
-                i,
-                self.symbol_table.symbol(*i).name()
-            )?;
+            writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
         }
         writeln!(f, "// User actions:")?;
         for (n, i) in &self.user_actions {
-            writeln!(
-                f,
-                "{}: {} /* {} */",
-                n,
-                i,
-                self.symbol_table.symbol(*i).name()
-            )?;
+            writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
         }
         writeln!(f, "// Adapter actions:")?;
         for (p, i) in &self.adapter_actions {
             writeln!(
                 f,
-                "Prod: {}: {} /* {} */",
-                p,
-                i,
+                "Prod: {p}: {i} /* {} */",
                 self.symbol_table.symbol(*i).name()
             )?;
         }
