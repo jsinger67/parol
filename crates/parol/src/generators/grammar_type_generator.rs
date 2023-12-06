@@ -91,7 +91,7 @@ impl GrammarTypeInfo {
             TypeEntrails::Struct,
         )?);
 
-        for n in ["new", "push", "pop", "trace_item_stack", "on_comment"] {
+        for n in ["new", "push", "pop", "trace_item_stack"] {
             me.symbol_table.insert_type(
                 me.adapter_grammar_struct_id.unwrap(),
                 n,
@@ -99,7 +99,7 @@ impl GrammarTypeInfo {
             )?;
         }
 
-        // Insert the fix Token type the global scope, simply to avoid name clashes
+        // Insert the fix Token type into the global scope, simply to avoid name clashes
         let token_type_id = me
             .symbol_table
             .insert_global_type("Token", TypeEntrails::Token)?;
@@ -127,7 +127,7 @@ impl GrammarTypeInfo {
     /// Set the auto-generate mode
     /// Internally it adjust the used flags on the arguments of the actions.
     /// The arguments keep their used state only if auto generation is active.
-    pub(crate) fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
+    pub fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
         self.auto_generate = auto_generate;
         self.adjust_arguments_used(auto_generate)
     }
@@ -142,6 +142,19 @@ impl GrammarTypeInfo {
                     .build()
                     .unwrap(),
             ),
+        )?;
+        let function_type_id = self.symbol_table.symbol_as_type(action_fn).my_id();
+        let argument_type_id = self
+            .symbol_table
+            .get_global_type(&NmHlp::to_upper_camel_case(non_terminal))
+            .ok_or_else(|| anyhow!("No type for non-terminal {} found!", non_terminal))?;
+        self.symbol_table.insert_instance(
+            function_type_id,
+            "arg",
+            argument_type_id,
+            true,
+            SymbolAttribute::None,
+            "Called on skipped language comments".to_owned(),
         )?;
         self.user_actions
             .push((non_terminal.to_string(), action_fn));

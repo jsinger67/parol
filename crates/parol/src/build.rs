@@ -603,7 +603,6 @@ impl GrammarGenerator<'_> {
             .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
         let user_trait_generator = UserTraitGeneratorBuilder::default()
-            .productions(self.builder.productions.clone())
             .grammar_config(grammar_config)
             .build()
             .unwrap();

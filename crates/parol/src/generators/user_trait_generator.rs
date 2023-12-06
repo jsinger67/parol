@@ -17,11 +17,10 @@ use parol_runtime::log::trace;
 
 /// Generator for user trait code
 /// The lifetime parameter `'a` refers to the lifetime of the contained references.
-/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
 #[derive(Builder, Debug, Default)]
 pub struct UserTraitGenerator<'a> {
-    /// Parsed original user grammar
-    productions: Vec<Production>,
+    /// Non-terminals of original user grammar before grammar transformation
+    non_terminals: Vec<String>,
     /// Compiled grammar configuration
     grammar_config: &'a GrammarConfig,
 }
@@ -371,12 +370,11 @@ impl<'a> UserTraitGenerator<'a> {
     }
 
     pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
-        self.productions
+        self.non_terminals
             .iter()
-            .fold(Vec::<&str>::new(), |mut acc, p| {
-                let lhs: &str = &p.lhs;
-                if !acc.contains(&lhs) {
-                    acc.push(lhs);
+            .fold(Vec::<&str>::new(), |mut acc, n| {
+                if !acc.contains(&n.as_str()) {
+                    acc.push(n.as_str());
                 }
                 acc
             })
@@ -564,8 +562,6 @@ impl<'a> UserTraitGenerator<'a> {
             })?;
 
         let user_trait_functions = if config.auto_generate() {
-            trace!("parol_grammar.item_stack:\n{:?}", self.productions);
-
             type_info.user_actions.iter().try_fold(
                 StrVec::new(0).first_line_no_indent(),
                 |acc, (nt, fn_id)| {
@@ -665,7 +661,12 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<Self> {
         UserTraitGeneratorBuilder::default()
             .grammar_config(grammar_config)
-            .productions(productions)
+            .non_terminals(
+                productions
+                    .iter()
+                    .map(|p| p.lhs.clone())
+                    .collect::<Vec<_>>(),
+            )
             .build()
             .map_err(|e| anyhow!("Builder error!: {}", e))
     }

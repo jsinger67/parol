@@ -131,6 +131,13 @@ impl Display for MetaSymbolKind {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) enum MutableSpec {
+    Immutable,
+    Mutable,
+}
+
 ///
 /// Type information used for auto-generation
 ///
@@ -143,6 +150,8 @@ pub(crate) enum TypeEntrails {
     Token,
     /// A type with Box semantic
     Box(SymbolId),
+    /// A type with Ref semantic an mutable state
+    Ref(SymbolId, MutableSpec),
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
@@ -187,6 +196,18 @@ impl TypeEntrails {
                 symbol_table.symbol(*r).name(),
                 symbol_table.lifetime(*r)
             ),
+            TypeEntrails::Ref(r, m) => {
+                let mutability = match m {
+                    MutableSpec::Immutable => "",
+                    MutableSpec::Mutable => "mut ",
+                };
+                format!(
+                    "&{}{}<{}>",
+                    mutability,
+                    symbol_table.symbol(*r).name(),
+                    symbol_table.lifetime(*r)
+                )
+            }
             TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
             TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
             TypeEntrails::EnumVariant(t) => {
@@ -222,6 +243,7 @@ impl TypeEntrails {
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> String {
         match self {
             TypeEntrails::Box(t)
+            | TypeEntrails::Ref(t, _)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t)
             | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
@@ -313,6 +335,7 @@ impl Type {
     fn inner_type(&self) -> Option<SymbolId> {
         match self.entrails {
             TypeEntrails::Box(t)
+            | TypeEntrails::Ref(t, _)
             | TypeEntrails::EnumVariant(t)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t) => Some(t),
