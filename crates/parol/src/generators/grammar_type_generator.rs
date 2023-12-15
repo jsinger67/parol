@@ -132,6 +132,24 @@ impl GrammarTypeInfo {
         self.adjust_arguments_used(auto_generate)
     }
 
+    /// Add user actions
+    pub fn add_user_actions(&mut self, grammar_config: &GrammarConfig) -> Result<()> {
+        grammar_config
+            .non_terminals
+            .iter()
+            .fold(Vec::<&str>::new(), |mut acc, n| {
+                if !acc.contains(&n.as_str()) {
+                    acc.push(n.as_str());
+                }
+                acc
+            })
+            .iter()
+            .try_for_each(|n| {
+                self.add_user_action(n)?;
+                Ok(())
+            })
+    }
+
     pub(crate) fn add_user_action(&mut self, non_terminal: &str) -> Result<SymbolId> {
         let action_fn = self.symbol_table.insert_type(
             self.user_action_trait_id.unwrap(),
@@ -154,7 +172,10 @@ impl GrammarTypeInfo {
             argument_type_id,
             true,
             SymbolAttribute::None,
-            "Called on skipped language comments".to_owned(),
+            format!(
+                "Argument of the user action for non-terminal '{}'",
+                non_terminal
+            ),
         )?;
         self.user_actions
             .push((non_terminal.to_string(), action_fn));
@@ -224,6 +245,7 @@ impl GrammarTypeInfo {
         self.deduce_actions(grammar_config)?;
         self.finish_non_terminal_types(&grammar_config.cfg)?;
         self.generate_ast_enum_type()?;
+        self.add_user_actions(grammar_config)?;
         self.symbol_table.propagate_lifetimes();
         Ok(())
     }

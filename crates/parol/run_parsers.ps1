@@ -22,8 +22,8 @@ $target = "../../target/$Config/parol"
 $target_dir = "../../target/$Config/examples"
 
 # --------------------------------------------------------------------------------------------------
-Write-Host "Running parol on its own parol-grammar..." -ForegroundColor Cyan
-&$target -f ./src/parser/parol-grammar.par -v
+Write-Host "Running parol on its own parol..." -ForegroundColor Cyan
+&$target -f ./src/parser/parol.par -v
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }

@@ -44,8 +44,7 @@
 //! It's [the recommended way to use `bindgen`](https://rust-lang.github.io/rust-bindgen/library-usage.html)
 //! and it's the only way to use [`pest`](https://pest.rs/).
 //!
-//! If you are really concerned about compile times, you can use explicit output (below) to avoid
-//! invoking pest.
+//! If you are really concerned about compile times, you can use explicit output (below).
 //!
 //! ## Explicitly controlling Output Locations
 //! If you want more control over the location of generated grammar files,
@@ -108,16 +107,15 @@
 //! If you want to disable this sanity check, use [`Builder::disable_output_sanity_checks`]
 //!
 //! ### Internal APIs
-//! The main `parol` command needs a couple of features that do not fit nicely into this API (or interact closely with the crate's internals).
+//! The main `parol` command needs a couple of features that do not fit nicely into this API
+//! (or interact closely with the crate's internals).
 //!
 //!
 //! Because of that, there are a number of APIs explicitly marked as unstable or internal.
 //! Some of these are public and some are private.
 //!
 //! Expect breaking changes both before and after 1.0 (but especially before).
-#![deny(
-    missing_docs, // Building should be documented :)
-)]
+#![deny(missing_docs)]
 
 use std::collections::BTreeMap;
 use std::convert::TryFrom;
@@ -125,9 +123,8 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
-use crate::parser::parol_grammar::Production;
 use crate::{
-    GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGeneratorBuilder, MAX_K,
+    GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGenerator, MAX_K,
 };
 use clap::{Parser, ValueEnum};
 use parol_macros::parol;
@@ -200,8 +197,6 @@ pub struct Builder {
     range: bool,
     /// Inner attributes to insert at the top of the generated trait source.
     inner_attributes: Vec<InnerAttributes>,
-    /// Used for auto generation of user's grammar semantic action trait
-    productions: Vec<Production>,
     /// Enables trimming of the parse tree during parsing.
     /// Generates the call to trim_parse_tree on the parser object before the call of parse.
     pub(crate) trim_parse_tree: bool,
@@ -279,7 +274,6 @@ impl Builder {
             inner_attributes: Vec::new(),
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
-            productions: Vec::new(),
             trim_parse_tree: false,
         }
     }
@@ -518,7 +512,6 @@ impl GrammarGenerator<'_> {
         }
         let mut parol_grammar = ParolGrammar::new();
         let syntax_tree = crate::parser::parse(&input, &self.grammar_file, &mut parol_grammar)?;
-        self.builder.productions = parol_grammar.productions.clone();
         self.listener
             .on_initial_grammar_parse(&syntax_tree, &parol_grammar)?;
         self.grammar_config = Some(GrammarConfig::try_from(parol_grammar)?);
@@ -602,10 +595,7 @@ impl GrammarGenerator<'_> {
         let lexer_source = crate::generate_lexer_source(grammar_config)
             .map_err(|e| parol!("Failed to generate lexer source!: {}", e))?;
 
-        let user_trait_generator = UserTraitGeneratorBuilder::default()
-            .grammar_config(grammar_config)
-            .build()
-            .unwrap();
+        let user_trait_generator = UserTraitGenerator::new(grammar_config);
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
         let user_trait_source =

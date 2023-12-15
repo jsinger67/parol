@@ -10,22 +10,24 @@ use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::Production;
 use crate::{Pr, StrVec};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
 
 /// Generator for user trait code
 /// The lifetime parameter `'a` refers to the lifetime of the contained references.
-#[derive(Builder, Debug, Default)]
+#[derive(Debug, Default)]
 pub struct UserTraitGenerator<'a> {
-    /// Non-terminals of original user grammar before grammar transformation
-    non_terminals: Vec<String>,
     /// Compiled grammar configuration
     grammar_config: &'a GrammarConfig,
 }
 
 impl<'a> UserTraitGenerator<'a> {
+    /// Creates a new instance of the user trait generator
+    pub fn new(grammar_config: &'a GrammarConfig) -> Self {
+        Self { grammar_config }
+    }
+
     fn generate_inner_action_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
@@ -369,22 +371,6 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
-        self.non_terminals
-            .iter()
-            .fold(Vec::<&str>::new(), |mut acc, n| {
-                if !acc.contains(&n.as_str()) {
-                    acc.push(n.as_str());
-                }
-                acc
-            })
-            .iter()
-            .try_for_each(|n| {
-                type_info.add_user_action(n)?;
-                Ok(())
-            })
-    }
-
     fn generate_user_action_args(
         non_terminal: &str,
         type_info: &GrammarTypeInfo,
@@ -493,7 +479,6 @@ impl<'a> UserTraitGenerator<'a> {
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(config.auto_generate())?;
 
-        self.add_user_actions(type_info)?;
         type_info.symbol_table.propagate_lifetimes();
 
         let production_output_types = if config.auto_generate() {
@@ -655,20 +640,10 @@ impl<'a> UserTraitGenerator<'a> {
     // *Changes will affect crate's version according to semver*
     // ---------------------------------------------------
     /// Creates a new item
-    pub fn try_new(
-        productions: Vec<Production>,
-        grammar_config: &'a GrammarConfig,
-    ) -> Result<Self> {
-        UserTraitGeneratorBuilder::default()
-            .grammar_config(grammar_config)
-            .non_terminals(
-                productions
-                    .iter()
-                    .map(|p| p.lhs.clone())
-                    .collect::<Vec<_>>(),
-            )
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))
+    ///
+    #[deprecated(since = "0.26.0", note = "Please use `new` instead")]
+    pub fn try_new(grammar_config: &'a GrammarConfig) -> Result<Self> {
+        Ok(UserTraitGenerator::new(grammar_config))
     }
 
     fn generate_single_non_terminal_type<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(

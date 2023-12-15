@@ -5,6 +5,16 @@ use anyhow::{bail, Result};
 
 pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfig> {
     let st = parol_grammar.start_symbol;
+    let non_terminals =
+        parol_grammar
+            .productions
+            .iter()
+            .fold(Vec::<String>::new(), |mut acc, p| {
+                if !acc.contains(&p.lhs) {
+                    acc.push(p.lhs.clone());
+                }
+                acc
+            });
     let pr = transform_productions(parol_grammar.productions)?;
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
@@ -27,6 +37,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
 
     let mut grammar_config = GrammarConfig::new(cfg, lookahead_size)
         .with_title(title)
+        .with_non_terminals(non_terminals)
         .with_comment(comment)
         .add_scanner(scanner_config);
 

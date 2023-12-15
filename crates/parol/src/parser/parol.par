@@ -1,0 +1,132 @@
+%start Parol
+%title "Parol grammar"
+%comment "Parol's own grammar"
+%line_comment '//'
+%block_comment '/*' '*/'
+%user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
+%user_type ScannerConfig = crate::parser::parol_grammar::ScannerConfig
+
+%%
+
+// The start symbol
+Parol
+    : Prolog GrammarDefinition;
+
+Prolog
+    : StartDeclaration { Declaration } { ScannerState: ScannerConfig };
+
+StartDeclaration
+    : '%start'^ Identifier;
+
+Declaration
+    : '%title'^ String
+    | '%comment'^ String
+    | '%user_type'^ Identifier '='^ UserTypeName: UserType // User type alias definition
+    | ScannerDirectives;
+
+ScannerDirectives
+    : '%line_comment'^ TokenLiteral
+    | '%block_comment'^ TokenLiteral TokenLiteral
+    | '%auto_newline_off'^
+    | '%auto_ws_off'^;
+
+GrammarDefinition
+    : '%%'^ Production
+      { Production } // There must be at least one production - with the start symbol
+    ;
+
+DoubleColon
+    : '::';
+
+Production
+    : Identifier ':'^ Alternations ';'^;
+
+Alternations
+    : Alternation { '|'^ Alternation };
+
+Alternation
+    : { Factor };
+
+Factor
+    : Group
+    | Repeat
+    | Optional
+    | Symbol;
+
+Symbol
+    : NonTerminal // EBNF: Meta-identifier
+    | SimpleToken
+    | TokenWithStates
+    | ScannerSwitch // Instruction to switch to new scanner state
+    ;
+
+// EBNF: Terminal-string
+TokenLiteral
+    : String // Treated as a regular expression
+    | RawString // Regex meta characters need not to be escaped by the user
+    | Regex // Treated as a regular expression
+    ;
+
+SimpleToken
+    : TokenLiteral [ ASTControl ];
+
+TokenWithStates
+    : '<'^ StateList '>'^ TokenLiteral [ ASTControl ];
+
+String
+    : /"(\\.|[^\\])*?"/;
+
+RawString
+    : /'(\\'|[^'])*?'/;
+
+Regex
+    : /\u{2F}(\\.|[^\\])*?\u{2F}/ // \u{2F} is /
+    ;
+
+// A non-empty grouping
+Group
+    : '(' Alternations ')';
+
+// A non-empty optional expression
+Optional
+    : '[' Alternations ']';
+
+// A non-empty repetition
+Repeat
+    : '{' Alternations '}';
+
+NonTerminal
+    : Identifier [ ASTControl ];
+
+Identifier
+    : /[a-zA-Z_][a-zA-Z0-9_]*/;
+
+// A complete scanner definition
+ScannerState
+    : '%scanner'^ Identifier '{'^ { ScannerDirectives } '}'^;
+
+// The list of scanner states a terminal symbol is associated with
+StateList
+    : Identifier { ','^ Identifier };
+
+ScannerSwitch
+    : '%sc'^ '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state
+    | '%push'^ '('^ Identifier ')'^ // Identifier of scanner state is mandatory
+    | '%pop'^ '('^ ')'^ // Parentheses are also mandatory
+    ;
+
+ASTControl
+    : CutOperator
+    | UserTypeDeclaration;
+
+// Prevents the symbol from being propagated to the AST in auto-gen
+CutOperator
+    : '^'^;
+
+// Assigns the user type to a symbol
+UserTypeDeclaration
+    : ':'^ UserTypeName: UserType;
+
+// A valid Rust qualified name
+UserTypeName
+    : Identifier { DoubleColon^ Identifier };

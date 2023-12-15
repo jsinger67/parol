@@ -23,6 +23,9 @@ static DEFAULT_GRAMMAR_CONFIG: Lazy<GrammarConfig> = Lazy::new(GrammarConfig::de
 ///
 #[derive(Debug, Clone)]
 pub struct GrammarConfig {
+    /// The non-terminals of the original context free grammar from the user's grammar description
+    /// before any checks and transformation has been conducted.
+    pub non_terminals: Vec<String>,
     ///
     /// The actual context free grammar.
     /// It should be checked and left-factored here.
@@ -71,12 +74,16 @@ impl GrammarConfig {
     pub fn new(cfg: Cfg, lookahead_size: usize) -> Self {
         Self {
             cfg,
-            title: None,
-            comment: None,
-            user_type_defs: Vec::new(),
-            scanner_configurations: Vec::new(),
             lookahead_size,
+            scanner_configurations: vec![ScannerConfig::default()], // There must always be a default scanner
+            ..Default::default()
         }
+    }
+
+    /// Sets the non-terminals
+    pub fn with_non_terminals(mut self, non_terminals: Vec<String>) -> Self {
+        self.non_terminals = non_terminals;
+        self
     }
 
     /// Sets an optional title
@@ -108,7 +115,7 @@ impl GrammarConfig {
         self.lookahead_size = k;
     }
 
-    /// Sets the cfg member
+    /// Updates the cfg member after the grammar has been checked and transformed
     pub fn update_cfg(&mut self, cfg: Cfg) {
         self.cfg = cfg;
     }
@@ -183,6 +190,7 @@ impl GrammarConfig {
 impl Default for GrammarConfig {
     fn default() -> Self {
         Self {
+            non_terminals: Vec::new(),
             cfg: Cfg::default(),
             title: None,
             comment: None,
