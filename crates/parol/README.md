@@ -12,7 +12,11 @@
 <br><br><br>
 <!-- markdownlint-enable Inline HTML -->
 
-`parol` is a LL(k) parser generator **for Rust**.
+<!-- Start of content from CommonReadMe copied here.
+Unfortunately there is no include directive available in Markdown -->
+
+[parol](https://github.com/jsinger67/parol/tree/main/crates/parol) is a LL(k) parser generator
+**for Rust**.
 
 It's an installable command line tool that can generate complete parsers from a single grammar
 description file including all AST data types you would otherwise had to design by yourself. `parol`
@@ -196,4 +200,5 @@ Thanks to all the contributors for improving this project!
 * [ryo33](https://github.com/ryo33)
 * [dalance](https://github.com/dalance)
 * [udoprog](https://github.com/udoprog)
+* [AumyF](https://github.com/AumyF)
 * [yui-knk](https://github.com/yui-knk)
