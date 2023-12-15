@@ -21,7 +21,7 @@ static DEFAULT_GRAMMAR_CONFIG: Lazy<GrammarConfig> = Lazy::new(GrammarConfig::de
 /// the grammar, user type aliases, maximum lookahead size and a list of scanner configurations.
 /// Can later be amended with further information or pragmas that control lexer/parser generation.
 ///
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct GrammarConfig {
     /// The non-terminals of the original context free grammar from the user's grammar description
     /// before any checks and transformation has been conducted.
@@ -75,7 +75,6 @@ impl GrammarConfig {
         Self {
             cfg,
             lookahead_size,
-            scanner_configurations: vec![ScannerConfig::default()], // There must always be a default scanner
             ..Default::default()
         }
     }
@@ -184,20 +183,6 @@ impl GrammarConfig {
     /// Generates a dummy user_type_resolver function that can be used in Pr::format
     pub fn dummy_user_type_resolver() -> FnUserTypeResolver {
         Box::new(|_u: &str| None)
-    }
-}
-
-impl Default for GrammarConfig {
-    fn default() -> Self {
-        Self {
-            non_terminals: Vec::new(),
-            cfg: Cfg::default(),
-            title: None,
-            comment: None,
-            user_type_defs: Vec::new(),
-            scanner_configurations: vec![ScannerConfig::default()], // There must always be a default scanner
-            lookahead_size: 0,
-        }
     }
 }
 

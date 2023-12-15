@@ -11,7 +11,8 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
-    Function, FunctionBuilder, MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails,
+    Function, FunctionBuilder, MetaSymbolKind, Mutability, ReferenceType, SymbolId, SymbolTable,
+    TypeEntrails,
 };
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
@@ -117,6 +118,8 @@ impl GrammarTypeInfo {
             "token",
             token_type_id,
             true,
+            ReferenceType::None,
+            Mutability::Immutable,
             SymbolAttribute::None,
             "Called on skipped language comments".to_owned(),
         )?;
@@ -171,6 +174,8 @@ impl GrammarTypeInfo {
             "arg",
             argument_type_id,
             true,
+            ReferenceType::Ref,
+            Mutability::Immutable,
             SymbolAttribute::None,
             format!(
                 "Argument of the user action for non-terminal '{}'",
@@ -540,7 +545,16 @@ impl GrammarTypeInfo {
                         )?
                     };
                     self.symbol_table
-                        .insert_instance(function_id, n, type_id, used, a, r.to_string())
+                        .insert_instance(
+                            function_id,
+                            n,
+                            type_id,
+                            used,
+                            ReferenceType::None,
+                            Mutability::Immutable,
+                            a,
+                            r.to_string(),
+                        )
                         .map(|_| Ok(()))?
                 });
             result
@@ -625,6 +639,8 @@ impl GrammarTypeInfo {
                 &inst_name,
                 type_id,
                 true,
+                ReferenceType::None,
+                Mutability::Immutable,
                 sem,
                 description,
             )?;

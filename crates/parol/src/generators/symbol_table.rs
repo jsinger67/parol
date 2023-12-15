@@ -131,11 +131,20 @@ impl Display for MetaSymbolKind {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Serialize, Deserialize, TS)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
 #[ts(export)]
-pub(crate) enum MutableSpec {
+pub(crate) enum Mutability {
+    #[default]
     Immutable,
     Mutable,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) enum ReferenceType {
+    #[default]
+    None,
+    Ref,
 }
 
 ///
@@ -151,7 +160,7 @@ pub(crate) enum TypeEntrails {
     /// A type with Box semantic
     Box(SymbolId),
     /// A type with Ref semantic an mutable state
-    Ref(SymbolId, MutableSpec),
+    Ref(SymbolId, Mutability),
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
@@ -198,8 +207,8 @@ impl TypeEntrails {
             ),
             TypeEntrails::Ref(r, m) => {
                 let mutability = match m {
-                    MutableSpec::Immutable => "",
-                    MutableSpec::Mutable => "mut ",
+                    Mutability::Immutable => "",
+                    Mutability::Mutable => "mut ",
                 };
                 format!(
                     "&{}{}<{}>",
@@ -362,6 +371,10 @@ pub(crate) struct Instance {
 
     /// Indicates if the argument is used
     pub(crate) used: bool,
+
+    pub(crate) ref_spec: ReferenceType,
+
+    pub(crate) mutability: Mutability,
 
     /// Semantic information
     pub(crate) sem: SymbolAttribute,
@@ -581,6 +594,8 @@ impl Scope {
         symbol_id: SymbolId,
         type_id: SymbolId,
         used: bool,
+        ref_spec: ReferenceType,
+        mutability: Mutability,
         sem: SymbolAttribute,
         description: String,
     ) -> Symbol {
@@ -594,6 +609,8 @@ impl Scope {
                 scope: self.my_id,
                 type_id,
                 used,
+                ref_spec,
+                mutability,
                 sem,
                 description,
             }),
@@ -914,6 +931,8 @@ impl SymbolTable {
         instance_name: &str,
         type_id: SymbolId,
         used: bool,
+        ref_spec: ReferenceType,
+        mutability: Mutability,
         sem: SymbolAttribute,
         description: String,
     ) -> Result<SymbolId> {
@@ -925,6 +944,8 @@ impl SymbolTable {
             symbol_id,
             type_id,
             used,
+            ref_spec,
+            mutability,
             sem,
             description,
         );
