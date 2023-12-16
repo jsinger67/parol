@@ -20,6 +20,7 @@ pub(crate) trait InstanceFacade<'a>: SymbolFacade<'a> {
     fn description(&self) -> String;
     fn sem(&self) -> SymbolAttribute;
     fn used(&self) -> bool;
+    fn reference(&self) -> String;
 }
 
 pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
@@ -28,6 +29,8 @@ pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
     fn entrails(&self) -> &TypeEntrails;
     fn is_container(&self) -> bool;
     fn generate_range_calculation(&self) -> Result<String>;
+    fn members(&self) -> Vec<SymbolId>;
+    fn lifetime(&self) -> String;
 }
 
 pub(crate) struct SymbolItem<'a> {
@@ -124,7 +127,14 @@ impl<'a> InstanceFacade<'a> for InstanceItem<'a> {
     }
 
     fn used(&self) -> bool {
-        self.instance.used
+        self.instance.entrails.used
+    }
+
+    fn reference(&self) -> String {
+        match self.instance.entrails.ref_spec {
+            super::symbol_table::ReferenceType::None => "".to_string(),
+            super::symbol_table::ReferenceType::Ref => "&".to_string(),
+        }
     }
 }
 
@@ -289,6 +299,20 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
             }
             _ => bail!("Unexpected type for range calculation!"),
         }
+    }
+
+    fn members(&self) -> Vec<SymbolId> {
+        self.symbol_item
+            .symbol_table
+            .scope(self.member_scope())
+            .symbols
+            .clone()
+    }
+
+    fn lifetime(&self) -> String {
+        self.symbol_item
+            .symbol_table
+            .lifetime(self.symbol_item.my_id())
     }
 }
 

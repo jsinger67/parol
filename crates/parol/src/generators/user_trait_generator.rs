@@ -375,20 +375,26 @@ impl<'a> UserTraitGenerator<'a> {
         non_terminal: &str,
         type_info: &GrammarTypeInfo,
     ) -> Result<String> {
-        let type_name = NmHlp::to_upper_camel_case(non_terminal);
-        if let Some(symbol_id) = type_info.symbol_table.get_global_type(&type_name) {
-            Ok(format!(
-                "_arg: &{}{}",
-                type_name,
-                type_info.symbol_table.lifetime(symbol_id)
-            ))
-        } else {
-            Err(anyhow!(
-                "Can't find type of argument {} (type {})",
-                non_terminal,
-                type_name
-            ))
-        }
+        let user_action = type_info
+            .symbol_table
+            .symbol_as_type(type_info.get_user_action(non_terminal)?);
+
+        Ok(user_action
+            .members()
+            .iter()
+            .map(|s| {
+                let arg_inst = type_info.symbol_table.symbol_as_instance(*s);
+                let arg_type = type_info.symbol_table.symbol_as_type(arg_inst.type_id());
+                format!(
+                    "{}: {}{}{}",
+                    NmHlp::add_unused_indicator(arg_inst.used(), &arg_inst.name()),
+                    arg_inst.reference(),
+                    arg_type.inner_name(),
+                    arg_type.lifetime()
+                )
+            })
+            .collect::<Vec<String>>()
+            .join(", "))
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
@@ -547,12 +553,12 @@ impl<'a> UserTraitGenerator<'a> {
             })?;
 
         let user_trait_functions = if config.auto_generate() {
-            type_info.user_actions.iter().try_fold(
-                StrVec::new(0).first_line_no_indent(),
-                |acc, (nt, fn_id)| {
-                    Self::generate_single_user_trait_function(type_info, fn_id, nt, acc)
-                },
-            )?
+            type_info
+                .get_user_actions()
+                .iter()
+                .try_fold(StrVec::new(0).first_line_no_indent(), |acc, fn_id| {
+                    Self::generate_single_user_trait_function(type_info, fn_id, acc)
+                })?
         } else {
             StrVec::default()
         };
@@ -699,15 +705,18 @@ impl<'a> UserTraitGenerator<'a> {
     fn generate_single_user_trait_function(
         type_info: &GrammarTypeInfo,
         fn_id: &SymbolId,
-        nt: &String,
         mut acc: StrVec,
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-        let fn_arguments = Self::generate_user_action_args(nt, type_info)
+        let nt = type_info
+            .symbol_table
+            .symbol_as_function(*fn_id)?
+            .non_terminal;
+        let fn_arguments = Self::generate_user_action_args(&nt, type_info)
             .map_err(|e| anyhow!("{e} in {fn_name}"))?;
         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
             .fn_name(fn_name)
-            .non_terminal(nt.to_string())
+            .non_terminal(nt)
             .fn_arguments(fn_arguments)
             .build()
             .unwrap();

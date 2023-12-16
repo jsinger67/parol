@@ -358,6 +358,23 @@ impl Type {
 }
 
 ///
+/// Instance specificities
+///
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) struct InstanceEntrails {
+    /// Indicates if the argument is used
+    #[builder(default)]
+    pub(crate) used: bool,
+
+    #[builder(default)]
+    pub(crate) ref_spec: ReferenceType,
+
+    #[builder(default)]
+    pub(crate) mutability: Mutability,
+}
+
+///
 /// A typed instance, usually a function argument or a struct member
 ///
 #[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
@@ -369,12 +386,8 @@ pub(crate) struct Instance {
     /// The instance's type id in the symbol table
     pub(crate) type_id: SymbolId,
 
-    /// Indicates if the argument is used
-    pub(crate) used: bool,
-
-    pub(crate) ref_spec: ReferenceType,
-
-    pub(crate) mutability: Mutability,
+    /// Instance specificities
+    pub(crate) entrails: InstanceEntrails,
 
     /// Semantic information
     pub(crate) sem: SymbolAttribute,
@@ -593,9 +606,7 @@ impl Scope {
         name: &str,
         symbol_id: SymbolId,
         type_id: SymbolId,
-        used: bool,
-        ref_spec: ReferenceType,
-        mutability: Mutability,
+        entrails: InstanceEntrails,
         sem: SymbolAttribute,
         description: String,
     ) -> Symbol {
@@ -608,9 +619,7 @@ impl Scope {
             SymbolKind::Instance(Instance {
                 scope: self.my_id,
                 type_id,
-                used,
-                ref_spec,
-                mutability,
+                entrails,
                 sem,
                 description,
             }),
@@ -620,6 +629,21 @@ impl Scope {
 
     fn has_symbol(&self, symbol_id: SymbolId) -> bool {
         self.symbols.contains(&symbol_id)
+    }
+
+    pub(crate) fn symbol_by_name(
+        &self,
+        symbol_table: &SymbolTable,
+        name: &str,
+    ) -> Option<SymbolId> {
+        self.symbols
+            .iter()
+            .find(|s| {
+                let symbol = symbol_table.symbol(**s);
+                debug_assert_eq!(symbol.name_id().0, self.my_id);
+                self.names[symbol.name_id().1] == name
+            })
+            .copied()
     }
 
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
@@ -761,7 +785,7 @@ impl SymbolTable {
     pub(crate) fn set_instance_used(&mut self, symbol_id: SymbolId, used: bool) {
         match &mut self.symbols[symbol_id.0].kind {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
-            SymbolKind::Instance(ref mut i) => i.used &= used,
+            SymbolKind::Instance(ref mut i) => i.entrails.used &= used,
         }
     }
 
@@ -930,9 +954,7 @@ impl SymbolTable {
         parent_symbol: SymbolId,
         instance_name: &str,
         type_id: SymbolId,
-        used: bool,
-        ref_spec: ReferenceType,
-        mutability: Mutability,
+        entrails: InstanceEntrails,
         sem: SymbolAttribute,
         description: String,
     ) -> Result<SymbolId> {
@@ -943,9 +965,7 @@ impl SymbolTable {
             instance_name,
             symbol_id,
             type_id,
-            used,
-            ref_spec,
-            mutability,
+            entrails,
             sem,
             description,
         );
