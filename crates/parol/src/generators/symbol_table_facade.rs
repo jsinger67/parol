@@ -17,10 +17,10 @@ pub(crate) trait SymbolFacade<'a> {
 
 pub(crate) trait InstanceFacade<'a>: SymbolFacade<'a> {
     fn type_id(&self) -> SymbolId;
-    fn description(&self) -> String;
+    fn description(&self) -> &str;
     fn sem(&self) -> SymbolAttribute;
     fn used(&self) -> bool;
-    fn reference(&self) -> String;
+    fn reference(&self) -> &'static str;
 }
 
 pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
@@ -29,7 +29,7 @@ pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
     fn entrails(&self) -> &TypeEntrails;
     fn is_container(&self) -> bool;
     fn generate_range_calculation(&self) -> Result<String>;
-    fn members(&self) -> Vec<SymbolId>;
+    fn members(&self) -> &[SymbolId];
     fn lifetime(&self) -> String;
 }
 
@@ -118,8 +118,8 @@ impl<'a> InstanceFacade<'a> for InstanceItem<'a> {
         self.instance.type_id
     }
 
-    fn description(&self) -> String {
-        self.instance.description.clone()
+    fn description(&self) -> &str {
+        &self.instance.description
     }
 
     fn sem(&self) -> SymbolAttribute {
@@ -130,10 +130,10 @@ impl<'a> InstanceFacade<'a> for InstanceItem<'a> {
         self.instance.entrails.used
     }
 
-    fn reference(&self) -> String {
+    fn reference(&self) -> &'static str {
         match self.instance.entrails.ref_spec {
-            super::symbol_table::ReferenceType::None => "".to_string(),
-            super::symbol_table::ReferenceType::Ref => "&".to_string(),
+            super::symbol_table::ReferenceType::None => &"",
+            super::symbol_table::ReferenceType::Ref => &"&",
         }
     }
 }
@@ -301,12 +301,12 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
         }
     }
 
-    fn members(&self) -> Vec<SymbolId> {
-        self.symbol_item
+    fn members(&self) -> &[SymbolId] {
+        &self
+            .symbol_item
             .symbol_table
             .scope(self.member_scope())
             .symbols
-            .clone()
     }
 
     fn lifetime(&self) -> String {

@@ -608,7 +608,7 @@ impl Scope {
         type_id: SymbolId,
         entrails: InstanceEntrails,
         sem: SymbolAttribute,
-        description: String,
+        description: &str,
     ) -> Symbol {
         let instance_name = self.make_unique_name(NmHlp::to_lower_snake_case(name));
         let name_id = self.add_name(instance_name);
@@ -621,7 +621,7 @@ impl Scope {
                 type_id,
                 entrails,
                 sem,
-                description,
+                description: description.to_owned(),
             }),
             false,
         )
@@ -743,7 +743,7 @@ impl SymbolTable {
         &self.scope(name_id.0).names[name_id.1]
     }
 
-    pub(crate) fn members(&self, type_id: SymbolId) -> Result<&Vec<SymbolId>> {
+    pub(crate) fn members(&self, type_id: SymbolId) -> Result<&[SymbolId]> {
         let type_symbol = self.symbol_as_type(type_id);
         Ok(&self.scope(type_symbol.member_scope()).symbols)
     }
@@ -956,7 +956,7 @@ impl SymbolTable {
         type_id: SymbolId,
         entrails: InstanceEntrails,
         sem: SymbolAttribute,
-        description: String,
+        description: &str,
     ) -> Result<SymbolId> {
         debug_assert!(parent_symbol.0 < self.symbols.len());
         let symbol_id = self.next_symbol_id();

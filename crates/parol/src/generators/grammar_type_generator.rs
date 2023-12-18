@@ -115,7 +115,7 @@ impl GrammarTypeInfo {
             token_type_id,
             InstanceEntrailsBuilder::default().used(true).build()?,
             SymbolAttribute::None,
-            "Called on skipped language comments".to_owned(),
+            &"Called on skipped language comments",
         )?;
 
         Ok(me)
@@ -171,7 +171,7 @@ impl GrammarTypeInfo {
                 .ref_spec(ReferenceType::Ref)
                 .build()?,
             SymbolAttribute::None,
-            format!(
+            &format!(
                 "Argument of the user action for non-terminal '{}'",
                 non_terminal
             ),
@@ -561,7 +561,7 @@ impl GrammarTypeInfo {
                             type_id,
                             InstanceEntrailsBuilder::default().used(used).build()?,
                             a,
-                            r.to_string(),
+                            r,
                         )
                         .map(|_| Ok(()))?
                 });
@@ -640,7 +640,7 @@ impl GrammarTypeInfo {
             let inst_name = self.symbol_table.symbol(*arg).name().to_string();
             let (type_id, description, sem) = {
                 let inst = self.symbol_table.symbol_as_instance(*arg);
-                (inst.type_id(), inst.description(), inst.sem())
+                (inst.type_id(), inst.description().to_owned(), inst.sem())
             };
             self.symbol_table.insert_instance(
                 production_type,
@@ -648,7 +648,7 @@ impl GrammarTypeInfo {
                 type_id,
                 InstanceEntrailsBuilder::default().used(true).build()?,
                 sem,
-                description,
+                &description,
             )?;
         }
         Ok(())
