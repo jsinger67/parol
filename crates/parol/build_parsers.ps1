@@ -16,7 +16,7 @@ $target = "./../../target/$Config/parol"
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building parol..." -ForegroundColor Cyan
-&$target -f ./src/parser/parol-grammar.par -e ./src/parser/parol-grammar-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g
+&$target -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }

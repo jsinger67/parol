@@ -10,23 +10,24 @@ use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::Production;
 use crate::{Pr, StrVec};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
 
 /// Generator for user trait code
 /// The lifetime parameter `'a` refers to the lifetime of the contained references.
-/// The lifetime parameter `'t` refers to the lifetime of the scanned text.
-#[derive(Builder, Debug, Default)]
+#[derive(Debug, Default)]
 pub struct UserTraitGenerator<'a> {
-    /// Parsed original user grammar
-    productions: Vec<Production>,
     /// Compiled grammar configuration
     grammar_config: &'a GrammarConfig,
 }
 
 impl<'a> UserTraitGenerator<'a> {
+    /// Creates a new instance of the user trait generator
+    pub fn new(grammar_config: &'a GrammarConfig) -> Self {
+        Self { grammar_config }
+    }
+
     fn generate_inner_action_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
@@ -370,41 +371,30 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    pub(crate) fn add_user_actions(&self, type_info: &mut GrammarTypeInfo) -> Result<()> {
-        self.productions
-            .iter()
-            .fold(Vec::<&str>::new(), |mut acc, p| {
-                let lhs: &str = &p.lhs;
-                if !acc.contains(&lhs) {
-                    acc.push(lhs);
-                }
-                acc
-            })
-            .iter()
-            .try_for_each(|n| {
-                type_info.add_user_action(n)?;
-                Ok(())
-            })
-    }
-
     fn generate_user_action_args(
         non_terminal: &str,
         type_info: &GrammarTypeInfo,
     ) -> Result<String> {
-        let type_name = NmHlp::to_upper_camel_case(non_terminal);
-        if let Some(symbol_id) = type_info.symbol_table.get_global_type(&type_name) {
-            Ok(format!(
-                "_arg: &{}{}",
-                type_name,
-                type_info.symbol_table.lifetime(symbol_id)
-            ))
-        } else {
-            Err(anyhow!(
-                "Can't find type of argument {} (type {})",
-                non_terminal,
-                type_name
-            ))
-        }
+        let user_action = type_info
+            .symbol_table
+            .symbol_as_type(type_info.get_user_action(non_terminal)?);
+
+        Ok(user_action
+            .members()
+            .iter()
+            .map(|s| {
+                let arg_inst = type_info.symbol_table.symbol_as_instance(*s);
+                let arg_type = type_info.symbol_table.symbol_as_type(arg_inst.type_id());
+                format!(
+                    "{}: {}{}{}",
+                    NmHlp::add_unused_indicator(arg_inst.used(), &arg_inst.name()),
+                    arg_inst.reference(),
+                    arg_type.inner_name(),
+                    arg_type.lifetime()
+                )
+            })
+            .collect::<Vec<String>>()
+            .join(", "))
     }
 
     fn generate_caller_argument_list(pr: &Pr) -> String {
@@ -495,7 +485,6 @@ impl<'a> UserTraitGenerator<'a> {
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(config.auto_generate())?;
 
-        self.add_user_actions(type_info)?;
         type_info.symbol_table.propagate_lifetimes();
 
         let production_output_types = if config.auto_generate() {
@@ -564,14 +553,12 @@ impl<'a> UserTraitGenerator<'a> {
             })?;
 
         let user_trait_functions = if config.auto_generate() {
-            trace!("parol_grammar.item_stack:\n{:?}", self.productions);
-
-            type_info.user_actions.iter().try_fold(
-                StrVec::new(0).first_line_no_indent(),
-                |acc, (nt, fn_id)| {
-                    Self::generate_single_user_trait_function(type_info, fn_id, nt, acc)
-                },
-            )?
+            type_info
+                .get_user_actions()
+                .iter()
+                .try_fold(StrVec::new(0).first_line_no_indent(), |acc, fn_id| {
+                    Self::generate_single_user_trait_function(type_info, fn_id, acc)
+                })?
         } else {
             StrVec::default()
         };
@@ -659,15 +646,10 @@ impl<'a> UserTraitGenerator<'a> {
     // *Changes will affect crate's version according to semver*
     // ---------------------------------------------------
     /// Creates a new item
-    pub fn try_new(
-        productions: Vec<Production>,
-        grammar_config: &'a GrammarConfig,
-    ) -> Result<Self> {
-        UserTraitGeneratorBuilder::default()
-            .grammar_config(grammar_config)
-            .productions(productions)
-            .build()
-            .map_err(|e| anyhow!("Builder error!: {}", e))
+    ///
+    #[deprecated(since = "0.26.0", note = "Please use `new` instead")]
+    pub fn try_new(grammar_config: &'a GrammarConfig) -> Result<Self> {
+        Ok(UserTraitGenerator::new(grammar_config))
     }
 
     fn generate_single_non_terminal_type<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
@@ -723,15 +705,18 @@ impl<'a> UserTraitGenerator<'a> {
     fn generate_single_user_trait_function(
         type_info: &GrammarTypeInfo,
         fn_id: &SymbolId,
-        nt: &String,
         mut acc: StrVec,
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let fn_name = type_info.symbol_table.type_name(*fn_id)?;
-        let fn_arguments = Self::generate_user_action_args(nt, type_info)
+        let nt = type_info
+            .symbol_table
+            .symbol_as_function(*fn_id)?
+            .non_terminal;
+        let fn_arguments = Self::generate_user_action_args(&nt, type_info)
             .map_err(|e| anyhow!("{e} in {fn_name}"))?;
         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
             .fn_name(fn_name)
-            .non_terminal(nt.to_string())
+            .non_terminal(nt)
             .fn_arguments(fn_arguments)
             .build()
             .unwrap();

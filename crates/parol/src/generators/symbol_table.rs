@@ -131,6 +131,22 @@ impl Display for MetaSymbolKind {
     }
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) enum Mutability {
+    #[default]
+    Immutable,
+    Mutable,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) enum ReferenceType {
+    #[default]
+    None,
+    Ref,
+}
+
 ///
 /// Type information used for auto-generation
 ///
@@ -143,6 +159,8 @@ pub(crate) enum TypeEntrails {
     Token,
     /// A type with Box semantic
     Box(SymbolId),
+    /// A type with Ref semantic an mutable state
+    Ref(SymbolId, Mutability),
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
@@ -187,6 +205,18 @@ impl TypeEntrails {
                 symbol_table.symbol(*r).name(),
                 symbol_table.lifetime(*r)
             ),
+            TypeEntrails::Ref(r, m) => {
+                let mutability = match m {
+                    Mutability::Immutable => "",
+                    Mutability::Mutable => "mut ",
+                };
+                format!(
+                    "&{}{}<{}>",
+                    mutability,
+                    symbol_table.symbol(*r).name(),
+                    symbol_table.lifetime(*r)
+                )
+            }
             TypeEntrails::Struct => format!("struct {}{}", my_type_name, lifetime),
             TypeEntrails::Enum => format!("enum {}{}", my_type_name, lifetime),
             TypeEntrails::EnumVariant(t) => {
@@ -222,6 +252,7 @@ impl TypeEntrails {
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> String {
         match self {
             TypeEntrails::Box(t)
+            | TypeEntrails::Ref(t, _)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t)
             | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
@@ -313,6 +344,7 @@ impl Type {
     fn inner_type(&self) -> Option<SymbolId> {
         match self.entrails {
             TypeEntrails::Box(t)
+            | TypeEntrails::Ref(t, _)
             | TypeEntrails::EnumVariant(t)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t) => Some(t),
@@ -323,6 +355,23 @@ impl Type {
     pub(crate) fn sem(&self) -> SymbolAttribute {
         self.entrails.sem()
     }
+}
+
+///
+/// Instance specificities
+///
+#[derive(Builder, Clone, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub(crate) struct InstanceEntrails {
+    /// Indicates if the argument is used
+    #[builder(default)]
+    pub(crate) used: bool,
+
+    #[builder(default)]
+    pub(crate) ref_spec: ReferenceType,
+
+    #[builder(default)]
+    pub(crate) mutability: Mutability,
 }
 
 ///
@@ -337,8 +386,8 @@ pub(crate) struct Instance {
     /// The instance's type id in the symbol table
     pub(crate) type_id: SymbolId,
 
-    /// Indicates if the argument is used
-    pub(crate) used: bool,
+    /// Instance specificities
+    pub(crate) entrails: InstanceEntrails,
 
     /// Semantic information
     pub(crate) sem: SymbolAttribute,
@@ -557,7 +606,7 @@ impl Scope {
         name: &str,
         symbol_id: SymbolId,
         type_id: SymbolId,
-        used: bool,
+        entrails: InstanceEntrails,
         sem: SymbolAttribute,
         description: String,
     ) -> Symbol {
@@ -570,7 +619,7 @@ impl Scope {
             SymbolKind::Instance(Instance {
                 scope: self.my_id,
                 type_id,
-                used,
+                entrails,
                 sem,
                 description,
             }),
@@ -580,6 +629,21 @@ impl Scope {
 
     fn has_symbol(&self, symbol_id: SymbolId) -> bool {
         self.symbols.contains(&symbol_id)
+    }
+
+    pub(crate) fn symbol_by_name(
+        &self,
+        symbol_table: &SymbolTable,
+        name: &str,
+    ) -> Option<SymbolId> {
+        self.symbols
+            .iter()
+            .find(|s| {
+                let symbol = symbol_table.symbol(**s);
+                debug_assert_eq!(symbol.name_id().0, self.my_id);
+                self.names[symbol.name_id().1] == name
+            })
+            .copied()
     }
 
     pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
@@ -721,7 +785,7 @@ impl SymbolTable {
     pub(crate) fn set_instance_used(&mut self, symbol_id: SymbolId, used: bool) {
         match &mut self.symbols[symbol_id.0].kind {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
-            SymbolKind::Instance(ref mut i) => i.used &= used,
+            SymbolKind::Instance(ref mut i) => i.entrails.used &= used,
         }
     }
 
@@ -890,7 +954,7 @@ impl SymbolTable {
         parent_symbol: SymbolId,
         instance_name: &str,
         type_id: SymbolId,
-        used: bool,
+        entrails: InstanceEntrails,
         sem: SymbolAttribute,
         description: String,
     ) -> Result<SymbolId> {
@@ -901,7 +965,7 @@ impl SymbolTable {
             instance_name,
             symbol_id,
             type_id,
-            used,
+            entrails,
             sem,
             description,
         );

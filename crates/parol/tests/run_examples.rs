@@ -29,8 +29,8 @@ fn run_examples_test() -> Result<()> {
     println!("Building examples...");
     build_examples()?;
 
-    let grammar = concat!(env!("CARGO_MANIFEST_DIR"), "/src/parser/parol-grammar.par");
-    println!("Running parol on its own parol-grammar {grammar}...");
+    let grammar = concat!(env!("CARGO_MANIFEST_DIR"), "/src/parser/parol.par");
+    println!("Running parol on its own grammar {grammar}...");
     run_parol(&["-f", grammar, "-v"])?;
 
     println!("Running parol on some example grammars...");

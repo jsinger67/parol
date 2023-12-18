@@ -62,7 +62,6 @@ pub mod generators;
 pub use generators::{
     check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
     GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
-    UserTraitGeneratorBuilder,
 };
 
 ///

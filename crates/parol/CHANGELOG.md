@@ -20,10 +20,31 @@ We defined for this project that while being on major version zero we mark incom
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
 ---
-## 0.25.1 - Not released yet
+## 0.26.0 - Not released yet
 
 * Fixed issue [#225](https://github.com/jsinger67/parol/issues/225)
   * New function `parol::test_support::acceptor_test`
+* Internal refactoring of grammar type generation with the goal to eventually solve issue
+[#236](https://github.com/jsinger67/parol/issues/236)
+  * Moved the information about original non-terminals into [parol::generators::GrammarConfig]
+  * Removed the member `user_actions` from [parol::generators::user_trait_generator::GrammarTypeInfo].
+  This information is retrievable from the member `symbol_table`.
+  * Moved the function `add_user_actions` from [parol::generators::grammar_type_generator::UserTraitGenerator]
+  to [parol::generators::user_trait_generator::GrammarTypeInfo]
+  * Extend module [parol::generators::symbol_table] with information about mutability and reference
+  semantics and combine these two with the `used` flag into a struct
+  [parol::generators::symbol_table::InstanceEntrails] so the information is accessible on instances
+  * Made appropriate changes to the module [parol::generators::symbol_table_facade]
+  * Renamed `parol-grammar.par` to `parol.par` to get rid of the somewhat duplicate notation of
+  grammar which leads to names like `ParolGrammarGrammarTrait` when external tools, e.g. like
+  [parol_symbols](https://github.com/jsinger67/parol_symbols), are applied to it. This tool is
+  heavily used during the whole refactoring.
+  * Added a function `new` to [parol::generators::grammar_type_generator::UserTraitGenerator] and
+  made the `try_new` deprecated.
+  * Updated documentation for the module [parol::build] and removed the vector of productions from
+  the struct `Builder` because the information is now belonging to the `GrammarTypeInfo`. Also the
+  `Builder` now uses `UserTraitGenerator::new` instead of `UserTraitGeneratorBuilder`.
+  * Using a CommonReadMe.md file for parol workspace and parol crate
 
 ## 0.25.0 - 2023-10-22
 

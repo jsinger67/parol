@@ -11,7 +11,8 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
-    Function, FunctionBuilder, MetaSymbolKind, SymbolId, SymbolTable, TypeEntrails,
+    Function, FunctionBuilder, InstanceEntrailsBuilder, MetaSymbolKind, ReferenceType, SymbolId,
+    SymbolTable, TypeEntrails,
 };
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
@@ -29,10 +30,6 @@ pub struct GrammarTypeInfo {
     pub(crate) user_action_trait_id: Option<SymbolId>,
     pub(crate) adapter_grammar_struct_id: Option<SymbolId>,
     pub(crate) action_caller_trait_id: Option<SymbolId>,
-
-    // Function in the user action trait
-    // For each non-terminal a function. Sorted by order of appearance in the user grammar
-    pub(crate) user_actions: Vec<(String, SymbolId)>,
 
     // Functions in the inner actions trait
     pub(crate) adapter_actions: BTreeMap<ProductionIndex, SymbolId>,
@@ -91,7 +88,7 @@ impl GrammarTypeInfo {
             TypeEntrails::Struct,
         )?);
 
-        for n in ["new", "push", "pop", "trace_item_stack", "on_comment"] {
+        for n in ["new", "push", "pop", "trace_item_stack"] {
             me.symbol_table.insert_type(
                 me.adapter_grammar_struct_id.unwrap(),
                 n,
@@ -99,7 +96,7 @@ impl GrammarTypeInfo {
             )?;
         }
 
-        // Insert the fix Token type the global scope, simply to avoid name clashes
+        // Insert the fix Token type into the global scope, simply to avoid name clashes
         let token_type_id = me
             .symbol_table
             .insert_global_type("Token", TypeEntrails::Token)?;
@@ -116,7 +113,7 @@ impl GrammarTypeInfo {
             function_type_id,
             "token",
             token_type_id,
-            true,
+            InstanceEntrailsBuilder::default().used(true).build()?,
             SymbolAttribute::None,
             "Called on skipped language comments".to_owned(),
         )?;
@@ -127,9 +124,27 @@ impl GrammarTypeInfo {
     /// Set the auto-generate mode
     /// Internally it adjust the used flags on the arguments of the actions.
     /// The arguments keep their used state only if auto generation is active.
-    pub(crate) fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
+    pub fn set_auto_generate(&mut self, auto_generate: bool) -> Result<()> {
         self.auto_generate = auto_generate;
         self.adjust_arguments_used(auto_generate)
+    }
+
+    /// Add user actions
+    pub fn add_user_actions(&mut self, grammar_config: &GrammarConfig) -> Result<()> {
+        grammar_config
+            .non_terminals
+            .iter()
+            .fold(Vec::<&str>::new(), |mut acc, n| {
+                if !acc.contains(&n.as_str()) {
+                    acc.push(n.as_str());
+                }
+                acc
+            })
+            .iter()
+            .try_for_each(|n| {
+                self.add_user_action(n)?;
+                Ok(())
+            })
     }
 
     pub(crate) fn add_user_action(&mut self, non_terminal: &str) -> Result<SymbolId> {
@@ -143,22 +158,56 @@ impl GrammarTypeInfo {
                     .unwrap(),
             ),
         )?;
-        self.user_actions
-            .push((non_terminal.to_string(), action_fn));
+        let function_type_id = self.symbol_table.symbol_as_type(action_fn).my_id();
+        let argument_type_id = self
+            .symbol_table
+            .get_global_type(&NmHlp::to_upper_camel_case(non_terminal))
+            .ok_or_else(|| anyhow!("No type for non-terminal {} found!", non_terminal))?;
+        self.symbol_table.insert_instance(
+            function_type_id,
+            "arg",
+            argument_type_id,
+            InstanceEntrailsBuilder::default()
+                .ref_spec(ReferenceType::Ref)
+                .build()?,
+            SymbolAttribute::None,
+            format!(
+                "Argument of the user action for non-terminal '{}'",
+                non_terminal
+            ),
+        )?;
         Ok(action_fn)
     }
 
     pub(crate) fn get_user_action(&self, non_terminal: &str) -> Result<SymbolId> {
-        self.user_actions
+        let user_action_trait = self.symbol_table.symbol_as_type(
+            self.user_action_trait_id
+                .ok_or(anyhow!("User action trait not found!"))?,
+        );
+        self.symbol_table
+            .scope(user_action_trait.member_scope())
+            .symbol_by_name(
+                &self.symbol_table,
+                &NmHlp::to_lower_snake_case(non_terminal),
+            )
+            .ok_or(anyhow!("User action '{}' not found!", non_terminal))
+    }
+
+    pub(crate) fn get_user_actions(&self) -> Vec<SymbolId> {
+        self.symbol_table
+            .scope(
+                self.symbol_table
+                    .symbol_as_type(
+                        self.user_action_trait_id
+                            .expect("User action trait not found!"),
+                    )
+                    .member_scope(),
+            )
+            .symbols
             .iter()
-            .find(|(nt, _)| nt == non_terminal)
-            .map(|(_, fn_id)| *fn_id)
-            .ok_or_else(|| {
-                anyhow!(
-                    "There should be a user action for non-terminal '{}'!",
-                    non_terminal
-                )
-            })
+            .filter(|s| self.symbol_table.symbol(**s).name() != "on_comment_parsed")
+            .cloned()
+            .collect::<Vec<_>>()
     }
 
     fn adjust_arguments_used(&mut self, used: bool) -> Result<()> {
@@ -211,6 +260,7 @@ impl GrammarTypeInfo {
         self.deduce_actions(grammar_config)?;
         self.finish_non_terminal_types(&grammar_config.cfg)?;
         self.generate_ast_enum_type()?;
+        self.add_user_actions(grammar_config)?;
         self.symbol_table.propagate_lifetimes();
         Ok(())
     }
@@ -505,7 +555,14 @@ impl GrammarTypeInfo {
                         )?
                     };
                     self.symbol_table
-                        .insert_instance(function_id, n, type_id, used, a, r.to_string())
+                        .insert_instance(
+                            function_id,
+                            n,
+                            type_id,
+                            InstanceEntrailsBuilder::default().used(used).build()?,
+                            a,
+                            r.to_string(),
+                        )
                         .map(|_| Ok(()))?
                 });
             result
@@ -589,7 +646,7 @@ impl GrammarTypeInfo {
                 production_type,
                 &inst_name,
                 type_id,
-                true,
+                InstanceEntrailsBuilder::default().used(true).build()?,
                 sem,
                 description,
             )?;
@@ -683,9 +740,10 @@ impl Display for GrammarTypeInfo {
             writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
         }
         writeln!(f, "// User actions:")?;
-        for (n, i) in &self.user_actions {
-            writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
-        }
+        self.get_user_actions().iter().try_for_each(|a| {
+            let s = self.symbol_table.symbol_as_instance(*a);
+            writeln!(f, "{}: {} /* {} */", s.name(), a, s.description())
+        })?;
         writeln!(f, "// Adapter actions:")?;
         for (p, i) in &self.adapter_actions {
             writeln!(
