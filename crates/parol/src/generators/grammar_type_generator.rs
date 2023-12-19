@@ -835,7 +835,7 @@ impl GrammarTypeInfo {
                 }
                 // Insert all parents of the current node into the candidate_types set
                 for parent in graph.neighbors_directed(*node, petgraph::Direction::Incoming) {
-                    new_candidate_types.insert(parent);
+                    changed |= new_candidate_types.insert(parent);
                 }
             }
             candidate_types = new_candidate_types;
