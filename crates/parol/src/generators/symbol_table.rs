@@ -14,7 +14,9 @@ use std::fmt::{Debug, Display, Error, Formatter};
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, SymbolItem, TypeFacade, TypeItem};
 
 /// Index type for Symbols
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
+#[derive(
+    Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, Eq, Hash, Ord, PartialOrd, TS,
+)]
 #[ts(export)]
 pub(crate) struct SymbolId(usize);
 
@@ -161,6 +163,8 @@ pub(crate) enum TypeEntrails {
     Box(SymbolId),
     /// A type with Ref semantic an mutable state
     Ref(SymbolId, Mutability),
+    /// A type that refers to another type. Typically used when the type was a boxed type before
+    Surrogate(SymbolId),
     /// A struct, i.e. a named collection of (name, type) tuples
     Struct,
     /// Will be generated as enum with given name
@@ -246,12 +250,18 @@ impl TypeEntrails {
             ),
             TypeEntrails::Clipped(k) => format!("Clipped({})", k),
             TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
+            TypeEntrails::Surrogate(s) => format!(
+                "{}{}",
+                symbol_table.symbol(*s).name(),
+                symbol_table.lifetime(*s)
+            ),
         }
     }
 
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable) -> String {
         match self {
             TypeEntrails::Box(t)
+            | TypeEntrails::Surrogate(t)
             | TypeEntrails::Ref(t, _)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t)
@@ -341,9 +351,10 @@ impl Type {
         )
     }
 
-    fn inner_type(&self) -> Option<SymbolId> {
+    pub(crate) fn inner_type(&self) -> Option<SymbolId> {
         match self.entrails {
             TypeEntrails::Box(t)
+            | TypeEntrails::Surrogate(t)
             | TypeEntrails::Ref(t, _)
             | TypeEntrails::EnumVariant(t)
             | TypeEntrails::Vec(t)
@@ -760,6 +771,15 @@ impl SymbolTable {
         SymbolItem::new(&self.symbols[symbol_id.0], self)
     }
 
+    // returns the type id behind the symbol
+    pub(crate) fn type_symbol_id(&self, symbol_id: SymbolId) -> SymbolId {
+        let symbol = self.symbol(symbol_id);
+        match symbol.kind() {
+            SymbolKind::Type(_) => symbol_id,
+            SymbolKind::Instance(i) => i.type_id,
+        }
+    }
+
     pub(crate) fn type_name(&self, symbol_id: SymbolId) -> Result<String> {
         let type_symbol = self.symbol(symbol_id);
         debug_assert!(matches!(type_symbol.kind(), SymbolKind::Type(_)));
@@ -774,7 +794,12 @@ impl SymbolTable {
 
     pub(crate) fn symbol_as_instance(&self, symbol_id: SymbolId) -> impl InstanceFacade<'_> {
         let instance_symbol = self.symbol(symbol_id);
-        debug_assert!(matches!(instance_symbol.kind(), SymbolKind::Instance(_)));
+        debug_assert!(
+            matches!(instance_symbol.kind(), SymbolKind::Instance(_)),
+            "Symbol {} is not an instance: {:?}!",
+            symbol_id,
+            instance_symbol.kind()
+        );
         let instance = match &self.symbols[symbol_id.0].kind {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
             SymbolKind::Instance(i) => i,
@@ -1025,6 +1050,24 @@ impl SymbolTable {
             parent_scope = self.symbol_as_type(symbol_id).member_scope();
         }
         Ok(symbol_id)
+    }
+
+    pub(crate) fn replace_type(
+        &mut self,
+        type_symbol_id: SymbolId,
+        referred_type_id: SymbolId,
+    ) -> Result<()> {
+        let new_symbol = Symbol {
+            my_id: type_symbol_id,                            // Keep the same id
+            name_id: self.symbol(referred_type_id).name_id(), // Set the new name
+            kind: SymbolKind::Type(Type {
+                entrails: TypeEntrails::Surrogate(referred_type_id),
+                member_scope: self.symbol_as_type(referred_type_id).member_scope(),
+            }),
+            lifetime: false,
+        };
+        self.symbols[type_symbol_id.0] = new_symbol;
+        Ok(())
     }
 }
 

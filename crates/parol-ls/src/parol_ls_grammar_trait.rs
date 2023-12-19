@@ -195,7 +195,7 @@ pub trait ParolLsGrammarTrait {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentTitleString {
     pub percent_title: crate::parol_ls_grammar::OwnedToken, /* %title */
-    pub string: Box<String>,
+    pub string: String,
 }
 
 ///
@@ -208,7 +208,7 @@ pub struct DeclarationPercentTitleString {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentCommentString {
     pub percent_comment: crate::parol_ls_grammar::OwnedToken, /* %comment */
-    pub string: Box<String>,
+    pub string: String,
 }
 
 ///
@@ -221,9 +221,9 @@ pub struct DeclarationPercentCommentString {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
     pub percent_user_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %user_type */
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub equ: crate::parol_ls_grammar::OwnedToken, /* = */
-    pub user_type_name: Box<UserTypeName>,
+    pub user_type_name: UserTypeName,
 }
 
 ///
@@ -235,7 +235,7 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclarationScannerDirectives {
-    pub scanner_directives: Box<ScannerDirectives>,
+    pub scanner_directives: ScannerDirectives,
 }
 
 ///
@@ -248,7 +248,7 @@ pub struct DeclarationScannerDirectives {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
     pub percent_line_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %line_comment */
-    pub token_literal: Box<TokenLiteral>,
+    pub token_literal: TokenLiteral,
 }
 
 ///
@@ -261,8 +261,8 @@ pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteral {
     pub percent_block_underscore_comment: crate::parol_ls_grammar::OwnedToken, /* %block_comment */
-    pub token_literal: Box<TokenLiteral>,
-    pub token_literal0: Box<TokenLiteral>,
+    pub token_literal: TokenLiteral,
+    pub token_literal0: TokenLiteral,
 }
 
 ///
@@ -334,7 +334,7 @@ pub struct FactorOptional {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorSymbol {
-    pub symbol: Box<Symbol>,
+    pub symbol: Symbol,
 }
 
 ///
@@ -346,7 +346,7 @@ pub struct FactorSymbol {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolNonTerminal {
-    pub non_terminal: Box<NonTerminal>,
+    pub non_terminal: NonTerminal,
 }
 
 ///
@@ -358,7 +358,7 @@ pub struct SymbolNonTerminal {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolSimpleToken {
-    pub simple_token: Box<SimpleToken>,
+    pub simple_token: SimpleToken,
 }
 
 ///
@@ -370,7 +370,7 @@ pub struct SymbolSimpleToken {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolTokenWithStates {
-    pub token_with_states: Box<TokenWithStates>,
+    pub token_with_states: TokenWithStates,
 }
 
 ///
@@ -382,7 +382,7 @@ pub struct SymbolTokenWithStates {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SymbolScannerSwitch {
-    pub scanner_switch: Box<ScannerSwitch>,
+    pub scanner_switch: ScannerSwitch,
 }
 
 ///
@@ -394,7 +394,7 @@ pub struct SymbolScannerSwitch {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralString {
-    pub string: Box<String>,
+    pub string: String,
 }
 
 ///
@@ -406,7 +406,7 @@ pub struct TokenLiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralLiteralString {
-    pub literal_string: Box<LiteralString>,
+    pub literal_string: LiteralString,
 }
 
 ///
@@ -418,7 +418,7 @@ pub struct TokenLiteralLiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenLiteralRegex {
-    pub regex: Box<Regex>,
+    pub regex: Regex,
 }
 
 ///
@@ -447,7 +447,7 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
 pub struct ScannerSwitchPercentPushLParenIdentifierRParen {
     pub percent_push: crate::parol_ls_grammar::OwnedToken, /* %push */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,      /* ( */
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
@@ -474,7 +474,7 @@ pub struct ScannerSwitchPercentPopLParenRParen {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlCutOperator {
-    pub cut_operator: Box<CutOperator>,
+    pub cut_operator: CutOperator,
 }
 
 ///
@@ -486,7 +486,7 @@ pub struct ASTControlCutOperator {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ASTControlUserTypeDeclaration {
-    pub user_type_declaration: Box<UserTypeDeclaration>,
+    pub user_type_declaration: UserTypeDeclaration,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -600,7 +600,7 @@ pub enum Factor {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinition {
     pub percent_percent: crate::parol_ls_grammar::OwnedToken, /* %% */
-    pub production: Box<Production>,
+    pub production: Production,
     pub grammar_definition_list: Vec<GrammarDefinitionList>,
 }
 
@@ -611,7 +611,7 @@ pub struct GrammarDefinition {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GrammarDefinitionList {
-    pub production: Box<Production>,
+    pub production: Production,
 }
 
 ///
@@ -653,7 +653,7 @@ pub struct LiteralString {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminal {
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
 }
 
@@ -664,7 +664,7 @@ pub struct NonTerminal {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminalOpt {
-    pub a_s_t_control: Box<ASTControl>,
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -686,8 +686,8 @@ pub struct Optional {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ParolLs {
-    pub prolog: Box<Prolog>,
-    pub grammar_definition: Box<GrammarDefinition>,
+    pub prolog: Prolog,
+    pub grammar_definition: GrammarDefinition,
 }
 
 ///
@@ -697,7 +697,7 @@ pub struct ParolLs {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Production {
-    pub production_l_h_s: Box<ProductionLHS>,
+    pub production_l_h_s: ProductionLHS,
     pub alternations: Box<Alternations>,
     pub semicolon: crate::parol_ls_grammar::OwnedToken, /* ; */
 }
@@ -709,7 +709,7 @@ pub struct Production {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProductionLHS {
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
 }
 
@@ -720,7 +720,7 @@ pub struct ProductionLHS {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Prolog {
-    pub start_declaration: Box<StartDeclaration>,
+    pub start_declaration: StartDeclaration,
     pub prolog_list: Vec<PrologList>,
     pub prolog_list0: Vec<PrologList0>,
 }
@@ -732,7 +732,7 @@ pub struct Prolog {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList {
-    pub declaration: Box<Declaration>,
+    pub declaration: Declaration,
 }
 
 ///
@@ -742,7 +742,7 @@ pub struct PrologList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PrologList0 {
-    pub scanner_state: Box<ScannerState>,
+    pub scanner_state: ScannerState,
 }
 
 ///
@@ -793,7 +793,7 @@ pub enum ScannerDirectives {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerState {
     pub percent_scanner: crate::parol_ls_grammar::OwnedToken, /* %scanner */
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub l_brace: crate::parol_ls_grammar::OwnedToken, /* { */
     pub scanner_state_list: Vec<ScannerStateList>,
     pub r_brace: crate::parol_ls_grammar::OwnedToken, /* } */
@@ -806,7 +806,7 @@ pub struct ScannerState {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerStateList {
-    pub scanner_directives: Box<ScannerDirectives>,
+    pub scanner_directives: ScannerDirectives,
 }
 
 ///
@@ -827,7 +827,7 @@ pub enum ScannerSwitch {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchOpt {
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
 }
 
 ///
@@ -837,7 +837,7 @@ pub struct ScannerSwitchOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleToken {
-    pub token_literal: Box<TokenLiteral>,
+    pub token_literal: TokenLiteral,
     pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
 }
 
@@ -848,7 +848,7 @@ pub struct SimpleToken {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleTokenOpt {
-    pub a_s_t_control: Box<ASTControl>,
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -859,7 +859,7 @@ pub struct SimpleTokenOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StartDeclaration {
     pub percent_start: crate::parol_ls_grammar::OwnedToken, /* %start */
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
 }
 
 ///
@@ -869,7 +869,7 @@ pub struct StartDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StateList {
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub state_list_list: Vec<StateListList>,
 }
 
@@ -881,7 +881,7 @@ pub struct StateList {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StateListList {
     pub comma: crate::parol_ls_grammar::OwnedToken, /* , */
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
 }
 
 ///
@@ -925,9 +925,9 @@ pub enum TokenLiteral {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStates {
     pub l_t: crate::parol_ls_grammar::OwnedToken, /* < */
-    pub state_list: Box<StateList>,
+    pub state_list: StateList,
     pub g_t: crate::parol_ls_grammar::OwnedToken, /* > */
-    pub token_literal: Box<TokenLiteral>,
+    pub token_literal: TokenLiteral,
     pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
 }
 
@@ -938,7 +938,7 @@ pub struct TokenWithStates {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TokenWithStatesOpt {
-    pub a_s_t_control: Box<ASTControl>,
+    pub a_s_t_control: ASTControl,
 }
 
 ///
@@ -949,7 +949,7 @@ pub struct TokenWithStatesOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeDeclaration {
     pub colon: crate::parol_ls_grammar::OwnedToken, /* : */
-    pub user_type_name: Box<UserTypeName>,
+    pub user_type_name: UserTypeName,
 }
 
 ///
@@ -959,7 +959,7 @@ pub struct UserTypeDeclaration {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeName {
-    pub identifier: Box<Identifier>,
+    pub identifier: Identifier,
     pub user_type_name_list: Vec<UserTypeNameList>,
 }
 
@@ -970,8 +970,8 @@ pub struct UserTypeName {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct UserTypeNameList {
-    pub double_colon: Box<DoubleColon>,
-    pub identifier: Box<Identifier>,
+    pub double_colon: DoubleColon,
+    pub identifier: Identifier,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -1104,8 +1104,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let grammar_definition = pop_item!(self, grammar_definition, GrammarDefinition, context);
         let prolog = pop_item!(self, prolog, Prolog, context);
         let parol_ls_built = ParolLs {
-            prolog: Box::new(prolog),
-            grammar_definition: Box::new(grammar_definition),
+            prolog,
+            grammar_definition,
         };
         // Calling user action here
         self.user_grammar.parol_ls(&parol_ls_built)?;
@@ -1130,7 +1130,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let prolog_list = pop_and_reverse_item!(self, prolog_list, PrologList, context);
         let start_declaration = pop_item!(self, start_declaration, StartDeclaration, context);
         let prolog_built = Prolog {
-            start_declaration: Box::new(start_declaration),
+            start_declaration,
             prolog_list,
             prolog_list0,
         };
@@ -1154,9 +1154,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list0 = pop_item!(self, prolog_list0, PrologList0, context);
         let scanner_state = pop_item!(self, scanner_state, ScannerState, context);
-        let prolog_list0_0_built = PrologList0 {
-            scanner_state: Box::new(scanner_state),
-        };
+        let prolog_list0_0_built = PrologList0 { scanner_state };
         // Add an element to the vector
         prolog_list0.push(prolog_list0_0_built);
         self.push(ASTType::PrologList0(prolog_list0), context);
@@ -1190,9 +1188,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut prolog_list = pop_item!(self, prolog_list, PrologList, context);
         let declaration = pop_item!(self, declaration, Declaration, context);
-        let prolog_list_0_built = PrologList {
-            declaration: Box::new(declaration),
-        };
+        let prolog_list_0_built = PrologList { declaration };
         // Add an element to the vector
         prolog_list.push(prolog_list_0_built);
         self.push(ASTType::PrologList(prolog_list), context);
@@ -1231,7 +1227,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let start_declaration_built = StartDeclaration {
             percent_start,
-            identifier: Box::new(identifier),
+            identifier,
         };
         // Calling user action here
         self.user_grammar
@@ -1259,7 +1255,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let string = pop_item!(self, string, String, context);
         let declaration_0_built = DeclarationPercentTitleString {
             percent_title,
-            string: Box::new(string),
+            string,
         };
         let declaration_0_built = Declaration::PercentTitleString(declaration_0_built);
         // Calling user action here
@@ -1287,7 +1283,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let string = pop_item!(self, string, String, context);
         let declaration_1_built = DeclarationPercentCommentString {
             percent_comment,
-            string: Box::new(string),
+            string,
         };
         let declaration_1_built = Declaration::PercentCommentString(declaration_1_built);
         // Calling user action here
@@ -1322,9 +1318,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let declaration_2_built = DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
             percent_user_underscore_type,
-            identifier: Box::new(identifier),
+            identifier,
             equ,
-            user_type_name: Box::new(user_type_name),
+            user_type_name,
         };
         let declaration_2_built =
             Declaration::PercentUserUnderscoreTypeIdentifierEquUserTypeName(declaration_2_built);
@@ -1343,9 +1339,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let declaration_3_built = DeclarationScannerDirectives {
-            scanner_directives: Box::new(scanner_directives),
-        };
+        let declaration_3_built = DeclarationScannerDirectives { scanner_directives };
         let declaration_3_built = Declaration::ScannerDirectives(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
@@ -1373,7 +1367,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let scanner_directives_0_built =
             ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
                 percent_line_underscore_comment,
-                token_literal: Box::new(token_literal),
+                token_literal,
             };
         let scanner_directives_0_built =
             ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(scanner_directives_0_built);
@@ -1409,8 +1403,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let scanner_directives_1_built =
             ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteral {
                 percent_block_underscore_comment,
-                token_literal: Box::new(token_literal),
-                token_literal0: Box::new(token_literal0),
+                token_literal,
+                token_literal0,
             };
         let scanner_directives_1_built =
             ScannerDirectives::PercentBlockUnderscoreCommentTokenLiteralTokenLiteral(
@@ -1516,7 +1510,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let production = pop_item!(self, production, Production, context);
         let grammar_definition_built = GrammarDefinition {
             percent_percent,
-            production: Box::new(production),
+            production,
             grammar_definition_list,
         };
         // Calling user action here
@@ -1548,9 +1542,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             context
         );
         let production = pop_item!(self, production, Production, context);
-        let grammar_definition_list_0_built = GrammarDefinitionList {
-            production: Box::new(production),
-        };
+        let grammar_definition_list_0_built = GrammarDefinitionList { production };
         // Add an element to the vector
         grammar_definition_list.push(grammar_definition_list_0_built);
         self.push(
@@ -1612,10 +1604,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .try_into()
             .map_err(parol_runtime::ParolError::UserError)?;
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let production_l_h_s_built = ProductionLHS {
-            identifier: Box::new(identifier),
-            colon,
-        };
+        let production_l_h_s_built = ProductionLHS { identifier, colon };
         // Calling user action here
         self.user_grammar
             .production_l_h_s(&production_l_h_s_built)?;
@@ -1643,7 +1632,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let alternations = pop_item!(self, alternations, Alternations, context);
         let production_l_h_s = pop_item!(self, production_l_h_s, ProductionLHS, context);
         let production_built = Production {
-            production_l_h_s: Box::new(production_l_h_s),
+            production_l_h_s,
             alternations: Box::new(alternations),
             semicolon,
         };
@@ -1842,9 +1831,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let symbol = pop_item!(self, symbol, Symbol, context);
-        let factor_3_built = FactorSymbol {
-            symbol: Box::new(symbol),
-        };
+        let factor_3_built = FactorSymbol { symbol };
         let factor_3_built = Factor::Symbol(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -1861,9 +1848,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_terminal = pop_item!(self, non_terminal, NonTerminal, context);
-        let symbol_0_built = SymbolNonTerminal {
-            non_terminal: Box::new(non_terminal),
-        };
+        let symbol_0_built = SymbolNonTerminal { non_terminal };
         let symbol_0_built = Symbol::NonTerminal(symbol_0_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_0_built)?;
@@ -1880,9 +1865,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let simple_token = pop_item!(self, simple_token, SimpleToken, context);
-        let symbol_1_built = SymbolSimpleToken {
-            simple_token: Box::new(simple_token),
-        };
+        let symbol_1_built = SymbolSimpleToken { simple_token };
         let symbol_1_built = Symbol::SimpleToken(symbol_1_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_1_built)?;
@@ -1899,9 +1882,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let token_with_states = pop_item!(self, token_with_states, TokenWithStates, context);
-        let symbol_2_built = SymbolTokenWithStates {
-            token_with_states: Box::new(token_with_states),
-        };
+        let symbol_2_built = SymbolTokenWithStates { token_with_states };
         let symbol_2_built = Symbol::TokenWithStates(symbol_2_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_2_built)?;
@@ -1918,9 +1899,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_switch = pop_item!(self, scanner_switch, ScannerSwitch, context);
-        let symbol_3_built = SymbolScannerSwitch {
-            scanner_switch: Box::new(scanner_switch),
-        };
+        let symbol_3_built = SymbolScannerSwitch { scanner_switch };
         let symbol_3_built = Symbol::ScannerSwitch(symbol_3_built);
         // Calling user action here
         self.user_grammar.symbol(&symbol_3_built)?;
@@ -1937,9 +1916,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let token_literal_0_built = TokenLiteralString {
-            string: Box::new(string),
-        };
+        let token_literal_0_built = TokenLiteralString { string };
         let token_literal_0_built = TokenLiteral::String(token_literal_0_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_0_built)?;
@@ -1956,9 +1933,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let token_literal_1_built = TokenLiteralLiteralString {
-            literal_string: Box::new(literal_string),
-        };
+        let token_literal_1_built = TokenLiteralLiteralString { literal_string };
         let token_literal_1_built = TokenLiteral::LiteralString(token_literal_1_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_1_built)?;
@@ -1975,9 +1950,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let regex = pop_item!(self, regex, Regex, context);
-        let token_literal_2_built = TokenLiteralRegex {
-            regex: Box::new(regex),
-        };
+        let token_literal_2_built = TokenLiteralRegex { regex };
         let token_literal_2_built = TokenLiteral::Regex(token_literal_2_built);
         // Calling user action here
         self.user_grammar.token_literal(&token_literal_2_built)?;
@@ -2000,7 +1973,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let simple_token_opt = pop_item!(self, simple_token_opt, SimpleTokenOpt, context);
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let simple_token_built = SimpleToken {
-            token_literal: Box::new(token_literal),
+            token_literal,
             simple_token_opt,
         };
         // Calling user action here
@@ -2018,9 +1991,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let simple_token_opt_0_built = SimpleTokenOpt {
-            a_s_t_control: Box::new(a_s_t_control),
-        };
+        let simple_token_opt_0_built = SimpleTokenOpt { a_s_t_control };
         self.push(
             ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
             context,
@@ -2069,9 +2040,9 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let state_list = pop_item!(self, state_list, StateList, context);
         let token_with_states_built = TokenWithStates {
             l_t,
-            state_list: Box::new(state_list),
+            state_list,
             g_t,
-            token_literal: Box::new(token_literal),
+            token_literal,
             token_with_states_opt,
         };
         // Calling user action here
@@ -2090,9 +2061,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let token_with_states_opt_0_built = TokenWithStatesOpt {
-            a_s_t_control: Box::new(a_s_t_control),
-        };
+        let token_with_states_opt_0_built = TokenWithStatesOpt { a_s_t_control };
         self.push(
             ASTType::TokenWithStatesOpt(Some(Box::new(token_with_states_opt_0_built))),
             context,
@@ -2226,7 +2195,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let non_terminal_opt = pop_item!(self, non_terminal_opt, NonTerminalOpt, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let non_terminal_built = NonTerminal {
-            identifier: Box::new(identifier),
+            identifier,
             non_terminal_opt,
         };
         // Calling user action here
@@ -2244,9 +2213,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
-        let non_terminal_opt_0_built = NonTerminalOpt {
-            a_s_t_control: Box::new(a_s_t_control),
-        };
+        let non_terminal_opt_0_built = NonTerminalOpt { a_s_t_control };
         self.push(
             ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
             context,
@@ -2355,7 +2322,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_state_built = ScannerState {
             percent_scanner,
-            identifier: Box::new(identifier),
+            identifier,
             l_brace,
             scanner_state_list,
             r_brace,
@@ -2380,9 +2347,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut scanner_state_list = pop_item!(self, scanner_state_list, ScannerStateList, context);
         let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let scanner_state_list_0_built = ScannerStateList {
-            scanner_directives: Box::new(scanner_directives),
-        };
+        let scanner_state_list_0_built = ScannerStateList { scanner_directives };
         // Add an element to the vector
         scanner_state_list.push(scanner_state_list_0_built);
         self.push(ASTType::ScannerStateList(scanner_state_list), context);
@@ -2420,7 +2385,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let state_list_list = pop_and_reverse_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let state_list_built = StateList {
-            identifier: Box::new(identifier),
+            identifier,
             state_list_list,
         };
         // Calling user action here
@@ -2448,10 +2413,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             .map_err(parol_runtime::ParolError::UserError)?;
         let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_list_0_built = StateListList {
-            identifier: Box::new(identifier),
-            comma,
-        };
+        let state_list_list_0_built = StateListList { identifier, comma };
         // Add an element to the vector
         state_list_list.push(state_list_list_0_built);
         self.push(ASTType::StateListList(state_list_list), context);
@@ -2542,7 +2504,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
             percent_push,
             l_paren,
-            identifier: Box::new(identifier),
+            identifier,
             r_paren,
         };
         let scanner_switch_1_built =
@@ -2599,9 +2561,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_opt_0_built = ScannerSwitchOpt {
-            identifier: Box::new(identifier),
-        };
+        let scanner_switch_opt_0_built = ScannerSwitchOpt { identifier };
         self.push(
             ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
             context,
@@ -2630,9 +2590,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let cut_operator = pop_item!(self, cut_operator, CutOperator, context);
-        let a_s_t_control_0_built = ASTControlCutOperator {
-            cut_operator: Box::new(cut_operator),
-        };
+        let a_s_t_control_0_built = ASTControlCutOperator { cut_operator };
         let a_s_t_control_0_built = ASTControl::CutOperator(a_s_t_control_0_built);
         // Calling user action here
         self.user_grammar.a_s_t_control(&a_s_t_control_0_built)?;
@@ -2651,7 +2609,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let user_type_declaration =
             pop_item!(self, user_type_declaration, UserTypeDeclaration, context);
         let a_s_t_control_1_built = ASTControlUserTypeDeclaration {
-            user_type_declaration: Box::new(user_type_declaration),
+            user_type_declaration,
         };
         let a_s_t_control_1_built = ASTControl::UserTypeDeclaration(a_s_t_control_1_built);
         // Calling user action here
@@ -2698,7 +2656,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclaration {
             colon,
-            user_type_name: Box::new(user_type_name),
+            user_type_name,
         };
         // Calling user action here
         self.user_grammar
@@ -2726,7 +2684,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, user_type_name_list, UserTypeNameList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let user_type_name_built = UserTypeName {
-            identifier: Box::new(identifier),
+            identifier,
             user_type_name_list,
         };
         // Calling user action here
@@ -2753,8 +2711,8 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let double_colon = pop_item!(self, double_colon, DoubleColon, context);
         let user_type_name_list_0_built = UserTypeNameList {
-            identifier: Box::new(identifier),
-            double_colon: Box::new(double_colon),
+            identifier,
+            double_colon,
         };
         // Add an element to the vector
         user_type_name_list.push(user_type_name_list_0_built);

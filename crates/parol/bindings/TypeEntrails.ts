@@ -5,4 +5,4 @@ import type { Mutability } from "./Mutability";
 import type { SymbolId } from "./SymbolId";
 import type { UserDefinedTypeName } from "./UserDefinedTypeName";
 
-export type TypeEntrails = "None" | "Token" | { "Box": SymbolId } | { "Ref": [SymbolId, Mutability] } | "Struct" | "Enum" | { "EnumVariant": SymbolId } | { "Vec": SymbolId } | "Trait" | { "Function": Function } | { "Option": SymbolId } | { "Clipped": MetaSymbolKind } | { "UserDefinedType": [MetaSymbolKind, UserDefinedTypeName] };
+export type TypeEntrails = "None" | "Token" | { "Box": SymbolId } | { "Ref": [SymbolId, Mutability] } | { "Surrogate": SymbolId } | "Struct" | "Enum" | { "EnumVariant": SymbolId } | { "Vec": SymbolId } | "Trait" | { "Function": Function } | { "Option": SymbolId } | { "Clipped": MetaSymbolKind } | { "UserDefinedType": [MetaSymbolKind, UserDefinedTypeName] };

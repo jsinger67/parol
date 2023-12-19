@@ -4,7 +4,11 @@ use crate::grammar::ProductionAttribute;
 use crate::{Pr, Symbol, Terminal};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
-use std::collections::{BTreeMap, HashSet};
+use petgraph::algo::simple_paths;
+use petgraph::graph::NodeIndex;
+use petgraph::Graph;
+use std::collections::hash_map::Entry;
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fmt::{Debug, Display, Error, Formatter};
 
 use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
@@ -12,7 +16,7 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 use super::generate_terminal_name;
 use super::symbol_table::{
     Function, FunctionBuilder, InstanceEntrailsBuilder, MetaSymbolKind, ReferenceType, SymbolId,
-    SymbolTable, TypeEntrails,
+    SymbolKind, SymbolTable, TypeEntrails,
 };
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
@@ -115,7 +119,7 @@ impl GrammarTypeInfo {
             token_type_id,
             InstanceEntrailsBuilder::default().used(true).build()?,
             SymbolAttribute::None,
-            &"Called on skipped language comments",
+            "Called on skipped language comments",
         )?;
 
         Ok(me)
@@ -261,6 +265,7 @@ impl GrammarTypeInfo {
         self.finish_non_terminal_types(&grammar_config.cfg)?;
         self.generate_ast_enum_type()?;
         self.add_user_actions(grammar_config)?;
+        self.minimize_boxed_types()?;
         self.symbol_table.propagate_lifetimes();
         Ok(())
     }
@@ -272,7 +277,7 @@ impl GrammarTypeInfo {
         self.adapter_actions
             .iter()
             .filter(|(_, a)| match &self.symbol_table.symbol(**a).kind() {
-                super::symbol_table::SymbolKind::Type(t) => match &t.entrails {
+                SymbolKind::Type(t) => match &t.entrails {
                     TypeEntrails::Function(f) => f.non_terminal == n,
                     _ => panic!("Expecting a function!"),
                 },
@@ -721,6 +726,122 @@ impl GrammarTypeInfo {
     pub fn symbol_table(&self) -> &SymbolTable {
         &self.symbol_table
     }
+
+    // Start from the symbol with ID ast_enum_type and walk the tree of types.
+    // Add all types to a Petgraph graph and then replace the Box typed with its inner type if
+    // the inner type contains no cycles.
+    fn minimize_boxed_types(&mut self) -> Result<()> {
+        // Walk the type tree and add all types to a graph
+        fn build_type_graph(
+            graph: &mut Graph<SymbolId, ()>,
+            node_map: &mut HashMap<SymbolId, NodeIndex>,
+            visited: &mut HashSet<SymbolId>,
+            symbol_table: &SymbolTable,
+            from_node: Option<NodeIndex>,
+            symbol_id: SymbolId,
+        ) -> Result<()> {
+            let node = if let Entry::Vacant(e) = node_map.entry(symbol_id) {
+                let node = graph.add_node(symbol_id);
+                e.insert(node);
+                node
+            } else {
+                *node_map.get(&symbol_id).unwrap()
+            };
+            if let Some(from_node) = from_node {
+                graph.add_edge(from_node, node, ());
+            }
+
+            if visited.contains(&symbol_id) {
+                return Ok(());
+            }
+            visited.insert(symbol_id);
+
+            let type_symbol = symbol_table.symbol_as_type(symbol_table.type_symbol_id(symbol_id));
+            if let Some(inner_type_id) = type_symbol.inner_type() {
+                build_type_graph(
+                    graph,
+                    node_map,
+                    visited,
+                    symbol_table,
+                    Some(node),
+                    inner_type_id,
+                )
+            } else {
+                type_symbol.members().iter().try_for_each(|m| {
+                    build_type_graph(graph, node_map, visited, symbol_table, Some(node), *m)
+                })
+            }
+        }
+
+        let mut graph = Graph::<SymbolId, ()>::new();
+        let mut node_map = HashMap::<SymbolId, NodeIndex>::new();
+        let mut visited = HashSet::<SymbolId>::new();
+
+        build_type_graph(
+            &mut graph,
+            &mut node_map,
+            &mut visited,
+            &self.symbol_table,
+            None,
+            self.ast_enum_type,
+        )?;
+
+        // Replace all boxed types with their inner type if the inner type contains no cycles.
+        // Start with the leaves of the graph and work upwards.
+
+        // Collect all leaves in the candidate_types set
+        let mut candidate_types = HashSet::<NodeIndex>::new();
+        for node in graph.node_indices() {
+            if graph.neighbors(node).count() == 0 {
+                candidate_types.insert(node);
+            }
+        }
+
+        trace!(
+            "{:?}",
+            petgraph::dot::Dot::with_attr_getters(
+                &graph,
+                &[petgraph::dot::Config::EdgeNoLabel],
+                &|_, _| "".to_owned(),
+                &|_, n| format!("label=\"{}\"", self.symbol_table.symbol(*n.1).name())
+            )
+        );
+
+        let mut changed = true;
+
+        while changed {
+            changed = false;
+            let mut new_candidate_types = candidate_types.clone();
+            for node in &candidate_types {
+                let symbol_id = graph[*node];
+                if simple_paths::all_simple_paths::<Vec<_>, _>(&graph, *node, *node, 1, None)
+                    .count()
+                    > 0
+                {
+                    // There is a cycle in the type tree. We cannot replace the boxed type with its
+                    // inner type.
+                    continue;
+                }
+                let (type_symbol_id, type_symbol_entrails) = {
+                    let type_symbol = self
+                        .symbol_table
+                        .symbol_as_type(self.symbol_table.type_symbol_id(symbol_id));
+                    (type_symbol.my_id(), type_symbol.entrails().clone())
+                };
+                if let TypeEntrails::Box(inner_type_id) = type_symbol_entrails {
+                    self.symbol_table
+                        .replace_type(type_symbol_id, inner_type_id)?;
+                    changed = true;
+                }
+                // Insert all parents of the current node into the candidate_types set
+                for parent in graph.neighbors_directed(*node, petgraph::Direction::Incoming) {
+                    new_candidate_types.insert(parent);
+                }
+            }
+            candidate_types = new_candidate_types;
+        }
+        Ok(())
+    }
 }
 
 impl Display for GrammarTypeInfo {
@@ -741,8 +862,12 @@ impl Display for GrammarTypeInfo {
         }
         writeln!(f, "// User actions:")?;
         self.get_user_actions().iter().try_for_each(|a| {
-            let s = self.symbol_table.symbol_as_instance(*a);
-            writeln!(f, "{}: {} /* {} */", s.name(), a, s.description())
+            let fun = self.symbol_table.symbol_as_function(*a).unwrap();
+            writeln!(
+                f,
+                "{}: {} /* {} */",
+                fun.prod_num, fun.non_terminal, fun.prod_string
+            )
         })?;
         writeln!(f, "// Adapter actions:")?;
         for (p, i) in &self.adapter_actions {

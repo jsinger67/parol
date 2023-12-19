@@ -62,7 +62,7 @@ pub trait ListGrammarTrait {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Items {
-    pub num: Box<Num>,
+    pub num: Num,
     pub items_list: Vec<ItemsList>,
 }
 
@@ -73,7 +73,7 @@ pub struct Items {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsList {
-    pub num: Box<Num>,
+    pub num: Num,
 }
 
 ///
@@ -268,10 +268,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let items_list = pop_and_reverse_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
-        let items_built = Items {
-            num: Box::new(num),
-            items_list,
-        };
+        let items_built = Items { num, items_list };
         // Calling user action here
         self.user_grammar.items(&items_built)?;
         self.push(ASTType::Items(items_built), context);
@@ -294,7 +291,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         let mut items_list = pop_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
         let items_list_0_built = ItemsList {
-            num: Box::new(num),
+            num,
             // Ignore clipped member 'comma'
         };
         // Add an element to the vector
