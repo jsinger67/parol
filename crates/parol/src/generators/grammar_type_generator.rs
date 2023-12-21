@@ -790,12 +790,10 @@ impl GrammarTypeInfo {
         // Start with the leaves of the graph and work upwards.
 
         // Collect all leaves in the candidate_types set
-        let mut candidate_types = HashSet::<NodeIndex>::new();
-        for node in graph.node_indices() {
-            if graph.neighbors(node).count() == 0 {
-                candidate_types.insert(node);
-            }
-        }
+        let mut candidate_types = graph
+            .node_indices()
+            .filter(|node| graph.neighbors(*node).count() == 0)
+            .collect::<HashSet<NodeIndex>>();
 
         trace!(
             "{:?}",
@@ -828,14 +826,16 @@ impl GrammarTypeInfo {
                         .symbol_as_type(self.symbol_table.type_symbol_id(symbol_id));
                     (type_symbol.my_id(), type_symbol.entrails().clone())
                 };
+                // Insert all parents of the current node into the candidate_types set because we
+                // didn't detect a cycle until now and all parents are possible candidates.
+                for parent in graph.neighbors_directed(*node, petgraph::Direction::Incoming) {
+                    changed |= new_candidate_types.insert(parent);
+                }
+                // Now replace the boxed type with its inner type
                 if let TypeEntrails::Box(inner_type_id) = type_symbol_entrails {
                     self.symbol_table
                         .replace_type(type_symbol_id, inner_type_id)?;
                     changed = true;
-                }
-                // Insert all parents of the current node into the candidate_types set
-                for parent in graph.neighbors_directed(*node, petgraph::Direction::Incoming) {
-                    changed |= new_candidate_types.insert(parent);
                 }
             }
             candidate_types = new_candidate_types;
