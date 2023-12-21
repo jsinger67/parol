@@ -219,7 +219,7 @@ impl GrammarTypeInfo {
             let arguments_scope = self.symbol_table.symbol_as_type(*action_id).member_scope();
             let args = self.symbol_table.scope(arguments_scope).symbols.clone();
             for arg in args {
-                self.symbol_table.set_instance_used(arg, used);
+                self.symbol_table.set_instance_used(arg, used)?;
             }
         }
         Ok(())
