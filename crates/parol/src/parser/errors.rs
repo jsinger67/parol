@@ -8,7 +8,7 @@ use thiserror::Error;
 /// Error types used by the [crate::parser::ParolGrammar]'s semantic actions
 #[derive(Error, Debug)]
 pub enum ParolParserError {
-    /// Undeclared scanner found. Pease declare a scanner via %scanner name {{...}}
+    /// Undeclared scanner found. Please declare a scanner via %scanner name {{...}}
     #[error("{context} - Unknown scanner {name}")]
     UnknownScanner {
         /// Context (semantic action) where the error was issued
