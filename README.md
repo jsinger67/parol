@@ -1,7 +1,9 @@
 <!-- markdownlint-disable first-line-h1 -->
+
 [![Rust](https://github.com/jsinger67/parol/actions/workflows/rust.yml/badge.svg)](https://github.com/jsinger67/parol/actions/workflows/rust.yml)
 [![Docs.rs](https://docs.rs/parol/badge.svg)](https://docs.rs/parol)
 [![Crates.io](https://img.shields.io/crates/v/parol.svg)](https://crates.io/crates/parol)
+
 <!-- markdownlint-enable first-line-h1 -->
 
 # About `parol`
@@ -22,22 +24,22 @@ Therefore, please use an officially released version from
 
 This workspace contains four essential crates that are all separately released on crates.io.
 
-* [parol](https://crates.io/crates/parol)
-* [parol_runtime](https://crates.io/crates/parol_runtime)
-* [parol-macros](https://crates.io/crates/parol-macros)
-* [parol-ls](https://crates.io/crates/parol-ls)
+- [parol](https://crates.io/crates/parol)
+- [parol_runtime](https://crates.io/crates/parol_runtime)
+- [parol-macros](https://crates.io/crates/parol-macros)
+- [parol-ls](https://crates.io/crates/parol-ls)
 
 New changes can be viewed in the change logs of the respective projects.
 
-* [CHANGELOG parol](./crates/parol/CHANGELOG.md)
-* [CHANGELOG parol_runtime](./crates/parol_runtime/CHANGELOG.md)
-* [CHANGELOG parol-macros](./crates/parol-macros/CHANGELOG.md)
-* [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
+- [CHANGELOG parol](./crates/parol/CHANGELOG.md)
+- [CHANGELOG parol_runtime](./crates/parol_runtime/CHANGELOG.md)
+- [CHANGELOG parol-macros](./crates/parol-macros/CHANGELOG.md)
+- [CHANGELOG parol-ls](./crates/parol-ls/CHANGELOG.md)
 
 It also contains the vs-code extension `parol-vscode` which is released on VS Code marketplace
 [parol-vscode](https://marketplace.visualstudio.com/items?itemName=jsinger67.parol-vscode)
 
-* [CHANGELOG parol-vscode](./tools/parol-vscode/CHANGELOG.md)
+- [CHANGELOG parol-vscode](./tools/parol-vscode/CHANGELOG.md)
 
 ---
 
@@ -57,7 +59,7 @@ AST. Also you can specify your own types for language elements.
 
 Language description and language implementation is strictly separated in `parol`. Thus you can
 design your language's grammar without any need to process anything because generated parsers
-function by default as acceptors. This empowers you to do a real *rapid prototyping* of your grammar.
+function by default as acceptors. This empowers you to do a real _rapid prototyping_ of your grammar.
 
 `parol` generates a trait as interface between your language processing and the generated parser.
 The trait contains functions for each non-terminal of your grammar which you can implement for
@@ -75,38 +77,38 @@ often a more iterative approach is taken.
 
 ## Generated parsers
 
-* are true LL(k) parsers implemented by push down automata (PDAs).
-* are predictive, i.e. they implement a **non-backtracking** parsing technique. This often results
-in much faster parsers.
-* are clean and easy to read.
-* use only as much lookahead as needed for a certain non-terminal (from 0 to k)
-* are generated from **a single grammar description** file.
-* can generate types that resemble the AST of your grammar automatically. Semantic actions are then
-called with these types. This greatly improves the development process and makes it less error-prone.
-* As of version 0.24.0 generated parsers can recover from syntax errors automatically
+- are true LL(k) parsers implemented by push down automata (PDAs).
+- are predictive, i.e. they implement a **non-backtracking** parsing technique. This often results
+  in much faster parsers.
+- are clean and easy to read.
+- use only as much lookahead as needed for a certain non-terminal (from 0 to k)
+- are generated from **a single grammar description** file.
+- can generate types that resemble the AST of your grammar automatically. Semantic actions are then
+  called with these types. This greatly improves the development process and makes it less error-prone.
+- As of version 0.24.0 generated parsers can recover from syntax errors automatically
 
 ## Other properties of `parol`
 
-* Selection of production is done by a deterministic finite **lookahead automaton** for each
-non-terminal.
-* **Semantic actions** with empty default implementations are generated as a trait. You can
-implement this trait for your grammar processing item and implement only needed actions. This
-provides a loose coupling between your language definition and the language processing.
-* As a result semantic actions are strictly separated from the grammar definition in contrast to
-Bison. No parser generation step is needed when you merely change the implementation of a semantic
-action.
-* The grammar description is provided in a **Yacc/Bison-like style** with additional features known
-from EBNF such as grouping, optional elements and repetitions.
-* You can define multiple scanner states (aka start conditions) and define switches between them
-directly in the productions of your grammar.
-* You can opt out the default handling of whitespace and newlines for each scanner state separately.
-* The grammar description supports definition of language comments via **%line_comment** and
-**%block_comment** declarations for each scanner state.
-* The crate provides several tools for **grammar analysis**, **transformation** and **parse tree visualization**
-to support your grammar implementation.
-* The parser generator **detects direct and indirect left recursions** in your grammar description.
-* `parol`'s parser is generated by `parol` itself.
-* Use `parol new` to create your own crate that uses `parol`.
+- Selection of production is done by a deterministic finite **lookahead automaton** for each
+  non-terminal.
+- **Semantic actions** with empty default implementations are generated as a trait. You can
+  implement this trait for your grammar processing item and implement only needed actions. This
+  provides a loose coupling between your language definition and the language processing.
+- As a result semantic actions are strictly separated from the grammar definition in contrast to
+  Bison. No parser generation step is needed when you merely change the implementation of a semantic
+  action.
+- The grammar description is provided in a **Yacc/Bison-like style** with additional features known
+  from EBNF such as grouping, optional elements and repetitions.
+- You can define multiple scanner states (aka start conditions) and define switches between them
+  directly in the productions of your grammar.
+- You can opt out the default handling of whitespace and newlines for each scanner state separately.
+- The grammar description supports definition of language comments via **%line_comment** and
+  **%block_comment** declarations for each scanner state.
+- The crate provides several tools for **grammar analysis**, **transformation** and **parse tree visualization**
+  to support your grammar implementation.
+- The parser generator **detects direct and indirect left recursions** in your grammar description.
+- `parol`'s parser is generated by `parol` itself.
+- Use `parol new` to create your own crate that uses `parol`.
 
 ## Why should you use LL(k) parsers in your language implementation?
 
@@ -192,7 +194,7 @@ implementations needed. The parol_runtime crate is very lightweight.
 ### Macros
 
 As of version 0.13.0 you have to add the [parol-macros](https://github.com/jsinger67/parol-macros)
-crate to your dependencies if you use  `parol`'s *auto-generation mode*.
+crate to your dependencies if you use `parol`'s _auto-generation mode_.
 
 ## License
 
@@ -200,10 +202,10 @@ crate to your dependencies if you use  `parol`'s *auto-generation mode*.
 licensed! Except where noted (below and/or in individual files), all code in this repository is
 dual-licensed under either:
 
-* MIT License ([LICENSE-MIT](LICENSE-MIT) or
-[http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT))
-* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0))
+- MIT License ([LICENSE-MIT](LICENSE-MIT) or
+  [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT))
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or
+  [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0))
 
 at your option.
 This means you can select the license you prefer!
@@ -216,18 +218,19 @@ additional terms or conditions.
 
 ## Further readings
 
-* [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol/CHANGELOG.md)
-* [The book](https://jsinger67.github.io/)
+- [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol/CHANGELOG.md)
+- [The book](https://jsinger67.github.io/)
 
 ## Contributors
 
 Thanks to all the contributors for improving this project!
 
-* [Techcable](https://github.com/Techcable)
-* [oaleaf](https://github.com/oaleaf)
-* [mobotsar](https://github.com/mobotsar)
-* [ryo33](https://github.com/ryo33)
-* [dalance](https://github.com/dalance)
-* [udoprog](https://github.com/udoprog)
-* [AumyF](https://github.com/AumyF)
-* [yui-knk](https://github.com/yui-knk)
+- [Techcable](https://github.com/Techcable)
+- [oaleaf](https://github.com/oaleaf)
+- [mobotsar](https://github.com/mobotsar)
+- [ryo33](https://github.com/ryo33)
+- [dalance](https://github.com/dalance)
+- [udoprog](https://github.com/udoprog)
+- [AumyF](https://github.com/AumyF)
+- [yui-knk](https://github.com/yui-knk)
+- [ydah](https://github.com/ydah)
