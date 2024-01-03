@@ -282,7 +282,7 @@ pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorGroup<'t> {
-    pub group: Box<Group<'t>>,
+    pub group: Group<'t>,
 }
 
 ///
@@ -294,7 +294,7 @@ pub struct FactorGroup<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorRepeat<'t> {
-    pub repeat: Box<Repeat<'t>>,
+    pub repeat: Repeat<'t>,
 }
 
 ///
@@ -306,7 +306,7 @@ pub struct FactorRepeat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOptional<'t> {
-    pub optional: Box<Optional<'t>>,
+    pub optional: Optional<'t>,
 }
 
 ///
@@ -495,7 +495,7 @@ pub struct Alternation<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationList<'t> {
-    pub factor: Box<Factor<'t>>,
+    pub factor: Factor<'t>,
 }
 
 ///
@@ -505,7 +505,7 @@ pub struct AlternationList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Alternations<'t> {
-    pub alternation: Box<Alternation<'t>>,
+    pub alternation: Alternation<'t>,
     pub alternations_list: Vec<AlternationsList<'t>>,
 }
 
@@ -516,7 +516,7 @@ pub struct Alternations<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AlternationsList<'t> {
-    pub alternation: Box<Alternation<'t>>,
+    pub alternation: Alternation<'t>,
 }
 
 ///
@@ -592,7 +592,7 @@ pub struct GrammarDefinitionList<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Group<'t> {
     pub l_paren: Token<'t>, /* ( */
-    pub alternations: Box<Alternations<'t>>,
+    pub alternations: Alternations<'t>,
     pub r_paren: Token<'t>, /* ) */
 }
 
@@ -635,7 +635,7 @@ pub struct NonTerminalOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Optional<'t> {
     pub l_bracket: Token<'t>, /* [ */
-    pub alternations: Box<Alternations<'t>>,
+    pub alternations: Alternations<'t>,
     pub r_bracket: Token<'t>, /* ] */
 }
 
@@ -658,7 +658,7 @@ pub struct Parol<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Production<'t> {
     pub identifier: Identifier<'t>,
-    pub alternations: Box<Alternations<'t>>,
+    pub alternations: Alternations<'t>,
 }
 
 ///
@@ -721,7 +721,7 @@ pub struct Regex<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Repeat<'t> {
     pub l_brace: Token<'t>, /* { */
-    pub alternations: Box<Alternations<'t>>,
+    pub alternations: Alternations<'t>,
     pub r_brace: Token<'t>, /* } */
 }
 
@@ -1513,7 +1513,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let production_built = Production {
             identifier,
             // Ignore clipped member 'colon'
-            alternations: Box::new(alternations),
+            alternations,
             // Ignore clipped member 'semicolon'
         };
         // Calling user action here
@@ -1538,7 +1538,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
         let alternations_built = Alternations {
-            alternation: Box::new(alternation),
+            alternation,
             alternations_list,
         };
         // Calling user action here
@@ -1563,7 +1563,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
         let alternations_list_0_built = AlternationsList {
-            alternation: Box::new(alternation),
+            alternation,
             // Ignore clipped member 'or'
         };
         // Add an element to the vector
@@ -1619,9 +1619,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut alternation_list = pop_item!(self, alternation_list, AlternationList, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let alternation_list_0_built = AlternationList {
-            factor: Box::new(factor),
-        };
+        let alternation_list_0_built = AlternationList { factor };
         // Add an element to the vector
         alternation_list.push(alternation_list_0_built);
         self.push(ASTType::AlternationList(alternation_list), context);
@@ -1650,9 +1648,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let group = pop_item!(self, group, Group, context);
-        let factor_0_built = FactorGroup {
-            group: Box::new(group),
-        };
+        let factor_0_built = FactorGroup { group };
         let factor_0_built = Factor::Group(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -1669,9 +1665,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let repeat = pop_item!(self, repeat, Repeat, context);
-        let factor_1_built = FactorRepeat {
-            repeat: Box::new(repeat),
-        };
+        let factor_1_built = FactorRepeat { repeat };
         let factor_1_built = Factor::Repeat(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -1688,9 +1682,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let optional = pop_item!(self, optional, Optional, context);
-        let factor_2_built = FactorOptional {
-            optional: Box::new(optional),
-        };
+        let factor_2_built = FactorOptional { optional };
         let factor_2_built = Factor::Optional(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -2015,7 +2007,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let alternations = pop_item!(self, alternations, Alternations, context);
         let group_built = Group {
             l_paren,
-            alternations: Box::new(alternations),
+            alternations,
             r_paren,
         };
         // Calling user action here
@@ -2042,7 +2034,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let alternations = pop_item!(self, alternations, Alternations, context);
         let optional_built = Optional {
             l_bracket,
-            alternations: Box::new(alternations),
+            alternations,
             r_bracket,
         };
         // Calling user action here
@@ -2069,7 +2061,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let alternations = pop_item!(self, alternations, Alternations, context);
         let repeat_built = Repeat {
             l_brace,
-            alternations: Box::new(alternations),
+            alternations,
             r_brace,
         };
         // Calling user action here

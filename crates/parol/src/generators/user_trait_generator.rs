@@ -448,7 +448,7 @@ impl<'a> UserTraitGenerator<'a> {
                 };
                 Ok(Some(format!("{}", struct_data)))
             }
-            _ => bail!("Unexpected type!"),
+            _ => bail!("Unexpected type {:?}!", type_symbol.entrails()),
         }
     }
 

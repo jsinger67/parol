@@ -1001,7 +1001,7 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
             // Only one factor in the single alternation
             if arg.alternations.alternation.alternation_list.len() == 1 {
                 if let Factor::Symbol(symbol) =
-                    &*arg.alternations.alternation.alternation_list[0].factor
+                    &arg.alternations.alternation.alternation_list[0].factor
                 {
                     match &symbol.symbol {
                         // Only applicable for SimpleToken ...

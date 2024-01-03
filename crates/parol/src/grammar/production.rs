@@ -140,6 +140,11 @@ impl Pr {
         })
     }
 
+    /// Returns the ProductionAttribute of self
+    pub(crate) fn get_attribute(&self) -> ProductionAttribute {
+        self.2
+    }
+
     /// Formats self with the help of a scanner state resolver
     pub fn format<R, S>(&self, scanner_state_resolver: &R, user_type_resolver: &S) -> Result<String>
     where

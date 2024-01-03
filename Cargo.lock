@@ -795,7 +795,6 @@ dependencies = [
  "owo-colors",
  "parol-macros",
  "parol_runtime",
- "petgraph",
  "pretty_assertions",
  "quickcheck",
  "quickcheck_macros",

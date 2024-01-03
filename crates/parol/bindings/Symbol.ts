@@ -3,4 +3,4 @@ import type { ScopedNameId } from "./ScopedNameId";
 import type { SymbolId } from "./SymbolId";
 import type { SymbolKind } from "./SymbolKind";
 
-export interface Symbol { my_id: SymbolId, name_id: ScopedNameId, kind: SymbolKind, lifetime: boolean, }
+export interface Symbol { my_id: SymbolId, name_id: ScopedNameId, kind: SymbolKind, has_lifetime: boolean, }
