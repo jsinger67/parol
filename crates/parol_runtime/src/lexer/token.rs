@@ -93,7 +93,7 @@ impl<'t> Token<'t> {
     }
 
     ///
-    /// Indicates wether the token is normally skipped by the TokenStream.
+    /// Indicates whether the token is normally skipped by the TokenStream.
     /// The behavior is independent from the language.
     ///
     #[inline]
@@ -102,7 +102,7 @@ impl<'t> Token<'t> {
     }
 
     ///
-    /// Indicates wether the token is a comment token.
+    /// Indicates whether the token is a comment token.
     ///
     #[inline]
     pub fn is_comment_token(&self) -> bool {
