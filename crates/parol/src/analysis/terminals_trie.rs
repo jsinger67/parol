@@ -75,7 +75,7 @@ impl Node {
     }
 
     /// Adds a child node if it not already exists and returns the child index of it
-    /// The boolean in the return value ist true on insertion (collection changed)
+    /// The boolean in the return value is true on insertion (collection changed)
     fn add_child(&mut self, t: TerminalIndex) -> (usize, bool) {
         if let Some(index) = self.child_index(t) {
             (index, false)
