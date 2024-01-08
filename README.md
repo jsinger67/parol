@@ -179,6 +179,12 @@ But `parol` is not ready for production yet. Features are still in development a
 interface can change at any time. There is still a lot of work to be done and any help is
 appreciated.
 
+### [The video](https://youtu.be/TJMwMqD4XSo)
+
+This video explains the installation of `parol` and the language server to setup your working
+environment. Then it shows the process of designing grammars with `parol` with the help of an
+example project.
+
 ## Dependencies
 
 Please note that any necessary dependencies are automatically added to your new `parol` project if
@@ -220,6 +226,7 @@ additional terms or conditions.
 
 - [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol/CHANGELOG.md)
 - [The book](https://jsinger67.github.io/)
+- [The video](https://youtu.be/TJMwMqD4XSo)
 
 ## Contributors
 
