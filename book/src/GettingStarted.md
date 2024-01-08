@@ -26,6 +26,11 @@ parol 0.10.6
 If you see an error saying the tool couldn't be found please check your PATH variable. It should
 include ~/.cargo/bin.
 
+### The video
+
+If you prefer a more visual introduction, I recommend watching the introductory
+[video](https://youtu.be/TJMwMqD4XSo) on YouTube.
+
 ## Let `parol` generate a crate for you
 
 We can use the `parol new` subcommand and let `parol` create our new project for us.
@@ -81,4 +86,3 @@ automatically if the grammar description file `my_grammar.par` has been changed.
 > ```shell
 > cargo install --force parol-ls
 > ```
->
