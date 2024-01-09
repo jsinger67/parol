@@ -12,7 +12,7 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 use super::generate_terminal_name;
 use super::symbol_table::{
     Function, FunctionBuilder, InstanceEntrailsBuilder, MetaSymbolKind, ReferenceType, SymbolId,
-    SymbolTable, TypeEntrails,
+    SymbolKind, SymbolTable, TypeEntrails,
 };
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
@@ -24,14 +24,37 @@ pub struct GrammarTypeInfo {
     /// All symbols are managed by the symbol table
     pub(crate) symbol_table: SymbolTable,
 
-    /// Calculated types of non-terminals
+    /// Calculated types of non-terminals.
+    /// These are the types that are used in the AST.
+    /// They are also used as types for the arguments of the semantic actions in the
+    /// semantic actions trait (user_action_trait_id).
+    /// All these types are created in global scope.
     pub(crate) non_terminal_types: BTreeMap<String, SymbolId>,
 
-    pub(crate) user_action_trait_id: Option<SymbolId>,
-    pub(crate) adapter_grammar_struct_id: Option<SymbolId>,
-    pub(crate) action_caller_trait_id: Option<SymbolId>,
+    /// The type id of the *semantic actions trait* that contains functions for each non-terminal of
+    /// the given grammar.
+    /// It also contains the function 'on_comment_parsed' that is called when a comment is parsed.
+    /// The user action trait is created in global scope.
+    /// The type name is <GrammarName>GrammarTrait
+    pub(crate) semantic_actions_trait_id: Option<SymbolId>,
 
-    // Functions in the inner actions trait
+    /// The type id of the adapter struct that is created for the given grammar in global scope.
+    /// The type name is <GrammarName>GrammarAuto.
+    /// The adapter struct contains functions for each production of the given grammar.
+    /// It is an adapter and calls the semantic actions functions in the appropriate places with
+    /// the constructed arguments of the corresponding non-terminal type.
+    pub(crate) adapter_grammar_struct_id: Option<SymbolId>,
+
+    /// The type id of the user action trait that contains only two functions.
+    /// The first calls the adapter functions in the adapter struct.
+    /// The second function 'on_comment_parsed' is called when a comment is parsed. This function
+    /// calls the user action function 'on_comment_parsed' in the semantic actions trait.
+    /// This trait created in global scope.
+    /// The type name is always 'UserActionsTrait' and it is the interface called by the parser.
+    pub(crate) parser_interface_trait_id: Option<SymbolId>,
+
+    /// Functions in the adapter struct (adapter_grammar_struct_id) that are called via the user
+    /// actions trait.
     pub(crate) adapter_actions: BTreeMap<ProductionIndex, SymbolId>,
 
     // Output types of productions
@@ -65,13 +88,13 @@ impl GrammarTypeInfo {
         me.symbol_table = SymbolTable::new();
 
         // Insert the fix UserActionsTrait into the global scope
-        me.action_caller_trait_id = Some(
+        me.parser_interface_trait_id = Some(
             me.symbol_table
                 .insert_global_type("UserActionsTrait", TypeEntrails::Trait)?,
         );
 
         // Insert the Semantic Actions Trait into the global scope
-        me.user_action_trait_id = Some(me.symbol_table.insert_global_type(
+        me.semantic_actions_trait_id = Some(me.symbol_table.insert_global_type(
             &format!(
                 "{}GrammarTrait",
                 NmHlp::to_upper_camel_case(grammar_type_name)
@@ -101,10 +124,10 @@ impl GrammarTypeInfo {
             .symbol_table
             .insert_global_type("Token", TypeEntrails::Token)?;
 
-        // Insert the fix 'on_comment_parsed' function into the user action trait to avoid name
+        // Insert the fix 'on_comment_parsed' function into the semantic actions trait to avoid name
         // clashes with a possible non-terminal 'OnCommentParsed'
         let on_comment_parsed_id = me.symbol_table.insert_type(
-            me.user_action_trait_id.unwrap(),
+            me.semantic_actions_trait_id.unwrap(),
             "on_comment_parsed",
             TypeEntrails::Function(Function::default()),
         )?;
@@ -115,7 +138,7 @@ impl GrammarTypeInfo {
             token_type_id,
             InstanceEntrailsBuilder::default().used(true).build()?,
             SymbolAttribute::None,
-            &"Called on skipped language comments",
+            "Called on skipped language comments",
         )?;
 
         Ok(me)
@@ -147,9 +170,10 @@ impl GrammarTypeInfo {
             })
     }
 
+    /// Add user action for the given non-terminal in the semantic actions trait.
     pub(crate) fn add_user_action(&mut self, non_terminal: &str) -> Result<SymbolId> {
         let action_fn = self.symbol_table.insert_type(
-            self.user_action_trait_id.unwrap(),
+            self.semantic_actions_trait_id.unwrap(),
             non_terminal,
             TypeEntrails::Function(
                 FunctionBuilder::default()
@@ -179,9 +203,10 @@ impl GrammarTypeInfo {
         Ok(action_fn)
     }
 
+    /// Returns the user action for the given non-terminal in the semantic actions trait.
     pub(crate) fn get_user_action(&self, non_terminal: &str) -> Result<SymbolId> {
         let user_action_trait = self.symbol_table.symbol_as_type(
-            self.user_action_trait_id
+            self.semantic_actions_trait_id
                 .ok_or(anyhow!("User action trait not found!"))?,
         );
         self.symbol_table
@@ -193,12 +218,13 @@ impl GrammarTypeInfo {
             .ok_or(anyhow!("User action '{}' not found!", non_terminal))
     }
 
+    /// Returns the user actions that are contained in the semantic actions trait.
     pub(crate) fn get_user_actions(&self) -> Vec<SymbolId> {
         self.symbol_table
             .scope(
                 self.symbol_table
                     .symbol_as_type(
-                        self.user_action_trait_id
+                        self.semantic_actions_trait_id
                             .expect("User action trait not found!"),
                     )
                     .member_scope(),
@@ -210,12 +236,13 @@ impl GrammarTypeInfo {
             .collect::<Vec<_>>()
     }
 
+    /// Sets the used flag on all arguments of the user actions in the adapter struct.
     fn adjust_arguments_used(&mut self, used: bool) -> Result<()> {
         for action_id in self.adapter_actions.values() {
             let arguments_scope = self.symbol_table.symbol_as_type(*action_id).member_scope();
             let args = self.symbol_table.scope(arguments_scope).symbols.clone();
             for arg in args {
-                self.symbol_table.set_instance_used(arg, used);
+                self.symbol_table.set_instance_used(arg, used)?;
             }
         }
         Ok(())
@@ -261,6 +288,7 @@ impl GrammarTypeInfo {
         self.finish_non_terminal_types(&grammar_config.cfg)?;
         self.generate_ast_enum_type()?;
         self.add_user_actions(grammar_config)?;
+        // self.minimize_boxed_types()?;
         self.symbol_table.propagate_lifetimes();
         Ok(())
     }
@@ -272,7 +300,7 @@ impl GrammarTypeInfo {
         self.adapter_actions
             .iter()
             .filter(|(_, a)| match &self.symbol_table.symbol(**a).kind() {
-                super::symbol_table::SymbolKind::Type(t) => match &t.entrails {
+                SymbolKind::Type(t) => match &t.entrails {
                     TypeEntrails::Function(f) => f.non_terminal == n,
                     _ => panic!("Expecting a function!"),
                 },
@@ -282,6 +310,7 @@ impl GrammarTypeInfo {
             .collect::<Vec<SymbolId>>()
     }
 
+    /// Create the initial non-terminal types for each non-terminal of the grammar.
     fn create_initial_non_terminal_types(&mut self, cfg: &Cfg) -> Result<()> {
         for nt in cfg.get_non_terminal_set() {
             let alternatives = cfg.matching_productions(&nt);
@@ -295,31 +324,35 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
+    /// Create the initial non-terminal type. This is done by looking at the productions of the
+    /// non-terminal and deducing the type from the production attributes resp. from the number
+    /// of alternatives.
+    /// If there is only one production for the non-terminal, we create an empty struct.
+    /// If there are two productions for the non-terminal and special production attributes are
+    /// present, we create an empty struct, too.
+    /// Otherwise, we create an empty enum.
     fn create_initial_non_terminal_type(
         &mut self,
         non_terminal: &str,
         alternatives: Vec<(usize, &Pr)>,
     ) -> Result<SymbolId> {
         if alternatives.len() == 2 {
-            let semantics = alternatives.iter().fold(
-                Vec::new(),
-                |mut res: Vec<ProductionAttribute>, (_, p)| {
-                    res.push(p.2);
-                    res
-                },
-            );
-            if semantics[0] == ProductionAttribute::AddToCollection
-                || semantics[0] == ProductionAttribute::CollectionStart
-                || semantics[0] == ProductionAttribute::OptionalNone
-                || semantics[0] == ProductionAttribute::OptionalSome
-            {
-                return self
-                    .symbol_table
-                    .insert_global_type(non_terminal, TypeEntrails::Struct);
+            match alternatives[0].1.get_attribute() {
+                ProductionAttribute::None => (),
+                ProductionAttribute::CollectionStart
+                | ProductionAttribute::AddToCollection
+                | ProductionAttribute::OptionalSome
+                | ProductionAttribute::OptionalNone => {
+                    return self
+                        .symbol_table
+                        .insert_global_type(non_terminal, TypeEntrails::Struct);
+                }
             }
         }
         match alternatives.len() {
             // Productions can be optimized away, when they have duplicates!
+            // This shouldn't actually happen anymore because structural equivalent (right-hand
+            // sides of) productions aren't optimized away anymore (see issue #166).
             0 => bail!("Not supported!"),
             // Only one production for this non-terminal: we create an empty Struct
             1 => self
@@ -347,6 +380,8 @@ impl GrammarTypeInfo {
     fn finish_non_terminal_type(&mut self, nt: &str, cfg: &Cfg) -> Result<()> {
         let mut vector_typed_non_terminal_opt = None;
         let mut option_typed_non_terminal_opt = None;
+
+        trace!("Finishing non-terminal type for {}", nt);
 
         let actions = self.matching_actions(nt).iter().try_fold(
             Vec::new(),
@@ -428,6 +463,8 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
+    /// Deduce the actions from the grammar.
+    /// Actions are functions in the adapter struct (adapter_grammar_struct_id).
     fn deduce_actions(&mut self, grammar_config: &GrammarConfig) -> Result<()> {
         let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
         let user_type_resolver = grammar_config.get_user_type_resolver();
@@ -496,6 +533,9 @@ impl GrammarTypeInfo {
             .collect::<Vec<(String, String)>>()
     }
 
+    /// Build the arguments of the given function.
+    /// The function is associated with a production.
+    /// The arguments are the symbols of the right-hand side of the production.
     fn build_arguments(
         &mut self,
         grammar_config: &GrammarConfig,
@@ -524,6 +564,7 @@ impl GrammarTypeInfo {
                 *ref_mut_last_type = match &ref_mut_last_type {
                     TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
                     _ => bail!("Unexpected last symbol in production with AddToCollection"),
+                    // _ => ref_mut_last_type.clone(),
                 };
             }
 
@@ -532,23 +573,23 @@ impl GrammarTypeInfo {
                 .iter()
                 .zip(types.drain(..))
                 .try_for_each(|((n, r), (t, a))| {
+                    // let type_name = if t.is_container() {
+                    //     SymbolTable::UNNAMED_TYPE.to_owned()
+                    // } else {
+                    //     NmHlp::to_upper_camel_case(n)
+                    // };
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
                     let type_id = if let TypeEntrails::UserDefinedType(k, ref u) = t {
                         if k == MetaSymbolKind::Token {
                             used = true;
-                            self.symbol_table
-                                .get_or_create_scoped_user_defined_type(k, u)?
-                        } else {
-                            self.symbol_table.get_or_create_type(
-                                SymbolTable::UNNAMED_TYPE,
-                                SymbolTable::GLOBAL_SCOPE,
-                                t,
-                            )?
                         }
+                        self.symbol_table
+                            .get_or_create_scoped_user_defined_type(k, u)?
                     } else {
                         self.symbol_table.get_or_create_type(
+                            // &type_name,
                             SymbolTable::UNNAMED_TYPE,
                             SymbolTable::GLOBAL_SCOPE,
                             t,
@@ -571,7 +612,7 @@ impl GrammarTypeInfo {
         }
     }
 
-    fn deduce_type_of_symbol(&mut self, symbol: &Symbol) -> Result<TypeEntrails> {
+    fn deduce_type_of_symbol(&self, symbol: &Symbol) -> Result<TypeEntrails> {
         match symbol {
             Symbol::T(Terminal::Trm(_, _, _, a, u)) => {
                 if *a == SymbolAttribute::Clipped {
@@ -595,10 +636,14 @@ impl GrammarTypeInfo {
                 } else {
                     match a {
                         SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
+                        // {
+                        //     let inner_type = self.symbol_table.symbol_as_type(*inner_type);
+                        //     Ok(inner_type.entrails().clone())
+                        // }
                         SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                         SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
                         SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(
-                            MetaSymbolKind::NonTerminal(SymbolId::invalid_id()),
+                            MetaSymbolKind::NonTerminal(*inner_type),
                         )),
                     }
                 }
@@ -630,7 +675,8 @@ impl GrammarTypeInfo {
         Ok(())
     }
 
-    /// Copy the arguments as struct members
+    /// Copy the arguments as struct members into the given production type.
+    /// Here we convert members to boxed members if cycles are introduced.
     fn arguments_to_struct_members(
         &mut self,
         arguments: &[SymbolId],
@@ -638,18 +684,48 @@ impl GrammarTypeInfo {
     ) -> Result<()> {
         for arg in arguments {
             let inst_name = self.symbol_table.symbol(*arg).name().to_string();
-            let (type_id, description, sem) = {
+            let (type_of_inst, description, sem) = {
                 let inst = self.symbol_table.symbol_as_instance(*arg);
                 (inst.type_id(), inst.description().to_owned(), inst.sem())
             };
-            self.symbol_table.insert_instance(
+
+            let _member_id = self.symbol_table.insert_instance(
                 production_type,
                 &inst_name,
-                type_id,
+                type_of_inst,
                 InstanceEntrailsBuilder::default().used(true).build()?,
                 sem,
                 &description,
             )?;
+
+            // {
+            //     let type_symbol = self.symbol_table.symbol_as_type(type_of_inst);
+            //     if matches!(type_symbol.entrails(), TypeEntrails::UserDefinedType(..)) {
+            //         // We don't want to box user defined types
+            //         continue;
+            //     }
+            // }
+
+            // if self
+            //     .symbol_table
+            //     .is_recursive_in(production_type, type_of_inst)
+            // {
+            //     // Create a boxed type for the recursive type
+            //     let boxed_type = self.symbol_table.get_or_create_type(
+            //         SymbolTable::UNNAMED_TYPE,
+            //         SymbolTable::GLOBAL_SCOPE,
+            //         TypeEntrails::Box(type_of_inst),
+            //     )?;
+            //     debug_assert!(boxed_type != type_of_inst);
+            //     trace!(
+            //         "Replacing type of instance {} from {} to {}",
+            //         member_id,
+            //         type_of_inst,
+            //         boxed_type
+            //     );
+            //     self.symbol_table
+            //         .replace_type_of_inst(member_id, boxed_type)?;
+            // }
         }
         Ok(())
     }
@@ -741,8 +817,12 @@ impl Display for GrammarTypeInfo {
         }
         writeln!(f, "// User actions:")?;
         self.get_user_actions().iter().try_for_each(|a| {
-            let s = self.symbol_table.symbol_as_instance(*a);
-            writeln!(f, "{}: {} /* {} */", s.name(), a, s.description())
+            let fun = self.symbol_table.symbol_as_function(*a).unwrap();
+            writeln!(
+                f,
+                "{}: {} /* {} */",
+                fun.prod_num, fun.non_terminal, fun.prod_string
+            )
         })?;
         writeln!(f, "// Adapter actions:")?;
         for (p, i) in &self.adapter_actions {

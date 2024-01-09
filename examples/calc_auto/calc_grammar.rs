@@ -131,10 +131,9 @@ impl<'t> CalcGrammar<'t> {
     }
 
     fn process_calc(&mut self, calc: &Calc) -> Result<()> {
-        calc.calc_list.iter().fold(Ok(()), |res, elem| {
-            res?;
-            self.process_calc_list(elem)
-        })
+        calc.calc_list
+            .iter()
+            .try_for_each(|elem| self.process_calc_list(elem))
     }
 
     fn process_calc_list(&mut self, elem: &CalcList) -> Result<()> {
@@ -269,7 +268,7 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_sum";
         let mut result = self.process_mult(&summ.mult)?;
         for item in &summ.summ_list {
-            let op: BinaryOperator = match &*item.add_op {
+            let op: BinaryOperator = match &item.add_op {
                 AddOp::Plus(plus) => plus.plus.plus.text().try_into(),
                 AddOp::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
@@ -294,17 +293,10 @@ impl<'t> CalcGrammar<'t> {
         let context = "process_power";
         let op = BinaryOperator::Pow;
         // Calculate from right to left (power operation is right associative)
-        let result = power
-            .power_list
-            .iter()
-            .rev()
-            .fold(Ok(1), |acc, f| match acc {
-                Ok(_) => {
-                    let val = self.process_factor(&f.factor)?;
-                    Self::apply_binary_operation(val, &op, acc.unwrap(), context)
-                }
-                Err(_) => acc,
-            })?;
+        let result: isize = power.power_list.iter().rev().try_fold(1, |acc, f| {
+            let val = self.process_factor(&f.factor)?;
+            Self::apply_binary_operation(val, &op, acc, context)
+        })?;
         Self::apply_binary_operation(self.process_factor(&power.factor)?, &op, result, context)
     }
 

@@ -167,7 +167,7 @@ impl ParolLsGrammar {
                     .0,
                     children: Some(vec![
                         DocumentSymbol {
-                            name: Self::expanded_token_literal(&block_comment.token_literal),
+                            name: Self::expanded_token_literal(&*block_comment.token_literal),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,
@@ -177,7 +177,7 @@ impl ParolLsGrammar {
                             children: None,
                         },
                         DocumentSymbol {
-                            name: Self::expanded_token_literal(&block_comment.token_literal0),
+                            name: Self::expanded_token_literal(&*block_comment.token_literal0),
                             detail: Some("Text".to_string()),
                             kind: SymbolKind::STRING,
                             tags: None,

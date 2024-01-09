@@ -198,7 +198,7 @@ pub trait CalcGrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InstructionAssignment<'t> {
-    pub assignment: Box<Assignment<'t>>,
+    pub assignment: Assignment<'t>,
 }
 
 ///
@@ -222,7 +222,7 @@ pub struct InstructionLogicalOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOpPlus<'t> {
-    pub plus: Box<Plus<'t>>,
+    pub plus: Plus<'t>,
 }
 
 ///
@@ -234,7 +234,7 @@ pub struct AddOpPlus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AddOpMinus<'t> {
-    pub minus: Box<Minus<'t>>,
+    pub minus: Minus<'t>,
 }
 
 ///
@@ -246,7 +246,7 @@ pub struct AddOpMinus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorNumber {
-    pub number: Box<Number>,
+    pub number: Number,
 }
 
 ///
@@ -258,7 +258,7 @@ pub struct FactorNumber {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorIdRef<'t> {
-    pub id_ref: Box<IdRef<'t>>,
+    pub id_ref: IdRef<'t>,
 }
 
 ///
@@ -270,7 +270,7 @@ pub struct FactorIdRef<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorNegateFactor<'t> {
-    pub negate: Box<Negate<'t>>,
+    pub negate: Negate<'t>,
     pub factor: Box<Factor<'t>>,
 }
 
@@ -308,8 +308,8 @@ pub enum AddOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AssignItem<'t> {
-    pub id: Box<Id<'t>>,
-    pub assign_op: Box<AssignOp<'t>>,
+    pub id: Id<'t>,
+    pub assign_op: AssignOp<'t>,
 }
 
 ///
@@ -329,7 +329,7 @@ pub struct AssignOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Assignment<'t> {
-    pub assign_item: Box<AssignItem<'t>>,
+    pub assign_item: AssignItem<'t>,
     pub assignment_list: Vec<AssignmentList<'t>>,
     pub logical_or: Box<LogicalOr<'t>>,
 }
@@ -341,7 +341,7 @@ pub struct Assignment<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct AssignmentList<'t> {
-    pub assign_item: Box<AssignItem<'t>>,
+    pub assign_item: AssignItem<'t>,
 }
 
 ///
@@ -362,7 +362,7 @@ pub struct BitwiseAnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseAndList<'t> {
-    pub bitwise_and_op: Box<BitwiseAndOp<'t>>,
+    pub bitwise_and_op: BitwiseAndOp<'t>,
     pub equality: Box<Equality<'t>>,
 }
 
@@ -394,7 +394,7 @@ pub struct BitwiseOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseOrList<'t> {
-    pub bitwise_or_op: Box<BitwiseOrOp<'t>>,
+    pub bitwise_or_op: BitwiseOrOp<'t>,
     pub bitwise_and: Box<BitwiseAnd<'t>>,
 }
 
@@ -426,7 +426,7 @@ pub struct BitwiseShift<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BitwiseShiftList<'t> {
-    pub bitwise_shift_op: Box<BitwiseShiftOp<'t>>,
+    pub bitwise_shift_op: BitwiseShiftOp<'t>,
     pub summ: Box<Summ<'t>>,
 }
 
@@ -457,7 +457,7 @@ pub struct Calc<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CalcList<'t> {
-    pub instruction: Box<Instruction<'t>>,
+    pub instruction: Instruction<'t>,
 }
 
 ///
@@ -478,7 +478,7 @@ pub struct Equality<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EqualityList<'t> {
-    pub equality_op: Box<EqualityOp<'t>>,
+    pub equality_op: EqualityOp<'t>,
     pub relational: Box<Relational<'t>>,
 }
 
@@ -521,7 +521,7 @@ pub struct Id<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdRef<'t> {
-    pub id: Box<Id<'t>>,
+    pub id: Id<'t>,
 }
 
 ///
@@ -552,7 +552,7 @@ pub struct LogicalAnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalAndList<'t> {
-    pub logical_and_op: Box<LogicalAndOp<'t>>,
+    pub logical_and_op: LogicalAndOp<'t>,
     pub bitwise_or: Box<BitwiseOr<'t>>,
 }
 
@@ -584,7 +584,7 @@ pub struct LogicalOr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalOrList<'t> {
-    pub logical_or_op: Box<LogicalOrOp<'t>>,
+    pub logical_or_op: LogicalOrOp<'t>,
     pub logical_and: Box<LogicalAnd<'t>>,
 }
 
@@ -626,7 +626,7 @@ pub struct Mult<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MultList<'t> {
-    pub mult_op: Box<MultOp<'t>>,
+    pub mult_op: MultOp<'t>,
     pub power: Box<Power<'t>>,
 }
 
@@ -647,7 +647,7 @@ pub struct MultOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Negate<'t> {
-    pub minus: Box<Minus<'t>>,
+    pub minus: Minus<'t>,
 }
 
 ///
@@ -698,7 +698,7 @@ pub struct Power<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct PowerList<'t> {
-    pub pow_op: Box<PowOp<'t>>,
+    pub pow_op: PowOp<'t>,
     pub factor: Box<Factor<'t>>,
 }
 
@@ -720,7 +720,7 @@ pub struct Relational<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationalList<'t> {
-    pub relational_op: Box<RelationalOp<'t>>,
+    pub relational_op: RelationalOp<'t>,
     pub bitwise_shift: Box<BitwiseShift<'t>>,
 }
 
@@ -752,7 +752,7 @@ pub struct Summ<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SummList<'t> {
-    pub add_op: Box<AddOp<'t>>,
+    pub add_op: AddOp<'t>,
     pub mult: Box<Mult<'t>>,
 }
 
@@ -902,7 +902,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let instruction = pop_item!(self, instruction, Instruction, context);
         let calc_list_0_built = CalcList {
             // Ignore clipped member 'semicolon'
-            instruction: Box::new(instruction),
+            instruction,
         };
         // Add an element to the vector
         calc_list.push(calc_list_0_built);
@@ -1125,9 +1125,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let assignment = pop_item!(self, assignment, Assignment, context);
-        let instruction_0_built = InstructionAssignment {
-            assignment: Box::new(assignment),
-        };
+        let instruction_0_built = InstructionAssignment { assignment };
         let instruction_0_built = Instruction::Assignment(instruction_0_built);
         // Calling user action here
         self.user_grammar.instruction(&instruction_0_built)?;
@@ -1168,10 +1166,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let assign_op = pop_item!(self, assign_op, AssignOp, context);
         let id = pop_item!(self, id, Id, context);
-        let assign_item_built = AssignItem {
-            id: Box::new(id),
-            assign_op: Box::new(assign_op),
-        };
+        let assign_item_built = AssignItem { id, assign_op };
         // Calling user action here
         self.user_grammar.assign_item(&assign_item_built)?;
         self.push(ASTType::AssignItem(assign_item_built), context);
@@ -1195,7 +1190,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let assignment_list = pop_and_reverse_item!(self, assignment_list, AssignmentList, context);
         let assign_item = pop_item!(self, assign_item, AssignItem, context);
         let assignment_built = Assignment {
-            assign_item: Box::new(assign_item),
+            assign_item,
             assignment_list,
             logical_or: Box::new(logical_or),
         };
@@ -1219,9 +1214,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut assignment_list = pop_item!(self, assignment_list, AssignmentList, context);
         let assign_item = pop_item!(self, assign_item, AssignItem, context);
-        let assignment_list_0_built = AssignmentList {
-            assign_item: Box::new(assign_item),
-        };
+        let assignment_list_0_built = AssignmentList { assign_item };
         // Add an element to the vector
         assignment_list.push(assignment_list_0_built);
         self.push(ASTType::AssignmentList(assignment_list), context);
@@ -1283,7 +1276,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_or_op = pop_item!(self, logical_or_op, LogicalOrOp, context);
         let logical_or_list_0_built = LogicalOrList {
             logical_and: Box::new(logical_and),
-            logical_or_op: Box::new(logical_or_op),
+            logical_or_op,
         };
         // Add an element to the vector
         logical_or_list.push(logical_or_list_0_built);
@@ -1347,7 +1340,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let logical_and_op = pop_item!(self, logical_and_op, LogicalAndOp, context);
         let logical_and_list_0_built = LogicalAndList {
             bitwise_or: Box::new(bitwise_or),
-            logical_and_op: Box::new(logical_and_op),
+            logical_and_op,
         };
         // Add an element to the vector
         logical_and_list.push(logical_and_list_0_built);
@@ -1410,7 +1403,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_or_op = pop_item!(self, bitwise_or_op, BitwiseOrOp, context);
         let bitwise_or_list_0_built = BitwiseOrList {
             bitwise_and: Box::new(bitwise_and),
-            bitwise_or_op: Box::new(bitwise_or_op),
+            bitwise_or_op,
         };
         // Add an element to the vector
         bitwise_or_list.push(bitwise_or_list_0_built);
@@ -1474,7 +1467,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_and_op = pop_item!(self, bitwise_and_op, BitwiseAndOp, context);
         let bitwise_and_list_0_built = BitwiseAndList {
             equality: Box::new(equality),
-            bitwise_and_op: Box::new(bitwise_and_op),
+            bitwise_and_op,
         };
         // Add an element to the vector
         bitwise_and_list.push(bitwise_and_list_0_built);
@@ -1537,7 +1530,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let equality_op = pop_item!(self, equality_op, EqualityOp, context);
         let equality_list_0_built = EqualityList {
             relational: Box::new(relational),
-            equality_op: Box::new(equality_op),
+            equality_op,
         };
         // Add an element to the vector
         equality_list.push(equality_list_0_built);
@@ -1600,7 +1593,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let relational_op = pop_item!(self, relational_op, RelationalOp, context);
         let relational_list_0_built = RelationalList {
             bitwise_shift: Box::new(bitwise_shift),
-            relational_op: Box::new(relational_op),
+            relational_op,
         };
         // Add an element to the vector
         relational_list.push(relational_list_0_built);
@@ -1664,7 +1657,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let bitwise_shift_op = pop_item!(self, bitwise_shift_op, BitwiseShiftOp, context);
         let bitwise_shift_list_0_built = BitwiseShiftList {
             summ: Box::new(summ),
-            bitwise_shift_op: Box::new(bitwise_shift_op),
+            bitwise_shift_op,
         };
         // Add an element to the vector
         bitwise_shift_list.push(bitwise_shift_list_0_built);
@@ -1697,9 +1690,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let add_op_0_built = AddOpPlus {
-            plus: Box::new(plus),
-        };
+        let add_op_0_built = AddOpPlus { plus };
         let add_op_0_built = AddOp::Plus(add_op_0_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_0_built)?;
@@ -1716,9 +1707,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let add_op_1_built = AddOpMinus {
-            minus: Box::new(minus),
-        };
+        let add_op_1_built = AddOpMinus { minus };
         let add_op_1_built = AddOp::Minus(add_op_1_built);
         // Calling user action here
         self.user_grammar.add_op(&add_op_1_built)?;
@@ -1764,7 +1753,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let add_op = pop_item!(self, add_op, AddOp, context);
         let summ_list_0_built = SummList {
             mult: Box::new(mult),
-            add_op: Box::new(add_op),
+            add_op,
         };
         // Add an element to the vector
         summ_list.push(summ_list_0_built);
@@ -1823,7 +1812,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let mult_op = pop_item!(self, mult_op, MultOp, context);
         let mult_list_0_built = MultList {
             power: Box::new(power),
-            mult_op: Box::new(mult_op),
+            mult_op,
         };
         // Add an element to the vector
         mult_list.push(mult_list_0_built);
@@ -1886,7 +1875,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let pow_op = pop_item!(self, pow_op, PowOp, context);
         let power_list_0_built = PowerList {
             factor: Box::new(factor),
-            pow_op: Box::new(pow_op),
+            pow_op,
         };
         // Add an element to the vector
         power_list.push(power_list_0_built);
@@ -1916,9 +1905,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let negate_built = Negate {
-            minus: Box::new(minus),
-        };
+        let negate_built = Negate { minus };
         // Calling user action here
         self.user_grammar.negate(&negate_built)?;
         self.push(ASTType::Negate(negate_built), context);
@@ -1934,9 +1921,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_0_built = FactorNumber {
-            number: Box::new(number),
-        };
+        let factor_0_built = FactorNumber { number };
         let factor_0_built = Factor::Number(factor_0_built);
         // Calling user action here
         self.user_grammar.factor(&factor_0_built)?;
@@ -1953,9 +1938,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id_ref = pop_item!(self, id_ref, IdRef, context);
-        let factor_1_built = FactorIdRef {
-            id_ref: Box::new(id_ref),
-        };
+        let factor_1_built = FactorIdRef { id_ref };
         let factor_1_built = Factor::IdRef(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -1974,7 +1957,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let factor = pop_item!(self, factor, Factor, context);
         let negate = pop_item!(self, negate, Negate, context);
         let factor_2_built = FactorNegateFactor {
-            negate: Box::new(negate),
+            negate,
             factor: Box::new(factor),
         };
         let factor_2_built = Factor::NegateFactor(factor_2_built);
@@ -2038,7 +2021,7 @@ impl<'t, 'u> CalcGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let id = pop_item!(self, id, Id, context);
-        let id_ref_built = IdRef { id: Box::new(id) };
+        let id_ref_built = IdRef { id };
         // Calling user action here
         self.user_grammar.id_ref(&id_ref_built)?;
         self.push(ASTType::IdRef(id_ref_built), context);

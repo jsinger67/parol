@@ -621,7 +621,7 @@ impl ParolGrammar<'_> {
         let productions = grammar_definition.grammar_definition_list.iter().fold(
             vec![&*grammar_definition.production],
             |mut acc, p| {
-                acc.push(&*p.production);
+                acc.push(&p.production);
                 acc
             },
         );
@@ -648,8 +648,8 @@ impl ParolGrammar<'_> {
     ) -> Vec<&'t super::parol_grammar_trait::Alternation<'t>> {
         alts.alternations_list
             .iter()
-            .fold(vec![&*alts.alternation], |mut acc, a| {
-                acc.push(&*a.alternation);
+            .fold(vec![&alts.alternation], |mut acc, a| {
+                acc.push(&a.alternation);
                 acc
             })
     }

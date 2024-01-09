@@ -25,6 +25,7 @@ pub(crate) trait InstanceFacade<'a>: SymbolFacade<'a> {
 
 pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
     fn inner_name(&self) -> String;
+    fn inner_type(&self) -> Option<SymbolId>;
     fn member_scope(&self) -> ScopeId;
     fn entrails(&self) -> &TypeEntrails;
     fn is_container(&self) -> bool;
@@ -132,8 +133,8 @@ impl<'a> InstanceFacade<'a> for InstanceItem<'a> {
 
     fn reference(&self) -> &'static str {
         match self.instance.entrails.ref_spec {
-            super::symbol_table::ReferenceType::None => &"",
-            super::symbol_table::ReferenceType::Ref => &"&",
+            super::symbol_table::ReferenceType::None => "",
+            super::symbol_table::ReferenceType::Ref => "&",
         }
     }
 }
@@ -188,6 +189,10 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
     fn inner_name(&self) -> String {
         self.my_type
             .inner_name(self.symbol_item.symbol_table, self.symbol_item.symbol)
+    }
+
+    fn inner_type(&self) -> Option<SymbolId> {
+        self.my_type.inner_type()
     }
 
     fn member_scope(&self) -> ScopeId {
