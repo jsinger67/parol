@@ -119,7 +119,7 @@ pub struct ArraySuffixRBracket {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueString<'t> {
-    pub string: String<'t>,
+    pub string: Box<String<'t>>,
 }
 
 ///
@@ -131,7 +131,7 @@ pub struct ValueString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValueNumber<'t> {
-    pub number: Number<'t>,
+    pub number: Box<Number<'t>>,
 }
 
 ///
@@ -280,7 +280,7 @@ pub enum ObjectSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Pair<'t> {
-    pub string: String<'t>,
+    pub string: Box<String<'t>>,
     pub value: Box<Value<'t>>,
 }
 
@@ -525,7 +525,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let value = pop_item!(self, value, Value, context);
         let string = pop_item!(self, string, String, context);
         let pair_built = Pair {
-            string,
+            string: Box::new(string),
             // Ignore clipped member 'colon'
             value: Box::new(value),
         };
@@ -646,7 +646,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let value_0_built = ValueString { string };
+        let value_0_built = ValueString {
+            string: Box::new(string),
+        };
         let value_0_built = Value::String(value_0_built);
         // Calling user action here
         self.user_grammar.value(&value_0_built)?;
@@ -663,7 +665,9 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let value_1_built = ValueNumber { number };
+        let value_1_built = ValueNumber {
+            number: Box::new(number),
+        };
         let value_1_built = Value::Number(value_1_built);
         // Calling user action here
         self.user_grammar.value(&value_1_built)?;

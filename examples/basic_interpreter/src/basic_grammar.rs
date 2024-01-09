@@ -371,7 +371,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_summation";
         let mut result = self.process_multiplication(&summation.multiplication)?;
         for item in &summation.summation_list {
-            let op: BinaryOperator = match &item.summation_list_group {
+            let op: BinaryOperator = match &*item.summation_list_group {
                 SummationListGroup::Plus(plus) => plus.plus.plus.text().try_into(),
                 SummationListGroup::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
@@ -398,8 +398,8 @@ impl<'t> BasicGrammar<'t> {
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
-            Factor::Literal(FactorLiteral { literal }) => match &literal.number {
-                Number::Float(flt) => match &flt.float {
+            Factor::Literal(FactorLiteral { literal }) => match &*literal.number {
+                Number::Float(flt) => match &*flt.float {
                     Float::Float1(float) => Ok(float.float1.float1.0),
                     Float::Float2(float) => Ok(float.float2.float2.0),
                 },

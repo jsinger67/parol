@@ -563,7 +563,8 @@ impl GrammarTypeInfo {
                 let ref_mut_last_type = &mut types.last_mut().unwrap().0;
                 *ref_mut_last_type = match &ref_mut_last_type {
                     TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
-                    _ => ref_mut_last_type.clone(),
+                    _ => bail!("Unexpected last symbol in production with AddToCollection"),
+                    // _ => ref_mut_last_type.clone(),
                 };
             }
 
@@ -572,7 +573,11 @@ impl GrammarTypeInfo {
                 .iter()
                 .zip(types.drain(..))
                 .try_for_each(|((n, r), (t, a))| {
-                    let type_name = &NmHlp::to_upper_camel_case(n);
+                    // let type_name = if t.is_container() {
+                    //     SymbolTable::UNNAMED_TYPE.to_owned()
+                    // } else {
+                    //     NmHlp::to_upper_camel_case(n)
+                    // };
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
@@ -584,7 +589,8 @@ impl GrammarTypeInfo {
                             .get_or_create_scoped_user_defined_type(k, u)?
                     } else {
                         self.symbol_table.get_or_create_type(
-                            type_name,
+                            // &type_name,
+                            SymbolTable::UNNAMED_TYPE,
                             SymbolTable::GLOBAL_SCOPE,
                             t,
                         )?
@@ -629,10 +635,11 @@ impl GrammarTypeInfo {
                     ))
                 } else {
                     match a {
-                        SymbolAttribute::None => {
-                            let inner_type = self.symbol_table.symbol_as_type(*inner_type);
-                            Ok(inner_type.entrails().clone())
-                        }
+                        SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
+                        // {
+                        //     let inner_type = self.symbol_table.symbol_as_type(*inner_type);
+                        //     Ok(inner_type.entrails().clone())
+                        // }
                         SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                         SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
                         SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(
@@ -682,7 +689,7 @@ impl GrammarTypeInfo {
                 (inst.type_id(), inst.description().to_owned(), inst.sem())
             };
 
-            let member_id = self.symbol_table.insert_instance(
+            let _member_id = self.symbol_table.insert_instance(
                 production_type,
                 &inst_name,
                 type_of_inst,
@@ -691,26 +698,34 @@ impl GrammarTypeInfo {
                 &description,
             )?;
 
-            if self
-                .symbol_table
-                .is_recursive_in(production_type, type_of_inst)
-            {
-                // Create a boxed type for the recursive type
-                let boxed_type = self.symbol_table.get_or_create_type(
-                    SymbolTable::UNNAMED_TYPE,
-                    SymbolTable::GLOBAL_SCOPE,
-                    TypeEntrails::Box(type_of_inst),
-                )?;
-                debug_assert!(boxed_type != type_of_inst);
-                trace!(
-                    "Replacing type of instance {} from {} to {}",
-                    member_id,
-                    type_of_inst,
-                    boxed_type
-                );
-                self.symbol_table
-                    .replace_type_of_inst(member_id, boxed_type)?;
-            }
+            // {
+            //     let type_symbol = self.symbol_table.symbol_as_type(type_of_inst);
+            //     if matches!(type_symbol.entrails(), TypeEntrails::UserDefinedType(..)) {
+            //         // We don't want to box user defined types
+            //         continue;
+            //     }
+            // }
+
+            // if self
+            //     .symbol_table
+            //     .is_recursive_in(production_type, type_of_inst)
+            // {
+            //     // Create a boxed type for the recursive type
+            //     let boxed_type = self.symbol_table.get_or_create_type(
+            //         SymbolTable::UNNAMED_TYPE,
+            //         SymbolTable::GLOBAL_SCOPE,
+            //         TypeEntrails::Box(type_of_inst),
+            //     )?;
+            //     debug_assert!(boxed_type != type_of_inst);
+            //     trace!(
+            //         "Replacing type of instance {} from {} to {}",
+            //         member_id,
+            //         type_of_inst,
+            //         boxed_type
+            //     );
+            //     self.symbol_table
+            //         .replace_type_of_inst(member_id, boxed_type)?;
+            // }
         }
         Ok(())
     }

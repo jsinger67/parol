@@ -485,7 +485,7 @@ pub struct ExpressionKeyVal<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExpressionTable<'t> {
-    pub table: Table<'t>,
+    pub table: Box<Table<'t>>,
 }
 
 ///
@@ -507,8 +507,8 @@ pub struct KeySuffixKeySuffixEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
-    pub dot_sep: DotSep<'t>,
-    pub simple_key: SimpleKey<'t>,
+    pub dot_sep: Box<DotSep<'t>>,
+    pub simple_key: Box<SimpleKey<'t>>,
     pub key_list: Vec<KeyList<'t>>,
 }
 
@@ -521,7 +521,7 @@ pub struct KeySuffixDotSepSimpleKeyKeyList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleKeyQuotedKey<'t> {
-    pub quoted_key: QuotedKey<'t>,
+    pub quoted_key: Box<QuotedKey<'t>>,
 }
 
 ///
@@ -533,7 +533,7 @@ pub struct SimpleKeyQuotedKey<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleKeyUnquotedKey<'t> {
-    pub unquoted_key: UnquotedKey<'t>,
+    pub unquoted_key: Box<UnquotedKey<'t>>,
 }
 
 ///
@@ -545,7 +545,7 @@ pub struct SimpleKeyUnquotedKey<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct QuotedKeyBasicString<'t> {
-    pub basic_string: BasicString<'t>,
+    pub basic_string: Box<BasicString<'t>>,
 }
 
 ///
@@ -557,7 +557,7 @@ pub struct QuotedKeyBasicString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct QuotedKeyLiteralString<'t> {
-    pub literal_string: LiteralString<'t>,
+    pub literal_string: Box<LiteralString<'t>>,
 }
 
 ///
@@ -569,7 +569,7 @@ pub struct QuotedKeyLiteralString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValBoolean<'t> {
-    pub boolean: Boolean<'t>,
+    pub boolean: Box<Boolean<'t>>,
 }
 
 ///
@@ -605,7 +605,7 @@ pub struct ValInlineTable<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValDateTime<'t> {
-    pub date_time: DateTime<'t>,
+    pub date_time: Box<DateTime<'t>>,
 }
 
 ///
@@ -617,7 +617,7 @@ pub struct ValDateTime<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValNumeric<'t> {
-    pub numeric: Numeric<'t>,
+    pub numeric: Box<Numeric<'t>>,
 }
 
 ///
@@ -629,7 +629,7 @@ pub struct ValNumeric<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValBasicString<'t> {
-    pub basic_string: BasicString<'t>,
+    pub basic_string: Box<BasicString<'t>>,
 }
 
 ///
@@ -641,7 +641,7 @@ pub struct ValBasicString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValMLBasicString<'t> {
-    pub m_l_basic_string: MLBasicString<'t>,
+    pub m_l_basic_string: Box<MLBasicString<'t>>,
 }
 
 ///
@@ -653,7 +653,7 @@ pub struct ValMLBasicString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValLiteralString<'t> {
-    pub literal_string: LiteralString<'t>,
+    pub literal_string: Box<LiteralString<'t>>,
 }
 
 ///
@@ -665,7 +665,7 @@ pub struct ValLiteralString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ValMLLiteralString<'t> {
-    pub m_l_literal_string: MLLiteralString<'t>,
+    pub m_l_literal_string: Box<MLLiteralString<'t>>,
 }
 
 ///
@@ -677,7 +677,7 @@ pub struct ValMLLiteralString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumericFloat<'t> {
-    pub float: Float<'t>,
+    pub float: Box<Float<'t>>,
 }
 
 ///
@@ -689,7 +689,7 @@ pub struct NumericFloat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumericInteger<'t> {
-    pub integer: Integer<'t>,
+    pub integer: Box<Integer<'t>>,
 }
 
 ///
@@ -701,7 +701,7 @@ pub struct NumericInteger<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicCharBasicUnescaped<'t> {
-    pub basic_unescaped: BasicUnescaped<'t>,
+    pub basic_unescaped: Box<BasicUnescaped<'t>>,
 }
 
 ///
@@ -713,7 +713,7 @@ pub struct BasicCharBasicUnescaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicCharEscaped<'t> {
-    pub escaped: Escaped<'t>,
+    pub escaped: Box<Escaped<'t>>,
 }
 
 ///
@@ -725,7 +725,7 @@ pub struct BasicCharEscaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicUnescapedAsciiNoEscape<'t> {
-    pub ascii_no_escape: AsciiNoEscape<'t>,
+    pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
 ///
@@ -737,7 +737,7 @@ pub struct BasicUnescapedAsciiNoEscape<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicUnescapedNonAscii<'t> {
-    pub non_ascii: NonAscii<'t>,
+    pub non_ascii: Box<NonAscii<'t>>,
 }
 
 ///
@@ -749,7 +749,7 @@ pub struct BasicUnescapedNonAscii<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharQuotationMark<'t> {
-    pub quotation_mark: QuotationMark<'t>,
+    pub quotation_mark: Box<QuotationMark<'t>>,
 }
 
 ///
@@ -761,7 +761,7 @@ pub struct EscapeSeqCharQuotationMark<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharEscape<'t> {
-    pub escape: Escape<'t>,
+    pub escape: Box<Escape<'t>>,
 }
 
 ///
@@ -833,7 +833,7 @@ pub struct EscapeSeqCharT<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharUnicode4<'t> {
-    pub unicode4: Unicode4<'t>,
+    pub unicode4: Box<Unicode4<'t>>,
 }
 
 ///
@@ -845,7 +845,7 @@ pub struct EscapeSeqCharUnicode4<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharUnicode8<'t> {
-    pub unicode8: Unicode8<'t>,
+    pub unicode8: Box<Unicode8<'t>>,
 }
 
 ///
@@ -857,7 +857,7 @@ pub struct EscapeSeqCharUnicode8<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharWsNewline<'t> {
-    pub ws_newline: WsNewline<'t>,
+    pub ws_newline: Box<WsNewline<'t>>,
 }
 
 ///
@@ -869,7 +869,7 @@ pub struct EscapeSeqCharWsNewline<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct EscapeSeqCharAsciiNoEscape<'t> {
-    pub ascii_no_escape: AsciiNoEscape<'t>,
+    pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
 ///
@@ -881,7 +881,7 @@ pub struct EscapeSeqCharAsciiNoEscape<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBContentListMLBContentMLBContentList<'t> {
-    pub m_l_b_content: MLBContent<'t>,
+    pub m_l_b_content: Box<MLBContent<'t>>,
     pub m_l_b_content_list: Box<MLBContentList<'t>>,
 }
 
@@ -904,7 +904,7 @@ pub struct MLBContentListMLBContentListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBContentMLBChar<'t> {
-    pub m_l_b_char: MLBChar<'t>,
+    pub m_l_b_char: Box<MLBChar<'t>>,
 }
 
 ///
@@ -916,7 +916,7 @@ pub struct MLBContentMLBChar<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBContentNewline<'t> {
-    pub newline: Newline<'t>,
+    pub newline: Box<Newline<'t>>,
 }
 
 ///
@@ -928,7 +928,7 @@ pub struct MLBContentNewline<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBContentMLBEscapedNL<'t> {
-    pub m_l_b_escaped_n_l: MLBEscapedNL<'t>,
+    pub m_l_b_escaped_n_l: Box<MLBEscapedNL<'t>>,
 }
 
 ///
@@ -940,7 +940,7 @@ pub struct MLBContentMLBEscapedNL<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBCharMLBUnescaped<'t> {
-    pub m_l_b_unescaped: MLBUnescaped<'t>,
+    pub m_l_b_unescaped: Box<MLBUnescaped<'t>>,
 }
 
 ///
@@ -952,7 +952,7 @@ pub struct MLBCharMLBUnescaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBCharEscaped<'t> {
-    pub escaped: Escaped<'t>,
+    pub escaped: Box<Escaped<'t>>,
 }
 
 ///
@@ -964,7 +964,7 @@ pub struct MLBCharEscaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBUnescapedAsciiNoEscape<'t> {
-    pub ascii_no_escape: AsciiNoEscape<'t>,
+    pub ascii_no_escape: Box<AsciiNoEscape<'t>>,
 }
 
 ///
@@ -976,7 +976,7 @@ pub struct MLBUnescapedAsciiNoEscape<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBUnescapedNonAscii<'t> {
-    pub non_ascii: NonAscii<'t>,
+    pub non_ascii: Box<NonAscii<'t>>,
 }
 
 ///
@@ -988,7 +988,7 @@ pub struct MLBUnescapedNonAscii<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LiteralCharLiteralCharNoApostrophe<'t> {
-    pub literal_char_no_apostrophe: LiteralCharNoApostrophe<'t>,
+    pub literal_char_no_apostrophe: Box<LiteralCharNoApostrophe<'t>>,
 }
 
 ///
@@ -1000,7 +1000,7 @@ pub struct LiteralCharLiteralCharNoApostrophe<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LiteralCharNonAscii<'t> {
-    pub non_ascii: NonAscii<'t>,
+    pub non_ascii: Box<NonAscii<'t>>,
 }
 
 ///
@@ -1012,7 +1012,7 @@ pub struct LiteralCharNonAscii<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLContentListMLLContentMLLContentList<'t> {
-    pub m_l_l_content: MLLContent<'t>,
+    pub m_l_l_content: Box<MLLContent<'t>>,
     pub m_l_l_content_list: Box<MLLContentList<'t>>,
 }
 
@@ -1035,7 +1035,7 @@ pub struct MLLContentListMLLContentListEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLContentLiteralChar<'t> {
-    pub literal_char: LiteralChar<'t>,
+    pub literal_char: Box<LiteralChar<'t>>,
 }
 
 ///
@@ -1047,7 +1047,7 @@ pub struct MLLContentLiteralChar<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLContentNewline<'t> {
-    pub newline: Newline<'t>,
+    pub newline: Box<Newline<'t>>,
 }
 
 ///
@@ -1059,7 +1059,7 @@ pub struct MLLContentNewline<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IntegerDecInt<'t> {
-    pub dec_int: DecInt<'t>,
+    pub dec_int: Box<DecInt<'t>>,
 }
 
 ///
@@ -1071,7 +1071,7 @@ pub struct IntegerDecInt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IntegerHexInt<'t> {
-    pub hex_int: HexInt<'t>,
+    pub hex_int: Box<HexInt<'t>>,
 }
 
 ///
@@ -1083,7 +1083,7 @@ pub struct IntegerHexInt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IntegerOctInt<'t> {
-    pub oct_int: OctInt<'t>,
+    pub oct_int: Box<OctInt<'t>>,
 }
 
 ///
@@ -1095,7 +1095,7 @@ pub struct IntegerOctInt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IntegerBinInt<'t> {
-    pub bin_int: BinInt<'t>,
+    pub bin_int: Box<BinInt<'t>>,
 }
 
 ///
@@ -1107,7 +1107,7 @@ pub struct IntegerBinInt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DecIntOptGroupPlus<'t> {
-    pub plus: Plus<'t>,
+    pub plus: Box<Plus<'t>>,
 }
 
 ///
@@ -1119,7 +1119,7 @@ pub struct DecIntOptGroupPlus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DecIntOptGroupMinus<'t> {
-    pub minus: Minus<'t>,
+    pub minus: Box<Minus<'t>>,
 }
 
 ///
@@ -1155,7 +1155,7 @@ pub struct BooleanFalse<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FloatNormalFloat<'t> {
-    pub normal_float: NormalFloat<'t>,
+    pub normal_float: Box<NormalFloat<'t>>,
 }
 
 ///
@@ -1167,7 +1167,7 @@ pub struct FloatNormalFloat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FloatSpecialFloat<'t> {
-    pub special_float: SpecialFloat<'t>,
+    pub special_float: Box<SpecialFloat<'t>>,
 }
 
 ///
@@ -1179,7 +1179,7 @@ pub struct FloatSpecialFloat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DateTimeOffsetDateTime<'t> {
-    pub offset_date_time: OffsetDateTime<'t>,
+    pub offset_date_time: Box<OffsetDateTime<'t>>,
 }
 
 ///
@@ -1191,7 +1191,7 @@ pub struct DateTimeOffsetDateTime<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DateTimeLocalDateTime<'t> {
-    pub local_date_time: LocalDateTime<'t>,
+    pub local_date_time: Box<LocalDateTime<'t>>,
 }
 
 ///
@@ -1203,7 +1203,7 @@ pub struct DateTimeLocalDateTime<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DateTimeLocalDate<'t> {
-    pub local_date: LocalDate<'t>,
+    pub local_date: Box<LocalDate<'t>>,
 }
 
 ///
@@ -1215,7 +1215,7 @@ pub struct DateTimeLocalDate<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DateTimeLocalTime<'t> {
-    pub local_time: LocalTime<'t>,
+    pub local_time: Box<LocalTime<'t>>,
 }
 
 ///
@@ -1271,7 +1271,7 @@ pub struct ArrayValuesSuffixArrayValuesSuffixEmpty {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TableStdTable<'t> {
-    pub std_table: StdTable<'t>,
+    pub std_table: Box<StdTable<'t>>,
 }
 
 ///
@@ -1283,7 +1283,7 @@ pub struct TableStdTable<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TableArrayTable<'t> {
-    pub array_table: ArrayTable<'t>,
+    pub array_table: Box<ArrayTable<'t>>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -1358,7 +1358,7 @@ pub struct ArraySep<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ArrayTable<'t> {
-    pub key: Key<'t>,
+    pub key: Box<Key<'t>>,
 }
 
 ///
@@ -1439,9 +1439,9 @@ pub enum BasicChar<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicString<'t> {
-    pub quotation_mark: QuotationMark<'t>,
+    pub quotation_mark: Box<QuotationMark<'t>>,
     pub basic_string_list: Vec<BasicStringList<'t>>,
-    pub quotation_mark0: QuotationMark<'t>,
+    pub quotation_mark0: Box<QuotationMark<'t>>,
 }
 
 ///
@@ -1451,7 +1451,7 @@ pub struct BasicString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BasicStringList<'t> {
-    pub basic_char: BasicChar<'t>,
+    pub basic_char: Box<BasicChar<'t>>,
 }
 
 ///
@@ -1471,7 +1471,7 @@ pub enum BasicUnescaped<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct BinInt<'t> {
-    pub bin_int_content: BinIntContent<'t>,
+    pub bin_int_content: Box<BinIntContent<'t>>,
 }
 
 ///
@@ -1524,7 +1524,7 @@ pub enum DateTime<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DecInt<'t> {
     pub dec_int_opt: Option<Box<DecIntOpt<'t>>>,
-    pub unsigned_dec_int: UnsignedDecInt<'t>,
+    pub unsigned_dec_int: Box<UnsignedDecInt<'t>>,
 }
 
 ///
@@ -1534,7 +1534,7 @@ pub struct DecInt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DecIntOpt<'t> {
-    pub dec_int_opt_group: DecIntOptGroup<'t>,
+    pub dec_int_opt_group: Box<DecIntOptGroup<'t>>,
 }
 
 ///
@@ -1593,8 +1593,8 @@ pub enum EscapeSeqChar<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Escaped<'t> {
-    pub escape: Escape<'t>,
-    pub escape_seq_char: EscapeSeqChar<'t>,
+    pub escape: Box<Escape<'t>>,
+    pub escape_seq_char: Box<EscapeSeqChar<'t>>,
 }
 
 ///
@@ -1624,7 +1624,7 @@ pub enum Float<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct HexInt<'t> {
-    pub hex_int_content: HexIntContent<'t>,
+    pub hex_int_content: Box<HexIntContent<'t>>,
 }
 
 ///
@@ -1716,7 +1716,7 @@ pub struct InlineTableOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InlineTableOpt0<'t> {
-    pub inline_table_sep: InlineTableSep<'t>,
+    pub inline_table_sep: Box<InlineTableSep<'t>>,
 }
 
 ///
@@ -1726,7 +1726,7 @@ pub struct InlineTableOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct InlineTableSep<'t> {
-    pub array_sep: ArraySep<'t>,
+    pub array_sep: Box<ArraySep<'t>>,
 }
 
 ///
@@ -1748,8 +1748,8 @@ pub enum Integer<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Key<'t> {
-    pub simple_key: SimpleKey<'t>,
-    pub key_suffix: KeySuffix<'t>,
+    pub simple_key: Box<SimpleKey<'t>>,
+    pub key_suffix: Box<KeySuffix<'t>>,
 }
 
 ///
@@ -1759,8 +1759,8 @@ pub struct Key<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct KeyList<'t> {
-    pub dot_sep: DotSep<'t>,
-    pub simple_key: SimpleKey<'t>,
+    pub dot_sep: Box<DotSep<'t>>,
+    pub simple_key: Box<SimpleKey<'t>>,
 }
 
 ///
@@ -1780,8 +1780,8 @@ pub enum KeySuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct KeyVal<'t> {
-    pub key: Key<'t>,
-    pub key_val_sep: KeyValSep<'t>,
+    pub key: Box<Key<'t>>,
+    pub key_val_sep: Box<KeyValSep<'t>>,
     pub val: Box<Val<'t>>,
 }
 
@@ -1832,7 +1832,7 @@ pub struct LiteralString<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LiteralStringList<'t> {
-    pub literal_char: LiteralChar<'t>,
+    pub literal_char: Box<LiteralChar<'t>>,
 }
 
 ///
@@ -1903,7 +1903,7 @@ pub enum MLBContentList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBContentList1<'t> {
-    pub m_l_b_content: MLBContent<'t>,
+    pub m_l_b_content: Box<MLBContent<'t>>,
     pub m_l_b_content_list: Box<MLBContentList<'t>>,
 }
 
@@ -1955,8 +1955,8 @@ pub struct MLBasicBody<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBasicBodyList<'t> {
-    pub m_l_b_quotes: MLBQuotes<'t>,
-    pub m_l_b_content_list1: MLBContentList1<'t>,
+    pub m_l_b_quotes: Box<MLBQuotes<'t>>,
+    pub m_l_b_content_list1: Box<MLBContentList1<'t>>,
 }
 
 ///
@@ -1966,9 +1966,9 @@ pub struct MLBasicBodyList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLBasicString<'t> {
-    pub m_l_basic_string_start: MLBasicStringStart<'t>,
-    pub m_l_basic_body: MLBasicBody<'t>,
-    pub m_l_basic_string_end: MLBasicStringEnd<'t>,
+    pub m_l_basic_string_start: Box<MLBasicStringStart<'t>>,
+    pub m_l_basic_body: Box<MLBasicBody<'t>>,
+    pub m_l_basic_string_end: Box<MLBasicStringEnd<'t>>,
 }
 
 ///
@@ -2018,7 +2018,7 @@ pub enum MLLContentList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLContentList1<'t> {
-    pub m_l_l_content: MLLContent<'t>,
+    pub m_l_l_content: Box<MLLContent<'t>>,
     pub m_l_l_content_list: Box<MLLContentList<'t>>,
 }
 
@@ -2050,8 +2050,8 @@ pub struct MLLiteralBody<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLiteralBodyList<'t> {
-    pub m_l_l_quotes: MLLQuotes<'t>,
-    pub m_l_l_content_list1: MLLContentList1<'t>,
+    pub m_l_l_quotes: Box<MLLQuotes<'t>>,
+    pub m_l_l_content_list1: Box<MLLContentList1<'t>>,
 }
 
 ///
@@ -2061,7 +2061,7 @@ pub struct MLLiteralBodyList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct MLLiteralString<'t> {
-    pub m_l_literal_body: MLLiteralBody<'t>,
+    pub m_l_literal_body: Box<MLLiteralBody<'t>>,
 }
 
 ///
@@ -2141,7 +2141,7 @@ pub enum Numeric<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct OctInt<'t> {
-    pub oct_int_content: OctIntContent<'t>,
+    pub oct_int_content: Box<OctIntContent<'t>>,
 }
 
 ///
@@ -2191,7 +2191,7 @@ pub struct ParolToml<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ParolTomlList<'t> {
-    pub expression: Expression<'t>,
+    pub expression: Box<Expression<'t>>,
 }
 
 ///
@@ -2251,7 +2251,7 @@ pub struct SpecialFloat<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StdTable<'t> {
-    pub key: Key<'t>,
+    pub key: Box<Key<'t>>,
 }
 
 ///
@@ -2261,7 +2261,7 @@ pub struct StdTable<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StdTableClose<'t> {
-    pub array_close: ArrayClose<'t>,
+    pub array_close: Box<ArrayClose<'t>>,
 }
 
 ///
@@ -2271,7 +2271,7 @@ pub struct StdTableClose<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StdTableOpen<'t> {
-    pub array_open: ArrayOpen<'t>,
+    pub array_open: Box<ArrayOpen<'t>>,
 }
 
 ///
@@ -2552,7 +2552,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut parol_toml_list = pop_item!(self, parol_toml_list, ParolTomlList, context);
         let expression = pop_item!(self, expression, Expression, context);
-        let parol_toml_list_0_built = ParolTomlList { expression };
+        let parol_toml_list_0_built = ParolTomlList {
+            expression: Box::new(expression),
+        };
         // Add an element to the vector
         parol_toml_list.push(parol_toml_list_0_built);
         self.push(ASTType::ParolTomlList(parol_toml_list), context);
@@ -2600,7 +2602,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let table = pop_item!(self, table, Table, context);
-        let expression_1_built = ExpressionTable { table };
+        let expression_1_built = ExpressionTable {
+            table: Box::new(table),
+        };
         let expression_1_built = Expression::Table(expression_1_built);
         // Calling user action here
         self.user_grammar.expression(&expression_1_built)?;
@@ -2673,8 +2677,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_val_sep = pop_item!(self, key_val_sep, KeyValSep, context);
         let key = pop_item!(self, key, Key, context);
         let key_val_built = KeyVal {
-            key,
-            key_val_sep,
+            key: Box::new(key),
+            key_val_sep: Box::new(key_val_sep),
             val: Box::new(val),
         };
         // Calling user action here
@@ -2698,8 +2702,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let key_suffix = pop_item!(self, key_suffix, KeySuffix, context);
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let key_built = Key {
-            simple_key,
-            key_suffix,
+            simple_key: Box::new(simple_key),
+            key_suffix: Box::new(key_suffix),
         };
         // Calling user action here
         self.user_grammar.key(&key_built)?;
@@ -2738,8 +2742,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let dot_sep = pop_item!(self, dot_sep, DotSep, context);
         let key_suffix_1_built = KeySuffixDotSepSimpleKeyKeyList {
-            dot_sep,
-            simple_key,
+            dot_sep: Box::new(dot_sep),
+            simple_key: Box::new(simple_key),
             key_list,
         };
         let key_suffix_1_built = KeySuffix::DotSepSimpleKeyKeyList(key_suffix_1_built);
@@ -2764,8 +2768,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let simple_key = pop_item!(self, simple_key, SimpleKey, context);
         let dot_sep = pop_item!(self, dot_sep, DotSep, context);
         let key_list_0_built = KeyList {
-            simple_key,
-            dot_sep,
+            simple_key: Box::new(simple_key),
+            dot_sep: Box::new(dot_sep),
         };
         // Add an element to the vector
         key_list.push(key_list_0_built);
@@ -2795,7 +2799,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quoted_key = pop_item!(self, quoted_key, QuotedKey, context);
-        let simple_key_0_built = SimpleKeyQuotedKey { quoted_key };
+        let simple_key_0_built = SimpleKeyQuotedKey {
+            quoted_key: Box::new(quoted_key),
+        };
         let simple_key_0_built = SimpleKey::QuotedKey(simple_key_0_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_0_built)?;
@@ -2812,7 +2818,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unquoted_key = pop_item!(self, unquoted_key, UnquotedKey, context);
-        let simple_key_1_built = SimpleKeyUnquotedKey { unquoted_key };
+        let simple_key_1_built = SimpleKeyUnquotedKey {
+            unquoted_key: Box::new(unquoted_key),
+        };
         let simple_key_1_built = SimpleKey::UnquotedKey(simple_key_1_built);
         // Calling user action here
         self.user_grammar.simple_key(&simple_key_1_built)?;
@@ -2829,7 +2837,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let quoted_key_0_built = QuotedKeyBasicString { basic_string };
+        let quoted_key_0_built = QuotedKeyBasicString {
+            basic_string: Box::new(basic_string),
+        };
         let quoted_key_0_built = QuotedKey::BasicString(quoted_key_0_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_0_built)?;
@@ -2846,7 +2856,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let quoted_key_1_built = QuotedKeyLiteralString { literal_string };
+        let quoted_key_1_built = QuotedKeyLiteralString {
+            literal_string: Box::new(literal_string),
+        };
         let quoted_key_1_built = QuotedKey::LiteralString(quoted_key_1_built);
         // Calling user action here
         self.user_grammar.quoted_key(&quoted_key_1_built)?;
@@ -2879,7 +2891,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let boolean = pop_item!(self, boolean, Boolean, context);
-        let val_0_built = ValBoolean { boolean };
+        let val_0_built = ValBoolean {
+            boolean: Box::new(boolean),
+        };
         let val_0_built = Val::Boolean(val_0_built);
         // Calling user action here
         self.user_grammar.val(&val_0_built)?;
@@ -2934,7 +2948,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let date_time = pop_item!(self, date_time, DateTime, context);
-        let val_3_built = ValDateTime { date_time };
+        let val_3_built = ValDateTime {
+            date_time: Box::new(date_time),
+        };
         let val_3_built = Val::DateTime(val_3_built);
         // Calling user action here
         self.user_grammar.val(&val_3_built)?;
@@ -2951,7 +2967,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let numeric = pop_item!(self, numeric, Numeric, context);
-        let val_4_built = ValNumeric { numeric };
+        let val_4_built = ValNumeric {
+            numeric: Box::new(numeric),
+        };
         let val_4_built = Val::Numeric(val_4_built);
         // Calling user action here
         self.user_grammar.val(&val_4_built)?;
@@ -2968,7 +2986,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_string = pop_item!(self, basic_string, BasicString, context);
-        let val_5_built = ValBasicString { basic_string };
+        let val_5_built = ValBasicString {
+            basic_string: Box::new(basic_string),
+        };
         let val_5_built = Val::BasicString(val_5_built);
         // Calling user action here
         self.user_grammar.val(&val_5_built)?;
@@ -2985,7 +3005,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_basic_string = pop_item!(self, m_l_basic_string, MLBasicString, context);
-        let val_6_built = ValMLBasicString { m_l_basic_string };
+        let val_6_built = ValMLBasicString {
+            m_l_basic_string: Box::new(m_l_basic_string),
+        };
         let val_6_built = Val::MLBasicString(val_6_built);
         // Calling user action here
         self.user_grammar.val(&val_6_built)?;
@@ -3002,7 +3024,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_string = pop_item!(self, literal_string, LiteralString, context);
-        let val_7_built = ValLiteralString { literal_string };
+        let val_7_built = ValLiteralString {
+            literal_string: Box::new(literal_string),
+        };
         let val_7_built = Val::LiteralString(val_7_built);
         // Calling user action here
         self.user_grammar.val(&val_7_built)?;
@@ -3019,7 +3043,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_string = pop_item!(self, m_l_literal_string, MLLiteralString, context);
-        let val_8_built = ValMLLiteralString { m_l_literal_string };
+        let val_8_built = ValMLLiteralString {
+            m_l_literal_string: Box::new(m_l_literal_string),
+        };
         let val_8_built = Val::MLLiteralString(val_8_built);
         // Calling user action here
         self.user_grammar.val(&val_8_built)?;
@@ -3036,7 +3062,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let float = pop_item!(self, float, Float, context);
-        let numeric_0_built = NumericFloat { float };
+        let numeric_0_built = NumericFloat {
+            float: Box::new(float),
+        };
         let numeric_0_built = Numeric::Float(numeric_0_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_0_built)?;
@@ -3053,7 +3081,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let numeric_1_built = NumericInteger { integer };
+        let numeric_1_built = NumericInteger {
+            integer: Box::new(integer),
+        };
         let numeric_1_built = Numeric::Integer(numeric_1_built);
         // Calling user action here
         self.user_grammar.numeric(&numeric_1_built)?;
@@ -3079,9 +3109,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, basic_string_list, BasicStringList, context);
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
         let basic_string_built = BasicString {
-            quotation_mark,
+            quotation_mark: Box::new(quotation_mark),
             basic_string_list,
-            quotation_mark0,
+            quotation_mark0: Box::new(quotation_mark0),
         };
         // Calling user action here
         self.user_grammar.basic_string(&basic_string_built)?;
@@ -3103,7 +3133,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut basic_string_list = pop_item!(self, basic_string_list, BasicStringList, context);
         let basic_char = pop_item!(self, basic_char, BasicChar, context);
-        let basic_string_list_0_built = BasicStringList { basic_char };
+        let basic_string_list_0_built = BasicStringList {
+            basic_char: Box::new(basic_char),
+        };
         // Add an element to the vector
         basic_string_list.push(basic_string_list_0_built);
         self.push(ASTType::BasicStringList(basic_string_list), context);
@@ -3132,7 +3164,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let basic_unescaped = pop_item!(self, basic_unescaped, BasicUnescaped, context);
-        let basic_char_0_built = BasicCharBasicUnescaped { basic_unescaped };
+        let basic_char_0_built = BasicCharBasicUnescaped {
+            basic_unescaped: Box::new(basic_unescaped),
+        };
         let basic_char_0_built = BasicChar::BasicUnescaped(basic_char_0_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_0_built)?;
@@ -3149,7 +3183,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let basic_char_1_built = BasicCharEscaped { escaped };
+        let basic_char_1_built = BasicCharEscaped {
+            escaped: Box::new(escaped),
+        };
         let basic_char_1_built = BasicChar::Escaped(basic_char_1_built);
         // Calling user action here
         self.user_grammar.basic_char(&basic_char_1_built)?;
@@ -3166,7 +3202,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let basic_unescaped_0_built = BasicUnescapedAsciiNoEscape { ascii_no_escape };
+        let basic_unescaped_0_built = BasicUnescapedAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let basic_unescaped_0_built = BasicUnescaped::AsciiNoEscape(basic_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -3184,7 +3222,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let basic_unescaped_1_built = BasicUnescapedNonAscii { non_ascii };
+        let basic_unescaped_1_built = BasicUnescapedNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let basic_unescaped_1_built = BasicUnescaped::NonAscii(basic_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -3208,8 +3248,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let escape_seq_char = pop_item!(self, escape_seq_char, EscapeSeqChar, context);
         let escape = pop_item!(self, escape, Escape, context);
         let escaped_built = Escaped {
-            escape,
-            escape_seq_char,
+            escape: Box::new(escape),
+            escape_seq_char: Box::new(escape_seq_char),
         };
         // Calling user action here
         self.user_grammar.escaped(&escaped_built)?;
@@ -3242,7 +3282,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let quotation_mark = pop_item!(self, quotation_mark, QuotationMark, context);
-        let escape_seq_char_0_built = EscapeSeqCharQuotationMark { quotation_mark };
+        let escape_seq_char_0_built = EscapeSeqCharQuotationMark {
+            quotation_mark: Box::new(quotation_mark),
+        };
         let escape_seq_char_0_built = EscapeSeqChar::QuotationMark(escape_seq_char_0_built);
         // Calling user action here
         self.user_grammar
@@ -3260,7 +3302,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escape = pop_item!(self, escape, Escape, context);
-        let escape_seq_char_1_built = EscapeSeqCharEscape { escape };
+        let escape_seq_char_1_built = EscapeSeqCharEscape {
+            escape: Box::new(escape),
+        };
         let escape_seq_char_1_built = EscapeSeqChar::Escape(escape_seq_char_1_built);
         // Calling user action here
         self.user_grammar
@@ -3368,7 +3412,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode4 = pop_item!(self, unicode4, Unicode4, context);
-        let escape_seq_char_7_built = EscapeSeqCharUnicode4 { unicode4 };
+        let escape_seq_char_7_built = EscapeSeqCharUnicode4 {
+            unicode4: Box::new(unicode4),
+        };
         let escape_seq_char_7_built = EscapeSeqChar::Unicode4(escape_seq_char_7_built);
         // Calling user action here
         self.user_grammar
@@ -3386,7 +3432,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let unicode8 = pop_item!(self, unicode8, Unicode8, context);
-        let escape_seq_char_8_built = EscapeSeqCharUnicode8 { unicode8 };
+        let escape_seq_char_8_built = EscapeSeqCharUnicode8 {
+            unicode8: Box::new(unicode8),
+        };
         let escape_seq_char_8_built = EscapeSeqChar::Unicode8(escape_seq_char_8_built);
         // Calling user action here
         self.user_grammar
@@ -3404,7 +3452,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ws_newline = pop_item!(self, ws_newline, WsNewline, context);
-        let escape_seq_char_9_built = EscapeSeqCharWsNewline { ws_newline };
+        let escape_seq_char_9_built = EscapeSeqCharWsNewline {
+            ws_newline: Box::new(ws_newline),
+        };
         let escape_seq_char_9_built = EscapeSeqChar::WsNewline(escape_seq_char_9_built);
         // Calling user action here
         self.user_grammar
@@ -3422,7 +3472,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscape { ascii_no_escape };
+        let escape_seq_char_10_built = EscapeSeqCharAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let escape_seq_char_10_built = EscapeSeqChar::AsciiNoEscape(escape_seq_char_10_built);
         // Calling user action here
         self.user_grammar
@@ -3481,9 +3533,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_basic_string_start =
             pop_item!(self, m_l_basic_string_start, MLBasicStringStart, context);
         let m_l_basic_string_built = MLBasicString {
-            m_l_basic_string_start,
-            m_l_basic_body,
-            m_l_basic_string_end,
+            m_l_basic_string_start: Box::new(m_l_basic_string_start),
+            m_l_basic_body: Box::new(m_l_basic_body),
+            m_l_basic_string_end: Box::new(m_l_basic_string_end),
         };
         // Calling user action here
         self.user_grammar
@@ -3535,8 +3587,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_list1 = pop_item!(self, m_l_b_content_list1, MLBContentList1, context);
         let m_l_b_quotes = pop_item!(self, m_l_b_quotes, MLBQuotes, context);
         let m_l_basic_body_list_0_built = MLBasicBodyList {
-            m_l_b_content_list1,
-            m_l_b_quotes,
+            m_l_b_content_list1: Box::new(m_l_b_content_list1),
+            m_l_b_quotes: Box::new(m_l_b_quotes),
         };
         // Add an element to the vector
         m_l_basic_body_list.push(m_l_basic_body_list_0_built);
@@ -3575,7 +3627,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
         let m_l_b_content_list_0_built = MLBContentListMLBContentMLBContentList {
-            m_l_b_content,
+            m_l_b_content: Box::new(m_l_b_content),
             m_l_b_content_list: Box::new(m_l_b_content_list),
         };
         let m_l_b_content_list_0_built =
@@ -3620,7 +3672,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_b_content_list = pop_item!(self, m_l_b_content_list, MLBContentList, context);
         let m_l_b_content = pop_item!(self, m_l_b_content, MLBContent, context);
         let m_l_b_content_list1_built = MLBContentList1 {
-            m_l_b_content,
+            m_l_b_content: Box::new(m_l_b_content),
             m_l_b_content_list: Box::new(m_l_b_content_list),
         };
         // Calling user action here
@@ -3639,7 +3691,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_char = pop_item!(self, m_l_b_char, MLBChar, context);
-        let m_l_b_content_0_built = MLBContentMLBChar { m_l_b_char };
+        let m_l_b_content_0_built = MLBContentMLBChar {
+            m_l_b_char: Box::new(m_l_b_char),
+        };
         let m_l_b_content_0_built = MLBContent::MLBChar(m_l_b_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_0_built)?;
@@ -3656,7 +3710,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_b_content_1_built = MLBContentNewline { newline };
+        let m_l_b_content_1_built = MLBContentNewline {
+            newline: Box::new(newline),
+        };
         let m_l_b_content_1_built = MLBContent::Newline(m_l_b_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_1_built)?;
@@ -3673,7 +3729,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_escaped_n_l = pop_item!(self, m_l_b_escaped_n_l, MLBEscapedNL, context);
-        let m_l_b_content_2_built = MLBContentMLBEscapedNL { m_l_b_escaped_n_l };
+        let m_l_b_content_2_built = MLBContentMLBEscapedNL {
+            m_l_b_escaped_n_l: Box::new(m_l_b_escaped_n_l),
+        };
         let m_l_b_content_2_built = MLBContent::MLBEscapedNL(m_l_b_content_2_built);
         // Calling user action here
         self.user_grammar.m_l_b_content(&m_l_b_content_2_built)?;
@@ -3690,7 +3748,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_b_unescaped = pop_item!(self, m_l_b_unescaped, MLBUnescaped, context);
-        let m_l_b_char_0_built = MLBCharMLBUnescaped { m_l_b_unescaped };
+        let m_l_b_char_0_built = MLBCharMLBUnescaped {
+            m_l_b_unescaped: Box::new(m_l_b_unescaped),
+        };
         let m_l_b_char_0_built = MLBChar::MLBUnescaped(m_l_b_char_0_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_0_built)?;
@@ -3707,7 +3767,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let escaped = pop_item!(self, escaped, Escaped, context);
-        let m_l_b_char_1_built = MLBCharEscaped { escaped };
+        let m_l_b_char_1_built = MLBCharEscaped {
+            escaped: Box::new(escaped),
+        };
         let m_l_b_char_1_built = MLBChar::Escaped(m_l_b_char_1_built);
         // Calling user action here
         self.user_grammar.m_l_b_char(&m_l_b_char_1_built)?;
@@ -3724,7 +3786,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ascii_no_escape = pop_item!(self, ascii_no_escape, AsciiNoEscape, context);
-        let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscape { ascii_no_escape };
+        let m_l_b_unescaped_0_built = MLBUnescapedAsciiNoEscape {
+            ascii_no_escape: Box::new(ascii_no_escape),
+        };
         let m_l_b_unescaped_0_built = MLBUnescaped::AsciiNoEscape(m_l_b_unescaped_0_built);
         // Calling user action here
         self.user_grammar
@@ -3742,7 +3806,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let m_l_b_unescaped_1_built = MLBUnescapedNonAscii { non_ascii };
+        let m_l_b_unescaped_1_built = MLBUnescapedNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let m_l_b_unescaped_1_built = MLBUnescaped::NonAscii(m_l_b_unescaped_1_built);
         // Calling user action here
         self.user_grammar
@@ -3813,7 +3879,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let mut literal_string_list =
             pop_item!(self, literal_string_list, LiteralStringList, context);
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
-        let literal_string_list_0_built = LiteralStringList { literal_char };
+        let literal_string_list_0_built = LiteralStringList {
+            literal_char: Box::new(literal_char),
+        };
         // Add an element to the vector
         literal_string_list.push(literal_string_list_0_built);
         self.push(ASTType::LiteralStringList(literal_string_list), context);
@@ -3851,7 +3919,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
             context
         );
         let literal_char_0_built = LiteralCharLiteralCharNoApostrophe {
-            literal_char_no_apostrophe,
+            literal_char_no_apostrophe: Box::new(literal_char_no_apostrophe),
         };
         let literal_char_0_built = LiteralChar::LiteralCharNoApostrophe(literal_char_0_built);
         // Calling user action here
@@ -3869,7 +3937,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let non_ascii = pop_item!(self, non_ascii, NonAscii, context);
-        let literal_char_1_built = LiteralCharNonAscii { non_ascii };
+        let literal_char_1_built = LiteralCharNonAscii {
+            non_ascii: Box::new(non_ascii),
+        };
         let literal_char_1_built = LiteralChar::NonAscii(literal_char_1_built);
         // Calling user action here
         self.user_grammar.literal_char(&literal_char_1_built)?;
@@ -3919,7 +3989,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let m_l_literal_string_built = MLLiteralString {
             // Ignore clipped member 'm_l_literal_string_start'
-            m_l_literal_body,
+            m_l_literal_body: Box::new(m_l_literal_body),
         };
         // Calling user action here
         self.user_grammar
@@ -3976,8 +4046,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_list1 = pop_item!(self, m_l_l_content_list1, MLLContentList1, context);
         let m_l_l_quotes = pop_item!(self, m_l_l_quotes, MLLQuotes, context);
         let m_l_literal_body_list_0_built = MLLiteralBodyList {
-            m_l_l_content_list1,
-            m_l_l_quotes,
+            m_l_l_content_list1: Box::new(m_l_l_content_list1),
+            m_l_l_quotes: Box::new(m_l_l_quotes),
         };
         // Add an element to the vector
         m_l_literal_body_list.push(m_l_literal_body_list_0_built);
@@ -4016,7 +4086,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
         let m_l_l_content_list_0_built = MLLContentListMLLContentMLLContentList {
-            m_l_l_content,
+            m_l_l_content: Box::new(m_l_l_content),
             m_l_l_content_list: Box::new(m_l_l_content_list),
         };
         let m_l_l_content_list_0_built =
@@ -4061,7 +4131,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let m_l_l_content_list = pop_item!(self, m_l_l_content_list, MLLContentList, context);
         let m_l_l_content = pop_item!(self, m_l_l_content, MLLContent, context);
         let m_l_l_content_list1_built = MLLContentList1 {
-            m_l_l_content,
+            m_l_l_content: Box::new(m_l_l_content),
             m_l_l_content_list: Box::new(m_l_l_content_list),
         };
         // Calling user action here
@@ -4080,7 +4150,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let literal_char = pop_item!(self, literal_char, LiteralChar, context);
-        let m_l_l_content_0_built = MLLContentLiteralChar { literal_char };
+        let m_l_l_content_0_built = MLLContentLiteralChar {
+            literal_char: Box::new(literal_char),
+        };
         let m_l_l_content_0_built = MLLContent::LiteralChar(m_l_l_content_0_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_0_built)?;
@@ -4097,7 +4169,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let newline = pop_item!(self, newline, Newline, context);
-        let m_l_l_content_1_built = MLLContentNewline { newline };
+        let m_l_l_content_1_built = MLLContentNewline {
+            newline: Box::new(newline),
+        };
         let m_l_l_content_1_built = MLLContent::Newline(m_l_l_content_1_built);
         // Calling user action here
         self.user_grammar.m_l_l_content(&m_l_l_content_1_built)?;
@@ -4114,7 +4188,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int = pop_item!(self, dec_int, DecInt, context);
-        let integer_0_built = IntegerDecInt { dec_int };
+        let integer_0_built = IntegerDecInt {
+            dec_int: Box::new(dec_int),
+        };
         let integer_0_built = Integer::DecInt(integer_0_built);
         // Calling user action here
         self.user_grammar.integer(&integer_0_built)?;
@@ -4131,7 +4207,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int = pop_item!(self, hex_int, HexInt, context);
-        let integer_1_built = IntegerHexInt { hex_int };
+        let integer_1_built = IntegerHexInt {
+            hex_int: Box::new(hex_int),
+        };
         let integer_1_built = Integer::HexInt(integer_1_built);
         // Calling user action here
         self.user_grammar.integer(&integer_1_built)?;
@@ -4148,7 +4226,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int = pop_item!(self, oct_int, OctInt, context);
-        let integer_2_built = IntegerOctInt { oct_int };
+        let integer_2_built = IntegerOctInt {
+            oct_int: Box::new(oct_int),
+        };
         let integer_2_built = Integer::OctInt(integer_2_built);
         // Calling user action here
         self.user_grammar.integer(&integer_2_built)?;
@@ -4165,7 +4245,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int = pop_item!(self, bin_int, BinInt, context);
-        let integer_3_built = IntegerBinInt { bin_int };
+        let integer_3_built = IntegerBinInt {
+            bin_int: Box::new(bin_int),
+        };
         let integer_3_built = Integer::BinInt(integer_3_built);
         // Calling user action here
         self.user_grammar.integer(&integer_3_built)?;
@@ -4237,7 +4319,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let dec_int_opt = pop_item!(self, dec_int_opt, DecIntOpt, context);
         let dec_int_built = DecInt {
             dec_int_opt,
-            unsigned_dec_int,
+            unsigned_dec_int: Box::new(unsigned_dec_int),
         };
         // Calling user action here
         self.user_grammar.dec_int(&dec_int_built)?;
@@ -4254,7 +4336,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let dec_int_opt_group = pop_item!(self, dec_int_opt_group, DecIntOptGroup, context);
-        let dec_int_opt_0_built = DecIntOpt { dec_int_opt_group };
+        let dec_int_opt_0_built = DecIntOpt {
+            dec_int_opt_group: Box::new(dec_int_opt_group),
+        };
         self.push(
             ASTType::DecIntOpt(Some(Box::new(dec_int_opt_0_built))),
             context,
@@ -4271,7 +4355,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let plus = pop_item!(self, plus, Plus, context);
-        let dec_int_opt_group_0_built = DecIntOptGroupPlus { plus };
+        let dec_int_opt_group_0_built = DecIntOptGroupPlus {
+            plus: Box::new(plus),
+        };
         let dec_int_opt_group_0_built = DecIntOptGroup::Plus(dec_int_opt_group_0_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_0_built), context);
         Ok(())
@@ -4286,7 +4372,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let minus = pop_item!(self, minus, Minus, context);
-        let dec_int_opt_group_1_built = DecIntOptGroupMinus { minus };
+        let dec_int_opt_group_1_built = DecIntOptGroupMinus {
+            minus: Box::new(minus),
+        };
         let dec_int_opt_group_1_built = DecIntOptGroup::Minus(dec_int_opt_group_1_built);
         self.push(ASTType::DecIntOptGroup(dec_int_opt_group_1_built), context);
         Ok(())
@@ -4321,7 +4409,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let hex_int_built = HexInt {
             // Ignore clipped member 'hex_prefix'
-            hex_int_content,
+            hex_int_content: Box::new(hex_int_content),
         };
         // Calling user action here
         self.user_grammar.hex_int(&hex_int_built)?;
@@ -4362,7 +4450,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let oct_int_built = OctInt {
             // Ignore clipped member 'oct_prefix'
-            oct_int_content,
+            oct_int_content: Box::new(oct_int_content),
         };
         // Calling user action here
         self.user_grammar.oct_int(&oct_int_built)?;
@@ -4403,7 +4491,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let bin_int_built = BinInt {
             // Ignore clipped member 'bin_prefix'
-            bin_int_content,
+            bin_int_content: Box::new(bin_int_content),
         };
         // Calling user action here
         self.user_grammar.bin_int(&bin_int_built)?;
@@ -4470,7 +4558,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let normal_float = pop_item!(self, normal_float, NormalFloat, context);
-        let float_0_built = FloatNormalFloat { normal_float };
+        let float_0_built = FloatNormalFloat {
+            normal_float: Box::new(normal_float),
+        };
         let float_0_built = Float::NormalFloat(float_0_built);
         // Calling user action here
         self.user_grammar.float(&float_0_built)?;
@@ -4487,7 +4577,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let special_float = pop_item!(self, special_float, SpecialFloat, context);
-        let float_1_built = FloatSpecialFloat { special_float };
+        let float_1_built = FloatSpecialFloat {
+            special_float: Box::new(special_float),
+        };
         let float_1_built = Float::SpecialFloat(float_1_built);
         // Calling user action here
         self.user_grammar.float(&float_1_built)?;
@@ -4536,7 +4628,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let offset_date_time = pop_item!(self, offset_date_time, OffsetDateTime, context);
-        let date_time_0_built = DateTimeOffsetDateTime { offset_date_time };
+        let date_time_0_built = DateTimeOffsetDateTime {
+            offset_date_time: Box::new(offset_date_time),
+        };
         let date_time_0_built = DateTime::OffsetDateTime(date_time_0_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_0_built)?;
@@ -4553,7 +4647,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date_time = pop_item!(self, local_date_time, LocalDateTime, context);
-        let date_time_1_built = DateTimeLocalDateTime { local_date_time };
+        let date_time_1_built = DateTimeLocalDateTime {
+            local_date_time: Box::new(local_date_time),
+        };
         let date_time_1_built = DateTime::LocalDateTime(date_time_1_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_1_built)?;
@@ -4570,7 +4666,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_date = pop_item!(self, local_date, LocalDate, context);
-        let date_time_2_built = DateTimeLocalDate { local_date };
+        let date_time_2_built = DateTimeLocalDate {
+            local_date: Box::new(local_date),
+        };
         let date_time_2_built = DateTime::LocalDate(date_time_2_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_2_built)?;
@@ -4587,7 +4685,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let local_time = pop_item!(self, local_time, LocalTime, context);
-        let date_time_3_built = DateTimeLocalTime { local_time };
+        let date_time_3_built = DateTimeLocalTime {
+            local_time: Box::new(local_time),
+        };
         let date_time_3_built = DateTime::LocalTime(date_time_3_built);
         // Calling user action here
         self.user_grammar.date_time(&date_time_3_built)?;
@@ -4855,7 +4955,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let std_table = pop_item!(self, std_table, StdTable, context);
-        let table_0_built = TableStdTable { std_table };
+        let table_0_built = TableStdTable {
+            std_table: Box::new(std_table),
+        };
         let table_0_built = Table::StdTable(table_0_built);
         // Calling user action here
         self.user_grammar.table(&table_0_built)?;
@@ -4872,7 +4974,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_table = pop_item!(self, array_table, ArrayTable, context);
-        let table_1_built = TableArrayTable { array_table };
+        let table_1_built = TableArrayTable {
+            array_table: Box::new(array_table),
+        };
         let table_1_built = Table::ArrayTable(table_1_built);
         // Calling user action here
         self.user_grammar.table(&table_1_built)?;
@@ -4900,7 +5004,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let std_table_built = StdTable {
             // Ignore clipped member 'std_table_open'
-            key,
+            key: Box::new(key),
             // Ignore clipped member 'std_table_close'
         };
         // Calling user action here
@@ -4984,7 +5088,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_open = pop_item!(self, array_open, ArrayOpen, context);
-        let std_table_open_built = StdTableOpen { array_open };
+        let std_table_open_built = StdTableOpen {
+            array_open: Box::new(array_open),
+        };
         // Calling user action here
         self.user_grammar.std_table_open(&std_table_open_built)?;
         self.push(ASTType::StdTableOpen(std_table_open_built), context);
@@ -5000,7 +5106,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_close = pop_item!(self, array_close, ArrayClose, context);
-        let std_table_close_built = StdTableClose { array_close };
+        let std_table_close_built = StdTableClose {
+            array_close: Box::new(array_close),
+        };
         // Calling user action here
         self.user_grammar.std_table_close(&std_table_close_built)?;
         self.push(ASTType::StdTableClose(std_table_close_built), context);
@@ -5048,7 +5156,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let inline_table_sep = pop_item!(self, inline_table_sep, InlineTableSep, context);
-        let inline_table_opt0_0_built = InlineTableOpt0 { inline_table_sep };
+        let inline_table_opt0_0_built = InlineTableOpt0 {
+            inline_table_sep: Box::new(inline_table_sep),
+        };
         self.push(
             ASTType::InlineTableOpt0(Some(Box::new(inline_table_opt0_0_built))),
             context,
@@ -5143,7 +5253,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_sep = pop_item!(self, array_sep, ArraySep, context);
-        let inline_table_sep_built = InlineTableSep { array_sep };
+        let inline_table_sep_built = InlineTableSep {
+            array_sep: Box::new(array_sep),
+        };
         // Calling user action here
         self.user_grammar
             .inline_table_sep(&inline_table_sep_built)?;
@@ -5243,7 +5355,7 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         self.pop(context);
         let array_table_built = ArrayTable {
             // Ignore clipped member 'array_table_open'
-            key,
+            key: Box::new(key),
             // Ignore clipped member 'array_table_close'
         };
         // Calling user action here
