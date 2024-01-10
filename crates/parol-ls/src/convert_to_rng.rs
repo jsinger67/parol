@@ -79,7 +79,7 @@ impl From<&GrammarDefinition> for Rng {
     fn from(val: &GrammarDefinition) -> Self {
         Self::from(&val.percent_percent)
             .extend(Self::from(&*val.production))
-            .extend(Self::from_slice(&*val.grammar_definition_list))
+            .extend(Self::from_slice(&val.grammar_definition_list))
     }
 }
 
