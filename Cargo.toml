@@ -31,7 +31,7 @@ anyhow = "1.0"
 clap = { version = "4.4", features = [ "derive", "cargo" ] }
 derive_builder = "0.12.0"
 derive-new = "0.6.0"
-env_logger = "0.10.1"
+env_logger = "0.10.2"
 function_name = "0.3.0"
 petgraph = "0.6.4"
 syntree = "0.14.5"
