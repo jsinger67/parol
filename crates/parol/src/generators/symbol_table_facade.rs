@@ -20,7 +20,6 @@ pub(crate) trait InstanceFacade<'a>: SymbolFacade<'a> {
     fn description(&self) -> &str;
     fn sem(&self) -> SymbolAttribute;
     fn used(&self) -> bool;
-    fn reference(&self) -> &'static str;
 }
 
 pub(crate) trait TypeFacade<'a>: SymbolFacade<'a> {
@@ -129,13 +128,6 @@ impl<'a> InstanceFacade<'a> for InstanceItem<'a> {
 
     fn used(&self) -> bool {
         self.instance.entrails.used
-    }
-
-    fn reference(&self) -> &'static str {
-        match self.instance.entrails.ref_spec {
-            super::symbol_table::ReferenceType::None => "",
-            super::symbol_table::ReferenceType::Ref => "&",
-        }
     }
 }
 

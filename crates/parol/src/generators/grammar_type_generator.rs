@@ -11,8 +11,8 @@ use crate::{grammar::SymbolAttribute, Cfg, GrammarConfig};
 
 use super::generate_terminal_name;
 use super::symbol_table::{
-    Function, FunctionBuilder, InstanceEntrailsBuilder, MetaSymbolKind, ReferenceType, SymbolId,
-    SymbolKind, SymbolTable, TypeEntrails,
+    Function, FunctionBuilder, InstanceEntrailsBuilder, MetaSymbolKind, SymbolId, SymbolKind,
+    SymbolTable, TypeEntrails,
 };
 use super::symbol_table_facade::{InstanceFacade, SymbolFacade, TypeFacade};
 
@@ -183,17 +183,20 @@ impl GrammarTypeInfo {
             ),
         )?;
         let function_type_id = self.symbol_table.symbol_as_type(action_fn).my_id();
-        let argument_type_id = self
+        let argument_inner_type_id = self
             .symbol_table
             .get_global_type(&NmHlp::to_upper_camel_case(non_terminal))
             .ok_or_else(|| anyhow!("No type for non-terminal {} found!", non_terminal))?;
+        let argument_type_id = self.symbol_table.get_or_create_type(
+            SymbolTable::UNNAMED_TYPE,
+            SymbolTable::GLOBAL_SCOPE,
+            TypeEntrails::Ref(argument_inner_type_id),
+        )?;
         self.symbol_table.insert_instance(
             function_type_id,
             "arg",
             argument_type_id,
-            InstanceEntrailsBuilder::default()
-                .ref_spec(ReferenceType::Ref)
-                .build()?,
+            InstanceEntrailsBuilder::default().build()?,
             SymbolAttribute::None,
             &format!(
                 "Argument of the user action for non-terminal '{}'",

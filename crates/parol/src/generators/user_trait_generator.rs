@@ -386,11 +386,9 @@ impl<'a> UserTraitGenerator<'a> {
                 let arg_inst = type_info.symbol_table.symbol_as_instance(*s);
                 let arg_type = type_info.symbol_table.symbol_as_type(arg_inst.type_id());
                 format!(
-                    "{}: {}{}{}",
+                    "{}: {}",
                     NmHlp::add_unused_indicator(arg_inst.used(), &arg_inst.name()),
-                    arg_inst.reference(),
-                    arg_type.inner_name(),
-                    arg_type.lifetime()
+                    arg_type.to_rust(),
                 )
             })
             .collect::<Vec<String>>()

@@ -131,22 +131,6 @@ impl Display for MetaSymbolKind {
     }
 }
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
-#[ts(export)]
-pub(crate) enum Mutability {
-    #[default]
-    Immutable,
-    Mutable,
-}
-
-#[derive(Clone, Copy, Debug, Default, PartialEq, Serialize, Deserialize, TS)]
-#[ts(export)]
-pub(crate) enum ReferenceType {
-    #[default]
-    None,
-    Ref,
-}
-
 ///
 /// Type information used for auto-generation
 ///
@@ -160,7 +144,7 @@ pub(crate) enum TypeEntrails {
     /// A type with Box semantic
     Box(SymbolId),
     /// A type with Ref semantic an mutable state
-    Ref(SymbolId, Mutability),
+    Ref(SymbolId),
     /// A type that refers to another type. Typically used when the type was a boxed type before
     Surrogate(SymbolId),
     /// A struct, i.e. a named collection of (name, type) tuples
@@ -207,17 +191,9 @@ impl TypeEntrails {
                 symbol_table.symbol(*r).name(),
                 symbol_table.lifetime(*r)
             ),
-            TypeEntrails::Ref(r, m) => {
-                let mutability = match m {
-                    Mutability::Immutable => "",
-                    Mutability::Mutable => "mut ",
-                };
-                format!(
-                    "&{}{}<{}>",
-                    mutability,
-                    symbol_table.symbol(*r).name(),
-                    symbol_table.lifetime(*r)
-                )
+            TypeEntrails::Ref(r) => {
+                let inner_type = symbol_table.symbol(*r);
+                format!("&{}", inner_type.to_rust())
             }
             TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
             TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
@@ -260,7 +236,7 @@ impl TypeEntrails {
         match self {
             TypeEntrails::Box(t)
             | TypeEntrails::Surrogate(t)
-            | TypeEntrails::Ref(t, _)
+            | TypeEntrails::Ref(t)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t)
             | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
@@ -360,7 +336,7 @@ impl Type {
         match self.entrails {
             TypeEntrails::Box(t)
             | TypeEntrails::Surrogate(t)
-            | TypeEntrails::Ref(t, _)
+            | TypeEntrails::Ref(t)
             | TypeEntrails::EnumVariant(t)
             | TypeEntrails::Vec(t)
             | TypeEntrails::Option(t) => Some(t),
@@ -382,12 +358,6 @@ pub(crate) struct InstanceEntrails {
     /// Indicates if the argument is used
     #[builder(default)]
     pub(crate) used: bool,
-
-    #[builder(default)]
-    pub(crate) ref_spec: ReferenceType,
-
-    #[builder(default)]
-    pub(crate) mutability: Mutability,
 }
 
 ///
@@ -1137,7 +1107,7 @@ impl SymbolTable {
         }
         match &self[next_symbol].kind {
             SymbolKind::Type(t) => match t.entrails {
-                TypeEntrails::Ref(t, _)
+                TypeEntrails::Ref(t)
                 | TypeEntrails::Surrogate(t)
                 | TypeEntrails::EnumVariant(t)
                 | TypeEntrails::Option(t) => {
