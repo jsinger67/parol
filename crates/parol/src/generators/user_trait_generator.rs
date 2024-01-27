@@ -28,7 +28,7 @@ impl<'a> UserTraitGenerator<'a> {
         Self { grammar_config }
     }
 
-    fn generate_inner_action_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_adapter_function_args<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
         action_id: SymbolId,
@@ -50,6 +50,7 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(arguments.join(", "))
     }
 
+    /// Generates the code that creates the context for the adapter function.
     fn generate_context<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
@@ -61,6 +62,10 @@ impl<'a> UserTraitGenerator<'a> {
         }
     }
 
+    /// Generates the code that assigns the token to the token argument of the adapter function to a
+    /// local variable that is later transformed into the ASTType (in `generate_result_builder`).
+    /// If the token argument is a user-defined type, then the code for the conversion into it is
+    /// generated.
     fn generate_token_assignments<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
@@ -319,6 +324,9 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
+    /// Generates the code that pushes the result of the adapter function for a given production as
+    /// ASTType onto the stack. The enum variant of the ASTType is the type generated for the
+    /// non-terminal on the left-hand side of the production.
     fn generate_stack_push<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
@@ -547,7 +555,7 @@ impl<'a> UserTraitGenerator<'a> {
             .adapter_actions
             .iter()
             .try_fold(StrVec::new(0).first_line_no_indent(), |acc, a| {
-                self.generate_single_trait_function(a, type_info, config, acc)
+                self.generate_single_adapter_function(a, type_info, config, acc)
             })?;
 
         let user_trait_functions = if config.auto_generate() {
@@ -602,7 +610,7 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(format!("{}", user_trait_data))
     }
 
-    fn generate_single_trait_function<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
+    fn generate_single_adapter_function<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         a: (&usize, &SymbolId),
         type_info: &GrammarTypeInfo,
@@ -616,7 +624,7 @@ impl<'a> UserTraitGenerator<'a> {
         let prod_num = function.prod_num;
         let prod_string = function.prod_string;
         let fn_arguments =
-            self.generate_inner_action_args(config, action_id, &type_info.symbol_table)?;
+            self.generate_adapter_function_args(config, action_id, &type_info.symbol_table)?;
         let mut code = StrVec::new(8);
         self.generate_context(config, &mut code);
         self.generate_token_assignments(config, &mut code, action_id, &type_info.symbol_table)?;

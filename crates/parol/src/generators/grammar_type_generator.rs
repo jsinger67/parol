@@ -566,8 +566,7 @@ impl GrammarTypeInfo {
                 let ref_mut_last_type = &mut types.last_mut().unwrap().0;
                 *ref_mut_last_type = match &ref_mut_last_type {
                     TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
-                    _ => bail!("Unexpected last symbol in production with AddToCollection"),
-                    // _ => ref_mut_last_type.clone(),
+                    _ => ref_mut_last_type.clone(),
                 };
             }
 
@@ -638,11 +637,12 @@ impl GrammarTypeInfo {
                     ))
                 } else {
                     match a {
-                        SymbolAttribute::None => Ok(TypeEntrails::Box(*inner_type)),
-                        // {
-                        //     let inner_type = self.symbol_table.symbol_as_type(*inner_type);
-                        //     Ok(inner_type.entrails().clone())
-                        // }
+                        SymbolAttribute::None =>
+                        // Ok(TypeEntrails::Box(*inner_type)),
+                        {
+                            let inner_type = self.symbol_table.symbol_as_type(*inner_type);
+                            Ok(inner_type.entrails().clone())
+                        }
                         SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                         SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
                         SymbolAttribute::Clipped => Ok(TypeEntrails::Clipped(

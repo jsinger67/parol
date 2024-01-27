@@ -170,11 +170,12 @@ pub(crate) enum TypeEntrails {
 impl TypeEntrails {
     pub(crate) fn format(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
         let uses_type_name = || {
-            matches!(self, Self::Struct)
-                | matches!(self, Self::Enum)
-                | matches!(self, Self::EnumVariant(_))
-                | matches!(self, Self::Function(_))
-                | matches!(self, Self::Trait)
+            !self.is_container()
+                && matches!(self, Self::Struct)
+                    | matches!(self, Self::Enum)
+                    | matches!(self, Self::EnumVariant(_))
+                    | matches!(self, Self::Function(_))
+                    | matches!(self, Self::Trait)
         };
         let my_type_name = if uses_type_name() {
             let my_type = symbol_table.symbol_as_type(type_id);
@@ -254,7 +255,7 @@ impl TypeEntrails {
         SymbolAttribute::None
     }
 
-    pub(crate) fn _is_container(&self) -> bool {
+    pub(crate) fn is_container(&self) -> bool {
         matches!(self, Self::Vec(_) | Self::Option(_) | Self::Box(_))
     }
 }
