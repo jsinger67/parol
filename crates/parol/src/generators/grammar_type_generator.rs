@@ -686,7 +686,7 @@ impl GrammarTypeInfo {
         production_type: SymbolId,
     ) -> Result<()> {
         for arg in arguments {
-            let inst_name = self.symbol_table.symbol(*arg).name().to_string();
+            let inst_name = self.symbol_table.symbol(*arg).name();
             let (type_of_inst, description, sem) = {
                 let inst = self.symbol_table.symbol_as_instance(*arg);
                 (inst.type_id(), inst.description().to_owned(), inst.sem())

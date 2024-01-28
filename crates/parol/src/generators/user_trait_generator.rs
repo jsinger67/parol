@@ -42,7 +42,7 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
             arguments.push(format!(
                 "{}: &ParseTreeType{}",
-                NmHlp::add_unused_indicator(arg_inst.used(), symbol_table.name(arg_inst.name_id())),
+                NmHlp::add_unused_indicator(arg_inst.used(), symbol_table.name(arg_inst.my_id())),
                 lifetime
             ));
         }
@@ -81,12 +81,12 @@ impl<'a> UserTraitGenerator<'a> {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
             let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
             if matches!(arg_type.entrails(), TypeEntrails::Token) {
-                let arg_name = symbol_table.name(arg_inst.name_id());
+                let arg_name = symbol_table.name(arg_inst.my_id());
                 code.push(format!("let {} = {}.token()?.clone();", arg_name, arg_name))
             } else if let TypeEntrails::UserDefinedType(MetaSymbolKind::Token, _) =
                 arg_type.entrails()
             {
-                let arg_name = symbol_table.name(arg_inst.name_id());
+                let arg_name = symbol_table.name(arg_inst.my_id());
                 code.push(format!(
                     "let {} = {}.token()?.try_into().map_err(parol_runtime::ParolError::UserError)?;",
                     arg_name, arg_name,
@@ -116,7 +116,7 @@ impl<'a> UserTraitGenerator<'a> {
                 *arg_type.entrails(),
                 TypeEntrails::Clipped(MetaSymbolKind::NonTerminal(_))
             ) {
-                let arg_name = symbol_table.name(arg_inst.name_id());
+                let arg_name = symbol_table.name(arg_inst.my_id());
                 code.push(format!("// Ignore clipped member '{}'", arg_name));
                 code.push("self.pop(context);".to_string());
             } else if !matches!(*arg_type.entrails(), TypeEntrails::Token)
@@ -126,7 +126,7 @@ impl<'a> UserTraitGenerator<'a> {
                 )
                 && arg_inst.sem() != SymbolAttribute::Clipped
             {
-                let arg_name = symbol_table.name(arg_inst.name_id());
+                let arg_name = symbol_table.name(arg_inst.my_id());
                 let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
                     .arg_name(arg_name.to_string())
                     .arg_type(arg_type.inner_name())
@@ -151,7 +151,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<()> {
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
-        let fn_name = symbol_table.name(fn_type.name_id()).to_string();
+        let fn_name = symbol_table.name(fn_type.my_id()).to_string();
 
         if config.auto_generate() && function.sem == ProductionAttribute::AddToCollection {
             let last_arg = symbol_table
@@ -160,7 +160,7 @@ impl<'a> UserTraitGenerator<'a> {
                 .last()
                 .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
             let arg_inst = symbol_table.symbol_as_instance(*last_arg);
-            let arg_name = symbol_table.name(arg_inst.name_id());
+            let arg_name = symbol_table.name(arg_inst.my_id());
             code.push("// Add an element to the vector".to_string());
             code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
         }
@@ -178,13 +178,13 @@ impl<'a> UserTraitGenerator<'a> {
             // Clipped element is ignored here
             code.push(format!(
                 "// Ignore clipped member '{}'",
-                symbol_table.name(arg_inst.name_id())
+                symbol_table.name(arg_inst.my_id())
             ));
             return Ok(());
         }
         let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
         if !matches!(*arg_type.entrails(), TypeEntrails::Clipped(_)) {
-            let arg_name = symbol_table.name(arg_inst.name_id());
+            let arg_name = symbol_table.name(arg_inst.my_id());
             let setter_name = &arg_name;
             let arg_name = if matches!(*arg_type.entrails(), TypeEntrails::Box(_)) &&
                 // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
@@ -226,7 +226,7 @@ impl<'a> UserTraitGenerator<'a> {
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
-        let fn_name = symbol_table.name(fn_type.name_id()).to_string();
+        let fn_name = symbol_table.name(fn_type.my_id()).to_string();
         let fn_out_type = symbol_table.symbol_as_type(
             *type_info
                 .production_types
@@ -312,7 +312,7 @@ impl<'a> UserTraitGenerator<'a> {
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
         let fn_type = symbol_table.symbol_as_type(action_id);
-        let fn_name = symbol_table.name(fn_type.name_id()).to_string();
+        let fn_name = symbol_table.name(fn_type.my_id()).to_string();
         if let Ok(user_action_id) = type_info.get_user_action(&function.non_terminal) {
             let user_action_name = symbol_table.type_name(user_action_id)?;
             code.push("// Calling user action here".to_string());
@@ -337,7 +337,7 @@ impl<'a> UserTraitGenerator<'a> {
         if config.auto_generate() {
             let function = symbol_table.symbol_as_function(action_id)?;
             let fn_type = symbol_table.symbol_as_type(action_id);
-            let fn_name = symbol_table.name(fn_type.name_id()).to_string();
+            let fn_name = symbol_table.name(fn_type.my_id()).to_string();
 
             if function.sem == ProductionAttribute::AddToCollection {
                 // The output type of the action is the type generated for the action's non-terminal
@@ -348,7 +348,7 @@ impl<'a> UserTraitGenerator<'a> {
                     .last()
                     .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
                 let arg_inst = symbol_table.symbol_as_instance(*last_arg);
-                let arg_name = symbol_table.name(arg_inst.name_id());
+                let arg_name = symbol_table.name(arg_inst.my_id());
 
                 code.push(format!(
                     "self.push(ASTType::{}({}), context);",
@@ -420,7 +420,7 @@ impl<'a> UserTraitGenerator<'a> {
         comment: StrVec,
     ) -> Result<Option<String>> {
         let type_symbol = symbol_table.symbol_as_type(type_id);
-        let type_name = symbol_table.name(type_symbol.name_id()).to_string();
+        let type_name = symbol_table.name(type_symbol.my_id()).to_string();
         let lifetime = symbol_table.lifetime(type_symbol.my_id());
         let default_members = Vec::default();
         let members = symbol_table
@@ -619,7 +619,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let action_id = *a.1;
         let fn_type = type_info.symbol_table.symbol_as_type(action_id);
-        let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
+        let fn_name = type_info.symbol_table.name(fn_type.my_id()).to_string();
         let function = type_info.symbol_table.symbol_as_function(action_id)?;
         let prod_num = function.prod_num;
         let prod_string = function.prod_string;
@@ -738,7 +738,7 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let fn_type_id = type_info.adapter_actions.get(&i).unwrap();
         let fn_type = type_info.symbol_table.symbol_as_type(*fn_type_id);
-        let fn_name = type_info.symbol_table.name(fn_type.name_id()).to_string();
+        let fn_name = type_info.symbol_table.name(fn_type.my_id()).to_string();
         let fn_arguments = Self::generate_caller_argument_list(p);
         let user_trait_function_data = UserTraitCallerFunctionDataBuilder::default()
             .fn_name(fn_name)

@@ -3,14 +3,16 @@ use crate::utils::str_vec::StrVec;
 use anyhow::{bail, Result};
 
 use super::symbol_table::{
-    Instance, ScopeId, ScopedNameId, Symbol, SymbolId, SymbolKind, SymbolTable, Type, TypeEntrails,
+    Instance, MetaSymbolKind, ScopeId, ScopedNameId, Symbol, SymbolId, SymbolKind, SymbolTable,
+    Type, TypeEntrails,
 };
 
 pub(crate) trait SymbolFacade<'a> {
+    /// Returns the name of the symbol. If the symbol is unnamed, None returned.
     fn name(&self) -> String;
     fn kind(&self) -> &'a SymbolKind;
     fn to_rust(&self) -> String;
-    fn format(&self, scope_depth: usize) -> String;
+    // fn format(&self, scope_depth: usize) -> String;
     fn my_id(&self) -> SymbolId;
     fn name_id(&self) -> ScopedNameId;
 }
@@ -49,7 +51,11 @@ impl<'a> SymbolItem<'a> {
 
 impl<'a> SymbolFacade<'a> for SymbolItem<'a> {
     fn name(&self) -> String {
-        self.symbol_table.name(self.symbol.name_id).to_string()
+        if self.symbol.name_id.is_unnamed() {
+            "UNNAMED".to_string()
+        } else {
+            self.symbol_table.name(self.symbol.my_id).to_string()
+        }
     }
 
     fn kind(&self) -> &'a SymbolKind {
@@ -60,9 +66,9 @@ impl<'a> SymbolFacade<'a> for SymbolItem<'a> {
         self.symbol.to_rust(self.symbol_table)
     }
 
-    fn format(&self, scope_depth: usize) -> String {
-        self.symbol.format(self.symbol_table, scope_depth)
-    }
+    // fn format(&self, scope_depth: usize) -> String {
+    //     self.symbol.format(self.symbol_table, scope_depth)
+    // }
 
     fn my_id(&self) -> SymbolId {
         self.symbol.my_id
@@ -100,9 +106,9 @@ impl<'a> SymbolFacade<'a> for InstanceItem<'a> {
         self.symbol_item.to_rust()
     }
 
-    fn format(&self, scope_depth: usize) -> String {
-        self.symbol_item.format(scope_depth)
-    }
+    // fn format(&self, scope_depth: usize) -> String {
+    //     self.symbol_item.format(scope_depth)
+    // }
 
     fn my_id(&self) -> SymbolId {
         self.symbol_item.my_id()
@@ -147,14 +153,38 @@ impl<'a> TypeItem<'a> {
 
 impl<'a> SymbolFacade<'a> for TypeItem<'a> {
     fn name(&self) -> String {
-        if self.symbol_item.name_id().is_unnamed() {
-            self.my_type
-                .entrails
-                .format(self.symbol_item.my_id(), self.symbol_item.symbol_table)
-        } else {
-            self.symbol_item.name()
+        let type_symbol = self
+            .symbol_item
+            .symbol_table
+            .symbol_as_type(self.symbol_item.my_id());
+        match type_symbol.entrails() {
+            TypeEntrails::Box(t)
+            | TypeEntrails::Ref(t)
+            | TypeEntrails::Surrogate(t)
+            | TypeEntrails::EnumVariant(t)
+            | TypeEntrails::Vec(t)
+            | TypeEntrails::Option(t)
+            | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
+                self.symbol_item.symbol_table.symbol(*t).name()
+            }
+            TypeEntrails::Clipped(t) => t.to_string(),
+            _ => self
+                .symbol_item
+                .symbol_table
+                .name(type_symbol.my_id())
+                .to_owned(),
         }
     }
+
+    // fn name(&self) -> String {
+    //     if self.symbol_item.name_id().is_unnamed() {
+    //         self.my_type
+    //             .entrails
+    //             .format(self.symbol_item.my_id(), self.symbol_item.symbol_table)
+    //     } else {
+    //         self.symbol_item.name()
+    //     }
+    // }
 
     fn kind(&self) -> &'a SymbolKind {
         self.symbol_item.kind()
@@ -164,9 +194,9 @@ impl<'a> SymbolFacade<'a> for TypeItem<'a> {
         self.symbol_item.to_rust()
     }
 
-    fn format(&self, scope_depth: usize) -> String {
-        self.symbol_item.format(scope_depth)
-    }
+    // fn format(&self, scope_depth: usize) -> String {
+    //     self.symbol_item.format(scope_depth)
+    // }
 
     fn my_id(&self) -> SymbolId {
         self.symbol_item.my_id()
@@ -240,12 +270,12 @@ impl<'a> TypeFacade<'a> for TypeItem<'a> {
                                     TypeEntrails::Option(_) => acc.push(format!(
                                         "{}self.{}.as_ref().map_or(Span::default(), |o| o.span())",
                                         addition,
-                                        member.name()
+                                            member.name()
                                     )),
                                     _ => acc.push(format!(
                                         "{}self.{}.span()",
                                         addition,
-                                        member.name()
+                                            member.name()
                                     )),
                                 }
                                 acc
