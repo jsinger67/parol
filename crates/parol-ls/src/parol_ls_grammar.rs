@@ -142,7 +142,7 @@ impl ParolLsGrammar {
                         tags: None,
                         deprecated: None,
                         range: Into::<Rng>::into(arg).0,
-                        selection_range: Into::<Rng>::into(&line_comment.token_literal).0,
+                        selection_range: Into::<Rng>::into(&*line_comment.token_literal).0,
                         children: None,
                     }]),
                 });
@@ -173,7 +173,7 @@ impl ParolLsGrammar {
                             tags: None,
                             deprecated: None,
                             range: Into::<Rng>::into(arg).0,
-                            selection_range: Into::<Rng>::into(&block_comment.token_literal).0,
+                            selection_range: Into::<Rng>::into(&*block_comment.token_literal).0,
                             children: None,
                         },
                         DocumentSymbol {
@@ -183,7 +183,7 @@ impl ParolLsGrammar {
                             tags: None,
                             deprecated: None,
                             range: Into::<Rng>::into(arg).0,
-                            selection_range: Into::<Rng>::into(&block_comment.token_literal0).0,
+                            selection_range: Into::<Rng>::into(&*block_comment.token_literal0).0,
                             children: None,
                         },
                     ]),

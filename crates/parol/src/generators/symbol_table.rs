@@ -176,70 +176,6 @@ impl TypeEntrails {
         }
     }
 
-    // fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
-    //     let uses_type_name = || {
-    //         matches!(self, Self::Struct)
-    //             | matches!(self, Self::Enum)
-    //             | matches!(self, Self::EnumVariant(_))
-    //             | matches!(self, Self::Function(_))
-    //             | matches!(self, Self::Trait)
-    //     };
-    //     let my_type_name = if uses_type_name() {
-    //         let my_type = symbol_table.symbol_as_type(type_id);
-    //         my_type.name()
-    //     } else {
-    //         String::default()
-    //     };
-    //     let lifetime = symbol_table.lifetime(type_id);
-    //     match self {
-    //         TypeEntrails::None => "*TypeError*".to_string(),
-    //         TypeEntrails::Token => format!("Token{}", lifetime),
-    //         TypeEntrails::Box(r) => format!(
-    //             "Box<{}{}>",
-    //             symbol_table.symbol(*r).name(),
-    //             symbol_table.lifetime(*r)
-    //         ),
-    //         TypeEntrails::Ref(r) => {
-    //             let inner_type = symbol_table.symbol(*r);
-    //             format!("&{}", inner_type.to_rust())
-    //         }
-    //         TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
-    //         TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
-    //         TypeEntrails::EnumVariant(t) => {
-    //             let lifetime = if symbol_table.symbol_as_type(*t).is_container() {
-    //                 "".to_string()
-    //             } else {
-    //                 lifetime
-    //             };
-    //             format!(
-    //                 "{}({}{}),",
-    //                 my_type_name,
-    //                 symbol_table.symbol_as_type(*t).name(),
-    //                 lifetime
-    //             )
-    //         }
-    //         TypeEntrails::Vec(r) => format!(
-    //             "Vec<{}{}>",
-    //             symbol_table.symbol(*r).name(),
-    //             symbol_table.lifetime(*r)
-    //         ),
-    //         TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
-    //         TypeEntrails::Function(f) => f.to_rust(my_type_name),
-    //         TypeEntrails::Option(o) => format!(
-    //             "Option<Box<{}{}>>",
-    //             symbol_table.symbol(*o).name(),
-    //             symbol_table.lifetime(*o)
-    //         ),
-    //         TypeEntrails::Clipped(k) => format!("Clipped({})", k),
-    //         TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
-    //         TypeEntrails::Surrogate(s) => format!(
-    //             "{}{}",
-    //             symbol_table.symbol(*s).name(),
-    //             symbol_table.lifetime(*s)
-    //         ),
-    //     }
-    // }
-
     pub(crate) fn sem(&self) -> SymbolAttribute {
         SymbolAttribute::None
     }
@@ -269,28 +205,6 @@ pub(crate) struct Type {
 }
 
 impl Type {
-    // fn format(&self, symbol_table: &SymbolTable, my_symbol: &Symbol, scope_depth: usize) -> String {
-    //     let scope = if !matches!(self.entrails, TypeEntrails::EnumVariant(_)) {
-    //         format!(
-    //             " {{\n{}\n{}}}",
-    //             symbol_table
-    //                 .scope(self.member_scope)
-    //                 .format(symbol_table, scope_depth + 1),
-    //             build_indent(scope_depth),
-    //         )
-    //     } else {
-    //         ",".to_string()
-    //     };
-    //     format!(
-    //         "{}{} /* Type: my_id {}, name_id: {} */ {}",
-    //         build_indent(scope_depth),
-    //         self.entrails.format(my_symbol.my_id, symbol_table),
-    //         my_symbol.my_id,
-    //         my_symbol.name_id,
-    //         scope,
-    //     )
-    // }
-
     pub(crate) fn to_rust(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
         // self.entrails.to_rust(my_symbol.my_id, symbol_table)
         let uses_type_name = || {
@@ -305,20 +219,13 @@ impl Type {
             my_type.inner_name()
         } else {
             symbol_table.name(my_symbol.my_id).to_owned()
-            // String::default()
         };
         let lifetime = symbol_table.lifetime(my_symbol.my_id);
         match &self.entrails {
             TypeEntrails::None => "*TypeError*".to_string(),
             TypeEntrails::Token => format!("Token{}", lifetime),
-            TypeEntrails::Box(r) =>
-            // format!(
-            // "Box<{}{}>",
-            // symbol_table.symbol(*r).to_rust(),
-            // symbol_table.lifetime(*r)
-            //),
-            {
-                symbol_table.symbol(*r).to_rust()
+            TypeEntrails::Box(r) => {
+                format!("Box<{}>", symbol_table.symbol(*r).to_rust())
             }
             TypeEntrails::Ref(r) => {
                 let inner_type = symbol_table.symbol(*r);
@@ -355,15 +262,7 @@ impl Type {
         }
     }
 
-    // pub(crate) fn name(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
-    //     if my_symbol.name_id.is_unnamed() {
-    //         self.entrails.format(my_symbol.my_id, symbol_table)
-    //     } else {
-    //         symbol_table.name(my_symbol.name_id).to_string()
-    //     }
-    // }
-
-    /// Returns the name of the type without lifetime
+    /// Returns the name of the wrapped type
     pub(crate) fn inner_name(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
         let is_user_defined_type = matches!(self.entrails, TypeEntrails::UserDefinedType(..));
         if is_user_defined_type || my_symbol.name_id.is_unnamed() {
@@ -433,26 +332,6 @@ pub(crate) struct Instance {
 }
 
 impl Instance {
-    // fn format(&self, symbol_table: &SymbolTable, my_symbol: &Symbol, scope_depth: usize) -> String {
-    //     let desc = if self.description.is_empty() {
-    //         String::default()
-    //     } else {
-    //         format!(" /* {} */", self.description)
-    //     };
-    //     format!(
-    //         "{}{}: {}{}{}{}",
-    //         build_indent(scope_depth),
-    //         self.name(symbol_table, my_symbol),
-    //         symbol_table.symbol(self.type_id).name(),
-    //         symbol_table.lifetime(self.type_id),
-    //         desc,
-    //         match self.sem {
-    //             SymbolAttribute::None => "".to_string(),
-    //             _ => format!(" /* {} */", self.sem),
-    //         }
-    //     )
-    // }
-
     fn to_rust(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
         let desc = if self.description.is_empty() {
             String::default()
@@ -536,6 +415,7 @@ impl Symbol {
         }
     }
 
+    /// Replace the inner type of the symbol
     fn set_inner_type(&mut self, inner_type: SymbolId) -> Result<()> {
         match &mut self.kind {
             SymbolKind::Type(t) => match t.entrails {
@@ -555,13 +435,6 @@ impl Symbol {
         Ok(())
     }
 
-    // pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
-    //     match &self.kind {
-    //         SymbolKind::Type(t) => t.format(symbol_table, self, scope_depth),
-    //         SymbolKind::Instance(i) => i.format(symbol_table, self, scope_depth),
-    //     }
-    // }
-
     pub(crate) fn to_rust(&self, symbol_table: &SymbolTable) -> String {
         match &self.kind {
             SymbolKind::Type(t) => t.to_rust(symbol_table, self),
@@ -575,13 +448,6 @@ impl Symbol {
             SymbolKind::Instance(_) => None,
         }
     }
-
-    // pub(crate) fn name(&self, symbol_table: &SymbolTable) -> String {
-    //     match &self.kind {
-    //         SymbolKind::Type(t) => t.name(symbol_table, self),
-    //         SymbolKind::Instance(i) => i.name(symbol_table, self),
-    //     }
-    // }
 
     pub(crate) fn sem(&self) -> SymbolAttribute {
         match &self.kind {
@@ -725,21 +591,6 @@ impl Scope {
         }
         result
     }
-
-    // pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
-    //     format!(
-    //         "{}// Scope: my_id: {}, parent: {}\n{}",
-    //         build_indent(scope_depth),
-    //         self.my_id,
-    //         self.parent
-    //             .map_or("No parent".to_string(), |i| format!("{}", i)),
-    //         self.symbols
-    //             .iter()
-    //             .map(|s| symbol_table.symbol(*s).format(scope_depth))
-    //             .collect::<Vec<String>>()
-    //             .join("\n")
-    //     )
-    // }
 }
 
 impl Display for Scope {

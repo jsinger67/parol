@@ -12,7 +12,6 @@ pub(crate) trait SymbolFacade<'a> {
     fn name(&self) -> String;
     fn kind(&self) -> &'a SymbolKind;
     fn to_rust(&self) -> String;
-    // fn format(&self, scope_depth: usize) -> String;
     fn my_id(&self) -> SymbolId;
     fn name_id(&self) -> ScopedNameId;
 }
@@ -66,10 +65,6 @@ impl<'a> SymbolFacade<'a> for SymbolItem<'a> {
         self.symbol.to_rust(self.symbol_table)
     }
 
-    // fn format(&self, scope_depth: usize) -> String {
-    //     self.symbol.format(self.symbol_table, scope_depth)
-    // }
-
     fn my_id(&self) -> SymbolId {
         self.symbol.my_id
     }
@@ -105,10 +100,6 @@ impl<'a> SymbolFacade<'a> for InstanceItem<'a> {
     fn to_rust(&self) -> String {
         self.symbol_item.to_rust()
     }
-
-    // fn format(&self, scope_depth: usize) -> String {
-    //     self.symbol_item.format(scope_depth)
-    // }
 
     fn my_id(&self) -> SymbolId {
         self.symbol_item.my_id()
@@ -176,16 +167,6 @@ impl<'a> SymbolFacade<'a> for TypeItem<'a> {
         }
     }
 
-    // fn name(&self) -> String {
-    //     if self.symbol_item.name_id().is_unnamed() {
-    //         self.my_type
-    //             .entrails
-    //             .format(self.symbol_item.my_id(), self.symbol_item.symbol_table)
-    //     } else {
-    //         self.symbol_item.name()
-    //     }
-    // }
-
     fn kind(&self) -> &'a SymbolKind {
         self.symbol_item.kind()
     }
@@ -193,10 +174,6 @@ impl<'a> SymbolFacade<'a> for TypeItem<'a> {
     fn to_rust(&self) -> String {
         self.symbol_item.to_rust()
     }
-
-    // fn format(&self, scope_depth: usize) -> String {
-    //     self.symbol_item.format(scope_depth)
-    // }
 
     fn my_id(&self) -> SymbolId {
         self.symbol_item.my_id()
