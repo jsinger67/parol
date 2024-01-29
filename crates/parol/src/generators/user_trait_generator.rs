@@ -270,13 +270,30 @@ impl<'a> UserTraitGenerator<'a> {
             if function.alts > 1 {
                 // Type adjustment to the non-terminal enum
                 // let list_0 = List::List0(list_0);
+                trace!(
+                    "members: {:?} of production {} (type {})",
+                    symbol_table.members(nt_type.my_id())?,
+                    fn_name,
+                    fn_out_type.my_id()
+                );
                 let enum_variant_name = symbol_table
                     .members(nt_type.my_id())?
                     .iter()
                     .find(|variant| {
                         let enum_variant = symbol_table.symbol_as_type(**variant);
                         if let TypeEntrails::EnumVariant(inner_type) = enum_variant.entrails() {
-                            *inner_type == fn_out_type.my_id()
+                            *inner_type == fn_out_type.my_id() || {
+                                // Check if the enum variant is a Box
+                                let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                                // trace!("inner_type: {:?}", inner_type_symbol.entrails());
+                                if let TypeEntrails::Box(inner_type) = inner_type_symbol.entrails()
+                                {
+                                    // trace!("boxed type: {:?}", inner_type);
+                                    *inner_type == fn_out_type.my_id()
+                                } else {
+                                    false
+                                }
+                            }
                         } else {
                             false
                         }
@@ -286,7 +303,7 @@ impl<'a> UserTraitGenerator<'a> {
                             .symbol(symbol_table.symbol(*enum_variant_id).my_id())
                             .name()
                     })
-                    .ok_or_else(|| anyhow!("Enum variant not found"))?;
+                    .ok_or_else(|| anyhow!("Enum variant not found {}", fn_name))?;
                 code.push(format!(
                     "let {}_built = {}::{}({}_built);",
                     fn_name,

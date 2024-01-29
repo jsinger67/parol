@@ -78,7 +78,7 @@ impl NamingHelper {
     }
 
     ///
-    /// Produces a lower snake camel case version of the given name.
+    /// Produces a lower snake case version of the given name.
     /// Since these names are supposed to be used as identifiers a clash with rust keywords is
     /// detected and prevented.
     ///
@@ -91,6 +91,7 @@ impl NamingHelper {
     /// assert_eq!("calc_lst1_1", NmHlp::to_lower_snake_case("calc_lst1_1"));
     /// assert_eq!("nor_op_23", NmHlp::to_lower_snake_case("nor_op_23"));
     /// assert_eq!("r#type", NmHlp::to_lower_snake_case("type"));
+    /// assert_eq!("r#type", NmHlp::to_lower_snake_case("r#type"));
     /// ```
     pub fn to_lower_snake_case(name: &str) -> String {
         let mut last_char = '.';
@@ -133,26 +134,38 @@ impl NamingHelper {
     /// assert_eq!("PrologItem", NmHlp::to_upper_camel_case("prolog_item"));
     /// assert_eq!("PrologItem", NmHlp::to_upper_camel_case("PrologItem"));
     /// assert_eq!("AA", NmHlp::to_upper_camel_case("_a_a_"));
+    /// assert_eq!("If", NmHlp::to_upper_camel_case("r#if"));
     /// ```
     pub fn to_upper_camel_case(name: &str) -> String {
+        // Handle raw identifiers are not allowed
+        let is_raw = name.starts_with("r#");
         let mut up = true;
         let mut last_char = '.';
-        name.chars().fold(String::new(), |mut acc, c| {
-            if c == '_' {
-                up = true;
-            } else if up {
-                if last_char.is_ascii_digit() && c.is_ascii_digit() {
-                    acc.push('_');
+        name.chars()
+            .skip(if is_raw { 2 } else { 0 })
+            .fold(String::new(), |mut acc, c| {
+                if c == '_' {
+                    up = true;
+                } else if up {
+                    if last_char.is_ascii_digit() && c.is_ascii_digit() {
+                        acc.push('_');
+                    }
+                    last_char = c.to_uppercase().next().unwrap();
+                    acc.push(last_char);
+                    up = false;
+                } else {
+                    last_char = c;
+                    acc.push(last_char);
                 }
-                last_char = c.to_uppercase().next().unwrap();
-                acc.push(last_char);
-                up = false;
-            } else {
-                last_char = c;
-                acc.push(last_char);
-            }
-            acc
-        })
+                acc
+            })
+        // Currently rust identifiers only start with a lowercase letter, thus we do not need to
+        // check for rust keywords
+        // if Self::is_rust_keyword(&result) {
+        //     format!("r#{}", result)
+        // } else {
+        //     result
+        // }
     }
 
     /// This is a very restrictive definition of allowed characters in identifiers `parol` allows.

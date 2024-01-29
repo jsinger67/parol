@@ -176,75 +176,75 @@ impl TypeEntrails {
         }
     }
 
-    fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
-        let uses_type_name = || {
-            matches!(self, Self::Struct)
-                | matches!(self, Self::Enum)
-                | matches!(self, Self::EnumVariant(_))
-                | matches!(self, Self::Function(_))
-                | matches!(self, Self::Trait)
-        };
-        let my_type_name = if uses_type_name() {
-            let my_type = symbol_table.symbol_as_type(type_id);
-            my_type.name()
-        } else {
-            String::default()
-        };
-        let lifetime = symbol_table.lifetime(type_id);
-        match self {
-            TypeEntrails::None => "*TypeError*".to_string(),
-            TypeEntrails::Token => format!("Token{}", lifetime),
-            TypeEntrails::Box(r) => format!(
-                "Box<{}{}>",
-                symbol_table.symbol(*r).name(),
-                symbol_table.lifetime(*r)
-            ),
-            TypeEntrails::Ref(r) => {
-                let inner_type = symbol_table.symbol(*r);
-                format!("&{}", inner_type.to_rust())
-            }
-            TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
-            TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
-            TypeEntrails::EnumVariant(t) => {
-                let lifetime = if symbol_table.symbol_as_type(*t).is_container() {
-                    "".to_string()
-                } else {
-                    lifetime
-                };
-                format!(
-                    "{}({}{}),",
-                    my_type_name,
-                    symbol_table.symbol_as_type(*t).name(),
-                    lifetime
-                )
-            }
-            TypeEntrails::Vec(r) => format!(
-                "Vec<{}{}>",
-                symbol_table.symbol(*r).name(),
-                symbol_table.lifetime(*r)
-            ),
-            TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
-            TypeEntrails::Function(f) => f.to_rust(my_type_name),
-            TypeEntrails::Option(o) => format!(
-                "Option<Box<{}{}>>",
-                symbol_table.symbol(*o).name(),
-                symbol_table.lifetime(*o)
-            ),
-            TypeEntrails::Clipped(k) => format!("Clipped({})", k),
-            TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
-            TypeEntrails::Surrogate(s) => format!(
-                "{}{}",
-                symbol_table.symbol(*s).name(),
-                symbol_table.lifetime(*s)
-            ),
-        }
-    }
+    // fn to_rust(&self, type_id: SymbolId, symbol_table: &SymbolTable) -> String {
+    //     let uses_type_name = || {
+    //         matches!(self, Self::Struct)
+    //             | matches!(self, Self::Enum)
+    //             | matches!(self, Self::EnumVariant(_))
+    //             | matches!(self, Self::Function(_))
+    //             | matches!(self, Self::Trait)
+    //     };
+    //     let my_type_name = if uses_type_name() {
+    //         let my_type = symbol_table.symbol_as_type(type_id);
+    //         my_type.name()
+    //     } else {
+    //         String::default()
+    //     };
+    //     let lifetime = symbol_table.lifetime(type_id);
+    //     match self {
+    //         TypeEntrails::None => "*TypeError*".to_string(),
+    //         TypeEntrails::Token => format!("Token{}", lifetime),
+    //         TypeEntrails::Box(r) => format!(
+    //             "Box<{}{}>",
+    //             symbol_table.symbol(*r).name(),
+    //             symbol_table.lifetime(*r)
+    //         ),
+    //         TypeEntrails::Ref(r) => {
+    //             let inner_type = symbol_table.symbol(*r);
+    //             format!("&{}", inner_type.to_rust())
+    //         }
+    //         TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
+    //         TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
+    //         TypeEntrails::EnumVariant(t) => {
+    //             let lifetime = if symbol_table.symbol_as_type(*t).is_container() {
+    //                 "".to_string()
+    //             } else {
+    //                 lifetime
+    //             };
+    //             format!(
+    //                 "{}({}{}),",
+    //                 my_type_name,
+    //                 symbol_table.symbol_as_type(*t).name(),
+    //                 lifetime
+    //             )
+    //         }
+    //         TypeEntrails::Vec(r) => format!(
+    //             "Vec<{}{}>",
+    //             symbol_table.symbol(*r).name(),
+    //             symbol_table.lifetime(*r)
+    //         ),
+    //         TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
+    //         TypeEntrails::Function(f) => f.to_rust(my_type_name),
+    //         TypeEntrails::Option(o) => format!(
+    //             "Option<Box<{}{}>>",
+    //             symbol_table.symbol(*o).name(),
+    //             symbol_table.lifetime(*o)
+    //         ),
+    //         TypeEntrails::Clipped(k) => format!("Clipped({})", k),
+    //         TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
+    //         TypeEntrails::Surrogate(s) => format!(
+    //             "{}{}",
+    //             symbol_table.symbol(*s).name(),
+    //             symbol_table.lifetime(*s)
+    //         ),
+    //     }
+    // }
 
     pub(crate) fn sem(&self) -> SymbolAttribute {
         SymbolAttribute::None
     }
 
-    pub(crate) fn _is_container(&self) -> bool {
+    pub(crate) fn is_container(&self) -> bool {
         matches!(self, Self::Vec(_) | Self::Option(_) | Self::Box(_))
     }
 }
@@ -292,7 +292,67 @@ impl Type {
     // }
 
     pub(crate) fn to_rust(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
-        self.entrails.to_rust(my_symbol.my_id, symbol_table)
+        // self.entrails.to_rust(my_symbol.my_id, symbol_table)
+        let uses_type_name = || {
+            matches!(self.entrails, TypeEntrails::Struct)
+                | matches!(self.entrails, TypeEntrails::Enum)
+                | matches!(self.entrails, TypeEntrails::EnumVariant(_))
+                | matches!(self.entrails, TypeEntrails::Function(_))
+                | matches!(self.entrails, TypeEntrails::Trait)
+        };
+        let my_type_name = if uses_type_name() {
+            let my_type = symbol_table.symbol_as_type(my_symbol.my_id);
+            my_type.inner_name()
+        } else {
+            symbol_table.name(my_symbol.my_id).to_owned()
+            // String::default()
+        };
+        let lifetime = symbol_table.lifetime(my_symbol.my_id);
+        match &self.entrails {
+            TypeEntrails::None => "*TypeError*".to_string(),
+            TypeEntrails::Token => format!("Token{}", lifetime),
+            TypeEntrails::Box(r) =>
+            // format!(
+            // "Box<{}{}>",
+            // symbol_table.symbol(*r).to_rust(),
+            // symbol_table.lifetime(*r)
+            //),
+            {
+                symbol_table.symbol(*r).to_rust()
+            }
+            TypeEntrails::Ref(r) => {
+                let inner_type = symbol_table.symbol(*r);
+                format!("&{}", inner_type.to_rust())
+            }
+            TypeEntrails::Struct => format!("{}{}", my_type_name, lifetime),
+            TypeEntrails::Enum => format!("{}{}", my_type_name, lifetime),
+            TypeEntrails::EnumVariant(t) => {
+                format!(
+                    "{}({}),",
+                    my_type_name,
+                    symbol_table.symbol_as_type(*t).to_rust(),
+                )
+            }
+            TypeEntrails::Vec(r) => format!(
+                "Vec<{}{}>",
+                symbol_table.symbol(*r).name(),
+                symbol_table.lifetime(*r)
+            ),
+            TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
+            TypeEntrails::Function(f) => f.to_rust(my_type_name),
+            TypeEntrails::Option(o) => format!(
+                "Option<Box<{}{}>>",
+                symbol_table.symbol(*o).name(),
+                symbol_table.lifetime(*o)
+            ),
+            TypeEntrails::Clipped(k) => format!("Clipped({})", k),
+            TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
+            TypeEntrails::Surrogate(s) => format!(
+                "{}{}",
+                symbol_table.symbol(*s).name(),
+                symbol_table.lifetime(*s)
+            ),
+        }
     }
 
     // pub(crate) fn name(&self, symbol_table: &SymbolTable, my_symbol: &Symbol) -> String {
@@ -474,6 +534,25 @@ impl Symbol {
             SymbolKind::Type(t) => t.inner_type(),
             SymbolKind::Instance(i) => i.inner_type(),
         }
+    }
+
+    fn set_inner_type(&mut self, inner_type: SymbolId) -> Result<()> {
+        match &mut self.kind {
+            SymbolKind::Type(t) => match t.entrails {
+                TypeEntrails::Box(ref mut i)
+                | TypeEntrails::Ref(ref mut i)
+                | TypeEntrails::Surrogate(ref mut i)
+                | TypeEntrails::EnumVariant(ref mut i)
+                | TypeEntrails::Vec(ref mut i)
+                | TypeEntrails::Option(ref mut i)
+                | TypeEntrails::Clipped(MetaSymbolKind::NonTerminal(ref mut i)) => {
+                    *i = inner_type;
+                }
+                _ => bail!("Have no inner type!"),
+            },
+            SymbolKind::Instance(_) => bail!("Ain't no type!"),
+        }
+        Ok(())
     }
 
     // pub(crate) fn format(&self, symbol_table: &SymbolTable, scope_depth: usize) -> String {
@@ -1028,9 +1107,7 @@ impl SymbolTable {
     ) -> Result<SymbolId> {
         if let Some(symbol_id) = self.scope(scope).symbols.iter().find(|symbol_id| {
             let type_symbol = self.symbol_as_type(**symbol_id);
-            (*type_symbol.entrails() == entrails && self.name(**symbol_id) == type_name)
-                || matches!(*type_symbol.entrails(), TypeEntrails::Token)
-                    && matches!(entrails, TypeEntrails::Token)
+            *type_symbol.entrails() == entrails && self.name(**symbol_id) == type_name
         }) {
             return Ok(*symbol_id);
         }
@@ -1085,7 +1162,7 @@ impl SymbolTable {
     }
 
     /// Replace the type of the given instance symbol with the type of the referred symbol
-    pub(crate) fn _replace_type_of_inst(
+    pub(crate) fn replace_type_of_inst(
         &mut self,
         inst_symbol_id: SymbolId,
         referred_type_id: SymbolId,
@@ -1101,7 +1178,32 @@ impl SymbolTable {
         Ok(())
     }
 
-    fn _inner_is_recursive(&self, mut ancestors: Vec<SymbolId>, next_symbol: SymbolId) -> bool {
+    pub(crate) fn replace_wrapped_type(
+        &mut self,
+        parent_type: SymbolId,
+        type_symbol_id: SymbolId,
+        referred_type_id: SymbolId,
+    ) -> Result<()> {
+        debug_assert!(matches!(
+            self.symbol(type_symbol_id).kind(),
+            SymbolKind::Type(_)
+        ));
+        let parent_scope_id = self.symbol_as_type(parent_type).member_scope();
+        let parent_scope = self.scope_mut(parent_scope_id);
+        if parent_scope.symbols.iter().any(|s| *s == type_symbol_id) {
+            self[type_symbol_id].set_inner_type(referred_type_id)?;
+            // parent_scope.symbols[index] = referred_type_id;
+        } else {
+            bail!(
+                "Type {} not found in scope {}",
+                type_symbol_id,
+                parent_scope_id
+            );
+        }
+        Ok(())
+    }
+
+    fn inner_is_recursive(&self, mut ancestors: Vec<SymbolId>, next_symbol: SymbolId) -> bool {
         if ancestors.contains(&next_symbol) {
             return true;
         }
@@ -1112,15 +1214,15 @@ impl SymbolTable {
                 | TypeEntrails::EnumVariant(t)
                 | TypeEntrails::Option(t) => {
                     ancestors.push(t);
-                    self._inner_is_recursive(ancestors, t)
+                    self.inner_is_recursive(ancestors, t)
                 }
                 TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
                     ancestors.push(t);
-                    self._inner_is_recursive(ancestors, t)
+                    self.inner_is_recursive(ancestors, t)
                 }
                 TypeEntrails::Struct | TypeEntrails::Enum => {
                     for member in self.members(next_symbol).unwrap() {
-                        if self._inner_is_recursive(ancestors.clone(), *member) {
+                        if self.inner_is_recursive(ancestors.clone(), *member) {
                             return true;
                         }
                     }
@@ -1130,14 +1232,14 @@ impl SymbolTable {
             },
             SymbolKind::Instance(t) => {
                 ancestors.push(next_symbol);
-                self._inner_is_recursive(ancestors, t.type_id)
+                self.inner_is_recursive(ancestors, t.type_id)
             }
         }
     }
 
-    pub(crate) fn _is_recursive_in(&self, parent_type_id: SymbolId, child_id: SymbolId) -> bool {
+    pub(crate) fn is_recursive_in(&self, parent_type_id: SymbolId, child_id: SymbolId) -> bool {
         let stack = vec![parent_type_id];
-        self._inner_is_recursive(stack, child_id)
+        self.inner_is_recursive(stack, child_id)
     }
 }
 

@@ -442,14 +442,42 @@ impl GrammarTypeInfo {
             // This is the "enum case". We generate an enum variant for each production with a name
             // built from the right-hand side of the corresponding production.
             let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
+            // Assert that the type is an enum
+            debug_assert!(matches!(
+                self.symbol_table
+                    .symbol_as_type(non_terminal_type)
+                    .entrails(),
+                TypeEntrails::Enum
+            ));
             for (action_id, _) in actions {
                 let function = self.symbol_table.symbol_as_function(action_id)?;
                 let variant_name = self.generate_production_rhs_name(function.prod_num, cfg);
                 let entrails = TypeEntrails::EnumVariant(
                     *self.production_types.get(&function.prod_num).unwrap(),
                 );
-                self.symbol_table
-                    .insert_type(non_terminal_type, &variant_name, entrails)?;
+                let enum_variant =
+                    self.symbol_table
+                        .insert_type(non_terminal_type, &variant_name, entrails)?;
+
+                // TODO: Make this dependent on a configuration option
+                let minimize_boxed_types = false;
+                if minimize_boxed_types
+                    && self
+                        .symbol_table
+                        .is_recursive_in(non_terminal_type, enum_variant)
+                {
+                    // Create a boxed type for the recursive type
+                    let boxed_type = self.symbol_table.get_or_create_type(
+                        SymbolTable::UNNAMED_TYPE,
+                        SymbolTable::GLOBAL_SCOPE,
+                        TypeEntrails::Box(*self.production_types.get(&function.prod_num).unwrap()),
+                    )?;
+                    self.symbol_table.replace_wrapped_type(
+                        non_terminal_type,
+                        enum_variant,
+                        boxed_type,
+                    )?;
+                }
             }
         }
 
@@ -544,6 +572,8 @@ impl GrammarTypeInfo {
         grammar_config: &GrammarConfig,
         function_id: SymbolId,
     ) -> Result<()> {
+        // TODO: Make this dependent on a configuration option
+        let minimize_boxed_types = false;
         let entrails = self
             .symbol_table
             .symbol_as_type(function_id)
@@ -575,11 +605,6 @@ impl GrammarTypeInfo {
                 .iter()
                 .zip(types.drain(..))
                 .try_for_each(|((n, r), (t, a))| {
-                    // let type_name = if t.is_container() {
-                    //     SymbolTable::UNNAMED_TYPE.to_owned()
-                    // } else {
-                    //     NmHlp::to_upper_camel_case(n)
-                    // };
                     // Tokens are taken from the parameter list per definition.
                     let mut used =
                         matches!(t, TypeEntrails::Token) && a != SymbolAttribute::Clipped;
@@ -589,9 +614,23 @@ impl GrammarTypeInfo {
                         }
                         self.symbol_table
                             .get_or_create_scoped_user_defined_type(k, u)?
+                    } else if minimize_boxed_types {
+                        let type_name = if t.is_container() {
+                            SymbolTable::UNNAMED_TYPE.to_owned()
+                        } else if matches!(t, TypeEntrails::Token)
+                            || matches!(t, TypeEntrails::Clipped(MetaSymbolKind::Token))
+                        {
+                            "Token".to_owned()
+                        } else {
+                            NmHlp::to_upper_camel_case(n)
+                        };
+                        self.symbol_table.get_or_create_type(
+                            &type_name,
+                            SymbolTable::GLOBAL_SCOPE,
+                            t,
+                        )?
                     } else {
                         self.symbol_table.get_or_create_type(
-                            // &type_name,
                             SymbolTable::UNNAMED_TYPE,
                             SymbolTable::GLOBAL_SCOPE,
                             t,
@@ -637,11 +676,15 @@ impl GrammarTypeInfo {
                     ))
                 } else {
                     match a {
-                        SymbolAttribute::None =>
-                        // Ok(TypeEntrails::Box(*inner_type)),
-                        {
-                            let inner_type = self.symbol_table.symbol_as_type(*inner_type);
-                            Ok(inner_type.entrails().clone())
+                        SymbolAttribute::None => {
+                            // TODO: Make this dependent on a configuration option
+                            let minimize_boxed_types = false;
+                            if minimize_boxed_types {
+                                let inner_type = self.symbol_table.symbol_as_type(*inner_type);
+                                Ok(inner_type.entrails().clone())
+                            } else {
+                                Ok(TypeEntrails::Box(*inner_type))
+                            }
                         }
                         SymbolAttribute::RepetitionAnchor => Ok(TypeEntrails::Vec(*inner_type)),
                         SymbolAttribute::Option => Ok(TypeEntrails::Option(*inner_type)),
@@ -692,7 +735,7 @@ impl GrammarTypeInfo {
                 (inst.type_id(), inst.description().to_owned(), inst.sem())
             };
 
-            let _member_id = self.symbol_table.insert_instance(
+            let member_id = self.symbol_table.insert_instance(
                 production_type,
                 &inst_name,
                 type_of_inst,
@@ -701,34 +744,38 @@ impl GrammarTypeInfo {
                 &description,
             )?;
 
-            // {
-            //     let type_symbol = self.symbol_table.symbol_as_type(type_of_inst);
-            //     if matches!(type_symbol.entrails(), TypeEntrails::UserDefinedType(..)) {
-            //         // We don't want to box user defined types
-            //         continue;
-            //     }
-            // }
+            // TODO: Make this dependent on a configuration option
+            let minimize_boxed_types = false;
+            if minimize_boxed_types {
+                {
+                    let type_symbol = self.symbol_table.symbol_as_type(type_of_inst);
+                    if matches!(type_symbol.entrails(), TypeEntrails::UserDefinedType(..)) {
+                        // We don't want to box user defined types
+                        continue;
+                    }
+                }
 
-            // if self
-            //     .symbol_table
-            //     .is_recursive_in(production_type, type_of_inst)
-            // {
-            //     // Create a boxed type for the recursive type
-            //     let boxed_type = self.symbol_table.get_or_create_type(
-            //         SymbolTable::UNNAMED_TYPE,
-            //         SymbolTable::GLOBAL_SCOPE,
-            //         TypeEntrails::Box(type_of_inst),
-            //     )?;
-            //     debug_assert!(boxed_type != type_of_inst);
-            //     trace!(
-            //         "Replacing type of instance {} from {} to {}",
-            //         member_id,
-            //         type_of_inst,
-            //         boxed_type
-            //     );
-            //     self.symbol_table
-            //         .replace_type_of_inst(member_id, boxed_type)?;
-            // }
+                if self
+                    .symbol_table
+                    .is_recursive_in(production_type, type_of_inst)
+                {
+                    // Create a boxed type for the recursive type
+                    let boxed_type = self.symbol_table.get_or_create_type(
+                        SymbolTable::UNNAMED_TYPE,
+                        SymbolTable::GLOBAL_SCOPE,
+                        TypeEntrails::Box(type_of_inst),
+                    )?;
+                    debug_assert!(boxed_type != type_of_inst);
+                    trace!(
+                        "Replacing type of instance {} from {} to {}",
+                        member_id,
+                        type_of_inst,
+                        boxed_type
+                    );
+                    self.symbol_table
+                        .replace_type_of_inst(member_id, boxed_type)?;
+                }
+            }
         }
         Ok(())
     }
