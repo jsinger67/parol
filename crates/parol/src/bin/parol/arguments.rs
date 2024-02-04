@@ -67,6 +67,10 @@ pub(crate) struct CliArgs {
     #[arg(short, long)]
     pub range: bool,
 
+    /// Activate the minimization of boxed types in the generated parser
+    #[arg(short = 'b', long = "minbox")]
+    pub minimize_boxed_types: bool,
+
     /// Inserts the given inner attributes at the top of the generated trait source.
     #[arg(long, value_enum)]
     pub inner_attributes: Vec<InnerAttributes>,

@@ -9,7 +9,7 @@ repository = "https://github.com/jsinger67/parol/tree/main/crates/parol"
 readme = "README.md"
 keywords = ["parser", "parsing", "parser-generator", "LLk"]
 categories = ["algorithms", "parsing", "Parsing tools"]
-license = "MIT OR Apache-2.0"
+license = "MIT/Apache-2.0"
 edition = "2021"
 exclude = ["/tests", "/data", "/bindings"]
 
@@ -28,6 +28,7 @@ parol_runtime = { path = "../parol_runtime", version = "0.20.1", features = [
     "auto_generation",
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
+petgraph = { workspace = true }
 rand = "0.8.5"
 rand_regex = "0.17.0"
 regex = { workspace = true }
@@ -45,6 +46,7 @@ ts-rs = "7.1.1"
 ume = "0.1"
 rayon = "1.8.1"
 tempfile = "3"
+graph-cycles = "0.1.0"
 
 [features]
 default = ["build"]

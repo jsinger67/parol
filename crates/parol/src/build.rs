@@ -191,6 +191,8 @@ pub struct Builder {
     output_sanity_checks: bool,
     /// Enables auto-generation of expanded grammar's semantic actions - experimental
     pub(crate) auto_generate: bool,
+    /// Activate the minimization of boxed types in the generated parser
+    pub(crate) minimize_boxed_types: bool,
     /// Internal debugging for CLI.
     debug_verbose: bool,
     /// Generate range information for AST types
@@ -271,6 +273,7 @@ impl Builder {
             actions_output_file: None,
             expanded_grammar_output_file: None,
             auto_generate: false,
+            minimize_boxed_types: false,
             inner_attributes: Vec::new(),
             // By default, we require that output files != /dev/null
             output_sanity_checks: true,
@@ -382,6 +385,11 @@ impl Builder {
         self.auto_generate = true;
         self
     }
+    /// Activate the minimization of boxed types in the generated parser
+    pub fn minimize_boxed_types(&mut self) -> &mut Self {
+        self.minimize_boxed_types = true;
+        self
+    }
     /// Enables trimming of the parse tree during parsing.
     /// Generates the call to trim_parse_tree on the parser object before the call of parse.
     ///
@@ -446,6 +454,10 @@ impl CommonGeneratorConfig for Builder {
 
     fn auto_generate(&self) -> bool {
         self.auto_generate
+    }
+
+    fn minimize_boxed_types(&self) -> bool {
+        self.minimize_boxed_types
     }
 
     fn range(&self) -> bool {

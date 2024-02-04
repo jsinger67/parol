@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorCont = 0
-$CargoConfig = if ($Config -eq "release") { "--release" } else { $null}
+$CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
 cargo build $CargoConfig
@@ -16,7 +16,7 @@ $target = "./../../target/$Config/parol"
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building parol..." -ForegroundColor Cyan
-&$target -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g
+&$target -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g -b
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }
@@ -30,7 +30,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building CalcAuto example..." -ForegroundColor Cyan
-&$target -f ../../examples/calc_auto/calc.par -e ../../examples/calc_auto/calc-exp.par -p ../../examples/calc_auto/calc_parser.rs -a ../../examples/calc_auto/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g
+&$target -f ../../examples/calc_auto/calc.par -e ../../examples/calc_auto/calc-exp.par -p ../../examples/calc_auto/calc_parser.rs -a ../../examples/calc_auto/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g -b
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }
@@ -44,7 +44,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # --------------------------------------------------------------------------------------------------
 Write-Host "Building ListAuto example..." -ForegroundColor Cyan
-&$target -f ../../examples/list_auto/list.par -e ../../examples/list_auto/list-exp.par -p ../../examples/list_auto/list_parser.rs -a ../../examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar -g
+&$target -f ../../examples/list_auto/list.par -e ../../examples/list_auto/list-exp.par -p ../../examples/list_auto/list_parser.rs -a ../../examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar -g -b
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCont    
 }
@@ -90,6 +90,7 @@ if ($LASTEXITCODE -ne 0) {
 if ($ErrorCont -gt 0) {
     $Msg = "$ErrorCount error(s) occurred during builds."
     Write-Host -Object $Msg  -ForegroundColor Red
-} else {
+}
+else {
     Write-Host "All builds successfully executed." -ForegroundColor Green
 }

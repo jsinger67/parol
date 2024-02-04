@@ -17,6 +17,9 @@ pub struct Args {
     /// The optional json output file
     #[clap(short = 'j', long = "json-output-file")]
     json_output_file: Option<PathBuf>,
+    /// Activate the minimization of boxed types in the generated parser
+    #[arg(short = 'b', long = "minbox")]
+    pub minimize_boxed_types: bool,
     /// Increase verbosity
     #[clap(short = 'v', long = "verbose")]
     verbose: bool,
@@ -49,6 +52,9 @@ pub fn main(args: &Args) -> Result<()> {
 
     let width = (grammar_config.cfg.pr.len() as f32).log10() as usize + 1;
     let mut type_info = GrammarTypeInfo::try_new(&grammar_name)?;
+    if args.minimize_boxed_types {
+        type_info.minimize_boxed_types();
+    }
     type_info.build(&grammar_config)?;
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     let user_type_resolver = grammar_config.get_user_type_resolver();

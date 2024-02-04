@@ -6,10 +6,19 @@ use crate::grammar::{ProductionAttribute, SymbolAttribute};
 use crate::parser::parol_grammar::UserDefinedTypeName;
 use crate::{generators::NamingHelper as NmHlp, utils::generate_name};
 use anyhow::{bail, Result};
+use graph_cycles::Cycles;
 use parol_runtime::log::trace;
+use petgraph::visit::NodeRef;
+use petgraph::{
+    algo::is_cyclic_directed,
+    dot::{Config, Dot},
+    graph::NodeIndex,
+    prelude::DiGraph,
+};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+use std::collections::HashMap;
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::ops::{Index, IndexMut};
 
@@ -1054,43 +1063,226 @@ impl SymbolTable {
         Ok(())
     }
 
-    fn inner_is_recursive(&self, mut ancestors: Vec<SymbolId>, next_symbol: SymbolId) -> bool {
-        if ancestors.contains(&next_symbol) {
-            return true;
+    // fn inner_is_recursive(&self, mut ancestors: Vec<SymbolId>, next_symbol: SymbolId) -> bool {
+    //     if ancestors.contains(&next_symbol) {
+    //         return true;
+    //     }
+    //     match &self[next_symbol].kind {
+    //         SymbolKind::Type(t) => match t.entrails {
+    //             TypeEntrails::Ref(t)
+    //             | TypeEntrails::Surrogate(t)
+    //             | TypeEntrails::EnumVariant(t)
+    //             | TypeEntrails::Option(t) => {
+    //                 ancestors.push(t);
+    //                 self.inner_is_recursive(ancestors, t)
+    //             }
+    //             TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
+    //                 ancestors.push(t);
+    //                 self.inner_is_recursive(ancestors, t)
+    //             }
+    //             TypeEntrails::Struct | TypeEntrails::Enum => {
+    //                 for member in self.members(next_symbol).unwrap() {
+    //                     if self.inner_is_recursive(ancestors.clone(), *member) {
+    //                         return true;
+    //                     }
+    //                 }
+    //                 false
+    //             }
+    //             _ => false,
+    //         },
+    //         SymbolKind::Instance(t) => {
+    //             ancestors.push(next_symbol);
+    //             self.inner_is_recursive(ancestors, t.type_id)
+    //         }
+    //     }
+    // }
+
+    // pub(crate) fn is_recursive_in(&self, parent_type_id: SymbolId, child_id: SymbolId) -> bool {
+    //     let stack = vec![parent_type_id];
+    //     self.inner_is_recursive(stack, child_id)
+    // }
+
+    fn recursive_add_symbols(
+        &self,
+        graph: &mut DiGraph<SymbolId, ()>,
+        node_map: &mut HashMap<SymbolId, NodeIndex>,
+        symbol: SymbolId,
+    ) {
+        // Adds a new node to the graph if it does not exist yet.
+        fn get_or_add_node(
+            graph: &mut DiGraph<SymbolId, ()>,
+            node_map: &mut HashMap<SymbolId, NodeIndex>,
+            symbol: SymbolId,
+        ) -> NodeIndex {
+            if let Some(node_id) = node_map.get(&symbol) {
+                *node_id
+            } else {
+                let node_id = graph.add_node(symbol);
+                node_map.insert(symbol, node_id);
+                node_id
+            }
         }
-        match &self[next_symbol].kind {
-            SymbolKind::Type(t) => match t.entrails {
-                TypeEntrails::Ref(t)
-                | TypeEntrails::Surrogate(t)
-                | TypeEntrails::EnumVariant(t)
-                | TypeEntrails::Option(t) => {
-                    ancestors.push(t);
-                    self.inner_is_recursive(ancestors, t)
-                }
-                TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
-                    ancestors.push(t);
-                    self.inner_is_recursive(ancestors, t)
-                }
-                TypeEntrails::Struct | TypeEntrails::Enum => {
-                    for member in self.members(next_symbol).unwrap() {
-                        if self.inner_is_recursive(ancestors.clone(), *member) {
-                            return true;
+        let symbol = &self[symbol];
+        match &symbol.kind {
+            SymbolKind::Type(_t) => {
+                let from_node_id = get_or_add_node(graph, node_map, symbol.my_id);
+                let type_symbol = self.symbol_as_type(symbol.my_id);
+                match type_symbol.entrails() {
+                    TypeEntrails::Surrogate(t)
+                    | TypeEntrails::EnumVariant(t)
+                    | TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _)
+                    | TypeEntrails::Option(t) => {
+                        // We add an edge from the type to the referred type.
+                        let to_node_id = get_or_add_node(graph, node_map, *t);
+                        if graph.find_edge(from_node_id, to_node_id).is_none() {
+                            graph.add_edge(from_node_id, to_node_id, ());
+                        } else {
+                            return;
+                        }
+                        self.recursive_add_symbols(graph, node_map, *t);
+                    }
+                    TypeEntrails::Struct | TypeEntrails::Enum => {
+                        // Members of structs are instances. We add an edge from the struct to the
+                        // instance member.
+                        // Members of enums are types. We add an edge from the enum to the member.
+                        for member in self.members(symbol.my_id).unwrap() {
+                            // These nodes are subject to replacement when removing recursivity.
+                            let to_node_id = get_or_add_node(graph, node_map, *member);
+                            if graph.find_edge(from_node_id, to_node_id).is_none() {
+                                graph.add_edge(from_node_id, to_node_id, ());
+                            } else {
+                                return;
+                            }
+                            self.recursive_add_symbols(graph, node_map, *member);
                         }
                     }
-                    false
+                    _ => {}
                 }
-                _ => false,
-            },
-            SymbolKind::Instance(t) => {
-                ancestors.push(next_symbol);
-                self.inner_is_recursive(ancestors, t.type_id)
+            }
+            SymbolKind::Instance(i) => {
+                let from_node_id = get_or_add_node(graph, node_map, symbol.my_id);
+                let to_node_id = get_or_add_node(graph, node_map, i.type_id);
+                if graph.find_edge(from_node_id, to_node_id).is_none() {
+                    graph.add_edge(from_node_id, to_node_id, ());
+                } else {
+                    return;
+                }
+                self.recursive_add_symbols(graph, node_map, i.type_id);
             }
         }
     }
 
-    pub(crate) fn is_recursive_in(&self, parent_type_id: SymbolId, child_id: SymbolId) -> bool {
-        let stack = vec![parent_type_id];
-        self.inner_is_recursive(stack, child_id)
+    /// Find cycles of the types in the symbol table.
+    pub(crate) fn find_type_cycles(&self) -> Vec<Vec<SymbolId>> {
+        // First we create a graph of the types. We use the type ids as node ids.
+        // The edges are the is_used/contains relations between the types.
+        // We us the petgraph crate to create the graph.
+        let mut graph = DiGraph::<SymbolId, ()>::new();
+        let mut node_map: HashMap<SymbolId, NodeIndex> = HashMap::new();
+
+        for symbol in &self[SymbolTable::GLOBAL_SCOPE].symbols {
+            self.recursive_add_symbols(&mut graph, &mut node_map, *symbol);
+        }
+        trace!(
+            "Type graph: \n{:?}",
+            Dot::with_attr_getters(
+                &graph,
+                &[Config::EdgeNoLabel, Config::NodeNoLabel],
+                &|_, _| { String::default() },
+                &|_, n| { format!("label = \"{} {}\"", self.name(*n.weight()), n.weight()) }
+            )
+        );
+        if !is_cyclic_directed(&graph) {
+            // If the graph is acyclic we don't need to remove cycles.
+            return Vec::new();
+        }
+
+        // Now we find the cycles in the graph.
+        graph.cycles().iter().fold(Vec::new(), |mut acc, cycle| {
+            let mut cycle_ids = cycle
+                .iter()
+                .map(|i| *graph.node_weight(*i).unwrap())
+                .collect::<Vec<SymbolId>>();
+            cycle_ids.sort();
+            if !acc.contains(&cycle_ids) {
+                acc.push(cycle_ids);
+            }
+            acc
+        })
+    }
+
+    pub(crate) fn remove_recursivity(&mut self) -> Result<()> {
+        loop {
+            let cycles = self.find_type_cycles();
+            if cycles.is_empty() {
+                break;
+            }
+            self.inner_remove_recursivity(cycles)?;
+        }
+        Ok(())
+    }
+
+    fn inner_remove_recursivity(&mut self, cycles: Vec<Vec<SymbolId>>) -> Result<()> {
+        for cycle in cycles {
+            // We remove the recursivity by modifying the type of the first symbol in the cycle that
+            // is either a struct member or an EnumVariant. Only these types are used here to remove
+            // recursivity.
+            if let Some(symbol_id) = cycle.iter().find(|s| match &self[**s].kind {
+                SymbolKind::Type(t) => match t.entrails {
+                    TypeEntrails::EnumVariant(e) => {
+                        let wrapped_type = self.symbol_as_type(e);
+                        !matches!(wrapped_type.entrails(), TypeEntrails::Box(_))
+                    }
+                    _ => false,
+                },
+                SymbolKind::Instance(_) => true, // Struct member
+            }) {
+                let symbol = self[*symbol_id].clone();
+                match symbol.kind {
+                    SymbolKind::Type(t) => {
+                        if let TypeEntrails::EnumVariant(t) = &t.entrails {
+                            // Create a global boxed type for the recursive type
+                            let boxed_type = self.get_or_create_type(
+                                SymbolTable::UNNAMED_TYPE,
+                                SymbolTable::GLOBAL_SCOPE,
+                                TypeEntrails::Box(*t),
+                            )?;
+                            // Find the parent enum of the enum variant
+                            let parent_enum = self
+                                .symbols
+                                .iter()
+                                .find(|s| {
+                                    if let SymbolKind::Type(t) = &s.kind {
+                                        if matches!(t.entrails, TypeEntrails::Enum) {
+                                            self.members(s.my_id())
+                                                .unwrap()
+                                                .iter()
+                                                .any(|m| *m == *symbol_id)
+                                        } else {
+                                            false
+                                        }
+                                    } else {
+                                        false
+                                    }
+                                })
+                                .unwrap();
+                            self.replace_wrapped_type(parent_enum.my_id, *symbol_id, boxed_type)?;
+                        }
+                    }
+                    SymbolKind::Instance(i) => {
+                        // Create a global boxed type for the recursive type
+                        let boxed_type = self.get_or_create_type(
+                            SymbolTable::UNNAMED_TYPE,
+                            SymbolTable::GLOBAL_SCOPE,
+                            TypeEntrails::Box(i.type_id),
+                        )?;
+                        // Replace the type of the struct member with the boxed type
+                        self.replace_type_of_inst(*symbol_id, boxed_type)?;
+                    }
+                }
+            }
+        }
+        Ok(())
     }
 }
 

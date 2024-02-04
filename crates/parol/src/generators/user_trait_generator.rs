@@ -263,7 +263,7 @@ impl<'a> UserTraitGenerator<'a> {
                 fn_out_type.name()
             };
             code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
-            for member_id in symbol_table.members(action_id)? {
+            for member_id in fn_out_type.members() {
                 Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("};".to_string());
@@ -504,6 +504,9 @@ impl<'a> UserTraitGenerator<'a> {
     ) -> Result<String> {
         if config.range() && !config.auto_generate() {
             bail!("Range information can only be generated in auto-generation mode!");
+        }
+        if config.minimize_boxed_types() {
+            type_info.minimize_boxed_types();
         }
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(config.auto_generate())?;

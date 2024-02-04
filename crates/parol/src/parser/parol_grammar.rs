@@ -472,7 +472,7 @@ impl TryFrom<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
             ..Default::default()
         };
         for scanner_directive in &scanner_state.scanner_state_list {
-            match &*scanner_directive.scanner_directives {
+            match &scanner_directive.scanner_directives {
                 ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(line_comment) => {
                     me.line_comments.push(ParolGrammar::expanded_token_literal(
                         &line_comment.token_literal,
@@ -570,7 +570,7 @@ impl ParolGrammar<'_> {
     }
 
     fn process_declaration(&mut self, declaration: &PrologList) -> Result<()> {
-        match &*declaration.declaration {
+        match &declaration.declaration {
             Declaration::PercentTitleString(title_decl) => {
                 self.title = Some(Self::trim_quotes(title_decl.string.string.text()))
             }
@@ -619,7 +619,7 @@ impl ParolGrammar<'_> {
 
     fn process_grammar_definition(&mut self, grammar_definition: &GrammarDefinition) -> Result<()> {
         let productions = grammar_definition.grammar_definition_list.iter().fold(
-            vec![&*grammar_definition.production],
+            vec![&grammar_definition.production],
             |mut acc, p| {
                 acc.push(&p.production);
                 acc
@@ -871,7 +871,7 @@ impl ParolGrammar<'_> {
         &self,
         scanner_switch: &super::parol_grammar_trait::SymbolScannerSwitch,
     ) -> Result<Factor> {
-        match &*scanner_switch.scanner_switch {
+        match &scanner_switch.scanner_switch {
             super::parol_grammar_trait::ScannerSwitch::PercentScLParenScannerSwitchOptRParen(
                 sw,
             ) => match &sw.scanner_switch_opt {
@@ -1001,9 +1001,9 @@ impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
             // Only one factor in the single alternation
             if arg.alternations.alternation.alternation_list.len() == 1 {
                 if let Factor::Symbol(symbol) =
-                    &*arg.alternations.alternation.alternation_list[0].factor
+                    &arg.alternations.alternation.alternation_list[0].factor
                 {
-                    match &*symbol.symbol {
+                    match &symbol.symbol {
                         // Only applicable for SimpleToken ...
                         Symbol::SimpleToken(SymbolSimpleToken { simple_token }) => {
                             let expanded =

@@ -66,6 +66,9 @@ fn run(args: &CliArgs) -> Result<u128> {
     if args.auto_generate {
         builder.enable_auto_generation();
     }
+    if args.minimize_boxed_types {
+        builder.minimize_boxed_types();
+    }
     if args.range {
         builder.range();
     }

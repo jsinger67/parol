@@ -171,10 +171,10 @@ impl<'t> BasicGrammar<'t> {
         }
 
         // On each line there can exist multiple statements separated by colons!
-        let mut statements = vec![line.statement.as_ref()];
+        let mut statements = vec![&line.statement];
 
         line.line_list.iter().for_each(|statement| {
-            statements.push(statement.statement.as_ref());
+            statements.push(&statement.statement);
         });
 
         let compiled_line = CompiledLine {
@@ -280,7 +280,7 @@ impl<'t> BasicGrammar<'t> {
         let condition = self.process_expression(&if_statement.if_statement.expression)?;
         trace!("{context}: condition: {condition}");
         if condition != 0.0 {
-            match &*if_statement.if_statement.if_body {
+            match &if_statement.if_statement.if_body {
                 IfBody::ThenStatement(then) => {
                     self.interpret_statement(&then.statement, lines, continue_statements)
                 }
@@ -371,7 +371,7 @@ impl<'t> BasicGrammar<'t> {
         let context = "process_summation";
         let mut result = self.process_multiplication(&summation.multiplication)?;
         for item in &summation.summation_list {
-            let op: BinaryOperator = match &*item.summation_list_group {
+            let op: BinaryOperator = match &item.summation_list_group {
                 SummationListGroup::Plus(plus) => plus.plus.plus.text().try_into(),
                 SummationListGroup::Minus(minus) => minus.minus.minus.text().try_into(),
             }?;
@@ -398,8 +398,8 @@ impl<'t> BasicGrammar<'t> {
     fn process_factor(&mut self, factor: &Factor) -> Result<DefinitionRange> {
         let context = "process_factor";
         match factor {
-            Factor::Literal(FactorLiteral { literal }) => match &*literal.number {
-                Number::Float(flt) => match &*flt.float {
+            Factor::Literal(FactorLiteral { literal }) => match &literal.number {
+                Number::Float(flt) => match &flt.float {
                     Float::Float1(float) => Ok(float.float1.float1.0),
                     Float::Float2(float) => Ok(float.float2.float2.0),
                 },
