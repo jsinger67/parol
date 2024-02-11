@@ -256,11 +256,7 @@ impl Type {
             ),
             TypeEntrails::Trait => format!("trait {}{}", my_type_name, lifetime),
             TypeEntrails::Function(f) => f.to_rust(my_type_name),
-            TypeEntrails::Option(o) => format!(
-                "Option<Box<{}{}>>",
-                symbol_table.symbol(*o).name(),
-                symbol_table.lifetime(*o)
-            ),
+            TypeEntrails::Option(o) => format!("Option<{}>", symbol_table.symbol(*o).to_rust()),
             TypeEntrails::Clipped(k) => format!("Clipped({})", k),
             TypeEntrails::UserDefinedType(_, u) => u.get_module_scoped_name(),
             TypeEntrails::Surrogate(s) => format!(
@@ -1021,19 +1017,22 @@ impl SymbolTable {
         Ok(symbol_id)
     }
 
-    /// Replace the type of the given instance symbol with the type of the referred symbol
+    /// Replace the type of the given instance symbol with the given new type
     pub(crate) fn replace_type_of_inst(
         &mut self,
         inst_symbol_id: SymbolId,
-        referred_type_id: SymbolId,
+        new_type_id: SymbolId,
     ) -> Result<()> {
-        debug_assert!(matches!(
-            self.symbol(inst_symbol_id).kind(),
-            SymbolKind::Instance(_)
-        ));
         match &mut self[inst_symbol_id].kind {
             SymbolKind::Type(_) => panic!("Ain't no instance!"),
-            SymbolKind::Instance(i) => i.type_id = referred_type_id,
+            SymbolKind::Instance(i) => {
+                trace!(
+                    "Replacing type of instance {} with type {}",
+                    inst_symbol_id,
+                    new_type_id
+                );
+                i.type_id = new_type_id
+            }
         };
         Ok(())
     }
@@ -1062,45 +1061,6 @@ impl SymbolTable {
         }
         Ok(())
     }
-
-    // fn inner_is_recursive(&self, mut ancestors: Vec<SymbolId>, next_symbol: SymbolId) -> bool {
-    //     if ancestors.contains(&next_symbol) {
-    //         return true;
-    //     }
-    //     match &self[next_symbol].kind {
-    //         SymbolKind::Type(t) => match t.entrails {
-    //             TypeEntrails::Ref(t)
-    //             | TypeEntrails::Surrogate(t)
-    //             | TypeEntrails::EnumVariant(t)
-    //             | TypeEntrails::Option(t) => {
-    //                 ancestors.push(t);
-    //                 self.inner_is_recursive(ancestors, t)
-    //             }
-    //             TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(t), _) => {
-    //                 ancestors.push(t);
-    //                 self.inner_is_recursive(ancestors, t)
-    //             }
-    //             TypeEntrails::Struct | TypeEntrails::Enum => {
-    //                 for member in self.members(next_symbol).unwrap() {
-    //                     if self.inner_is_recursive(ancestors.clone(), *member) {
-    //                         return true;
-    //                     }
-    //                 }
-    //                 false
-    //             }
-    //             _ => false,
-    //         },
-    //         SymbolKind::Instance(t) => {
-    //             ancestors.push(next_symbol);
-    //             self.inner_is_recursive(ancestors, t.type_id)
-    //         }
-    //     }
-    // }
-
-    // pub(crate) fn is_recursive_in(&self, parent_type_id: SymbolId, child_id: SymbolId) -> bool {
-    //     let stack = vec![parent_type_id];
-    //     self.inner_is_recursive(stack, child_id)
-    // }
 
     fn recursive_add_symbols(
         &self,
@@ -1270,14 +1230,43 @@ impl SymbolTable {
                         }
                     }
                     SymbolKind::Instance(i) => {
-                        // Create a global boxed type for the recursive type
-                        let boxed_type = self.get_or_create_type(
-                            SymbolTable::UNNAMED_TYPE,
-                            SymbolTable::GLOBAL_SCOPE,
-                            TypeEntrails::Box(i.type_id),
-                        )?;
-                        // Replace the type of the struct member with the boxed type
-                        self.replace_type_of_inst(*symbol_id, boxed_type)?;
+                        let type_entrails = self.symbol_as_type(i.type_id).entrails().clone();
+                        if let TypeEntrails::Option(t) = type_entrails {
+                            let wrapped_type_entrails = self.symbol_as_type(t).entrails().clone();
+                            if !matches!(wrapped_type_entrails, TypeEntrails::Box(_)) {
+                                // Create a global boxed type for the recursive type if it is not
+                                // already boxed
+                                let boxed_type = self.get_or_create_type(
+                                    SymbolTable::UNNAMED_TYPE,
+                                    SymbolTable::GLOBAL_SCOPE,
+                                    TypeEntrails::Box(t),
+                                )?;
+                                let option_of_boxed_type = self.get_or_create_type(
+                                    SymbolTable::UNNAMED_TYPE,
+                                    SymbolTable::GLOBAL_SCOPE,
+                                    TypeEntrails::Option(boxed_type),
+                                )?;
+                                self.replace_type_of_inst(*symbol_id, option_of_boxed_type)?;
+                            }
+                            // else {
+                            //     // Replace the type of the struct member with the boxed type
+                            //     let boxed_type = self.get_or_create_type(
+                            //         SymbolTable::UNNAMED_TYPE,
+                            //         SymbolTable::GLOBAL_SCOPE,
+                            //         TypeEntrails::Box(t),
+                            //     )?;
+                            //     self.replace_type_of_inst(*symbol_id, boxed_type)?;
+                            // }
+                        } else {
+                            // Create a global boxed type for the recursive type
+                            let boxed_type = self.get_or_create_type(
+                                SymbolTable::UNNAMED_TYPE,
+                                SymbolTable::GLOBAL_SCOPE,
+                                TypeEntrails::Box(i.type_id),
+                            )?;
+                            // Replace the type of the struct member with the boxed type
+                            self.replace_type_of_inst(*symbol_id, boxed_type)?;
+                        }
                     }
                 }
             }

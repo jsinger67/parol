@@ -490,7 +490,7 @@ pub struct AssignOp {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Assignment<'t> {
-    pub assignment_opt: Option<Box<AssignmentOpt>>,
+    pub assignment_opt: Option<AssignmentOpt>,
     pub variable: Variable<'t>,
     pub assign_op: AssignOp,
     pub expression: Expression<'t>,
@@ -513,10 +513,10 @@ pub struct AssignmentOpt {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Basic<'t> {
-    pub basic_opt: Option<Box<BasicOpt>>,
+    pub basic_opt: Option<BasicOpt>,
     pub line: Line<'t>,
     pub basic_list: Vec<BasicList<'t>>,
-    pub basic_opt0: Option<Box<BasicOpt0>>,
+    pub basic_opt0: Option<BasicOpt0>,
 }
 
 ///
@@ -796,7 +796,7 @@ pub struct LogicalAndOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct LogicalNot<'t> {
-    pub logical_not_opt: Option<Box<LogicalNotOpt<'t>>>,
+    pub logical_not_opt: Option<LogicalNotOpt<'t>>,
     pub relational: Relational<'t>,
 }
 
@@ -993,7 +993,7 @@ pub struct RelationalOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Remark<'t> {
-    pub remark_opt: Option<Box<RemarkOpt<'t>>>,
+    pub remark_opt: Option<RemarkOpt<'t>>,
 }
 
 ///
@@ -1080,11 +1080,11 @@ pub struct Variable<'t> {
 pub enum ASTType<'t> {
     AssignOp(AssignOp),
     Assignment(Assignment<'t>),
-    AssignmentOpt(Option<Box<AssignmentOpt>>),
+    AssignmentOpt(Option<AssignmentOpt>),
     Basic(Basic<'t>),
     BasicList(Vec<BasicList<'t>>),
-    BasicOpt(Option<Box<BasicOpt>>),
-    BasicOpt0(Option<Box<BasicOpt0>>),
+    BasicOpt(Option<BasicOpt>),
+    BasicOpt0(Option<BasicOpt0>),
     Comment(Comment<'t>),
     End(End),
     EndOfLine(EndOfLine),
@@ -1111,7 +1111,7 @@ pub enum ASTType<'t> {
     LogicalAndOp(LogicalAndOp<'t>),
     LogicalNot(LogicalNot<'t>),
     LogicalNotOp(LogicalNotOp<'t>),
-    LogicalNotOpt(Option<Box<LogicalNotOpt<'t>>>),
+    LogicalNotOpt(Option<LogicalNotOpt<'t>>),
     LogicalOr(LogicalOr<'t>),
     LogicalOrList(Vec<LogicalOrList<'t>>),
     LogicalOrOp(LogicalOrOp<'t>),
@@ -1129,7 +1129,7 @@ pub enum ASTType<'t> {
     RelationalList(Vec<RelationalList<'t>>),
     RelationalOp(RelationalOp<'t>),
     Remark(Remark<'t>),
-    RemarkOpt(Option<Box<RemarkOpt<'t>>>),
+    RemarkOpt(Option<RemarkOpt<'t>>),
     Statement(Statement<'t>),
     Summation(Summation<'t>),
     SummationList(Vec<SummationList<'t>>),
@@ -1273,10 +1273,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
         let basic_opt0_0_built = BasicOpt0 { end_of_line };
-        self.push(
-            ASTType::BasicOpt0(Some(Box::new(basic_opt0_0_built))),
-            context,
-        );
+        self.push(ASTType::BasicOpt0(Some(basic_opt0_0_built)), context);
         Ok(())
     }
 
@@ -1302,10 +1299,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let end_of_line = pop_item!(self, end_of_line, EndOfLine, context);
         let basic_opt_0_built = BasicOpt { end_of_line };
-        self.push(
-            ASTType::BasicOpt(Some(Box::new(basic_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::BasicOpt(Some(basic_opt_0_built)), context);
         Ok(())
     }
 
@@ -1542,10 +1536,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let comment = pop_item!(self, comment, Comment, context);
         let remark_opt_0_built = RemarkOpt { comment };
-        self.push(
-            ASTType::RemarkOpt(Some(Box::new(remark_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::RemarkOpt(Some(remark_opt_0_built)), context);
         Ok(())
     }
 
@@ -1650,7 +1641,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let r#let = pop_item!(self, r#let, Let, context);
         let assignment_opt_0_built = AssignmentOpt { r#let };
         self.push(
-            ASTType::AssignmentOpt(Some(Box::new(assignment_opt_0_built))),
+            ASTType::AssignmentOpt(Some(assignment_opt_0_built)),
             context,
         );
         Ok(())
@@ -2429,7 +2420,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let logical_not_op = pop_item!(self, logical_not_op, LogicalNotOp, context);
         let logical_not_opt_0_built = LogicalNotOpt { logical_not_op };
         self.push(
-            ASTType::LogicalNotOpt(Some(Box::new(logical_not_opt_0_built))),
+            ASTType::LogicalNotOpt(Some(logical_not_opt_0_built)),
             context,
         );
         Ok(())

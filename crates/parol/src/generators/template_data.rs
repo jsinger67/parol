@@ -82,7 +82,7 @@ pub(crate) struct UserTraitFunctionStackPopData {
     pub arg_name: String,
     pub arg_type: String,
     pub vec_anchor: bool,
-    pub vec_push_semantic: bool,
+    pub popped_item_is_mutable: bool,
 }
 
 impl std::fmt::Display for UserTraitFunctionStackPopData {
@@ -91,7 +91,7 @@ impl std::fmt::Display for UserTraitFunctionStackPopData {
             arg_name,
             arg_type,
             vec_anchor,
-            vec_push_semantic,
+            popped_item_is_mutable: vec_push_semantic,
         } = self;
         let mutability = if *vec_push_semantic { "mut" } else { "" };
         let macro_name = if *vec_anchor {

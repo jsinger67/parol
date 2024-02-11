@@ -96,17 +96,55 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
+    // /// Checks if the option item popped from the stack needs to be modified when later built
+    // /// into a struct that is put into an ASTType enum variant.
+    // /// The possible case is when the option item's inner type is a simple type and the ASTType
+    // /// enum variant's inner struct type has an Option type with a Box of the inner type at this
+    // /// place.
+    // /// This can be necessary because the Box could have been later introduced during removal of
+    // /// type recursion at the ASTType enum variant's inner struct type.
+    // fn need_to_box_popped_option_item(
+    //     member_id: &SymbolId,
+    //     type_info: &GrammarTypeInfo,
+    // ) -> Result<bool> {
+    //     let symbol_table = &type_info.symbol_table;
+    //     let arg_inst = symbol_table.symbol_as_instance(*member_id);
+    //     let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
+    //     if let TypeEntrails::Option(inner_type) = arg_type.entrails() {
+    //         let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+    //         if !matches!(inner_type_symbol.entrails(), TypeEntrails::Box(_)) {
+    //             // The inner type is not a Box
+    //             // Check if the ASTType enum variant is an Option type with a Box of the inner type
+    //             let ast_type = symbol_table.symbol_as_type(type_info.ast_enum_type);
+    //             return Ok(ast_type.members().iter().any(|m| {
+    //                 let m_type = symbol_table.symbol_as_type(*m);
+    //                 if let TypeEntrails::Option(inner_type) = m_type.entrails() {
+    //                     let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+    //                     matches!(
+    //                         inner_type_symbol.entrails(),
+    //                         TypeEntrails::Box(inner_type) if *inner_type == arg_inst.type_id()
+    //                     )
+    //                 } else {
+    //                     false
+    //                 }
+    //             }));
+    //         }
+    //     }
+
+    //     Ok(false)
+    // }
+
     fn generate_stack_pops<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
-        &self,
         config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
-        symbol_table: &SymbolTable,
+        type_info: &GrammarTypeInfo,
     ) -> Result<()> {
         if !config.auto_generate() {
             return Ok(());
         }
 
+        let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
 
         for (i, member_id) in symbol_table.members(action_id)?.iter().rev().enumerate() {
@@ -131,11 +169,12 @@ impl<'a> UserTraitGenerator<'a> {
                     .arg_name(arg_name.to_string())
                     .arg_type(arg_type.inner_name())
                     .vec_anchor(arg_inst.sem() == SymbolAttribute::RepetitionAnchor)
-                    .vec_push_semantic(
+                    .popped_item_is_mutable(
                         function.sem == ProductionAttribute::AddToCollection && i == 0,
                     )
                     .build()
                     .unwrap();
+                code.push(format!("// Type of popped value is {}", arg_type.my_id()));
                 code.push(format!("{}", stack_pop_data));
             }
         }
@@ -167,10 +206,11 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn format_builder_call(
+    fn format_builder_call<'f>(
         symbol_table: &SymbolTable,
+        fn_out_type: &impl TypeFacade<'f>,
         member_id: &SymbolId,
-        sem: ProductionAttribute,
+        _sem: ProductionAttribute,
         code: &mut StrVec,
     ) -> Result<()> {
         let arg_inst = symbol_table.symbol_as_instance(*member_id);
@@ -186,21 +226,104 @@ impl<'a> UserTraitGenerator<'a> {
         if !matches!(*arg_type.entrails(), TypeEntrails::Clipped(_)) {
             let arg_name = symbol_table.name(arg_inst.my_id());
             let setter_name = &arg_name;
-            let arg_name = if matches!(*arg_type.entrails(), TypeEntrails::Box(_)) &&
-                // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
-                (sem != ProductionAttribute::AddToCollection || arg_inst.sem() != SymbolAttribute::RepetitionAnchor)
-            {
-                format!("Box::new({})", arg_name)
-            } else if matches!(
-                *arg_type.entrails(),
-                TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
-            ) {
-                format!(
-                    r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
-                    arg_name
-                )
-            } else {
-                arg_name.to_string()
+            // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
+            let arg_name = {
+                match arg_type.entrails() {
+                    TypeEntrails::Box(_) => {
+                        format!("Box::new({})", arg_name)
+                    }
+                    TypeEntrails::Option(inner_type) => {
+                        let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                        match inner_type_symbol.entrails() {
+                            TypeEntrails::Box(_) => {
+                                format!("{}.map(Box::new)", arg_name)
+                            }
+                            _ => {
+                                if matches!(fn_out_type.entrails(), TypeEntrails::Struct) {
+                                    if let Some(member_type_in_fn_out_type) =
+                                        fn_out_type.members().iter().find(|m| {
+                                            let inst_name = symbol_table.symbol_as_instance(**m);
+                                            inst_name.name() == arg_name
+                                        })
+                                    {
+                                        let member_type_in_fn_out_type = symbol_table
+                                            .symbol_as_type(
+                                                symbol_table
+                                                    .symbol_as_instance(*member_type_in_fn_out_type)
+                                                    .type_id(),
+                                            );
+                                        if let TypeEntrails::Option(t) =
+                                            member_type_in_fn_out_type.entrails()
+                                        {
+                                            let fn_out_member_inner_option_type =
+                                                symbol_table.symbol_as_type(*t);
+                                            if let TypeEntrails::Box(_) =
+                                                fn_out_member_inner_option_type.entrails()
+                                            {
+                                                arg_name.to_string()
+                                            } else {
+                                                if arg_type.my_id()
+                                                    == member_type_in_fn_out_type.my_id()
+                                                {
+                                                    format!("{}.map(Box::new) /*1 fnouttype({}) fnoutmember({}) argtype({}) {} */", arg_name,
+                                                        fn_out_type.my_id(),
+                                                        member_type_in_fn_out_type.my_id(),
+                                                        arg_type.my_id(),
+                                                        fn_out_member_inner_option_type.my_id())
+                                                } else {
+                                                    format!(
+                                                        "{} /*1 fnouttype({}) fnoutmember({}) argtype({}) {} */",
+                                                        arg_name,
+                                                        fn_out_type.my_id(),
+                                                        member_type_in_fn_out_type.my_id(),
+                                                        arg_type.my_id(),
+                                                        fn_out_member_inner_option_type.my_id()
+                                                    )
+                                                }
+                                                // format!(
+                                                //     "{} /*1 fnoutmember({}) argtype({}) {} */",
+                                                //     arg_name,
+                                                //     member_type_in_fn_out_type.my_id(),
+                                                //     arg_type.my_id(),
+                                                //     fn_out_member_inner_option_type.my_id()
+                                                // )
+                                            }
+                                        } else {
+                                            format!(
+                                                "{} /*2 fnoutmember({}) {} */",
+                                                arg_name,
+                                                member_type_in_fn_out_type.my_id(),
+                                                inner_type
+                                            )
+                                        }
+                                        // let inner_type = symbol_table.symbol_as_type(*t);
+
+                                        // format!("{}.map(Box::new)", arg_name)
+                                    } else {
+                                        format!("{} /*3 {} */", arg_name, inner_type)
+                                    }
+                                } else {
+                                    format!(
+                                        "{} /*4 fn({}) {} */",
+                                        arg_name,
+                                        fn_out_type.my_id(),
+                                        inner_type
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _) => {
+                        format!(
+                            r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
+                            arg_name
+                        )
+                    }
+                    TypeEntrails::Clipped(_) => {
+                        panic!("Clipped type should have been handled before!");
+                    }
+                    _ => arg_name.to_string(),
+                }
             };
             if *setter_name == arg_name {
                 // Avoid clippy warning "Redundant field names in struct initialization"
@@ -245,13 +368,25 @@ impl<'a> UserTraitGenerator<'a> {
         } else if function.sem == ProductionAttribute::AddToCollection {
             code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
-                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+                Self::format_builder_call(
+                    symbol_table,
+                    &fn_out_type,
+                    member_id,
+                    function.sem,
+                    code,
+                )?;
             }
             code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalSome {
             code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)? {
-                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+                Self::format_builder_call(
+                    symbol_table,
+                    &fn_out_type,
+                    member_id,
+                    function.sem,
+                    code,
+                )?;
             }
             code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalNone {
@@ -264,7 +399,13 @@ impl<'a> UserTraitGenerator<'a> {
             };
             code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
             for member_id in fn_out_type.members() {
-                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+                Self::format_builder_call(
+                    symbol_table,
+                    &fn_out_type,
+                    member_id,
+                    function.sem,
+                    code,
+                )?;
             }
             code.push("};".to_string());
             if function.alts > 1 {
@@ -349,12 +490,19 @@ impl<'a> UserTraitGenerator<'a> {
         config: &C,
         code: &mut StrVec,
         action_id: SymbolId,
-        symbol_table: &SymbolTable,
+        type_info: &GrammarTypeInfo,
     ) -> Result<()> {
+        let symbol_table = &type_info.symbol_table;
         if config.auto_generate() {
             let function = symbol_table.symbol_as_function(action_id)?;
             let fn_type = symbol_table.symbol_as_type(action_id);
             let fn_name = symbol_table.name(fn_type.my_id()).to_string();
+            let fn_out_type = symbol_table.symbol_as_type(
+                *type_info
+                    .production_types
+                    .get(&function.prod_num)
+                    .ok_or_else(|| anyhow!("Production output type not accessible!"))?,
+            );
 
             if function.sem == ProductionAttribute::AddToCollection {
                 // The output type of the action is the type generated for the action's non-terminal
@@ -378,11 +526,24 @@ impl<'a> UserTraitGenerator<'a> {
                     NmHlp::to_upper_camel_case(&function.non_terminal),
                 ));
             } else if function.sem == ProductionAttribute::OptionalSome {
-                code.push(format!(
-                    "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
-                    NmHlp::to_upper_camel_case(&function.non_terminal),
-                    fn_name,
-                ));
+                match fn_out_type.entrails() {
+                    TypeEntrails::Box(inner_type) => {
+                        let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                        let inner_type_name = symbol_table.name(inner_type_symbol.my_id());
+                        code.push(format!(
+                            "self.push(ASTType::{}(Some(Box::new({}_built))), context);",
+                            NmHlp::to_upper_camel_case(&function.non_terminal),
+                            inner_type_name,
+                        ));
+                    }
+                    _ => {
+                        code.push(format!(
+                            "self.push(ASTType::{}(Some({}_built)), context);",
+                            NmHlp::to_upper_camel_case(&function.non_terminal),
+                            fn_name,
+                        ));
+                    }
+                }
             } else {
                 // The output type of the action is the type generated for the action's non-terminal
                 // filled with type kind of the action
@@ -648,11 +809,11 @@ impl<'a> UserTraitGenerator<'a> {
         let mut code = StrVec::new(8);
         self.generate_context(config, &mut code);
         self.generate_token_assignments(config, &mut code, action_id, &type_info.symbol_table)?;
-        self.generate_stack_pops(config, &mut code, action_id, &type_info.symbol_table)?;
+        Self::generate_stack_pops(config, &mut code, action_id, type_info)?;
         self.generate_result_builder(config, &mut code, action_id, type_info)?;
         self.generate_push_semantic(config, &mut code, action_id, &type_info.symbol_table)?;
         self.generate_user_action_call(config, &mut code, action_id, type_info)?;
-        self.generate_stack_push(config, &mut code, action_id, &type_info.symbol_table)?;
+        self.generate_stack_push(config, &mut code, action_id, type_info)?;
         let user_trait_function_data = UserTraitFunctionDataBuilder::default()
             .fn_name(fn_name)
             .prod_num(prod_num)
