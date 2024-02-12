@@ -21,6 +21,20 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.26.1 - Not released yet
+
+- Fixed issue [#38](https://github.com/jsinger67/parol/issues/38)
+
+  This is a major step towards more efficiency.
+  The `parol` tool supports a new command line switch (-b, --min_boxes) that enables the minimization
+  of used boxes in generated data structures. The `parol::build::Builder` also provides a new method
+  `minimize_boxed_types()` that you can call in your build scripts.
+
+  `parol` then generates first all data types without boxed
+  members and afterwards applies an extra step that detects recursions in types and removes them by
+  selectively inserting boxes only where they are needed.
+  This new feature is somewhat experimental and feedback is appreciated.
+
 ## 0.26.0 - 2024-01-10
 
 - Fixed issue [#225](https://github.com/jsinger67/parol/issues/225)
