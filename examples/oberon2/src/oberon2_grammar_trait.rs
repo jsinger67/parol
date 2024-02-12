@@ -3390,7 +3390,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block_list =
             pop_and_reverse_item!(self, var_decl_block_list, VarDeclBlockList, context);
-        // Ignore clipped member 'kw_var'
         self.pop(context);
         let var_decl_block_built = VarDeclBlock {
             var_decl_block_list,
@@ -3559,7 +3558,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let procedure_heading_opt =
             pop_item!(self, procedure_heading_opt, ProcedureHeadingOpt, context);
-        // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let procedure_heading_built = ProcedureHeading {
             procedure_heading_opt,
@@ -3669,7 +3667,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_block_opt = pop_item!(self, statement_block_opt, StatementBlockOpt, context);
         let statement_block_built = StatementBlock {
@@ -3695,7 +3692,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        // Ignore clipped member 'kw_begin'
         self.pop(context);
         let statement_block_opt_0_built = StatementBlockOpt { statement_seq };
         self.push(
@@ -3736,7 +3732,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let forward_decl_opt0 = pop_item!(self, forward_decl_opt0, ForwardDeclOpt0, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let forward_decl_opt = pop_item!(self, forward_decl_opt, ForwardDeclOpt, context);
-        // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let forward_decl_built = ForwardDecl {
             circumflex,
@@ -4019,7 +4014,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn f_p_section_opt_0(&mut self, _kw_var: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_var'
         self.pop(context);
         let f_p_section_opt_0_built = FPSectionOpt {};
         self.push(
@@ -4075,7 +4069,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn receiver_opt_0(&mut self, _kw_var: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_var'
         self.pop(context);
         let receiver_opt_0_built = ReceiverOpt {};
         self.push(ASTType::ReceiverOpt(Some(receiver_opt_0_built)), context);
@@ -4149,7 +4142,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
-        // Ignore clipped member 'kw_of'
         self.pop(context);
         let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
         let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDef {
@@ -4178,7 +4170,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_end'
         self.pop(context);
         let type_def_list = pop_and_reverse_item!(self, type_def_list, TypeDefList, context);
         let field_list = pop_item!(self, field_list, FieldList, context);
@@ -4245,7 +4236,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def = pop_item!(self, type_def, TypeDef, context);
-        // Ignore clipped member 'kw_to'
         self.pop(context);
         let type_def_3_built = TypeDefPOINTERKwToTypeDef {
             type_def: Box::new(type_def),
@@ -4270,7 +4260,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_def_opt1 = pop_item!(self, type_def_opt1, TypeDefOpt1, context);
-        // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let type_def_4_built = TypeDefKwProcedureTypeDefOpt1 {
             type_def_opt1: type_def_opt1.map(Box::new),
@@ -4654,7 +4643,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         );
         let then_block = pop_item!(self, then_block, ThenBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
-        // Ignore clipped member 'kw_if'
         self.pop(context);
         let statement_opt_group_1_built =
             StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd {
@@ -4691,10 +4679,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let opt_else_part_end = pop_item!(self, opt_else_part_end, OptElsePartEnd, context);
         let cases = pop_item!(self, cases, Cases, context);
-        // Ignore clipped member 'kw_of'
         self.pop(context);
         let expr = pop_item!(self, expr, Expr, context);
-        // Ignore clipped member 'kw_case'
         self.pop(context);
         let statement_opt_group_2_built = StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd {
             expr,
@@ -4811,7 +4797,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let statement_opt_group_6_built = StatementOptGroupLOOPStatementSeqKwEnd {
@@ -5142,7 +5127,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        // Ignore clipped member 'kw_then'
         self.pop(context);
         let then_block_built = ThenBlock { statement_seq };
         // Calling user action here
@@ -5218,7 +5202,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let then_block = pop_item!(self, then_block, ThenBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
-        // Ignore clipped member 'kw_elsif'
         self.pop(context);
         let elsif_part_built = ElsifPart { expr, then_block };
         // Calling user action here
@@ -5240,7 +5223,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        // Ignore clipped member 'kw_else'
         self.pop(context);
         let else_part_built = ElsePart { statement_seq };
         // Calling user action here
@@ -5261,7 +5243,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_end'
         self.pop(context);
         let opt_else_part_end_opt =
             pop_item!(self, opt_else_part_end_opt, OptElsePartEndOpt, context);
@@ -5317,10 +5298,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'kw_end'
         self.pop(context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        // Ignore clipped member 'kw_do'
         self.pop(context);
         let do_block_built = DoBlock { statement_seq };
         // Calling user action here
@@ -5343,7 +5322,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
-        // Ignore clipped member 'kw_do'
         self.pop(context);
         let guard = pop_item!(self, guard, Guard, context);
         let guarded_do_block_built = GuardedDoBlock {
@@ -5373,7 +5351,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr0 = pop_item!(self, expr0, Expr, context);
-        // Ignore clipped member 'kw_to'
         self.pop(context);
         let expr = pop_item!(self, expr, Expr, context);
         let ident = pop_item!(self, ident, Ident, context);

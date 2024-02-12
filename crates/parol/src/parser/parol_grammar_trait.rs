@@ -414,7 +414,7 @@ pub struct TokenLiteralRegex<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
-    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt<'t>>>,
+    pub scanner_switch_opt: Option<ScannerSwitchOpt<'t>>,
 }
 
 ///
@@ -614,7 +614,7 @@ pub struct Identifier<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminal<'t> {
     pub identifier: Identifier<'t>,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
+    pub non_terminal_opt: Option<NonTerminalOpt>,
 }
 
 ///
@@ -793,7 +793,7 @@ pub struct ScannerSwitchOpt<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleToken<'t> {
     pub token_literal: TokenLiteral<'t>,
-    pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
+    pub simple_token_opt: Option<SimpleTokenOpt>,
 }
 
 ///
@@ -879,7 +879,7 @@ pub enum TokenLiteral<'t> {
 pub struct TokenWithStates<'t> {
     pub state_list: StateList<'t>,
     pub token_literal: TokenLiteral<'t>,
-    pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
+    pub token_with_states_opt: Option<TokenWithStatesOpt>,
 }
 
 ///
@@ -945,7 +945,7 @@ pub enum ASTType<'t> {
     Group(Group<'t>),
     Identifier(Identifier<'t>),
     NonTerminal(NonTerminal<'t>),
-    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
+    NonTerminalOpt(Option<NonTerminalOpt>),
     Optional(Optional<'t>),
     Parol(Parol<'t>),
     Production(Production<'t>),
@@ -959,9 +959,9 @@ pub enum ASTType<'t> {
     ScannerState(ScannerState<'t>),
     ScannerStateList(Vec<ScannerStateList<'t>>),
     ScannerSwitch(ScannerSwitch<'t>),
-    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt<'t>>>),
+    ScannerSwitchOpt(Option<ScannerSwitchOpt<'t>>),
     SimpleToken(SimpleToken<'t>),
-    SimpleTokenOpt(Option<Box<SimpleTokenOpt>>),
+    SimpleTokenOpt(Option<SimpleTokenOpt>),
     StartDeclaration(StartDeclaration<'t>),
     StateList(StateList<'t>),
     StateListList(Vec<StateListList<'t>>),
@@ -969,7 +969,7 @@ pub enum ASTType<'t> {
     Symbol(Symbol<'t>),
     TokenLiteral(TokenLiteral<'t>),
     TokenWithStates(TokenWithStates<'t>),
-    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
+    TokenWithStatesOpt(Option<TokenWithStatesOpt>),
     UserTypeDeclaration(UserTypeDeclaration),
     UserTypeName(UserTypeName<'t>),
     UserTypeNameList(Vec<UserTypeNameList<'t>>),
@@ -1170,10 +1170,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let start_declaration_built = StartDeclaration {
-            // Ignore clipped member 'percent_start'
-            identifier,
-        };
+        let start_declaration_built = StartDeclaration { identifier };
         // Calling user action here
         self.user_grammar
             .start_declaration(&start_declaration_built)?;
@@ -1194,10 +1191,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let declaration_0_built = DeclarationPercentTitleString {
-            // Ignore clipped member 'percent_title'
-            string,
-        };
+        let declaration_0_built = DeclarationPercentTitleString { string };
         let declaration_0_built = Declaration::PercentTitleString(declaration_0_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_0_built)?;
@@ -1218,10 +1212,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let declaration_1_built = DeclarationPercentCommentString {
-            // Ignore clipped member 'percent_comment'
-            string,
-        };
+        let declaration_1_built = DeclarationPercentCommentString { string };
         let declaration_1_built = Declaration::PercentCommentString(declaration_1_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_1_built)?;
@@ -1246,9 +1237,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let declaration_2_built = DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
-            // Ignore clipped member 'percent_user_underscore_type'
             identifier,
-            // Ignore clipped member 'equ'
             user_type_name: (&user_type_name)
                 .try_into()
                 .map_err(parol_runtime::ParolError::UserError)?,
@@ -1292,10 +1281,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_0_built =
-            ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
-                // Ignore clipped member 'percent_line_underscore_comment'
-                token_literal,
-            };
+            ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral { token_literal };
         let scanner_directives_0_built =
             ScannerDirectives::PercentLineUnderscoreCommentTokenLiteral(scanner_directives_0_built);
         // Calling user action here
@@ -1325,7 +1311,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let scanner_directives_1_built =
             ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLiteral {
-                // Ignore clipped member 'percent_block_underscore_comment'
                 token_literal,
                 token_literal0,
             };
@@ -1355,9 +1340,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_directives_2_built =
-            ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff {
-        // Ignore clipped member 'percent_auto_underscore_newline_underscore_off'
-        };
+            ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff {};
         let scanner_directives_2_built =
             ScannerDirectives::PercentAutoUnderscoreNewlineUnderscoreOff(
                 scanner_directives_2_built,
@@ -1383,9 +1366,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_directives_3_built = ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {
-        // Ignore clipped member 'percent_auto_underscore_ws_underscore_off'
-        };
+        let scanner_directives_3_built = ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {};
         let scanner_directives_3_built =
             ScannerDirectives::PercentAutoUnderscoreWsUnderscoreOff(scanner_directives_3_built);
         // Calling user action here
@@ -1419,7 +1400,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         );
         let production = pop_item!(self, production, Production, context);
         let grammar_definition_built = GrammarDefinition {
-            // Ignore clipped member 'percent_percent'
             production,
             grammar_definition_list,
         };
@@ -1512,9 +1492,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let production_built = Production {
             identifier,
-            // Ignore clipped member 'colon'
             alternations,
-            // Ignore clipped member 'semicolon'
         };
         // Calling user action here
         self.user_grammar.production(&production_built)?;
@@ -1562,10 +1540,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut alternations_list = pop_item!(self, alternations_list, AlternationsList, context);
         let alternation = pop_item!(self, alternation, Alternation, context);
-        let alternations_list_0_built = AlternationsList {
-            alternation,
-            // Ignore clipped member 'or'
-        };
+        let alternations_list_0_built = AlternationsList { alternation };
         // Add an element to the vector
         alternations_list.push(alternations_list_0_built);
         self.push(ASTType::AlternationsList(alternations_list), context);
@@ -1861,7 +1836,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let simple_token_opt_0_built = SimpleTokenOpt { a_s_t_control };
         self.push(
-            ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
+            ASTType::SimpleTokenOpt(Some(simple_token_opt_0_built)),
             context,
         );
         Ok(())
@@ -1899,9 +1874,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let token_literal = pop_item!(self, token_literal, TokenLiteral, context);
         let state_list = pop_item!(self, state_list, StateList, context);
         let token_with_states_built = TokenWithStates {
-            // Ignore clipped member 'l_t'
             state_list,
-            // Ignore clipped member 'g_t'
             token_literal,
             token_with_states_opt,
         };
@@ -1923,7 +1896,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let token_with_states_opt_0_built = TokenWithStatesOpt { a_s_t_control };
         self.push(
-            ASTType::TokenWithStatesOpt(Some(Box::new(token_with_states_opt_0_built))),
+            ASTType::TokenWithStatesOpt(Some(token_with_states_opt_0_built)),
             context,
         );
         Ok(())
@@ -2105,7 +2078,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let non_terminal_opt_0_built = NonTerminalOpt { a_s_t_control };
         self.push(
-            ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
+            ASTType::NonTerminalOpt(Some(non_terminal_opt_0_built)),
             context,
         );
         Ok(())
@@ -2158,11 +2131,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, scanner_state_list, ScannerStateList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_state_built = ScannerState {
-            // Ignore clipped member 'percent_scanner'
             identifier,
-            // Ignore clipped member 'l_brace'
             scanner_state_list,
-            // Ignore clipped member 'r_brace'
         };
         // Calling user action here
         self.user_grammar.scanner_state(&scanner_state_built)?;
@@ -2246,10 +2216,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut state_list_list = pop_item!(self, state_list_list, StateListList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let state_list_list_0_built = StateListList {
-            identifier,
-            // Ignore clipped member 'comma'
-        };
+        let state_list_list_0_built = StateListList { identifier };
         // Add an element to the vector
         state_list_list.push(state_list_list_0_built);
         self.push(ASTType::StateListList(state_list_list), context);
@@ -2284,12 +2251,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
-        let scanner_switch_0_built = ScannerSwitchPercentScLParenScannerSwitchOptRParen {
-            // Ignore clipped member 'percent_sc'
-            // Ignore clipped member 'l_paren'
-            scanner_switch_opt,
-            // Ignore clipped member 'r_paren'
-        };
+        let scanner_switch_0_built =
+            ScannerSwitchPercentScLParenScannerSwitchOptRParen { scanner_switch_opt };
         let scanner_switch_0_built =
             ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
         // Calling user action here
@@ -2313,12 +2276,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
-            // Ignore clipped member 'percent_push'
-            // Ignore clipped member 'l_paren'
-            identifier,
-            // Ignore clipped member 'r_paren'
-        };
+        let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen { identifier };
         let scanner_switch_1_built =
             ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
         // Calling user action here
@@ -2340,11 +2298,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {
-        // Ignore clipped member 'percent_pop'
-        // Ignore clipped member 'l_paren'
-        // Ignore clipped member 'r_paren'
-        };
+        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {};
         let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_2_built)?;
@@ -2363,7 +2317,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_opt_0_built = ScannerSwitchOpt { identifier };
         self.push(
-            ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
+            ASTType::ScannerSwitchOpt(Some(scanner_switch_opt_0_built)),
             context,
         );
         Ok(())
@@ -2426,9 +2380,7 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
     fn cut_operator(&mut self, _cut_operator: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let cut_operator_built = CutOperator {
-        // Ignore clipped member 'cut_operator'
-        };
+        let cut_operator_built = CutOperator {};
         // Calling user action here
         self.user_grammar.cut_operator(&cut_operator_built)?;
         self.push(ASTType::CutOperator(cut_operator_built), context);
@@ -2449,7 +2401,6 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let user_type_name = pop_item!(self, user_type_name, UserTypeName, context);
         let user_type_declaration_built = UserTypeDeclaration {
-            // Ignore clipped member 'colon'
             user_type_name: (&user_type_name)
                 .try_into()
                 .map_err(parol_runtime::ParolError::UserError)?,
@@ -2505,12 +2456,8 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
         let mut user_type_name_list =
             pop_item!(self, user_type_name_list, UserTypeNameList, context);
         let identifier = pop_item!(self, identifier, Identifier, context);
-        // Ignore clipped member 'double_colon'
         self.pop(context);
-        let user_type_name_list_0_built = UserTypeNameList {
-            identifier,
-            // Ignore clipped member 'double_colon'
-        };
+        let user_type_name_list_0_built = UserTypeNameList { identifier };
         // Add an element to the vector
         user_type_name_list.push(user_type_name_list_0_built);
         self.push(ASTType::UserTypeNameList(user_type_name_list), context);

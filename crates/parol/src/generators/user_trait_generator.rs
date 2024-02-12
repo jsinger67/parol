@@ -154,8 +154,8 @@ impl<'a> UserTraitGenerator<'a> {
                 *arg_type.entrails(),
                 TypeEntrails::Clipped(MetaSymbolKind::NonTerminal(_))
             ) {
-                let arg_name = symbol_table.name(arg_inst.my_id());
-                code.push(format!("// Ignore clipped member '{}'", arg_name));
+                // let arg_name = symbol_table.name(arg_inst.my_id());
+                // code.push(format!("// Ignore clipped member '{}'", arg_name));
                 code.push("self.pop(context);".to_string());
             } else if !matches!(*arg_type.entrails(), TypeEntrails::Token)
                 && !matches!(

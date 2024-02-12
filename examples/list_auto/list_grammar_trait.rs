@@ -215,7 +215,6 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'trailing_comma'
         self.pop(context);
         let list_opt = pop_item!(self, list_opt, ListOpt, context);
         let list_built = List { list_opt };

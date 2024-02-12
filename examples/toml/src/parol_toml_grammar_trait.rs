@@ -3779,11 +3779,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'apostrophe0'
         self.pop(context);
         let literal_string_list =
             pop_and_reverse_item!(self, literal_string_list, LiteralStringList, context);
-        // Ignore clipped member 'apostrophe'
         self.pop(context);
         let literal_string_built = LiteralString {
             literal_string_list,
@@ -3911,7 +3909,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let m_l_literal_body = pop_item!(self, m_l_literal_body, MLLiteralBody, context);
-        // Ignore clipped member 'm_l_literal_string_start'
         self.pop(context);
         let m_l_literal_string_built = MLLiteralString { m_l_literal_body };
         // Calling user action here
@@ -3934,7 +3931,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'm_l_literal_string_end'
         self.pop(context);
         let m_l_literal_body_list =
             pop_and_reverse_item!(self, m_l_literal_body_list, MLLiteralBodyList, context);
@@ -4306,7 +4302,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let hex_int_content = pop_item!(self, hex_int_content, HexIntContent, context);
-        // Ignore clipped member 'hex_prefix'
         self.pop(context);
         let hex_int_built = HexInt { hex_int_content };
         // Calling user action here
@@ -4344,7 +4339,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let oct_int_content = pop_item!(self, oct_int_content, OctIntContent, context);
-        // Ignore clipped member 'oct_prefix'
         self.pop(context);
         let oct_int_built = OctInt { oct_int_content };
         // Calling user action here
@@ -4382,7 +4376,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let bin_int_content = pop_item!(self, bin_int_content, BinIntContent, context);
-        // Ignore clipped member 'bin_prefix'
         self.pop(context);
         let bin_int_built = BinInt { bin_int_content };
         // Calling user action here
@@ -4653,10 +4646,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'array_close'
         self.pop(context);
         let array_opt = pop_item!(self, array_opt, ArrayOpt, context);
-        // Ignore clipped member 'array_open'
         self.pop(context);
         let array_built = Array { array_opt };
         // Calling user action here
@@ -4729,7 +4720,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_values_suffix = pop_item!(self, array_values_suffix, ArrayValuesSuffix, context);
-        // Ignore clipped member 'array_sep'
         self.pop(context);
         let array_values_suffix0_0_built = ArrayValuesSuffix0ArraySepArrayValuesSuffix {
             array_values_suffix: Box::new(array_values_suffix),
@@ -4861,10 +4851,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'std_table_close'
         self.pop(context);
         let key = pop_item!(self, key, Key, context);
-        // Ignore clipped member 'std_table_open'
         self.pop(context);
         let std_table_built = StdTable { key };
         // Calling user action here
@@ -4985,11 +4973,9 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'inline_table_close'
         self.pop(context);
         let inline_table_opt0 = pop_item!(self, inline_table_opt0, InlineTableOpt0, context);
         let inline_table_opt = pop_item!(self, inline_table_opt, InlineTableOpt, context);
-        // Ignore clipped member 'inline_table_open'
         self.pop(context);
         let inline_table_built = InlineTable {
             inline_table_opt,
@@ -5160,7 +5146,6 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let inline_table_key_vals =
             pop_item!(self, inline_table_key_vals, InlineTableKeyVals, context);
-        // Ignore clipped member 'inline_table_sep'
         self.pop(context);
         let inline_table_key_vals_opt_0_built = InlineTableKeyValsOpt {
             inline_table_key_vals,
@@ -5197,10 +5182,8 @@ impl<'t, 'u> ParolTomlGrammarAuto<'t, 'u> {
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        // Ignore clipped member 'array_table_close'
         self.pop(context);
         let key = pop_item!(self, key, Key, context);
-        // Ignore clipped member 'array_table_open'
         self.pop(context);
         let array_table_built = ArrayTable { key };
         // Calling user action here
