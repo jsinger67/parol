@@ -174,7 +174,7 @@ impl<'a> UserTraitGenerator<'a> {
                     )
                     .build()
                     .unwrap();
-                code.push(format!("// Type of popped value is {}", arg_type.my_id()));
+                // code.push(format!("// Type of popped value is {}", arg_type.my_id()));
                 code.push(format!("{}", stack_pop_data));
             }
         }
@@ -206,124 +206,42 @@ impl<'a> UserTraitGenerator<'a> {
         Ok(())
     }
 
-    fn format_builder_call<'f>(
+    fn format_builder_call(
         symbol_table: &SymbolTable,
-        fn_out_type: &impl TypeFacade<'f>,
         member_id: &SymbolId,
-        _sem: ProductionAttribute,
+        sem: ProductionAttribute,
         code: &mut StrVec,
     ) -> Result<()> {
         let arg_inst = symbol_table.symbol_as_instance(*member_id);
         if arg_inst.sem() == SymbolAttribute::Clipped {
-            // Clipped element is ignored here
-            code.push(format!(
-                "// Ignore clipped member '{}'",
-                symbol_table.name(arg_inst.my_id())
-            ));
             return Ok(());
         }
         let arg_type = symbol_table.symbol_as_type(arg_inst.type_id());
         if !matches!(*arg_type.entrails(), TypeEntrails::Clipped(_)) {
             let arg_name = symbol_table.name(arg_inst.my_id());
             let setter_name = &arg_name;
-            // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
-            let arg_name = {
-                match arg_type.entrails() {
-                    TypeEntrails::Box(_) => {
-                        format!("Box::new({})", arg_name)
-                    }
-                    TypeEntrails::Option(inner_type) => {
-                        let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
-                        match inner_type_symbol.entrails() {
-                            TypeEntrails::Box(_) => {
-                                format!("{}.map(Box::new)", arg_name)
-                            }
-                            _ => {
-                                if matches!(fn_out_type.entrails(), TypeEntrails::Struct) {
-                                    if let Some(member_type_in_fn_out_type) =
-                                        fn_out_type.members().iter().find(|m| {
-                                            let inst_name = symbol_table.symbol_as_instance(**m);
-                                            inst_name.name() == arg_name
-                                        })
-                                    {
-                                        let member_type_in_fn_out_type = symbol_table
-                                            .symbol_as_type(
-                                                symbol_table
-                                                    .symbol_as_instance(*member_type_in_fn_out_type)
-                                                    .type_id(),
-                                            );
-                                        if let TypeEntrails::Option(t) =
-                                            member_type_in_fn_out_type.entrails()
-                                        {
-                                            let fn_out_member_inner_option_type =
-                                                symbol_table.symbol_as_type(*t);
-                                            if let TypeEntrails::Box(_) =
-                                                fn_out_member_inner_option_type.entrails()
-                                            {
-                                                arg_name.to_string()
-                                            } else {
-                                                if arg_type.my_id()
-                                                    == member_type_in_fn_out_type.my_id()
-                                                {
-                                                    format!("{}.map(Box::new) /*1 fnouttype({}) fnoutmember({}) argtype({}) {} */", arg_name,
-                                                        fn_out_type.my_id(),
-                                                        member_type_in_fn_out_type.my_id(),
-                                                        arg_type.my_id(),
-                                                        fn_out_member_inner_option_type.my_id())
-                                                } else {
-                                                    format!(
-                                                        "{} /*1 fnouttype({}) fnoutmember({}) argtype({}) {} */",
-                                                        arg_name,
-                                                        fn_out_type.my_id(),
-                                                        member_type_in_fn_out_type.my_id(),
-                                                        arg_type.my_id(),
-                                                        fn_out_member_inner_option_type.my_id()
-                                                    )
-                                                }
-                                                // format!(
-                                                //     "{} /*1 fnoutmember({}) argtype({}) {} */",
-                                                //     arg_name,
-                                                //     member_type_in_fn_out_type.my_id(),
-                                                //     arg_type.my_id(),
-                                                //     fn_out_member_inner_option_type.my_id()
-                                                // )
-                                            }
-                                        } else {
-                                            format!(
-                                                "{} /*2 fnoutmember({}) {} */",
-                                                arg_name,
-                                                member_type_in_fn_out_type.my_id(),
-                                                inner_type
-                                            )
-                                        }
-                                        // let inner_type = symbol_table.symbol_as_type(*t);
-
-                                        // format!("{}.map(Box::new)", arg_name)
-                                    } else {
-                                        format!("{} /*3 {} */", arg_name, inner_type)
-                                    }
-                                } else {
-                                    format!(
-                                        "{} /*4 fn({}) {} */",
-                                        arg_name,
-                                        fn_out_type.my_id(),
-                                        inner_type
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _) => {
-                        format!(
-                            r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
-                            arg_name
-                        )
-                    }
-                    TypeEntrails::Clipped(_) => {
-                        panic!("Clipped type should have been handled before!");
-                    }
-                    _ => arg_name.to_string(),
+            let arg_name = if matches!(*arg_type.entrails(), TypeEntrails::Box(_)) &&
+                // If the production is AddToCollection then instance semantic must not be RepetitionAnchor
+                (sem != ProductionAttribute::AddToCollection || arg_inst.sem() != SymbolAttribute::RepetitionAnchor)
+            {
+                format!("Box::new({})", arg_name)
+            } else if matches!(
+                *arg_type.entrails(),
+                TypeEntrails::UserDefinedType(MetaSymbolKind::NonTerminal(_), _)
+            ) {
+                format!(
+                    r#"(&{}).try_into().map_err(parol_runtime::ParolError::UserError)?"#,
+                    arg_name
+                )
+            } else if let TypeEntrails::Option(t) = arg_type.entrails() {
+                let inner_type = symbol_table.symbol_as_type(*t);
+                if let TypeEntrails::Box(_) = inner_type.entrails() {
+                    format!("{}.map(Box::new)", arg_name)
+                } else {
+                    arg_name.to_string()
                 }
+            } else {
+                arg_name.to_string()
             };
             if *setter_name == arg_name {
                 // Avoid clippy warning "Redundant field names in struct initialization"
@@ -368,25 +286,13 @@ impl<'a> UserTraitGenerator<'a> {
         } else if function.sem == ProductionAttribute::AddToCollection {
             code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
-                Self::format_builder_call(
-                    symbol_table,
-                    &fn_out_type,
-                    member_id,
-                    function.sem,
-                    code,
-                )?;
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalSome {
             code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)? {
-                Self::format_builder_call(
-                    symbol_table,
-                    &fn_out_type,
-                    member_id,
-                    function.sem,
-                    code,
-                )?;
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalNone {
@@ -399,7 +305,7 @@ impl<'a> UserTraitGenerator<'a> {
             };
             code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
             for member_id in fn_type.members() {
-                Self::format_builder_call(symbol_table, fn_type, member_id, function.sem, code)?;
+                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
             }
             code.push("};".to_string());
             if function.alts > 1 {
@@ -411,7 +317,7 @@ impl<'a> UserTraitGenerator<'a> {
                     fn_name,
                     fn_out_type.my_id()
                 );
-                let enum_variant_name = symbol_table
+                let (enum_variant_name, is_box) = symbol_table
                     .members(nt_type.my_id())?
                     .iter()
                     .find(|variant| {
@@ -434,18 +340,40 @@ impl<'a> UserTraitGenerator<'a> {
                         }
                     })
                     .map(|enum_variant_id| {
-                        symbol_table
-                            .symbol(symbol_table.symbol(*enum_variant_id).my_id())
-                            .name()
+                        let enum_variant = symbol_table.symbol_as_type(*enum_variant_id);
+                        let is_box = if let TypeEntrails::EnumVariant(inner_type) =
+                            enum_variant.entrails()
+                        {
+                            let inner_type_symbol = symbol_table.symbol_as_type(*inner_type);
+                            matches!(inner_type_symbol.entrails(), TypeEntrails::Box(_))
+                        } else {
+                            false
+                        };
+                        (
+                            symbol_table
+                                .symbol(symbol_table.symbol(*enum_variant_id).my_id())
+                                .name(),
+                            is_box,
+                        )
                     })
                     .ok_or_else(|| anyhow!("Enum variant not found {}", fn_name))?;
-                code.push(format!(
-                    "let {}_built = {}::{}({}_built);",
-                    fn_name,
-                    nt_type.name(),
-                    enum_variant_name,
-                    fn_name
-                ));
+                if is_box {
+                    code.push(format!(
+                        "let {}_built = {}::{}(Box::new({}_built));",
+                        fn_name,
+                        nt_type.name(),
+                        enum_variant_name,
+                        fn_name
+                    ));
+                } else {
+                    code.push(format!(
+                        "let {}_built = {}::{}({}_built);",
+                        fn_name,
+                        nt_type.name(),
+                        enum_variant_name,
+                        fn_name
+                    ));
+                }
             }
         }
         Ok(())

@@ -1191,11 +1191,17 @@ impl SymbolTable {
                 SymbolKind::Type(t) => match t.entrails {
                     TypeEntrails::EnumVariant(e) => {
                         let wrapped_type = self.symbol_as_type(e);
+                        // And not already boxed
                         !matches!(wrapped_type.entrails(), TypeEntrails::Box(_))
                     }
                     _ => false,
                 },
-                SymbolKind::Instance(_) => true, // Struct member
+                SymbolKind::Instance(i) => {
+                    // Struct member
+                    let wrapped_type = self.symbol_as_type(i.type_id);
+                    // And not already boxed
+                    !matches!(wrapped_type.entrails(), TypeEntrails::Box(_))
+                }
             }) {
                 let symbol = self[*symbol_id].clone();
                 match symbol.kind {

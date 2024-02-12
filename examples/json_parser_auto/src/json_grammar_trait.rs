@@ -418,10 +418,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let object_suffix = pop_item!(self, object_suffix, ObjectSuffix, context);
-        let object_built = Object {
-            // Ignore clipped member 'l_brace'
-            object_suffix,
-        };
+        let object_built = Object { object_suffix };
         // Calling user action here
         self.user_grammar.object(&object_built)?;
         self.push(ASTType::Object(object_built), context);
@@ -446,7 +443,6 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let object_suffix_0_built = ObjectSuffixPairObjectListRBrace {
             pair: Box::new(pair),
             object_list,
-            // Ignore clipped member 'r_brace'
         };
         let object_suffix_0_built = ObjectSuffix::PairObjectListRBrace(object_suffix_0_built);
         self.push(ASTType::ObjectSuffix(object_suffix_0_built), context);
@@ -461,9 +457,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     fn object_suffix_1(&mut self, _r_brace: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let object_suffix_1_built = ObjectSuffixRBrace {
-        // Ignore clipped member 'r_brace'
-        };
+        let object_suffix_1_built = ObjectSuffixRBrace {};
         let object_suffix_1_built = ObjectSuffix::RBrace(object_suffix_1_built);
         self.push(ASTType::ObjectSuffix(object_suffix_1_built), context);
         Ok(())
@@ -484,10 +478,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut object_list = pop_item!(self, object_list, ObjectList, context);
         let pair = pop_item!(self, pair, Pair, context);
-        let object_list_0_built = ObjectList {
-            pair,
-            // Ignore clipped member 'comma'
-        };
+        let object_list_0_built = ObjectList { pair };
         // Add an element to the vector
         object_list.push(object_list_0_built);
         self.push(ASTType::ObjectList(object_list), context);
@@ -522,11 +513,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let value = pop_item!(self, value, Value, context);
         let string = pop_item!(self, string, String, context);
-        let pair_built = Pair {
-            string,
-            // Ignore clipped member 'colon'
-            value,
-        };
+        let pair_built = Pair { string, value };
         // Calling user action here
         self.user_grammar.pair(&pair_built)?;
         self.push(ASTType::Pair(pair_built), context);
@@ -546,10 +533,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let array_suffix = pop_item!(self, array_suffix, ArraySuffix, context);
-        let array_built = Array {
-            // Ignore clipped member 'l_bracket'
-            array_suffix,
-        };
+        let array_built = Array { array_suffix };
         // Calling user action here
         self.user_grammar.array(&array_built)?;
         self.push(ASTType::Array(array_built), context);
@@ -574,7 +558,6 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         let array_suffix_0_built = ArraySuffixValueArrayListRBracket {
             value: Box::new(value),
             array_list,
-            // Ignore clipped member 'r_bracket'
         };
         let array_suffix_0_built = ArraySuffix::ValueArrayListRBracket(array_suffix_0_built);
         self.push(ASTType::ArraySuffix(array_suffix_0_built), context);
@@ -589,9 +572,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     fn array_suffix_1(&mut self, _r_bracket: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let array_suffix_1_built = ArraySuffixRBracket {
-        // Ignore clipped member 'r_bracket'
-        };
+        let array_suffix_1_built = ArraySuffixRBracket {};
         let array_suffix_1_built = ArraySuffix::RBracket(array_suffix_1_built);
         self.push(ASTType::ArraySuffix(array_suffix_1_built), context);
         Ok(())
@@ -612,10 +593,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut array_list = pop_item!(self, array_list, ArrayList, context);
         let value = pop_item!(self, value, Value, context);
-        let array_list_0_built = ArrayList {
-            value,
-            // Ignore clipped member 'comma'
-        };
+        let array_list_0_built = ArrayList { value };
         // Add an element to the vector
         array_list.push(array_list_0_built);
         self.push(ASTType::ArrayList(array_list), context);
@@ -711,9 +689,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     fn value_4(&mut self, _true: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_4_built = ValueTrue {
-        // Ignore clipped member 'r#true'
-        };
+        let value_4_built = ValueTrue {};
         let value_4_built = Value::True(value_4_built);
         // Calling user action here
         self.user_grammar.value(&value_4_built)?;
@@ -729,9 +705,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     fn value_5(&mut self, _false: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_5_built = ValueFalse {
-        // Ignore clipped member 'r#false'
-        };
+        let value_5_built = ValueFalse {};
         let value_5_built = Value::False(value_5_built);
         // Calling user action here
         self.user_grammar.value(&value_5_built)?;
@@ -747,9 +721,7 @@ impl<'t, 'u> JsonGrammarAuto<'t, 'u> {
     fn value_6(&mut self, _null: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let value_6_built = ValueNull {
-        // Ignore clipped member 'null'
-        };
+        let value_6_built = ValueNull {};
         let value_6_built = Value::Null(value_6_built);
         // Calling user action here
         self.user_grammar.value(&value_6_built)?;

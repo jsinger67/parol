@@ -432,7 +432,7 @@ pub struct TokenLiteralRegex {
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
     pub percent_sc: crate::parol_ls_grammar::OwnedToken, /* %sc */
     pub l_paren: crate::parol_ls_grammar::OwnedToken,    /* ( */
-    pub scanner_switch_opt: Option<Box<ScannerSwitchOpt>>,
+    pub scanner_switch_opt: Option<ScannerSwitchOpt>,
     pub r_paren: crate::parol_ls_grammar::OwnedToken, /* ) */
 }
 
@@ -654,7 +654,7 @@ pub struct LiteralString {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NonTerminal {
     pub identifier: Identifier,
-    pub non_terminal_opt: Option<Box<NonTerminalOpt>>,
+    pub non_terminal_opt: Option<NonTerminalOpt>,
 }
 
 ///
@@ -838,7 +838,7 @@ pub struct ScannerSwitchOpt {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleToken {
     pub token_literal: TokenLiteral,
-    pub simple_token_opt: Option<Box<SimpleTokenOpt>>,
+    pub simple_token_opt: Option<SimpleTokenOpt>,
 }
 
 ///
@@ -928,7 +928,7 @@ pub struct TokenWithStates {
     pub state_list: StateList,
     pub g_t: crate::parol_ls_grammar::OwnedToken, /* > */
     pub token_literal: TokenLiteral,
-    pub token_with_states_opt: Option<Box<TokenWithStatesOpt>>,
+    pub token_with_states_opt: Option<TokenWithStatesOpt>,
 }
 
 ///
@@ -997,7 +997,7 @@ pub enum ASTType {
     Identifier(Identifier),
     LiteralString(LiteralString),
     NonTerminal(NonTerminal),
-    NonTerminalOpt(Option<Box<NonTerminalOpt>>),
+    NonTerminalOpt(Option<NonTerminalOpt>),
     Optional(Optional),
     ParolLs(ParolLs),
     Production(Production),
@@ -1011,9 +1011,9 @@ pub enum ASTType {
     ScannerState(ScannerState),
     ScannerStateList(Vec<ScannerStateList>),
     ScannerSwitch(ScannerSwitch),
-    ScannerSwitchOpt(Option<Box<ScannerSwitchOpt>>),
+    ScannerSwitchOpt(Option<ScannerSwitchOpt>),
     SimpleToken(SimpleToken),
-    SimpleTokenOpt(Option<Box<SimpleTokenOpt>>),
+    SimpleTokenOpt(Option<SimpleTokenOpt>),
     StartDeclaration(StartDeclaration),
     StateList(StateList),
     StateListList(Vec<StateListList>),
@@ -1021,7 +1021,7 @@ pub enum ASTType {
     Symbol(Symbol),
     TokenLiteral(TokenLiteral),
     TokenWithStates(TokenWithStates),
-    TokenWithStatesOpt(Option<Box<TokenWithStatesOpt>>),
+    TokenWithStatesOpt(Option<TokenWithStatesOpt>),
     UserTypeDeclaration(UserTypeDeclaration),
     UserTypeName(UserTypeName),
     UserTypeNameList(Vec<UserTypeNameList>),
@@ -1982,7 +1982,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let simple_token_opt_0_built = SimpleTokenOpt { a_s_t_control };
         self.push(
-            ASTType::SimpleTokenOpt(Some(Box::new(simple_token_opt_0_built))),
+            ASTType::SimpleTokenOpt(Some(simple_token_opt_0_built)),
             context,
         );
         Ok(())
@@ -2052,7 +2052,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let token_with_states_opt_0_built = TokenWithStatesOpt { a_s_t_control };
         self.push(
-            ASTType::TokenWithStatesOpt(Some(Box::new(token_with_states_opt_0_built))),
+            ASTType::TokenWithStatesOpt(Some(token_with_states_opt_0_built)),
             context,
         );
         Ok(())
@@ -2204,7 +2204,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let a_s_t_control = pop_item!(self, a_s_t_control, ASTControl, context);
         let non_terminal_opt_0_built = NonTerminalOpt { a_s_t_control };
         self.push(
-            ASTType::NonTerminalOpt(Some(Box::new(non_terminal_opt_0_built))),
+            ASTType::NonTerminalOpt(Some(non_terminal_opt_0_built)),
             context,
         );
         Ok(())
@@ -2552,7 +2552,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         let identifier = pop_item!(self, identifier, Identifier, context);
         let scanner_switch_opt_0_built = ScannerSwitchOpt { identifier };
         self.push(
-            ASTType::ScannerSwitchOpt(Some(Box::new(scanner_switch_opt_0_built))),
+            ASTType::ScannerSwitchOpt(Some(scanner_switch_opt_0_built)),
             context,
         );
         Ok(())

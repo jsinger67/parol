@@ -403,7 +403,7 @@ pub trait Oberon2GrammarTrait<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0GroupProcDeclSemicolon<'t> {
-    pub proc_decl: Box<ProcDecl<'t>>,
+    pub proc_decl: ProcDecl<'t>,
 }
 
 ///
@@ -415,7 +415,7 @@ pub struct DeclSeqList0GroupProcDeclSemicolon<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0GroupForwardDeclSemicolon<'t> {
-    pub forward_decl: Box<ForwardDecl<'t>>,
+    pub forward_decl: ForwardDecl<'t>,
 }
 
 ///
@@ -427,7 +427,7 @@ pub struct DeclSeqList0GroupForwardDeclSemicolon<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlockConstDeclBlock<'t> {
-    pub const_decl_block: Box<ConstDeclBlock<'t>>,
+    pub const_decl_block: ConstDeclBlock<'t>,
 }
 
 ///
@@ -439,7 +439,7 @@ pub struct DeclBlockConstDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlockTypeDeclBlock<'t> {
-    pub type_decl_block: Box<TypeDeclBlock<'t>>,
+    pub type_decl_block: TypeDeclBlock<'t>,
 }
 
 ///
@@ -451,7 +451,7 @@ pub struct DeclBlockTypeDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclBlockVarDeclBlock<'t> {
-    pub var_decl_block: Box<VarDeclBlock<'t>>,
+    pub var_decl_block: VarDeclBlock<'t>,
 }
 
 ///
@@ -463,7 +463,7 @@ pub struct DeclBlockVarDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefQualIdent<'t> {
-    pub qual_ident: Box<QualIdent<'t>>,
+    pub qual_ident: QualIdent<'t>,
 }
 
 ///
@@ -475,7 +475,7 @@ pub struct TypeDefQualIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefARRAYTypeDefOptKwOfTypeDef<'t> {
-    pub type_def_opt: Option<Box<TypeDefOpt<'t>>>,
+    pub type_def_opt: Option<TypeDefOpt<'t>>,
     pub type_def: Box<TypeDef<'t>>,
 }
 
@@ -488,7 +488,7 @@ pub struct TypeDefARRAYTypeDefOptKwOfTypeDef<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd<'t> {
-    pub type_def_opt0: Option<Box<TypeDefOpt0<'t>>>,
+    pub type_def_opt0: Option<TypeDefOpt0<'t>>,
     pub field_list: Box<FieldList<'t>>,
     pub type_def_list: Vec<TypeDefList<'t>>,
 }
@@ -526,8 +526,8 @@ pub struct TypeDefKwProcedureTypeDefOpt1<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupDesignatorStatementOptGroupSuffix<'t> {
-    pub designator: Box<Designator<'t>>,
-    pub statement_opt_group_suffix: Box<StatementOptGroupSuffix<'t>>,
+    pub designator: Designator<'t>,
+    pub statement_opt_group_suffix: StatementOptGroupSuffix<'t>,
 }
 
 ///
@@ -539,7 +539,7 @@ pub struct StatementOptGroupDesignatorStatementOptGroupSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupSuffixColonEquExpr<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -551,7 +551,7 @@ pub struct StatementOptGroupSuffixColonEquExpr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupSuffixStatementOpt0<'t> {
-    pub statement_opt0: Option<Box<StatementOpt0<'t>>>,
+    pub statement_opt0: Option<StatementOpt0<'t>>,
 }
 
 ///
@@ -563,7 +563,7 @@ pub struct StatementOptGroupSuffixStatementOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
     pub then_block: Box<ThenBlock<'t>>,
     pub statement_opt_group_list: Vec<StatementOptGroupList<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
@@ -578,7 +578,7 @@ pub struct StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
     pub cases: Box<Cases<'t>>,
     pub opt_else_part_end: Box<OptElsePartEnd<'t>>,
 }
@@ -592,7 +592,7 @@ pub struct StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupWHILEExprDoBlock<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
     pub do_block: Box<DoBlock<'t>>,
 }
 
@@ -606,7 +606,7 @@ pub struct StatementOptGroupWHILEExprDoBlock<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupREPEATStatementSeqUNTILExpr<'t> {
     pub statement_seq: Box<StatementSeq<'t>>,
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -618,8 +618,8 @@ pub struct StatementOptGroupREPEATStatementSeqUNTILExpr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupFORForInitStatementOpt1DoBlock<'t> {
-    pub for_init: Box<ForInit<'t>>,
-    pub statement_opt1: Option<Box<StatementOpt1<'t>>>,
+    pub for_init: ForInit<'t>,
+    pub statement_opt1: Option<StatementOpt1<'t>>,
     pub do_block: Box<DoBlock<'t>>,
 }
 
@@ -668,7 +668,7 @@ pub struct StatementOptGroupEXIT {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupRETURNStatementOpt2<'t> {
-    pub statement_opt2: Option<Box<StatementOpt2<'t>>>,
+    pub statement_opt2: Option<StatementOpt2<'t>>,
 }
 
 ///
@@ -704,7 +704,7 @@ pub struct SimpleExprOptGroupMinus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorDesignatorFactorOpt<'t> {
-    pub designator: Box<Designator<'t>>,
+    pub designator: Designator<'t>,
     pub factor_opt: Option<Box<FactorOpt<'t>>>,
 }
 
@@ -717,7 +717,7 @@ pub struct FactorDesignatorFactorOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorNumber<'t> {
-    pub number: Box<Number<'t>>,
+    pub number: Number<'t>,
 }
 
 ///
@@ -729,7 +729,7 @@ pub struct FactorNumber<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorCharacter<'t> {
-    pub character: Box<Character<'t>>,
+    pub character: Character<'t>,
 }
 
 ///
@@ -741,7 +741,7 @@ pub struct FactorCharacter<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorString<'t> {
-    pub string: Box<String<'t>>,
+    pub string: String<'t>,
 }
 
 ///
@@ -869,7 +869,7 @@ pub struct RelationGTEqu<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct RelationInOp {
-    pub in_op: Box<InOp>,
+    pub in_op: InOp,
 }
 
 ///
@@ -989,7 +989,7 @@ pub struct MulOpAmp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorSuffixDotIdent<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1001,7 +1001,7 @@ pub struct DesignatorSuffixDotIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorSuffixLBracketExprListRBracket<'t> {
-    pub expr_list: Box<ExprList<'t>>,
+    pub expr_list: ExprList<'t>,
 }
 
 ///
@@ -1023,7 +1023,7 @@ pub struct DesignatorSuffixCircumflex {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct QualIdentIdent<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1035,7 +1035,7 @@ pub struct QualIdentIdent<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct QualIdentQIdent<'t> {
-    pub q_ident: Box<QIdent<'t>>,
+    pub q_ident: QIdent<'t>,
 }
 
 ///
@@ -1071,7 +1071,7 @@ pub struct IdentDefOptGroupMinus<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumberInteger<'t> {
-    pub integer: Box<Integer<'t>>,
+    pub integer: Integer<'t>,
 }
 
 ///
@@ -1083,7 +1083,7 @@ pub struct NumberInteger<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct NumberReal<'t> {
-    pub real: Box<Real<'t>>,
+    pub real: Real<'t>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -1109,7 +1109,7 @@ pub enum AddOp<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Case<'t> {
-    pub case_opt: Option<Box<CaseOpt<'t>>>,
+    pub case_opt: Option<CaseOpt<'t>>,
 }
 
 ///
@@ -1119,8 +1119,8 @@ pub struct Case<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseLabels<'t> {
-    pub const_expr: Box<ConstExpr<'t>>,
-    pub case_labels_opt: Option<Box<CaseLabelsOpt<'t>>>,
+    pub const_expr: ConstExpr<'t>,
+    pub case_labels_opt: Option<CaseLabelsOpt<'t>>,
 }
 
 ///
@@ -1131,7 +1131,7 @@ pub struct CaseLabels<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseLabelsOpt<'t> {
     pub dot_dot: Token<'t>, /* \.\. */
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub const_expr: ConstExpr<'t>,
 }
 
 ///
@@ -1141,9 +1141,9 @@ pub struct CaseLabelsOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseOpt<'t> {
-    pub case_labels: Box<CaseLabels<'t>>,
+    pub case_labels: CaseLabels<'t>,
     pub case_opt_list: Vec<CaseOptList<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -1153,7 +1153,7 @@ pub struct CaseOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CaseOptList<'t> {
-    pub case_labels: Box<CaseLabels<'t>>,
+    pub case_labels: CaseLabels<'t>,
 }
 
 ///
@@ -1163,7 +1163,7 @@ pub struct CaseOptList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Cases<'t> {
-    pub case: Box<Case<'t>>,
+    pub case: Case<'t>,
     pub cases_list: Vec<CasesList<'t>>,
 }
 
@@ -1174,7 +1174,7 @@ pub struct Cases<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct CasesList<'t> {
-    pub case: Box<Case<'t>>,
+    pub case: Case<'t>,
 }
 
 ///
@@ -1194,8 +1194,8 @@ pub struct Character<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDecl<'t> {
-    pub ident_def: Box<IdentDef<'t>>,
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub ident_def: IdentDef<'t>,
+    pub const_expr: ConstExpr<'t>,
 }
 
 ///
@@ -1215,7 +1215,7 @@ pub struct ConstDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstDeclBlockList<'t> {
-    pub const_decl: Box<ConstDecl<'t>>,
+    pub const_decl: ConstDecl<'t>,
 }
 
 ///
@@ -1225,7 +1225,7 @@ pub struct ConstDeclBlockList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ConstExpr<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -1257,7 +1257,7 @@ pub struct DeclSeq<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList<'t> {
-    pub decl_block: Box<DeclBlock<'t>>,
+    pub decl_block: DeclBlock<'t>,
 }
 
 ///
@@ -1267,7 +1267,7 @@ pub struct DeclSeqList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DeclSeqList0<'t> {
-    pub decl_seq_list0_group: Box<DeclSeqList0Group<'t>>,
+    pub decl_seq_list0_group: DeclSeqList0Group<'t>,
 }
 
 ///
@@ -1287,7 +1287,7 @@ pub enum DeclSeqList0Group<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Designator<'t> {
-    pub qual_ident: Box<QualIdent<'t>>,
+    pub qual_ident: QualIdent<'t>,
     pub designator_list: Vec<DesignatorList<'t>>,
 }
 
@@ -1298,7 +1298,7 @@ pub struct Designator<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DesignatorList<'t> {
-    pub designator_suffix: Box<DesignatorSuffix<'t>>,
+    pub designator_suffix: DesignatorSuffix<'t>,
 }
 
 ///
@@ -1319,7 +1319,7 @@ pub enum DesignatorSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct DoBlock<'t> {
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -1340,7 +1340,7 @@ pub struct Element<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElementOpt<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -1350,7 +1350,7 @@ pub struct ElementOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElsePart<'t> {
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -1360,8 +1360,8 @@ pub struct ElsePart<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ElsifPart<'t> {
-    pub expr: Box<Expr<'t>>,
-    pub then_block: Box<ThenBlock<'t>>,
+    pub expr: Expr<'t>,
+    pub then_block: ThenBlock<'t>,
 }
 
 ///
@@ -1372,7 +1372,7 @@ pub struct ElsifPart<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Expr<'t> {
     pub simple_expr: Box<SimpleExpr<'t>>,
-    pub expr_opt: Option<Box<ExprOpt<'t>>>,
+    pub expr_opt: Option<ExprOpt<'t>>,
 }
 
 ///
@@ -1382,7 +1382,7 @@ pub struct Expr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprList<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
     pub expr_list_list: Vec<ExprListList<'t>>,
 }
 
@@ -1393,7 +1393,7 @@ pub struct ExprList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprListList<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -1403,8 +1403,8 @@ pub struct ExprListList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ExprOpt<'t> {
-    pub relation: Box<Relation<'t>>,
-    pub simple_expr: Box<SimpleExpr<'t>>,
+    pub relation: Relation<'t>,
+    pub simple_expr: SimpleExpr<'t>,
 }
 
 ///
@@ -1414,10 +1414,10 @@ pub struct ExprOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSection<'t> {
-    pub f_p_section_opt: Option<Box<FPSectionOpt>>,
-    pub ident: Box<Ident<'t>>,
+    pub f_p_section_opt: Option<FPSectionOpt>,
+    pub ident: Ident<'t>,
     pub f_p_section_list: Vec<FPSectionList<'t>>,
-    pub type_def: Box<TypeDef<'t>>,
+    pub type_def: TypeDef<'t>,
 }
 
 ///
@@ -1427,7 +1427,7 @@ pub struct FPSection<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FPSectionList<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1449,7 +1449,7 @@ pub enum Factor<'t> {
     Character(FactorCharacter<'t>),
     String(FactorString<'t>),
     NIL(FactorNIL),
-    Set(FactorSet<'t>),
+    Set(Box<FactorSet<'t>>),
     LParenExprRParen(FactorLParenExprRParen<'t>),
     TildeFactor(FactorTildeFactor<'t>),
 }
@@ -1461,7 +1461,7 @@ pub enum Factor<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOpt<'t> {
-    pub factor_opt0: Option<Box<FactorOpt0<'t>>>,
+    pub factor_opt0: Option<FactorOpt0<'t>>,
 }
 
 ///
@@ -1471,7 +1471,7 @@ pub struct FactorOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FactorOpt0<'t> {
-    pub expr_list: Box<ExprList<'t>>,
+    pub expr_list: ExprList<'t>,
 }
 
 ///
@@ -1481,7 +1481,7 @@ pub struct FactorOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldList<'t> {
-    pub field_list_opt: Option<Box<FieldListOpt<'t>>>,
+    pub field_list_opt: Option<FieldListOpt<'t>>,
 }
 
 ///
@@ -1491,8 +1491,8 @@ pub struct FieldList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FieldListOpt<'t> {
-    pub ident_list: Box<IdentList<'t>>,
-    pub type_def: Box<TypeDef<'t>>,
+    pub ident_list: IdentList<'t>,
+    pub type_def: TypeDef<'t>,
 }
 
 ///
@@ -1502,9 +1502,9 @@ pub struct FieldListOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForInit<'t> {
-    pub ident: Box<Ident<'t>>,
-    pub expr: Box<Expr<'t>>,
-    pub expr0: Box<Expr<'t>>,
+    pub ident: Ident<'t>,
+    pub expr: Expr<'t>,
+    pub expr0: Expr<'t>,
 }
 
 ///
@@ -1514,7 +1514,7 @@ pub struct ForInit<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForStep<'t> {
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub const_expr: ConstExpr<'t>,
 }
 
 ///
@@ -1524,8 +1524,8 @@ pub struct ForStep<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalPars<'t> {
-    pub formal_pars_opt: Option<Box<FormalParsOpt<'t>>>,
-    pub formal_pars_opt0: Option<Box<FormalParsOpt0<'t>>>,
+    pub formal_pars_opt: Option<FormalParsOpt<'t>>,
+    pub formal_pars_opt0: Option<FormalParsOpt0<'t>>,
 }
 
 ///
@@ -1535,7 +1535,7 @@ pub struct FormalPars<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOpt<'t> {
-    pub f_p_section: Box<FPSection<'t>>,
+    pub f_p_section: FPSection<'t>,
     pub formal_pars_opt_list: Vec<FormalParsOptList<'t>>,
 }
 
@@ -1546,7 +1546,7 @@ pub struct FormalParsOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOpt0<'t> {
-    pub qual_ident: Box<QualIdent<'t>>,
+    pub qual_ident: QualIdent<'t>,
 }
 
 ///
@@ -1556,7 +1556,7 @@ pub struct FormalParsOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct FormalParsOptList<'t> {
-    pub f_p_section: Box<FPSection<'t>>,
+    pub f_p_section: FPSection<'t>,
 }
 
 ///
@@ -1567,9 +1567,9 @@ pub struct FormalParsOptList<'t> {
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDecl<'t> {
     pub circumflex: Token<'t>, /* \^ */
-    pub forward_decl_opt: Option<Box<ForwardDeclOpt<'t>>>,
-    pub ident_def: Box<IdentDef<'t>>,
-    pub forward_decl_opt0: Option<Box<ForwardDeclOpt0<'t>>>,
+    pub forward_decl_opt: Option<ForwardDeclOpt<'t>>,
+    pub ident_def: IdentDef<'t>,
+    pub forward_decl_opt0: Option<ForwardDeclOpt0<'t>>,
 }
 
 ///
@@ -1579,7 +1579,7 @@ pub struct ForwardDecl<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDeclOpt<'t> {
-    pub receiver: Box<Receiver<'t>>,
+    pub receiver: Receiver<'t>,
 }
 
 ///
@@ -1589,7 +1589,7 @@ pub struct ForwardDeclOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ForwardDeclOpt0<'t> {
-    pub formal_pars: Box<FormalPars<'t>>,
+    pub formal_pars: FormalPars<'t>,
 }
 
 ///
@@ -1599,8 +1599,8 @@ pub struct ForwardDeclOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Guard<'t> {
-    pub qual_ident: Box<QualIdent<'t>>,
-    pub qual_ident0: Box<QualIdent<'t>>,
+    pub qual_ident: QualIdent<'t>,
+    pub qual_ident0: QualIdent<'t>,
 }
 
 ///
@@ -1610,8 +1610,8 @@ pub struct Guard<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct GuardedDoBlock<'t> {
-    pub guard: Box<Guard<'t>>,
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub guard: Guard<'t>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -1631,8 +1631,8 @@ pub struct Ident<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDef<'t> {
-    pub ident: Box<Ident<'t>>,
-    pub ident_def_opt: Option<Box<IdentDefOpt<'t>>>,
+    pub ident: Ident<'t>,
+    pub ident_def_opt: Option<IdentDefOpt<'t>>,
 }
 
 ///
@@ -1642,7 +1642,7 @@ pub struct IdentDef<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentDefOpt<'t> {
-    pub ident_def_opt_group: Box<IdentDefOptGroup<'t>>,
+    pub ident_def_opt_group: IdentDefOptGroup<'t>,
 }
 
 ///
@@ -1662,7 +1662,7 @@ pub enum IdentDefOptGroup<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentList<'t> {
-    pub ident_def: Box<IdentDef<'t>>,
+    pub ident_def: IdentDef<'t>,
     pub ident_list_list: Vec<IdentListList<'t>>,
 }
 
@@ -1673,7 +1673,7 @@ pub struct IdentList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct IdentListList<'t> {
-    pub ident_def: Box<IdentDef<'t>>,
+    pub ident_def: IdentDef<'t>,
 }
 
 ///
@@ -1683,8 +1683,8 @@ pub struct IdentListList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportList<'t> {
-    pub import_list_opt: Option<Box<ImportListOpt<'t>>>,
-    pub ident: Box<Ident<'t>>,
+    pub import_list_opt: Option<ImportListOpt<'t>>,
+    pub ident: Ident<'t>,
     pub import_list_list: Vec<ImportListList<'t>>,
 }
 
@@ -1695,8 +1695,8 @@ pub struct ImportList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListList<'t> {
-    pub import_list_opt0: Option<Box<ImportListOpt0<'t>>>,
-    pub ident: Box<Ident<'t>>,
+    pub import_list_opt0: Option<ImportListOpt0<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1706,7 +1706,7 @@ pub struct ImportListList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListOpt<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1716,7 +1716,7 @@ pub struct ImportListOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ImportListOpt0<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1840,7 +1840,7 @@ pub struct KwVar {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleBody<'t> {
-    pub statement_block: Box<StatementBlock<'t>>,
+    pub statement_block: StatementBlock<'t>,
 }
 
 ///
@@ -1850,7 +1850,7 @@ pub struct ModuleBody<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ModuleHead<'t> {
-    pub ident: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -1883,10 +1883,10 @@ pub enum Number<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Oberon2<'t> {
-    pub module_head: Box<ModuleHead<'t>>,
-    pub oberon2_opt: Option<Box<Oberon2Opt<'t>>>,
-    pub decl_seq: Box<DeclSeq<'t>>,
-    pub module_body: Box<ModuleBody<'t>>,
+    pub module_head: ModuleHead<'t>,
+    pub oberon2_opt: Option<Oberon2Opt<'t>>,
+    pub decl_seq: DeclSeq<'t>,
+    pub module_body: ModuleBody<'t>,
 }
 
 ///
@@ -1896,7 +1896,7 @@ pub struct Oberon2<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Oberon2Opt<'t> {
-    pub import_list: Box<ImportList<'t>>,
+    pub import_list: ImportList<'t>,
 }
 
 ///
@@ -1906,7 +1906,7 @@ pub struct Oberon2Opt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct OptElsePartEnd<'t> {
-    pub opt_else_part_end_opt: Option<Box<OptElsePartEndOpt<'t>>>,
+    pub opt_else_part_end_opt: Option<OptElsePartEndOpt<'t>>,
 }
 
 ///
@@ -1916,7 +1916,7 @@ pub struct OptElsePartEnd<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct OptElsePartEndOpt<'t> {
-    pub else_part: Box<ElsePart<'t>>,
+    pub else_part: ElsePart<'t>,
 }
 
 ///
@@ -1926,8 +1926,8 @@ pub struct OptElsePartEndOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcDecl<'t> {
-    pub procedure_heading: Box<ProcedureHeading<'t>>,
-    pub procedure_body: Box<ProcedureBody<'t>>,
+    pub procedure_heading: ProcedureHeading<'t>,
+    pub procedure_body: ProcedureBody<'t>,
 }
 
 ///
@@ -1937,8 +1937,8 @@ pub struct ProcDecl<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureBody<'t> {
-    pub decl_seq: Box<DeclSeq<'t>>,
-    pub statement_block: Box<StatementBlock<'t>>,
+    pub decl_seq: DeclSeq<'t>,
+    pub statement_block: StatementBlock<'t>,
 }
 
 ///
@@ -1948,9 +1948,9 @@ pub struct ProcedureBody<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeading<'t> {
-    pub procedure_heading_opt: Option<Box<ProcedureHeadingOpt<'t>>>,
-    pub ident_def: Box<IdentDef<'t>>,
-    pub procedure_heading_opt0: Option<Box<ProcedureHeadingOpt0<'t>>>,
+    pub procedure_heading_opt: Option<ProcedureHeadingOpt<'t>>,
+    pub ident_def: IdentDef<'t>,
+    pub procedure_heading_opt0: Option<ProcedureHeadingOpt0<'t>>,
 }
 
 ///
@@ -1960,7 +1960,7 @@ pub struct ProcedureHeading<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeadingOpt<'t> {
-    pub receiver: Box<Receiver<'t>>,
+    pub receiver: Receiver<'t>,
 }
 
 ///
@@ -1970,7 +1970,7 @@ pub struct ProcedureHeadingOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ProcedureHeadingOpt0<'t> {
-    pub formal_pars: Box<FormalPars<'t>>,
+    pub formal_pars: FormalPars<'t>,
 }
 
 ///
@@ -2010,8 +2010,8 @@ pub struct Real<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Receiver<'t> {
-    pub receiver_opt: Option<Box<ReceiverOpt>>,
-    pub receiver_var_decl: Box<ReceiverVarDecl<'t>>,
+    pub receiver_opt: Option<ReceiverOpt>,
+    pub receiver_var_decl: ReceiverVarDecl<'t>,
 }
 
 ///
@@ -2029,8 +2029,8 @@ pub struct ReceiverOpt {}
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ReceiverVarDecl<'t> {
-    pub ident: Box<Ident<'t>>,
-    pub ident0: Box<Ident<'t>>,
+    pub ident: Ident<'t>,
+    pub ident0: Ident<'t>,
 }
 
 ///
@@ -2056,7 +2056,7 @@ pub enum Relation<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Set<'t> {
-    pub set_opt: Option<Box<SetOpt<'t>>>,
+    pub set_opt: Option<SetOpt<'t>>,
 }
 
 ///
@@ -2066,7 +2066,7 @@ pub struct Set<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SetOpt<'t> {
-    pub element: Box<Element<'t>>,
+    pub element: Element<'t>,
     pub set_opt_list: Vec<SetOptList<'t>>,
 }
 
@@ -2077,7 +2077,7 @@ pub struct SetOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SetOptList<'t> {
-    pub element: Box<Element<'t>>,
+    pub element: Element<'t>,
 }
 
 ///
@@ -2087,8 +2087,8 @@ pub struct SetOptList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExpr<'t> {
-    pub simple_expr_opt: Option<Box<SimpleExprOpt<'t>>>,
-    pub term: Box<Term<'t>>,
+    pub simple_expr_opt: Option<SimpleExprOpt<'t>>,
+    pub term: Term<'t>,
     pub simple_expr_list: Vec<SimpleExprList<'t>>,
 }
 
@@ -2099,8 +2099,8 @@ pub struct SimpleExpr<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprList<'t> {
-    pub add_op: Box<AddOp<'t>>,
-    pub term: Box<Term<'t>>,
+    pub add_op: AddOp<'t>,
+    pub term: Term<'t>,
 }
 
 ///
@@ -2110,7 +2110,7 @@ pub struct SimpleExprList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct SimpleExprOpt<'t> {
-    pub simple_expr_opt_group: Box<SimpleExprOptGroup<'t>>,
+    pub simple_expr_opt_group: SimpleExprOptGroup<'t>,
 }
 
 ///
@@ -2130,7 +2130,7 @@ pub enum SimpleExprOptGroup<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Statement<'t> {
-    pub statement_opt: Option<Box<StatementOpt<'t>>>,
+    pub statement_opt: Option<StatementOpt<'t>>,
 }
 
 ///
@@ -2140,8 +2140,8 @@ pub struct Statement<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementBlock<'t> {
-    pub statement_block_opt: Option<Box<StatementBlockOpt<'t>>>,
-    pub ident: Box<Ident<'t>>,
+    pub statement_block_opt: Option<StatementBlockOpt<'t>>,
+    pub ident: Ident<'t>,
 }
 
 ///
@@ -2151,7 +2151,7 @@ pub struct StatementBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementBlockOpt<'t> {
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -2161,7 +2161,7 @@ pub struct StatementBlockOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt<'t> {
-    pub statement_opt_group: Box<StatementOptGroup<'t>>,
+    pub statement_opt_group: StatementOptGroup<'t>,
 }
 
 ///
@@ -2171,7 +2171,7 @@ pub struct StatementOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt0<'t> {
-    pub statement_opt3: Option<Box<StatementOpt3<'t>>>,
+    pub statement_opt3: Option<StatementOpt3<'t>>,
 }
 
 ///
@@ -2181,7 +2181,7 @@ pub struct StatementOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt1<'t> {
-    pub for_step: Box<ForStep<'t>>,
+    pub for_step: ForStep<'t>,
 }
 
 ///
@@ -2191,7 +2191,7 @@ pub struct StatementOpt1<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt2<'t> {
-    pub expr: Box<Expr<'t>>,
+    pub expr: Expr<'t>,
 }
 
 ///
@@ -2201,7 +2201,7 @@ pub struct StatementOpt2<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOpt3<'t> {
-    pub expr_list: Box<ExprList<'t>>,
+    pub expr_list: ExprList<'t>,
 }
 
 ///
@@ -2233,7 +2233,7 @@ pub enum StatementOptGroup<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupList<'t> {
-    pub elsif_part: Box<ElsifPart<'t>>,
+    pub elsif_part: ElsifPart<'t>,
 }
 
 ///
@@ -2243,7 +2243,7 @@ pub struct StatementOptGroupList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementOptGroupList0<'t> {
-    pub guarded_do_block: Box<GuardedDoBlock<'t>>,
+    pub guarded_do_block: GuardedDoBlock<'t>,
 }
 
 ///
@@ -2263,7 +2263,7 @@ pub enum StatementOptGroupSuffix<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSeq<'t> {
-    pub statement: Box<Statement<'t>>,
+    pub statement: Statement<'t>,
     pub statement_seq_list: Vec<StatementSeqList<'t>>,
 }
 
@@ -2274,7 +2274,7 @@ pub struct StatementSeq<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct StatementSeqList<'t> {
-    pub statement: Box<Statement<'t>>,
+    pub statement: Statement<'t>,
 }
 
 ///
@@ -2294,7 +2294,7 @@ pub struct String<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Term<'t> {
-    pub factor: Box<Factor<'t>>,
+    pub factor: Factor<'t>,
     pub term_list: Vec<TermList<'t>>,
 }
 
@@ -2305,8 +2305,8 @@ pub struct Term<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TermList<'t> {
-    pub mul_op: Box<MulOp<'t>>,
-    pub factor: Box<Factor<'t>>,
+    pub mul_op: MulOp<'t>,
+    pub factor: Factor<'t>,
 }
 
 ///
@@ -2316,7 +2316,7 @@ pub struct TermList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ThenBlock<'t> {
-    pub statement_seq: Box<StatementSeq<'t>>,
+    pub statement_seq: StatementSeq<'t>,
 }
 
 ///
@@ -2326,8 +2326,8 @@ pub struct ThenBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDecl<'t> {
-    pub ident_def: Box<IdentDef<'t>>,
-    pub type_def: Box<TypeDef<'t>>,
+    pub ident_def: IdentDef<'t>,
+    pub type_def: TypeDef<'t>,
 }
 
 ///
@@ -2347,7 +2347,7 @@ pub struct TypeDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDeclBlockList<'t> {
-    pub type_decl: Box<TypeDecl<'t>>,
+    pub type_decl: TypeDecl<'t>,
 }
 
 ///
@@ -2372,7 +2372,7 @@ pub enum TypeDef<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefList<'t> {
-    pub field_list: Box<FieldList<'t>>,
+    pub field_list: FieldList<'t>,
 }
 
 ///
@@ -2382,7 +2382,7 @@ pub struct TypeDefList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt<'t> {
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub const_expr: ConstExpr<'t>,
     pub type_def_opt_list: Vec<TypeDefOptList<'t>>,
 }
 
@@ -2393,7 +2393,7 @@ pub struct TypeDefOpt<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt0<'t> {
-    pub qual_ident: Box<QualIdent<'t>>,
+    pub qual_ident: QualIdent<'t>,
 }
 
 ///
@@ -2403,7 +2403,7 @@ pub struct TypeDefOpt0<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOpt1<'t> {
-    pub formal_pars: Box<FormalPars<'t>>,
+    pub formal_pars: FormalPars<'t>,
 }
 
 ///
@@ -2413,7 +2413,7 @@ pub struct TypeDefOpt1<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TypeDefOptList<'t> {
-    pub const_expr: Box<ConstExpr<'t>>,
+    pub const_expr: ConstExpr<'t>,
 }
 
 ///
@@ -2423,8 +2423,8 @@ pub struct TypeDefOptList<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDecl<'t> {
-    pub ident_list: Box<IdentList<'t>>,
-    pub type_def: Box<TypeDef<'t>>,
+    pub ident_list: IdentList<'t>,
+    pub type_def: TypeDef<'t>,
 }
 
 ///
@@ -2444,7 +2444,7 @@ pub struct VarDeclBlock<'t> {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct VarDeclBlockList<'t> {
-    pub var_decl: Box<VarDecl<'t>>,
+    pub var_decl: VarDecl<'t>,
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -2458,8 +2458,8 @@ pub enum ASTType<'t> {
     AddOp(AddOp<'t>),
     Case(Case<'t>),
     CaseLabels(CaseLabels<'t>),
-    CaseLabelsOpt(Option<Box<CaseLabelsOpt<'t>>>),
-    CaseOpt(Option<Box<CaseOpt<'t>>>),
+    CaseLabelsOpt(Option<CaseLabelsOpt<'t>>),
+    CaseOpt(Option<CaseOpt<'t>>),
     CaseOptList(Vec<CaseOptList<'t>>),
     Cases(Cases<'t>),
     CasesList(Vec<CasesList<'t>>),
@@ -2478,42 +2478,42 @@ pub enum ASTType<'t> {
     DesignatorSuffix(DesignatorSuffix<'t>),
     DoBlock(DoBlock<'t>),
     Element(Element<'t>),
-    ElementOpt(Option<Box<ElementOpt<'t>>>),
+    ElementOpt(Option<ElementOpt<'t>>),
     ElsePart(ElsePart<'t>),
     ElsifPart(ElsifPart<'t>),
     Expr(Expr<'t>),
     ExprList(ExprList<'t>),
     ExprListList(Vec<ExprListList<'t>>),
-    ExprOpt(Option<Box<ExprOpt<'t>>>),
+    ExprOpt(Option<ExprOpt<'t>>),
     FPSection(FPSection<'t>),
     FPSectionList(Vec<FPSectionList<'t>>),
-    FPSectionOpt(Option<Box<FPSectionOpt>>),
+    FPSectionOpt(Option<FPSectionOpt>),
     Factor(Factor<'t>),
-    FactorOpt(Option<Box<FactorOpt<'t>>>),
-    FactorOpt0(Option<Box<FactorOpt0<'t>>>),
+    FactorOpt(Option<FactorOpt<'t>>),
+    FactorOpt0(Option<FactorOpt0<'t>>),
     FieldList(FieldList<'t>),
-    FieldListOpt(Option<Box<FieldListOpt<'t>>>),
+    FieldListOpt(Option<FieldListOpt<'t>>),
     ForInit(ForInit<'t>),
     ForStep(ForStep<'t>),
     FormalPars(FormalPars<'t>),
-    FormalParsOpt(Option<Box<FormalParsOpt<'t>>>),
-    FormalParsOpt0(Option<Box<FormalParsOpt0<'t>>>),
+    FormalParsOpt(Option<FormalParsOpt<'t>>),
+    FormalParsOpt0(Option<FormalParsOpt0<'t>>),
     FormalParsOptList(Vec<FormalParsOptList<'t>>),
     ForwardDecl(ForwardDecl<'t>),
-    ForwardDeclOpt(Option<Box<ForwardDeclOpt<'t>>>),
-    ForwardDeclOpt0(Option<Box<ForwardDeclOpt0<'t>>>),
+    ForwardDeclOpt(Option<ForwardDeclOpt<'t>>),
+    ForwardDeclOpt0(Option<ForwardDeclOpt0<'t>>),
     Guard(Guard<'t>),
     GuardedDoBlock(GuardedDoBlock<'t>),
     Ident(Ident<'t>),
     IdentDef(IdentDef<'t>),
-    IdentDefOpt(Option<Box<IdentDefOpt<'t>>>),
+    IdentDefOpt(Option<IdentDefOpt<'t>>),
     IdentDefOptGroup(IdentDefOptGroup<'t>),
     IdentList(IdentList<'t>),
     IdentListList(Vec<IdentListList<'t>>),
     ImportList(ImportList<'t>),
     ImportListList(Vec<ImportListList<'t>>),
-    ImportListOpt(Option<Box<ImportListOpt<'t>>>),
-    ImportListOpt0(Option<Box<ImportListOpt0<'t>>>),
+    ImportListOpt(Option<ImportListOpt<'t>>),
+    ImportListOpt0(Option<ImportListOpt0<'t>>),
     InOp(InOp),
     Integer(Integer<'t>),
     KwBegin(KwBegin),
@@ -2533,36 +2533,36 @@ pub enum ASTType<'t> {
     MulOp(MulOp<'t>),
     Number(Number<'t>),
     Oberon2(Oberon2<'t>),
-    Oberon2Opt(Option<Box<Oberon2Opt<'t>>>),
+    Oberon2Opt(Option<Oberon2Opt<'t>>),
     OptElsePartEnd(OptElsePartEnd<'t>),
-    OptElsePartEndOpt(Option<Box<OptElsePartEndOpt<'t>>>),
+    OptElsePartEndOpt(Option<OptElsePartEndOpt<'t>>),
     ProcDecl(ProcDecl<'t>),
     ProcedureBody(ProcedureBody<'t>),
     ProcedureHeading(ProcedureHeading<'t>),
-    ProcedureHeadingOpt(Option<Box<ProcedureHeadingOpt<'t>>>),
-    ProcedureHeadingOpt0(Option<Box<ProcedureHeadingOpt0<'t>>>),
+    ProcedureHeadingOpt(Option<ProcedureHeadingOpt<'t>>),
+    ProcedureHeadingOpt0(Option<ProcedureHeadingOpt0<'t>>),
     QIdent(QIdent<'t>),
     QualIdent(QualIdent<'t>),
     Real(Real<'t>),
     Receiver(Receiver<'t>),
-    ReceiverOpt(Option<Box<ReceiverOpt>>),
+    ReceiverOpt(Option<ReceiverOpt>),
     ReceiverVarDecl(ReceiverVarDecl<'t>),
     Relation(Relation<'t>),
     Set(Set<'t>),
-    SetOpt(Option<Box<SetOpt<'t>>>),
+    SetOpt(Option<SetOpt<'t>>),
     SetOptList(Vec<SetOptList<'t>>),
     SimpleExpr(SimpleExpr<'t>),
     SimpleExprList(Vec<SimpleExprList<'t>>),
-    SimpleExprOpt(Option<Box<SimpleExprOpt<'t>>>),
+    SimpleExprOpt(Option<SimpleExprOpt<'t>>),
     SimpleExprOptGroup(SimpleExprOptGroup<'t>),
     Statement(Statement<'t>),
     StatementBlock(StatementBlock<'t>),
-    StatementBlockOpt(Option<Box<StatementBlockOpt<'t>>>),
-    StatementOpt(Option<Box<StatementOpt<'t>>>),
-    StatementOpt0(Option<Box<StatementOpt0<'t>>>),
-    StatementOpt1(Option<Box<StatementOpt1<'t>>>),
-    StatementOpt2(Option<Box<StatementOpt2<'t>>>),
-    StatementOpt3(Option<Box<StatementOpt3<'t>>>),
+    StatementBlockOpt(Option<StatementBlockOpt<'t>>),
+    StatementOpt(Option<StatementOpt<'t>>),
+    StatementOpt0(Option<StatementOpt0<'t>>),
+    StatementOpt1(Option<StatementOpt1<'t>>),
+    StatementOpt2(Option<StatementOpt2<'t>>),
+    StatementOpt3(Option<StatementOpt3<'t>>),
     StatementOptGroup(StatementOptGroup<'t>),
     StatementOptGroupList(Vec<StatementOptGroupList<'t>>),
     StatementOptGroupList0(Vec<StatementOptGroupList0<'t>>),
@@ -2578,9 +2578,9 @@ pub enum ASTType<'t> {
     TypeDeclBlockList(Vec<TypeDeclBlockList<'t>>),
     TypeDef(TypeDef<'t>),
     TypeDefList(Vec<TypeDefList<'t>>),
-    TypeDefOpt(Option<Box<TypeDefOpt<'t>>>),
-    TypeDefOpt0(Option<Box<TypeDefOpt0<'t>>>),
-    TypeDefOpt1(Option<Box<TypeDefOpt1<'t>>>),
+    TypeDefOpt(Option<TypeDefOpt<'t>>),
+    TypeDefOpt0(Option<TypeDefOpt0<'t>>),
+    TypeDefOpt1(Option<TypeDefOpt1<'t>>),
     TypeDefOptList(Vec<TypeDefOptList<'t>>),
     VarDecl(VarDecl<'t>),
     VarDeclBlock(VarDeclBlock<'t>),
@@ -2654,9 +2654,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_begin(&mut self, _kw_begin: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_begin_built = KwBegin {
-        // Ignore clipped member 'kw_begin'
-        };
+        let kw_begin_built = KwBegin {};
         // Calling user action here
         self.user_grammar.kw_begin(&kw_begin_built)?;
         self.push(ASTType::KwBegin(kw_begin_built), context);
@@ -2671,9 +2669,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_case(&mut self, _kw_case: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_case_built = KwCase {
-        // Ignore clipped member 'kw_case'
-        };
+        let kw_case_built = KwCase {};
         // Calling user action here
         self.user_grammar.kw_case(&kw_case_built)?;
         self.push(ASTType::KwCase(kw_case_built), context);
@@ -2688,9 +2684,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_do(&mut self, _kw_do: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_do_built = KwDo {
-        // Ignore clipped member 'kw_do'
-        };
+        let kw_do_built = KwDo {};
         // Calling user action here
         self.user_grammar.kw_do(&kw_do_built)?;
         self.push(ASTType::KwDo(kw_do_built), context);
@@ -2705,9 +2699,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_else(&mut self, _kw_else: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_else_built = KwElse {
-        // Ignore clipped member 'kw_else'
-        };
+        let kw_else_built = KwElse {};
         // Calling user action here
         self.user_grammar.kw_else(&kw_else_built)?;
         self.push(ASTType::KwElse(kw_else_built), context);
@@ -2722,9 +2714,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_elsif(&mut self, _kw_elsif: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_elsif_built = KwElsif {
-        // Ignore clipped member 'kw_elsif'
-        };
+        let kw_elsif_built = KwElsif {};
         // Calling user action here
         self.user_grammar.kw_elsif(&kw_elsif_built)?;
         self.push(ASTType::KwElsif(kw_elsif_built), context);
@@ -2739,9 +2729,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_end(&mut self, _kw_end: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_end_built = KwEnd {
-        // Ignore clipped member 'kw_end'
-        };
+        let kw_end_built = KwEnd {};
         // Calling user action here
         self.user_grammar.kw_end(&kw_end_built)?;
         self.push(ASTType::KwEnd(kw_end_built), context);
@@ -2756,9 +2744,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_if(&mut self, _kw_if: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_if_built = KwIf {
-        // Ignore clipped member 'kw_if'
-        };
+        let kw_if_built = KwIf {};
         // Calling user action here
         self.user_grammar.kw_if(&kw_if_built)?;
         self.push(ASTType::KwIf(kw_if_built), context);
@@ -2773,9 +2759,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_of(&mut self, _kw_of: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_of_built = KwOf {
-        // Ignore clipped member 'kw_of'
-        };
+        let kw_of_built = KwOf {};
         // Calling user action here
         self.user_grammar.kw_of(&kw_of_built)?;
         self.push(ASTType::KwOf(kw_of_built), context);
@@ -2790,9 +2774,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_procedure(&mut self, _kw_procedure: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_procedure_built = KwProcedure {
-        // Ignore clipped member 'kw_procedure'
-        };
+        let kw_procedure_built = KwProcedure {};
         // Calling user action here
         self.user_grammar.kw_procedure(&kw_procedure_built)?;
         self.push(ASTType::KwProcedure(kw_procedure_built), context);
@@ -2807,9 +2789,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_then(&mut self, _kw_then: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_then_built = KwThen {
-        // Ignore clipped member 'kw_then'
-        };
+        let kw_then_built = KwThen {};
         // Calling user action here
         self.user_grammar.kw_then(&kw_then_built)?;
         self.push(ASTType::KwThen(kw_then_built), context);
@@ -2824,9 +2804,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_to(&mut self, _kw_to: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_to_built = KwTo {
-        // Ignore clipped member 'kw_to'
-        };
+        let kw_to_built = KwTo {};
         // Calling user action here
         self.user_grammar.kw_to(&kw_to_built)?;
         self.push(ASTType::KwTo(kw_to_built), context);
@@ -2841,9 +2819,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn kw_var(&mut self, _kw_var: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let kw_var_built = KwVar {
-        // Ignore clipped member 'kw_var'
-        };
+        let kw_var_built = KwVar {};
         // Calling user action here
         self.user_grammar.kw_var(&kw_var_built)?;
         self.push(ASTType::KwVar(kw_var_built), context);
@@ -2869,10 +2845,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let oberon2_opt = pop_item!(self, oberon2_opt, Oberon2Opt, context);
         let module_head = pop_item!(self, module_head, ModuleHead, context);
         let oberon2_built = Oberon2 {
-            module_head: Box::new(module_head),
+            module_head,
             oberon2_opt,
-            decl_seq: Box::new(decl_seq),
-            module_body: Box::new(module_body),
+            decl_seq,
+            module_body,
         };
         // Calling user action here
         self.user_grammar.oberon2(&oberon2_built)?;
@@ -2889,13 +2865,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let import_list = pop_item!(self, import_list, ImportList, context);
-        let oberon2_opt_0_built = Oberon2Opt {
-            import_list: Box::new(import_list),
-        };
-        self.push(
-            ASTType::Oberon2Opt(Some(Box::new(oberon2_opt_0_built))),
-            context,
-        );
+        let oberon2_opt_0_built = Oberon2Opt { import_list };
+        self.push(ASTType::Oberon2Opt(Some(oberon2_opt_0_built)), context);
         Ok(())
     }
 
@@ -2925,11 +2896,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let module_head_built = ModuleHead {
-            // Ignore clipped member 'm_o_d_u_l_e'
-            ident: Box::new(ident),
-            // Ignore clipped member 'semicolon'
-        };
+        let module_head_built = ModuleHead { ident };
         // Calling user action here
         self.user_grammar.module_head(&module_head_built)?;
         self.push(ASTType::ModuleHead(module_head_built), context);
@@ -2949,10 +2916,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
-        let module_body_built = ModuleBody {
-            statement_block: Box::new(statement_block),
-            // Ignore clipped member 'dot'
-        };
+        let module_body_built = ModuleBody { statement_block };
         // Calling user action here
         self.user_grammar.module_body(&module_body_built)?;
         self.push(ASTType::ModuleBody(module_body_built), context);
@@ -2979,11 +2943,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt = pop_item!(self, import_list_opt, ImportListOpt, context);
         let import_list_built = ImportList {
-            // Ignore clipped member 'i_m_p_o_r_t'
             import_list_opt,
-            ident: Box::new(ident),
+            ident,
             import_list_list,
-            // Ignore clipped member 'semicolon'
         };
         // Calling user action here
         self.user_grammar.import_list(&import_list_built)?;
@@ -3009,9 +2971,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident = pop_item!(self, ident, Ident, context);
         let import_list_opt0 = pop_item!(self, import_list_opt0, ImportListOpt0, context);
         let import_list_list_0_built = ImportListList {
-            ident: Box::new(ident),
+            ident,
             import_list_opt0,
-            // Ignore clipped member 'comma'
         };
         // Add an element to the vector
         import_list_list.push(import_list_list_0_built);
@@ -3045,12 +3006,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let import_list_opt0_0_built = ImportListOpt0 {
-            ident: Box::new(ident),
-            // Ignore clipped member 'colon_equ'
-        };
+        let import_list_opt0_0_built = ImportListOpt0 { ident };
         self.push(
-            ASTType::ImportListOpt0(Some(Box::new(import_list_opt0_0_built))),
+            ASTType::ImportListOpt0(Some(import_list_opt0_0_built)),
             context,
         );
         Ok(())
@@ -3081,12 +3039,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let import_list_opt_0_built = ImportListOpt {
-            ident: Box::new(ident),
-            // Ignore clipped member 'colon_equ'
-        };
+        let import_list_opt_0_built = ImportListOpt { ident };
         self.push(
-            ASTType::ImportListOpt(Some(Box::new(import_list_opt_0_built))),
+            ASTType::ImportListOpt(Some(import_list_opt_0_built)),
             context,
         );
         Ok(())
@@ -3144,7 +3099,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let decl_seq_list0_group =
             pop_item!(self, decl_seq_list0_group, DeclSeqList0Group, context);
         let decl_seq_list0_0_built = DeclSeqList0 {
-            decl_seq_list0_group: Box::new(decl_seq_list0_group),
+            decl_seq_list0_group,
         };
         // Add an element to the vector
         decl_seq_list0.push(decl_seq_list0_0_built);
@@ -3165,10 +3120,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let proc_decl = pop_item!(self, proc_decl, ProcDecl, context);
-        let decl_seq_list0_group_0_built = DeclSeqList0GroupProcDeclSemicolon {
-            proc_decl: Box::new(proc_decl),
-            // Ignore clipped member 'semicolon'
-        };
+        let decl_seq_list0_group_0_built = DeclSeqList0GroupProcDeclSemicolon { proc_decl };
         let decl_seq_list0_group_0_built =
             DeclSeqList0Group::ProcDeclSemicolon(decl_seq_list0_group_0_built);
         self.push(
@@ -3191,10 +3143,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let forward_decl = pop_item!(self, forward_decl, ForwardDecl, context);
-        let decl_seq_list0_group_1_built = DeclSeqList0GroupForwardDeclSemicolon {
-            forward_decl: Box::new(forward_decl),
-            // Ignore clipped member 'semicolon'
-        };
+        let decl_seq_list0_group_1_built = DeclSeqList0GroupForwardDeclSemicolon { forward_decl };
         let decl_seq_list0_group_1_built =
             DeclSeqList0Group::ForwardDeclSemicolon(decl_seq_list0_group_1_built);
         self.push(
@@ -3231,9 +3180,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut decl_seq_list = pop_item!(self, decl_seq_list, DeclSeqList, context);
         let decl_block = pop_item!(self, decl_block, DeclBlock, context);
-        let decl_seq_list_0_built = DeclSeqList {
-            decl_block: Box::new(decl_block),
-        };
+        let decl_seq_list_0_built = DeclSeqList { decl_block };
         // Add an element to the vector
         decl_seq_list.push(decl_seq_list_0_built);
         self.push(ASTType::DeclSeqList(decl_seq_list), context);
@@ -3262,9 +3209,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_decl_block = pop_item!(self, const_decl_block, ConstDeclBlock, context);
-        let decl_block_0_built = DeclBlockConstDeclBlock {
-            const_decl_block: Box::new(const_decl_block),
-        };
+        let decl_block_0_built = DeclBlockConstDeclBlock { const_decl_block };
         let decl_block_0_built = DeclBlock::ConstDeclBlock(decl_block_0_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_0_built)?;
@@ -3281,9 +3226,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let type_decl_block = pop_item!(self, type_decl_block, TypeDeclBlock, context);
-        let decl_block_1_built = DeclBlockTypeDeclBlock {
-            type_decl_block: Box::new(type_decl_block),
-        };
+        let decl_block_1_built = DeclBlockTypeDeclBlock { type_decl_block };
         let decl_block_1_built = DeclBlock::TypeDeclBlock(decl_block_1_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_1_built)?;
@@ -3300,9 +3243,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let var_decl_block = pop_item!(self, var_decl_block, VarDeclBlock, context);
-        let decl_block_2_built = DeclBlockVarDeclBlock {
-            var_decl_block: Box::new(var_decl_block),
-        };
+        let decl_block_2_built = DeclBlockVarDeclBlock { var_decl_block };
         let decl_block_2_built = DeclBlock::VarDeclBlock(decl_block_2_built);
         // Calling user action here
         self.user_grammar.decl_block(&decl_block_2_built)?;
@@ -3325,7 +3266,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_decl_block_list =
             pop_and_reverse_item!(self, const_decl_block_list, ConstDeclBlockList, context);
         let const_decl_block_built = ConstDeclBlock {
-            // Ignore clipped member 'c_o_n_s_t'
             const_decl_block_list,
         };
         // Calling user action here
@@ -3351,10 +3291,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut const_decl_block_list =
             pop_item!(self, const_decl_block_list, ConstDeclBlockList, context);
         let const_decl = pop_item!(self, const_decl, ConstDecl, context);
-        let const_decl_block_list_0_built = ConstDeclBlockList {
-            // Ignore clipped member 'semicolon'
-            const_decl: Box::new(const_decl),
-        };
+        let const_decl_block_list_0_built = ConstDeclBlockList { const_decl };
         // Add an element to the vector
         const_decl_block_list.push(const_decl_block_list_0_built);
         self.push(ASTType::ConstDeclBlockList(const_decl_block_list), context);
@@ -3392,7 +3329,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_decl_block_list =
             pop_and_reverse_item!(self, type_decl_block_list, TypeDeclBlockList, context);
         let type_decl_block_built = TypeDeclBlock {
-            // Ignore clipped member 't_y_p_e'
             type_decl_block_list,
         };
         // Calling user action here
@@ -3417,10 +3353,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut type_decl_block_list =
             pop_item!(self, type_decl_block_list, TypeDeclBlockList, context);
         let type_decl = pop_item!(self, type_decl, TypeDecl, context);
-        let type_decl_block_list_0_built = TypeDeclBlockList {
-            // Ignore clipped member 'semicolon'
-            type_decl: Box::new(type_decl),
-        };
+        let type_decl_block_list_0_built = TypeDeclBlockList { type_decl };
         // Add an element to the vector
         type_decl_block_list.push(type_decl_block_list_0_built);
         self.push(ASTType::TypeDeclBlockList(type_decl_block_list), context);
@@ -3460,7 +3393,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_var'
         self.pop(context);
         let var_decl_block_built = VarDeclBlock {
-            // Ignore clipped member 'kw_var'
             var_decl_block_list,
         };
         // Calling user action here
@@ -3485,10 +3417,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut var_decl_block_list =
             pop_item!(self, var_decl_block_list, VarDeclBlockList, context);
         let var_decl = pop_item!(self, var_decl, VarDecl, context);
-        let var_decl_block_list_0_built = VarDeclBlockList {
-            // Ignore clipped member 'semicolon'
-            var_decl: Box::new(var_decl),
-        };
+        let var_decl_block_list_0_built = VarDeclBlockList { var_decl };
         // Add an element to the vector
         var_decl_block_list.push(var_decl_block_list_0_built);
         self.push(ASTType::VarDeclBlockList(var_decl_block_list), context);
@@ -3527,9 +3456,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let const_decl_built = ConstDecl {
-            ident_def: Box::new(ident_def),
-            // Ignore clipped member 'equ'
-            const_expr: Box::new(const_expr),
+            ident_def,
+            const_expr,
         };
         // Calling user action here
         self.user_grammar.const_decl(&const_decl_built)?;
@@ -3553,9 +3481,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let type_decl_built = TypeDecl {
-            ident_def: Box::new(ident_def),
-            // Ignore clipped member 'equ'
-            type_def: Box::new(type_def),
+            ident_def,
+            type_def,
         };
         // Calling user action here
         self.user_grammar.type_decl(&type_decl_built)?;
@@ -3579,9 +3506,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_list = pop_item!(self, ident_list, IdentList, context);
         let var_decl_built = VarDecl {
-            ident_list: Box::new(ident_list),
-            // Ignore clipped member 'colon'
-            type_def: Box::new(type_def),
+            ident_list,
+            type_def,
         };
         // Calling user action here
         self.user_grammar.var_decl(&var_decl_built)?;
@@ -3605,9 +3531,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let procedure_body = pop_item!(self, procedure_body, ProcedureBody, context);
         let procedure_heading = pop_item!(self, procedure_heading, ProcedureHeading, context);
         let proc_decl_built = ProcDecl {
-            procedure_heading: Box::new(procedure_heading),
-            // Ignore clipped member 'semicolon'
-            procedure_body: Box::new(procedure_body),
+            procedure_heading,
+            procedure_body,
         };
         // Calling user action here
         self.user_grammar.proc_decl(&proc_decl_built)?;
@@ -3637,9 +3562,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let procedure_heading_built = ProcedureHeading {
-            // Ignore clipped member 'kw_procedure'
             procedure_heading_opt,
-            ident_def: Box::new(ident_def),
+            ident_def,
             procedure_heading_opt0,
         };
         // Calling user action here
@@ -3658,11 +3582,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let procedure_heading_opt0_0_built = ProcedureHeadingOpt0 {
-            formal_pars: Box::new(formal_pars),
-        };
+        let procedure_heading_opt0_0_built = ProcedureHeadingOpt0 { formal_pars };
         self.push(
-            ASTType::ProcedureHeadingOpt0(Some(Box::new(procedure_heading_opt0_0_built))),
+            ASTType::ProcedureHeadingOpt0(Some(procedure_heading_opt0_0_built)),
             context,
         );
         Ok(())
@@ -3689,11 +3611,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
-        let procedure_heading_opt_0_built = ProcedureHeadingOpt {
-            receiver: Box::new(receiver),
-        };
+        let procedure_heading_opt_0_built = ProcedureHeadingOpt { receiver };
         self.push(
-            ASTType::ProcedureHeadingOpt(Some(Box::new(procedure_heading_opt_0_built))),
+            ASTType::ProcedureHeadingOpt(Some(procedure_heading_opt_0_built)),
             context,
         );
         Ok(())
@@ -3726,8 +3646,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_block = pop_item!(self, statement_block, StatementBlock, context);
         let decl_seq = pop_item!(self, decl_seq, DeclSeq, context);
         let procedure_body_built = ProcedureBody {
-            decl_seq: Box::new(decl_seq),
-            statement_block: Box::new(statement_block),
+            decl_seq,
+            statement_block,
         };
         // Calling user action here
         self.user_grammar.procedure_body(&procedure_body_built)?;
@@ -3754,8 +3674,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_block_opt = pop_item!(self, statement_block_opt, StatementBlockOpt, context);
         let statement_block_built = StatementBlock {
             statement_block_opt,
-            // Ignore clipped member 'kw_end'
-            ident: Box::new(ident),
+            ident,
         };
         // Calling user action here
         self.user_grammar.statement_block(&statement_block_built)?;
@@ -3778,12 +3697,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_begin'
         self.pop(context);
-        let statement_block_opt_0_built = StatementBlockOpt {
-            // Ignore clipped member 'kw_begin'
-            statement_seq: Box::new(statement_seq),
-        };
+        let statement_block_opt_0_built = StatementBlockOpt { statement_seq };
         self.push(
-            ASTType::StatementBlockOpt(Some(Box::new(statement_block_opt_0_built))),
+            ASTType::StatementBlockOpt(Some(statement_block_opt_0_built)),
             context,
         );
         Ok(())
@@ -3823,10 +3739,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let forward_decl_built = ForwardDecl {
-            // Ignore clipped member 'kw_procedure'
             circumflex,
             forward_decl_opt,
-            ident_def: Box::new(ident_def),
+            ident_def,
             forward_decl_opt0,
         };
         // Calling user action here
@@ -3844,11 +3759,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let forward_decl_opt0_0_built = ForwardDeclOpt0 {
-            formal_pars: Box::new(formal_pars),
-        };
+        let forward_decl_opt0_0_built = ForwardDeclOpt0 { formal_pars };
         self.push(
-            ASTType::ForwardDeclOpt0(Some(Box::new(forward_decl_opt0_0_built))),
+            ASTType::ForwardDeclOpt0(Some(forward_decl_opt0_0_built)),
             context,
         );
         Ok(())
@@ -3875,11 +3788,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let receiver = pop_item!(self, receiver, Receiver, context);
-        let forward_decl_opt_0_built = ForwardDeclOpt {
-            receiver: Box::new(receiver),
-        };
+        let forward_decl_opt_0_built = ForwardDeclOpt { receiver };
         self.push(
-            ASTType::ForwardDeclOpt(Some(Box::new(forward_decl_opt_0_built))),
+            ASTType::ForwardDeclOpt(Some(forward_decl_opt_0_built)),
             context,
         );
         Ok(())
@@ -3914,9 +3825,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let formal_pars_opt0 = pop_item!(self, formal_pars_opt0, FormalParsOpt0, context);
         let formal_pars_opt = pop_item!(self, formal_pars_opt, FormalParsOpt, context);
         let formal_pars_built = FormalPars {
-            // Ignore clipped member 'l_paren'
             formal_pars_opt,
-            // Ignore clipped member 'r_paren'
             formal_pars_opt0,
         };
         // Calling user action here
@@ -3938,12 +3847,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let formal_pars_opt0_0_built = FormalParsOpt0 {
-            // Ignore clipped member 'colon'
-            qual_ident: Box::new(qual_ident),
-        };
+        let formal_pars_opt0_0_built = FormalParsOpt0 { qual_ident };
         self.push(
-            ASTType::FormalParsOpt0(Some(Box::new(formal_pars_opt0_0_built))),
+            ASTType::FormalParsOpt0(Some(formal_pars_opt0_0_built)),
             context,
         );
         Ok(())
@@ -3977,11 +3883,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, formal_pars_opt_list, FormalParsOptList, context);
         let f_p_section = pop_item!(self, f_p_section, FPSection, context);
         let formal_pars_opt_0_built = FormalParsOpt {
-            f_p_section: Box::new(f_p_section),
+            f_p_section,
             formal_pars_opt_list,
         };
         self.push(
-            ASTType::FormalParsOpt(Some(Box::new(formal_pars_opt_0_built))),
+            ASTType::FormalParsOpt(Some(formal_pars_opt_0_built)),
             context,
         );
         Ok(())
@@ -4003,10 +3909,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut formal_pars_opt_list =
             pop_item!(self, formal_pars_opt_list, FormalParsOptList, context);
         let f_p_section = pop_item!(self, f_p_section, FPSection, context);
-        let formal_pars_opt_list_0_built = FormalParsOptList {
-            f_p_section: Box::new(f_p_section),
-            // Ignore clipped member 'semicolon'
-        };
+        let formal_pars_opt_list_0_built = FormalParsOptList { f_p_section };
         // Add an element to the vector
         formal_pars_opt_list.push(formal_pars_opt_list_0_built);
         self.push(ASTType::FormalParsOptList(formal_pars_opt_list), context);
@@ -4063,10 +3966,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let f_p_section_opt = pop_item!(self, f_p_section_opt, FPSectionOpt, context);
         let f_p_section_built = FPSection {
             f_p_section_opt,
-            ident: Box::new(ident),
+            ident,
             f_p_section_list,
-            // Ignore clipped member 'colon'
-            type_def: Box::new(type_def),
+            type_def,
         };
         // Calling user action here
         self.user_grammar.f_p_section(&f_p_section_built)?;
@@ -4089,10 +3991,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut f_p_section_list = pop_item!(self, f_p_section_list, FPSectionList, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let f_p_section_list_0_built = FPSectionList {
-            ident: Box::new(ident),
-            // Ignore clipped member 'comma'
-        };
+        let f_p_section_list_0_built = FPSectionList { ident };
         // Add an element to the vector
         f_p_section_list.push(f_p_section_list_0_built);
         self.push(ASTType::FPSectionList(f_p_section_list), context);
@@ -4122,11 +4021,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
         self.pop(context);
-        let f_p_section_opt_0_built = FPSectionOpt {
-        // Ignore clipped member 'kw_var'
-        };
+        let f_p_section_opt_0_built = FPSectionOpt {};
         self.push(
-            ASTType::FPSectionOpt(Some(Box::new(f_p_section_opt_0_built))),
+            ASTType::FPSectionOpt(Some(f_p_section_opt_0_built)),
             context,
         );
         Ok(())
@@ -4161,10 +4058,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let receiver_var_decl = pop_item!(self, receiver_var_decl, ReceiverVarDecl, context);
         let receiver_opt = pop_item!(self, receiver_opt, ReceiverOpt, context);
         let receiver_built = Receiver {
-            // Ignore clipped member 'l_paren'
             receiver_opt,
-            receiver_var_decl: Box::new(receiver_var_decl),
-            // Ignore clipped member 'r_paren'
+            receiver_var_decl,
         };
         // Calling user action here
         self.user_grammar.receiver(&receiver_built)?;
@@ -4182,13 +4077,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         // Ignore clipped member 'kw_var'
         self.pop(context);
-        let receiver_opt_0_built = ReceiverOpt {
-        // Ignore clipped member 'kw_var'
-        };
-        self.push(
-            ASTType::ReceiverOpt(Some(Box::new(receiver_opt_0_built))),
-            context,
-        );
+        let receiver_opt_0_built = ReceiverOpt {};
+        self.push(ASTType::ReceiverOpt(Some(receiver_opt_0_built)), context);
         Ok(())
     }
 
@@ -4219,11 +4109,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let ident0 = pop_item!(self, ident0, Ident, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let receiver_var_decl_built = ReceiverVarDecl {
-            ident: Box::new(ident),
-            // Ignore clipped member 'colon'
-            ident0: Box::new(ident0),
-        };
+        let receiver_var_decl_built = ReceiverVarDecl { ident, ident0 };
         // Calling user action here
         self.user_grammar
             .receiver_var_decl(&receiver_var_decl_built)?;
@@ -4240,9 +4126,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let type_def_0_built = TypeDefQualIdent {
-            qual_ident: Box::new(qual_ident),
-        };
+        let type_def_0_built = TypeDefQualIdent { qual_ident };
         let type_def_0_built = TypeDef::QualIdent(type_def_0_built);
         // Calling user action here
         self.user_grammar.type_def(&type_def_0_built)?;
@@ -4269,9 +4153,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let type_def_opt = pop_item!(self, type_def_opt, TypeDefOpt, context);
         let type_def_1_built = TypeDefARRAYTypeDefOptKwOfTypeDef {
-            // Ignore clipped member 'a_r_r_a_y'
             type_def_opt,
-            // Ignore clipped member 'kw_of'
             type_def: Box::new(type_def),
         };
         let type_def_1_built = TypeDef::ARRAYTypeDefOptKwOfTypeDef(type_def_1_built);
@@ -4302,11 +4184,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let field_list = pop_item!(self, field_list, FieldList, context);
         let type_def_opt0 = pop_item!(self, type_def_opt0, TypeDefOpt0, context);
         let type_def_2_built = TypeDefRECORDTypeDefOpt0FieldListTypeDefListKwEnd {
-            // Ignore clipped member 'r_e_c_o_r_d'
             type_def_opt0,
             field_list: Box::new(field_list),
             type_def_list,
-            // Ignore clipped member 'kw_end'
         };
         let type_def_2_built =
             TypeDef::RECORDTypeDefOpt0FieldListTypeDefListKwEnd(type_def_2_built);
@@ -4331,10 +4211,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_list = pop_item!(self, type_def_list, TypeDefList, context);
         let field_list = pop_item!(self, field_list, FieldList, context);
-        let type_def_list_0_built = TypeDefList {
-            field_list: Box::new(field_list),
-            // Ignore clipped member 'semicolon'
-        };
+        let type_def_list_0_built = TypeDefList { field_list };
         // Add an element to the vector
         type_def_list.push(type_def_list_0_built);
         self.push(ASTType::TypeDefList(type_def_list), context);
@@ -4371,8 +4248,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_to'
         self.pop(context);
         let type_def_3_built = TypeDefPOINTERKwToTypeDef {
-            // Ignore clipped member 'p_o_i_n_t_e_r'
-            // Ignore clipped member 'kw_to'
             type_def: Box::new(type_def),
         };
         let type_def_3_built = TypeDef::POINTERKwToTypeDef(type_def_3_built);
@@ -4398,8 +4273,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_procedure'
         self.pop(context);
         let type_def_4_built = TypeDefKwProcedureTypeDefOpt1 {
-            // Ignore clipped member 'kw_procedure'
-            type_def_opt1,
+            type_def_opt1: type_def_opt1.map(Box::new),
         };
         let type_def_4_built = TypeDef::KwProcedureTypeDefOpt1(type_def_4_built);
         // Calling user action here
@@ -4417,13 +4291,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let formal_pars = pop_item!(self, formal_pars, FormalPars, context);
-        let type_def_opt1_0_built = TypeDefOpt1 {
-            formal_pars: Box::new(formal_pars),
-        };
-        self.push(
-            ASTType::TypeDefOpt1(Some(Box::new(type_def_opt1_0_built))),
-            context,
-        );
+        let type_def_opt1_0_built = TypeDefOpt1 { formal_pars };
+        self.push(ASTType::TypeDefOpt1(Some(type_def_opt1_0_built)), context);
         Ok(())
     }
 
@@ -4453,15 +4322,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
-        let type_def_opt0_0_built = TypeDefOpt0 {
-            // Ignore clipped member 'l_paren'
-            qual_ident: Box::new(qual_ident),
-            // Ignore clipped member 'r_paren'
-        };
-        self.push(
-            ASTType::TypeDefOpt0(Some(Box::new(type_def_opt0_0_built))),
-            context,
-        );
+        let type_def_opt0_0_built = TypeDefOpt0 { qual_ident };
+        self.push(ASTType::TypeDefOpt0(Some(type_def_opt0_0_built)), context);
         Ok(())
     }
 
@@ -4493,13 +4355,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, type_def_opt_list, TypeDefOptList, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let type_def_opt_0_built = TypeDefOpt {
-            const_expr: Box::new(const_expr),
+            const_expr,
             type_def_opt_list,
         };
-        self.push(
-            ASTType::TypeDefOpt(Some(Box::new(type_def_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::TypeDefOpt(Some(type_def_opt_0_built)), context);
         Ok(())
     }
 
@@ -4518,10 +4377,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut type_def_opt_list = pop_item!(self, type_def_opt_list, TypeDefOptList, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let type_def_opt_list_0_built = TypeDefOptList {
-            const_expr: Box::new(const_expr),
-            // Ignore clipped member 'comma'
-        };
+        let type_def_opt_list_0_built = TypeDefOptList { const_expr };
         // Add an element to the vector
         type_def_opt_list.push(type_def_opt_list_0_built);
         self.push(ASTType::TypeDefOptList(type_def_opt_list), context);
@@ -4585,14 +4441,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let type_def = pop_item!(self, type_def, TypeDef, context);
         let ident_list = pop_item!(self, ident_list, IdentList, context);
         let field_list_opt_0_built = FieldListOpt {
-            ident_list: Box::new(ident_list),
-            // Ignore clipped member 'colon'
-            type_def: Box::new(type_def),
+            ident_list,
+            type_def,
         };
-        self.push(
-            ASTType::FieldListOpt(Some(Box::new(field_list_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::FieldListOpt(Some(field_list_opt_0_built)), context);
         Ok(())
     }
 
@@ -4624,7 +4476,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_and_reverse_item!(self, statement_seq_list, StatementSeqList, context);
         let statement = pop_item!(self, statement, Statement, context);
         let statement_seq_built = StatementSeq {
-            statement: Box::new(statement),
+            statement,
             statement_seq_list,
         };
         // Calling user action here
@@ -4648,10 +4500,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut statement_seq_list = pop_item!(self, statement_seq_list, StatementSeqList, context);
         let statement = pop_item!(self, statement, Statement, context);
-        let statement_seq_list_0_built = StatementSeqList {
-            statement: Box::new(statement),
-            // Ignore clipped member 'semicolon'
-        };
+        let statement_seq_list_0_built = StatementSeqList { statement };
         // Add an element to the vector
         statement_seq_list.push(statement_seq_list_0_built);
         self.push(ASTType::StatementSeqList(statement_seq_list), context);
@@ -4700,12 +4549,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let statement_opt_group = pop_item!(self, statement_opt_group, StatementOptGroup, context);
         let statement_opt_0_built = StatementOpt {
-            statement_opt_group: Box::new(statement_opt_group),
+            statement_opt_group,
         };
-        self.push(
-            ASTType::StatementOpt(Some(Box::new(statement_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::StatementOpt(Some(statement_opt_0_built)), context);
         Ok(())
     }
 
@@ -4729,8 +4575,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         );
         let designator = pop_item!(self, designator, Designator, context);
         let statement_opt_group_0_built = StatementOptGroupDesignatorStatementOptGroupSuffix {
-            designator: Box::new(designator),
-            statement_opt_group_suffix: Box::new(statement_opt_group_suffix),
+            designator,
+            statement_opt_group_suffix,
         };
         let statement_opt_group_0_built =
             StatementOptGroup::DesignatorStatementOptGroupSuffix(statement_opt_group_0_built);
@@ -4754,10 +4600,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt_group_suffix_0_built = StatementOptGroupSuffixColonEquExpr {
-            // Ignore clipped member 'colon_equ'
-            expr: Box::new(expr),
-        };
+        let statement_opt_group_suffix_0_built = StatementOptGroupSuffixColonEquExpr { expr };
         let statement_opt_group_suffix_0_built =
             StatementOptGroupSuffix::ColonEquExpr(statement_opt_group_suffix_0_built);
         self.push(
@@ -4815,8 +4658,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let statement_opt_group_1_built =
             StatementOptGroupKwIfExprThenBlockStatementOptGroupListOptElsePartEnd {
-                // Ignore clipped member 'kw_if'
-                expr: Box::new(expr),
+                expr,
                 then_block: Box::new(then_block),
                 statement_opt_group_list,
                 opt_else_part_end: Box::new(opt_else_part_end),
@@ -4855,9 +4697,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         // Ignore clipped member 'kw_case'
         self.pop(context);
         let statement_opt_group_2_built = StatementOptGroupKwCaseExprKwOfCasesOptElsePartEnd {
-            // Ignore clipped member 'kw_case'
-            expr: Box::new(expr),
-            // Ignore clipped member 'kw_of'
+            expr,
             cases: Box::new(cases),
             opt_else_part_end: Box::new(opt_else_part_end),
         };
@@ -4886,8 +4726,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let do_block = pop_item!(self, do_block, DoBlock, context);
         let expr = pop_item!(self, expr, Expr, context);
         let statement_opt_group_3_built = StatementOptGroupWHILEExprDoBlock {
-            // Ignore clipped member 'w_h_i_l_e'
-            expr: Box::new(expr),
+            expr,
             do_block: Box::new(do_block),
         };
         let statement_opt_group_3_built =
@@ -4916,10 +4755,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let statement_opt_group_4_built = StatementOptGroupREPEATStatementSeqUNTILExpr {
-            // Ignore clipped member 'r_e_p_e_a_t'
             statement_seq: Box::new(statement_seq),
-            // Ignore clipped member 'u_n_t_i_l'
-            expr: Box::new(expr),
+            expr,
         };
         let statement_opt_group_4_built =
             StatementOptGroup::REPEATStatementSeqUNTILExpr(statement_opt_group_4_built);
@@ -4948,8 +4785,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_opt1 = pop_item!(self, statement_opt1, StatementOpt1, context);
         let for_init = pop_item!(self, for_init, ForInit, context);
         let statement_opt_group_5_built = StatementOptGroupFORForInitStatementOpt1DoBlock {
-            // Ignore clipped member 'f_o_r'
-            for_init: Box::new(for_init),
+            for_init,
             statement_opt1,
             do_block: Box::new(do_block),
         };
@@ -4979,9 +4815,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         let statement_opt_group_6_built = StatementOptGroupLOOPStatementSeqKwEnd {
-            // Ignore clipped member 'l_o_o_p'
             statement_seq: Box::new(statement_seq),
-            // Ignore clipped member 'kw_end'
         };
         let statement_opt_group_6_built =
             StatementOptGroup::LOOPStatementSeqKwEnd(statement_opt_group_6_built);
@@ -5016,7 +4850,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
         let statement_opt_group_7_built =
             StatementOptGroupWITHGuardedDoBlockStatementOptGroupList0OptElsePartEnd {
-                // Ignore clipped member 'w_i_t_h'
                 guarded_do_block: Box::new(guarded_do_block),
                 statement_opt_group_list0,
                 opt_else_part_end: Box::new(opt_else_part_end),
@@ -5040,9 +4873,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn statement_opt_group_8(&mut self, _e_x_i_t: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let statement_opt_group_8_built = StatementOptGroupEXIT {
-        // Ignore clipped member 'e_x_i_t'
-        };
+        let statement_opt_group_8_built = StatementOptGroupEXIT {};
         let statement_opt_group_8_built = StatementOptGroup::EXIT(statement_opt_group_8_built);
         self.push(
             ASTType::StatementOptGroup(statement_opt_group_8_built),
@@ -5064,10 +4895,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt2 = pop_item!(self, statement_opt2, StatementOpt2, context);
-        let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2 {
-            // Ignore clipped member 'r_e_t_u_r_n'
-            statement_opt2,
-        };
+        let statement_opt_group_9_built = StatementOptGroupRETURNStatementOpt2 { statement_opt2 };
         let statement_opt_group_9_built =
             StatementOptGroup::RETURNStatementOpt2(statement_opt_group_9_built);
         self.push(
@@ -5096,9 +4924,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let elsif_part = pop_item!(self, elsif_part, ElsifPart, context);
-        let statement_opt_group_list_0_built = StatementOptGroupList {
-            elsif_part: Box::new(elsif_part),
-        };
+        let statement_opt_group_list_0_built = StatementOptGroupList { elsif_part };
         // Add an element to the vector
         statement_opt_group_list.push(statement_opt_group_list_0_built);
         self.push(
@@ -5144,10 +4970,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             context
         );
         let guarded_do_block = pop_item!(self, guarded_do_block, GuardedDoBlock, context);
-        let statement_opt_group_list0_0_built = StatementOptGroupList0 {
-            guarded_do_block: Box::new(guarded_do_block),
-            // Ignore clipped member 'or'
-        };
+        let statement_opt_group_list0_0_built = StatementOptGroupList0 { guarded_do_block };
         // Add an element to the vector
         statement_opt_group_list0.push(statement_opt_group_list0_0_built);
         self.push(
@@ -5182,11 +5005,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let statement_opt2_0_built = StatementOpt2 {
-            expr: Box::new(expr),
-        };
+        let statement_opt2_0_built = StatementOpt2 { expr };
         self.push(
-            ASTType::StatementOpt2(Some(Box::new(statement_opt2_0_built))),
+            ASTType::StatementOpt2(Some(statement_opt2_0_built)),
             context,
         );
         Ok(())
@@ -5213,11 +5034,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let for_step = pop_item!(self, for_step, ForStep, context);
-        let statement_opt1_0_built = StatementOpt1 {
-            for_step: Box::new(for_step),
-        };
+        let statement_opt1_0_built = StatementOpt1 { for_step };
         self.push(
-            ASTType::StatementOpt1(Some(Box::new(statement_opt1_0_built))),
+            ASTType::StatementOpt1(Some(statement_opt1_0_built)),
             context,
         );
         Ok(())
@@ -5249,13 +5068,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let statement_opt3 = pop_item!(self, statement_opt3, StatementOpt3, context);
-        let statement_opt0_0_built = StatementOpt0 {
-            // Ignore clipped member 'l_paren'
-            statement_opt3,
-            // Ignore clipped member 'r_paren'
-        };
+        let statement_opt0_0_built = StatementOpt0 { statement_opt3 };
         self.push(
-            ASTType::StatementOpt0(Some(Box::new(statement_opt0_0_built))),
+            ASTType::StatementOpt0(Some(statement_opt0_0_built)),
             context,
         );
         Ok(())
@@ -5270,11 +5085,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let statement_opt3_0_built = StatementOpt3 {
-            expr_list: Box::new(expr_list),
-        };
+        let statement_opt3_0_built = StatementOpt3 { expr_list };
         self.push(
-            ASTType::StatementOpt3(Some(Box::new(statement_opt3_0_built))),
+            ASTType::StatementOpt3(Some(statement_opt3_0_built)),
             context,
         );
         Ok(())
@@ -5331,10 +5144,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_then'
         self.pop(context);
-        let then_block_built = ThenBlock {
-            // Ignore clipped member 'kw_then'
-            statement_seq: Box::new(statement_seq),
-        };
+        let then_block_built = ThenBlock { statement_seq };
         // Calling user action here
         self.user_grammar.then_block(&then_block_built)?;
         self.push(ASTType::ThenBlock(then_block_built), context);
@@ -5351,10 +5161,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let cases_list = pop_and_reverse_item!(self, cases_list, CasesList, context);
         let case = pop_item!(self, case, Case, context);
-        let cases_built = Cases {
-            case: Box::new(case),
-            cases_list,
-        };
+        let cases_built = Cases { case, cases_list };
         // Calling user action here
         self.user_grammar.cases(&cases_built)?;
         self.push(ASTType::Cases(cases_built), context);
@@ -5376,10 +5183,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut cases_list = pop_item!(self, cases_list, CasesList, context);
         let case = pop_item!(self, case, Case, context);
-        let cases_list_0_built = CasesList {
-            case: Box::new(case),
-            // Ignore clipped member 'or'
-        };
+        let cases_list_0_built = CasesList { case };
         // Add an element to the vector
         cases_list.push(cases_list_0_built);
         self.push(ASTType::CasesList(cases_list), context);
@@ -5416,11 +5220,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         // Ignore clipped member 'kw_elsif'
         self.pop(context);
-        let elsif_part_built = ElsifPart {
-            // Ignore clipped member 'kw_elsif'
-            expr: Box::new(expr),
-            then_block: Box::new(then_block),
-        };
+        let elsif_part_built = ElsifPart { expr, then_block };
         // Calling user action here
         self.user_grammar.elsif_part(&elsif_part_built)?;
         self.push(ASTType::ElsifPart(elsif_part_built), context);
@@ -5442,10 +5242,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_else'
         self.pop(context);
-        let else_part_built = ElsePart {
-            // Ignore clipped member 'kw_else'
-            statement_seq: Box::new(statement_seq),
-        };
+        let else_part_built = ElsePart { statement_seq };
         // Calling user action here
         self.user_grammar.else_part(&else_part_built)?;
         self.push(ASTType::ElsePart(else_part_built), context);
@@ -5470,7 +5267,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
             pop_item!(self, opt_else_part_end_opt, OptElsePartEndOpt, context);
         let opt_else_part_end_built = OptElsePartEnd {
             opt_else_part_end_opt,
-            // Ignore clipped member 'kw_end'
         };
         // Calling user action here
         self.user_grammar
@@ -5488,11 +5284,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let else_part = pop_item!(self, else_part, ElsePart, context);
-        let opt_else_part_end_opt_0_built = OptElsePartEndOpt {
-            else_part: Box::new(else_part),
-        };
+        let opt_else_part_end_opt_0_built = OptElsePartEndOpt { else_part };
         self.push(
-            ASTType::OptElsePartEndOpt(Some(Box::new(opt_else_part_end_opt_0_built))),
+            ASTType::OptElsePartEndOpt(Some(opt_else_part_end_opt_0_built)),
             context,
         );
         Ok(())
@@ -5528,11 +5322,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let statement_seq = pop_item!(self, statement_seq, StatementSeq, context);
         // Ignore clipped member 'kw_do'
         self.pop(context);
-        let do_block_built = DoBlock {
-            // Ignore clipped member 'kw_do'
-            statement_seq: Box::new(statement_seq),
-            // Ignore clipped member 'kw_end'
-        };
+        let do_block_built = DoBlock { statement_seq };
         // Calling user action here
         self.user_grammar.do_block(&do_block_built)?;
         self.push(ASTType::DoBlock(do_block_built), context);
@@ -5557,9 +5347,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let guard = pop_item!(self, guard, Guard, context);
         let guarded_do_block_built = GuardedDoBlock {
-            guard: Box::new(guard),
-            // Ignore clipped member 'kw_do'
-            statement_seq: Box::new(statement_seq),
+            guard,
+            statement_seq,
         };
         // Calling user action here
         self.user_grammar
@@ -5588,13 +5377,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         self.pop(context);
         let expr = pop_item!(self, expr, Expr, context);
         let ident = pop_item!(self, ident, Ident, context);
-        let for_init_built = ForInit {
-            ident: Box::new(ident),
-            // Ignore clipped member 'colon_equ'
-            expr: Box::new(expr),
-            // Ignore clipped member 'kw_to'
-            expr0: Box::new(expr0),
-        };
+        let for_init_built = ForInit { ident, expr, expr0 };
         // Calling user action here
         self.user_grammar.for_init(&for_init_built)?;
         self.push(ASTType::ForInit(for_init_built), context);
@@ -5614,10 +5397,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
-        let for_step_built = ForStep {
-            // Ignore clipped member 'b_y'
-            const_expr: Box::new(const_expr),
-        };
+        let for_step_built = ForStep { const_expr };
         // Calling user action here
         self.user_grammar.for_step(&for_step_built)?;
         self.push(ASTType::ForStep(for_step_built), context);
@@ -5658,12 +5438,11 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case_opt_list = pop_and_reverse_item!(self, case_opt_list, CaseOptList, context);
         let case_labels = pop_item!(self, case_labels, CaseLabels, context);
         let case_opt_0_built = CaseOpt {
-            case_labels: Box::new(case_labels),
+            case_labels,
             case_opt_list,
-            // Ignore clipped member 'colon'
-            statement_seq: Box::new(statement_seq),
+            statement_seq,
         };
-        self.push(ASTType::CaseOpt(Some(Box::new(case_opt_0_built))), context);
+        self.push(ASTType::CaseOpt(Some(case_opt_0_built)), context);
         Ok(())
     }
 
@@ -5682,10 +5461,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut case_opt_list = pop_item!(self, case_opt_list, CaseOptList, context);
         let case_labels = pop_item!(self, case_labels, CaseLabels, context);
-        let case_opt_list_0_built = CaseOptList {
-            case_labels: Box::new(case_labels),
-            // Ignore clipped member 'comma'
-        };
+        let case_opt_list_0_built = CaseOptList { case_labels };
         // Add an element to the vector
         case_opt_list.push(case_opt_list_0_built);
         self.push(ASTType::CaseOptList(case_opt_list), context);
@@ -5732,7 +5508,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let case_labels_opt = pop_item!(self, case_labels_opt, CaseLabelsOpt, context);
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_built = CaseLabels {
-            const_expr: Box::new(const_expr),
+            const_expr,
             case_labels_opt,
         };
         // Calling user action here
@@ -5757,10 +5533,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let const_expr = pop_item!(self, const_expr, ConstExpr, context);
         let case_labels_opt_0_built = CaseLabelsOpt {
             dot_dot,
-            const_expr: Box::new(const_expr),
+            const_expr,
         };
         self.push(
-            ASTType::CaseLabelsOpt(Some(Box::new(case_labels_opt_0_built))),
+            ASTType::CaseLabelsOpt(Some(case_labels_opt_0_built)),
             context,
         );
         Ok(())
@@ -5794,9 +5570,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let qual_ident0 = pop_item!(self, qual_ident0, QualIdent, context);
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let guard_built = Guard {
-            qual_ident: Box::new(qual_ident),
-            // Ignore clipped member 'colon'
-            qual_ident0: Box::new(qual_ident0),
+            qual_ident,
+            qual_ident0,
         };
         // Calling user action here
         self.user_grammar.guard(&guard_built)?;
@@ -5813,9 +5588,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let const_expr_built = ConstExpr {
-            expr: Box::new(expr),
-        };
+        let const_expr_built = ConstExpr { expr };
         // Calling user action here
         self.user_grammar.const_expr(&const_expr_built)?;
         self.push(ASTType::ConstExpr(const_expr_built), context);
@@ -5861,10 +5634,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr = pop_item!(self, simple_expr, SimpleExpr, context);
         let relation = pop_item!(self, relation, Relation, context);
         let expr_opt_0_built = ExprOpt {
-            relation: Box::new(relation),
-            simple_expr: Box::new(simple_expr),
+            relation,
+            simple_expr,
         };
-        self.push(ASTType::ExprOpt(Some(Box::new(expr_opt_0_built))), context);
+        self.push(ASTType::ExprOpt(Some(expr_opt_0_built)), context);
         Ok(())
     }
 
@@ -5899,7 +5672,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr_opt = pop_item!(self, simple_expr_opt, SimpleExprOpt, context);
         let simple_expr_built = SimpleExpr {
             simple_expr_opt,
-            term: Box::new(term),
+            term,
             simple_expr_list,
         };
         // Calling user action here
@@ -5924,10 +5697,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut simple_expr_list = pop_item!(self, simple_expr_list, SimpleExprList, context);
         let term = pop_item!(self, term, Term, context);
         let add_op = pop_item!(self, add_op, AddOp, context);
-        let simple_expr_list_0_built = SimpleExprList {
-            term: Box::new(term),
-            add_op: Box::new(add_op),
-        };
+        let simple_expr_list_0_built = SimpleExprList { term, add_op };
         // Add an element to the vector
         simple_expr_list.push(simple_expr_list_0_built);
         self.push(ASTType::SimpleExprList(simple_expr_list), context);
@@ -5958,10 +5728,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let simple_expr_opt_group =
             pop_item!(self, simple_expr_opt_group, SimpleExprOptGroup, context);
         let simple_expr_opt_0_built = SimpleExprOpt {
-            simple_expr_opt_group: Box::new(simple_expr_opt_group),
+            simple_expr_opt_group,
         };
         self.push(
-            ASTType::SimpleExprOpt(Some(Box::new(simple_expr_opt_0_built))),
+            ASTType::SimpleExprOpt(Some(simple_expr_opt_0_built)),
             context,
         );
         Ok(())
@@ -6026,10 +5796,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let term_list = pop_and_reverse_item!(self, term_list, TermList, context);
         let factor = pop_item!(self, factor, Factor, context);
-        let term_built = Term {
-            factor: Box::new(factor),
-            term_list,
-        };
+        let term_built = Term { factor, term_list };
         // Calling user action here
         self.user_grammar.term(&term_built)?;
         self.push(ASTType::Term(term_built), context);
@@ -6052,10 +5819,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let mut term_list = pop_item!(self, term_list, TermList, context);
         let factor = pop_item!(self, factor, Factor, context);
         let mul_op = pop_item!(self, mul_op, MulOp, context);
-        let term_list_0_built = TermList {
-            factor: Box::new(factor),
-            mul_op: Box::new(mul_op),
-        };
+        let term_list_0_built = TermList { factor, mul_op };
         // Add an element to the vector
         term_list.push(term_list_0_built);
         self.push(ASTType::TermList(term_list), context);
@@ -6090,8 +5854,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let factor_opt = pop_item!(self, factor_opt, FactorOpt, context);
         let designator = pop_item!(self, designator, Designator, context);
         let factor_0_built = FactorDesignatorFactorOpt {
-            designator: Box::new(designator),
-            factor_opt,
+            designator,
+            factor_opt: factor_opt.map(Box::new),
         };
         let factor_0_built = Factor::DesignatorFactorOpt(factor_0_built);
         // Calling user action here
@@ -6109,9 +5873,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let number = pop_item!(self, number, Number, context);
-        let factor_1_built = FactorNumber {
-            number: Box::new(number),
-        };
+        let factor_1_built = FactorNumber { number };
         let factor_1_built = Factor::Number(factor_1_built);
         // Calling user action here
         self.user_grammar.factor(&factor_1_built)?;
@@ -6128,9 +5890,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let character = pop_item!(self, character, Character, context);
-        let factor_2_built = FactorCharacter {
-            character: Box::new(character),
-        };
+        let factor_2_built = FactorCharacter { character };
         let factor_2_built = Factor::Character(factor_2_built);
         // Calling user action here
         self.user_grammar.factor(&factor_2_built)?;
@@ -6147,9 +5907,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let string = pop_item!(self, string, String, context);
-        let factor_3_built = FactorString {
-            string: Box::new(string),
-        };
+        let factor_3_built = FactorString { string };
         let factor_3_built = Factor::String(factor_3_built);
         // Calling user action here
         self.user_grammar.factor(&factor_3_built)?;
@@ -6165,9 +5923,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn factor_4(&mut self, _n_i_l: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let factor_4_built = FactorNIL {
-        // Ignore clipped member 'n_i_l'
-        };
+        let factor_4_built = FactorNIL {};
         let factor_4_built = Factor::NIL(factor_4_built);
         // Calling user action here
         self.user_grammar.factor(&factor_4_built)?;
@@ -6185,7 +5941,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let set = pop_item!(self, set, Set, context);
         let factor_5_built = FactorSet { set: Box::new(set) };
-        let factor_5_built = Factor::Set(factor_5_built);
+        let factor_5_built = Factor::Set(Box::new(factor_5_built));
         // Calling user action here
         self.user_grammar.factor(&factor_5_built)?;
         self.push(ASTType::Factor(factor_5_built), context);
@@ -6207,9 +5963,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
         let factor_6_built = FactorLParenExprRParen {
-            // Ignore clipped member 'l_paren'
             expr: Box::new(expr),
-            // Ignore clipped member 'r_paren'
         };
         let factor_6_built = Factor::LParenExprRParen(factor_6_built);
         // Calling user action here
@@ -6228,7 +5982,6 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let factor = pop_item!(self, factor, Factor, context);
         let factor_7_built = FactorTildeFactor {
-            // Ignore clipped member 'tilde'
             factor: Box::new(factor),
         };
         let factor_7_built = Factor::TildeFactor(factor_7_built);
@@ -6252,15 +6005,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let factor_opt0 = pop_item!(self, factor_opt0, FactorOpt0, context);
-        let factor_opt_0_built = FactorOpt {
-            // Ignore clipped member 'l_paren'
-            factor_opt0,
-            // Ignore clipped member 'r_paren'
-        };
-        self.push(
-            ASTType::FactorOpt(Some(Box::new(factor_opt_0_built))),
-            context,
-        );
+        let factor_opt_0_built = FactorOpt { factor_opt0 };
+        self.push(ASTType::FactorOpt(Some(factor_opt_0_built)), context);
         Ok(())
     }
 
@@ -6273,13 +6019,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let factor_opt0_0_built = FactorOpt0 {
-            expr_list: Box::new(expr_list),
-        };
-        self.push(
-            ASTType::FactorOpt0(Some(Box::new(factor_opt0_0_built))),
-            context,
-        );
+        let factor_opt0_0_built = FactorOpt0 { expr_list };
+        self.push(ASTType::FactorOpt0(Some(factor_opt0_0_built)), context);
         Ok(())
     }
 
@@ -6321,11 +6062,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let set_opt = pop_item!(self, set_opt, SetOpt, context);
-        let set_built = Set {
-            // Ignore clipped member 'l_brace'
-            set_opt,
-            // Ignore clipped member 'r_brace'
-        };
+        let set_built = Set { set_opt };
         // Calling user action here
         self.user_grammar.set(&set_built)?;
         self.push(ASTType::Set(set_built), context);
@@ -6347,10 +6084,10 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let set_opt_list = pop_and_reverse_item!(self, set_opt_list, SetOptList, context);
         let element = pop_item!(self, element, Element, context);
         let set_opt_0_built = SetOpt {
-            element: Box::new(element),
+            element,
             set_opt_list,
         };
-        self.push(ASTType::SetOpt(Some(Box::new(set_opt_0_built))), context);
+        self.push(ASTType::SetOpt(Some(set_opt_0_built)), context);
         Ok(())
     }
 
@@ -6369,10 +6106,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut set_opt_list = pop_item!(self, set_opt_list, SetOptList, context);
         let element = pop_item!(self, element, Element, context);
-        let set_opt_list_0_built = SetOptList {
-            element: Box::new(element),
-            // Ignore clipped member 'comma'
-        };
+        let set_opt_list_0_built = SetOptList { element };
         // Add an element to the vector
         set_opt_list.push(set_opt_list_0_built);
         self.push(ASTType::SetOptList(set_opt_list), context);
@@ -6420,7 +6154,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr = pop_item!(self, expr, Expr, context);
         let element_built = Element {
             expr: Box::new(expr),
-            element_opt,
+            element_opt: element_opt.map(Box::new),
         };
         // Calling user action here
         self.user_grammar.element(&element_built)?;
@@ -6441,14 +6175,8 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr = pop_item!(self, expr, Expr, context);
-        let element_opt_0_built = ElementOpt {
-            // Ignore clipped member 'dot_dot'
-            expr: Box::new(expr),
-        };
-        self.push(
-            ASTType::ElementOpt(Some(Box::new(element_opt_0_built))),
-            context,
-        );
+        let element_opt_0_built = ElementOpt { expr };
+        self.push(ASTType::ElementOpt(Some(element_opt_0_built)), context);
         Ok(())
     }
 
@@ -6472,9 +6200,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn relation_0(&mut self, _equ: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let relation_0_built = RelationEqu {
-        // Ignore clipped member 'equ'
-        };
+        let relation_0_built = RelationEqu {};
         let relation_0_built = Relation::Equ(relation_0_built);
         // Calling user action here
         self.user_grammar.relation(&relation_0_built)?;
@@ -6576,9 +6302,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let in_op = pop_item!(self, in_op, InOp, context);
-        let relation_6_built = RelationInOp {
-            in_op: Box::new(in_op),
-        };
+        let relation_6_built = RelationInOp { in_op };
         let relation_6_built = Relation::InOp(relation_6_built);
         // Calling user action here
         self.user_grammar.relation(&relation_6_built)?;
@@ -6754,7 +6478,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let designator_list = pop_and_reverse_item!(self, designator_list, DesignatorList, context);
         let qual_ident = pop_item!(self, qual_ident, QualIdent, context);
         let designator_built = Designator {
-            qual_ident: Box::new(qual_ident),
+            qual_ident,
             designator_list,
         };
         // Calling user action here
@@ -6777,9 +6501,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut designator_list = pop_item!(self, designator_list, DesignatorList, context);
         let designator_suffix = pop_item!(self, designator_suffix, DesignatorSuffix, context);
-        let designator_list_0_built = DesignatorList {
-            designator_suffix: Box::new(designator_suffix),
-        };
+        let designator_list_0_built = DesignatorList { designator_suffix };
         // Add an element to the vector
         designator_list.push(designator_list_0_built);
         self.push(ASTType::DesignatorList(designator_list), context);
@@ -6812,10 +6534,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let designator_suffix_0_built = DesignatorSuffixDotIdent {
-            // Ignore clipped member 'dot'
-            ident: Box::new(ident),
-        };
+        let designator_suffix_0_built = DesignatorSuffixDotIdent { ident };
         let designator_suffix_0_built = DesignatorSuffix::DotIdent(designator_suffix_0_built);
         // Calling user action here
         self.user_grammar
@@ -6841,11 +6560,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let expr_list = pop_item!(self, expr_list, ExprList, context);
-        let designator_suffix_1_built = DesignatorSuffixLBracketExprListRBracket {
-            // Ignore clipped member 'l_bracket'
-            expr_list: Box::new(expr_list),
-            // Ignore clipped member 'r_bracket'
-        };
+        let designator_suffix_1_built = DesignatorSuffixLBracketExprListRBracket { expr_list };
         let designator_suffix_1_built =
             DesignatorSuffix::LBracketExprListRBracket(designator_suffix_1_built);
         // Calling user action here
@@ -6866,9 +6581,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn designator_suffix_2(&mut self, _circumflex: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let designator_suffix_2_built = DesignatorSuffixCircumflex {
-        // Ignore clipped member 'circumflex'
-        };
+        let designator_suffix_2_built = DesignatorSuffixCircumflex {};
         let designator_suffix_2_built = DesignatorSuffix::Circumflex(designator_suffix_2_built);
         // Calling user action here
         self.user_grammar
@@ -6895,7 +6608,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let expr_list_list = pop_and_reverse_item!(self, expr_list_list, ExprListList, context);
         let expr = pop_item!(self, expr, Expr, context);
         let expr_list_built = ExprList {
-            expr: Box::new(expr),
+            expr,
             expr_list_list,
         };
         // Calling user action here
@@ -6919,10 +6632,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut expr_list_list = pop_item!(self, expr_list_list, ExprListList, context);
         let expr = pop_item!(self, expr, Expr, context);
-        let expr_list_list_0_built = ExprListList {
-            expr: Box::new(expr),
-            // Ignore clipped member 'comma'
-        };
+        let expr_list_list_0_built = ExprListList { expr };
         // Add an element to the vector
         expr_list_list.push(expr_list_list_0_built);
         self.push(ASTType::ExprListList(expr_list_list), context);
@@ -6957,7 +6667,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_list_list = pop_and_reverse_item!(self, ident_list_list, IdentListList, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
         let ident_list_built = IdentList {
-            ident_def: Box::new(ident_def),
+            ident_def,
             ident_list_list,
         };
         // Calling user action here
@@ -6981,10 +6691,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut ident_list_list = pop_item!(self, ident_list_list, IdentListList, context);
         let ident_def = pop_item!(self, ident_def, IdentDef, context);
-        let ident_list_list_0_built = IdentListList {
-            ident_def: Box::new(ident_def),
-            // Ignore clipped member 'comma'
-        };
+        let ident_list_list_0_built = IdentListList { ident_def };
         // Add an element to the vector
         ident_list_list.push(ident_list_list_0_built);
         self.push(ASTType::IdentListList(ident_list_list), context);
@@ -7013,9 +6720,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let ident = pop_item!(self, ident, Ident, context);
-        let qual_ident_0_built = QualIdentIdent {
-            ident: Box::new(ident),
-        };
+        let qual_ident_0_built = QualIdentIdent { ident };
         let qual_ident_0_built = QualIdent::Ident(qual_ident_0_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_0_built)?;
@@ -7032,9 +6737,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let q_ident = pop_item!(self, q_ident, QIdent, context);
-        let qual_ident_1_built = QualIdentQIdent {
-            q_ident: Box::new(q_ident),
-        };
+        let qual_ident_1_built = QualIdentQIdent { q_ident };
         let qual_ident_1_built = QualIdent::QIdent(qual_ident_1_built);
         // Calling user action here
         self.user_grammar.qual_ident(&qual_ident_1_built)?;
@@ -7057,7 +6760,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let ident_def_opt = pop_item!(self, ident_def_opt, IdentDefOpt, context);
         let ident = pop_item!(self, ident, Ident, context);
         let ident_def_built = IdentDef {
-            ident: Box::new(ident),
+            ident,
             ident_def_opt,
         };
         // Calling user action here
@@ -7076,12 +6779,9 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let ident_def_opt_group = pop_item!(self, ident_def_opt_group, IdentDefOptGroup, context);
         let ident_def_opt_0_built = IdentDefOpt {
-            ident_def_opt_group: Box::new(ident_def_opt_group),
+            ident_def_opt_group,
         };
-        self.push(
-            ASTType::IdentDefOpt(Some(Box::new(ident_def_opt_0_built))),
-            context,
-        );
+        self.push(ASTType::IdentDefOpt(Some(ident_def_opt_0_built)), context);
         Ok(())
     }
 
@@ -7142,9 +6842,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let integer = pop_item!(self, integer, Integer, context);
-        let number_0_built = NumberInteger {
-            integer: Box::new(integer),
-        };
+        let number_0_built = NumberInteger { integer };
         let number_0_built = Number::Integer(number_0_built);
         // Calling user action here
         self.user_grammar.number(&number_0_built)?;
@@ -7161,9 +6859,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let real = pop_item!(self, real, Real, context);
-        let number_1_built = NumberReal {
-            real: Box::new(real),
-        };
+        let number_1_built = NumberReal { real };
         let number_1_built = Number::Real(number_1_built);
         // Calling user action here
         self.user_grammar.number(&number_1_built)?;
@@ -7275,9 +6971,7 @@ impl<'t, 'u> Oberon2GrammarAuto<'t, 'u> {
     fn in_op(&mut self, _in_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let in_op_built = InOp {
-        // Ignore clipped member 'in_op'
-        };
+        let in_op_built = InOp {};
         // Calling user action here
         self.user_grammar.in_op(&in_op_built)?;
         self.push(ASTType::InOp(in_op_built), context);

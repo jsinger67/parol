@@ -62,7 +62,7 @@ pub trait ListGrammarTrait {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct Items {
-    pub num: Box<Num>,
+    pub num: Num,
     pub items_list: Vec<ItemsList>,
 }
 
@@ -73,7 +73,7 @@ pub struct Items {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ItemsList {
-    pub num: Box<Num>,
+    pub num: Num,
 }
 
 ///
@@ -83,7 +83,7 @@ pub struct ItemsList {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct List {
-    pub list_opt: Option<Box<ListOpt>>,
+    pub list_opt: Option<ListOpt>,
 }
 
 ///
@@ -113,7 +113,7 @@ pub struct Num {
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct TrailingComma {
-    pub trailing_comma_opt: Option<Box<TrailingCommaOpt>>,
+    pub trailing_comma_opt: Option<TrailingCommaOpt>,
 }
 
 ///
@@ -135,10 +135,10 @@ pub enum ASTType {
     Items(Items),
     ItemsList(Vec<ItemsList>),
     List(List),
-    ListOpt(Option<Box<ListOpt>>),
+    ListOpt(Option<ListOpt>),
     Num(Num),
     TrailingComma(TrailingComma),
-    TrailingCommaOpt(Option<Box<TrailingCommaOpt>>),
+    TrailingCommaOpt(Option<TrailingCommaOpt>),
 }
 
 /// Auto-implemented adapter grammar
@@ -218,10 +218,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         // Ignore clipped member 'trailing_comma'
         self.pop(context);
         let list_opt = pop_item!(self, list_opt, ListOpt, context);
-        let list_built = List {
-            list_opt,
-            // Ignore clipped member 'trailing_comma'
-        };
+        let list_built = List { list_opt };
         // Calling user action here
         self.user_grammar.list(&list_built)?;
         self.push(ASTType::List(list_built), context);
@@ -242,7 +239,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
                 .try_into()
                 .map_err(parol_runtime::ParolError::UserError)?,
         };
-        self.push(ASTType::ListOpt(Some(Box::new(list_opt_0_built))), context);
+        self.push(ASTType::ListOpt(Some(list_opt_0_built)), context);
         Ok(())
     }
 
@@ -268,10 +265,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let items_list = pop_and_reverse_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
-        let items_built = Items {
-            num: Box::new(num),
-            items_list,
-        };
+        let items_built = Items { num, items_list };
         // Calling user action here
         self.user_grammar.items(&items_built)?;
         self.push(ASTType::Items(items_built), context);
@@ -293,10 +287,7 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut items_list = pop_item!(self, items_list, ItemsList, context);
         let num = pop_item!(self, num, Num, context);
-        let items_list_0_built = ItemsList {
-            num: Box::new(num),
-            // Ignore clipped member 'comma'
-        };
+        let items_list_0_built = ItemsList { num };
         // Add an element to the vector
         items_list.push(items_list_0_built);
         self.push(ASTType::ItemsList(items_list), context);
@@ -359,11 +350,9 @@ impl<'t, 'u> ListGrammarAuto<'t, 'u> {
     fn trailing_comma_opt_0(&mut self, _comma: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let trailing_comma_opt_0_built = TrailingCommaOpt {
-        // Ignore clipped member 'comma'
-        };
+        let trailing_comma_opt_0_built = TrailingCommaOpt {};
         self.push(
-            ASTType::TrailingCommaOpt(Some(Box::new(trailing_comma_opt_0_built))),
+            ASTType::TrailingCommaOpt(Some(trailing_comma_opt_0_built)),
             context,
         );
         Ok(())

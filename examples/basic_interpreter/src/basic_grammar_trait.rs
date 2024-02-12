@@ -1357,10 +1357,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         trace!("{}", self.trace_item_stack(context));
         let mut line_list = pop_item!(self, line_list, LineList, context);
         let statement = pop_item!(self, statement, Statement, context);
-        let line_list_0_built = LineList {
-            statement,
-            // Ignore clipped member 'colon'
-        };
+        let line_list_0_built = LineList { statement };
         // Add an element to the vector
         line_list.push(line_list_0_built);
         self.push(ASTType::LineList(line_list), context);
@@ -1516,10 +1513,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
         let remark_opt = pop_item!(self, remark_opt, RemarkOpt, context);
-        let remark_built = Remark {
-            // Ignore clipped member 'r_e_m'
-            remark_opt,
-        };
+        let remark_built = Remark { remark_opt };
         // Calling user action here
         self.user_grammar.remark(&remark_built)?;
         self.push(ASTType::Remark(remark_built), context);
@@ -1747,10 +1741,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
         let mut print_statement_list =
             pop_item!(self, print_statement_list, PrintStatementList, context);
         let expression = pop_item!(self, expression, Expression, context);
-        let print_statement_list_0_built = PrintStatementList {
-            expression,
-            // Ignore clipped member 'comma'
-        };
+        let print_statement_list_0_built = PrintStatementList { expression };
         // Add an element to the vector
         print_statement_list.push(print_statement_list_0_built);
         self.push(ASTType::PrintStatementList(print_statement_list), context);
@@ -1797,9 +1788,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn end_of_line(&mut self, _end_of_line: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_of_line_built = EndOfLine {
-        // Ignore clipped member 'end_of_line'
-        };
+        let end_of_line_built = EndOfLine {};
         // Calling user action here
         self.user_grammar.end_of_line(&end_of_line_built)?;
         self.push(ASTType::EndOfLine(end_of_line_built), context);
@@ -1955,9 +1944,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn r#if(&mut self, _if: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#if_built = If {
-        // Ignore clipped member 'r#if'
-        };
+        let r#if_built = If {};
         // Calling user action here
         self.user_grammar.r#if(&r#if_built)?;
         self.push(ASTType::If(r#if_built), context);
@@ -1972,9 +1959,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn then(&mut self, _then: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let then_built = Then {
-        // Ignore clipped member 'then'
-        };
+        let then_built = Then {};
         // Calling user action here
         self.user_grammar.then(&then_built)?;
         self.push(ASTType::Then(then_built), context);
@@ -1989,9 +1974,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn goto(&mut self, _goto: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let goto_built = Goto {
-        // Ignore clipped member 'goto'
-        };
+        let goto_built = Goto {};
         // Calling user action here
         self.user_grammar.goto(&goto_built)?;
         self.push(ASTType::Goto(goto_built), context);
@@ -2006,9 +1989,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn r#let(&mut self, _let: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let r#let_built = Let {
-        // Ignore clipped member 'r#let'
-        };
+        let r#let_built = Let {};
         // Calling user action here
         self.user_grammar.r#let(&r#let_built)?;
         self.push(ASTType::Let(r#let_built), context);
@@ -2023,9 +2004,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn print(&mut self, _print: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let print_built = Print {
-        // Ignore clipped member 'print'
-        };
+        let print_built = Print {};
         // Calling user action here
         self.user_grammar.print(&print_built)?;
         self.push(ASTType::Print(print_built), context);
@@ -2040,9 +2019,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn end(&mut self, _end: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let end_built = End {
-        // Ignore clipped member 'end'
-        };
+        let end_built = End {};
         // Calling user action here
         self.user_grammar.end(&end_built)?;
         self.push(ASTType::End(end_built), context);
@@ -2057,9 +2034,7 @@ impl<'t, 'u> BasicGrammarAuto<'t, 'u> {
     fn assign_op(&mut self, _assign_op: &ParseTreeType<'t>) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let assign_op_built = AssignOp {
-        // Ignore clipped member 'assign_op'
-        };
+        let assign_op_built = AssignOp {};
         // Calling user action here
         self.user_grammar.assign_op(&assign_op_built)?;
         self.push(ASTType::AssignOp(assign_op_built), context);
