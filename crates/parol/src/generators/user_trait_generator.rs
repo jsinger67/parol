@@ -392,20 +392,14 @@ impl<'a> UserTraitGenerator<'a> {
         } else if function.sem == ProductionAttribute::OptionalNone {
             // Don't generate a builder!
         } else {
-            let builder_prefix = if function.alts == 1 {
-                nt_type.name()
+            let (builder_prefix, fn_type) = if function.alts == 1 {
+                (nt_type.name(), &nt_type)
             } else {
-                fn_out_type.name()
+                (fn_out_type.name(), &fn_out_type)
             };
             code.push(format!("let {}_built = {} {{", fn_name, builder_prefix));
-            for member_id in fn_out_type.members() {
-                Self::format_builder_call(
-                    symbol_table,
-                    &fn_out_type,
-                    member_id,
-                    function.sem,
-                    code,
-                )?;
+            for member_id in fn_type.members() {
+                Self::format_builder_call(symbol_table, fn_type, member_id, function.sem, code)?;
             }
             code.push("};".to_string());
             if function.alts > 1 {

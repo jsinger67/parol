@@ -813,6 +813,30 @@ impl Display for GrammarTypeInfo {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::result::Result<(), Error> {
         writeln!(f, "// Symbol table:")?;
         writeln!(f, "{}", self.symbol_table)?;
+
+        writeln!(f, "// Non-terminal types:")?;
+        for (n, i) in &self.non_terminal_types {
+            writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
+        }
+
+        writeln!(f, "// Semantic action trait:")?;
+        writeln!(f, "{:?}", self.semantic_actions_trait_id)?;
+
+        writeln!(f, "// Adapter grammar struct:")?;
+        writeln!(f, "{:?}", self.adapter_grammar_struct_id)?;
+
+        writeln!(f, "// Parser interface trait:")?;
+        writeln!(f, "{:?}", self.parser_interface_trait_id)?;
+
+        writeln!(f, "// Adapter actions:")?;
+        for (p, i) in &self.adapter_actions {
+            writeln!(
+                f,
+                "Prod: {p}: {i} /* {} */",
+                self.symbol_table.symbol(*i).name()
+            )?;
+        }
+
         writeln!(f, "// Production types:")?;
         for (p, i) in &self.production_types {
             writeln!(
@@ -821,10 +845,14 @@ impl Display for GrammarTypeInfo {
                 self.symbol_table.symbol(*i).name()
             )?;
         }
-        writeln!(f, "// Non-terminal types:")?;
-        for (n, i) in &self.non_terminal_types {
-            writeln!(f, "{n}: {i} /* {} */", self.symbol_table.symbol(*i).name())?;
-        }
+
+        writeln!(f, "// AST enum type:")?;
+        writeln!(f, "{:?}", self.ast_enum_type)?;
+
+        writeln!(f, "// Auto generate = {}", self.auto_generate)?;
+
+        writeln!(f, "// Minimize boxed types = {}", self.minimize_boxed_types)?;
+
         writeln!(f, "// User actions:")?;
         self.get_user_actions().iter().try_for_each(|a| {
             let fun = self.symbol_table.symbol_as_function(*a).unwrap();
@@ -834,14 +862,6 @@ impl Display for GrammarTypeInfo {
                 fun.prod_num, fun.non_terminal, fun.prod_string
             )
         })?;
-        writeln!(f, "// Adapter actions:")?;
-        for (p, i) in &self.adapter_actions {
-            writeln!(
-                f,
-                "Prod: {p}: {i} /* {} */",
-                self.symbol_table.symbol(*i).name()
-            )?;
-        }
         writeln!(f, "// Vector non-terminals:")?;
         for nt in &self.vector_typed_non_terminals {
             writeln!(f, "{}", nt)?;
