@@ -107,7 +107,7 @@ impl From<&NonTerminal> for Rng {
         val.non_terminal_opt
             .as_ref()
             .map_or(rng, |non_terminal_opt| {
-                rng.extend(Self::from(&*non_terminal_opt))
+                rng.extend(Self::from(non_terminal_opt))
             })
     }
 }
@@ -233,7 +233,7 @@ impl From<&SimpleToken> for Rng {
         val.simple_token_opt
             .as_ref()
             .map_or(rng, |simple_token_opt| {
-                rng.extend(Self::from(&*simple_token_opt))
+                rng.extend(Self::from(simple_token_opt))
             })
     }
 }
@@ -297,7 +297,7 @@ impl From<&TokenWithStates> for Rng {
         let rng = Self::from(&val.l_t);
         val.token_with_states_opt.as_ref().map_or(
             rng.extend(Self::from(&val.token_literal)),
-            |token_with_states| rng.extend(Self::from(&*token_with_states)),
+            |token_with_states| rng.extend(Self::from(token_with_states)),
         )
     }
 }

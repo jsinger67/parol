@@ -461,7 +461,7 @@ impl<'t> LLKParser<'t> {
             ),
             input: Some(Box::new(FileSource::from_stream(&stream.borrow()))),
             error_location: unexpected_tokens
-                .get(0)
+                .first()
                 .map_or(Box::<Location>::default(), |t| Box::new(t.token.clone())),
             unexpected_tokens,
             expected_tokens,

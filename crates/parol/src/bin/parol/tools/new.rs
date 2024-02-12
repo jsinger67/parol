@@ -173,7 +173,6 @@ fn apply_cargo(creation_data: &CreationData) -> Result<()> {
 
     let mut cargo_toml = fs::OpenOptions::new()
         .append(true)
-        .write(true)
         .open(creation_data.path.join("Cargo.toml"))
         .context("Error opening Cargo.toml file")?;
     write!(
@@ -341,7 +340,6 @@ fn generate_gitignore(creation_data: &CreationData) -> Result<()> {
     let mut file = fs::OpenOptions::new()
         // Cargo skips to generate .gitignore inside a existing repository.
         .create(true)
-        .write(true)
         .append(true)
         .open(path)
         .context("Error opening .gitignore file!")?;
