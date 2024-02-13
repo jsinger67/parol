@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.26.1 - Not released yet
+## 0.26.1 - 2024-02-13
 
 - Fixed issue [#38](https://github.com/jsinger67/parol/issues/38)
 
@@ -34,6 +34,15 @@ new minor version numbers. Please note that this is no version handling covered 
   members and afterwards applies an extra step that detects recursions in types and removes them by
   selectively inserting boxes only where they are needed.
   This new feature is somewhat experimental and feedback is appreciated.
+
+- Fixed issue [#236](https://github.com/jsinger67/parol/issues/236)
+
+  The grammar type information now contains a lot more details that could be useful for other
+  generators like the one suggested by @ryo33
+  [Type-agnostic AST generator](https://github.com/jsinger67/parol/discussions/12#discussioncomment-4153769).
+
+  Also please consider a type browser such as [parsym](https://github.com/jsinger67/parsym) to
+  easily browse the grammar type information.
 
 ## 0.26.0 - 2024-01-10
 
