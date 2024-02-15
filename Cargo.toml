@@ -29,7 +29,7 @@ exclude = [
 [workspace.dependencies]
 anyhow = "1.0"
 clap = { version = "4.5", features = [ "derive", "cargo" ] }
-derive_builder = "0.13.1"
+derive_builder = "0.20.0"
 derive-new = "0.6.0"
 env_logger = "0.10.2"
 function_name = "0.3.0"
