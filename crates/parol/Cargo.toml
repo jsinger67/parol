@@ -19,7 +19,7 @@ assert_cmd = "2.0"
 bitflags = "2.4.2"
 cfg-if = "1.0.0"
 clap = { workspace = true }
-derive_builder = { version = "0.13.1" }
+derive_builder = { version = "0.20.0" }
 env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
