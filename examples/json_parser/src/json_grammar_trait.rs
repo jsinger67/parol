@@ -8,6 +8,7 @@
 #![allow(clippy::enum_variant_names)]
 #![allow(clippy::large_enum_variant)]
 #![allow(clippy::upper_case_acronyms)]
+#![allow(clippy::too_many_arguments)]
 
 use crate::json_grammar::JsonGrammar;
 use parol_runtime::parser::{ParseTreeType, UserActionsTrait};

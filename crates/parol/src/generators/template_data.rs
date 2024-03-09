@@ -156,6 +156,7 @@ impl std::fmt::Display for UserTraitData<'_> {
             #![allow(clippy::enum_variant_names)]
             #![allow(clippy::large_enum_variant)]
             #![allow(clippy::upper_case_acronyms)]
+            #![allow(clippy::too_many_arguments)]
         })?;
 
         writeln!(f, "\n")?;
