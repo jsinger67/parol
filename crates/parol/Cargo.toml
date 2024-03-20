@@ -42,7 +42,7 @@ syn = { version = "2", default-features = false, features = [
 syntree = { workspace = true }
 syntree_layout = { workspace = true }
 thiserror = { workspace = true }
-ts-rs = "7.1.1"
+ts-rs = "8.0.0"
 ume = "0.1"
 rayon = "1.9.0"
 tempfile = "3"

@@ -2,4 +2,9 @@
 import type { ScopeId } from "./ScopeId";
 import type { SymbolId } from "./SymbolId";
 
-export interface Scope { parent: ScopeId | null, my_id: ScopeId, symbols: Array<SymbolId>, names: Array<string>, }
+/**
+ *
+ * Scope with symbols inside
+ *
+ */
+export type Scope = { parent: ScopeId | null, my_id: ScopeId, symbols: Array<SymbolId>, names: Array<string>, };
