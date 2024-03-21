@@ -21,7 +21,7 @@ pub(crate) const INVALID: TerminalIndex = TerminalIndex::MAX - 1;
 ///
 /// Internal data structure to represent a compiled terminal, a TerminalIndex.
 ///
-#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Default, Debug, Copy, Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub struct CompiledTerminal(pub TerminalIndex);
 
 impl CompiledTerminal {
@@ -39,15 +39,21 @@ impl CompiledTerminal {
     }
 }
 
-impl Default for CompiledTerminal {
-    fn default() -> Self {
-        Self(INVALID)
+impl AsRef<TerminalIndex> for CompiledTerminal {
+    fn as_ref(&self) -> &TerminalIndex {
+        &self.0
     }
 }
 
 impl Display for CompiledTerminal {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(f, "{}", self.0)
+    }
+}
+
+impl From<TerminalIndex> for CompiledTerminal {
+    fn from(t: TerminalIndex) -> Self {
+        Self(t)
     }
 }
 

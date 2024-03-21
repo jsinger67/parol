@@ -4,7 +4,6 @@ use crate::analysis::compiled_terminal::EPS;
 use crate::{CompiledTerminal, MAX_K};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::{Hash, Hasher};
-use std::ops::Index;
 
 const EOI: TerminalIndex = 0;
 const NEW_LINE: TerminalIndex = 1;
@@ -26,13 +25,29 @@ pub trait TerminalMappings<T> {
     fn is_inv(&self) -> bool;
 }
 
-/// An ordered collection of terminals
+/// When storing MAX_K terminals in 128 bits, the maximum number of bits used per terminal is 12.
+const MAX_BITS: u8 = 12;
+
+/// A collection of terminals
+///
+/// The terminals are stored in a 128 bit integer where each terminal is stored in a fixed number of
+/// bits. The number of bits is determined by the number of terminals to store.
+/// The maximum number of terminals when storing MAX_K terminals in 128 bits is:
+/// 128 / MAX_K = 128 / 10 = 12.8 => 12 bits
+/// The maximum number of terminals that can be stored is 2^12 = 4096.
+/// The maximum value of member bits is therefore 12 and can safely be stored in a u8.
+/// We store a mask to more easily extract the terminals from the 128 bits unsigned integer.
+/// The mask is calculated as 2^bits - 1 that is equivalent to the expression !(!0u128 << bits).
 #[derive(Clone, Copy, Default, Hash, Eq, PartialEq)]
 pub struct Terminals {
     // The terminals
-    pub(crate) t: [CompiledTerminal; MAX_K + 1],
+    pub(crate) t: u128,
+    // A mask to extract the terminal at position i
+    mask: u128,
     // The index of next insertion
-    pub(crate) i: usize,
+    pub(crate) i: u8,
+    // Number of bits used per terminal
+    bits: u8,
 }
 
 impl Terminals {
@@ -47,8 +62,22 @@ impl Terminals {
     /// assert_eq!(CompiledTerminal::default(), t[0]);
     /// assert_eq!(CompiledTerminal::default(), t[9]);
     /// ```
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(max_terminal_index: usize) -> Self {
+        // max_terminal_index + 1: we also need to store EPS
+        let bits = (max_terminal_index + 1).ilog2() as u8 + 1;
+        if bits > MAX_BITS {
+            panic!(
+                "The number of bits required to store {} terminals is {} which is greater than the maximum of {}",
+                max_terminal_index + 1, bits, MAX_BITS
+            );
+        }
+        let mask = !(!0u128 << bits);
+        Self {
+            t: 0,
+            i: 0,
+            bits,
+            mask,
+        }
     }
 
     /// Creates a new item with epsilon semantic
@@ -63,10 +92,11 @@ impl Terminals {
     /// assert_eq!(CompiledTerminal::default(), t[1]);
     /// assert_eq!(CompiledTerminal::default(), t[9]);
     /// ```
-    pub fn eps() -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-        t[0] = CompiledTerminal::eps();
-        Self { t, i: 1 }
+    pub fn eps(max_terminal_index: usize) -> Terminals {
+        let mut t = Self::new(max_terminal_index);
+        t.t = t.mask;
+        t.i = 1;
+        t
     }
 
     /// Creates a new item with end (EOI) semantic
@@ -82,10 +112,11 @@ impl Terminals {
     /// assert_eq!(CompiledTerminal::default(), t[1]);
     /// assert_eq!(CompiledTerminal::default(), t[9]);
     /// ```
-    pub fn end() -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-        t[0] = CompiledTerminal::end();
-        Self { t, i: 1 }
+    pub fn end(max_terminal_index: usize) -> Terminals {
+        let mut t = Self::new(max_terminal_index);
+        // t.t = 0; // EOI as u128 & t.mask;
+        t.i = 1;
+        t
     }
 
     ///
@@ -93,55 +124,60 @@ impl Terminals {
     ///
     #[must_use]
     pub fn of(k: usize, other: Self) -> Self {
-        let first_len = other.k_len(k);
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-        (0..first_len).for_each(|i| t[i] = other.t[i]);
-        Self { t, i: first_len }
+        let bits = other.bits;
+        let mask = other.mask;
+        let i = other.k_len(k) as u8;
+        let mut copy_mask = 0u128;
+        (0..i).for_each(|_| {
+            copy_mask <<= bits as usize;
+            copy_mask |= mask;
+        });
+        let t = other.t & copy_mask;
+        Self { t, i, bits, mask }
     }
 
     ///
     /// Creates a new object from a slice of other objects while applying a mapper function
     ///
-    #[must_use]
-    pub fn from_slice_with<'s, S, M>(others: &'s [S], k: usize, m: M) -> Self
-    where
-        M: Fn(&'s S) -> CompiledTerminal,
-    {
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-        let mut i = 0;
-        others
-            .iter()
-            .take(std::cmp::min(k, MAX_K))
-            .enumerate()
-            .for_each(|(n, o)| {
-                t[n] = m(o);
-                i += 1;
-            });
-        Self { t, i }
-    }
+    // #[must_use]
+    // pub fn from_slice_with<'s, S, M>(others: &'s [S], k: usize, m: M) -> Self
+    // where
+    //     M: Fn(&'s S) -> CompiledTerminal,
+    // {
+    //     let mut t = Self::default();
+    //     others
+    //         .iter()
+    //         .take(std::cmp::min(k, MAX_K))
+    //         .enumerate()
+    //         .for_each(|(n, o)| {
+    //             t.set(n, m(o));
+    //             t.i += 1;
+    //         });
+    //     Self { t, i }
+    // }
 
     ///
     /// Creates a new object from a slice of other objects
     ///
-    #[must_use]
-    pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-        let mut i = 0;
-        others
-            .iter()
-            .take(std::cmp::min(k, MAX_K))
-            .enumerate()
-            .for_each(|(n, o)| {
-                t[n] = *o;
-                i += 1;
-            });
-        Self { t, i }
-    }
+    // #[must_use]
+    // pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
+    //     let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
+    //     let mut i = 0;
+    //     others
+    //         .iter()
+    //         .take(std::cmp::min(k, MAX_K))
+    //         .enumerate()
+    //         .for_each(|(n, o)| {
+    //             t[n] = *o;
+    //             i += 1;
+    //         });
+    //     Self { t, i }
+    // }
 
     /// Returns the length of the collection
     #[inline]
     pub fn len(&self) -> usize {
-        self.i
+        self.i as usize
     }
     /// Checks if the collection is empty
     #[inline]
@@ -150,11 +186,11 @@ impl Terminals {
     }
 
     #[must_use]
-    fn last(&self) -> Option<&CompiledTerminal> {
+    fn last(&self) -> Option<CompiledTerminal> {
         if self.is_empty() {
             None
         } else {
-            Some(&self.t[self.i - 1])
+            Some(self.get(self.i as usize - 1))
         }
     }
 
@@ -172,28 +208,35 @@ impl Terminals {
     #[must_use]
     pub fn k_len(&self, k: usize) -> usize {
         let mut k_len = 0;
-        for i in 0..self.i {
+        let mut t_dup = self.t;
+        for _i in 0..self.i {
             if k_len >= k {
                 break;
             }
-            // if self.t[i].is_eps() {
-            //     break;
-            // }
             k_len += 1;
-            if self.t[i].is_end() {
+            let t = t_dup & self.mask;
+            if t == EOI as u128 {
                 break;
             }
+            t_dup >>= self.bits as usize;
         }
         k_len
     }
 
     /// Clears the collection
     pub fn clear(&mut self) {
-        *self = Self::default();
+        self.t = 0;
+        self.i = 0;
     }
 
     /// Concatenates two collections with respect to the rules of k-concatenation
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
+        debug_assert!(
+            other.bits == self.bits,
+            "Bits must be the same, self:({:?}) != other:({:?})",
+            self,
+            other
+        );
         if other.is_eps() {
             // w + ε = W
             return self;
@@ -212,17 +255,18 @@ impl Terminals {
 
         let my_k_len = self.k_len(k);
         let to_take = other.k_len(k - my_k_len);
-        for i in 0..to_take {
-            self.t[self.i] = other.t[i];
-            self.i += 1;
-        }
+        let mask = !0u128 << (to_take * self.bits as usize);
+        let value = (other.t & !mask) << (my_k_len * self.bits as usize);
+        self.t &= !mask;
+        self.t |= value;
+        self.i = (my_k_len + to_take) as u8;
         self
     }
 
     /// Adds a new terminal to self if max size is not reached yet and if last is not EOI
     pub fn push(&mut self, t: CompiledTerminal) {
-        if self.i < MAX_K && !matches!(self.last(), Some(CompiledTerminal(EOI))) {
-            self.t[self.i] = t;
+        if (self.i as usize) < MAX_K && !matches!(self.last(), Some(CompiledTerminal(EOI))) {
+            self.set(self.i.into(), t);
             self.i += 1;
         }
     }
@@ -230,13 +274,43 @@ impl Terminals {
     /// Checks if self is an Epsilon
     #[inline]
     pub fn is_eps(&self) -> bool {
-        self.i == 1 && self.t[0].is_eps()
+        self.i == 1 && ((self.t & self.mask) == self.mask)
     }
 
-    /// Checks if self is an end-of-input symbol
-    #[inline]
-    pub fn is_end(&self) -> bool {
-        self.i == 1 && self.t[0].is_end()
+    // / Checks if self is an end-of-input symbol
+    // #[inline]
+    // pub fn is_end(&self) -> bool {
+    //     // EOI is 0, we don't need to mask it
+    //     self.i == 1 && self.t & self.mask == EOI as u128
+    // }
+
+    /// Creates an iterator over the terminals
+    pub fn iter(&self) -> TermIt {
+        TermIt::new(*self)
+    }
+
+    /// Returns the terminal at position i
+    pub fn get(&self, i: usize) -> CompiledTerminal {
+        let mut terminal_index = (self.t >> (i * self.bits as usize)) & self.mask;
+        if terminal_index == self.mask {
+            // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e. all
+            // bits set to 1. We need to convert it back to 0xFFFF.
+            terminal_index = EPS as u128;
+        }
+        CompiledTerminal(terminal_index as TerminalIndex)
+    }
+
+    /// Sets the terminal at position i
+    pub fn set(&mut self, i: usize, t: CompiledTerminal) {
+        debug_assert!(
+            t.0 <= self.mask as TerminalIndex || t.0 == EPS as TerminalIndex,
+            "Terminal index {} out of range",
+            t.0
+        );
+        let v = (t.0 as u128 & self.mask) << (i * self.bits as usize);
+        let mask = !(self.mask << (i * self.bits as usize));
+        self.t &= mask;
+        self.t |= v;
     }
 }
 
@@ -244,7 +318,9 @@ impl Ord for Terminals {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         match self.i.cmp(&other.i) {
             std::cmp::Ordering::Less => std::cmp::Ordering::Less,
-            std::cmp::Ordering::Equal => self.t[0..self.i].cmp(&other.t[0..other.i]),
+            std::cmp::Ordering::Equal => {
+                <&Self as Into<u128>>::into(self).cmp(&<&Self as Into<u128>>::into(other))
+            }
             std::cmp::Ordering::Greater => std::cmp::Ordering::Greater,
         }
     }
@@ -256,23 +332,13 @@ impl PartialOrd for Terminals {
     }
 }
 
-impl Index<usize> for Terminals {
-    type Output = CompiledTerminal;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.t[index]
-    }
-}
-
 impl Display for Terminals {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
         write!(
             f,
             "[{}(i{})]",
-            self.t
-                .iter()
-                .take(self.i)
-                .map(|e| format!("{}", e))
+            (0..self.i)
+                .map(|i| format!("{}", self.get(i as usize)))
                 .collect::<Vec<String>>()
                 .join(", "),
             self.i,
@@ -280,10 +346,74 @@ impl Display for Terminals {
     }
 }
 
+// Used for comparison in implementation of Ord
+impl From<&Terminals> for u128 {
+    fn from(t: &Terminals) -> Self {
+        // If the assertion never fails, the extra masking is not necessary
+        debug_assert!(t.t & (!0u128 << (t.i * t.bits) as usize) == 0);
+        // Mask out the unused bits although it should not be necessary
+        t.t & !(!0u128 << (t.i * t.bits) as usize)
+    }
+}
+
+impl Extend<CompiledTerminal> for Terminals {
+    fn extend<I: IntoIterator<Item = CompiledTerminal>>(&mut self, iter: I) {
+        for t in iter {
+            self.push(t);
+        }
+    }
+}
+
+impl Extend<TerminalIndex> for Terminals {
+    fn extend<I: IntoIterator<Item = TerminalIndex>>(&mut self, iter: I) {
+        for t in iter {
+            self.push(CompiledTerminal(t));
+        }
+    }
+}
+
 impl Debug for Terminals {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        // Forward to Display implementation
-        write!(f, "{}", self)
+        write!(
+            f,
+            "0b{:b}, i:{}, bits:0x{:x}, mask:0x{:x}",
+            self.t, self.i, self.bits, self.mask
+        )
+    }
+}
+
+/// Iterator for Terminals
+/// It returns the terminal indices
+#[derive(Debug)]
+pub struct TermIt {
+    t: Terminals,
+    i: usize,
+}
+
+impl TermIt {
+    fn new(t: Terminals) -> Self {
+        Self { t, i: 0 }
+    }
+}
+
+impl Iterator for TermIt {
+    type Item = TerminalIndex;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.i < self.t.i as usize {
+            let t = self.t.t & self.t.mask;
+            self.t.t >>= self.t.bits as usize;
+            self.i += 1;
+            if t == self.t.mask {
+                // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e.
+                // all bits set to 1. We need to convert it back to 0xFFFF.
+                Some(EPS)
+            } else {
+                Some(t as TerminalIndex)
+            }
+        } else {
+            None
+        }
     }
 }
 
@@ -339,7 +469,12 @@ impl TerminalString {
 
     /// Clear the sequences
     pub fn clear(self) -> Self {
-        Self::Incomplete(Terminals::new())
+        let mut inner = match self {
+            Self::Incomplete(t) | Self::Complete(t) => t,
+        };
+        inner.clear();
+
+        Self::Incomplete(inner)
     }
 
     /// Return the inner sequences
@@ -358,26 +493,24 @@ impl TerminalString {
         }
     }
 
-    /// Checks if self is an end-of-input symbol
-    pub fn is_end(&self) -> bool {
-        match self {
-            Self::Incomplete(_) => false,
-            Self::Complete(v) => v.is_end(),
-        }
-    }
+    // / Checks if self is an end-of-input symbol
+    // pub fn is_end(&self) -> bool {
+    //     match self {
+    //         Self::Incomplete(_) => false,
+    //         Self::Complete(v) => v.is_end(),
+    //     }
+    // }
 
     /// Push a new terminal
-    pub fn push(self, t: CompiledTerminal, k: usize) -> Self {
+    pub fn push(&mut self, t: CompiledTerminal, k: usize) {
         match self {
-            Self::Incomplete(mut v) => {
+            Self::Incomplete(v) => {
                 v.push(t);
                 if v.is_k_complete(k) {
-                    Self::Complete(v)
-                } else {
-                    Self::Incomplete(v)
+                    *self = Self::Complete(*v);
                 }
             }
-            Self::Complete(_) => self,
+            Self::Complete(_) => {}
         }
     }
 
@@ -397,6 +530,141 @@ impl TerminalString {
     }
 }
 
+impl Display for TerminalString {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        match self {
+            Self::Incomplete(v) => write!(f, "Incomplete({})", v),
+            Self::Complete(v) => write!(f, "Complete  ({})", v),
+        }
+    }
+}
+
+impl Debug for TerminalString {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
+        match self {
+            Self::Incomplete(v) => write!(f, "Incomplete({:?})", v),
+            Self::Complete(v) => write!(f, "Complete  ({:?})", v),
+        }
+    }
+}
+
+/// A builder for KTuple
+#[derive(Clone, Default)]
+pub struct KTupleBuilder<'a> {
+    k: Option<usize>,
+    max_terminal_index: Option<usize>,
+    k_tuple: Option<&'a KTuple>,
+    terminal_string: Option<&'a [TerminalIndex]>,
+}
+
+impl<'a> KTupleBuilder<'a> {
+    /// Creates a new builder
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Sets the lookahead size
+    pub fn k(mut self, k: usize) -> Self {
+        self.k = Some(k);
+        self
+    }
+
+    /// Sets the maximum terminal index
+    pub fn max_terminal_index(mut self, max_terminal_index: usize) -> Self {
+        self.max_terminal_index = Some(max_terminal_index);
+        self
+    }
+
+    /// Sets the k-tuple to be used during construction
+    pub fn k_tuple(mut self, k_tuple: &'a KTuple) -> Self {
+        self.k_tuple = Some(k_tuple);
+        self
+    }
+
+    /// Sets the terminal string to be used during construction
+    pub fn terminal_string(mut self, terminal_string: &'a [TerminalIndex]) -> Self {
+        self.terminal_string = Some(terminal_string);
+        self
+    }
+
+    /// Builds a new KTuple
+    pub fn build(self) -> Result<KTuple, String> {
+        if self.k.is_none() {
+            return Err("k is not set".to_owned());
+        }
+        if self.max_terminal_index.is_none() {
+            return Err("max_terminal_index is not set".to_owned());
+        }
+        let k = self.k.unwrap_or(0);
+        let max_terminal_index = self.max_terminal_index.unwrap_or(0);
+        if let Some(k_tuple) = self.k_tuple {
+            let mut terminals = Terminals::new(max_terminal_index);
+            for t in k_tuple.terminals.inner().iter().take(k) {
+                terminals.push(CompiledTerminal(t));
+            }
+            let terminals = if terminals.is_k_complete(k) {
+                TerminalString::Complete(terminals)
+            } else {
+                TerminalString::Incomplete(terminals)
+            };
+            Ok(KTuple {
+                terminals,
+                k: std::cmp::min(k, MAX_K),
+            })
+        } else if let Some(terminal_string) = self.terminal_string {
+            let mut terminals = Terminals::new(max_terminal_index);
+            for t in terminal_string.iter().take(k) {
+                terminals.push(CompiledTerminal(*t));
+            }
+            let terminals = if terminals.is_k_complete(k) {
+                TerminalString::Complete(terminals)
+            } else {
+                TerminalString::Incomplete(terminals)
+            };
+            Ok(KTuple {
+                terminals,
+                k: std::cmp::min(k, MAX_K),
+            })
+        } else {
+            Err("k_tuple or terminal_string must be set".to_owned())
+        }
+    }
+
+    ///
+    /// Creates a new ε object
+    ///
+    pub fn eps(self) -> Result<KTuple, String> {
+        if self.k.is_none() {
+            return Err("k is not set".to_owned());
+        }
+        if self.max_terminal_index.is_none() {
+            return Err("max_terminal_index is not set".to_owned());
+        }
+        let terminals =
+            TerminalString::Incomplete(Terminals::eps(self.max_terminal_index.unwrap()));
+        Ok(KTuple {
+            terminals,
+            k: self.k.unwrap(),
+        })
+    }
+    ///
+    /// Creates a new End object
+    ///
+    pub fn end(self) -> Result<KTuple, String> {
+        if self.k.is_none() {
+            return Err("k is not set".to_owned());
+        }
+        if self.max_terminal_index.is_none() {
+            return Err("max_terminal_index is not set".to_owned());
+        }
+        let terminals = TerminalString::Complete(Terminals::end(self.max_terminal_index.unwrap()));
+        Ok(KTuple {
+            terminals,
+            k: self.k.unwrap(),
+        })
+    }
+}
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -404,25 +672,25 @@ impl TerminalString {
 ///
 /// Terminal symbol string type
 ///
-#[derive(Clone, Eq, Ord, PartialOrd)]
+#[derive(Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct KTuple {
     /// The sequence of terminals
-    pub terminals: TerminalString,
+    terminals: TerminalString,
     /// The lookahead size
-    pub k: usize,
+    k: usize,
 }
 
 impl KTuple {
-    ///
-    /// Creates a new and empty object.
-    ///
-    pub fn new(k: usize) -> Self {
-        let terminals = TerminalString::Incomplete(Terminals::new());
-        Self {
-            terminals,
-            k: std::cmp::min(k, MAX_K),
-        }
-    }
+    // /
+    // / Creates a new and empty object.
+    // /
+    // pub fn new(k: usize, max_terminal_index: usize) -> Self {
+    //     let terminals = TerminalString::Incomplete(Terminals::new(max_terminal_index));
+    //     Self {
+    //         terminals,
+    //         k: std::cmp::min(k, MAX_K),
+    //     }
+    // }
 
     /// Used for debugging only
     pub fn with_terminal_indices(self, terms: &[TerminalIndex]) -> Self {
@@ -432,17 +700,10 @@ impl KTuple {
             TerminalString::Complete(s) => s,
         };
 
-        let mut i = 0;
-        terminals
-            .t
-            .iter_mut()
-            .zip(terms.iter())
-            .take(k)
-            .for_each(|(l, r)| {
-                *l = CompiledTerminal(*r);
-                i += 1;
-            });
-        terminals.i = i;
+        terms.iter().take(k).enumerate().for_each(|(i, t)| {
+            terminals.set(i, CompiledTerminal(*t));
+            terminals.i += 1;
+        });
 
         let terminals = if terminals.is_k_complete(k) {
             TerminalString::Complete(terminals)
@@ -456,24 +717,25 @@ impl KTuple {
     ///
     /// Creates a new object from a slice of other objects while applying a mapper function
     ///
-    pub fn from_slice_with<'s, S, M>(others: &'s [S], m: M, k: usize) -> Self
-    where
-        M: Fn(&'s S) -> CompiledTerminal,
-    {
-        let terminals = Terminals::from_slice_with(others, k, m);
-        let terminals = if terminals.is_k_complete(k) {
-            TerminalString::Complete(terminals)
-        } else {
-            TerminalString::Incomplete(terminals)
-        };
-        Self { terminals, k }
-    }
+    // pub fn from_slice_with<'s, S, M>(others: &'s [S], m: M, k: usize) -> Self
+    // where
+    //     M: Fn(&'s S) -> CompiledTerminal,
+    // {
+    //     let terminals = Terminals::from_slice_with(others, k, m);
+    //     let terminals = if terminals.is_k_complete(k) {
+    //         TerminalString::Complete(terminals)
+    //     } else {
+    //         TerminalString::Incomplete(terminals)
+    //     };
+    //     Self { terminals, k }
+    // }
 
     ///
     /// Creates a new object from a slice of CompiledTerminals
     ///
-    pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
-        let terminals = Terminals::from_slice(others, k);
+    pub fn from_slice(others: &[CompiledTerminal], k: usize, max_terminal_index: usize) -> Self {
+        let mut terminals = Terminals::new(max_terminal_index);
+        terminals.extend(others.iter().take(k).cloned());
         let terminals = if terminals.is_k_complete(k) {
             TerminalString::Complete(terminals)
         } else {
@@ -496,27 +758,24 @@ impl KTuple {
         Self { terminals, k }
     }
 
-    ///
-    /// Creates a new ε object
-    ///
-    pub fn eps(k: usize) -> Self {
-        let terminals = TerminalString::Incomplete(Terminals::eps());
-        Self { terminals, k }
-    }
-    ///
-    /// Creates a new End object
-    ///
-    pub fn end(k: usize) -> Self {
-        let terminals = TerminalString::Complete(Terminals::end());
-        Self { terminals, k }
-    }
+    // ///
+    // /// Creates a new ε object
+    // ///
+    // pub fn eps(k: usize, max_terminal_index: usize) -> Self {
+    //     let terminals = TerminalString::Incomplete(Terminals::eps(max_terminal_index));
+    //     Self { terminals, k }
+    // }
+    // ///
+    // /// Creates a new End object
+    // ///
+    // pub fn end(k: usize, max_terminal_index: usize) -> Self {
+    //     let terminals = TerminalString::Complete(Terminals::end(max_terminal_index));
+    //     Self { terminals, k }
+    // }
 
     /// Adds a new terminal to self while consuming self
-    pub fn push(self, t: CompiledTerminal) -> Self {
-        Self {
-            terminals: self.terminals.push(t, self.k),
-            k: self.k,
-        }
+    pub fn push(&mut self, t: CompiledTerminal) {
+        self.terminals.push(t, self.k)
     }
 
     /// Appends a sequence to self while consuming self
@@ -572,28 +831,43 @@ impl KTuple {
             "[{}]",
             self.terminals
                 .inner()
-                .t
                 .iter()
-                .take(self.terminals.inner().i)
-                .map(|t| match t.0 {
+                .map(|t| match t {
                     EOI => "$".to_owned(),
                     NEW_LINE => "NewLine".to_owned(),
                     WHITESPACE => "WhiteSpace".to_owned(),
                     LINE_COMMENT => "LineComment".to_owned(),
                     BLOCK_COMMENT => "BlockComment".to_owned(),
                     EPS => "\u{03B5}".to_owned(),
-                    _ => terminals[t.0 as usize].to_string(),
+                    _ => terminals[t as usize].to_string(),
                 })
                 .collect::<Vec<String>>()
                 .join(", ")
         )
     }
+
+    /// Returns the k value
+    #[inline]
+    pub fn k(&self) -> usize {
+        self.k
+    }
+
+    /// Returns the terminals
+    #[inline]
+    pub fn terminals(&self) -> &Terminals {
+        self.terminals.inner()
+    }
 }
 
 impl Debug for KTuple {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error> {
-        // Forward to the implementation of Display
-        write!(f, "{}", self)
+        write!(
+            f,
+            "[{:?}(i{})](k{})",
+            self.terminals,
+            self.terminals.inner().i,
+            self.k
+        )
     }
 }
 
@@ -602,7 +876,7 @@ impl Display for KTuple {
         write!(
             f,
             "[{}(i{})](k{})",
-            self.terminals.inner(),
+            self.terminals,
             self.terminals.inner().i,
             self.k
         )
@@ -612,18 +886,24 @@ impl Display for KTuple {
 impl Hash for KTuple {
     fn hash<H: Hasher>(&self, state: &mut H) {
         let self_inner = self.terminals.inner();
-        self_inner.t[0..self_inner.i].hash(state)
+        self_inner.t.hash(state)
     }
 }
 
-impl PartialEq for KTuple {
-    fn eq(&self, other: &Self) -> bool {
-        let self_inner = self.terminals.inner();
-        let other_inner = other.terminals.inner();
-        if self_inner.i == other_inner.i {
-            self_inner.t[0..self_inner.i].eq(&other_inner.t[0..other_inner.i])
-        } else {
-            false
+impl Extend<CompiledTerminal> for KTuple {
+    fn extend<I: IntoIterator<Item = CompiledTerminal>>(&mut self, iter: I) {
+        if !self.terminals.is_k_complete() {
+            for t in iter.into_iter().take(self.k - self.len()) {
+                self.push(t);
+            }
+        }
+    }
+}
+
+impl Extend<TerminalIndex> for KTuple {
+    fn extend<I: IntoIterator<Item = TerminalIndex>>(&mut self, iter: I) {
+        for t in iter {
+            self.push(CompiledTerminal(t));
         }
     }
 }
@@ -633,70 +913,67 @@ mod test {
     use parol_runtime::TerminalIndex;
 
     use super::{TerminalString, Terminals};
-    use crate::{analysis::k_tuple::EOI, CompiledTerminal, KTuple, MAX_K};
+    use crate::{
+        analysis::k_tuple::{KTupleBuilder, EOI},
+        CompiledTerminal, KTuple, MAX_K,
+    };
 
-    fn term(terminals: &[TerminalIndex], k: usize) -> Terminals {
-        let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
+    fn term(terminals: &[TerminalIndex], k: usize, max_terminal_index: usize) -> Terminals {
         debug_assert!(k <= MAX_K);
-        terminals
-            .iter()
-            .enumerate()
-            .for_each(|(i, x)| t[i] = CompiledTerminal(*x));
-        Terminals {
-            t,
-            i: terminals.len(),
-        }
+        let mut t = Terminals::new(max_terminal_index);
+        t.extend(terminals.iter().map(|t| CompiledTerminal(*t)));
+        t
     }
 
     #[test]
     fn check_with_terminal_indices() {
         {
-            let k_tuple = KTuple::new(1).with_terminal_indices(&[1]);
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 1;
-            let k = 1;
-            t[0] = CompiledTerminal(1);
+            let k_tuple = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
+            let t = term(&[1], 1, 1);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: 1,
             };
-            assert_eq!(CompiledTerminal::default(), t[1]);
-            assert_eq!(CompiledTerminal::default(), t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal::default(), t.get(1));
+            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
-            let k_tuple =
-                KTuple::new(MAX_K).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = MAX_K;
-            let k = MAX_K;
-            (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
+            let k_tuple = KTupleBuilder::new()
+                .k(MAX_K)
+                .max_terminal_index(11)
+                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+                .build()
+                .unwrap();
+            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], MAX_K, 11);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: MAX_K,
             };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]");
         }
         {
-            let k_tuple =
-                KTuple::new(5).with_terminal_indices(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 5;
-            let k = 5;
-            (0..5).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
+            let k_tuple = KTupleBuilder::new()
+                .k(5)
+                .max_terminal_index(11)
+                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+                .build()
+                .unwrap();
+            let t = term(&[1, 2, 3, 4, 5], 5, 11);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: 5,
             };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(5), t[4]);
-            assert_eq!(CompiledTerminal::default(), t[5]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(5), t.get(4));
+            assert_eq!(CompiledTerminal::default(), t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
@@ -704,17 +981,14 @@ mod test {
     #[test]
     fn check_from_slice() {
         {
-            let k_tuple = KTuple::from_slice(&[CompiledTerminal(1)], 1);
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 1;
-            let k = 1;
-            t[0] = CompiledTerminal(1);
+            let k_tuple = KTuple::from_slice(&[CompiledTerminal(1)], 1, 1);
+            let t = term(&[1], 1, 1);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: 1,
             };
-            assert_eq!(CompiledTerminal::default(), t[1]);
-            assert_eq!(CompiledTerminal::default(), t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal::default(), t.get(1));
+            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
@@ -733,19 +1007,15 @@ mod test {
                     CompiledTerminal(11),
                 ],
                 MAX_K,
+                11,
             );
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = MAX_K;
-            let k = MAX_K;
-            (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
+            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], MAX_K, 11);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: MAX_K,
             };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple);
         }
         {
@@ -764,79 +1034,16 @@ mod test {
                     CompiledTerminal(11),
                 ],
                 5,
+                11,
             );
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 5;
-            let k = 5;
-            (0..5).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
+            let t = term(&[1, 2, 3, 4, 5], 5, 11);
             let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
+                terminals: TerminalString::Complete(t),
+                k: 5,
             };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(5), t[4]);
-            assert_eq!(CompiledTerminal::default(), t[5]);
-            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
-        }
-    }
-
-    #[test]
-    fn check_from_slice_with() {
-        {
-            let k_tuple = KTuple::from_slice_with(&[1], |t| CompiledTerminal(*t), 1);
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 1;
-            let k = 1;
-            t[0] = CompiledTerminal(1);
-            let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
-            };
-            assert_eq!(CompiledTerminal::default(), t[1]);
-            assert_eq!(CompiledTerminal::default(), t[MAX_K - 1]);
-            assert_eq!(expected, k_tuple, "[1]");
-        }
-        {
-            let k_tuple = KTuple::from_slice_with(
-                &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                |t| CompiledTerminal(*t),
-                MAX_K,
-            );
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = MAX_K;
-            let k = MAX_K;
-            (0..MAX_K).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
-            let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
-            };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(10), t[MAX_K - 1]);
-            assert_eq!(expected, k_tuple);
-        }
-        {
-            let k_tuple = KTuple::from_slice_with(
-                &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-                |t| CompiledTerminal(*t),
-                5,
-            );
-            let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-            let i = 5;
-            let k = 5;
-            (0..5).for_each(|i| {
-                t[i] = CompiledTerminal((i + 1).try_into().unwrap());
-            });
-            let expected = KTuple {
-                terminals: TerminalString::Incomplete(Terminals { t, i }),
-                k,
-            };
-            assert_eq!(CompiledTerminal(1), t[0]);
-            assert_eq!(CompiledTerminal(5), t[4]);
-            assert_eq!(CompiledTerminal::default(), t[5]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(5), t.get(4));
+            assert_eq!(CompiledTerminal::default(), t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
@@ -845,47 +1052,50 @@ mod test {
     fn check_k_tuple_of() {
         {
             let k = 1;
-            let t = Terminals::from_slice_with(&[1], k, |t| CompiledTerminal(*t));
+            let mut t = Terminals::new(1);
+            t.extend([1]);
             let k_tuple = KTuple::of(t, k);
-            let i = k;
+            let mut t2 = Terminals::new(1);
+            t2.extend([1]);
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
+                terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal::default(), t.t[1]);
-            assert_eq!(CompiledTerminal::default(), t.t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal::default(), t.get(1));
+            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
             let k = MAX_K;
-            let t = Terminals::from_slice_with(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], k, |t| {
-                CompiledTerminal(*t)
-            });
+            let mut t = Terminals::new(11);
+            t.extend([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
             let k_tuple = KTuple::of(t, k);
             assert_eq!(MAX_K, k_tuple.len());
-            let i = k;
+            let mut t2 = Terminals::new(11);
+            t2.extend([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
+                terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal(1), t.t[0]);
-            assert_eq!(CompiledTerminal(10), t.t[MAX_K - 1]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
         }
         {
             let k = 5;
-            let t = Terminals::from_slice_with(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], k, |t| {
-                CompiledTerminal(*t)
-            });
+            let mut t = Terminals::new(11);
+            t.extend([1, 2, 3, 4, 5]);
+
             let k_tuple = KTuple::of(t, k);
-            let i = k;
+            let mut t2 = Terminals::new(11);
+            t2.extend([1, 2, 3, 4, 5]);
             let expected = KTuple {
-                terminals: TerminalString::Complete(Terminals { t: t.t, i }),
+                terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal(1), t.t[0]);
-            assert_eq!(CompiledTerminal(5), t.t[4]);
-            assert_eq!(CompiledTerminal::default(), t.t[5]);
+            assert_eq!(CompiledTerminal(1), t.get(0));
+            assert_eq!(CompiledTerminal(5), t.get(4));
+            assert_eq!(CompiledTerminal::default(), t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
@@ -893,31 +1103,86 @@ mod test {
     #[test]
     fn check_k_concat() {
         {
-            let tuple1 = KTuple::eps(1);
-            let tuple2 = KTuple::eps(1);
+            let tuple1 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .eps()
+                .unwrap();
+            let tuple2 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .eps()
+                .unwrap();
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::eps(1);
+            let expected = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .eps()
+                .unwrap();
             assert_eq!(expected, result, "1: [ε] + [ε] = [ε]");
         }
         {
-            let tuple1 = KTuple::new(1).with_terminal_indices(&[1]);
-            let tuple2 = KTuple::eps(1);
+            let tuple1 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
+            let tuple2 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .eps()
+                .unwrap();
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::new(1).with_terminal_indices(&[1]);
+            let expected = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
             assert_eq!(expected, result, "1: [a] + [ε] = [a]");
         }
         {
-            let tuple1 = KTuple::eps(1);
-            let tuple2 = KTuple::new(1).with_terminal_indices(&[1]);
+            let tuple1 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .eps()
+                .unwrap();
+            let tuple2 = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
             let result = tuple1.k_concat(&tuple2, 1);
-            let expected = KTuple::new(1).with_terminal_indices(&[1]);
+            let expected = KTupleBuilder::new()
+                .k(1)
+                .max_terminal_index(1)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
             assert_eq!(expected, result, "1: [ε] + [a] = [a]");
         }
         {
-            let tuple1 = KTuple::new(2).with_terminal_indices(&[1]);
-            let tuple2 = KTuple::new(2).with_terminal_indices(&[2]);
+            let tuple1 = KTupleBuilder::new()
+                .k(2)
+                .max_terminal_index(2)
+                .terminal_string(&[1])
+                .build()
+                .unwrap();
+            let tuple2 = KTupleBuilder::new()
+                .k(2)
+                .max_terminal_index(2)
+                .terminal_string(&[2])
+                .build()
+                .unwrap();
             let result = tuple1.k_concat(&tuple2, 2);
-            let expected = KTuple::new(2).with_terminal_indices(&[1, 2]);
+            let expected = KTupleBuilder::new()
+                .k(2)
+                .max_terminal_index(1)
+                .terminal_string(&[1, 2])
+                .build()
+                .unwrap();
             assert_eq!(expected, result, "2: [a] + [b] = [ab]");
         }
     }
@@ -925,7 +1190,7 @@ mod test {
     #[test]
     fn check_term() {
         {
-            let terminals = Terminals::new();
+            let terminals = Terminals::new(4);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(0, terminals.k_len(1));
             assert_eq!(0, terminals.k_len(2));
@@ -936,7 +1201,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = term(&[1], 1);
+            let terminals = term(&[1], 1, 4);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(1, terminals.k_len(2));
@@ -947,7 +1212,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = term(&[1, 2], 2);
+            let terminals = term(&[1, 2], 2, 4);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(2, terminals.k_len(2));
@@ -959,7 +1224,7 @@ mod test {
             assert!(!terminals.is_k_complete(3));
         }
         {
-            let terminals = term(&[1, EOI], 2);
+            let terminals = term(&[1, EOI], 2, 4);
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
             assert_eq!(2, terminals.k_len(2));
@@ -976,6 +1241,7 @@ mod test {
                     1, EOI, 1, // This constellation is actually illegal!
                 ],
                 3,
+                1,
             );
             assert_eq!(0, terminals.k_len(0));
             assert_eq!(1, terminals.k_len(1));
@@ -987,9 +1253,22 @@ mod test {
             assert!(terminals.is_k_complete(2));
             assert!(terminals.is_k_complete(3));
 
-            let terminals2 = term(&[3], 1);
+            let terminals2 = term(&[3], 1, 1);
             let result = terminals.k_concat(&terminals2, 3);
-            assert_eq!(term(&[1, EOI, 1], 3), result);
+            let expected = term(&[1, EOI, 1], 3, 1);
+            assert_eq!(expected, result);
         }
+    }
+
+    #[test]
+    fn test_iteration_of_terminals() {
+        let terminals = term(&[1, 2, 3, 4, 5], 5, 11);
+        let mut iter = terminals.iter();
+        assert_eq!(Some(1), iter.next());
+        assert_eq!(Some(2), iter.next());
+        assert_eq!(Some(3), iter.next());
+        assert_eq!(Some(4), iter.next());
+        assert_eq!(Some(5), iter.next());
+        assert_eq!(None, iter.next());
     }
 }

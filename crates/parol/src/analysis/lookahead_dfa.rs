@@ -116,9 +116,9 @@ impl LookaheadDFA {
         for k_tuple in &k_tuples.sorted() {
             trace!("{k_tuple}");
             let mut current_state = 0;
-            let tuple = k_tuple.terminals.inner();
-            for i in 0..tuple.i {
-                current_state = dfa.add_transition(current_state, tuple.t[i].0);
+            let tuple = k_tuple.terminals();
+            for ti in tuple.iter() {
+                current_state = dfa.add_transition(current_state, ti);
             }
             // The last created state is always accepting and needs to have a
             // valid production number

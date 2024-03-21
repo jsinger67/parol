@@ -3,12 +3,13 @@
 //! FOLLOW k of productions and non-terminals
 //!
 
+use super::k_tuples::KTuplesBuilder;
 use super::FollowCache;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::k_decision::CacheEntry;
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
-use crate::{GrammarConfig, KTuple, KTuples, Pos, Pr, Symbol, TerminalKind};
+use crate::{GrammarConfig, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
@@ -19,6 +20,7 @@ use std::sync::{Arc, RwLock};
 /// Result type for each non-terminal:
 /// The set of the follow k terminals
 type DomainType = KTuples;
+type DomainTypeBuilder<'a> = KTuplesBuilder<'a>;
 
 /// KTuples for non-terminals in non-terminal-index (alphabetical) order
 pub type FollowSet = Vec<DomainType>;
@@ -85,6 +87,8 @@ pub fn follow_k(
 
     let terminals = grammar_config.cfg.get_ordered_terminals_owned();
 
+    let max_terminal_index = terminals.len() + FIRST_USER_TOKEN as usize;
+
     let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> TerminalIndex {
         (terminals
             .iter()
@@ -114,15 +118,15 @@ pub fn follow_k(
             .iter()
             .enumerate()
             .fold(EquationSystem::new(), |es, (i, pr)| {
-                update_production_equations(
-                    es,
-                    i,
+                let args = UpdateProductionEquationsArgs {
+                    prod_num: i,
                     pr,
-                    &non_terminal_index_finder,
-                    first_k_of_nt.clone(),
-                    terminal_index.clone(),
+                    first_k_of_nt: first_k_of_nt.clone(),
+                    terminal_index: terminal_index.clone(),
                     k,
-                )
+                    max_terminal_index,
+                };
+                update_production_equations(es, &non_terminal_index_finder, args)
             });
 
     trace!(
@@ -164,9 +168,21 @@ pub fn follow_k(
         Vec::new(),
         |mut acc, nt| {
             if nt == start_symbol {
-                acc.push(DomainType::end(k));
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .end()
+                        .unwrap(),
+                );
             } else {
-                acc.push(DomainType::new(k));
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .build()
+                        .unwrap(),
+                );
             }
             acc
         },
@@ -178,7 +194,14 @@ pub fn follow_k(
             non_terminal_positions
                 .iter()
                 .fold(ResultMap::new(), |mut acc, (p, _)| {
-                    acc.insert(*p, DomainType::new(k));
+                    acc.insert(
+                        *p,
+                        DomainTypeBuilder::new()
+                            .k(k)
+                            .max_terminal_index(max_terminal_index)
+                            .build()
+                            .unwrap(),
+                    );
                     acc
                 }),
         )
@@ -215,23 +238,28 @@ pub fn follow_k(
     )
 }
 
+struct UpdateProductionEquationsArgs<'a, T> {
+    prod_num: usize,
+    pr: &'a Pr,
+    first_k_of_nt: Arc<FollowSet>,
+    terminal_index: Arc<T>,
+    k: usize,
+    max_terminal_index: usize,
+}
+
 ///
 /// Creates functions that calculate the FOLLOW k sets for each occurrence of
 /// a non-terminal in the given production and adds them to the equation system.
 ///
 fn update_production_equations<T>(
     mut es: EquationSystem,
-    prod_num: usize,
-    pr: &Pr,
     non_terminal_index_finder: &impl Fn(&str) -> usize,
-    first_k_of_nt: Arc<FollowSet>,
-    terminal_index: Arc<T>,
-    k: usize,
+    args: UpdateProductionEquationsArgs<T>,
 ) -> EquationSystem
 where
     T: Fn(&str, TerminalKind) -> TerminalIndex + Clone + Send + Sync + 'static,
 {
-    let parts = pr.get_r().iter().enumerate().fold(
+    let parts = args.pr.get_r().iter().enumerate().fold(
         Vec::<(usize, SymbolString)>::new(),
         |mut acc, (i, s)| {
             match s {
@@ -267,38 +295,45 @@ where
     // have to provide an equation.
     for (part_index, (symbol_index, symbol_string)) in parts.iter().enumerate() {
         if let Symbol::N(..) = &symbol_string.0[0] {
-            let mut result_function: TransferFunction = Arc::new(move |_, _| DomainType::eps(k));
+            let mut result_function: TransferFunction = Arc::new(move |_, _| {
+                DomainTypeBuilder::new()
+                    .k(args.k)
+                    .max_terminal_index(args.max_terminal_index)
+                    .eps()
+                    .unwrap()
+            });
             for (_, symbol_string) in parts.iter().skip(part_index + 1) {
                 let symbol_string_clone = symbol_string.clone();
                 let symbol = symbol_string_clone.0[0].clone();
                 match symbol {
                     Symbol::T(_) => {
-                        let terminal_index = terminal_index.clone();
+                        let terminal_index = args.terminal_index.clone();
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
                                 let mapper =
                                     |s| CompiledTerminal::create(s, terminal_index.clone());
+                                let terminal_indices: Vec<TerminalIndex> =
+                                    symbol_string_clone.0.iter().map(|s| mapper(s).0).collect();
                                 result_function(result_map, non_terminal_results).k_concat(
-                                    &DomainType::of(
-                                        &[KTuple::from_slice_with(
-                                            &symbol_string_clone.0,
-                                            mapper,
-                                            k,
-                                        )],
-                                        k,
-                                    ),
-                                    k,
+                                    &DomainTypeBuilder::new()
+                                        .k(args.k)
+                                        .max_terminal_index(args.max_terminal_index)
+                                        .clone()
+                                        .terminal_indices(&[&terminal_indices])
+                                        .build()
+                                        .unwrap(),
+                                    args.k,
                                 )
                             });
                     }
                     Symbol::N(nt, _, _) => {
-                        let first_k_of_nt = first_k_of_nt.clone();
+                        let first_k_of_nt = args.first_k_of_nt.clone();
                         let nt_i = non_terminal_index_finder(&nt);
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
                                 let first_of_nt = first_k_of_nt.get(nt_i).unwrap();
                                 result_function(result_map, non_terminal_results)
-                                    .k_concat(first_of_nt, k)
+                                    .k_concat(first_of_nt, args.k)
                             });
                     }
                     Symbol::S(_) => (),
@@ -306,13 +341,15 @@ where
                     Symbol::Pop => (),
                 }
             }
-            let nt = non_terminal_index_finder(pr.get_n_str());
+            let nt = non_terminal_index_finder(args.pr.get_n_str());
             es.insert(
-                (prod_num, *symbol_index).into(),
+                (args.prod_num, *symbol_index).into(),
                 Arc::new(
                     move |result_map, non_terminal_results: Arc<RwLock<FollowSet>>| {
-                        result_function(result_map, non_terminal_results.clone())
-                            .k_concat(non_terminal_results.read().unwrap().get(nt).unwrap(), k)
+                        result_function(result_map, non_terminal_results.clone()).k_concat(
+                            non_terminal_results.read().unwrap().get(nt).unwrap(),
+                            args.k,
+                        )
                     },
                 ),
             );

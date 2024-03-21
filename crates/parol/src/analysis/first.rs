@@ -5,10 +5,13 @@
 
 use crate::analysis::FirstCache;
 use crate::grammar::symbol_string::SymbolString;
-use crate::{CompiledTerminal, GrammarConfig, KTuple, KTuples, Pr, Symbol, TerminalKind};
+use crate::{CompiledTerminal, GrammarConfig, KTuples, Pr, Symbol, TerminalKind};
+use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
 use std::sync::Arc;
+
+use super::k_tuples::KTuplesBuilder;
 
 /// 0: KTuples for terminals in terminal-index order
 /// 1: KTuples for non-terminals in non-terminal-index (alphabetical) order
@@ -17,6 +20,7 @@ pub type FirstSet = (Vec<KTuples>, Vec<KTuples>);
 /// Result type for each production:
 /// The set of the first k terminals
 type DomainType = KTuples;
+type DomainTypeBuilder<'a> = KTuplesBuilder<'a>;
 
 /// The result vector applied to each iteration step;
 /// is also returned after each iteration step
@@ -49,6 +53,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     // The indices returned from this function are used to create CompiledTerminals.
     let terminal_index = Arc::new(grammar_config.cfg.get_terminal_index_function());
 
+    let max_terminal_index = cfg.get_ordered_terminals().len() + FIRST_USER_TOKEN as usize;
+
     let nt_for_production: Vec<usize> =
         cfg.get_non_terminal_set()
             .iter()
@@ -70,6 +76,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                     terminal_index.clone(),
                     non_terminal_index.clone(),
                     k,
+                    max_terminal_index,
                 ));
                 es
             });
@@ -85,8 +92,14 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let step_function: StepFunction = {
         Arc::new(
             move |es: Arc<EquationSystem>, result_vector: Arc<ResultVector>| {
-                let mut new_result_vector: ResultVector =
-                    vec![DomainType::new(k); result_vector.len()];
+                let mut new_result_vector: ResultVector = vec![
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .build()
+                        .unwrap();
+                    result_vector.len()
+                ];
                 for pr_i in 0..pr_count {
                     let r = es[pr_i](result_vector.clone());
                     new_result_vector[pr_count + nt_for_production[pr_i]].append(&r);
@@ -135,16 +148,34 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let mut result_vector = Arc::new(if k == 0 {
         (0..pr_count + nt_count).fold(Vec::with_capacity(pr_count + nt_count), |mut acc, i| {
             if i < pr_count {
-                acc.push(DomainType::new(k));
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .build()
+                        .unwrap(),
+                );
             } else {
-                acc.push(DomainType::eps(k));
+                acc.push(
+                    DomainTypeBuilder::new()
+                        .k(k)
+                        .max_terminal_index(max_terminal_index)
+                        .eps()
+                        .unwrap(),
+                );
             }
             acc
         })
     } else {
         let (mut p, n) = first_cache.get(k - 1, grammar_config);
         for _ in 0..nt_count {
-            p.push(DomainType::new(k));
+            p.push(
+                DomainTypeBuilder::new()
+                    .k(k)
+                    .max_terminal_index(max_terminal_index)
+                    .build()
+                    .unwrap(),
+            );
         }
         for (nt_i, t) in n.iter().enumerate() {
             p[pr_count + nt_i] = t.clone();
@@ -158,6 +189,9 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
             equation_system.clone(),
             result_vector.clone(),
         ));
+        trace!("Iteration number {} completed", iterations);
+        trace!("Old result vector: {:?}", result_vector);
+        trace!("New result vector: {:?}", new_result_vector);
         if new_result_vector == result_vector {
             break;
         }
@@ -180,6 +214,7 @@ fn combine_production_equation<N, T>(
     terminal_index: Arc<T>,
     non_terminal_index: Arc<N>,
     k: usize,
+    max_terminal_index: usize,
 ) -> TransferFunction
 where
     T: Fn(&str, TerminalKind) -> TerminalIndex + Send + Sync + 'static,
@@ -215,7 +250,13 @@ where
             }
             acc
         });
-    let mut result_function: TransferFunction = Arc::new(move |_| DomainType::eps(k));
+    let mut result_function: TransferFunction = Arc::new(move |_| {
+        DomainTypeBuilder::new()
+            .k(k)
+            .max_terminal_index(max_terminal_index)
+            .eps()
+            .unwrap()
+    });
 
     // For each part of the production (separated into strings of terminals and
     // single non-terminals) we have to provide a part of the equation like this:
@@ -230,8 +271,15 @@ where
                 let terminal_index = terminal_index.clone();
                 result_function = Arc::new(move |result_vector: Arc<ResultVector>| {
                     let mapper = |s| CompiledTerminal::create(s, terminal_index.clone());
+                    let terminal_indices: Vec<TerminalIndex> =
+                        symbol_string.0.iter().map(|s| mapper(s).0).collect();
                     result_function(result_vector).k_concat(
-                        &DomainType::of(&[KTuple::from_slice_with(&symbol_string.0, mapper, k)], k),
+                        &DomainTypeBuilder::new()
+                            .k(k)
+                            .max_terminal_index(max_terminal_index)
+                            .terminal_indices(&[&terminal_indices])
+                            .build()
+                            .unwrap(),
                         k,
                     )
                 });
