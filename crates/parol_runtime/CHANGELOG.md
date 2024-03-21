@@ -17,6 +17,35 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.20.2 - 2024-03-21
+
+- Fixed issue [#310 Access internal data of TokenVec](https://github.com/jsinger67/parol/issues/310)
+
+  I extended the implementation on `TokenVec`. It now provides a `get` method and an `iter` method.
+```rust
+/// A vector of tokens in a string representation
+#[derive(Debug, Default)]
+pub struct TokenVec(Vec<String>);
+
+impl TokenVec {
+    /// Pushes a token to the vector
+    pub fn push(&mut self, token: String) {
+        self.0.push(token);
+    }
+
+    /// Returns an iterator over the tokens
+    pub fn iter(&self) -> std::slice::Iter<String> {
+        self.0.iter()
+    }
+
+    /// Returns a token at the given index
+    pub fn get(&self, index: usize) -> Option<&String> {
+        self.0.get(index)
+    }
+}
+```
+
+
 ## 0.20.1 - 2024-01-10
 
 - Refactor `parol_runtime::parser::LLKParser::adjust_token_stream` that is used in error recovery
