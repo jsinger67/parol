@@ -235,13 +235,6 @@ impl Trie {
         trie
     }
 
-    // / Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
-    // pub fn end(max_terminal_index: usize) -> Self {
-    //     let mut trie = Trie::new(max_terminal_index);
-    //     trie.add(&Terminals::end(max_terminal_index));
-    //     trie
-    // }
-
     /// Returns the index of the given terminal is in the node's list of children if it exists
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
         self.root.child_index(t)
@@ -274,12 +267,6 @@ impl Extend<Terminals> for Trie {
         iter.into_iter().for_each(|t| self.add(&t))
     }
 }
-
-// impl PartialEq for Trie {
-//     fn eq(&self, other: &Self) -> bool {
-//         self.len == other.len && self.union(other).0.len() == self.len()
-//     }
-// }
 
 impl Display for Trie {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -494,13 +481,6 @@ mod test {
         assert_eq!(1, t.len());
         assert_eq!(t[0].t, EPS);
     }
-
-    // #[test]
-    // fn trie_end() {
-    //     let t = Trie::end(1);
-    //     assert_eq!(1, t.len());
-    //     assert_eq!(t[0].t, EOI);
-    // }
 
     fn end_node_count(trie: &Trie) -> usize {
         fn recurse_for_cnt(node: &Node) -> usize {

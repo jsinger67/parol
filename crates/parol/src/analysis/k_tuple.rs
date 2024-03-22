@@ -1,6 +1,6 @@
 use parol_runtime::TerminalIndex;
 
-use crate::analysis::compiled_terminal::EPS;
+use crate::analysis::compiled_terminal::{EPS, INVALID};
 use crate::{CompiledTerminal, MAX_K};
 use std::fmt::{Debug, Display, Error, Formatter};
 use std::hash::{Hash, Hasher};
@@ -136,44 +136,6 @@ impl Terminals {
         Self { t, i, bits, mask }
     }
 
-    ///
-    /// Creates a new object from a slice of other objects while applying a mapper function
-    ///
-    // #[must_use]
-    // pub fn from_slice_with<'s, S, M>(others: &'s [S], k: usize, m: M) -> Self
-    // where
-    //     M: Fn(&'s S) -> CompiledTerminal,
-    // {
-    //     let mut t = Self::default();
-    //     others
-    //         .iter()
-    //         .take(std::cmp::min(k, MAX_K))
-    //         .enumerate()
-    //         .for_each(|(n, o)| {
-    //             t.set(n, m(o));
-    //             t.i += 1;
-    //         });
-    //     Self { t, i }
-    // }
-
-    ///
-    /// Creates a new object from a slice of other objects
-    ///
-    // #[must_use]
-    // pub fn from_slice(others: &[CompiledTerminal], k: usize) -> Self {
-    //     let mut t = <[CompiledTerminal; MAX_K + 1]>::default();
-    //     let mut i = 0;
-    //     others
-    //         .iter()
-    //         .take(std::cmp::min(k, MAX_K))
-    //         .enumerate()
-    //         .for_each(|(n, o)| {
-    //             t[n] = *o;
-    //             i += 1;
-    //         });
-    //     Self { t, i }
-    // }
-
     /// Returns the length of the collection
     #[inline]
     pub fn len(&self) -> usize {
@@ -265,10 +227,15 @@ impl Terminals {
 
     /// Adds a new terminal to self if max size is not reached yet and if last is not EOI
     pub fn push(&mut self, t: CompiledTerminal) {
-        if (self.i as usize) < MAX_K && !matches!(self.last(), Some(CompiledTerminal(EOI))) {
-            self.set(self.i.into(), t);
-            self.i += 1;
+        if self.i >= MAX_K as u8 {
+            panic!("Maximum number of terminals reached");
         }
+        if matches!(self.last(), Some(CompiledTerminal(EOI))) {
+            return;
+        }
+        debug_assert_ne!(t.0, INVALID, "Invalid terminal");
+        self.set(self.i.into(), t);
+        self.i += 1;
     }
 
     /// Checks if self is an Epsilon
@@ -276,13 +243,6 @@ impl Terminals {
     pub fn is_eps(&self) -> bool {
         self.i == 1 && ((self.t & self.mask) == self.mask)
     }
-
-    // / Checks if self is an end-of-input symbol
-    // #[inline]
-    // pub fn is_end(&self) -> bool {
-    //     // EOI is 0, we don't need to mask it
-    //     self.i == 1 && self.t & self.mask == EOI as u128
-    // }
 
     /// Creates an iterator over the terminals
     pub fn iter(&self) -> TermIt {
@@ -307,6 +267,7 @@ impl Terminals {
             "Terminal index {} out of range",
             t.0
         );
+        debug_assert_ne!(t.0, INVALID, "Invalid terminal");
         let v = (t.0 as u128 & self.mask) << (i * self.bits as usize);
         let mask = !(self.mask << (i * self.bits as usize));
         self.t &= mask;
@@ -493,14 +454,6 @@ impl TerminalString {
         }
     }
 
-    // / Checks if self is an end-of-input symbol
-    // pub fn is_end(&self) -> bool {
-    //     match self {
-    //         Self::Incomplete(_) => false,
-    //         Self::Complete(v) => v.is_end(),
-    //     }
-    // }
-
     /// Push a new terminal
     pub fn push(&mut self, t: CompiledTerminal, k: usize) {
         match self {
@@ -681,17 +634,6 @@ pub struct KTuple {
 }
 
 impl KTuple {
-    // /
-    // / Creates a new and empty object.
-    // /
-    // pub fn new(k: usize, max_terminal_index: usize) -> Self {
-    //     let terminals = TerminalString::Incomplete(Terminals::new(max_terminal_index));
-    //     Self {
-    //         terminals,
-    //         k: std::cmp::min(k, MAX_K),
-    //     }
-    // }
-
     /// Used for debugging only
     pub fn with_terminal_indices(self, terms: &[TerminalIndex]) -> Self {
         let k = self.k;
@@ -713,22 +655,6 @@ impl KTuple {
 
         Self { terminals, k }
     }
-
-    ///
-    /// Creates a new object from a slice of other objects while applying a mapper function
-    ///
-    // pub fn from_slice_with<'s, S, M>(others: &'s [S], m: M, k: usize) -> Self
-    // where
-    //     M: Fn(&'s S) -> CompiledTerminal,
-    // {
-    //     let terminals = Terminals::from_slice_with(others, k, m);
-    //     let terminals = if terminals.is_k_complete(k) {
-    //         TerminalString::Complete(terminals)
-    //     } else {
-    //         TerminalString::Incomplete(terminals)
-    //     };
-    //     Self { terminals, k }
-    // }
 
     ///
     /// Creates a new object from a slice of CompiledTerminals
@@ -758,33 +684,10 @@ impl KTuple {
         Self { terminals, k }
     }
 
-    // ///
-    // /// Creates a new ε object
-    // ///
-    // pub fn eps(k: usize, max_terminal_index: usize) -> Self {
-    //     let terminals = TerminalString::Incomplete(Terminals::eps(max_terminal_index));
-    //     Self { terminals, k }
-    // }
-    // ///
-    // /// Creates a new End object
-    // ///
-    // pub fn end(k: usize, max_terminal_index: usize) -> Self {
-    //     let terminals = TerminalString::Complete(Terminals::end(max_terminal_index));
-    //     Self { terminals, k }
-    // }
-
     /// Adds a new terminal to self while consuming self
     pub fn push(&mut self, t: CompiledTerminal) {
         self.terminals.push(t, self.k)
     }
-
-    /// Appends a sequence to self while consuming self
-    // pub fn append(self, other: &mut Self) -> Self {
-    //     Self {
-    //         terminals: self.terminals.append(&mut other.terminals, self.k),
-    //         k: self.k,
-    //     }
-    // }
 
     /// Checks if self is an Epsilon
     pub fn is_eps(&self) -> bool {
@@ -902,8 +805,10 @@ impl Extend<CompiledTerminal> for KTuple {
 
 impl Extend<TerminalIndex> for KTuple {
     fn extend<I: IntoIterator<Item = TerminalIndex>>(&mut self, iter: I) {
-        for t in iter {
-            self.push(CompiledTerminal(t));
+        if !self.terminals.is_k_complete() {
+            for t in iter.into_iter().take(self.k - self.len()) {
+                self.push(CompiledTerminal(t));
+            }
         }
     }
 }
@@ -946,27 +851,27 @@ mod test {
         {
             let k_tuple = KTupleBuilder::new()
                 .k(MAX_K)
-                .max_terminal_index(11)
-                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+                .max_terminal_index(10)
+                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
                 .build()
                 .unwrap();
-            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], MAX_K, 11);
+            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], MAX_K, 10);
             let expected = KTuple {
                 terminals: TerminalString::Complete(t),
                 k: MAX_K,
             };
             assert_eq!(CompiledTerminal(1), t.get(0));
             assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
-            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]");
+            assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
         }
         {
             let k_tuple = KTupleBuilder::new()
                 .k(5)
-                .max_terminal_index(11)
-                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+                .max_terminal_index(10)
+                .terminal_string(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
                 .build()
                 .unwrap();
-            let t = term(&[1, 2, 3, 4, 5], 5, 11);
+            let t = term(&[1, 2, 3, 4, 5], 5, 10);
             let expected = KTuple {
                 terminals: TerminalString::Complete(t),
                 k: 5,
@@ -1004,12 +909,11 @@ mod test {
                     CompiledTerminal(8),
                     CompiledTerminal(9),
                     CompiledTerminal(10),
-                    CompiledTerminal(11),
                 ],
                 MAX_K,
-                11,
+                10,
             );
-            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], MAX_K, 11);
+            let t = term(&[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], MAX_K, 10);
             let expected = KTuple {
                 terminals: TerminalString::Complete(t),
                 k: MAX_K,
@@ -1031,12 +935,11 @@ mod test {
                     CompiledTerminal(8),
                     CompiledTerminal(9),
                     CompiledTerminal(10),
-                    CompiledTerminal(11),
                 ],
                 5,
-                11,
+                10,
             );
-            let t = term(&[1, 2, 3, 4, 5], 5, 11);
+            let t = term(&[1, 2, 3, 4, 5], 5, 10);
             let expected = KTuple {
                 terminals: TerminalString::Complete(t),
                 k: 5,

@@ -303,7 +303,7 @@ impl Display for KTuples {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::analysis::compiled_terminal::EPS;
+    use crate::{analysis::compiled_terminal::EPS, MAX_K};
     use criterion::black_box;
     use quickcheck::{Arbitrary, Gen};
 
@@ -494,6 +494,7 @@ mod tests {
         t2: Vec<SmallTerminalIndex>,
         k: usize,
     ) -> bool {
+        let k = std::cmp::min(MAX_K, k);
         let t1 = t1.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let t2 = t2.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let tuples1 = KTuplesBuilder::new()
@@ -512,6 +513,7 @@ mod tests {
     // KTuples equality is commutative
     #[quickcheck]
     fn k_tuples_eq_is_commutative(t1: Vec<SmallTerminalIndex>, k: usize) -> bool {
+        let k = std::cmp::min(MAX_K, k);
         let t1 = t1.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let tuples1 = KTuplesBuilder::new()
             .k(k)
