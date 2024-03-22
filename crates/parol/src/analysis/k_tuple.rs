@@ -55,12 +55,12 @@ impl Terminals {
     /// ```
     /// use parol::analysis::k_tuple::Terminals;
     /// use parol::analysis::compiled_terminal::CompiledTerminal;
-    /// let t = Terminals::new();
+    /// let t = Terminals::new(1);
     /// assert!(t.is_empty());
     /// assert_eq!(0, t.len(), "len");
     /// assert_eq!(0, t.k_len(5), "k_len");
-    /// assert_eq!(CompiledTerminal::default(), t[0]);
-    /// assert_eq!(CompiledTerminal::default(), t[9]);
+    /// assert_eq!(None, t.get(0));
+    /// assert_eq!(None, t.get(9));
     /// ```
     pub fn new(max_terminal_index: usize) -> Self {
         // max_terminal_index + 1: we also need to store EPS
@@ -84,13 +84,13 @@ impl Terminals {
     /// ```
     /// use parol::analysis::k_tuple::{Terminals, TerminalMappings};
     /// use parol::analysis::compiled_terminal::CompiledTerminal;
-    /// let t = Terminals::eps();
+    /// let t = Terminals::eps(1);
     /// assert!(!t.is_empty());
     /// assert_eq!(1, t.len(), "len");
     /// assert_eq!(1, t.k_len(5), "k_len");
-    /// assert_eq!(CompiledTerminal::eps(), t[0]);
-    /// assert_eq!(CompiledTerminal::default(), t[1]);
-    /// assert_eq!(CompiledTerminal::default(), t[9]);
+    /// assert_eq!(Some(CompiledTerminal::eps()), t.get(0));
+    /// assert_eq!(None, t.get(1));
+    /// assert_eq!(None, t.get(9));
     /// ```
     pub fn eps(max_terminal_index: usize) -> Terminals {
         let mut t = Self::new(max_terminal_index);
@@ -104,13 +104,13 @@ impl Terminals {
     /// ```
     /// use parol::analysis::k_tuple::{Terminals, TerminalMappings};
     /// use parol::analysis::compiled_terminal::CompiledTerminal;
-    /// let t = Terminals::end();
+    /// let t = Terminals::end(1);
     /// assert!(!t.is_empty());
     /// assert_eq!(1, t.len());
     /// assert_eq!(1, t.k_len(5));
-    /// assert_eq!(CompiledTerminal::end(), t[0]);
-    /// assert_eq!(CompiledTerminal::default(), t[1]);
-    /// assert_eq!(CompiledTerminal::default(), t[9]);
+    /// assert_eq!(Some(CompiledTerminal::end()), t.get(0));
+    /// assert_eq!(None, t.get(1));
+    /// assert_eq!(None, t.get(9));
     /// ```
     pub fn end(max_terminal_index: usize) -> Terminals {
         let mut t = Self::new(max_terminal_index);
@@ -152,14 +152,14 @@ impl Terminals {
         if self.is_empty() {
             None
         } else {
-            Some(self.get(self.i as usize - 1))
+            self.get(self.i as usize - 1)
         }
     }
 
     /// Checks if the collection is k-complete, i.e. no terminals can be added
     /// ```
     /// use parol::analysis::k_tuple::Terminals;
-    /// let t = Terminals::end();
+    /// let t = Terminals::end(1);
     /// assert!(t.is_k_complete(5));
     /// ```
     pub fn is_k_complete(&self, k: usize) -> bool {
@@ -192,6 +192,16 @@ impl Terminals {
     }
 
     /// Concatenates two collections with respect to the rules of k-concatenation
+    /// ```
+    /// use parol::analysis::k_tuple::{Terminals, TerminalMappings};
+    /// use parol::analysis::compiled_terminal::CompiledTerminal;
+    /// let t1 = Terminals::eps(1);
+    /// let t2 = Terminals::end(1);
+    /// let t = t1.k_concat(&t2, 5);
+    /// assert!(t.is_k_complete(5));
+    /// assert_eq!(1, t.len());
+    /// assert_eq!(Some(CompiledTerminal::end()), t.get(0));
+    /// ```
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         debug_assert!(
             other.bits == self.bits,
@@ -234,6 +244,11 @@ impl Terminals {
             return;
         }
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
+        if t.0 == EPS as TerminalIndex && self.i > 0 {
+            unsafe {
+                std::arch::asm!("int3");
+            }
+        }
         self.set(self.i.into(), t);
         self.i += 1;
     }
@@ -250,14 +265,18 @@ impl Terminals {
     }
 
     /// Returns the terminal at position i
-    pub fn get(&self, i: usize) -> CompiledTerminal {
-        let mut terminal_index = (self.t >> (i * self.bits as usize)) & self.mask;
-        if terminal_index == self.mask {
-            // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e. all
-            // bits set to 1. We need to convert it back to 0xFFFF.
-            terminal_index = EPS as u128;
+    pub fn get(&self, i: usize) -> Option<CompiledTerminal> {
+        if i < self.i as usize {
+            let mut terminal_index = (self.t >> (i * self.bits as usize)) & self.mask;
+            if terminal_index == self.mask {
+                // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e. all
+                // bits set to 1. We need to convert it back to 0xFFFF.
+                terminal_index = EPS as u128;
+            }
+            Some(CompiledTerminal(terminal_index as TerminalIndex))
+        } else {
+            None
         }
-        CompiledTerminal(terminal_index as TerminalIndex)
     }
 
     /// Sets the terminal at position i
@@ -268,6 +287,11 @@ impl Terminals {
             t.0
         );
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
+        if t.0 == EPS as TerminalIndex && self.i > 0 {
+            unsafe {
+                std::arch::asm!("int3");
+            }
+        }
         let v = (t.0 as u128 & self.mask) << (i * self.bits as usize);
         let mask = !(self.mask << (i * self.bits as usize));
         self.t &= mask;
@@ -299,7 +323,7 @@ impl Display for Terminals {
             f,
             "[{}(i{})]",
             (0..self.i)
-                .map(|i| format!("{}", self.get(i as usize)))
+                .map(|i| format!("{}", self.get(i as usize).unwrap()))
                 .collect::<Vec<String>>()
                 .join(", "),
             self.i,
@@ -844,8 +868,8 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: 1,
             };
-            assert_eq!(CompiledTerminal::default(), t.get(1));
-            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
+            assert_eq!(None, t.get(1));
+            assert_eq!(None, t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
@@ -860,8 +884,8 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: MAX_K,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(10)), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
         }
         {
@@ -876,9 +900,9 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: 5,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(5), t.get(4));
-            assert_eq!(CompiledTerminal::default(), t.get(5));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(5)), t.get(4));
+            assert_eq!(None, t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
@@ -892,8 +916,8 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: 1,
             };
-            assert_eq!(CompiledTerminal::default(), t.get(1));
-            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
+            assert_eq!(None, t.get(1));
+            assert_eq!(None, t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
@@ -918,8 +942,8 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: MAX_K,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(10)), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple);
         }
         {
@@ -944,9 +968,9 @@ mod test {
                 terminals: TerminalString::Complete(t),
                 k: 5,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(5), t.get(4));
-            assert_eq!(CompiledTerminal::default(), t.get(5));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(5)), t.get(4));
+            assert_eq!(None, t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }
@@ -964,8 +988,8 @@ mod test {
                 terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal::default(), t.get(1));
-            assert_eq!(CompiledTerminal::default(), t.get(MAX_K - 1));
+            assert_eq!(None, t.get(1));
+            assert_eq!(None, t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1]");
         }
         {
@@ -980,8 +1004,8 @@ mod test {
                 terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(10), t.get(MAX_K - 1));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(10)), t.get(MAX_K - 1));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]");
         }
         {
@@ -996,9 +1020,9 @@ mod test {
                 terminals: TerminalString::Complete(t2),
                 k,
             };
-            assert_eq!(CompiledTerminal(1), t.get(0));
-            assert_eq!(CompiledTerminal(5), t.get(4));
-            assert_eq!(CompiledTerminal::default(), t.get(5));
+            assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+            assert_eq!(Some(CompiledTerminal(5)), t.get(4));
+            assert_eq!(None, t.get(5));
             assert_eq!(expected, k_tuple, "[1, 2, 3, 4, 5]");
         }
     }

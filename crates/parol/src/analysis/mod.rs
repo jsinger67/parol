@@ -18,11 +18,11 @@ pub use left_recursion::detect_left_recursive_non_terminals;
 
 /// Module with the KTuple type
 pub mod k_tuple;
-pub use k_tuple::KTuple;
+pub use k_tuple::{KTuple, KTupleBuilder};
 
 /// Module with the KTuples type
 pub mod k_tuples;
-pub use k_tuples::KTuples;
+pub use k_tuples::{KTuples, KTuplesBuilder};
 
 /// Module with FIRST set calculations
 pub mod first;

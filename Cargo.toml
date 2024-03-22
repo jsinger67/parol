@@ -3,12 +3,15 @@
 resolver = "2"
 
 members = [
-  "crates/*",
-  "examples/basic_interpreter",
-  "examples/json_parser",
-  "examples/json_parser_auto",
-  "examples/oberon2",
-  "examples/toml"
+  "crates/parol",
+  "crates/parol_runtime",
+  "crates/parol-macros",
+  # "crates/*",
+  # "examples/basic_interpreter",
+  # "examples/json_parser",
+  # "examples/json_parser_auto",
+  # "examples/oberon2",
+  # "examples/toml"
 ]
 
 exclude = [

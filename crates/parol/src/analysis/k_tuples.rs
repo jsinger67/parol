@@ -56,7 +56,11 @@ impl<'a> KTuplesBuilder<'a> {
             return Err("max_terminal_index is not set".to_string());
         }
         let trie = Trie::eps(self.max_terminal_index.unwrap());
-        Ok(KTuples(trie, self.k.unwrap(), false))
+        Ok(KTuples {
+            trie,
+            k: self.k.unwrap(),
+            k_complete: false,
+        })
     }
 
     /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
@@ -68,7 +72,11 @@ impl<'a> KTuplesBuilder<'a> {
             return Err("max_terminal_index is not set".to_string());
         }
         let trie = Trie::eps(self.max_terminal_index.unwrap());
-        Ok(KTuples(trie, self.k.unwrap(), true))
+        Ok(KTuples {
+            trie,
+            k: self.k.unwrap(),
+            k_complete: true,
+        })
     }
 
     /// Builds the KTuples
@@ -80,11 +88,11 @@ impl<'a> KTuplesBuilder<'a> {
             return Err("max_terminal_index is not set".to_string());
         }
 
-        let mut tuples = KTuples(
-            Trie::new(self.max_terminal_index.unwrap()),
-            self.k.unwrap(),
-            false,
-        );
+        let mut tuples = KTuples {
+            trie: Trie::new(self.max_terminal_index.unwrap()),
+            k: self.k.unwrap(),
+            k_complete: false,
+        };
 
         if let Some(k_tuples) = self.k_tuples {
             for tuple in k_tuples.iter() {
@@ -119,117 +127,129 @@ impl<'a> KTuplesBuilder<'a> {
 /// A set type consisting of terminal strings (called k-tuples)
 ///
 #[derive(Clone, Eq, PartialEq)]
-pub struct KTuples(Trie, usize, bool);
+pub struct KTuples {
+    trie: Trie,
+    k: usize,
+    k_complete: bool,
+}
 
 impl KTuples {
     /// Inserts a KTuple
     pub fn insert(&mut self, tuple: KTuple) {
-        debug_assert!(self.1 >= tuple.k());
-        self.2 &= tuple.is_k_complete();
-        self.0.insert(&tuple);
+        debug_assert!(self.k >= tuple.k());
+        self.k_complete &= tuple.is_k_complete();
+        self.trie.insert(&tuple);
     }
 
     /// Appends another KTuples item to self
     pub fn append(&mut self, other: &Self) -> bool {
-        let count = self.0.len();
-        self.0.append(&other.0);
-        count != self.0.len()
+        let count = self.trie.len();
+        self.trie.append(&other.trie);
+        count != self.trie.len()
     }
 
     /// Creates a union with another KTuples and self
     pub fn union(&self, other: &Self) -> (Self, bool) {
-        let (unn, changed) = self.0.union(&other.0);
-        let mut tuples = Self(unn, self.1, false);
+        let (unn, changed) = self.trie.union(&other.trie);
+        let mut tuples = Self {
+            trie: unn,
+            k: self.k,
+            k_complete: false,
+        };
         tuples.update_completeness();
         (tuples, changed)
     }
 
     /// Creates a intersection with another KTuples and self
     pub fn intersection(&self, other: &Self) -> Self {
-        let mut tuples = Self(self.0.intersection(&other.0), self.1, false);
+        let mut tuples = Self {
+            trie: self.trie.intersection(&other.trie),
+            k: self.k,
+            k_complete: false,
+        };
         tuples.update_completeness();
         tuples
     }
 
     /// Returns the number of `KTuple`s
     pub fn len(&self) -> usize {
-        self.0.len()
+        self.trie.len()
     }
 
     /// Checks if the collection is empty
     pub fn is_empty(&self) -> bool {
-        self.0.is_empty()
+        self.trie.is_empty()
     }
 
     /// Checks if self and other are disjoint
     pub fn is_disjoint(&self, other: &Self) -> bool {
-        self.0.is_disjoint(&other.0)
+        self.trie.is_disjoint(&other.trie)
     }
 
     ///
     /// Creates a new object from a slice of KTuple objects.
     ///
     /// ```
-    /// use parol::{KTuple, KTuples, CompiledTerminal};
+    /// use parol::{KTuple, KTuplesBuilder, CompiledTerminal};
     /// use parol::analysis::k_tuple::TerminalMappings;
     /// use parol::analysis::compiled_terminal::EPS;
     ///
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
+    ///     let tuples1 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[EPS]]).build().unwrap();
+    ///     let tuples2 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[EPS]]).build().unwrap();
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
+    ///     let expected = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[EPS]]).build().unwrap();
     ///     assert_eq!(expected, result, "[ε] + [ε] = [ε]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
+    ///     let tuples1 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[1]]).build().unwrap();
+    ///     let tuples2 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[EPS]]).build().unwrap();
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let expected = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[1]]).build().unwrap();
     ///     assert_eq!(expected, result, "[a] + [ε] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[EPS])], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let tuples1 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[EPS]]).build().unwrap();
+    ///     let tuples2 = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[1]]).build().unwrap();
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let expected = KTuplesBuilder::new().k(1).max_terminal_index(1).terminal_indices(&[&[1]]).build().unwrap();
     ///     assert_eq!(expected, result, "[ε] + [a] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[2])], 1);
+    ///     let tuples1 = KTuplesBuilder::new().k(1).max_terminal_index(2).terminal_indices(&[&[1]]).build().unwrap();
+    ///     let tuples2 = KTuplesBuilder::new().k(1).max_terminal_index(2).terminal_indices(&[&[2]]).build().unwrap();
     ///     let result = tuples1.k_concat(&tuples2, 1);
-    ///     let expected = KTuples::of(&vec![KTuple::new(1).with_terminal_indices(&[1])], 1);
+    ///     let expected = KTuplesBuilder::new().k(1).max_terminal_index(2).terminal_indices(&[&[1]]).build().unwrap();
     ///     assert_eq!(expected, result, "1: [a] + [b] = [a]");
     /// }
     /// {
-    ///     let tuples1 = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[1])], 2);
-    ///     let tuples2 = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[2])], 2);
+    ///     let tuples1 = KTuplesBuilder::new().k(2).max_terminal_index(2).terminal_indices(&[&[1]]).build().unwrap();
+    ///     let tuples2 = KTuplesBuilder::new().k(2).max_terminal_index(2).terminal_indices(&[&[2]]).build().unwrap();
     ///     let result = tuples1.k_concat(&tuples2, 2);
-    ///     let expected = KTuples::of(&vec![KTuple::new(2).with_terminal_indices(&[1, 2])], 2);
+    ///     let expected = KTuplesBuilder::new().k(2).max_terminal_index(2).terminal_indices(&[&[1, 2]]).build().unwrap();
     ///     assert_eq!(expected, result, "2: [a] + [b] = [ab]");
     /// }
     ///
     /// ```
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
-        if !self.2 {
-            let max_terminal_index = self.0.max_terminal_index;
+        if !self.k_complete {
+            let max_terminal_index = self.trie.max_terminal_index;
             let mut complete = Trie::new(max_terminal_index);
             let mut incomplete = Trie::new(max_terminal_index);
-            self.0.iter().for_each(|t| {
+            self.trie.iter().for_each(|t| {
                 if t.is_k_complete(k) {
                     complete.add(&t);
                 } else {
                     incomplete.add(&t);
                 }
             });
-            self.0 = complete;
-            self.0.max_terminal_index = max_terminal_index;
-            self.0.extend(
+            self.trie = complete;
+            self.trie.max_terminal_index = max_terminal_index;
+            self.trie.extend(
                 incomplete
                     .iter()
-                    .flat_map(|t| other.0.iter().map(move |o| t.k_concat(&o, k))),
+                    .flat_map(|t| other.trie.iter().map(move |o| t.k_concat(&o, k))),
             );
             self.update_completeness();
         }
@@ -246,13 +266,13 @@ impl KTuples {
                 .map(|t| t.to_string(terminals))
                 .collect::<Vec<String>>()
                 .join(", "),
-            self.1
+            self.k
         )
     }
 
     /// Set the lookahead size
     pub fn set_k(mut self, k: usize) -> Self {
-        self.1 = k;
+        self.k = k;
         self.update_completeness();
         self
     }
@@ -260,13 +280,13 @@ impl KTuples {
     /// Returns a sorted representation of self
     pub fn sorted(&self) -> Vec<KTuple> {
         let mut sorted_k_tuples: Vec<KTuple> =
-            self.0.iter().map(|t| KTuple::of(t, self.1)).collect();
+            self.trie.iter().map(|t| KTuple::of(t, self.k)).collect();
         sorted_k_tuples.sort_by(|a, b| a.partial_cmp(b).unwrap());
         sorted_k_tuples
     }
 
     fn update_completeness(&mut self) {
-        self.2 = self.0.iter().all(|t| t.is_k_complete(self.1));
+        self.k_complete = self.trie.iter().all(|t| t.is_k_complete(self.k));
     }
 }
 
@@ -280,7 +300,7 @@ impl Debug for KTuples {
                 .map(|e| format!("{:?}", e))
                 .collect::<Vec<String>>()
                 .join(", "),
-            self.1
+            self.k
         )
     }
 }
@@ -290,12 +310,12 @@ impl Display for KTuples {
         write!(
             f,
             "{{{}}}(k={})",
-            self.0
+            self.trie
                 .iter()
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()
                 .join(", "),
-            self.1
+            self.k
         )
     }
 }

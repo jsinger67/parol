@@ -177,7 +177,7 @@ impl Trie {
         if terminals.is_empty() {
             return;
         }
-        let (start_root, mut changed) = self.add_child(terminals.get(0).0);
+        let (start_root, mut changed) = self.add_child(terminals.get(0).unwrap().0);
         let mut node = &mut self.root[start_root];
         for ti in terminals.iter().skip(1) {
             let (child_index, inserted) = node.add_child(ti);

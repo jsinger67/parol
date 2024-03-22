@@ -36,7 +36,8 @@ pub mod analysis;
 
 pub use analysis::{
     calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal,
-    GrammarAnalysisError, KTuple, KTuples, LookaheadDFA, RecursiveNonTerminal, RelatedHint,
+    GrammarAnalysisError, KTuple, KTupleBuilder, KTuples, KTuplesBuilder, LookaheadDFA,
+    RecursiveNonTerminal, RelatedHint,
 };
 
 ///
