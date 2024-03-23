@@ -35,19 +35,19 @@ const MAX_BITS: u8 = (std::mem::size_of::<u128>() * 8) as u8 / MAX_K as u8;
 /// The maximum number of terminals when storing MAX_K terminals in 128 bits is:
 /// 128 / MAX_K = 128 / 10 = 12.8 => 12 bits
 /// The maximum number of terminals that can be stored is 2^12 = 4096.
-/// The maximum value of member bits is therefore 12 and can safely be stored in a u8.
+/// The maximum value of the bit count is therefore 12 and can safely be stored in four bits.
 /// We store a mask to more easily extract the terminals from the 128 bits unsigned integer.
-/// The mask is calculated as 2^bits - 1 that is equivalent to the expression !(!0u128 << bits).
+/// The mask to extract single terminals from the 128 bit unsigned integer is calculated as
+/// 2^bits - 1 that is equivalent to the expression !(!0u128 << bits) at runtime.
+///
+/// Since we use only 120 bits to store the terminals, we have 8 bits left. We use the 8 bits to
+/// store the index of the next insertion as well as the bit count used to calculate the mask.
+/// Therefore we split the highest 8 bits of the 128 bits unsigned integer as follows:
+/// - The higher 4 bits are used to store the number of bits used per terminal
+/// - The lower 4 bits are used to store the index of the next insertion
 #[derive(Clone, Copy, Default, Hash, Eq, PartialEq)]
 pub struct Terminals {
-    // The terminals
-    pub(crate) t: u128,
-    // A mask to extract the terminal at position i
-    mask: u128,
-    // The index of next insertion
-    pub(crate) i: u8,
-    // Number of bits used per terminal
-    bits: u8,
+    t: u128,
 }
 
 impl Terminals {
@@ -71,13 +71,9 @@ impl Terminals {
                 max_terminal_index + 1, bits, MAX_BITS
             );
         }
-        let mask = !(!0u128 << bits);
-        Self {
-            t: 0,
-            i: 0,
-            bits,
-            mask,
-        }
+        let mut this = Self { t: 0 };
+        this.set_bits(bits);
+        this
     }
 
     /// Creates a new item with epsilon semantic
@@ -94,8 +90,8 @@ impl Terminals {
     /// ```
     pub fn eps(max_terminal_index: usize) -> Terminals {
         let mut t = Self::new(max_terminal_index);
-        t.t = t.mask;
-        t.i = 1;
+        t.set(0, CompiledTerminal(EPS));
+        t.set_next_index(1);
         t
     }
 
@@ -115,7 +111,7 @@ impl Terminals {
     pub fn end(max_terminal_index: usize) -> Terminals {
         let mut t = Self::new(max_terminal_index);
         // t.t = 0; // EOI as u128 & t.mask;
-        t.i = 1;
+        t.set_next_index(1);
         t
     }
 
@@ -124,8 +120,8 @@ impl Terminals {
     ///
     #[must_use]
     pub fn of(k: usize, other: Self) -> Self {
-        let bits = other.bits;
-        let mask = other.mask;
+        let bits = other.bits();
+        let mask = other.mask();
         let i = other.k_len(k) as u8;
         let mut copy_mask = 0u128;
         (0..i).for_each(|_| {
@@ -133,18 +129,72 @@ impl Terminals {
             copy_mask |= mask;
         });
         let t = other.t & copy_mask;
-        Self { t, i, bits, mask }
+        let mut t = Self { t };
+        t.set_bits(bits);
+        t.set_next_index(i);
+        t
     }
 
     /// Returns the length of the collection
     #[inline]
     pub fn len(&self) -> usize {
-        self.i as usize
+        self.next_index() as usize
     }
     /// Checks if the collection is empty
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.i == 0
+        self.next_index() == 0
+    }
+
+    /// Returns the index of the next insertion
+    /// The highest 8 bits of t are used to store the index of the next insertion in it's lowest 4
+    /// bits.
+    #[inline]
+    pub fn next_index(&self) -> u8 {
+        ((self.t & 0x0F00_0000_0000_0000_0000_0000_0000_0000) >> 120) as u8
+    }
+
+    /// Sets the index of the next insertion
+    #[inline]
+    fn set_next_index(&mut self, i: u8) {
+        self.t &= 0xF0FF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
+        self.t |= (i as u128) << 120;
+    }
+
+    /// Increments the index of the next insertion
+    #[inline]
+    pub fn inc_index(&mut self) {
+        let i = self.next_index() + 1;
+        self.t &= 0xF0FF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
+        self.t |= (i as u128) << 120;
+    }
+
+    /// Returns the bits used per terminal
+    /// The highest 8 bits of t are used to store the number of bits used per terminal in it's highest
+    /// 4 bits.
+    /// ```
+    /// use parol::analysis::k_tuple::Terminals;
+    /// let t = Terminals::eps(1);
+    /// assert_eq!(2, t.bits());
+    /// ```
+    #[inline]
+    pub fn bits(&self) -> u8 {
+        ((self.t & 0xF000_0000_0000_0000_0000_0000_0000_0000) >> 124) as u8
+    }
+
+    /// Sets the number of bits used per terminal
+    #[inline]
+    pub fn set_bits(&mut self, bits: u8) {
+        self.t &= 0x0FFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF;
+        self.t |= (bits as u128) << 124;
+        debug_assert_ne!(self.bits(), 0, "Bits must not be 0");
+    }
+
+    /// Returns the mask used to extract the terminal at position i
+    /// The mask is calculated as 2^bits - 1 that is equivalent to the expression !(!0u128 << bits).
+    #[inline]
+    pub fn mask(&self) -> u128 {
+        !(!0u128 << self.bits())
     }
 
     #[must_use]
@@ -152,7 +202,7 @@ impl Terminals {
         if self.is_empty() {
             None
         } else {
-            self.get(self.i as usize - 1)
+            self.get(self.next_index() as usize - 1)
         }
     }
 
@@ -174,8 +224,10 @@ impl Terminals {
 
     /// Clears the collection
     pub fn clear(&mut self) {
+        let bits = self.bits();
         self.t = 0;
-        self.i = 0;
+        self.set_bits(bits);
+        debug_assert_ne!(self.bits(), 0, "Bits must not be 0");
     }
 
     /// Concatenates two collections with respect to the rules of k-concatenation
@@ -208,11 +260,13 @@ impl Terminals {
     /// ```
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         debug_assert!(
-            other.bits == self.bits,
+            other.bits() == self.bits(),
             "Bits must be the same, self:({:?}) != other:({:?})",
             self,
             other
         );
+        debug_assert_ne!(self.bits(), 0, "Bits must not be 0");
+
         if other.is_eps() || other.is_empty() {
             // w + ε = w
             return self;
@@ -242,33 +296,36 @@ impl Terminals {
             return self;
         };
 
+        let bits = self.bits();
+
         // Mask out the other value with a length of to_take
-        let other_val = other.t & !(!0u128 << (to_take * other.bits as usize));
+        let other_val = other.t & !(!0u128 << (to_take * bits as usize));
         // Shift the other value to the left by the length of my_k_len
-        let value = other_val << (my_k_len * self.bits as usize);
+        let value = other_val << (my_k_len * bits as usize);
         // Add the other value to self
         self.t |= value;
-        self.i = (my_k_len + to_take) as u8;
+        self.set_next_index((my_k_len + to_take) as u8);
+        self.set_bits(bits);
         self
     }
 
     /// Adds a new terminal to self if max size is not reached yet and if last is not EOI
     pub fn push(&mut self, t: CompiledTerminal) {
-        if self.i >= MAX_K as u8 {
+        if self.next_index() >= MAX_K as u8 {
             panic!("Maximum number of terminals reached");
         }
         if matches!(self.last(), Some(CompiledTerminal(EOI))) {
             return;
         }
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
-        self.set(self.i.into(), t);
-        self.i += 1;
+        self.set(self.next_index().into(), t);
+        self.inc_index()
     }
 
     /// Checks if self is an Epsilon
     #[inline]
     pub fn is_eps(&self) -> bool {
-        self.i == 1 && ((self.t & self.mask) == self.mask)
+        self.next_index() == 1 && ((self.t & self.mask()) == self.mask())
     }
 
     /// Creates an iterator over the terminals
@@ -278,9 +335,9 @@ impl Terminals {
 
     /// Returns the terminal at position i
     pub fn get(&self, i: usize) -> Option<CompiledTerminal> {
-        if i < self.i as usize {
-            let mut terminal_index = (self.t >> (i * self.bits as usize)) & self.mask;
-            if terminal_index == self.mask {
+        if i < self.next_index() as usize {
+            let mut terminal_index = (self.t >> (i * self.bits() as usize)) & self.mask();
+            if terminal_index == self.mask() {
                 // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e. all
                 // bits set to 1. We need to convert it back to 0xFFFF.
                 terminal_index = EPS as u128;
@@ -294,13 +351,13 @@ impl Terminals {
     /// Sets the terminal at position i
     pub fn set(&mut self, i: usize, t: CompiledTerminal) {
         debug_assert!(
-            t.0 <= self.mask as TerminalIndex || t.0 == EPS as TerminalIndex,
+            t.0 <= self.mask() as TerminalIndex || t.0 == EPS as TerminalIndex,
             "Terminal index {} out of range",
             t.0
         );
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
-        let v = (t.0 as u128 & self.mask) << (i * self.bits as usize);
-        let mask = !(self.mask << (i * self.bits as usize));
+        let v = (t.0 as u128 & self.mask()) << (i * self.bits() as usize);
+        let mask = !(self.mask() << (i * self.bits() as usize));
         self.t &= mask;
         self.t |= v;
     }
@@ -308,7 +365,7 @@ impl Terminals {
 
 impl Ord for Terminals {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        match self.i.cmp(&other.i) {
+        match self.next_index().cmp(&other.next_index()) {
             std::cmp::Ordering::Less => std::cmp::Ordering::Less,
             std::cmp::Ordering::Equal => {
                 <&Self as Into<u128>>::into(self).cmp(&<&Self as Into<u128>>::into(other))
@@ -329,11 +386,11 @@ impl Display for Terminals {
         write!(
             f,
             "[{}(i{})]",
-            (0..self.i)
+            (0..self.next_index())
                 .map(|i| format!("{}", self.get(i as usize).unwrap()))
                 .collect::<Vec<String>>()
                 .join(", "),
-            self.i,
+            self.next_index(),
         )
     }
 }
@@ -341,10 +398,8 @@ impl Display for Terminals {
 // Used for comparison in implementation of Ord
 impl From<&Terminals> for u128 {
     fn from(t: &Terminals) -> Self {
-        // If the assertion never fails, the extra masking is not necessary
-        debug_assert!(t.t & (!0u128 << (t.i * t.bits) as usize) == 0);
         // Mask out the unused bits although it should not be necessary
-        t.t & !(!0u128 << (t.i * t.bits) as usize)
+        t.t & !(!0u128 << (t.next_index() * t.bits()) as usize)
     }
 }
 
@@ -369,7 +424,10 @@ impl Debug for Terminals {
         write!(
             f,
             "0b{:b}, i:{}, bits:0x{:x}, mask:0x{:x}",
-            self.t, self.i, self.bits, self.mask
+            self.t,
+            self.next_index(),
+            self.bits(),
+            self.mask()
         )
     }
 }
@@ -378,13 +436,29 @@ impl Debug for Terminals {
 /// It returns the terminal indices
 #[derive(Debug)]
 pub struct TermIt {
+    /// A copy of the Terminals object.
+    /// During iteration, the member t is shifted to the right by bits and the terminal is extracted
+    /// by masking the lowest bits.
     t: Terminals,
+    /// The current index
     i: usize,
+    /// The number of bits used per terminal
+    bits: usize,
+    /// The mask to extract the terminal
+    mask: u128,
+    /// The number of terminals in the collection
+    len: usize,
 }
 
 impl TermIt {
     fn new(t: Terminals) -> Self {
-        Self { t, i: 0 }
+        Self {
+            t,
+            i: 0,
+            bits: t.bits() as usize,
+            mask: t.mask(),
+            len: t.next_index() as usize,
+        }
     }
 }
 
@@ -392,11 +466,13 @@ impl Iterator for TermIt {
     type Item = TerminalIndex;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.i < self.t.i as usize {
-            let t = self.t.t & self.t.mask;
-            self.t.t >>= self.t.bits as usize;
+        if self.i < self.len {
+            let t = self.t.t & self.mask;
+            // Prepare for the next iteration
+            self.t.t >>= self.bits;
             self.i += 1;
-            if t == self.t.mask {
+
+            if t == self.mask {
                 // Epsilon is defined as 0xFFFF and stored as a value identical to self.mask, i.e.
                 // all bits set to 1. We need to convert it back to 0xFFFF.
                 Some(EPS)
@@ -675,7 +751,7 @@ impl KTuple {
 
         terms.iter().take(k).enumerate().for_each(|(i, t)| {
             terminals.set(i, CompiledTerminal(*t));
-            terminals.i += 1;
+            terminals.inc_index();
         });
 
         let terminals = if terminals.is_k_complete(k) {
@@ -799,7 +875,7 @@ impl Debug for KTuple {
             f,
             "[{:?}(i{})](k{})",
             self.terminals,
-            self.terminals.inner().i,
+            self.terminals.inner().next_index(),
             self.k
         )
     }
@@ -811,7 +887,7 @@ impl Display for KTuple {
             f,
             "[{}(i{})](k{})",
             self.terminals,
-            self.terminals.inner().i,
+            self.terminals.inner().next_index(),
             self.k
         )
     }
@@ -859,6 +935,55 @@ mod test {
         let mut t = Terminals::new(max_terminal_index);
         t.extend(terminals.iter().map(|t| CompiledTerminal(*t)));
         t
+    }
+
+    #[test]
+    fn test_terminals_bits() {
+        let terminals = Terminals::new(6);
+        assert_eq!(3, terminals.bits());
+    }
+
+    #[test]
+    fn test_terminals_set_bits() {
+        let mut terminals = Terminals::new(6);
+        terminals.set_bits(0b1010);
+        assert_eq!(0b1010, terminals.bits());
+        terminals.set_bits(0b1100);
+        assert_eq!(0b1100, terminals.bits());
+    }
+
+    #[test]
+    fn test_terminals_mask() {
+        let terminals = Terminals::new(6);
+        assert_eq!(terminals.mask(), 0b111);
+    }
+
+    #[test]
+    fn test_terminals_next_index() {
+        let mut terminals = Terminals::new(6);
+        assert_eq!(0, terminals.next_index());
+        terminals.set_next_index(3);
+        assert_eq!(3, terminals.next_index());
+    }
+
+    #[test]
+    fn test_terminals_set_next_index() {
+        let mut terminals = Terminals::new(6);
+        assert_eq!(0, terminals.next_index());
+        terminals.set_next_index(3);
+        assert_eq!(3, terminals.next_index());
+        terminals.set_next_index(5);
+        assert_eq!(5, terminals.next_index());
+    }
+
+    #[test]
+    fn test_terminals_inc_index() {
+        let mut terminals = Terminals::new(6);
+        assert_eq!(0, terminals.next_index());
+        terminals.inc_index();
+        assert_eq!(1, terminals.next_index());
+        terminals.inc_index();
+        assert_eq!(2, terminals.next_index());
     }
 
     #[test]
@@ -1223,7 +1348,7 @@ mod test {
 
     #[test]
     fn test_iteration_of_terminals() {
-        let terminals = term(&[1, 2, 3, 4, 5], 5, 11);
+        let terminals = term(&[1, 2, 3, 4, 5], 5, 5);
         let mut iter = terminals.iter();
         assert_eq!(Some(1), iter.next());
         assert_eq!(Some(2), iter.next());
