@@ -433,6 +433,17 @@ mod test {
         }
     }
 
+    #[derive(Debug, Clone, Copy)]
+    struct LookaheadSize(usize);
+
+    impl Arbitrary for LookaheadSize {
+        fn arbitrary(_g: &mut Gen) -> LookaheadSize {
+            let rand = rand::random::<usize>();
+            // Generate a random value between 1 and MAX_K
+            LookaheadSize(rand % MAX_K + 1)
+        }
+    }
+
     #[test]
     fn node_new() {
         let n = Node::new(42);
@@ -1164,18 +1175,18 @@ mod test {
     fn trie_insert_is_commutative_regarding_eq(
         t1: Vec<SmallTerminalIndex>,
         t2: Vec<SmallTerminalIndex>,
-        k: usize,
+        k: LookaheadSize,
     ) -> bool {
         let t1 = t1.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let t2 = t2.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let tuple1 = KTupleBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_string(&t1)
             .build()
             .unwrap();
         let tuple2 = KTupleBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_string(&t2)
             .build()
@@ -1195,7 +1206,10 @@ mod test {
 
     // Number of elements should be eq to number of the sum of inner and outer end nodes
     #[quickcheck]
-    fn trie_item_count_equals_end_node_count(t1: Vec<Vec<SmallTerminalIndex>>, k: usize) -> bool {
+    fn trie_item_count_equals_end_node_count(
+        t1: Vec<Vec<SmallTerminalIndex>>,
+        k: LookaheadSize,
+    ) -> bool {
         let t1: Vec<Vec<TerminalIndex>> = t1
             .iter()
             .map(|t| t.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>())
@@ -1203,7 +1217,7 @@ mod test {
         let trie = t1.iter().fold(Trie::new(MAX_TERMINAL_INDEX), |mut acc, e| {
             acc.insert(
                 &KTupleBuilder::new()
-                    .k(k)
+                    .k(k.0)
                     .max_terminal_index(MAX_TERMINAL_INDEX)
                     .terminal_string(e)
                     .build()

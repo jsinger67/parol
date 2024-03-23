@@ -343,6 +343,17 @@ mod tests {
         }
     }
 
+    #[derive(Debug, Clone, Copy)]
+    struct LookaheadSize(usize);
+
+    impl Arbitrary for LookaheadSize {
+        fn arbitrary(_g: &mut Gen) -> LookaheadSize {
+            let rand = rand::random::<usize>();
+            // Generate a random value between 1 and MAX_K
+            LookaheadSize(rand % MAX_K + 1)
+        }
+    }
+
     #[test]
     fn test_k_concat_epsilon() {
         let tuples1 = KTuplesBuilder::new()
@@ -512,18 +523,17 @@ mod tests {
     fn k_tuples_insert_is_commutative_regarding_eq(
         t1: Vec<SmallTerminalIndex>,
         t2: Vec<SmallTerminalIndex>,
-        k: usize,
+        k: LookaheadSize,
     ) -> bool {
-        let k = std::cmp::min(MAX_K, k);
         let t1 = t1.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let t2 = t2.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let tuples1 = KTuplesBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_indices(&[&t1, &t2])
             .build();
         let tuples2 = KTuplesBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_indices(&[&t2, &t1])
             .build();
@@ -532,16 +542,15 @@ mod tests {
 
     // KTuples equality is commutative
     #[quickcheck]
-    fn k_tuples_eq_is_commutative(t1: Vec<SmallTerminalIndex>, k: usize) -> bool {
-        let k = std::cmp::min(MAX_K, k);
+    fn k_tuples_eq_is_commutative(t1: Vec<SmallTerminalIndex>, k: LookaheadSize) -> bool {
         let t1 = t1.iter().map(|t| t.0).collect::<Vec<TerminalIndex>>();
         let tuples1 = KTuplesBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_indices(&[&t1])
             .build();
         let tuples2 = KTuplesBuilder::new()
-            .k(k)
+            .k(k.0)
             .max_terminal_index(MAX_TERMINAL_INDEX)
             .terminal_indices(&[&t1])
             .build();

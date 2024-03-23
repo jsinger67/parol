@@ -26,7 +26,7 @@ pub trait TerminalMappings<T> {
 }
 
 /// When storing MAX_K terminals in 128 bits, the maximum number of bits used per terminal is 12.
-const MAX_BITS: u8 = 12;
+const MAX_BITS: u8 = (std::mem::size_of::<u128>() * 8) as u8 / MAX_K as u8;
 
 /// A collection of terminals
 ///
@@ -170,17 +170,14 @@ impl Terminals {
     #[must_use]
     pub fn k_len(&self, k: usize) -> usize {
         let mut k_len = 0;
-        let mut t_dup = self.t;
-        for _i in 0..self.i {
+        for t in self.iter() {
             if k_len >= k {
                 break;
             }
             k_len += 1;
-            let t = t_dup & self.mask;
-            if t == EOI as u128 {
+            if t == EOI {
                 break;
             }
-            t_dup >>= self.bits as usize;
         }
         k_len
     }
@@ -201,6 +198,23 @@ impl Terminals {
     /// assert!(t.is_k_complete(5));
     /// assert_eq!(1, t.len());
     /// assert_eq!(Some(CompiledTerminal::end()), t.get(0));
+    /// let t = t2.k_concat(&t1, 5);
+    /// assert!(t.is_k_complete(5));
+    /// assert_eq!(1, t.len());
+    /// assert_eq!(Some(CompiledTerminal::end()), t.get(0));
+    /// let mut t1 = Terminals::new(6);
+    /// t1.extend([1, 2, 3].iter().cloned());
+    /// let mut t2 = Terminals::new(6);
+    /// t2.extend([4, 5, 6].iter().cloned());
+    /// let t = t1.k_concat(&t2, 5);
+    /// assert!(t.is_k_complete(5));
+    /// assert_eq!(5, t.len());
+    /// assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+    /// assert_eq!(Some(CompiledTerminal(2)), t.get(1));
+    /// assert_eq!(Some(CompiledTerminal(3)), t.get(2));
+    /// assert_eq!(Some(CompiledTerminal(4)), t.get(3));
+    /// assert_eq!(Some(CompiledTerminal(5)), t.get(4));
+    /// assert_eq!(None, t.get(5));
     /// ```
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         debug_assert!(
@@ -209,12 +223,12 @@ impl Terminals {
             self,
             other
         );
-        if other.is_eps() {
-            // w + ε = W
+        if other.is_eps() || other.is_empty() {
+            // w + ε = w
             return self;
         }
 
-        if self.is_eps() {
+        if self.is_eps() || self.is_empty() {
             // ε + w = w
             // Remove possible epsilon terminal
             self.clear();
@@ -226,10 +240,23 @@ impl Terminals {
         }
 
         let my_k_len = self.k_len(k);
-        let to_take = other.k_len(k - my_k_len);
-        let mask = !0u128 << (to_take * self.bits as usize);
-        let value = (other.t & !mask) << (my_k_len * self.bits as usize);
-        self.t &= !mask;
+        let other_len = other.k_len(k);
+        let to_take = std::cmp::min(k - my_k_len, other_len);
+        if to_take == 0 {
+            // We can't take any more terminals
+            debug_assert!(
+                false,
+                "to_take == 0, self:({:?}), other:({:?})",
+                self, other
+            );
+            return self;
+        };
+
+        // Mask out the other value with a length of to_take
+        let other_val = other.t & !(!0u128 << (to_take * other.bits as usize));
+        // Shift the other value to the left by the length of my_k_len
+        let value = other_val << (my_k_len * self.bits as usize);
+        // Add the other value to self
         self.t |= value;
         self.i = (my_k_len + to_take) as u8;
         self
@@ -244,11 +271,6 @@ impl Terminals {
             return;
         }
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
-        if t.0 == EPS as TerminalIndex && self.i > 0 {
-            unsafe {
-                std::arch::asm!("int3");
-            }
-        }
         self.set(self.i.into(), t);
         self.i += 1;
     }
@@ -287,11 +309,6 @@ impl Terminals {
             t.0
         );
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
-        if t.0 == EPS as TerminalIndex && self.i > 0 {
-            unsafe {
-                std::arch::asm!("int3");
-            }
-        }
         let v = (t.0 as u128 & self.mask) << (i * self.bits as usize);
         let mask = !(self.mask << (i * self.bits as usize));
         self.t &= mask;
@@ -852,6 +869,33 @@ mod test {
         let mut t = Terminals::new(max_terminal_index);
         t.extend(terminals.iter().map(|t| CompiledTerminal(*t)));
         t
+    }
+
+    #[test]
+    fn check_terminals_k_concat() {
+        // let t1 = Terminals::eps(1);
+        // let t2 = Terminals::end(1);
+        // let t = t1.k_concat(&t2, 5);
+        // assert!(t.is_k_complete(5));
+        // assert_eq!(1, t.len());
+        // assert_eq!(Some(CompiledTerminal(EOI)), t.get(0));
+        // let t = t2.k_concat(&t1, 5);
+        // assert!(t.is_k_complete(5));
+        // assert_eq!(1, t.len());
+        // assert_eq!(Some(CompiledTerminal(EOI)), t.get(0));
+        let mut t1 = Terminals::new(6);
+        t1.extend([1, 2, 3].iter().cloned());
+        let mut t2 = Terminals::new(6);
+        t2.extend([4, 5, 6].iter().cloned());
+        let t = t1.k_concat(&t2, 5);
+        assert!(t.is_k_complete(5));
+        assert_eq!(5, t.len());
+        assert_eq!(Some(CompiledTerminal(1)), t.get(0));
+        assert_eq!(Some(CompiledTerminal(2)), t.get(1));
+        assert_eq!(Some(CompiledTerminal(3)), t.get(2));
+        assert_eq!(Some(CompiledTerminal(4)), t.get(3));
+        assert_eq!(Some(CompiledTerminal(5)), t.get(4));
+        assert_eq!(None, t.get(5));
     }
 
     #[test]
