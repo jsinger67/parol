@@ -13,7 +13,7 @@ use crate::{GrammarConfig, KTuples, Pos, Pr, Symbol, TerminalKind};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
-use rayon::prelude::*;
+// use rayon::prelude::*;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
@@ -144,7 +144,8 @@ pub fn follow_k(
             let new_result_vector = Arc::new(RwLock::new(ResultMap::new()));
 
             // We use multiple threads here with the help of rayon's parallel iterator.
-            result_map.par_iter().for_each(|(pos, _)| {
+            // result_map.par_iter().for_each(|(pos, _)| {
+            result_map.iter().for_each(|(pos, _)| {
                 // Call each function of the equation system
                 let pos_result = es[pos](result_map.clone(), non_terminal_results.clone());
 
