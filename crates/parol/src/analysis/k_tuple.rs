@@ -486,7 +486,7 @@ impl Iterator for TermIt {
 }
 
 /// Terminal string with support for k-completeness
-#[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Clone, Copy, Hash, Eq, PartialEq, Ord, PartialOrd)]
 pub enum TerminalString {
     /// Incomplete sequence
     Incomplete(Terminals),
@@ -732,7 +732,7 @@ impl<'a> KTupleBuilder<'a> {
 ///
 /// Terminal symbol string type
 ///
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
 pub struct KTuple {
     /// The sequence of terminals
     terminals: TerminalString,

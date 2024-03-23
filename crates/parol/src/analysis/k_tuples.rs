@@ -2,9 +2,14 @@ use parol_runtime::TerminalIndex;
 
 use crate::KTuple;
 //use parol_runtime::log::trace;
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::{
+    collections::HashSet,
+    fmt::{Debug, Display, Error, Formatter},
+};
 
-use super::{k_tuple::KTupleBuilder, terminals_trie::Trie};
+use super::k_tuple::KTupleBuilder;
+
+type TuplesSet = HashSet<KTuple>;
 
 /// Builder for KTuples
 #[derive(Clone, Debug, Default)]
@@ -55,10 +60,14 @@ impl<'a> KTuplesBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_string());
         }
-        let trie = Trie::eps(self.max_terminal_index.unwrap());
+        let set = TuplesSet::from_iter([KTupleBuilder::new()
+            .k(self.k.unwrap())
+            .max_terminal_index(self.max_terminal_index.unwrap())
+            .eps()?]);
         Ok(KTuples {
-            trie,
+            set,
             k: self.k.unwrap(),
+            max_terminal_index: self.max_terminal_index.unwrap(),
             k_complete: false,
         })
     }
@@ -71,10 +80,14 @@ impl<'a> KTuplesBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_string());
         }
-        let trie = Trie::end(self.max_terminal_index.unwrap());
+        let set = TuplesSet::from_iter([KTupleBuilder::new()
+            .k(self.k.unwrap())
+            .max_terminal_index(self.max_terminal_index.unwrap())
+            .end()?]);
         Ok(KTuples {
-            trie,
+            set,
             k: self.k.unwrap(),
+            max_terminal_index: self.max_terminal_index.unwrap(),
             k_complete: true,
         })
     }
@@ -89,14 +102,15 @@ impl<'a> KTuplesBuilder<'a> {
         }
 
         let mut tuples = KTuples {
-            trie: Trie::new(self.max_terminal_index.unwrap()),
+            set: TuplesSet::new(),
             k: self.k.unwrap(),
+            max_terminal_index: self.max_terminal_index.unwrap(),
             k_complete: false,
         };
 
         if let Some(k_tuples) = self.k_tuples {
             for tuple in k_tuples.iter() {
-                tuples.insert(tuple.clone());
+                tuples.insert(*tuple);
             }
             tuples.update_completeness();
         }
@@ -124,12 +138,13 @@ impl<'a> KTuplesBuilder<'a> {
 // *Changes will affect crate's version according to semver*
 // ---------------------------------------------------
 ///
-/// A set type consisting of terminal strings (called k-tuples)
+/// A type representing a set of terminal strings (i.e. terminal sequences) (called k-tuples)
 ///
 #[derive(Clone, Eq, PartialEq)]
 pub struct KTuples {
-    trie: Trie,
+    set: TuplesSet,
     k: usize,
+    max_terminal_index: usize,
     k_complete: bool,
 }
 
@@ -138,22 +153,27 @@ impl KTuples {
     pub fn insert(&mut self, tuple: KTuple) {
         debug_assert!(self.k >= tuple.k());
         self.k_complete &= tuple.is_k_complete();
-        self.trie.insert(&tuple);
+        self.set.insert(tuple);
     }
 
     /// Appends another KTuples item to self
-    pub fn append(&mut self, other: &Self) -> bool {
-        let count = self.trie.len();
-        self.trie.append(&other.trie);
-        count != self.trie.len()
+    pub fn append(&mut self, mut other: Self) -> bool {
+        let count = self.set.len();
+        // self.set.append(&mut other.set);
+        self.set.extend(other.set.drain());
+        count != self.set.len()
     }
 
     /// Creates a union with another KTuples and self
     pub fn union(&self, other: &Self) -> (Self, bool) {
-        let (unn, changed) = self.trie.union(&other.trie);
+        let len = self.set.len();
+        let max_terminal_index = self.max_terminal_index;
+        let unn = self.set.union(&other.set).cloned().collect::<TuplesSet>();
+        let changed = len != unn.len();
         let mut tuples = Self {
-            trie: unn,
+            set: unn,
             k: self.k,
+            max_terminal_index,
             k_complete: false,
         };
         tuples.update_completeness();
@@ -162,9 +182,15 @@ impl KTuples {
 
     /// Creates a intersection with another KTuples and self
     pub fn intersection(&self, other: &Self) -> Self {
+        let max_terminal_index = self.max_terminal_index;
         let mut tuples = Self {
-            trie: self.trie.intersection(&other.trie),
+            set: self
+                .set
+                .intersection(&other.set)
+                .cloned()
+                .collect::<TuplesSet>(),
             k: self.k,
+            max_terminal_index,
             k_complete: false,
         };
         tuples.update_completeness();
@@ -173,17 +199,17 @@ impl KTuples {
 
     /// Returns the number of `KTuple`s
     pub fn len(&self) -> usize {
-        self.trie.len()
+        self.set.len()
     }
 
     /// Checks if the collection is empty
     pub fn is_empty(&self) -> bool {
-        self.trie.is_empty()
+        self.set.is_empty()
     }
 
     /// Checks if self and other are disjoint
     pub fn is_disjoint(&self, other: &Self) -> bool {
-        self.trie.is_disjoint(&other.trie)
+        self.set.is_disjoint(&other.set)
     }
 
     ///
@@ -234,22 +260,13 @@ impl KTuples {
     pub fn k_concat(mut self, other: &Self, k: usize) -> Self {
         // trace!("KTuples::k_concat {} with {} at k={}", self, other, k);
         if !self.k_complete {
-            let max_terminal_index = self.trie.max_terminal_index;
-            let mut complete = Trie::new(max_terminal_index);
-            let mut incomplete = Trie::new(max_terminal_index);
-            self.trie.iter().for_each(|t| {
-                if t.is_k_complete(k) {
-                    complete.add(&t);
-                } else {
-                    incomplete.add(&t);
-                }
-            });
-            self.trie = complete;
-            self.trie.max_terminal_index = max_terminal_index;
-            self.trie.extend(
+            let (complete, incomplete): (TuplesSet, TuplesSet) =
+                self.set.iter().partition(|t| t.is_k_complete());
+            self.set = complete;
+            self.set.extend(
                 incomplete
                     .iter()
-                    .flat_map(|t| other.trie.iter().map(move |o| t.k_concat(&o, k))),
+                    .flat_map(|t| other.set.iter().map(move |o| t.k_concat(o, k))),
             );
             self.update_completeness();
         }
@@ -279,14 +296,11 @@ impl KTuples {
 
     /// Returns a sorted representation of self
     pub fn sorted(&self) -> Vec<KTuple> {
-        let mut sorted_k_tuples: Vec<KTuple> =
-            self.trie.iter().map(|t| KTuple::of(t, self.k)).collect();
-        sorted_k_tuples.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        sorted_k_tuples
+        self.set.iter().cloned().collect::<Vec<KTuple>>()
     }
 
     fn update_completeness(&mut self) {
-        self.k_complete = self.trie.iter().all(|t| t.is_k_complete(self.k));
+        self.k_complete = self.set.iter().all(|t| t.is_k_complete());
     }
 }
 
@@ -310,7 +324,7 @@ impl Display for KTuples {
         write!(
             f,
             "{{{}}}(k={})",
-            self.trie
+            self.set
                 .iter()
                 .map(|e| format!("{}", e))
                 .collect::<Vec<String>>()

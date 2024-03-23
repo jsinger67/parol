@@ -102,7 +102,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 ];
                 for pr_i in 0..pr_count {
                     let r = es[pr_i](result_vector.clone());
-                    new_result_vector[pr_count + nt_for_production[pr_i]].append(&r);
+                    new_result_vector[pr_count + nt_for_production[pr_i]].append(r.clone());
                     new_result_vector[pr_i] = r;
                 }
                 new_result_vector
