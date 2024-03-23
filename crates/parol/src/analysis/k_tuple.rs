@@ -169,17 +169,7 @@ impl Terminals {
     /// Returns the k-length, i.e. the number of symbols that contributes to lookahead sizes
     #[must_use]
     pub fn k_len(&self, k: usize) -> usize {
-        let mut k_len = 0;
-        for t in self.iter() {
-            if k_len >= k {
-                break;
-            }
-            k_len += 1;
-            if t == EOI {
-                break;
-            }
-        }
-        k_len
+        std::cmp::min(self.len(), k)
     }
 
     /// Clears the collection
@@ -228,7 +218,7 @@ impl Terminals {
             return self;
         }
 
-        if self.is_eps() || self.is_empty() {
+        if self.is_eps() {
             // ε + w = w
             // Remove possible epsilon terminal
             self.clear();

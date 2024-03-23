@@ -235,6 +235,13 @@ impl Trie {
         trie
     }
 
+    /// Creates an end-of-input item, i.e. a set with exactly one end-of-input k-tuple
+    pub fn end(max_terminal_index: usize) -> Self {
+        let mut trie = Trie::new(max_terminal_index);
+        trie.add(&Terminals::end(max_terminal_index));
+        trie
+    }
+
     /// Returns the index of the given terminal is in the node's list of children if it exists
     fn child_index(&self, t: TerminalIndex) -> Option<usize> {
         self.root.child_index(t)

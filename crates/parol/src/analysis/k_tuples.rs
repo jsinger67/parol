@@ -71,7 +71,7 @@ impl<'a> KTuplesBuilder<'a> {
         if self.max_terminal_index.is_none() {
             return Err("max_terminal_index is not set".to_string());
         }
-        let trie = Trie::eps(self.max_terminal_index.unwrap());
+        let trie = Trie::end(self.max_terminal_index.unwrap());
         Ok(KTuples {
             trie,
             k: self.k.unwrap(),
