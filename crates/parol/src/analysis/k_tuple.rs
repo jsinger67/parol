@@ -299,9 +299,9 @@ impl Terminals {
         let bits = self.bits();
 
         // Mask out the other value with a length of to_take
-        let other_val = other.t & !(!0u128 << (to_take * bits as usize));
         // Shift the other value to the left by the length of my_k_len
-        let value = other_val << (my_k_len * bits as usize);
+        let value =
+            (other.t & !(!0u128 << (to_take * bits as usize))) << (my_k_len * bits as usize);
         // Add the other value to self
         self.t |= value;
         self.set_next_index((my_k_len + to_take) as u8);
@@ -310,22 +310,27 @@ impl Terminals {
     }
 
     /// Adds a new terminal to self if max size is not reached yet and if last is not EOI
-    pub fn push(&mut self, t: CompiledTerminal) {
+    pub fn push(&mut self, t: CompiledTerminal) -> Result<(), String> {
         if self.next_index() >= MAX_K as u8 {
-            panic!("Maximum number of terminals reached");
+            return Err("Maximum number of terminals reached".to_owned());
         }
         if matches!(self.last(), Some(CompiledTerminal(EOI))) {
-            return;
+            return Ok(());
         }
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
         self.set(self.next_index().into(), t);
-        self.inc_index()
+        self.inc_index();
+        Ok(())
     }
 
     /// Checks if self is an Epsilon
     #[inline]
     pub fn is_eps(&self) -> bool {
-        self.next_index() == 1 && ((self.t & self.mask()) == self.mask())
+        if self.next_index() != 1 {
+            return false;
+        }
+        let mask = self.mask();
+        (self.t & mask) == mask
     }
 
     /// Creates an iterator over the terminals
@@ -350,14 +355,16 @@ impl Terminals {
 
     /// Sets the terminal at position i
     pub fn set(&mut self, i: usize, t: CompiledTerminal) {
+        let terminal_mask = self.mask();
         debug_assert!(
-            t.0 <= self.mask() as TerminalIndex || t.0 == EPS as TerminalIndex,
+            t.0 <= terminal_mask as TerminalIndex || t.0 == EPS as TerminalIndex,
             "Terminal index {} out of range",
             t.0
         );
         debug_assert_ne!(t.0, INVALID, "Invalid terminal");
-        let v = (t.0 as u128 & self.mask()) << (i * self.bits() as usize);
-        let mask = !(self.mask() << (i * self.bits() as usize));
+        let bits = self.bits() as usize;
+        let v = (t.0 as u128 & terminal_mask) << (i * bits);
+        let mask = !(terminal_mask << (i * bits));
         self.t &= mask;
         self.t |= v;
     }
@@ -406,7 +413,7 @@ impl From<&Terminals> for u128 {
 impl Extend<CompiledTerminal> for Terminals {
     fn extend<I: IntoIterator<Item = CompiledTerminal>>(&mut self, iter: I) {
         for t in iter {
-            self.push(t);
+            let _ = self.push(t);
         }
     }
 }
@@ -414,7 +421,7 @@ impl Extend<CompiledTerminal> for Terminals {
 impl Extend<TerminalIndex> for Terminals {
     fn extend<I: IntoIterator<Item = TerminalIndex>>(&mut self, iter: I) {
         for t in iter {
-            self.push(CompiledTerminal(t));
+            let _ = self.push(CompiledTerminal(t));
         }
     }
 }
@@ -562,16 +569,17 @@ impl TerminalString {
     }
 
     /// Push a new terminal
-    pub fn push(&mut self, t: CompiledTerminal, k: usize) {
+    pub fn push(&mut self, t: CompiledTerminal, k: usize) -> Result<(), String> {
         match self {
             Self::Incomplete(v) => {
-                v.push(t);
+                v.push(t)?;
                 if v.is_k_complete(k) {
                     *self = Self::Complete(*v);
                 }
             }
             Self::Complete(_) => {}
         }
+        Ok(())
     }
 
     /// Concat self with another sequence while consuming self
@@ -660,7 +668,7 @@ impl<'a> KTupleBuilder<'a> {
         if let Some(k_tuple) = self.k_tuple {
             let mut terminals = Terminals::new(max_terminal_index);
             for t in k_tuple.terminals.inner().iter().take(k) {
-                terminals.push(CompiledTerminal(t));
+                terminals.push(CompiledTerminal(t))?;
             }
             let terminals = if terminals.is_k_complete(k) {
                 TerminalString::Complete(terminals)
@@ -674,7 +682,7 @@ impl<'a> KTupleBuilder<'a> {
         } else if let Some(terminal_string) = self.terminal_string {
             let mut terminals = Terminals::new(max_terminal_index);
             for t in terminal_string.iter().take(k) {
-                terminals.push(CompiledTerminal(*t));
+                terminals.push(CompiledTerminal(*t))?;
             }
             let terminals = if terminals.is_k_complete(k) {
                 TerminalString::Complete(terminals)
@@ -792,7 +800,7 @@ impl KTuple {
     }
 
     /// Adds a new terminal to self while consuming self
-    pub fn push(&mut self, t: CompiledTerminal) {
+    pub fn push(&mut self, t: CompiledTerminal) -> Result<(), String> {
         self.terminals.push(t, self.k)
     }
 
@@ -904,7 +912,7 @@ impl Extend<CompiledTerminal> for KTuple {
     fn extend<I: IntoIterator<Item = CompiledTerminal>>(&mut self, iter: I) {
         if !self.terminals.is_k_complete() {
             for t in iter.into_iter().take(self.k - self.len()) {
-                self.push(t);
+                let _ = self.push(t);
             }
         }
     }
@@ -914,7 +922,7 @@ impl Extend<TerminalIndex> for KTuple {
     fn extend<I: IntoIterator<Item = TerminalIndex>>(&mut self, iter: I) {
         if !self.terminals.is_k_complete() {
             for t in iter.into_iter().take(self.k - self.len()) {
-                self.push(CompiledTerminal(t));
+                let _ = self.push(CompiledTerminal(t));
             }
         }
     }
