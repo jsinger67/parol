@@ -21,6 +21,73 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.27.0 - Not released yet
+
+- Heavy performance optimization of the calculation of FIRST and FOLLOW sets and there especially
+the k-concatenation.
+
+  Here are the results of the benchmarks produced on my machine:
+
+  ```
+  k_tuples_k_concat        time:   [168.17 ns 171.30 ns 174.58 ns]
+                          change: [-80.201% -79.680% -79.163%] (p = 0.00 < 0.05)
+
+  k_tuples_k_concat_large: time:   [154.21 ns 156.97 ns 159.79 ns]
+                          change: [-65.600% -64.757% -63.912%] (p = 0.00 < 0.05)
+  ```
+
+  This involved some changes in the public API that can break your application, so please be aware
+  of that.
+
+  _Here are the detailed changes:_
+
+  ### parol::analysis::k_tuple::Terminals
+
+  The Implementation of `parol::analysis::k_tuple::Terminals` has received a huge refactoring. The
+  terminals that were former stored in an array of
+  `parol::analysis::compiled_terminal::CompiledTerminal`s are now stored in a single u128 value.
+  Each terminal takes a fixed number of bits which is determined by the highest index
+  of a terminal from the input grammar. This is the reason why some APIs now expect an additional
+  parameter `max_terminal_index`.
+
+  The methods `from_slice` and `from_slice_with` of the struct `Terminals` have been removed. You
+  should use the `std::iter::Extend` trait that is now implemented for `Terminals` and supports
+  types that implement `std::iter::IntoIterator<Item = CompiledTerminal>>` or
+  `std::iter::IntoIterator<Item = TerminalIndex>>`. This should make the overall use more idiomatic.
+
+  `Terminals` now also provides an `iter()` method that returns a type which implements
+  `std::iter::Iterator<Item = TerminalIndex>`. This should also make the use more idiomatic.
+
+  ### parol::analysis::k_tuple::KTuple
+
+  The `parol::analysis::k_tuple::KTuple` has no method `new()` anymore. Use
+  `parol::analysis::k_tuple::KTupleBuilder` instead. This was necessary to ensure that all necessary
+  information, such as `k` and `max_terminal_index` have been provided before creating the object.
+
+  `parol::analysis::k_tuple::KTuple` now implements `Clone`.
+  
+  Its method `from_slice_with` was removed. You can use the `std::iter::Extend` trait that is now
+  also implemented for `KTuple` and supports types that implement
+  `std::iter::IntoIterator<Item = CompiledTerminal>>` or
+  `std::iter::IntoIterator<Item = TerminalIndex>>`.
+
+  ### parol::analysis::k_tuples::KTuples
+
+  The `parol::analysis::k_tuples::KTuples` also has no method `new()` anymore. Use
+  `parol::analysis::k_tuples::KTuplesBuilder` instead. This was necessary to ensure that all
+  necessary information, such as `k` and `max_terminal_index` have been provided before creating the
+  object just like for the `KTuple` detailed above.
+
+  The type `KTuples` now does no more provide an implementation of the `Default` trait because this
+  could lead to a creation of invalidly initialized instances.
+
+  ### parol::analysis::terminals_trie::Trie
+
+  The types in this module have been removed from the crate although the file is still under source
+  control. The Trie was replaced by a `HashSet` in `KTuples` and has therefore become superfluous.
+
+
+
 ## 0.26.1 - 2024-02-13
 
 - Fixed issue [#38](https://github.com/jsinger67/parol/issues/38)
