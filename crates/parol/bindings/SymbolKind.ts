@@ -2,4 +2,9 @@
 import type { Instance } from "./Instance";
 import type { Type } from "./Type";
 
+/**
+ *
+ * A more general symbol
+ *
+ */
 export type SymbolKind = { "Type": Type } | { "Instance": Instance };

@@ -2,4 +2,17 @@
 import type { ScopeId } from "./ScopeId";
 import type { TypeEntrails } from "./TypeEntrails";
 
-export interface Type { entrails: TypeEntrails, member_scope: ScopeId, }
+/**
+ *
+ * Type information used for auto-generation
+ *
+ */
+export type Type = { 
+/**
+ * The type specificities
+ */
+entrails: TypeEntrails, 
+/**
+ * The inner scope
+ */
+member_scope: ScopeId, };

@@ -4,4 +4,9 @@ import type { MetaSymbolKind } from "./MetaSymbolKind";
 import type { SymbolId } from "./SymbolId";
 import type { UserDefinedTypeName } from "./UserDefinedTypeName";
 
+/**
+ *
+ * Type information used for auto-generation
+ *
+ */
 export type TypeEntrails = "None" | "Token" | { "Box": SymbolId } | { "Ref": SymbolId } | { "Surrogate": SymbolId } | "Struct" | "Enum" | { "EnumVariant": SymbolId } | { "Vec": SymbolId } | "Trait" | { "Function": Function } | { "Option": SymbolId } | { "Clipped": MetaSymbolKind } | { "UserDefinedType": [MetaSymbolKind, UserDefinedTypeName] };

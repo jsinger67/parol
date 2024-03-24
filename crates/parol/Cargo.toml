@@ -16,7 +16,7 @@ exclude = ["/tests", "/data", "/bindings"]
 [dependencies]
 anyhow = { workspace = true }
 assert_cmd = "2.0"
-bitflags = "2.4.2"
+bitflags = "2.5.0"
 cfg-if = "1.0.0"
 clap = { workspace = true }
 derive_builder = { version = "0.20.0" }
@@ -24,7 +24,7 @@ env_logger = { workspace = true }
 function_name = { workspace = true }
 num_cpus = "1.16.0"
 owo-colors = "4.0.0"
-parol_runtime = { path = "../parol_runtime", version = "0.20.1", features = [
+parol_runtime = { path = "../parol_runtime", version = "0.20.2", features = [
     "auto_generation",
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
@@ -42,7 +42,7 @@ syn = { version = "2", default-features = false, features = [
 syntree = { workspace = true }
 syntree_layout = { workspace = true }
 thiserror = { workspace = true }
-ts-rs = "7.1.1"
+ts-rs = "8.0.0"
 ume = "0.1"
 rayon = "1.9.0"
 tempfile = "3"

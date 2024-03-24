@@ -4,4 +4,29 @@ import type { ScopeId } from "./ScopeId";
 import type { SymbolAttribute } from "./SymbolAttribute";
 import type { SymbolId } from "./SymbolId";
 
-export interface Instance { scope: ScopeId, type_id: SymbolId, entrails: InstanceEntrails, sem: SymbolAttribute, description: string, }
+/**
+ *
+ * A typed instance, usually a function argument or a struct member
+ *
+ */
+export type Instance = { 
+/**
+ * The scope where the instance resides
+ */
+scope: ScopeId, 
+/**
+ * The instance's type id in the symbol table
+ */
+type_id: SymbolId, 
+/**
+ * Instance specificities
+ */
+entrails: InstanceEntrails, 
+/**
+ * Semantic information
+ */
+sem: SymbolAttribute, 
+/**
+ * Description
+ */
+description: string, };

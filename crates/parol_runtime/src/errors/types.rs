@@ -116,12 +116,24 @@ impl Display for UnexpectedToken {
     }
 }
 
+/// A vector of tokens in a string representation
 #[derive(Debug, Default)]
 pub struct TokenVec(Vec<String>);
 
 impl TokenVec {
+    /// Pushes a token to the vector
     pub fn push(&mut self, token: String) {
         self.0.push(token);
+    }
+
+    /// Returns an iterator over the tokens
+    pub fn iter(&self) -> std::slice::Iter<String> {
+        self.0.iter()
+    }
+
+    /// Returns a token at the given index
+    pub fn get(&self, index: usize) -> Option<&String> {
+        self.0.get(index)
     }
 }
 
