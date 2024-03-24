@@ -296,7 +296,9 @@ impl KTuples {
 
     /// Returns a sorted representation of self
     pub fn sorted(&self) -> Vec<KTuple> {
-        self.set.iter().cloned().collect::<Vec<KTuple>>()
+        let mut sorted_k_tuples: Vec<KTuple> = self.set.iter().cloned().collect();
+        sorted_k_tuples.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        sorted_k_tuples
     }
 
     fn update_completeness(&mut self) {
