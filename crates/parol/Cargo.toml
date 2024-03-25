@@ -44,7 +44,7 @@ syntree_layout = { workspace = true }
 thiserror = { workspace = true }
 ts-rs = "8.1.0"
 ume = "0.1"
-rayon = "1.9.0"
+rayon = "1.10.0"
 tempfile = "3"
 graph-cycles = "0.1.0"
 
