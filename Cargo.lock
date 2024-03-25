@@ -227,7 +227,7 @@ dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -348,7 +348,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "strsim 0.10.0",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -359,7 +359,7 @@ checksum = "c5a91391accf613803c2a9bf9abccdbaa07c54b4244a5b64883f9c3c137c86be"
 dependencies = [
  "darling_core",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -370,7 +370,7 @@ checksum = "d150dea618e920167e5973d70ae6ece4385b7164e0d799fe7c122dd0a5d912ad"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -391,7 +391,7 @@ dependencies = [
  "darling",
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -401,7 +401,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "206868b8242f27cecce124c19fd88157fbd0dd334df2587f36417bafbc85097b"
 dependencies = [
  "derive_builder_core",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -810,7 +810,7 @@ dependencies = [
  "regex-syntax",
  "serde",
  "serde_json",
- "syn 2.0.53",
+ "syn 2.0.55",
  "syntree",
  "syntree_layout",
  "tempfile",
@@ -1173,7 +1173,7 @@ checksum = "7eb0b34b42edc17f6b7cac84a52a1c5f0e1bb2227e997ca9011ea3dd34e8610b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -1195,7 +1195,7 @@ checksum = "0b2e6b945e9d3df726b65d6ee24060aff8e3533d431f677a9695db04eff9dfdb"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -1223,9 +1223,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.53"
+version = "2.0.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7383cd0e49fff4b6b90ca5670bfd3e9d6a733b3f90c686605aa7eec8c4996032"
+checksum = "002a1b3dbf967edfafc32655d0f377ab0bb7b994aa1d32c8cc7e9b8bf3ebb8f0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1294,7 +1294,7 @@ checksum = "c61f3ba182994efc43764a46c018c347bc492c79f024e705f46567b418f6d4f7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
 
 [[package]]
@@ -1341,7 +1341,7 @@ dependencies = [
  "Inflector",
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
  "termcolor",
 ]
 
@@ -1683,5 +1683,5 @@ checksum = "9ce1b18ccd8e73a9321186f97e46f9f04b778851177567b1975109d26a08d2a6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.53",
+ "syn 2.0.55",
 ]
