@@ -1,6 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generate_name;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
+use crate::parser::parol_grammar::SupportedGrammarType;
 use crate::parser::{Alternation, Alternations, Factor, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
@@ -320,6 +321,7 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
 }
 
 // -------------------------------------------------------------------------
+// For LL grammars:
 // Replace the first Factor that is a R with a non-left-recursive substitution.
 // -------------------------------------------------------------------------
 // R  -> x { a } y
@@ -332,10 +334,25 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
 // R  -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
 // R' -> (a) R'        (2) - Alternation receives ProductionAttribute::AddToCollection
 // R' ->               (2a)- Alternation receives ProductionAttribute::CollectionStart
+// -------------------------------------------------------------------------
+// For LR grammars:
+// Replace the first Factor that is a R with a non-right-recursive substitution.
+// -------------------------------------------------------------------------
+// R  -> x { a } y
+// =>
+// Case 1: Iff a is only of size 1
+// R -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
+// R' -> R' a         (2) - Alternation receives ProductionAttribute::AddToCollection
+// R' ->              (2a)- Alternation receives ProductionAttribute::CollectionStart
+// Case 2: Otherwise
+// R -> x R' y        (1) - Non-terminal R' receives SymbolAttribute::RepetitionAnchor
+// R' -> R' (a)       (2) - Alternation receives ProductionAttribute::AddToCollection
+// R' ->              (2a)- Alternation receives ProductionAttribute::CollectionStart
 ///
 fn eliminate_single_rep(
     exclusions: &[String],
     alt_index: usize,
+    grammar_type: SupportedGrammarType,
     production: Production,
 ) -> Vec<Production> {
     let production_name = production.lhs.clone();
@@ -353,7 +370,14 @@ fn eliminate_single_rep(
             let production2 = if repeat.0.len() == 1 {
                 // Case 1
                 let mut rhs_p2 = repeat.0;
-                rhs_p2[0].push(Factor::default_non_terminal(r_tick_name.clone()));
+                match grammar_type {
+                    SupportedGrammarType::LLK => {
+                        rhs_p2[0].push(Factor::default_non_terminal(r_tick_name.clone()));
+                    }
+                    SupportedGrammarType::LALR1 => {
+                        rhs_p2[0].insert(0, Factor::default_non_terminal(r_tick_name.clone()));
+                    }
+                }
                 rhs_p2[0].1 = ProductionAttribute::AddToCollection;
 
                 Production {
@@ -365,15 +389,15 @@ fn eliminate_single_rep(
                 Production {
                     lhs: r_tick_name.clone(),
                     rhs: Alternations(vec![Alternation::new()
-                        .with_factors(if repeat.0.len() == 1 {
-                            let mut fs = repeat.0[0].0.clone();
-                            fs.push(Factor::default_non_terminal(r_tick_name.clone()));
-                            fs
-                        } else {
-                            vec![
+                        .with_factors(match grammar_type {
+                            SupportedGrammarType::LLK => vec![
                                 Factor::Group(repeat),
                                 Factor::default_non_terminal(r_tick_name.clone()),
-                            ]
+                            ],
+                            SupportedGrammarType::LALR1 => vec![
+                                Factor::default_non_terminal(r_tick_name.clone()),
+                                Factor::Group(repeat),
+                            ],
                         })
                         .with_attribute(ProductionAttribute::AddToCollection)]),
                 }
@@ -396,18 +420,24 @@ fn eliminate_single_rep(
 }
 
 // Eliminate repetitions
-fn eliminate_repetitions(opd: TransformationOperand) -> TransformationOperand {
+fn eliminate_repetitions(
+    opd: TransformationOperand,
+    grammar_type: SupportedGrammarType,
+) -> TransformationOperand {
     fn find_production_with_repetition(
         productions: &[Production],
     ) -> Option<(ProductionIndex, usize)> {
         find_production_with_factor(productions, |f| matches!(f, Factor::Repeat(_)))
     }
 
-    fn eliminate_repetition(productions: &mut Vec<Production>) -> bool {
+    fn eliminate_repetition(
+        productions: &mut Vec<Production>,
+        grammar_type: SupportedGrammarType,
+    ) -> bool {
         if let Some((production_index, alt_index)) = find_production_with_repetition(productions) {
             let exclusions = variable_names(productions);
             apply_production_transformation(productions, production_index, |r| {
-                eliminate_single_rep(&exclusions, alt_index, r)
+                eliminate_single_rep(&exclusions, alt_index, grammar_type, r)
             });
             true
         } else {
@@ -423,7 +453,7 @@ fn eliminate_repetitions(opd: TransformationOperand) -> TransformationOperand {
     //     format_productions(&productions)
     // );
 
-    while eliminate_repetition(&mut productions) {
+    while eliminate_repetition(&mut productions, grammar_type) {
         modified |= true;
         // trace!(
         //     "\nRemoved repetitions\n{}",
@@ -634,7 +664,10 @@ fn eliminate_groups(opd: TransformationOperand) -> TransformationOperand {
 // The grammar's structure should be 'linear' then (i.e no loops like in {}).
 // The input order should be preserved as much as possible.
 // -------------------------------------------------------------------------
-pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<Pr>> {
+pub(crate) fn transform_productions(
+    productions: Vec<Production>,
+    grammar_type: SupportedGrammarType,
+) -> Result<Vec<Pr>> {
     trace!(
         "\nStarting transformation\n{}",
         format_productions(&productions)
@@ -650,9 +683,15 @@ pub(crate) fn transform_productions(productions: Vec<Production>) -> Result<Vec<
         operand = extract_options(operand);
     }
 
+    let partially_applied_eliminate_repetitions =
+        |operand| eliminate_repetitions(operand, grammar_type);
+
     let trans_fn = combine(
         combine(
-            combine(separate_alternatives, eliminate_repetitions),
+            combine(
+                separate_alternatives,
+                partially_applied_eliminate_repetitions,
+            ),
             eliminate_options,
         ),
         eliminate_groups,

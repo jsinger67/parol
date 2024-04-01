@@ -47,6 +47,7 @@ ume = "0.1"
 rayon = "1.10.0"
 tempfile = "3"
 graph-cycles = "0.1.0"
+lalr = "0.0.2"
 
 [features]
 default = ["build"]

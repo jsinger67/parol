@@ -666,6 +666,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lalr"
+version = "0.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "106d7548f95adbe3019b4fc4954554d7b72535867aa9ce326d2f766b68958de7"
+
+[[package]]
 name = "libc"
 version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -795,6 +801,7 @@ dependencies = [
  "env_logger 0.10.2",
  "function_name",
  "graph-cycles",
+ "lalr",
  "num_cpus",
  "owo-colors",
  "parol-macros",

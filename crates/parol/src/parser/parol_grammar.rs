@@ -257,8 +257,8 @@ impl Alternation {
         self
     }
 
-    pub(crate) fn insert(&mut self, fac: Factor) {
-        self.0.push(fac)
+    pub(crate) fn insert(&mut self, index: usize, fac: Factor) {
+        self.0.insert(index, fac)
     }
 
     pub(crate) fn push(&mut self, fac: Factor) {
@@ -501,7 +501,7 @@ enum ASTControlKind {
 }
 
 /// The type of grammar supported by parol
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum SupportedGrammarType {
     /// LLK grammar, default
     #[default]
@@ -691,7 +691,7 @@ impl ParolGrammar<'_> {
     fn process_alternation(&mut self, alternation_list: &[AlternationList]) -> Result<Alternation> {
         let mut result = Alternation::new();
         for a in alternation_list {
-            result.insert(self.process_factor(&a.factor)?)
+            result.push(self.process_factor(&a.factor)?)
         }
         Ok(result)
     }

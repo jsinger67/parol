@@ -15,7 +15,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
                 }
                 acc
             });
-    let pr = transform_productions(parol_grammar.productions)?;
+    let pr = transform_productions(parol_grammar.productions, parol_grammar.grammar_type)?;
     let cfg = Cfg { st, pr };
     let title = parol_grammar.title;
     let comment = parol_grammar.comment;
@@ -39,6 +39,7 @@ pub(crate) fn try_to_convert(parol_grammar: ParolGrammar) -> Result<GrammarConfi
         .with_title(title)
         .with_non_terminals(non_terminals)
         .with_comment(comment)
+        .with_grammar_type(parol_grammar.grammar_type)
         .add_scanner(scanner_config);
 
     for u in parol_grammar.user_type_definitions {
