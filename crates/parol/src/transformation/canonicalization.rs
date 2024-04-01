@@ -714,6 +714,7 @@ mod test {
     };
     use crate::{
         grammar::{ProductionAttribute, SymbolAttribute, TerminalKind},
+        parser::parol_grammar::SupportedGrammarType,
         transformation::canonicalization::apply_production_transformation,
     };
 
@@ -732,11 +733,10 @@ mod test {
     // R  -> x { r1 r2 } y
     // =>
     // R  -> x R' y        (1)
-    // R' -> r1 r2 R'      (2)
+    // R' -> R' r1 r2      (2)
     // R' ->               (2a)
-
     #[test]
-    fn eliminate_single_rep_case_1() {
+    fn eliminate_single_rep_case_1_lr() {
         // Start: x { r1 r2 } y;
         let production = Production {
             lhs: "Start".to_string(),
@@ -749,7 +749,80 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(&[production.lhs.clone()], 0, production);
+        let productions = eliminate_single_rep(
+            &[production.lhs.clone()],
+            0,
+            SupportedGrammarType::LALR1,
+            production,
+        );
+        assert_eq!(3, productions.len());
+        // Start: x StartList y;
+        assert_eq!(
+            Production {
+                lhs: "Start".to_string(),
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
+                    terminal!("x"),
+                    Factor::NonTerminal(
+                        "StartList".to_string(),
+                        SymbolAttribute::RepetitionAnchor,
+                        None
+                    ),
+                    terminal!("y"),
+                ])]),
+            },
+            productions[0]
+        );
+        // StartList: StartList r1 r2;
+        assert_eq!(
+            Production {
+                lhs: "StartList".to_string(),
+                rhs: Alternations(vec![Alternation::new()
+                    .with_factors(vec![
+                        Factor::default_non_terminal("StartList".to_string()),
+                        terminal!("r1"),
+                        terminal!("r2"),
+                    ])
+                    .with_attribute(ProductionAttribute::AddToCollection)]),
+            },
+            productions[1]
+        );
+        // StartList: ;
+        assert_eq!(
+            Production {
+                lhs: "StartList".to_string(),
+                rhs: Alternations(vec![
+                    Alternation::new().with_attribute(ProductionAttribute::CollectionStart)
+                ]),
+            },
+            productions[2]
+        );
+    }
+
+    // R  -> x { r1 r2 } y
+    // =>
+    // R  -> x R' y        (1)
+    // R' -> r1 r2 R'      (2)
+    // R' ->               (2a)
+    #[test]
+    fn eliminate_single_rep_case_1_ll() {
+        // Start: x { r1 r2 } y;
+        let production = Production {
+            lhs: "Start".to_string(),
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
+                terminal!("x"),
+                Factor::Repeat(Alternations(vec![
+                    Alternation::new().with_factors(vec![terminal!("r1"), terminal!("r2")])
+                ])),
+                terminal!("y"),
+            ])]),
+        };
+
+        let productions = eliminate_single_rep(
+            &[production.lhs.clone()],
+            0,
+            SupportedGrammarType::LLK,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -795,11 +868,11 @@ mod test {
 
     // R  -> x { r1 | r2 } y
     // =>
-    // R  -> x R' y        (1)
-    // R' -> ( r1 | r2 ) R'        (2)
-    // R' ->               (2a)
+    // R  -> x R' y         (1)
+    // R' -> ( r1 | r2 ) R' (2)
+    // R' ->                (2a)
     #[test]
-    fn eliminate_single_rep_case_2() {
+    fn eliminate_single_rep_case_2_ll() {
         // Start: x { r1 | r2 } y;
         let production = Production {
             lhs: "Start".to_string(),
@@ -813,7 +886,12 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(&[production.lhs.clone()], 0, production);
+        let productions = eliminate_single_rep(
+            &[production.lhs.clone()],
+            0,
+            SupportedGrammarType::LLK,
+            production,
+        );
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -842,6 +920,77 @@ mod test {
                             Alternation::new().with_factors(vec![terminal!("r2"),]),
                         ])),
                         Factor::default_non_terminal("StartList".to_string()),
+                    ])
+                    .with_attribute(ProductionAttribute::AddToCollection)])
+            },
+            productions[1]
+        );
+        // StartList: ;
+        assert_eq!(
+            Production {
+                lhs: "StartList".to_string(),
+                rhs: Alternations(vec![
+                    Alternation::new().with_attribute(ProductionAttribute::CollectionStart)
+                ])
+            },
+            productions[2]
+        );
+    }
+
+    // R  -> x { r1 | r2 } y
+    // =>
+    // R  -> x R' y         (1)
+    // R' -> R' ( r1 | r2 ) (2)
+    // R' ->                (2a)
+    #[test]
+    fn eliminate_single_rep_case_2_lr() {
+        // Start: x { r1 | r2 } y;
+        let production = Production {
+            lhs: "Start".to_string(),
+            rhs: Alternations(vec![Alternation::new().with_factors(vec![
+                terminal!("x"),
+                Factor::Repeat(Alternations(vec![
+                    Alternation::new().with_factors(vec![terminal!("r1")]),
+                    Alternation::new().with_factors(vec![terminal!("r2")]),
+                ])),
+                terminal!("x"),
+            ])]),
+        };
+
+        let productions = eliminate_single_rep(
+            &[production.lhs.clone()],
+            0,
+            SupportedGrammarType::LALR1,
+            production,
+        );
+        assert_eq!(3, productions.len());
+        // Start: x StartList y;
+        assert_eq!(
+            Production {
+                lhs: "Start".to_string(),
+                rhs: Alternations(vec![Alternation::new().with_factors(vec![
+                    terminal!("x"),
+                    Factor::NonTerminal(
+                        "StartList".to_string(),
+                        SymbolAttribute::RepetitionAnchor,
+                        None
+                    ),
+                    terminal!("x"),
+                ])])
+            },
+            productions[0]
+        );
+        // StartList: StartList ( r1 | r2 );
+        assert_eq!(
+            Production {
+                lhs: "StartList".to_string(),
+                rhs: Alternations(vec![Alternation::new()
+                    .with_factors(vec![
+                        Factor::default_non_terminal("StartList".to_string()),
+                        Factor::Group(Alternations(vec![
+                            Alternation::new().with_factors(vec![terminal!("r1"),]),
+                            Alternation::new().with_factors(vec![terminal!("r2"),]),
+                        ])),
                     ])
                     .with_attribute(ProductionAttribute::AddToCollection)])
             },
