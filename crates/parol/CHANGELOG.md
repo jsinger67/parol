@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.27.0 - Not released yet
+## 0.27.0 - 2024-04-01
 
 - Heavy performance optimization of the calculation of FIRST and FOLLOW sets and there especially
 the k-concatenation.
@@ -64,7 +64,7 @@ the k-concatenation.
   `parol::analysis::k_tuple::KTupleBuilder` instead. This was necessary to ensure that all necessary
   information, such as `k` and `max_terminal_index` have been provided before creating the object.
 
-  `parol::analysis::k_tuple::KTuple` now implements `Clone`.
+  `parol::analysis::k_tuple::KTuple` now implements `Copy`.
   
   Its method `from_slice_with` was removed. You can use the `std::iter::Extend` trait that is now
   also implemented for `KTuple` and supports types that implement
