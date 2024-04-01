@@ -168,6 +168,31 @@ impl Report for ParolErrorReporter {
                             "Assign at least one terminal or remove them.".to_string()
                         ]),
                 )?),
+                ParolParserError::UnsupportedGrammarType {
+                    grammar_type,
+                    input,
+                    token,
+                } => {
+                    let mut files = SimpleFiles::new();
+                    let content = fs::read_to_string(input).unwrap_or_default();
+                    let file_id = files.add(input.display().to_string(), content);
+
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{grammar_type} - Unsupported grammar type"))
+                            .with_code("parol::parser::unsupported_grammar_type")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(token),
+                            )])
+                            .with_notes(vec![
+                                "Only 'LL(k)' and 'LALR(1)' are supported.".to_string()
+                            ]),
+                    )?)
+                }
             }
         } else if let Some(err) = err.downcast_ref::<GrammarAnalysisError>() {
             match err {

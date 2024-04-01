@@ -1,6 +1,7 @@
 use super::parol_grammar_trait::{
-    AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog, PrologList,
-    PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
+    self, AlternationList, Declaration, DeclarationOpt, GrammarDefinition, Parol,
+    ParolGrammarTrait, Prolog, PrologList, PrologList0, ScannerDirectives, StartDeclaration,
+    TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -78,10 +79,10 @@ impl Display for UserDefinedTypeName {
 
 /// This trait is used to automatically convert the generated type `UserTypeName` to our own
 /// `UserDefinedTypeName`.
-impl TryFrom<&super::parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
+impl TryFrom<&parol_grammar_trait::UserTypeName<'_>> for UserDefinedTypeName {
     type Error = anyhow::Error;
     fn try_from(
-        user_type_names: &super::parol_grammar_trait::UserTypeName<'_>,
+        user_type_names: &parol_grammar_trait::UserTypeName<'_>,
     ) -> std::result::Result<Self, Self::Error> {
         Ok(Self(user_type_names.user_type_name_list.iter().fold(
             vec![user_type_names.identifier.identifier.text().to_string()],
@@ -462,10 +463,10 @@ impl Default for ScannerConfig {
 
 /// This trait is used to automatically convert the generated type `ScannerState` to our own
 /// `ScannerConfig`.
-impl TryFrom<&super::parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
+impl TryFrom<&parol_grammar_trait::ScannerState<'_>> for ScannerConfig {
     type Error = anyhow::Error;
     fn try_from(
-        scanner_state: &super::parol_grammar_trait::ScannerState<'_>,
+        scanner_state: &parol_grammar_trait::ScannerState<'_>,
     ) -> std::result::Result<Self, Self::Error> {
         let mut me = Self {
             name: scanner_state.identifier.identifier.text().to_string(),
@@ -500,6 +501,16 @@ enum ASTControlKind {
     UserTyped(UserDefinedTypeName),
 }
 
+/// The type of grammar supported by parol
+#[derive(Debug, Clone, Default)]
+pub enum SupportedGrammarType {
+    /// LLK grammar, default
+    #[default]
+    LLK,
+    /// LR(1) grammar, not yet supported
+    LALR1,
+}
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -521,6 +532,8 @@ pub struct ParolGrammar<'t> {
     pub scanner_configurations: Vec<ScannerConfig>,
     /// User type definitions (aliases)
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
+    /// The grammar type
+    pub grammar_type: SupportedGrammarType,
     /// Contains information about token aliases:
     /// (LHS identifier, Token literal, expanded text)
     token_aliases: Vec<(Token<'static>, String)>,
@@ -583,6 +596,11 @@ impl ParolGrammar<'_> {
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
             }
+            Declaration::PercentGrammarUnderscoreTypeIdentifierDeclarationOpt(grammar) => {
+                if let Some(grammar) = grammar.declaration_opt.as_ref() {
+                    self.process_grammar_type_declaration(grammar)?;
+                }
+            }
         }
         Ok(())
     }
@@ -635,7 +653,7 @@ impl ParolGrammar<'_> {
 
     fn process_productions(
         &mut self,
-        productions: &[&super::parol_grammar_trait::Production],
+        productions: &[&parol_grammar_trait::Production],
     ) -> Result<()> {
         for prod in productions {
             self.process_production(prod)?;
@@ -644,8 +662,8 @@ impl ParolGrammar<'_> {
     }
 
     fn to_alternation_vec<'t>(
-        alts: &'t super::parol_grammar_trait::Alternations<'t>,
-    ) -> Vec<&'t super::parol_grammar_trait::Alternation<'t>> {
+        alts: &'t parol_grammar_trait::Alternations<'t>,
+    ) -> Vec<&'t parol_grammar_trait::Alternation<'t>> {
         alts.alternations_list
             .iter()
             .fold(vec![&alts.alternation], |mut acc, a| {
@@ -654,7 +672,7 @@ impl ParolGrammar<'_> {
             })
     }
 
-    fn process_production(&mut self, prod: &super::parol_grammar_trait::Production) -> Result<()> {
+    fn process_production(&mut self, prod: &parol_grammar_trait::Production) -> Result<()> {
         let lhs = prod.identifier.identifier.text().to_string();
         let alternations = Self::to_alternation_vec(&prod.alternations);
         let rhs = self.process_alternations(&alternations)?;
@@ -664,7 +682,7 @@ impl ParolGrammar<'_> {
 
     fn process_alternations(
         &mut self,
-        alternations: &[&super::parol_grammar_trait::Alternation],
+        alternations: &[&parol_grammar_trait::Alternation],
     ) -> Result<Alternations> {
         let mut result = Alternations::new();
         for a in alternations {
@@ -682,10 +700,10 @@ impl ParolGrammar<'_> {
     }
 
     #[named]
-    fn process_factor(&mut self, factor: &super::parol_grammar_trait::Factor) -> Result<Factor> {
+    fn process_factor(&mut self, factor: &parol_grammar_trait::Factor) -> Result<Factor> {
         let context = function_name!();
         match factor {
-            super::parol_grammar_trait::Factor::Group(group) => {
+            parol_grammar_trait::Factor::Group(group) => {
                 let alternations = Self::to_alternation_vec(&group.group.alternations);
                 let factors = self.process_alternations(&alternations)?;
                 if factors.is_empty() {
@@ -699,7 +717,7 @@ impl ParolGrammar<'_> {
                     Ok(Factor::Group(factors))
                 }
             }
-            super::parol_grammar_trait::Factor::Repeat(repeat) => {
+            parol_grammar_trait::Factor::Repeat(repeat) => {
                 let alternations = Self::to_alternation_vec(&repeat.repeat.alternations);
                 let factors = self.process_alternations(&alternations)?;
                 if factors.is_empty() {
@@ -713,7 +731,7 @@ impl ParolGrammar<'_> {
                     Ok(Factor::Repeat(factors))
                 }
             }
-            super::parol_grammar_trait::Factor::Optional(optional) => {
+            parol_grammar_trait::Factor::Optional(optional) => {
                 let alternations = Self::to_alternation_vec(&optional.optional.alternations);
                 let factors = self.process_alternations(&alternations)?;
                 if factors.is_empty() {
@@ -727,21 +745,19 @@ impl ParolGrammar<'_> {
                     Ok(Factor::Optional(factors))
                 }
             }
-            super::parol_grammar_trait::Factor::Symbol(symbol) => {
-                self.process_symbol(&symbol.symbol)
-            }
+            parol_grammar_trait::Factor::Symbol(symbol) => self.process_symbol(&symbol.symbol),
         }
     }
 
     fn process_ast_control(
         &mut self,
-        ast_control: &super::parol_grammar_trait::ASTControl,
+        ast_control: &parol_grammar_trait::ASTControl,
     ) -> ASTControlKind {
         match ast_control {
-            super::parol_grammar_trait::ASTControl::CutOperator(_) => {
+            parol_grammar_trait::ASTControl::CutOperator(_) => {
                 ASTControlKind::Attr(SymbolAttribute::Clipped)
             }
-            super::parol_grammar_trait::ASTControl::UserTypeDeclaration(t) => {
+            parol_grammar_trait::ASTControl::UserTypeDeclaration(t) => {
                 let mut user_type_name = t.user_type_declaration.user_type_name.clone();
                 if let Some(defined_type) = self
                     .user_type_definitions
@@ -756,21 +772,21 @@ impl ParolGrammar<'_> {
 
     fn measure_token_literal<'a>(literal: &'a TokenLiteral) -> (&'a str, TerminalKind) {
         match literal {
-            super::parol_grammar_trait::TokenLiteral::String(s) => {
+            parol_grammar_trait::TokenLiteral::String(s) => {
                 (s.string.string.text(), TerminalKind::Legacy)
             }
-            super::parol_grammar_trait::TokenLiteral::RawString(l) => {
+            parol_grammar_trait::TokenLiteral::RawString(l) => {
                 (l.raw_string.raw_string.text(), TerminalKind::Raw)
             }
-            super::parol_grammar_trait::TokenLiteral::Regex(r) => {
+            parol_grammar_trait::TokenLiteral::Regex(r) => {
                 (r.regex.regex.text(), TerminalKind::Regex)
             }
         }
     }
 
-    fn process_symbol(&mut self, symbol: &super::parol_grammar_trait::Symbol) -> Result<Factor> {
+    fn process_symbol(&mut self, symbol: &parol_grammar_trait::Symbol) -> Result<Factor> {
         match symbol {
-            super::parol_grammar_trait::Symbol::NonTerminal(non_terminal) => {
+            parol_grammar_trait::Symbol::NonTerminal(non_terminal) => {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 if let Some(ref non_terminal_opt) = &non_terminal.non_terminal.non_terminal_opt {
@@ -790,7 +806,7 @@ impl ParolGrammar<'_> {
                     user_type_name,
                 ))
             }
-            super::parol_grammar_trait::Symbol::SimpleToken(simple_token) => {
+            parol_grammar_trait::Symbol::SimpleToken(simple_token) => {
                 let mut attr = SymbolAttribute::None;
                 let mut user_type_name = None;
                 if let Some(ref terminal_opt) = &simple_token.simple_token.simple_token_opt {
@@ -809,7 +825,7 @@ impl ParolGrammar<'_> {
                     user_type_name,
                 ))
             }
-            super::parol_grammar_trait::Symbol::TokenWithStates(token_with_states) => {
+            parol_grammar_trait::Symbol::TokenWithStates(token_with_states) => {
                 let mut scanner_states = self
                     .process_scanner_state_list(&token_with_states.token_with_states.state_list)?;
                 scanner_states.sort_unstable();
@@ -833,7 +849,7 @@ impl ParolGrammar<'_> {
                     user_type_name,
                 ))
             }
-            super::parol_grammar_trait::Symbol::ScannerSwitch(scanner_switch) => {
+            parol_grammar_trait::Symbol::ScannerSwitch(scanner_switch) => {
                 self.process_scanner_switch(scanner_switch)
             }
         }
@@ -841,7 +857,7 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_state_list(
         &mut self,
-        state_list: &super::parol_grammar_trait::StateList,
+        state_list: &parol_grammar_trait::StateList,
     ) -> Result<Vec<usize>> {
         let mut result = vec![self.resolve_scanner(&state_list.identifier.identifier)?];
         for s in &state_list.state_list_list {
@@ -869,21 +885,21 @@ impl ParolGrammar<'_> {
 
     fn process_scanner_switch(
         &self,
-        scanner_switch: &super::parol_grammar_trait::SymbolScannerSwitch,
+        scanner_switch: &parol_grammar_trait::SymbolScannerSwitch,
     ) -> Result<Factor> {
         match &scanner_switch.scanner_switch {
-            super::parol_grammar_trait::ScannerSwitch::PercentScLParenScannerSwitchOptRParen(
-                sw,
-            ) => match &sw.scanner_switch_opt {
-                Some(st) => Ok(Factor::ScannerSwitch(
-                    self.resolve_scanner(&st.identifier.identifier)?,
-                )),
-                None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
-            },
-            super::parol_grammar_trait::ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => Ok(
+            parol_grammar_trait::ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sw) => {
+                match &sw.scanner_switch_opt {
+                    Some(st) => Ok(Factor::ScannerSwitch(
+                        self.resolve_scanner(&st.identifier.identifier)?,
+                    )),
+                    None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
+                }
+            }
+            parol_grammar_trait::ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => Ok(
                 Factor::ScannerSwitchPush(self.resolve_scanner(&sw.identifier.identifier)?),
             ),
-            super::parol_grammar_trait::ScannerSwitch::PercentPopLParenRParen(_) => {
+            parol_grammar_trait::ScannerSwitch::PercentPopLParenRParen(_) => {
                 Ok(Factor::ScannerSwitchPop)
             }
         }
@@ -891,7 +907,7 @@ impl ParolGrammar<'_> {
 
     fn process_user_type_definition(
         &mut self,
-        user_type_def: &super::parol_grammar_trait::DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName,
+        user_type_def: &parol_grammar_trait::DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName,
     ) {
         self.user_type_definitions.insert(
             user_type_def.identifier.identifier.text().to_string(),
@@ -920,7 +936,7 @@ impl ParolGrammar<'_> {
         Ok(())
     }
 
-    fn expanded_token_literal(token_literal: &super::parol_grammar_trait::TokenLiteral) -> String {
+    fn expanded_token_literal(token_literal: &parol_grammar_trait::TokenLiteral) -> String {
         match token_literal {
             TokenLiteral::String(s) => TerminalKind::Legacy
                 .expand(ParolGrammar::trim_quotes(s.string.string.text()).as_str()),
@@ -956,6 +972,33 @@ impl ParolGrammar<'_> {
             .iter()
             .any(|p| p.rhs.0.iter().any(|a| a.is_used_scanner(scanner_index)))
     }
+
+    fn process_grammar_type_declaration(&mut self, grammar: &DeclarationOpt) -> Result<()> {
+        let grammar_type = grammar
+            .grammar_type
+            .grammar_type
+            .text()
+            .to_string()
+            .to_lowercase();
+        if grammar_type == "lalr(1)" {
+            self.grammar_type = SupportedGrammarType::LALR1;
+        } else if grammar_type == "ll(k)" {
+            self.grammar_type = SupportedGrammarType::LLK;
+        } else {
+            return Err(ParolParserError::UnsupportedGrammarType {
+                grammar_type,
+                input: grammar
+                    .grammar_type
+                    .grammar_type
+                    .location
+                    .file_name
+                    .to_path_buf(),
+                token: grammar.grammar_type.grammar_type.location.clone(),
+            }
+            .into());
+        }
+        Ok(())
+    }
 }
 
 impl Display for ParolGrammar<'_> {
@@ -963,6 +1006,7 @@ impl Display for ParolGrammar<'_> {
         writeln!(f, "title: {:?}", self.title)?;
         writeln!(f, "comment: {:?}", self.comment)?;
         writeln!(f, "start_symbol: {}", self.start_symbol)?;
+        writeln!(f, "grammar_type: {:?}", self.grammar_type)?;
         writeln!(
             f,
             "{}",
@@ -992,7 +1036,7 @@ impl Default for &ParolGrammar<'_> {
 
 impl<'t> ParolGrammarTrait<'t> for ParolGrammar<'t> {
     /// Semantic action for non-terminal 'Production'
-    fn production(&mut self, arg: &super::parol_grammar_trait::Production<'t>) -> Result<()> {
+    fn production(&mut self, arg: &parol_grammar_trait::Production<'t>) -> Result<()> {
         use super::parol_grammar_trait::{
             Factor, Symbol, SymbolSimpleToken, SymbolTokenWithStates,
         };

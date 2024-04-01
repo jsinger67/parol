@@ -86,6 +86,17 @@ pub enum ParolParserError {
         /// Names of the empty scanner states
         empty_scanners: Vec<String>,
     },
+
+    /// Unsupported grammar type
+    #[error("{grammar_type} - Unsupported grammar type")]
+    UnsupportedGrammarType {
+        /// The grammar type found
+        grammar_type: String,
+        /// Source
+        input: PathBuf,
+        /// Location
+        token: Location,
+    },
 }
 
 impl From<ParolParserError> for parol_runtime::ParolError {
