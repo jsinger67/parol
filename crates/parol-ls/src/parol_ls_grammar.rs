@@ -474,6 +474,41 @@ impl ParolLsGrammarTrait for ParolLsGrammar {
             Declaration::ScannerDirectives(scanner) => {
                 Self::add_scanner_symbols(&mut self.symbols, &scanner.scanner_directives);
             }
+            Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
+                #[allow(deprecated)]
+                self.symbols.push(DocumentSymbol {
+                    name: grammar_type
+                        .percent_grammar_underscore_type
+                        .text()
+                        .to_string(),
+                    detail: Some("Grammar type".to_string()),
+                    kind: SymbolKind::TYPE_PARAMETER,
+                    tags: None,
+                    deprecated: None,
+                    range: Into::<Rng>::into(arg).0,
+                    selection_range: Into::<Rng>::into(
+                        &grammar_type.percent_grammar_underscore_type,
+                    )
+                    .0,
+                    children: Some(vec![DocumentSymbol {
+                        name: grammar_type
+                            .literal_string
+                            .literal_string
+                            .text()
+                            .to_string(),
+                        detail: Some("Text".to_string()),
+                        kind: SymbolKind::STRING,
+                        tags: None,
+                        deprecated: None,
+                        range: Into::<Rng>::into(arg).0,
+                        selection_range: Into::<Rng>::into(
+                            &grammar_type.literal_string.literal_string,
+                        )
+                        .0,
+                        children: None,
+                    }]),
+                });
+            }
         }
         Ok(())
     }

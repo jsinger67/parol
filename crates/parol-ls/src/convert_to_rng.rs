@@ -54,7 +54,17 @@ impl From<&Declaration> for Rng {
                     .extend(Self::from(&user_type.user_type_name))
             }
             Declaration::ScannerDirectives(scanner) => Self::from(&scanner.scanner_directives),
+            Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
+                Self::from(&grammar_type.percent_grammar_underscore_type)
+                    .extend(Self::from(&grammar_type.literal_string))
+            }
         }
+    }
+}
+
+impl From<&LiteralString> for Rng {
+    fn from(val: &LiteralString) -> Self {
+        Self::from(&val.literal_string)
     }
 }
 

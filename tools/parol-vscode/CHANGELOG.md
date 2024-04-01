@@ -4,6 +4,10 @@ All notable changes to the "parol-vscode" extension will be documented in this f
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## v0.2.0
+
+* Support grammar type specification in par files with the `%grammar_type` directive
+
 ## v0.1.15
 
 * Support of several new formatting options

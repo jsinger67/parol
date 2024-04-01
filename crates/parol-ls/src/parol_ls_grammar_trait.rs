@@ -229,6 +229,19 @@ pub struct DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName {
 ///
 /// Type derived for production 10
 ///
+/// `Declaration: '%grammar_type' : OwnedToken LiteralString;`
+///
+#[allow(dead_code)]
+#[derive(Builder, Debug, Clone)]
+#[builder(crate = "parol_runtime::derive_builder")]
+pub struct DeclarationPercentGrammarUnderscoreTypeLiteralString {
+    pub percent_grammar_underscore_type: crate::parol_ls_grammar::OwnedToken, /* %grammar_type */
+    pub literal_string: LiteralString,
+}
+
+///
+/// Type derived for production 11
+///
 /// `Declaration: ScannerDirectives;`
 ///
 #[allow(dead_code)]
@@ -239,7 +252,7 @@ pub struct DeclarationScannerDirectives {
 }
 
 ///
-/// Type derived for production 11
+/// Type derived for production 12
 ///
 /// `ScannerDirectives: "%line_comment" : OwnedToken TokenLiteral;`
 ///
@@ -252,7 +265,7 @@ pub struct ScannerDirectivesPercentLineUnderscoreCommentTokenLiteral {
 }
 
 ///
-/// Type derived for production 12
+/// Type derived for production 13
 ///
 /// `ScannerDirectives: "%block_comment" : OwnedToken TokenLiteral TokenLiteral;`
 ///
@@ -266,7 +279,7 @@ pub struct ScannerDirectivesPercentBlockUnderscoreCommentTokenLiteralTokenLitera
 }
 
 ///
-/// Type derived for production 13
+/// Type derived for production 14
 ///
 /// `ScannerDirectives: "%auto_newline_off" : OwnedToken;`
 ///
@@ -278,7 +291,7 @@ pub struct ScannerDirectivesPercentAutoUnderscoreNewlineUnderscoreOff {
 }
 
 ///
-/// Type derived for production 14
+/// Type derived for production 15
 ///
 /// `ScannerDirectives: "%auto_ws_off" : OwnedToken;`
 ///
@@ -290,7 +303,7 @@ pub struct ScannerDirectivesPercentAutoUnderscoreWsUnderscoreOff {
 }
 
 ///
-/// Type derived for production 27
+/// Type derived for production 28
 ///
 /// `Factor: Group;`
 ///
@@ -302,7 +315,7 @@ pub struct FactorGroup {
 }
 
 ///
-/// Type derived for production 28
+/// Type derived for production 29
 ///
 /// `Factor: Repeat;`
 ///
@@ -314,7 +327,7 @@ pub struct FactorRepeat {
 }
 
 ///
-/// Type derived for production 29
+/// Type derived for production 30
 ///
 /// `Factor: Optional;`
 ///
@@ -326,7 +339,7 @@ pub struct FactorOptional {
 }
 
 ///
-/// Type derived for production 30
+/// Type derived for production 31
 ///
 /// `Factor: Symbol;`
 ///
@@ -338,7 +351,7 @@ pub struct FactorSymbol {
 }
 
 ///
-/// Type derived for production 31
+/// Type derived for production 32
 ///
 /// `Symbol: NonTerminal;`
 ///
@@ -350,7 +363,7 @@ pub struct SymbolNonTerminal {
 }
 
 ///
-/// Type derived for production 32
+/// Type derived for production 33
 ///
 /// `Symbol: SimpleToken;`
 ///
@@ -362,7 +375,7 @@ pub struct SymbolSimpleToken {
 }
 
 ///
-/// Type derived for production 33
+/// Type derived for production 34
 ///
 /// `Symbol: TokenWithStates;`
 ///
@@ -374,7 +387,7 @@ pub struct SymbolTokenWithStates {
 }
 
 ///
-/// Type derived for production 34
+/// Type derived for production 35
 ///
 /// `Symbol: ScannerSwitch;`
 ///
@@ -386,7 +399,7 @@ pub struct SymbolScannerSwitch {
 }
 
 ///
-/// Type derived for production 35
+/// Type derived for production 36
 ///
 /// `TokenLiteral: String;`
 ///
@@ -398,7 +411,7 @@ pub struct TokenLiteralString {
 }
 
 ///
-/// Type derived for production 36
+/// Type derived for production 37
 ///
 /// `TokenLiteral: LiteralString;`
 ///
@@ -410,7 +423,7 @@ pub struct TokenLiteralLiteralString {
 }
 
 ///
-/// Type derived for production 37
+/// Type derived for production 38
 ///
 /// `TokenLiteral: Regex;`
 ///
@@ -422,7 +435,7 @@ pub struct TokenLiteralRegex {
 }
 
 ///
-/// Type derived for production 59
+/// Type derived for production 60
 ///
 /// `ScannerSwitch: "%sc" : OwnedToken '(' : OwnedToken ScannerSwitchOpt /* Option */ ')' : OwnedToken;`
 ///
@@ -437,7 +450,7 @@ pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen {
 }
 
 ///
-/// Type derived for production 60
+/// Type derived for production 61
 ///
 /// `ScannerSwitch: "%push" : OwnedToken '(' : OwnedToken Identifier ')' : OwnedToken;`
 ///
@@ -452,7 +465,7 @@ pub struct ScannerSwitchPercentPushLParenIdentifierRParen {
 }
 
 ///
-/// Type derived for production 61
+/// Type derived for production 62
 ///
 /// `ScannerSwitch: "%pop" : OwnedToken '(' : OwnedToken ')' : OwnedToken;`
 ///
@@ -466,7 +479,7 @@ pub struct ScannerSwitchPercentPopLParenRParen {
 }
 
 ///
-/// Type derived for production 64
+/// Type derived for production 65
 ///
 /// `ASTControl: CutOperator;`
 ///
@@ -478,7 +491,7 @@ pub struct ASTControlCutOperator {
 }
 
 ///
-/// Type derived for production 65
+/// Type derived for production 66
 ///
 /// `ASTControl: UserTypeDeclaration;`
 ///
@@ -567,6 +580,7 @@ pub enum Declaration {
     PercentUserUnderscoreTypeIdentifierEquUserTypeName(
         DeclarationPercentUserUnderscoreTypeIdentifierEquUserTypeName,
     ),
+    PercentGrammarUnderscoreTypeLiteralString(DeclarationPercentGrammarUnderscoreTypeLiteralString),
     ScannerDirectives(DeclarationScannerDirectives),
 }
 
@@ -1332,15 +1346,27 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 10:
     ///
-    /// `Declaration: ScannerDirectives;`
+    /// `Declaration: '%grammar_type' : OwnedToken LiteralString;`
     ///
     #[parol_runtime::function_name::named]
-    fn declaration_3(&mut self, _scanner_directives: &ParseTreeType<'t>) -> Result<()> {
+    fn declaration_3(
+        &mut self,
+        percent_grammar_underscore_type: &ParseTreeType<'t>,
+        _literal_string: &ParseTreeType<'t>,
+    ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
-        let declaration_3_built = DeclarationScannerDirectives { scanner_directives };
-        let declaration_3_built = Declaration::ScannerDirectives(declaration_3_built);
+        let percent_grammar_underscore_type = percent_grammar_underscore_type
+            .token()?
+            .try_into()
+            .map_err(parol_runtime::ParolError::UserError)?;
+        let literal_string = pop_item!(self, literal_string, LiteralString, context);
+        let declaration_3_built = DeclarationPercentGrammarUnderscoreTypeLiteralString {
+            percent_grammar_underscore_type,
+            literal_string,
+        };
+        let declaration_3_built =
+            Declaration::PercentGrammarUnderscoreTypeLiteralString(declaration_3_built);
         // Calling user action here
         self.user_grammar.declaration(&declaration_3_built)?;
         self.push(ASTType::Declaration(declaration_3_built), context);
@@ -1348,6 +1374,23 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
     }
 
     /// Semantic action for production 11:
+    ///
+    /// `Declaration: ScannerDirectives;`
+    ///
+    #[parol_runtime::function_name::named]
+    fn declaration_4(&mut self, _scanner_directives: &ParseTreeType<'t>) -> Result<()> {
+        let context = function_name!();
+        trace!("{}", self.trace_item_stack(context));
+        let scanner_directives = pop_item!(self, scanner_directives, ScannerDirectives, context);
+        let declaration_4_built = DeclarationScannerDirectives { scanner_directives };
+        let declaration_4_built = Declaration::ScannerDirectives(declaration_4_built);
+        // Calling user action here
+        self.user_grammar.declaration(&declaration_4_built)?;
+        self.push(ASTType::Declaration(declaration_4_built), context);
+        Ok(())
+    }
+
+    /// Semantic action for production 12:
     ///
     /// `ScannerDirectives: "%line_comment" : OwnedToken TokenLiteral;`
     ///
@@ -1381,7 +1424,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 12:
+    /// Semantic action for production 13:
     ///
     /// `ScannerDirectives: "%block_comment" : OwnedToken TokenLiteral TokenLiteral;`
     ///
@@ -1420,7 +1463,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 13:
+    /// Semantic action for production 14:
     ///
     /// `ScannerDirectives: "%auto_newline_off" : OwnedToken;`
     ///
@@ -1454,7 +1497,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 14:
+    /// Semantic action for production 15:
     ///
     /// `ScannerDirectives: "%auto_ws_off" : OwnedToken;`
     ///
@@ -1484,7 +1527,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 15:
+    /// Semantic action for production 16:
     ///
     /// `GrammarDefinition: "%%" : OwnedToken Production GrammarDefinitionList /* Vec */;`
     ///
@@ -1523,7 +1566,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 16:
+    /// Semantic action for production 17:
     ///
     /// `GrammarDefinitionList /* Vec<T>::Push */: Production GrammarDefinitionList;`
     ///
@@ -1552,7 +1595,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 17:
+    /// Semantic action for production 18:
     ///
     /// `GrammarDefinitionList /* Vec<T>::New */: ;`
     ///
@@ -1568,7 +1611,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 18:
+    /// Semantic action for production 19:
     ///
     /// `DoubleColon: "::" : OwnedToken;`
     ///
@@ -1587,7 +1630,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 19:
+    /// Semantic action for production 20:
     ///
     /// `ProductionLHS: Identifier ":" : OwnedToken;`
     ///
@@ -1612,7 +1655,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 20:
+    /// Semantic action for production 21:
     ///
     /// `Production: ProductionLHS Alternations ";" : OwnedToken;`
     ///
@@ -1642,7 +1685,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 21:
+    /// Semantic action for production 22:
     ///
     /// `Alternations: Alternation AlternationsList /* Vec */;`
     ///
@@ -1667,7 +1710,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 22:
+    /// Semantic action for production 23:
     ///
     /// `AlternationsList /* Vec<T>::Push */: '|' : OwnedToken Alternation AlternationsList;`
     ///
@@ -1693,7 +1736,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 23:
+    /// Semantic action for production 24:
     ///
     /// `AlternationsList /* Vec<T>::New */: ;`
     ///
@@ -1709,7 +1752,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 24:
+    /// Semantic action for production 25:
     ///
     /// `Alternation: AlternationList /* Vec */;`
     ///
@@ -1726,7 +1769,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 25:
+    /// Semantic action for production 26:
     ///
     /// `AlternationList /* Vec<T>::Push */: Factor AlternationList;`
     ///
@@ -1747,7 +1790,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 26:
+    /// Semantic action for production 27:
     ///
     /// `AlternationList /* Vec<T>::New */: ;`
     ///
@@ -1760,7 +1803,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 27:
+    /// Semantic action for production 28:
     ///
     /// `Factor: Group;`
     ///
@@ -1777,7 +1820,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 28:
+    /// Semantic action for production 29:
     ///
     /// `Factor: Repeat;`
     ///
@@ -1794,7 +1837,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 29:
+    /// Semantic action for production 30:
     ///
     /// `Factor: Optional;`
     ///
@@ -1811,7 +1854,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 30:
+    /// Semantic action for production 31:
     ///
     /// `Factor: Symbol;`
     ///
@@ -1828,7 +1871,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 31:
+    /// Semantic action for production 32:
     ///
     /// `Symbol: NonTerminal;`
     ///
@@ -1845,7 +1888,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 32:
+    /// Semantic action for production 33:
     ///
     /// `Symbol: SimpleToken;`
     ///
@@ -1862,7 +1905,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 33:
+    /// Semantic action for production 34:
     ///
     /// `Symbol: TokenWithStates;`
     ///
@@ -1879,7 +1922,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 34:
+    /// Semantic action for production 35:
     ///
     /// `Symbol: ScannerSwitch;`
     ///
@@ -1896,7 +1939,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 35:
+    /// Semantic action for production 36:
     ///
     /// `TokenLiteral: String;`
     ///
@@ -1913,7 +1956,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 36:
+    /// Semantic action for production 37:
     ///
     /// `TokenLiteral: LiteralString;`
     ///
@@ -1930,7 +1973,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 37:
+    /// Semantic action for production 38:
     ///
     /// `TokenLiteral: Regex;`
     ///
@@ -1947,7 +1990,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 38:
+    /// Semantic action for production 39:
     ///
     /// `SimpleToken: TokenLiteral SimpleTokenOpt /* Option */;`
     ///
@@ -1971,7 +2014,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 39:
+    /// Semantic action for production 40:
     ///
     /// `SimpleTokenOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -1988,7 +2031,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 40:
+    /// Semantic action for production 41:
     ///
     /// `SimpleTokenOpt /* Option<T>::None */: ;`
     ///
@@ -2000,7 +2043,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 41:
+    /// Semantic action for production 42:
     ///
     /// `TokenWithStates: "<" : OwnedToken StateList ">" : OwnedToken TokenLiteral TokenWithStatesOpt /* Option */;`
     ///
@@ -2041,7 +2084,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 42:
+    /// Semantic action for production 43:
     ///
     /// `TokenWithStatesOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -2058,7 +2101,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 43:
+    /// Semantic action for production 44:
     ///
     /// `TokenWithStatesOpt /* Option<T>::None */: ;`
     ///
@@ -2070,7 +2113,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 44:
+    /// Semantic action for production 45:
     ///
     /// `Group: '(' : OwnedToken Alternations ')' : OwnedToken;`
     ///
@@ -2103,7 +2146,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 45:
+    /// Semantic action for production 46:
     ///
     /// `Optional: '[' : OwnedToken Alternations ']' : OwnedToken;`
     ///
@@ -2136,7 +2179,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 46:
+    /// Semantic action for production 47:
     ///
     /// `Repeat: '{' : OwnedToken Alternations '}' : OwnedToken;`
     ///
@@ -2169,7 +2212,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 47:
+    /// Semantic action for production 48:
     ///
     /// `NonTerminal: Identifier NonTerminalOpt /* Option */;`
     ///
@@ -2193,7 +2236,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 48:
+    /// Semantic action for production 49:
     ///
     /// `NonTerminalOpt /* Option<T>::Some */: ASTControl;`
     ///
@@ -2210,7 +2253,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 49:
+    /// Semantic action for production 50:
     ///
     /// `NonTerminalOpt /* Option<T>::None */: ;`
     ///
@@ -2222,7 +2265,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 50:
+    /// Semantic action for production 51:
     ///
     /// `Identifier: /[a-zA-Z_][a-zA-Z0-9_]*/ : OwnedToken;`
     ///
@@ -2241,7 +2284,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 51:
+    /// Semantic action for production 52:
     ///
     /// `String: /"(\\.|[^\\])*?"/ : OwnedToken;`
     ///
@@ -2260,7 +2303,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 52:
+    /// Semantic action for production 53:
     ///
     /// `LiteralString: /'(\\'|[^'])*?'/ : OwnedToken;`
     ///
@@ -2279,7 +2322,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 53:
+    /// Semantic action for production 54:
     ///
     /// `ScannerState: "%scanner" : OwnedToken Identifier '{' : OwnedToken ScannerStateList /* Vec */ '}' : OwnedToken;`
     ///
@@ -2322,7 +2365,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 54:
+    /// Semantic action for production 55:
     ///
     /// `ScannerStateList /* Vec<T>::Push */: ScannerDirectives ScannerStateList;`
     ///
@@ -2343,7 +2386,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 55:
+    /// Semantic action for production 56:
     ///
     /// `ScannerStateList /* Vec<T>::New */: ;`
     ///
@@ -2359,7 +2402,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 56:
+    /// Semantic action for production 57:
     ///
     /// `StateList: Identifier StateListList /* Vec */;`
     ///
@@ -2383,7 +2426,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 57:
+    /// Semantic action for production 58:
     ///
     /// `StateListList /* Vec<T>::Push */: "," : OwnedToken Identifier StateListList;`
     ///
@@ -2409,7 +2452,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 58:
+    /// Semantic action for production 59:
     ///
     /// `StateListList /* Vec<T>::New */: ;`
     ///
@@ -2422,7 +2465,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 59:
+    /// Semantic action for production 60:
     ///
     /// `ScannerSwitch: "%sc" : OwnedToken '(' : OwnedToken ScannerSwitchOpt /* Option */ ')' : OwnedToken;`
     ///
@@ -2463,7 +2506,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 60:
+    /// Semantic action for production 61:
     ///
     /// `ScannerSwitch: "%push" : OwnedToken '(' : OwnedToken Identifier ')' : OwnedToken;`
     ///
@@ -2504,7 +2547,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 61:
+    /// Semantic action for production 62:
     ///
     /// `ScannerSwitch: "%pop" : OwnedToken '(' : OwnedToken ')' : OwnedToken;`
     ///
@@ -2541,7 +2584,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 62:
+    /// Semantic action for production 63:
     ///
     /// `ScannerSwitchOpt /* Option<T>::Some */: Identifier;`
     ///
@@ -2558,7 +2601,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 63:
+    /// Semantic action for production 64:
     ///
     /// `ScannerSwitchOpt /* Option<T>::None */: ;`
     ///
@@ -2570,7 +2613,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 64:
+    /// Semantic action for production 65:
     ///
     /// `ASTControl: CutOperator;`
     ///
@@ -2587,7 +2630,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 65:
+    /// Semantic action for production 66:
     ///
     /// `ASTControl: UserTypeDeclaration;`
     ///
@@ -2607,7 +2650,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 66:
+    /// Semantic action for production 67:
     ///
     /// `CutOperator: '^' : OwnedToken;`
     ///
@@ -2626,7 +2669,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 67:
+    /// Semantic action for production 68:
     ///
     /// `UserTypeDeclaration: ":" : OwnedToken UserTypeName;`
     ///
@@ -2657,7 +2700,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 68:
+    /// Semantic action for production 69:
     ///
     /// `UserTypeName: Identifier UserTypeNameList /* Vec */;`
     ///
@@ -2682,7 +2725,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 69:
+    /// Semantic action for production 70:
     ///
     /// `UserTypeNameList /* Vec<T>::Push */: DoubleColon Identifier UserTypeNameList;`
     ///
@@ -2709,7 +2752,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 70:
+    /// Semantic action for production 71:
     ///
     /// `UserTypeNameList /* Vec<T>::New */: ;`
     ///
@@ -2725,7 +2768,7 @@ impl<'t, 'u> ParolLsGrammarAuto<'t, 'u> {
         Ok(())
     }
 
-    /// Semantic action for production 71:
+    /// Semantic action for production 72:
     ///
     /// `Regex: /\u{2f}(\\.|[^\\])*?\u{2f}/ : OwnedToken;`
     ///
@@ -2765,80 +2808,81 @@ impl<'t> UserActionsTrait<'t> for ParolLsGrammarAuto<'t, '_> {
             7 => self.declaration_0(&children[0], &children[1]),
             8 => self.declaration_1(&children[0], &children[1]),
             9 => self.declaration_2(&children[0], &children[1], &children[2], &children[3]),
-            10 => self.declaration_3(&children[0]),
-            11 => self.scanner_directives_0(&children[0], &children[1]),
-            12 => self.scanner_directives_1(&children[0], &children[1], &children[2]),
-            13 => self.scanner_directives_2(&children[0]),
-            14 => self.scanner_directives_3(&children[0]),
-            15 => self.grammar_definition(&children[0], &children[1], &children[2]),
-            16 => self.grammar_definition_list_0(&children[0], &children[1]),
-            17 => self.grammar_definition_list_1(),
-            18 => self.double_colon(&children[0]),
-            19 => self.production_l_h_s(&children[0], &children[1]),
-            20 => self.production(&children[0], &children[1], &children[2]),
-            21 => self.alternations(&children[0], &children[1]),
-            22 => self.alternations_list_0(&children[0], &children[1], &children[2]),
-            23 => self.alternations_list_1(),
-            24 => self.alternation(&children[0]),
-            25 => self.alternation_list_0(&children[0], &children[1]),
-            26 => self.alternation_list_1(),
-            27 => self.factor_0(&children[0]),
-            28 => self.factor_1(&children[0]),
-            29 => self.factor_2(&children[0]),
-            30 => self.factor_3(&children[0]),
-            31 => self.symbol_0(&children[0]),
-            32 => self.symbol_1(&children[0]),
-            33 => self.symbol_2(&children[0]),
-            34 => self.symbol_3(&children[0]),
-            35 => self.token_literal_0(&children[0]),
-            36 => self.token_literal_1(&children[0]),
-            37 => self.token_literal_2(&children[0]),
-            38 => self.simple_token(&children[0], &children[1]),
-            39 => self.simple_token_opt_0(&children[0]),
-            40 => self.simple_token_opt_1(),
-            41 => self.token_with_states(
+            10 => self.declaration_3(&children[0], &children[1]),
+            11 => self.declaration_4(&children[0]),
+            12 => self.scanner_directives_0(&children[0], &children[1]),
+            13 => self.scanner_directives_1(&children[0], &children[1], &children[2]),
+            14 => self.scanner_directives_2(&children[0]),
+            15 => self.scanner_directives_3(&children[0]),
+            16 => self.grammar_definition(&children[0], &children[1], &children[2]),
+            17 => self.grammar_definition_list_0(&children[0], &children[1]),
+            18 => self.grammar_definition_list_1(),
+            19 => self.double_colon(&children[0]),
+            20 => self.production_l_h_s(&children[0], &children[1]),
+            21 => self.production(&children[0], &children[1], &children[2]),
+            22 => self.alternations(&children[0], &children[1]),
+            23 => self.alternations_list_0(&children[0], &children[1], &children[2]),
+            24 => self.alternations_list_1(),
+            25 => self.alternation(&children[0]),
+            26 => self.alternation_list_0(&children[0], &children[1]),
+            27 => self.alternation_list_1(),
+            28 => self.factor_0(&children[0]),
+            29 => self.factor_1(&children[0]),
+            30 => self.factor_2(&children[0]),
+            31 => self.factor_3(&children[0]),
+            32 => self.symbol_0(&children[0]),
+            33 => self.symbol_1(&children[0]),
+            34 => self.symbol_2(&children[0]),
+            35 => self.symbol_3(&children[0]),
+            36 => self.token_literal_0(&children[0]),
+            37 => self.token_literal_1(&children[0]),
+            38 => self.token_literal_2(&children[0]),
+            39 => self.simple_token(&children[0], &children[1]),
+            40 => self.simple_token_opt_0(&children[0]),
+            41 => self.simple_token_opt_1(),
+            42 => self.token_with_states(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            42 => self.token_with_states_opt_0(&children[0]),
-            43 => self.token_with_states_opt_1(),
-            44 => self.group(&children[0], &children[1], &children[2]),
-            45 => self.optional(&children[0], &children[1], &children[2]),
-            46 => self.repeat(&children[0], &children[1], &children[2]),
-            47 => self.non_terminal(&children[0], &children[1]),
-            48 => self.non_terminal_opt_0(&children[0]),
-            49 => self.non_terminal_opt_1(),
-            50 => self.identifier(&children[0]),
-            51 => self.string(&children[0]),
-            52 => self.literal_string(&children[0]),
-            53 => self.scanner_state(
+            43 => self.token_with_states_opt_0(&children[0]),
+            44 => self.token_with_states_opt_1(),
+            45 => self.group(&children[0], &children[1], &children[2]),
+            46 => self.optional(&children[0], &children[1], &children[2]),
+            47 => self.repeat(&children[0], &children[1], &children[2]),
+            48 => self.non_terminal(&children[0], &children[1]),
+            49 => self.non_terminal_opt_0(&children[0]),
+            50 => self.non_terminal_opt_1(),
+            51 => self.identifier(&children[0]),
+            52 => self.string(&children[0]),
+            53 => self.literal_string(&children[0]),
+            54 => self.scanner_state(
                 &children[0],
                 &children[1],
                 &children[2],
                 &children[3],
                 &children[4],
             ),
-            54 => self.scanner_state_list_0(&children[0], &children[1]),
-            55 => self.scanner_state_list_1(),
-            56 => self.state_list(&children[0], &children[1]),
-            57 => self.state_list_list_0(&children[0], &children[1], &children[2]),
-            58 => self.state_list_list_1(),
-            59 => self.scanner_switch_0(&children[0], &children[1], &children[2], &children[3]),
-            60 => self.scanner_switch_1(&children[0], &children[1], &children[2], &children[3]),
-            61 => self.scanner_switch_2(&children[0], &children[1], &children[2]),
-            62 => self.scanner_switch_opt_0(&children[0]),
-            63 => self.scanner_switch_opt_1(),
-            64 => self.a_s_t_control_0(&children[0]),
-            65 => self.a_s_t_control_1(&children[0]),
-            66 => self.cut_operator(&children[0]),
-            67 => self.user_type_declaration(&children[0], &children[1]),
-            68 => self.user_type_name(&children[0], &children[1]),
-            69 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
-            70 => self.user_type_name_list_1(),
-            71 => self.regex(&children[0]),
+            55 => self.scanner_state_list_0(&children[0], &children[1]),
+            56 => self.scanner_state_list_1(),
+            57 => self.state_list(&children[0], &children[1]),
+            58 => self.state_list_list_0(&children[0], &children[1], &children[2]),
+            59 => self.state_list_list_1(),
+            60 => self.scanner_switch_0(&children[0], &children[1], &children[2], &children[3]),
+            61 => self.scanner_switch_1(&children[0], &children[1], &children[2], &children[3]),
+            62 => self.scanner_switch_2(&children[0], &children[1], &children[2]),
+            63 => self.scanner_switch_opt_0(&children[0]),
+            64 => self.scanner_switch_opt_1(),
+            65 => self.a_s_t_control_0(&children[0]),
+            66 => self.a_s_t_control_1(&children[0]),
+            67 => self.cut_operator(&children[0]),
+            68 => self.user_type_declaration(&children[0], &children[1]),
+            69 => self.user_type_name(&children[0], &children[1]),
+            70 => self.user_type_name_list_0(&children[0], &children[1], &children[2]),
+            71 => self.user_type_name_list_1(),
+            72 => self.regex(&children[0]),
             _ => Err(ParserError::InternalError(format!(
                 "Unhandled production number: {}",
                 prod_num

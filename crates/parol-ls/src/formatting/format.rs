@@ -249,6 +249,27 @@ impl Fmt for Declaration {
             Declaration::ScannerDirectives(scanner_directives) => {
                 handle_scanner_directives(&scanner_directives.scanner_directives, options, comments)
             }
+            Declaration::PercentGrammarUnderscoreTypeLiteralString(grammar_type) => {
+                let (comments_before_token, comments) = Comments::format_comments_before(
+                    comments,
+                    &grammar_type.percent_grammar_underscore_type,
+                    &options.clone().with_padding(Padding::Left),
+                );
+                if comments_before_token.is_empty() || !Line::ends_with_nl(&comments_before_token) {
+                    delim = "\n";
+                };
+                let (str, comments) = grammar_type.literal_string.txt(options, comments);
+                (
+                    format!(
+                        "{}{}{} {}",
+                        comments_before_token,
+                        delim,
+                        grammar_type.percent_grammar_underscore_type,
+                        str
+                    ),
+                    comments,
+                )
+            }
         }
     }
 }

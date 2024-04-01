@@ -1,7 +1,6 @@
 use super::parol_grammar_trait::{
-    self, AlternationList, Declaration, DeclarationOpt, GrammarDefinition, Parol,
-    ParolGrammarTrait, Prolog, PrologList, PrologList0, ScannerDirectives, StartDeclaration,
-    TokenLiteral,
+    self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
+    PrologList, PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -596,10 +595,8 @@ impl ParolGrammar<'_> {
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
             }
-            Declaration::PercentGrammarUnderscoreTypeIdentifierDeclarationOpt(grammar) => {
-                if let Some(grammar) = grammar.declaration_opt.as_ref() {
-                    self.process_grammar_type_declaration(grammar)?;
-                }
+            Declaration::PercentGrammarUnderscoreTypeRawString(grammar_type) => {
+                self.process_grammar_type_declaration(&grammar_type.raw_string.raw_string)?
             }
         }
         Ok(())
@@ -973,27 +970,17 @@ impl ParolGrammar<'_> {
             .any(|p| p.rhs.0.iter().any(|a| a.is_used_scanner(scanner_index)))
     }
 
-    fn process_grammar_type_declaration(&mut self, grammar: &DeclarationOpt) -> Result<()> {
-        let grammar_type = grammar
-            .grammar_type
-            .grammar_type
-            .text()
-            .to_string()
-            .to_lowercase();
-        if grammar_type == "lalr(1)" {
+    fn process_grammar_type_declaration(&mut self, grammar_type: &Token) -> Result<()> {
+        let grammar_type_name = grammar_type.text().to_string().to_lowercase();
+        if grammar_type_name == "'lalr(1)'" {
             self.grammar_type = SupportedGrammarType::LALR1;
-        } else if grammar_type == "ll(k)" {
+        } else if grammar_type_name == "'ll(k)'" {
             self.grammar_type = SupportedGrammarType::LLK;
         } else {
             return Err(ParolParserError::UnsupportedGrammarType {
-                grammar_type,
-                input: grammar
-                    .grammar_type
-                    .grammar_type
-                    .location
-                    .file_name
-                    .to_path_buf(),
-                token: grammar.grammar_type.grammar_type.location.clone(),
+                grammar_type: grammar_type_name,
+                input: grammar_type.location.file_name.to_path_buf(),
+                token: grammar_type.location.clone(),
             }
             .into());
         }

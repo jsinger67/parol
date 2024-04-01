@@ -1,6 +1,7 @@
 %start Parol
 %title "Parol grammar"
 %comment "Parol's own grammar"
+%grammar_type 'll(k)'
 %line_comment '//'
 %block_comment '/*' '*/'
 %user_type UserType = crate::parser::parol_grammar::UserDefinedTypeName
@@ -25,7 +26,7 @@ Declaration
     : '%title'^ String
     | '%comment'^ String
     | '%user_type'^ Identifier '='^ UserTypeName: UserType // User type alias definition
-    | '%grammar_type'^ Identifier [ GrammarType ] // The type of the grammar, e.g. LL(k), LALR(1)
+    | '%grammar_type'^ RawString // The type of the grammar, e.g. LL(k), LALR(1)
     | ScannerDirectives
     ;
 
@@ -154,8 +155,4 @@ UserTypeDeclaration
 // A valid Rust qualified name
 UserTypeName
     : Identifier { DoubleColon^ Identifier }
-    ;
-
-GrammarType
-    : /\(k|\d\)/
     ;
