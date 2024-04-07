@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+use super::lalr1_parse_table::LRConflict;
+
 // ---------------------------------------------------
 // Part of the Public API
 // *Changes will affect crate's version according to semver*
@@ -41,6 +43,13 @@ pub enum GrammarAnalysisError {
     MaxKExceeded {
         /// Maximum lookahead
         max_k: usize,
+    },
+
+    /// The LALR(1) parse table construction failed with conflicts.
+    #[error("LALR(1) parse table construction failed with conflicts")]
+    LALR1ParseTableConstructionFailed {
+        /// Conflict
+        conflict: LRConflict,
     },
 }
 

@@ -212,6 +212,15 @@ fn extract_grammar_analysis_error(
         GrammarAnalysisError::MaxKExceeded { max_k: _ } => {
             // No additional information attached
         }
+        GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict } => {
+            related_information.push(DiagnosticRelatedInformation {
+                location: Location {
+                    uri: located_document_state.uri.to_owned(),
+                    range: *range,
+                },
+                message: format!("{:?}", conflict),
+            });
+        }
     }
 }
 

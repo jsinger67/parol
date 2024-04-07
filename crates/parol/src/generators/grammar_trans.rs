@@ -39,8 +39,8 @@ pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: SupportedGrammarType
     }
 
     match grammar_type {
-        SupportedGrammarType::LLK => return check_and_transform_ll(&cfg),
-        SupportedGrammarType::LALR1 => return check_and_transform_lr(&cfg),
+        SupportedGrammarType::LLK => check_and_transform_ll(cfg),
+        SupportedGrammarType::LALR1 => check_and_transform_lr(cfg),
     }
 }
 

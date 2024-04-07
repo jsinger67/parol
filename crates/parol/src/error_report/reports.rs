@@ -289,6 +289,20 @@ impl Report for ParolErrorReporter {
                             .with_notes(vec!["Please examine your grammar.".to_string()]),
                     )?);
                 }
+                GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict } => {
+                    return Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message("LALR(1) parse table construction failed with conflicts")
+                            .with_code("parol::analysis::lalr1_parse_table_construction_failed")
+                            .with_notes(vec![
+                                "Please examine your grammar.".to_string(),
+                                format!("{:?}", conflict),
+                            ]),
+                    )?);
+                }
             }
         } else {
             let result = term::emit(
