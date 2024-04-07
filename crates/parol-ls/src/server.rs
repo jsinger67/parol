@@ -13,7 +13,11 @@ use lsp_types::{
     Location, PrepareRenameResponse, PublishDiagnosticsParams, Range, RenameParams,
     TextDocumentContentChangeEvent, TextDocumentPositionParams, TextEdit, Url, WorkspaceEdit,
 };
-use parol::{calculate_lookahead_dfas, check_and_transform_grammar, GrammarConfig, ParolGrammar};
+use parol::{
+    analysis::lalr1_parse_table::calculate_lalr1_parse_table, calculate_lookahead_dfas,
+    check_and_transform_grammar, parser::parol_grammar::SupportedGrammarType, GrammarConfig,
+    ParolGrammar,
+};
 
 use crate::{
     config::ConfigProperties, diagnostics::Diagnostics, document_state::DocumentState,
@@ -207,13 +211,23 @@ impl Server {
         document_state: DocumentState,
     ) -> anyhow::Result<()> {
         let mut grammar_config = Self::obtain_grammar_config_from_string(input, file_name)?;
-        let cfg = check_and_transform_grammar(&grammar_config.cfg)?;
+        let cfg = check_and_transform_grammar(&grammar_config.cfg, grammar_config.grammar_type)?;
         grammar_config.update_cfg(cfg);
         let grammar_config = grammar_config.clone();
-        thread::spawn(move || {
-            if let Err(err) = calculate_lookahead_dfas(&grammar_config, max_k) {
-                eprintln!("check_grammar: errors from calculate_lookahead_dfas");
-                let _ = Self::notify_analysis_error(err, connection, uri, version, document_state);
+        thread::spawn(move || match grammar_config.grammar_type {
+            SupportedGrammarType::LLK => {
+                if let Err(err) = calculate_lookahead_dfas(&grammar_config, max_k) {
+                    eprintln!("check_grammar: errors from calculate_lookahead_dfas");
+                    let _ =
+                        Self::notify_analysis_error(err, connection, uri, version, document_state);
+                }
+            }
+            SupportedGrammarType::LALR1 => {
+                if let Err(err) = calculate_lalr1_parse_table(&grammar_config) {
+                    eprintln!("check_grammar: errors from calculate_lookahead_dfas");
+                    let _ =
+                        Self::notify_analysis_error(err, connection, uri, version, document_state);
+                }
             }
         });
         Ok(())

@@ -537,7 +537,8 @@ impl GrammarGenerator<'_> {
         // NOTE: it's up to the listener to add appropriate error context
         self.listener
             .on_intermediate_grammar(IntermediateGrammar::Untransformed, &*grammar_config)?;
-        let cfg = crate::check_and_transform_grammar(&grammar_config.cfg)?;
+        let cfg =
+            crate::check_and_transform_grammar(&grammar_config.cfg, grammar_config.grammar_type)?;
 
         // To have at least a preliminary version of the expanded grammar,
         // even when the next checks fail, we write out the expanded grammar here.

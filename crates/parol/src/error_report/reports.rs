@@ -217,6 +217,27 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?);
                 }
+                GrammarAnalysisError::RightRecursion { recursions } => {
+                    let non_terminals = recursions
+                        .iter()
+                        .map(|r| r.name.to_string())
+                        .collect::<Vec<String>>()
+                        .join(", ");
+                    return Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message("Grammar contains right-recursions")
+                            .with_code("parol::analysis::right_recursion")
+                            .with_notes(vec![
+                                "Right-recursions detected.".to_string(),
+                                non_terminals,
+                                "Please rework your grammar to remove these recursions."
+                                    .to_string(),
+                            ]),
+                    )?);
+                }
                 GrammarAnalysisError::UnreachableNonTerminals { non_terminals } => {
                     let non_terminals = non_terminals
                         .iter()

@@ -25,8 +25,8 @@ log = { workspace = true }
 lsp-server = "0.7.6"
 lsp-types = "0.95.1"
 once_cell = { workspace = true }
-parol = { path = "../parol", version = "0.27.0" }
-parol_runtime = { path = "../parol_runtime", version = "0.20.2", features = [
+parol = { path = "../parol", version = "0.28.0" }
+parol_runtime = { path = "../parol_runtime", version = "0.21.0", features = [
     "auto_generation",
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
@@ -36,7 +36,7 @@ serde_json = "1.0.115"
 thiserror = { workspace = true }
 
 [build-dependencies]
-parol = { path = "../parol", version = "0.27.0" }
-parol_runtime = { path = "../parol_runtime", version = "0.20.2", features = [
+parol = { path = "../parol", version = "0.28.0" }
+parol_runtime = { path = "../parol_runtime", version = "0.21.0", features = [
     "auto_generation",
 ] }

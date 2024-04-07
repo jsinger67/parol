@@ -16,6 +16,10 @@ pub use errors::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 pub mod left_recursion;
 pub use left_recursion::detect_left_recursive_non_terminals;
 
+/// Module with check for right-recursions
+pub mod right_recursion;
+pub use right_recursion::detect_right_recursive_non_terminals;
+
 /// Module with the KTuple type
 pub mod k_tuple;
 pub use k_tuple::{KTuple, KTupleBuilder};
@@ -38,6 +42,9 @@ pub use k_decision::{
     calculate_k, calculate_k_tuples, calculate_lookahead_dfas, decidable, explain_conflicts,
     FirstCache, FollowCache,
 };
+
+/// Module with calculations for the LALR(1) parse table
+pub mod lalr1_parse_table;
 
 /// Module with types for production selection
 pub mod lookahead_dfa;

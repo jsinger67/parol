@@ -82,7 +82,7 @@ pub mod test_support;
 ///
 #[forbid(missing_docs)]
 pub mod transformation;
-pub use transformation::left_factor;
+pub use transformation::{augment_grammar, left_factor};
 
 ///
 /// Module with utility functionalities

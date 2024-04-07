@@ -3,7 +3,7 @@
 
 use crate::grammar::symbol_string::SymbolString;
 use crate::utils::{short_cut_conjunction_combine, short_cut_disjunction_combine};
-use crate::{Cfg, Pr, Symbol /*SymbolString*/};
+use crate::{Cfg, Pr, Symbol};
 use parol_runtime::log::trace;
 
 /// Result type for each non-terminal:
