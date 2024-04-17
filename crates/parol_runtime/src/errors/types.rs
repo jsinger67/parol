@@ -121,6 +121,11 @@ impl Display for UnexpectedToken {
 pub struct TokenVec(Vec<String>);
 
 impl TokenVec {
+    /// Creates a new token vector
+    pub fn new() -> Self {
+        Self(Vec::new())
+    }
+
     /// Pushes a token to the vector
     pub fn push(&mut self, token: String) {
         self.0.push(token);

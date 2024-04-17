@@ -55,7 +55,7 @@ impl Production {
 pub type ParseTree<'t> = Tree<ParseTreeType<'t>, u32, usize>;
 
 /// The parse tree builder type
-type TreeBuilder<'t> = Builder<ParseTreeType<'t>, u32, usize>;
+pub(crate) type TreeBuilder<'t> = Builder<ParseTreeType<'t>, u32, usize>;
 
 ///
 /// The actual LLK parser.

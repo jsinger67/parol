@@ -1,6 +1,7 @@
 use crate::{ParserError, Token};
 
 use std::fmt::{Display, Formatter};
+use syntree::{pointer::PointerUsize, Checkpoint};
 use syntree_layout::Visualize;
 
 ///
@@ -20,6 +21,12 @@ pub enum ParseTreeType<'t> {
     /// All names are of static lifetime (see NON_TERMINALS slice of non-terminal names).
     ///
     N(&'static str),
+
+    ///
+    /// A checkpoint in the parse tree to mark the start of a production.
+    /// This is used to build the parse tree in LR parsing.
+    ///
+    C(Checkpoint<PointerUsize>),
 }
 
 impl<'t> ParseTreeType<'t> {
@@ -55,6 +62,7 @@ impl Visualize for ParseTreeType<'_> {
         match self {
             ParseTreeType::T(t) => write!(f, "{}", t),
             ParseTreeType::N(n) => write!(f, "{}", n),
+            ParseTreeType::C(c) => write!(f, "{:?}", c),
         }
     }
     fn emphasize(&self) -> bool {
@@ -67,6 +75,7 @@ impl Display for ParseTreeType<'_> {
         match self {
             Self::T(t) => write!(f, "T({})", t),
             Self::N(n) => write!(f, "N({})", n),
+            Self::C(c) => write!(f, "C({:?})", c),
         }
     }
 }

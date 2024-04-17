@@ -32,6 +32,11 @@ pub use parser::{
 };
 
 ///
+/// Module that provides types for the LR parser.
+///
+pub mod lr_parser;
+
+///
 /// Module with error types reported from this crate.
 ///
 pub mod errors;
