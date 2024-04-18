@@ -35,9 +35,9 @@ pub use grammar::{Cfg, Pos, Pr, Rhs, Symbol, SymbolAttribute, Terminal, Terminal
 pub mod analysis;
 
 pub use analysis::{
-    calculate_lookahead_dfas, detect_left_recursive_non_terminals, CompiledTerminal,
-    GrammarAnalysisError, KTuple, KTupleBuilder, KTuples, KTuplesBuilder, LookaheadDFA,
-    RecursiveNonTerminal, RelatedHint,
+    calculate_lalr1_parse_table, calculate_lookahead_dfas, detect_left_recursive_non_terminals,
+    CompiledTerminal, GrammarAnalysisError, KTuple, KTupleBuilder, KTuples, KTuplesBuilder,
+    LR1State, LRAction, LRParseTable, LookaheadDFA, RecursiveNonTerminal, RelatedHint,
 };
 
 ///
@@ -61,8 +61,9 @@ pub use error_report::ParolErrorReporter;
 #[forbid(missing_docs)]
 pub mod generators;
 pub use generators::{
-    check_and_transform_grammar, generate_lexer_source, generate_parser_source, try_format,
-    GrammarConfig, GrammarTypeInfo, LanguageGenerator, ScannerConfig, UserTraitGenerator,
+    check_and_transform_grammar, generate_lalr1_parser_source, generate_lexer_source,
+    generate_parser_source, try_format, GrammarConfig, GrammarTypeInfo, LanguageGenerator,
+    ScannerConfig, UserTraitGenerator,
 };
 
 ///

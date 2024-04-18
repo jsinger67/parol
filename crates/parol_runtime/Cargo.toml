@@ -14,6 +14,7 @@ edition = "2018"
 [dependencies]
 anyhow = { workspace = true }
 codespan-reporting = "0.11.1"
+collection_literals = "1.0.1"
 derive_builder = { workspace = true }
 function_name = { workspace = true }
 log = { workspace = true }

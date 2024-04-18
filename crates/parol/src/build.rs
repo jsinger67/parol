@@ -123,8 +123,10 @@ use std::path::{Path, PathBuf};
 use std::{env, fs};
 
 use crate::config::{CommonGeneratorConfig, ParserGeneratorConfig, UserTraitGeneratorConfig};
+use crate::parser::GrammarType;
 use crate::{
-    GrammarConfig, GrammarTypeInfo, LookaheadDFA, ParolGrammar, UserTraitGenerator, MAX_K,
+    GrammarConfig, GrammarTypeInfo, LRParseTable, LookaheadDFA, ParolGrammar, UserTraitGenerator,
+    MAX_K,
 };
 use clap::{Parser, ValueEnum};
 use parol_macros::parol;
@@ -433,6 +435,7 @@ impl Builder {
             state: None,
             grammar_config: None,
             lookahead_dfa_s: None,
+            parse_table: None,
         })
     }
     /// Generate the parser, writing it to the pre-configured output files.
@@ -494,6 +497,7 @@ pub struct GrammarGenerator<'l> {
     state: Option<State>,
     grammar_config: Option<GrammarConfig>,
     lookahead_dfa_s: Option<BTreeMap<String, LookaheadDFA>>,
+    parse_table: Option<LRParseTable>,
 }
 impl GrammarGenerator<'_> {
     /// Generate the parser, writing it to the pre-configured output files.
@@ -570,30 +574,39 @@ impl GrammarGenerator<'_> {
     pub fn post_process(&mut self) -> Result<()> {
         assert_eq!(self.state, Some(State::Expanded));
         let grammar_config = self.grammar_config.as_mut().unwrap();
-        self.lookahead_dfa_s = Some(
-            crate::calculate_lookahead_dfas(grammar_config, self.builder.max_lookahead).map_err(
-                |e| parol!("Lookahead calculation for the given grammar failed!: {}", e),
-            )?,
-        );
+        match grammar_config.grammar_type {
+            GrammarType::LLK => {
+                self.lookahead_dfa_s = Some(
+                    crate::calculate_lookahead_dfas(grammar_config, self.builder.max_lookahead)
+                        .map_err(|e| {
+                            parol!("Lookahead calculation for the given grammar failed!: {}", e)
+                        })?,
+                );
 
-        if self.builder.debug_verbose {
-            print!(
-                "Lookahead DFAs:\n{:?}",
-                self.lookahead_dfa_s.as_ref().unwrap()
-            );
+                if self.builder.debug_verbose {
+                    print!(
+                        "Lookahead DFAs:\n{:?}",
+                        self.lookahead_dfa_s.as_ref().unwrap()
+                    );
+                }
+
+                // Update maximum lookahead size for scanner generation
+                grammar_config.update_lookahead_size(
+                    self.lookahead_dfa_s
+                        .as_ref()
+                        .unwrap()
+                        .iter()
+                        .max_by_key(|(_, dfa)| dfa.k)
+                        .unwrap()
+                        .1
+                        .k,
+                );
+            }
+            GrammarType::LALR1 => {
+                self.parse_table = Some(crate::calculate_lalr1_parse_table(grammar_config)?);
+                grammar_config.update_lookahead_size(1);
+            }
         }
-
-        // Update maximum lookahead size for scanner generation
-        grammar_config.update_lookahead_size(
-            self.lookahead_dfa_s
-                .as_ref()
-                .unwrap()
-                .iter()
-                .max_by_key(|(_, dfa)| dfa.k)
-                .unwrap()
-                .1
-                .k,
-        );
 
         if self.builder.debug_verbose {
             print!("\nGrammar config:\n{:?}", grammar_config);
@@ -623,13 +636,22 @@ impl GrammarGenerator<'_> {
 
         let ast_type_has_lifetime = type_info.symbol_table.has_lifetime(type_info.ast_enum_type);
 
-        let parser_source = crate::generate_parser_source(
-            grammar_config,
-            &lexer_source,
-            &self.builder,
-            self.lookahead_dfa_s.as_ref().unwrap(),
-            ast_type_has_lifetime,
-        )?;
+        let parser_source = match grammar_config.grammar_type {
+            GrammarType::LLK => crate::generate_parser_source(
+                grammar_config,
+                &lexer_source,
+                &self.builder,
+                self.lookahead_dfa_s.as_ref().unwrap(),
+                ast_type_has_lifetime,
+            )?,
+            GrammarType::LALR1 => crate::generate_lalr1_parser_source(
+                grammar_config,
+                &lexer_source,
+                &self.builder,
+                &self.parse_table.as_ref().unwrap(),
+                ast_type_has_lifetime,
+            )?,
+        };
 
         if let Some(ref parser_file_out) = self.builder.parser_output_file {
             fs::write(parser_file_out, parser_source)

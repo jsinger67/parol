@@ -15,8 +15,7 @@ use lsp_types::{
 };
 use parol::{
     analysis::lalr1_parse_table::calculate_lalr1_parse_table, calculate_lookahead_dfas,
-    check_and_transform_grammar, parser::parol_grammar::SupportedGrammarType, GrammarConfig,
-    ParolGrammar,
+    check_and_transform_grammar, parser::parol_grammar::GrammarType, GrammarConfig, ParolGrammar,
 };
 
 use crate::{
@@ -215,14 +214,14 @@ impl Server {
         grammar_config.update_cfg(cfg);
         let grammar_config = grammar_config.clone();
         thread::spawn(move || match grammar_config.grammar_type {
-            SupportedGrammarType::LLK => {
+            GrammarType::LLK => {
                 if let Err(err) = calculate_lookahead_dfas(&grammar_config, max_k) {
                     eprintln!("check_grammar: errors from calculate_lookahead_dfas");
                     let _ =
                         Self::notify_analysis_error(err, connection, uri, version, document_state);
                 }
             }
-            SupportedGrammarType::LALR1 => {
+            GrammarType::LALR1 => {
                 if let Err(err) = calculate_lalr1_parse_table(&grammar_config) {
                     eprintln!("check_grammar: errors from calculate_lookahead_dfas");
                     let _ =

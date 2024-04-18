@@ -502,7 +502,7 @@ enum ASTControlKind {
 
 /// The type of grammar supported by parol
 #[derive(Debug, Clone, Copy, Default)]
-pub enum SupportedGrammarType {
+pub enum GrammarType {
     /// LLK grammar, default
     #[default]
     LLK,
@@ -532,7 +532,7 @@ pub struct ParolGrammar<'t> {
     /// User type definitions (aliases)
     pub user_type_definitions: BTreeMap<String, UserDefinedTypeName>,
     /// The grammar type
-    pub grammar_type: SupportedGrammarType,
+    pub grammar_type: GrammarType,
     /// Contains information about token aliases:
     /// (LHS identifier, Token literal, expanded text)
     token_aliases: Vec<(Token<'static>, String)>,
@@ -973,9 +973,9 @@ impl ParolGrammar<'_> {
     fn process_grammar_type_declaration(&mut self, grammar_type: &Token) -> Result<()> {
         let grammar_type_name = grammar_type.text().to_string().to_lowercase();
         if grammar_type_name == "'lalr(1)'" {
-            self.grammar_type = SupportedGrammarType::LALR1;
+            self.grammar_type = GrammarType::LALR1;
         } else if grammar_type_name == "'ll(k)'" {
-            self.grammar_type = SupportedGrammarType::LLK;
+            self.grammar_type = GrammarType::LLK;
         } else {
             return Err(ParolParserError::UnsupportedGrammarType {
                 grammar_type: grammar_type_name,

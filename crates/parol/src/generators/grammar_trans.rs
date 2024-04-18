@@ -1,7 +1,7 @@
 use crate::analysis::{
     detect_right_recursive_non_terminals, non_productive_non_terminals, unreachable_non_terminals,
 };
-use crate::parser::parol_grammar::SupportedGrammarType;
+use crate::parser::parol_grammar::GrammarType;
 use crate::{augment_grammar, detect_left_recursive_non_terminals, left_factor, Cfg};
 use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 use parol_macros::bail;
@@ -14,7 +14,7 @@ use parol_runtime::Result;
 ///
 ///  Apply all grammar transformation necessary to be able to use the given grammar.
 ///
-pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: SupportedGrammarType) -> Result<Cfg> {
+pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: GrammarType) -> Result<Cfg> {
     let non_productive = non_productive_non_terminals(cfg);
     if !non_productive.is_empty() {
         let non_terminals = non_productive
@@ -39,8 +39,8 @@ pub fn check_and_transform_grammar(cfg: &Cfg, grammar_type: SupportedGrammarType
     }
 
     match grammar_type {
-        SupportedGrammarType::LLK => check_and_transform_ll(cfg),
-        SupportedGrammarType::LALR1 => check_and_transform_lr(cfg),
+        GrammarType::LLK => check_and_transform_ll(cfg),
+        GrammarType::LALR1 => check_and_transform_lr(cfg),
     }
 }
 

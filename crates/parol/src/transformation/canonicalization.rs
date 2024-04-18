@@ -1,7 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generate_name;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
-use crate::parser::parol_grammar::SupportedGrammarType;
+use crate::parser::parol_grammar::GrammarType;
 use crate::parser::{Alternation, Alternations, Factor, Production};
 use crate::utils::combine;
 use crate::{Pr, Symbol};
@@ -352,7 +352,7 @@ fn separate_alternatives(opd: TransformationOperand) -> TransformationOperand {
 fn eliminate_single_rep(
     exclusions: &[String],
     alt_index: usize,
-    grammar_type: SupportedGrammarType,
+    grammar_type: GrammarType,
     production: Production,
 ) -> Vec<Production> {
     let production_name = production.lhs.clone();
@@ -371,10 +371,10 @@ fn eliminate_single_rep(
                 // Case 1
                 let mut rhs_p2 = repeat.0;
                 match grammar_type {
-                    SupportedGrammarType::LLK => {
+                    GrammarType::LLK => {
                         rhs_p2[0].push(Factor::default_non_terminal(r_tick_name.clone()));
                     }
-                    SupportedGrammarType::LALR1 => {
+                    GrammarType::LALR1 => {
                         rhs_p2[0].insert(0, Factor::default_non_terminal(r_tick_name.clone()));
                     }
                 }
@@ -390,11 +390,11 @@ fn eliminate_single_rep(
                     lhs: r_tick_name.clone(),
                     rhs: Alternations(vec![Alternation::new()
                         .with_factors(match grammar_type {
-                            SupportedGrammarType::LLK => vec![
+                            GrammarType::LLK => vec![
                                 Factor::Group(repeat),
                                 Factor::default_non_terminal(r_tick_name.clone()),
                             ],
-                            SupportedGrammarType::LALR1 => vec![
+                            GrammarType::LALR1 => vec![
                                 Factor::default_non_terminal(r_tick_name.clone()),
                                 Factor::Group(repeat),
                             ],
@@ -422,7 +422,7 @@ fn eliminate_single_rep(
 // Eliminate repetitions
 fn eliminate_repetitions(
     opd: TransformationOperand,
-    grammar_type: SupportedGrammarType,
+    grammar_type: GrammarType,
 ) -> TransformationOperand {
     fn find_production_with_repetition(
         productions: &[Production],
@@ -430,10 +430,7 @@ fn eliminate_repetitions(
         find_production_with_factor(productions, |f| matches!(f, Factor::Repeat(_)))
     }
 
-    fn eliminate_repetition(
-        productions: &mut Vec<Production>,
-        grammar_type: SupportedGrammarType,
-    ) -> bool {
+    fn eliminate_repetition(productions: &mut Vec<Production>, grammar_type: GrammarType) -> bool {
         if let Some((production_index, alt_index)) = find_production_with_repetition(productions) {
             let exclusions = variable_names(productions);
             apply_production_transformation(productions, production_index, |r| {
@@ -666,7 +663,7 @@ fn eliminate_groups(opd: TransformationOperand) -> TransformationOperand {
 // -------------------------------------------------------------------------
 pub(crate) fn transform_productions(
     productions: Vec<Production>,
-    grammar_type: SupportedGrammarType,
+    grammar_type: GrammarType,
 ) -> Result<Vec<Pr>> {
     trace!(
         "\nStarting transformation\n{}",
@@ -714,7 +711,7 @@ mod test {
     };
     use crate::{
         grammar::{ProductionAttribute, SymbolAttribute, TerminalKind},
-        parser::parol_grammar::SupportedGrammarType,
+        parser::parol_grammar::GrammarType,
         transformation::canonicalization::apply_production_transformation,
     };
 
@@ -749,12 +746,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(
-            &[production.lhs.clone()],
-            0,
-            SupportedGrammarType::LALR1,
-            production,
-        );
+        let productions =
+            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LALR1, production);
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -817,12 +810,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(
-            &[production.lhs.clone()],
-            0,
-            SupportedGrammarType::LLK,
-            production,
-        );
+        let productions =
+            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LLK, production);
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -886,12 +875,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(
-            &[production.lhs.clone()],
-            0,
-            SupportedGrammarType::LLK,
-            production,
-        );
+        let productions =
+            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LLK, production);
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(
@@ -957,12 +942,8 @@ mod test {
             ])]),
         };
 
-        let productions = eliminate_single_rep(
-            &[production.lhs.clone()],
-            0,
-            SupportedGrammarType::LALR1,
-            production,
-        );
+        let productions =
+            eliminate_single_rep(&[production.lhs.clone()], 0, GrammarType::LALR1, production);
         assert_eq!(3, productions.len());
         // Start: x StartList y;
         assert_eq!(

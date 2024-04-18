@@ -11,7 +11,7 @@ pub use errors::ParolParserError;
 #[forbid(missing_docs)]
 pub mod parol_grammar;
 pub use parol_grammar::{
-    Alternation, Alternations, Factor, ParolGrammar, ParolGrammarItem, Production,
+    Alternation, Alternations, Factor, GrammarType, ParolGrammar, ParolGrammarItem, Production,
 };
 
 pub mod parol_grammar_trait;

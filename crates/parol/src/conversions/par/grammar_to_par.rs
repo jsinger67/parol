@@ -1,7 +1,7 @@
 //!
 //! The module contains the conversion to a the PAR format.
 //!
-use crate::{parser::parol_grammar::SupportedGrammarType, GrammarConfig, ScannerConfig, StrVec};
+use crate::{parser::parol_grammar::GrammarType, GrammarConfig, ScannerConfig, StrVec};
 use anyhow::Result;
 
 // ---------------------------------------------------
@@ -28,8 +28,8 @@ pub fn render_par_string(
         });
 
     let grammar_type = match grammar_config.grammar_type {
-        SupportedGrammarType::LLK => "\n%grammar_type 'll(k)'".to_owned(),
-        SupportedGrammarType::LALR1 => "\n%grammar_type 'lalr(1)'".to_owned(),
+        GrammarType::LLK => "\n%grammar_type 'll(k)'".to_owned(),
+        GrammarType::LALR1 => "\n%grammar_type 'lalr(1)'".to_owned(),
     };
 
     let line_comments = grammar_config.scanner_configurations[0]

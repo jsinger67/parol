@@ -1,7 +1,7 @@
 use parol_runtime::once_cell::sync::Lazy;
 
 use super::ScannerConfig;
-use crate::parser::parol_grammar::SupportedGrammarType;
+use crate::parser::parol_grammar::GrammarType;
 use crate::parser::try_to_convert;
 use crate::{Cfg, ParolGrammar};
 use anyhow::Result;
@@ -37,7 +37,7 @@ pub struct GrammarConfig {
     pub cfg: Cfg,
 
     /// The type of the grammar
-    pub grammar_type: SupportedGrammarType,
+    pub grammar_type: GrammarType,
 
     ///
     /// Title of the grammar
@@ -102,7 +102,7 @@ impl GrammarConfig {
     }
 
     /// Sets the grammar type
-    pub fn with_grammar_type(mut self, grammar_type: SupportedGrammarType) -> Self {
+    pub fn with_grammar_type(mut self, grammar_type: GrammarType) -> Self {
         self.grammar_type = grammar_type;
         self
     }

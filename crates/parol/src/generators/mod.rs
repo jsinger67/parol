@@ -28,7 +28,7 @@ pub use lexer_generator::{generate_lexer_source, generate_terminal_names};
 
 /// Module with the parser generator
 pub mod parser_generator;
-pub use parser_generator::generate_parser_source;
+pub use parser_generator::{generate_lalr1_parser_source, generate_parser_source};
 
 /// Module with the user-trait generator
 pub mod user_trait_generator;

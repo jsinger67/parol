@@ -1,12 +1,14 @@
 //! Parser types for the LR parser.
 //! The parser types are used during the parsing process.
-//! They are duplicated from the `parol` crate which in turn duplicates the `lalr` crate's types.
+//! They are nearly duplicates of the ones in the `parol` crate which in turn duplicates the `lalr`
+//! crate's types.
 //! This is suboptimal but necessary to avoid a dependency to the `lalr` crate here.
 
 use core::str;
 use std::{
     cell::RefCell,
     collections::{BTreeMap, BTreeSet},
+    iter::FromIterator,
     rc::Rc,
 };
 
@@ -66,8 +68,23 @@ pub struct LRParseTable {
     pub states: Vec<LR1State>,
 }
 
+impl LRParseTable {
+    /// Creates a new instance.
+    pub fn new(states: Vec<LR1State>) -> Self {
+        Self { states }
+    }
+}
+
+impl FromIterator<LR1State> for LRParseTable {
+    fn from_iter<T: IntoIterator<Item = LR1State>>(iter: T) -> Self {
+        Self {
+            states: iter.into_iter().collect(),
+        }
+    }
+}
+
 /// The LR parse stack.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct LRParseStack {
     /// The state indices from in the parse table.
     pub stack: Vec<usize>,
@@ -115,7 +132,7 @@ pub struct LRParser<'t> {
     start_symbol_index: NonTerminalIndex,
 
     /// The parse table.
-    pub parse_table: LRParseTable,
+    pub parse_table: &'static LRParseTable,
 
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
@@ -155,7 +172,7 @@ impl<'t> LRParser<'t> {
     ///
     pub fn new(
         start_symbol_index: NonTerminalIndex,
-        parse_table: LRParseTable,
+        parse_table: &'static LRParseTable,
         productions: &'static [Production],
         terminal_names: &'static [&'static str],
         non_terminal_names: &'static [&'static str],
@@ -211,7 +228,7 @@ impl<'t> LRParser<'t> {
         tree_builder: &mut syntree::Builder<ParseTreeType<'_>, u32, usize>,
         prod_num: ProductionIndex,
     ) -> Result<()> {
-        let checkpoint = match self.parse_tree_stack.pop().unwrap() {
+        let checkpoint = match self.parse_tree_stack.last().unwrap() {
             ParseTreeType::C(c) => c,
             _ => {
                 return Err(ParserError::InternalError(
@@ -225,7 +242,7 @@ impl<'t> LRParser<'t> {
             // And we close the production subtree
             tree_builder
                 .close_at(
-                    &checkpoint,
+                    checkpoint,
                     ParseTreeType::N(self.non_terminal_names[self.productions[prod_num].lhs]),
                 )
                 .map(|_| ())
@@ -315,6 +332,12 @@ impl<'t> LRParser<'t> {
                     )?;
                     for _ in 0..n {
                         // Pop n states from the stack
+                        if self.parser_stack.stack.is_empty() {
+                            return Err(ParserError::InternalError(
+                                "Attempted to pop from an empty stack".to_owned(),
+                            )
+                            .into());
+                        }
                         self.parser_stack.pop();
                     }
                     self.parse_tree_stack.push(ParseTreeType::C(
@@ -326,14 +349,23 @@ impl<'t> LRParser<'t> {
                         .push(ParseTreeType::N(self.non_terminal_names[production.lhs]));
                     // The new state is the one on top of the stack
                     let state = self.parser_stack.current_state();
-                    let goto = self
+                    let goto = match self
                         .parse_table
                         .states
                         .get(state)
                         .unwrap()
                         .gotos
                         .get(&nt_index)
-                        .unwrap();
+                    {
+                        Some(goto) => goto,
+                        None => {
+                            return Err(ParserError::InternalError(format!(
+                                "No goto for non-terminal '{}' in state {}",
+                                nt_index, state
+                            ))
+                            .into());
+                        }
+                    };
                     // Push the new state onto the stack
                     self.parser_stack.push(*goto);
                 }
