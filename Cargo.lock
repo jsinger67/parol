@@ -697,9 +697,8 @@ dependencies = [
 [[package]]
 name = "lalr"
 version = "0.0.2"
-dependencies = [
- "log",
-]
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "106d7548f95adbe3019b4fc4954554d7b72535867aa9ce326d2f766b68958de7"
 
 [[package]]
 name = "libc"

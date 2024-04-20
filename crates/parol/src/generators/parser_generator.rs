@@ -9,7 +9,7 @@ use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
 use anyhow::{anyhow, Result};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
-use parol_runtime::TerminalIndex;
+use parol_runtime::{NonTerminalIndex, TerminalIndex};
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::StrVec;
@@ -287,7 +287,7 @@ impl std::fmt::Display for ParserData<'_> {
         };
         let auto_wrapper = if *auto_generate {
             format!(
-                "// Initialize wrapper\n{}\n",
+                "\n// Initialize wrapper\n{}",
                 ume::ume! {
                     let mut user_actions = #auto_name::new(user_actions);
                 }
@@ -430,7 +430,7 @@ impl std::fmt::Display for LRParserData<'_> {
         };
         let auto_wrapper = if *auto_generate {
             format!(
-                "// Initialize wrapper\n{}\n",
+                "\n// Initialize wrapper\n{}",
                 ume::ume! {
                     let mut user_actions = #auto_name::new(user_actions);
                 }
@@ -591,24 +591,25 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     let non_terminals = original_non_terminals.iter().collect::<Vec<_>>();
     let start_symbol_index: usize = find_start_symbol_index(&non_terminals, grammar_config)?;
 
-    let non_terminals = non_terminals
-        .iter()
-        .enumerate()
-        .fold(StrVec::new(4), |mut acc, (i, n)| {
-            acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
-            acc
-        });
+    let non_terminals_with_index_comment =
+        non_terminals
+            .iter()
+            .enumerate()
+            .fold(StrVec::new(4), |mut acc, (i, n)| {
+                acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
+                acc
+            });
     let productions = generate_productions(grammar_config, &original_non_terminals, &terminals);
     let scanner_builds = generate_scanner_builds(grammar_config);
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
-    let parse_table_source = generate_parse_table_source(parse_table, grammar_config);
+    let parse_table_source = generate_parse_table_source(parse_table, &terminals, &non_terminals);
 
     let parser_data = LRParserData {
         start_symbol_index,
         lexer_source,
-        non_terminals,
+        non_terminals: non_terminals_with_index_comment,
         non_terminal_count,
         productions,
         scanner_builds,
@@ -625,10 +626,13 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
 
 fn generate_parse_table_source(
     parse_table: &LRParseTable,
-    grammar_config: &GrammarConfig,
+    terminals: &[&str],
+    non_terminals: &[&String],
 ) -> String {
-    let _ti = grammar_config.cfg.get_terminal_index_function();
-    let _nti = grammar_config.cfg.get_non_terminal_index_function();
+    // Create a terminal resolver function
+    let tr = |ti: TerminalIndex| terminals[(ti - FIRST_USER_TOKEN) as usize];
+    // Create a non-terminal resolver function
+    let nr = |ni: usize| non_terminals[ni].as_str();
     format!(
         "LRParseTable::new(vec![{}])",
         parse_table
@@ -636,59 +640,91 @@ fn generate_parse_table_source(
             .iter()
             .enumerate()
             .fold(String::new(), |mut acc, (i, s)| {
-                acc.push_str(&generate_source_for_lrstate(
-                    s, i,
-                    //fn_ti, fn_nti
-                ));
+                acc.push_str(&generate_source_for_lrstate(s, i, &tr, &nr));
                 acc.push(',');
                 acc
             })
     )
 }
 
-fn generate_source_for_lrstate(
-    state: &LR1State,
+fn generate_source_for_lrstate<'a>(
+    state: &'a LR1State,
     state_num: usize,
-    // fn_ti: impl TerminalIndexFn,
-    // fn_nti: &Fn(&str) -> usize,
+    tr: &impl Fn(TerminalIndex) -> &'a str,
+    nr: &impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
     let eof_action = match &state.eof_action {
-        Some(action) => format!("Some({}),", generate_source_for_lraction(action)),
+        Some(action) => format!("Some({})", generate_source_for_lraction(action, nr)),
         None => "None".to_string(),
     };
     format!(
-        "\n// State {} \nLR1State {{ eof_action: {}, actions: {}, gotos: {} }}",
+        r#"
+        // State {} 
+        LR1State {{
+            eof_action: {},
+            actions: {},
+            gotos: {} }}"#,
         state_num,
         eof_action,
-        generate_source_for_actions(state),
-        generate_source_for_gotos(state)
+        generate_source_for_actions(state, tr, nr),
+        generate_source_for_gotos(state, nr)
     )
 }
 
-fn generate_source_for_actions(state: &LR1State) -> String {
+fn generate_source_for_actions<'a>(
+    state: &LR1State,
+    tr: &impl Fn(TerminalIndex) -> &'a str,
+    nr: &impl Fn(NonTerminalIndex) -> &'a str,
+) -> String {
     format!(
-        "collection! {{ {}}}",
+        r#"collection! {{ {}
+    }}"#,
         state.actions.iter().fold(String::new(), |mut acc, (t, a)| {
-            acc.push_str(format!("{} => {}, ", t, generate_source_for_lraction(a)).as_str());
+            acc.push_str(
+                format!(
+                    r#"
+        {} /* '{}' */ => {},"#,
+                    t,
+                    tr(*t),
+                    generate_source_for_lraction(a, nr)
+                )
+                .as_str(),
+            );
             acc
         })
     )
 }
 
-fn generate_source_for_gotos(state: &LR1State) -> String {
+fn generate_source_for_gotos<'a>(
+    state: &LR1State,
+    nr: &impl Fn(NonTerminalIndex) -> &'a str,
+) -> String {
     format!(
-        "collection! {{ {}}}",
+        r#"collection! {{ {}
+    }}"#,
         state.gotos.iter().fold(String::new(), |mut acc, (n, s)| {
-            acc.push_str(format!("{} => {}, ", n, s).as_str());
+            acc.push_str(
+                format!(
+                    r#"
+        {} /* {} */ => {}, "#,
+                    n,
+                    nr(*n),
+                    s
+                )
+                .as_str(),
+            );
             acc
         })
     )
 }
 
-fn generate_source_for_lraction(action: &LRAction) -> String {
+fn generate_source_for_lraction<'a>(
+    action: &LRAction,
+    nr: impl Fn(NonTerminalIndex) -> &'a str,
+) -> String {
     match action {
         LRAction::Shift(s) => format!("LRAction::Shift({})", s),
-        LRAction::Reduce(n, p) => format!("LRAction::Reduce({}, {})", n, p),
+        LRAction::Reduce(n, p) => format!("LRAction::Reduce({} /*{}*/, {})", n, nr(*n), p),
         LRAction::Accept => "LRAction::Accept".to_string(),
     }
 }

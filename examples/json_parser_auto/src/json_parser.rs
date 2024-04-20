@@ -316,9 +316,9 @@ where
         NON_TERMINALS,
     );
     llk_parser.trim_parse_tree();
+
     // Initialize wrapper
     let mut user_actions = JsonGrammarAuto::new(user_actions);
-
     llk_parser.parse(
         TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
         &mut user_actions,

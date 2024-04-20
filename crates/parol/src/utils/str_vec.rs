@@ -1,4 +1,9 @@
-use std::fmt::{Debug, Display, Error, Formatter};
+use std::{
+    fmt::{Debug, Display, Error, Formatter},
+    ops::Index,
+};
+
+use parol_runtime::NonTerminalIndex;
 
 #[derive(Debug, Default, Clone)]
 pub struct StrVec {
@@ -88,5 +93,12 @@ impl<'a> IntoIterator for &'a StrVec {
     type IntoIter = StrVecIterator<'a>;
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
+    }
+}
+
+impl Index<NonTerminalIndex> for StrVec {
+    type Output = String;
+    fn index(&self, index: NonTerminalIndex) -> &Self::Output {
+        &self.vec[index]
     }
 }

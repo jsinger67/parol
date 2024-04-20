@@ -242,14 +242,14 @@ pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRP
     trace!("CFG: \n{}", render_par_string(grammar_config, true)?);
     let cfg = &grammar_config.cfg;
     let grammar = GrammarLalr::from(cfg);
-    // trace!("LALR(1) grammar: {:#?}", grammar);
-    let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| false;
+    trace!("{:#?}", grammar);
+    let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| true;
     let priority_of = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| 0;
     let parse_table = grammar.lalr1(reduce_on, priority_of).map_err(|e| {
         anyhow!(GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict: e.into() })
     })?;
-    // trace!("LALR(1) parse table: {:#?}", parse_table);
+    trace!("LALR(1) parse table: {:#?}", parse_table);
     let parse_table = LRParseTable::from(parse_table);
-    // trace!("Converted LALR(1) parse table: {:#?}", parse_table);
+    trace!("Converted LALR(1) parse table: {:#?}", parse_table);
     Ok(parse_table)
 }
