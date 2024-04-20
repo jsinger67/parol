@@ -8,9 +8,12 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{anyhow, Result};
-use parol_runtime::{NonTerminalIndex, ProductionIndex, TerminalIndex};
+use parol_runtime::{log::trace, NonTerminalIndex, ProductionIndex, TerminalIndex};
 
-use crate::{Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal};
+use crate::{
+    grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
+    render_par_string, Cfg, GrammarAnalysisError, GrammarConfig, Pr, Terminal,
+};
 
 /// Type aliases for the LALR(1) parse table construction.
 /// The generic parameters are defined to be terminal, non-terminal, and production indices.
@@ -29,32 +32,33 @@ type GrammarLalr = lalr::Grammar<TerminalIndex, NonTerminalIndex, ProductionInde
 /// the LALR(1) parse table.
 impl From<&Cfg> for GrammarLalr {
     fn from(cfg: &Cfg) -> Self {
-        let terminal_index = cfg.get_terminal_index_function();
-        let non_terminal_index = cfg.get_non_terminal_index_function();
+        let ti = cfg.get_terminal_index_function();
+        let nti = cfg.get_non_terminal_index_function();
 
         let mut grammar = GrammarLalr {
             rules: BTreeMap::new(),
-            start: non_terminal_index(&cfg.st),
+            start: nti.non_terminal_index(&cfg.st),
         };
 
         for (i, Pr(s, rhs, _)) in cfg.pr.iter().enumerate() {
-            let lhs = non_terminal_index(s.get_n_ref().unwrap());
+            let lhs = nti.non_terminal_index(s.get_n_ref().unwrap());
             let rhs = RhsLalr {
                 syms: rhs
                     .iter()
                     .map(|s| match s {
                         crate::Symbol::N(n, _, _) => {
-                            lalr::Symbol::Nonterminal(non_terminal_index(n))
+                            lalr::Symbol::Nonterminal(nti.non_terminal_index(n))
                         }
                         crate::Symbol::T(Terminal::Trm(s, k, _, _, _)) => {
-                            lalr::Symbol::Terminal(terminal_index(s, *k))
+                            lalr::Symbol::Terminal(ti.terminal_index(s, *k))
                         }
                         _ => unreachable!(),
                     })
                     .collect(),
                 act: i,
             };
-            grammar.rules.insert(lhs, vec![rhs]);
+            trace!("LALR(1) rule: {} -> {:?}", lhs, rhs);
+            grammar.rules.entry(lhs).or_default().push(rhs);
         }
 
         grammar
@@ -214,7 +218,7 @@ pub struct LRParseTable {
 impl From<LR1ParseTableLalr<'_>> for LRParseTable {
     fn from(parse_table: LR1ParseTableLalr) -> Self {
         let mut states = Vec::new();
-        for state in parse_table.states {
+        for state in parse_table.states.into_iter() {
             let mut actions = BTreeMap::new();
             for (terminal, action) in state.lookahead {
                 actions.insert(*terminal, action.into());
@@ -235,12 +239,17 @@ impl From<LR1ParseTableLalr<'_>> for LRParseTable {
 
 /// Calculate the LALR(1) parse table for the given grammar configuration.
 pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRParseTable> {
+    trace!("CFG: \n{}", render_par_string(grammar_config, true)?);
     let cfg = &grammar_config.cfg;
     let grammar = GrammarLalr::from(cfg);
+    // trace!("LALR(1) grammar: {:#?}", grammar);
     let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| false;
     let priority_of = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| 0;
     let parse_table = grammar.lalr1(reduce_on, priority_of).map_err(|e| {
         anyhow!(GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict: e.into() })
     })?;
-    Ok(parse_table.into())
+    // trace!("LALR(1) parse table: {:#?}", parse_table);
+    let parse_table = LRParseTable::from(parse_table);
+    // trace!("Converted LALR(1) parse table: {:#?}", parse_table);
+    Ok(parse_table)
 }

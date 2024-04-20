@@ -648,7 +648,7 @@ impl GrammarGenerator<'_> {
                 grammar_config,
                 &lexer_source,
                 &self.builder,
-                &self.parse_table.as_ref().unwrap(),
+                self.parse_table.as_ref().unwrap(),
                 ast_type_has_lifetime,
             )?,
         };

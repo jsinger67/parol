@@ -603,7 +603,7 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
 
-    let parse_table_source = generate_parse_table_source(parse_table);
+    let parse_table_source = generate_parse_table_source(parse_table, grammar_config);
 
     let parser_data = LRParserData {
         start_symbol_index,
@@ -623,24 +623,42 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
     Ok(format!("{}", parser_data))
 }
 
-fn generate_parse_table_source(parse_table: &LRParseTable) -> String {
+fn generate_parse_table_source(
+    parse_table: &LRParseTable,
+    grammar_config: &GrammarConfig,
+) -> String {
+    let _ti = grammar_config.cfg.get_terminal_index_function();
+    let _nti = grammar_config.cfg.get_non_terminal_index_function();
     format!(
         "LRParseTable::new(vec![{}])",
-        parse_table.states.iter().fold(String::new(), |mut acc, s| {
-            acc.push_str(&generate_source_for_lrstate(s));
-            acc.push(',');
-            acc
-        })
+        parse_table
+            .states
+            .iter()
+            .enumerate()
+            .fold(String::new(), |mut acc, (i, s)| {
+                acc.push_str(&generate_source_for_lrstate(
+                    s, i,
+                    //fn_ti, fn_nti
+                ));
+                acc.push(',');
+                acc
+            })
     )
 }
 
-fn generate_source_for_lrstate(state: &LR1State) -> String {
+fn generate_source_for_lrstate(
+    state: &LR1State,
+    state_num: usize,
+    // fn_ti: impl TerminalIndexFn,
+    // fn_nti: &Fn(&str) -> usize,
+) -> String {
     let eof_action = match &state.eof_action {
         Some(action) => format!("Some({}),", generate_source_for_lraction(action)),
         None => "None".to_string(),
     };
     format!(
-        "LR1State {{ eof_action: {}, actions: {}, gotos: {} }}",
+        "\n// State {} \nLR1State {{ eof_action: {}, actions: {}, gotos: {} }}",
+        state_num,
         eof_action,
         generate_source_for_actions(state),
         generate_source_for_gotos(state)
@@ -649,9 +667,9 @@ fn generate_source_for_lrstate(state: &LR1State) -> String {
 
 fn generate_source_for_actions(state: &LR1State) -> String {
     format!(
-        "collection! {{{}}}",
+        "collection! {{ {}}}",
         state.actions.iter().fold(String::new(), |mut acc, (t, a)| {
-            acc.push_str(format!("{} => {},", t, generate_source_for_lraction(a)).as_str());
+            acc.push_str(format!("{} => {}, ", t, generate_source_for_lraction(a)).as_str());
             acc
         })
     )
@@ -659,9 +677,9 @@ fn generate_source_for_actions(state: &LR1State) -> String {
 
 fn generate_source_for_gotos(state: &LR1State) -> String {
     format!(
-        "collection! {{{}}}",
+        "collection! {{ {}}}",
         state.gotos.iter().fold(String::new(), |mut acc, (n, s)| {
-            acc.push_str(format!("{} => {},", n, s).as_str());
+            acc.push_str(format!("{} => {}, ", n, s).as_str());
             acc
         })
     )

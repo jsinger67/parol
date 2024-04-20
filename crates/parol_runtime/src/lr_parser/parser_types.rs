@@ -12,6 +12,8 @@ use std::{
     rc::Rc,
 };
 
+use log::trace;
+
 use crate::{
     parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError, ParseTree,
     ParseTreeType, ParserError, Production, ProductionIndex, Result, SyntaxError, TerminalIndex,
@@ -291,6 +293,7 @@ impl<'t> LRParser<'t> {
             let token = stream.borrow_mut().consume()?;
             let terminal_index = token.token_type;
             let current_state = self.parser_stack.current_state();
+            trace!("Current state: {}", current_state);
             let action = match self.parse_table.states[current_state]
                 .actions
                 .get(&terminal_index)
@@ -319,10 +322,17 @@ impl<'t> LRParser<'t> {
             };
             match action {
                 LRAction::Shift(next_state) => {
+                    trace!("Shift to state {}", next_state);
                     self.parser_stack.push(*next_state);
+                    trace!(
+                        "Push token {} ({})",
+                        token.text,
+                        self.terminal_names[token.token_type as usize]
+                    );
                     self.parse_tree_stack.push(ParseTreeType::T(token.clone()));
                 }
                 LRAction::Reduce(nt_index, prod_index) => {
+                    trace!("Reduce by production {}", prod_index);
                     let production = &self.productions[*prod_index];
                     let nt_index = *nt_index;
                     let n = self.call_action_and_build_parse_tree(
@@ -349,6 +359,7 @@ impl<'t> LRParser<'t> {
                         .push(ParseTreeType::N(self.non_terminal_names[production.lhs]));
                     // The new state is the one on top of the stack
                     let state = self.parser_stack.current_state();
+                    trace!("Current state after removing {} states is {}", n, state);
                     let goto = match self
                         .parse_table
                         .states
@@ -367,9 +378,11 @@ impl<'t> LRParser<'t> {
                         }
                     };
                     // Push the new state onto the stack
+                    trace!("Push goto state {}", goto);
                     self.parser_stack.push(*goto);
                 }
                 LRAction::Accept => {
+                    trace!("Accept");
                     self.close_sub_parse_tree(
                         &mut tree_builder,
                         self.productions

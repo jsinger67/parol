@@ -4,8 +4,9 @@
 //!
 
 use crate::analysis::FirstCache;
+use crate::grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn};
 use crate::grammar::symbol_string::SymbolString;
-use crate::{CompiledTerminal, GrammarConfig, KTuples, Pr, Symbol, TerminalKind};
+use crate::{CompiledTerminal, GrammarConfig, KTuples, Pr, Symbol};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
@@ -49,9 +50,9 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
     let nt_count = cfg.get_non_terminal_set().len();
 
     // The indices returned from this function corresponds to the indices in the result-vector.
-    let non_terminal_index = Arc::new(grammar_config.cfg.get_non_terminal_index_function());
+    let nti = Arc::new(grammar_config.cfg.get_non_terminal_index_function());
     // The indices returned from this function are used to create CompiledTerminals.
-    let terminal_index = Arc::new(grammar_config.cfg.get_terminal_index_function());
+    let ti = Arc::new(grammar_config.cfg.get_terminal_index_function());
 
     let max_terminal_index = cfg.get_ordered_terminals().len() + FIRST_USER_TOKEN as usize;
 
@@ -59,7 +60,7 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
         cfg.get_non_terminal_set()
             .iter()
             .fold(vec![0; pr_count], |mut acc, nt| {
-                let non_terminal_index = non_terminal_index(nt);
+                let non_terminal_index = nti.non_terminal_index(nt);
                 for (pi, _) in cfg.matching_productions(nt) {
                     acc[pi] = non_terminal_index;
                 }
@@ -73,8 +74,8 @@ pub fn first_k(grammar_config: &GrammarConfig, k: usize, first_cache: &FirstCach
                 es.push(combine_production_equation(
                     pr,
                     pr_count,
-                    terminal_index.clone(),
-                    non_terminal_index.clone(),
+                    ti.clone(),
+                    nti.clone(),
                     k,
                     max_terminal_index,
                 ));
@@ -217,8 +218,8 @@ fn combine_production_equation<N, T>(
     max_terminal_index: usize,
 ) -> TransferFunction
 where
-    T: Fn(&str, TerminalKind) -> TerminalIndex + Send + Sync + 'static,
-    N: Fn(&str) -> usize + Send + 'static,
+    T: TerminalIndexFn + Send + Sync + 'static,
+    N: NonTerminalIndexFn + Send + 'static,
 {
     let parts = pr
         .get_r()
@@ -308,9 +309,9 @@ where
 fn create_union_access_function(
     nt: &str,
     pr_count: usize,
-    non_terminal_index: Arc<dyn Fn(&str) -> usize>,
+    nti: Arc<dyn NonTerminalIndexFn>,
 ) -> TransferFunction {
     let nt = nt.to_owned();
-    let index = non_terminal_index(&nt);
+    let index = nti.non_terminal_index(&nt);
     Arc::new(move |result_vector: Arc<ResultVector>| result_vector[pr_count + index].clone())
 }

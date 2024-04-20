@@ -1,7 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::{Pos, Pr, Symbol, Terminal, TerminalKind};
 use parol_runtime::once_cell::sync::Lazy;
-use parol_runtime::TerminalIndex;
+use parol_runtime::{NonTerminalIndex, TerminalIndex};
 use regex::Regex;
 use std::collections::HashSet;
 use std::collections::{BTreeMap, BTreeSet};
@@ -9,6 +9,36 @@ use std::ops::Index;
 
 pub(crate) static RX_NUM_SUFFIX: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"[0-9]+$").expect("error parsing regex"));
+
+/// Trait to resolve terminal indices
+pub trait TerminalIndexFn {
+    /// Returns the terminal index for a given terminal string and terminal kind
+    fn terminal_index(&self, t: &str, k: TerminalKind) -> TerminalIndex;
+}
+
+impl<F> TerminalIndexFn for F
+where
+    F: Fn(&str, TerminalKind) -> TerminalIndex,
+{
+    fn terminal_index(&self, t: &str, k: TerminalKind) -> TerminalIndex {
+        self(t, k)
+    }
+}
+
+/// Trait to resolve terminal indices
+pub trait NonTerminalIndexFn {
+    /// Returns the non-terminal index for a given non-terminal string
+    fn non_terminal_index(&self, t: &str) -> NonTerminalIndex;
+}
+
+impl<F> NonTerminalIndexFn for F
+where
+    F: Fn(&str) -> NonTerminalIndex,
+{
+    fn non_terminal_index(&self, t: &str) -> NonTerminalIndex {
+        self(t)
+    }
+}
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -104,7 +134,7 @@ impl Cfg {
     /// Generates a function that returns the non-terminal index (in alphabetical sort order) for a
     /// given non-terminal name
     ///
-    pub fn get_non_terminal_index_function(&self) -> impl Fn(&str) -> usize {
+    pub fn get_non_terminal_index_function(&self) -> impl NonTerminalIndexFn {
         let vec = self.get_non_terminal_set();
         move |nt_name: &str| vec.iter().position(|nt| nt == nt_name).unwrap()
     }
@@ -113,7 +143,7 @@ impl Cfg {
     /// Generates a function that returns the terminal index (in ordered of occurrence) for given
     /// terminal string and terminal kind
     ///
-    pub fn get_terminal_index_function(&self) -> impl Fn(&str, TerminalKind) -> TerminalIndex {
+    pub fn get_terminal_index_function(&self) -> impl TerminalIndexFn {
         let vec = self
             .get_ordered_terminals_owned()
             .into_iter()

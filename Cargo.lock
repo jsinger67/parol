@@ -38,9 +38,9 @@ checksum = "4b46cbb362ab8752921c97e041f5e366ee6297bd428a31275b9fcf1e380f7299"
 
 [[package]]
 name = "anstream"
-version = "0.6.7"
+version = "0.6.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cd2405b3ac1faab2990b74d728624cd9fd115651fcecc7c2d8daf01376275ba"
+checksum = "d96bd03f33fe50a863e394ee9718a706f988b9079b20c3784fb726e7678b62fb"
 dependencies = [
  "anstyle",
  "anstyle-parse",
@@ -52,9 +52,9 @@ dependencies = [
 
 [[package]]
 name = "anstyle"
-version = "1.0.0"
+version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41ed9a86bf92ae6580e0a31281f65a1b1d867c0cc68d5346e2ae128dddfa6a7d"
+checksum = "8901269c6307e8d93993578286ac0edf7f195079ffff5ebdeea6a59ffb7e36bc"
 
 [[package]]
 name = "anstyle-parse"
@@ -116,7 +116,7 @@ name = "basic"
 version = "0.5.0"
 dependencies = [
  "anyhow",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "log",
  "parol",
@@ -435,6 +435,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
 
 [[package]]
+name = "env_filter"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a009aa4810eb158359dda09d0c87378e4bbb89b5a801f016885a4707ba24f7ea"
+dependencies = [
+ "log",
+ "regex",
+]
+
+[[package]]
 name = "env_logger"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -455,6 +465,19 @@ dependencies = [
  "log",
  "regex",
  "termcolor",
+]
+
+[[package]]
+name = "env_logger"
+version = "0.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38b35839ba51819680ba087cd351788c9a3c476841207e0b8cee0b04722343b9"
+dependencies = [
+ "anstream",
+ "anstyle",
+ "env_filter",
+ "humantime",
+ "log",
 ]
 
 [[package]]
@@ -645,7 +668,7 @@ name = "json_parser"
 version = "0.5.0"
 dependencies = [
  "anyhow",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "log",
  "parol",
  "parol-macros",
@@ -661,7 +684,7 @@ version = "0.4.0"
 dependencies = [
  "anyhow",
  "derive_builder",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "log",
  "parol",
@@ -674,8 +697,9 @@ dependencies = [
 [[package]]
 name = "lalr"
 version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "106d7548f95adbe3019b4fc4954554d7b72535867aa9ce326d2f766b68958de7"
+dependencies = [
+ "log",
+]
 
 [[package]]
 name = "libc"
@@ -765,7 +789,7 @@ name = "oberon2"
 version = "0.3.0"
 dependencies = [
  "anyhow",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "log",
  "parol",
@@ -804,7 +828,7 @@ dependencies = [
  "clap",
  "criterion",
  "derive_builder",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "graph-cycles",
  "lalr",
@@ -840,7 +864,7 @@ dependencies = [
  "clap",
  "derive-new",
  "derive_builder",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "log",
  "lsp-server",
@@ -888,7 +912,7 @@ name = "parol_toml"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "env_logger 0.10.2",
+ "env_logger 0.11.3",
  "function_name",
  "log",
  "parol",

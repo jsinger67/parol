@@ -1,5 +1,6 @@
 use crate::analysis::k_tuple::TerminalMappings;
-use crate::{Symbol, Terminal, TerminalKind};
+use crate::grammar::cfg::TerminalIndexFn;
+use crate::{Symbol, Terminal};
 use parol_runtime::lexer::EOI;
 use parol_runtime::TerminalIndex;
 use std::fmt::{Debug, Display, Error, Formatter};
@@ -29,10 +30,12 @@ impl CompiledTerminal {
     pub fn create<F, R>(s: &Symbol, terminal_index_resolver: R) -> Self
     where
         R: AsRef<F>,
-        F: Fn(&str, TerminalKind) -> TerminalIndex,
+        F: TerminalIndexFn,
     {
         match s {
-            Symbol::T(Terminal::Trm(t, k, ..)) => Self(terminal_index_resolver.as_ref()(t, *k)),
+            Symbol::T(Terminal::Trm(t, k, ..)) => {
+                Self(terminal_index_resolver.as_ref().terminal_index(t, *k))
+            }
             Symbol::T(Terminal::End) => Self(EOI),
             _ => panic!("Unexpected symbol type: {:?}", s),
         }

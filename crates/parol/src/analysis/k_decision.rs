@@ -1,6 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::analysis::LookaheadDFA;
 use crate::analysis::{first_k, follow_k, FirstSet, FollowSet};
+use crate::grammar::cfg::NonTerminalIndexFn;
 use crate::{GrammarAnalysisError, MAX_K};
 use crate::{GrammarConfig, KTuples};
 use anyhow::{anyhow, bail, Result};
@@ -104,7 +105,7 @@ pub fn decidable(
         // The trivial case - no lookahead is needed.
         Ok(0)
     } else {
-        let non_terminal_index_finder = cfg.get_non_terminal_index_function();
+        let nti = cfg.get_non_terminal_index_function();
         let mut current_k = 1;
         loop {
             if current_k > max_k {
@@ -120,7 +121,7 @@ pub fn decidable(
                 .collect::<Vec<(ProductionIndex, KTuples)>>();
 
             let cached = follow_cache.get(current_k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.1.get(non_terminal_index_finder(non_terminal)) {
+            if let Some(follow_set) = cached.1.get(nti.non_terminal_index(non_terminal)) {
                 let concatenated_k_tuples = k_tuples_of_productions
                     .iter()
                     .map(|(i, t)| (*i, t.clone().k_concat(follow_set, current_k)))
@@ -174,7 +175,7 @@ pub fn calculate_k_tuples(
     follow_cache: &FollowCache,
 ) -> Result<BTreeMap<usize, KTuples>> {
     let cfg = &grammar_config.cfg;
-    let non_terminal_index_finder = Rc::new(cfg.get_non_terminal_index_function());
+    let nti = Rc::new(cfg.get_non_terminal_index_function());
     cfg.get_non_terminal_set()
         .iter()
         .map(|n| {
@@ -191,7 +192,7 @@ pub fn calculate_k_tuples(
                     grammar_config,
                     first_cache,
                     follow_cache,
-                    non_terminal_index_finder.clone(),
+                    nti.clone(),
                     acc,
                 )
             })
@@ -204,7 +205,7 @@ fn calculate_tuples_for_non_terminal(
     grammar_config: &GrammarConfig,
     first_cache: &FirstCache,
     follow_cache: &FollowCache,
-    non_terminal_index_finder: Rc<impl Fn(&str) -> usize>,
+    nti: Rc<impl NonTerminalIndexFn>,
     mut m: BTreeMap<usize, KTuples>,
 ) -> std::result::Result<BTreeMap<usize, KTuples>, anyhow::Error> {
     let productions = grammar_config.cfg.matching_productions(&nt);
@@ -213,7 +214,7 @@ fn calculate_tuples_for_non_terminal(
         .fold(BTreeMap::new(), |mut acc, (pi, _)| {
             let k_tuples = first_cache.get(k, grammar_config).0[*pi].clone();
             let cached = follow_cache.get(k, grammar_config, first_cache);
-            if let Some(follow_set) = cached.1.get(non_terminal_index_finder(&nt)) {
+            if let Some(follow_set) = cached.1.get(nti.non_terminal_index(&nt)) {
                 acc.insert(*pi, k_tuples.k_concat(follow_set, k));
             }
             acc
@@ -276,7 +277,7 @@ pub fn explain_conflicts(
         // The trivial case - no lookahead is needed, no conflicts can occur.
         Ok(Vec::new())
     } else {
-        let non_terminal_index_finder = cfg.get_non_terminal_index_function();
+        let nti = cfg.get_non_terminal_index_function();
         let productions = cfg.matching_productions(non_terminal);
         let k_tuples_of_productions = productions
             .iter()
@@ -287,7 +288,7 @@ pub fn explain_conflicts(
             .collect::<Vec<(ProductionIndex, KTuples)>>();
 
         let cached = follow_cache.get(k, grammar_config, first_cache);
-        if let Some(follow_set) = cached.1.get(non_terminal_index_finder(non_terminal)) {
+        if let Some(follow_set) = cached.1.get(nti.non_terminal_index(non_terminal)) {
             let concatenated_k_tuples = k_tuples_of_productions
                 .iter()
                 .map(|(i, t)| (*i, t.clone().k_concat(follow_set, k)))

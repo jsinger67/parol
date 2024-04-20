@@ -8,8 +8,9 @@ use super::FollowCache;
 use crate::analysis::compiled_terminal::CompiledTerminal;
 use crate::analysis::k_decision::CacheEntry;
 use crate::analysis::FirstCache;
+use crate::grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn};
 use crate::grammar::symbol_string::SymbolString;
-use crate::{GrammarConfig, KTuples, Pos, Pr, Symbol, TerminalKind};
+use crate::{GrammarConfig, KTuples, Pos, Pr, Symbol};
 use parol_runtime::lexer::FIRST_USER_TOKEN;
 use parol_runtime::log::trace;
 use parol_runtime::TerminalIndex;
@@ -89,26 +90,20 @@ pub fn follow_k(
 
     let max_terminal_index = terminals.len() + FIRST_USER_TOKEN as usize;
 
-    let terminal_index = Arc::new(move |t: &str, k: TerminalKind| -> TerminalIndex {
-        (terminals
-            .iter()
-            .position(|(trm, kind, _)| *trm == t && kind.behaves_like(k))
-            .unwrap() as TerminalIndex)
-            + FIRST_USER_TOKEN
-    });
+    let ti = Arc::new(grammar_config.cfg.get_terminal_index_function());
 
     let first_k_of_nt = Arc::new(first_cache.get(k, grammar_config).1);
 
     let start_symbol = cfg.get_start_symbol();
 
-    let non_terminal_index_finder = cfg.get_non_terminal_index_function();
+    let nti = cfg.get_non_terminal_index_function();
 
     let non_terminal_positions = Arc::new(
         cfg.get_non_terminal_positions()
             .iter()
             .filter(|(p, _)| p.sy_index() > 0)
             .fold(HashMap::<Pos, usize>::new(), |mut acc, (p, s)| {
-                acc.insert(*p, non_terminal_index_finder(s));
+                acc.insert(*p, nti.non_terminal_index(s));
                 acc
             }),
     );
@@ -122,11 +117,12 @@ pub fn follow_k(
                     prod_num: i,
                     pr,
                     first_k_of_nt: first_k_of_nt.clone(),
-                    terminal_index: terminal_index.clone(),
+                    ti: ti.clone(),
+                    nti: &nti,
                     k,
                     max_terminal_index,
                 };
-                update_production_equations(es, &non_terminal_index_finder, args)
+                update_production_equations(es, args)
             });
 
     trace!(
@@ -238,12 +234,21 @@ pub fn follow_k(
     )
 }
 
-struct UpdateProductionEquationsArgs<'a, T> {
+/// Arguments for the update_production_equations function
+struct UpdateProductionEquationsArgs<'a, T, N> {
+    /// The production number
     prod_num: usize,
+    /// The production
     pr: &'a Pr,
+    /// The FIRST(k) sets of non-terminals
     first_k_of_nt: Arc<FollowSet>,
-    terminal_index: Arc<T>,
+    /// The terminal index function
+    ti: Arc<T>,
+    /// The non-terminal index function
+    nti: &'a N,
+    /// The k value
     k: usize,
+    /// The maximum terminal index
     max_terminal_index: usize,
 }
 
@@ -251,13 +256,13 @@ struct UpdateProductionEquationsArgs<'a, T> {
 /// Creates functions that calculate the FOLLOW k sets for each occurrence of
 /// a non-terminal in the given production and adds them to the equation system.
 ///
-fn update_production_equations<T>(
+fn update_production_equations<T, N>(
     mut es: EquationSystem,
-    non_terminal_index_finder: &impl Fn(&str) -> usize,
-    args: UpdateProductionEquationsArgs<T>,
+    args: UpdateProductionEquationsArgs<T, N>,
 ) -> EquationSystem
 where
-    T: Fn(&str, TerminalKind) -> TerminalIndex + Clone + Send + Sync + 'static,
+    T: TerminalIndexFn + Send + Sync + 'static,
+    N: NonTerminalIndexFn + Send + Sync + 'static,
 {
     let parts = args.pr.get_r().iter().enumerate().fold(
         Vec::<(usize, SymbolString)>::new(),
@@ -307,11 +312,10 @@ where
                 let symbol = symbol_string_clone.0[0].clone();
                 match symbol {
                     Symbol::T(_) => {
-                        let terminal_index = args.terminal_index.clone();
+                        let ti = args.ti.clone();
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
-                                let mapper =
-                                    |s| CompiledTerminal::create(s, terminal_index.clone());
+                                let mapper = |s| CompiledTerminal::create(s, ti.clone());
                                 let terminal_indices: Vec<TerminalIndex> =
                                     symbol_string_clone.0.iter().map(|s| mapper(s).0).collect();
                                 result_function(result_map, non_terminal_results).k_concat(
@@ -328,7 +332,7 @@ where
                     }
                     Symbol::N(nt, _, _) => {
                         let first_k_of_nt = args.first_k_of_nt.clone();
-                        let nt_i = non_terminal_index_finder(&nt);
+                        let nt_i = args.nti.non_terminal_index(&nt);
                         result_function =
                             Arc::new(move |result_map: Arc<ResultMap>, non_terminal_results| {
                                 let first_of_nt = first_k_of_nt.get(nt_i).unwrap();
@@ -341,7 +345,7 @@ where
                     Symbol::Pop => (),
                 }
             }
-            let nt = non_terminal_index_finder(args.pr.get_n_str());
+            let nt = args.nti.non_terminal_index(args.pr.get_n_str());
             es.insert(
                 (args.prod_num, *symbol_index).into(),
                 Arc::new(
