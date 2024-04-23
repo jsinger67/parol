@@ -22,6 +22,9 @@ pub use lexer::{
     TokenNumber, TokenStream, Tokenizer,
 };
 
+pub mod parser_common;
+pub use parser_common::ParseTreeStack;
+
 ///
 /// Module that provides types for syntactical analysis.
 ///
