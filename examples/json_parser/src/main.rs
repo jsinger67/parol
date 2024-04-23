@@ -66,7 +66,6 @@ fn generate_tree_layout(syntax_tree: &ParseTree<'_>, input_file_name: &str) -> R
             |n, f| match n {
                 parol_runtime::ParseTreeType::T(t) => write!(f, "{}", t.text()),
                 parol_runtime::ParseTreeType::N(n) => write!(f, "{}", n),
-                parol_runtime::ParseTreeType::C(c) => write!(f, "{:?}", c),
             },
             |n| matches!(n, parol_runtime::ParseTreeType::T(_)),
         )?

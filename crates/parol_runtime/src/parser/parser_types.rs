@@ -1,7 +1,7 @@
 use crate::{
     parser::recovery::Recovery, FileSource, FormatToken, Location, LookaheadDFA, NonTerminalIndex,
-    ParseStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result, SyntaxError,
-    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    ParseStack, ParseTreeStack, ParseTreeType, ParseType, ParserError, ProductionIndex, Result,
+    SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 use log::{debug, trace};
 use std::{cell::RefCell, cmp::Ord, rc::Rc};
@@ -87,7 +87,7 @@ pub struct LLKParser<'t> {
     /// are added to the parse tree.
     /// This stack is also used to provide arguments to semantic user actions.
     ///
-    parse_tree_stack: Vec<ParseTreeType<'t>>,
+    parse_tree_stack: ParseTreeStack<ParseTreeType<'t>>,
 
     ///
     /// The array of generated lookahead automata.
@@ -139,7 +139,7 @@ impl<'t> LLKParser<'t> {
             start_symbol_index,
             parser_stack: ParseStack::new(terminal_names, non_terminal_names),
             production_depth: 0,
-            parse_tree_stack: Vec::new(),
+            parse_tree_stack: ParseTreeStack::new(),
             lookahead_automata,
             productions,
             terminal_names,

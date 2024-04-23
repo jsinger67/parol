@@ -15,9 +15,9 @@ use std::{
 use log::trace;
 
 use crate::{
-    parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError, ParseTree,
-    ParseTreeType, ParserError, Production, ProductionIndex, Result, SyntaxError, TerminalIndex,
-    TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    lexer::EOI, parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError,
+    ParseTree, ParseTreeStack, ParseTreeType, ParserError, Production, ProductionIndex, Result,
+    SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 
 /// An item in the LR(0) state machine.
@@ -138,8 +138,14 @@ pub struct LRParser<'t> {
 
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
+    ///
+    /// !!!!!
+    /// Parse tree generation is not implemented yet because of the syntree's implementation.
+    /// TODO: Rethink the parse tree generation.
+    /// !!!!!
+    ///
     /// This stack is also used to provide arguments to semantic user actions.
-    parse_tree_stack: Vec<ParseTreeType<'t>>,
+    parse_tree_stack: ParseTreeStack<ParseTreeType<'t>>,
 
     /// The stack of the parser.
     parser_stack: LRParseStack,
@@ -165,6 +171,7 @@ pub struct LRParser<'t> {
     ///
     /// To enable this call the method `trim_parse_tree` on the parser object before parsing.
     ///
+    /// Default is `true` as longs a parse tree generation is not implemented.
     trim_parse_tree: bool,
 }
 
@@ -182,12 +189,12 @@ impl<'t> LRParser<'t> {
         LRParser {
             start_symbol_index,
             parse_table,
-            parse_tree_stack: Vec::new(),
+            parse_tree_stack: ParseTreeStack::new(),
             parser_stack: LRParseStack::new(),
             productions,
             terminal_names,
             non_terminal_names,
-            trim_parse_tree: false,
+            trim_parse_tree: true,
         }
     }
 
@@ -200,9 +207,8 @@ impl<'t> LRParser<'t> {
         self.trim_parse_tree = true;
     }
 
-    fn call_action_and_build_parse_tree<'u>(
+    fn call_action<'u>(
         &mut self,
-        tree_builder: &mut TreeBuilder<'t>,
         prod_num: ProductionIndex,
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<usize> {
@@ -215,43 +221,14 @@ impl<'t> LRParser<'t> {
 
         // We remove the last n entries from the parse tree stack and insert them as
         // children under the node laying below on the stack
-        let children = self
+        let children: Vec<ParseTreeType<'_>> = self
             .parse_tree_stack
             .split_off(self.parse_tree_stack.len() - n);
 
         // With the children we can call the user's semantic action
+        trace!("Call semantic action for production {}", prod_num);
         user_actions.call_semantic_action_for_production_number(prod_num, &children)?;
-        self.close_sub_parse_tree(tree_builder, prod_num)?; // Close the production subtree
         Ok(n)
-    }
-
-    fn close_sub_parse_tree(
-        &mut self,
-        tree_builder: &mut syntree::Builder<ParseTreeType<'_>, u32, usize>,
-        prod_num: ProductionIndex,
-    ) -> Result<()> {
-        let checkpoint = match self.parse_tree_stack.last().unwrap() {
-            ParseTreeType::C(c) => c,
-            _ => {
-                return Err(ParserError::InternalError(
-                    "Expected checkpoint on parse tree stack".to_owned(),
-                )
-                .into())
-            }
-        };
-
-        if !self.trim_parse_tree {
-            // And we close the production subtree
-            tree_builder
-                .close_at(
-                    checkpoint,
-                    ParseTreeType::N(self.non_terminal_names[self.productions[prod_num].lhs]),
-                )
-                .map(|_| ())
-                .map_err(|source| ParserError::TreeError { source }.into())
-        } else {
-            Ok(())
-        }
     }
 
     fn handle_comments<'u>(
@@ -277,27 +254,33 @@ impl<'t> LRParser<'t> {
     ) -> Result<ParseTree<'t>> {
         let stream = Rc::new(RefCell::new(stream));
 
-        // Prepare the tree builder
-        let mut tree_builder = TreeBuilder::new();
-
         // Initialize the parse stack and the parse tree stack.
         self.parser_stack = LRParseStack::new();
-        self.parse_tree_stack = vec![ParseTreeType::C(
-            tree_builder
-                .checkpoint()
-                .map_err(|source| ParserError::TreeError { source })?,
-        )];
+        self.parse_tree_stack.push(ParseTreeType::N(
+            self.non_terminal_names[self.start_symbol_index],
+        ));
 
         loop {
             self.handle_comments(&stream, user_actions)?;
-            let token = stream.borrow_mut().consume()?;
+            let token = stream.borrow_mut().lookahead(0)?;
             let terminal_index = token.token_type;
             let current_state = self.parser_stack.current_state();
-            trace!("Current state: {}", current_state);
-            let action = match self.parse_table.states[current_state]
-                .actions
-                .get(&terminal_index)
-            {
+            trace!(
+                "Current state: {}, token type: {} ({})",
+                current_state,
+                terminal_index,
+                self.terminal_names[terminal_index as usize]
+            );
+            // Get the action for the current state and the current terminal
+            // In case the terminal index is 0 (EOI) we use the eof_action (if present)
+            // TODO: Modify the parser generator to use the EOI terminal index
+            let action = match terminal_index {
+                EOI => self.parse_table.states[current_state].eof_action.as_ref(),
+                _ => self.parse_table.states[current_state]
+                    .actions
+                    .get(&terminal_index),
+            };
+            let action = match action {
                 Some(action) => action,
                 None => {
                     let entries = vec![SyntaxError {
@@ -329,17 +312,15 @@ impl<'t> LRParser<'t> {
                         token.text,
                         self.terminal_names[token.token_type as usize]
                     );
-                    self.parse_tree_stack.push(ParseTreeType::T(token.clone()));
+                    let token = ParseTreeType::T(token.clone());
+                    self.parse_tree_stack.push(token.clone());
+                    // Consume the token
+                    stream.borrow_mut().consume()?;
                 }
                 LRAction::Reduce(nt_index, prod_index) => {
                     trace!("Reduce by production {}", prod_index);
-                    let production = &self.productions[*prod_index];
                     let nt_index = *nt_index;
-                    let n = self.call_action_and_build_parse_tree(
-                        &mut tree_builder,
-                        *prod_index,
-                        user_actions,
-                    )?;
+                    let n = self.call_action(*prod_index, user_actions)?;
                     for _ in 0..n {
                         // Pop n states from the stack
                         if self.parser_stack.stack.is_empty() {
@@ -350,13 +331,8 @@ impl<'t> LRParser<'t> {
                         }
                         self.parser_stack.pop();
                     }
-                    self.parse_tree_stack.push(ParseTreeType::C(
-                        tree_builder
-                            .checkpoint()
-                            .map_err(|source| ParserError::TreeError { source })?,
-                    ));
-                    self.parse_tree_stack
-                        .push(ParseTreeType::N(self.non_terminal_names[production.lhs]));
+                    let non_terminal = ParseTreeType::N(self.non_terminal_names[nt_index]);
+                    self.parse_tree_stack.push(non_terminal.clone());
                     // The new state is the one on top of the stack
                     let state = self.parser_stack.current_state();
                     trace!("Current state after removing {} states is {}", n, state);
@@ -383,18 +359,30 @@ impl<'t> LRParser<'t> {
                 }
                 LRAction::Accept => {
                     trace!("Accept");
-                    self.close_sub_parse_tree(
-                        &mut tree_builder,
-                        self.productions
-                            .iter()
-                            .position(|p| p.lhs == self.start_symbol_index)
-                            .unwrap(),
-                    )?;
+                    // The non-terminal of the start symbol lies on top of the stack here
+                    trace!("Final parse stack: {:?}", self.parser_stack.stack);
+                    trace!("Final parse tree stack:\n{}", self.parse_tree_stack);
+                    // Find the production number of the start symbol
+                    // TODO: Modify the parser generator to provide the start symbol's production number
+                    let prod_index =
+                        if let Some(index) = self.productions.iter().position(|p| {
+                            p.lhs == self.start_symbol_index && p.production.len() == 1
+                        }) {
+                            index
+                        } else {
+                            return Err(ParserError::InternalError(format!(
+                                "No production found for start symbol '{}'",
+                                self.non_terminal_names[self.start_symbol_index]
+                            ))
+                            .into());
+                        };
+                    // Call the action for the start symbol
+                    let _n = self.call_action(prod_index, user_actions)?;
                     break;
                 }
             }
         }
-        Ok(tree_builder
+        Ok(TreeBuilder::new()
             .build()
             .map_err(|source| ParserError::TreeError { source })?)
     }
