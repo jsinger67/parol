@@ -285,7 +285,6 @@ impl<'t> LRParser<'t> {
             );
             // Get the action for the current state and the current terminal
             // In case the terminal index is 0 (EOI) we use the eof_action (if present)
-            // TODO: Modify the parser generator to use the EOI terminal index
             let action = self.parse_table.states[current_state]
                 .actions
                 .get(&terminal_index);
@@ -372,7 +371,6 @@ impl<'t> LRParser<'t> {
                     trace!("Final parse stack: {:?}", self.parser_stack.stack);
                     trace!("Final parse tree stack:\n{}", self.parse_tree_stack);
                     // Find the production number of the start symbol
-                    // TODO: Modify the parser generator to provide the start symbol's production number
                     let prod_index = if let Some(index) = self
                         .productions
                         .iter()

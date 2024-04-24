@@ -38,6 +38,7 @@ pub use parser::{
 /// Module that provides types for the LR parser.
 ///
 pub mod lr_parser;
+pub use lr_parser::{LR1State, LRAction, LRParseTable, LRParser, LRProduction};
 
 ///
 /// Module with error types reported from this crate.
