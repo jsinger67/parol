@@ -15,10 +15,28 @@ use std::{
 use log::trace;
 
 use crate::{
-    lexer::EOI, parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError,
-    ParseTree, ParseTreeStack, ParseTreeType, ParserError, Production, ProductionIndex, Result,
-    SyntaxError, TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
+    parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError, ParseTree,
+    ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
+    TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
+
+///
+/// The type that contains all data to process a production within the lr-parser.
+///
+#[derive(Debug, Clone)]
+pub struct LRProduction {
+    ///
+    /// The non-terminal index of the symbol on the left-hand side of the
+    /// production.
+    /// It is used as index into the generated LOOKAHEAD_AUTOMATA array.
+    ///
+    pub lhs: NonTerminalIndex,
+
+    ///
+    /// The length of the right-hand side of the production.
+    ///
+    pub len: usize,
+}
 
 /// An item in the LR(0) state machine.
 /// Duplicate of the `lalr` crate's `Item` type without the reference to the creating grammar.
@@ -55,8 +73,6 @@ pub enum LRAction {
 /// Duplicate of the `lalr` crate's `LR1State` type without the reference to the creating grammar.
 #[derive(Debug)]
 pub struct LR1State {
-    /// The action to take when the end of the input is reached.
-    pub eof_action: Option<LRAction>,
     /// The actions to take for each terminal in the state.
     pub actions: BTreeMap<TerminalIndex, LRAction>,
     /// The gotos to take for each non-terminal in the state.
@@ -153,7 +169,7 @@ pub struct LRParser<'t> {
     ///
     /// The array of generated grammar productions.
     ///
-    productions: &'static [Production],
+    productions: &'static [LRProduction],
 
     ///
     /// Array of generated terminal names.
@@ -182,7 +198,7 @@ impl<'t> LRParser<'t> {
     pub fn new(
         start_symbol_index: NonTerminalIndex,
         parse_table: &'static LRParseTable,
-        productions: &'static [Production],
+        productions: &'static [LRProduction],
         terminal_names: &'static [&'static str],
         non_terminal_names: &'static [&'static str],
     ) -> Self {
@@ -213,11 +229,7 @@ impl<'t> LRParser<'t> {
         user_actions: &'u mut dyn UserActionsTrait<'t>,
     ) -> Result<usize> {
         // Calculate the number of symbols in the production
-        let n = self.productions[prod_num]
-            .production
-            .iter()
-            .filter(|s| !s.is_switch())
-            .count();
+        let n = self.productions[prod_num].len;
 
         // We remove the last n entries from the parse tree stack and insert them as
         // children under the node laying below on the stack
@@ -274,12 +286,9 @@ impl<'t> LRParser<'t> {
             // Get the action for the current state and the current terminal
             // In case the terminal index is 0 (EOI) we use the eof_action (if present)
             // TODO: Modify the parser generator to use the EOI terminal index
-            let action = match terminal_index {
-                EOI => self.parse_table.states[current_state].eof_action.as_ref(),
-                _ => self.parse_table.states[current_state]
-                    .actions
-                    .get(&terminal_index),
-            };
+            let action = self.parse_table.states[current_state]
+                .actions
+                .get(&terminal_index);
             let action = match action {
                 Some(action) => action,
                 None => {
@@ -364,18 +373,19 @@ impl<'t> LRParser<'t> {
                     trace!("Final parse tree stack:\n{}", self.parse_tree_stack);
                     // Find the production number of the start symbol
                     // TODO: Modify the parser generator to provide the start symbol's production number
-                    let prod_index =
-                        if let Some(index) = self.productions.iter().position(|p| {
-                            p.lhs == self.start_symbol_index && p.production.len() == 1
-                        }) {
-                            index
-                        } else {
-                            return Err(ParserError::InternalError(format!(
-                                "No production found for start symbol '{}'",
-                                self.non_terminal_names[self.start_symbol_index]
-                            ))
-                            .into());
-                        };
+                    let prod_index = if let Some(index) = self
+                        .productions
+                        .iter()
+                        .position(|p| p.lhs == self.start_symbol_index && p.len == 1)
+                    {
+                        index
+                    } else {
+                        return Err(ParserError::InternalError(format!(
+                            "No production found for start symbol '{}'",
+                            self.non_terminal_names[self.start_symbol_index]
+                        ))
+                        .into());
+                    };
                     // Call the action for the start symbol
                     let _n = self.call_action(prod_index, user_actions)?;
                     break;

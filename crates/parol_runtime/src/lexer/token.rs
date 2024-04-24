@@ -23,6 +23,7 @@ pub const BLOCK_COMMENT: TerminalIndex = 4;
 /// Index of the first user token.
 pub const FIRST_USER_TOKEN: TerminalIndex = 5;
 
+/// End of input token text
 const EOI_TOKEN: &str = "$";
 
 ///

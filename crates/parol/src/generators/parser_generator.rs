@@ -7,7 +7,9 @@ use crate::conversions::dot::render_dfa_dot_string;
 use crate::generators::GrammarConfig;
 use crate::{LRAction, LRParseTable, Pr, Symbol, Terminal};
 use anyhow::{anyhow, Result};
-use parol_runtime::lexer::FIRST_USER_TOKEN;
+use parol_runtime::lexer::{
+    BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE,
+};
 use parol_runtime::log::trace;
 use parol_runtime::{NonTerminalIndex, TerminalIndex};
 use std::collections::{BTreeMap, BTreeSet};
@@ -167,6 +169,49 @@ impl std::fmt::Display for Production {
 }
 
 #[derive(Debug, Default)]
+struct LRProduction {
+    lhs: usize,
+    len: usize,
+    prod_num: usize,
+    prod_string: String,
+}
+
+impl LRProduction {
+    fn from_cfg_production(pr: &Pr, prod_num: usize, non_terminals: &[&str]) -> Self {
+        let get_non_terminal_index =
+            |nt: &str| non_terminals.iter().position(|n| *n == nt).unwrap();
+        let lhs = get_non_terminal_index(pr.get_n_str());
+        let len = pr.get_r().iter().count();
+        let prod_string = format!("{}", pr);
+        Self {
+            lhs,
+            len,
+            prod_num,
+            prod_string,
+        }
+    }
+}
+
+impl std::fmt::Display for LRProduction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let LRProduction {
+            lhs,
+            len,
+            prod_num,
+            prod_string,
+        } = self;
+        writeln!(f, "// {prod_num} - {prod_string}")?;
+        f.write_fmt(ume::ume! {
+            LRProduction {
+                lhs: #lhs,
+                len: #len,
+            },
+        })?;
+        writeln!(f)
+    }
+}
+
+#[derive(Debug, Default)]
 struct Productions {
     production_count: usize,
     productions: String,
@@ -180,6 +225,25 @@ impl std::fmt::Display for Productions {
         } = self;
         f.write_fmt(ume::ume! {
             pub const PRODUCTIONS: &[Production; #production_count] = &[
+            #productions];
+        })
+    }
+}
+
+#[derive(Debug, Default)]
+struct LRProductions {
+    production_count: usize,
+    productions: String,
+}
+
+impl std::fmt::Display for LRProductions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let LRProductions {
+            production_count,
+            productions,
+        } = self;
+        f.write_fmt(ume::ume! {
+            pub const PRODUCTIONS: &[LRProduction; #production_count] = &[
             #productions];
         })
     }
@@ -385,7 +449,7 @@ impl std::fmt::Display for LRParserData<'_> {
             use parol_runtime::parser::{
                 ParseTreeType, Trans, ParseType, Production, #user_action_trait
             };
-            use parol_runtime::lr_parser::{LRParseTable, LRParser, LR1State, LRAction};
+            use parol_runtime::lr_parser::{LRParseTable, LRParser, LRProduction, LR1State, LRAction};
             use std::path::Path;
         })?;
 
@@ -599,7 +663,7 @@ pub fn generate_lalr1_parser_source<C: CommonGeneratorConfig + ParserGeneratorCo
                 acc.push(format!(r#"/* {:w$} */ "{}","#, i, n, w = width));
                 acc
             });
-    let productions = generate_productions(grammar_config, &original_non_terminals, &terminals);
+    let productions = generate_lr_productions(grammar_config, &original_non_terminals);
     let scanner_builds = generate_scanner_builds(grammar_config);
 
     let user_type_life_time = if ast_type_has_lifetime { "<'t>" } else { "" };
@@ -630,7 +694,21 @@ fn generate_parse_table_source(
     non_terminals: &[&String],
 ) -> String {
     // Create a terminal resolver function
-    let tr = |ti: TerminalIndex| terminals[(ti - FIRST_USER_TOKEN) as usize];
+    let tr = |ti: TerminalIndex| {
+        if ti >= FIRST_USER_TOKEN {
+            terminals[(ti - FIRST_USER_TOKEN) as usize]
+        } else {
+            match ti {
+                EOI => "<$>",
+                NEW_LINE => "<NL>",
+                WHITESPACE => "<WS>",
+                LINE_COMMENT => "<LC>",
+                BLOCK_COMMENT => "<BC>",
+                _ => unreachable!(),
+            }
+        }
+    };
+
     // Create a non-terminal resolver function
     let nr = |ni: usize| non_terminals[ni].as_str();
     format!(
@@ -653,19 +731,13 @@ fn generate_source_for_lrstate<'a>(
     tr: &impl Fn(TerminalIndex) -> &'a str,
     nr: &impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
-    let eof_action = match &state.eof_action {
-        Some(action) => format!("Some({})", generate_source_for_lraction(action, nr)),
-        None => "None".to_string(),
-    };
     format!(
         r#"
         // State {} 
         LR1State {{
-            eof_action: {},
             actions: {},
             gotos: {} }}"#,
         state_num,
-        eof_action,
         generate_source_for_actions(state, tr, nr),
         generate_source_for_gotos(state, nr)
     )
@@ -686,7 +758,7 @@ fn generate_source_for_actions<'a>(
         {} /* '{}' */ => {},"#,
                     t,
                     tr(*t),
-                    generate_source_for_lraction(a, nr)
+                    generate_source_for_action(a, nr)
                 )
                 .as_str(),
             );
@@ -718,7 +790,7 @@ fn generate_source_for_gotos<'a>(
     )
 }
 
-fn generate_source_for_lraction<'a>(
+fn generate_source_for_action<'a>(
     action: &LRAction,
     nr: impl Fn(NonTerminalIndex) -> &'a str,
 ) -> String {
@@ -773,6 +845,35 @@ fn generate_productions(
             });
 
     let productions = Productions {
+        production_count,
+        productions,
+    };
+
+    format!("{}", productions)
+}
+
+fn generate_lr_productions(
+    grammar_config: &GrammarConfig,
+    non_terminals: &BTreeSet<String>,
+) -> String {
+    let non_terminals = non_terminals
+        .iter()
+        .map(|n| n.as_str())
+        .collect::<Vec<&str>>();
+    let production_count = grammar_config.cfg.pr.len();
+    let productions =
+        grammar_config
+            .cfg
+            .pr
+            .iter()
+            .enumerate()
+            .fold(String::new(), |mut acc, (i, p)| {
+                let production = LRProduction::from_cfg_production(p, i, &non_terminals);
+                acc.push_str(format!("{}", production).as_str());
+                acc
+            });
+
+    let productions = LRProductions {
         production_count,
         productions,
     };

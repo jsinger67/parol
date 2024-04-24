@@ -4,11 +4,14 @@
 //! creating grammar.
 //! The reference to the creating grammar is not needed for the actual parsing process. Moreover,
 //! it inhibits the use of the parse table in other contexts.
-//! This is the reason why we duplicate the `lalr` types here.
+//! This is the first reason why we duplicate the `lalr` types here.
+//! The second reason is that we don't handle the eof action in the same way as the `lalr` crate.
+//! The `lalr` crate uses a separate field for the eof action, while we include the eof action in
+//! the actions field for the terminal EOI.
 use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{anyhow, Result};
-use parol_runtime::{log::trace, NonTerminalIndex, ProductionIndex, TerminalIndex};
+use parol_runtime::{lexer::EOI, log::trace, NonTerminalIndex, ProductionIndex, TerminalIndex};
 
 use crate::{
     grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
@@ -126,8 +129,6 @@ impl From<LRActionLalr<'_>> for LRAction {
 /// Duplicate of the `lalr` crate's `LR1State` type without the reference to the creating grammar.
 #[derive(Debug)]
 pub struct LR1State {
-    /// The action to take when the end of the input is reached.
-    pub eof_action: Option<LRAction>,
     /// The actions to take for each terminal in the state.
     pub actions: BTreeMap<TerminalIndex, LRAction>,
     /// The gotos to take for each non-terminal in the state.
@@ -137,26 +138,20 @@ pub struct LR1State {
 impl From<LR1StateLalr<'_>> for LR1State {
     fn from(state: LR1StateLalr) -> Self {
         let mut actions = BTreeMap::new();
+
+        // Add EOF action if present
+        if let Some(action) = state.eof {
+            actions.insert(EOI, action.into());
+        };
+
+        // Add actions for all other terminals
         for (terminal, action) in state.lookahead {
-            let action = match action {
-                lalr::LRAction::Shift(s) => LRAction::Shift(s),
-                lalr::LRAction::Reduce(p, r) => LRAction::Reduce(*p, r.act),
-                lalr::LRAction::Accept => LRAction::Accept,
-            };
-            actions.insert(*terminal, action);
+            actions.insert(*terminal, action.into());
         }
 
         let gotos = state.goto.into_iter().map(|(n, s)| (*n, s)).collect();
 
-        LR1State {
-            eof_action: state.eof.map(|action| match action {
-                lalr::LRAction::Shift(s) => LRAction::Shift(s),
-                lalr::LRAction::Reduce(p, r) => LRAction::Reduce(*p, r.act),
-                lalr::LRAction::Accept => LRAction::Accept,
-            }),
-            actions,
-            gotos,
-        }
+        LR1State { actions, gotos }
     }
 }
 
@@ -219,18 +214,8 @@ impl From<LR1ParseTableLalr<'_>> for LRParseTable {
     fn from(parse_table: LR1ParseTableLalr) -> Self {
         let mut states = Vec::new();
         for state in parse_table.states.into_iter() {
-            let mut actions = BTreeMap::new();
-            for (terminal, action) in state.lookahead {
-                actions.insert(*terminal, action.into());
-            }
-
-            let gotos = state.goto.into_iter().map(|(n, s)| (*n, s)).collect();
-
-            states.push(LR1State {
-                eof_action: state.eof.map(|action| action.into()),
-                actions,
-                gotos,
-            });
+            let state = state.into();
+            states.push(state);
         }
 
         LRParseTable { states }
