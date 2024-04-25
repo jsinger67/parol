@@ -1,7 +1,6 @@
 %start Basic
 %title "Basic grammar"
 %comment "Subset of C64 Basic used in tutorial for parser generator `parol`"
-%grammar_type 'll(k)'
 %auto_newline_off
 %user_type BasicLineNumber = crate::basic_grammar::BasicLineNumber
 %user_type BasicNumber = crate::basic_grammar::BasicNumber

@@ -188,9 +188,9 @@ where
         PRODUCTIONS,
         TERMINAL_NAMES,
         NON_TERMINALS,
-    ); // Initialize wrapper
+    );
+    // Initialize wrapper
     let mut user_actions = ListGrammarAuto::new(user_actions);
-
     llk_parser.parse(
         TokenStream::new(input, file_name, &TOKENIZERS, MAX_K).unwrap(),
         &mut user_actions,

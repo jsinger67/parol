@@ -1,7 +1,6 @@
 %start ParolLs
 %title "Parol grammar"
 %comment "Parol's own grammar enhanced with comment processing"
-%grammar_type 'll(k)'
 %line_comment "//"
 %block_comment "/\*" "\*/"
 %user_type OwnedToken = crate::parol_ls_grammar::OwnedToken

@@ -1,7 +1,6 @@
 %start Oberon2
 %title "Oberon2 grammar"
 %comment "Adapted from https://cseweb.ucsd.edu/~wgg/CSE131B/oberon2.htm for `parol`"
-%grammar_type 'll(k)'
 %block_comment "\(\*" "\*\)"
 
 %%

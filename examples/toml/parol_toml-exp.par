@@ -1,7 +1,6 @@
 %start ParolToml
 %title "TOML Grammar"
 %comment "Adapted from https://raw.githubusercontent.com/toml-lang/toml/1.0.0/toml.abnf"
-%grammar_type 'll(k)'
 %line_comment "#"
 
 %scanner Esc { %auto_newline_off %auto_ws_off }
