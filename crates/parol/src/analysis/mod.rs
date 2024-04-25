@@ -45,7 +45,9 @@ pub use k_decision::{
 
 /// Module with calculations for the LALR(1) parse table
 pub mod lalr1_parse_table;
-pub use lalr1_parse_table::{calculate_lalr1_parse_table, LR1State, LRAction, LRParseTable};
+pub use lalr1_parse_table::{
+    calculate_lalr1_parse_table, LR1State, LRAction, LRConflict, LRConflictError, LRParseTable,
+};
 
 /// Module with types for production selection
 pub mod lookahead_dfa;

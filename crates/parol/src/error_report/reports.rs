@@ -299,7 +299,7 @@ impl Report for ParolErrorReporter {
                             .with_code("parol::analysis::lalr1_parse_table_construction_failed")
                             .with_notes(vec![
                                 "Please examine your grammar.".to_string(),
-                                format!("{:?}", conflict),
+                                format!("{}", conflict),
                             ]),
                     )?);
                 }

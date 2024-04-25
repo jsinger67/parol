@@ -8,10 +8,17 @@
 //! The second reason is that we don't handle the eof action in the same way as the `lalr` crate.
 //! The `lalr` crate uses a separate field for the eof action, while we include the eof action in
 //! the actions field for the terminal EOI.
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fmt::Display,
+};
 
 use anyhow::{anyhow, Result};
-use parol_runtime::{lexer::EOI, log::trace, NonTerminalIndex, ProductionIndex, TerminalIndex};
+use parol_runtime::{
+    lexer::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE},
+    log::trace,
+    NonTerminalIndex, ProductionIndex, TerminalIndex,
+};
 
 use crate::{
     grammar::cfg::{NonTerminalIndexFn, TerminalIndexFn},
@@ -203,6 +210,133 @@ impl From<LR1ConflictLalr<'_>> for LRConflict {
         }
     }
 }
+
+/// An error that occurs when a LALR(1) parse table conflict is detected.
+/// It supports better diagnostics than the plain `LRConflict`.
+#[derive(Debug)]
+pub struct LRConflictError {
+    /// The conflict that occurred.
+    pub conflict: LRConflict,
+    cfg: Option<Cfg>,
+}
+
+impl LRConflictError {
+    /// Create a new `LRConflictError` with the given conflict and optional grammar configuration.
+    pub fn new(conflict: LRConflict, cfg: Option<Cfg>) -> Self {
+        LRConflictError { conflict, cfg }
+    }
+
+    /// Set the grammar configuration for the error.
+    pub fn set_cfg(&mut self, cfg: Cfg) {
+        self.cfg = Some(cfg);
+    }
+}
+
+impl From<LRConflict> for LRConflictError {
+    fn from(conflict: LRConflict) -> Self {
+        LRConflictError::new(conflict, None)
+    }
+}
+
+impl Display for LRConflictError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // TODO: Provide a terminal resolver and non-terminal resolver implementation in the Cfg
+
+        // Terminal index to string function (terminal resolver)
+        let tr: Box<dyn Fn(TerminalIndex) -> String> = if let Some(cfg) = &self.cfg {
+            let terminals = cfg
+                .get_ordered_terminals()
+                .iter()
+                .map(|(t, _, _)| t.to_string())
+                .collect::<Vec<_>>();
+            Box::new(move |ti: TerminalIndex| {
+                if ti >= FIRST_USER_TOKEN {
+                    terminals[(ti - FIRST_USER_TOKEN) as usize].clone()
+                } else {
+                    match ti {
+                        EOI => "<$>".to_owned(),
+                        NEW_LINE => "<NL>".to_owned(),
+                        WHITESPACE => "<WS>".to_owned(),
+                        LINE_COMMENT => "<LC>".to_owned(),
+                        BLOCK_COMMENT => "<BC>".to_owned(),
+                        _ => unreachable!(),
+                    }
+                }
+            }) as Box<dyn Fn(TerminalIndex) -> String>
+        } else {
+            // Default resolver that just returns the index as string
+            Box::new(|i: TerminalIndex| i.to_string()) as Box<dyn Fn(TerminalIndex) -> String>
+        };
+
+        match &self.conflict {
+            LRConflict::ReduceReduce {
+                state,
+                token,
+                r1,
+                r2,
+            } => {
+                writeln!(
+                    f,
+                    "Reduce-reduce conflict in state {:?} on token {}",
+                    state,
+                    token.map_or("<$>".to_owned(), tr)
+                )?;
+                if let Some(cfg) = &self.cfg {
+                    writeln!(
+                        f,
+                        "Can't decide which of the following two productions to reduce with:",
+                    )?;
+                    writeln!(f, "  Production {}: {}", r1, cfg.pr[*r1])?;
+                    writeln!(f, "  Production {}: {}", r2, cfg.pr[*r2])?;
+                }
+                Ok(())
+            }
+            LRConflict::ShiftReduce { state, token, rule } => {
+                if let Some(cfg) = &self.cfg {
+                    writeln!(f, "Shift-reduce conflict in state")?;
+                    state.items.iter().for_each(|item| {
+                        let Pr(lhs, rhs, _) = &cfg.pr[item.prod];
+                        let mut r = rhs
+                            .iter()
+                            .enumerate()
+                            .map(|(i, s)| {
+                                if i == item.pos {
+                                    format!("•{}", s)
+                                } else {
+                                    format!("{}", s)
+                                }
+                            })
+                            .collect::<Vec<_>>()
+                            .join(" ");
+                        if item.pos == rhs.len() {
+                            r.push('•');
+                        }
+                        writeln!(f, "  {},{}: {} -> {}", item.prod, item.pos, lhs, r).unwrap();
+                    });
+                    writeln!(
+                        f,
+                        "Can't decide between shifting the token or reducing with the production:",
+                    )?;
+                    writeln!(
+                        f,
+                        "  Token      {}: {}",
+                        token.map_or("<$>".to_owned(), |t| t.to_string()),
+                        token.map_or("<$>".to_owned(), tr)
+                    )?;
+                    writeln!(f, "  Production {}: {}", rule, cfg.pr[*rule])?;
+                } else {
+                    writeln!(
+                        f,
+                        "Shift-reduce conflict in state {:?} on token {:?}",
+                        state, token
+                    )?;
+                }
+                Ok(())
+            }
+        }
+    }
+}
+
 /// The LALR(1) parse table.
 #[derive(Debug)]
 pub struct LRParseTable {
@@ -231,7 +365,10 @@ pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRP
     let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| true;
     let priority_of = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| 0;
     let parse_table = grammar.lalr1(reduce_on, priority_of).map_err(|e| {
-        anyhow!(GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict: e.into() })
+        let conflict: LRConflict = e.into();
+        let mut conflict: LRConflictError = conflict.into();
+        conflict.set_cfg(cfg.clone());
+        anyhow!(GrammarAnalysisError::LALR1ParseTableConstructionFailed { conflict })
     })?;
     trace!("LALR(1) parse table: {:#?}", parse_table);
     let parse_table = LRParseTable::from(parse_table);

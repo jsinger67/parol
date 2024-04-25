@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use super::lalr1_parse_table::LRConflict;
+use super::LRConflictError;
 
 // ---------------------------------------------------
 // Part of the Public API
@@ -49,7 +49,7 @@ pub enum GrammarAnalysisError {
     #[error("LALR(1) parse table construction failed with conflicts")]
     LALR1ParseTableConstructionFailed {
         /// Conflict
-        conflict: LRConflict,
+        conflict: LRConflictError,
     },
 }
 
