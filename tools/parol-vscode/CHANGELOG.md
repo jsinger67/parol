@@ -7,6 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## v0.2.0
 
 * Support grammar type specification in par files with the `%grammar_type` directive
+* Little fix in tm-grammar specification regarding regex-like quoted strings
 
 ## v0.1.15
 
