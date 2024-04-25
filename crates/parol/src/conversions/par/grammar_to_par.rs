@@ -28,7 +28,9 @@ pub fn render_par_string(
         });
 
     let grammar_type = match grammar_config.grammar_type {
-        GrammarType::LLK => "\n%grammar_type 'll(k)'".to_owned(),
+        // For compatibility reasons we do not output the grammar type for LLK grammars
+        // This is no problem as the default is LLK
+        GrammarType::LLK => "".to_owned(), // "\n%grammar_type 'll(k)'".to_owned(),
         GrammarType::LALR1 => "\n%grammar_type 'lalr(1)'".to_owned(),
     };
 
@@ -222,7 +224,6 @@ mod test {
         let expected = r#"%start S
 %title "Test grammar"
 %comment "A simple grammar"
-%grammar_type 'll(k)'
 
 %%
 
