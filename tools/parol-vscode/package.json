@@ -17,7 +17,7 @@
     },
     "icon": "icons/parol-vscode.png",
     "engines": {
-        "vscode": "^1.74.0"
+        "vscode": "^1.75.0"
     },
     "keywords": [
         "Parol",
@@ -95,6 +95,8 @@
         "vsce": "^2.9.3"
     },
     "main": "./out/extension",
+    "activationEvents": [
+    ],
     "scripts": {
         "vscode:prepublish": "npm run build-base -- --minify",
         "package": "vsce package -o parol-vscode.vsix",
