@@ -63,15 +63,8 @@
           ]
         },
         {
-          "name": "string.quoted.parol",
-          "begin": "/",
-          "end": "/",
-          "patterns": [
-            {
-              "name": "string.quoted.regex.parol",
-              "match": "\\/|[^/]"
-            }
-          ]
+          "name": "string.quoted.regex.parol",
+          "match": "/(\\/|[^/])+?/"
         }
       ]
     },
