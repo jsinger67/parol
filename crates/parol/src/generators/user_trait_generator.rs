@@ -10,6 +10,7 @@ use crate::config::{CommonGeneratorConfig, UserTraitGeneratorConfig};
 use crate::generators::naming_helper::NamingHelper as NmHlp;
 use crate::generators::GrammarConfig;
 use crate::grammar::{ProductionAttribute, SymbolAttribute};
+use crate::parser::GrammarType;
 use crate::{Pr, StrVec};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
@@ -136,6 +137,7 @@ impl<'a> UserTraitGenerator<'a> {
 
     fn generate_stack_pops<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         config: &C,
+        grammar_type: GrammarType,
         code: &mut StrVec,
         action_id: SymbolId,
         type_info: &GrammarTypeInfo,
@@ -146,6 +148,8 @@ impl<'a> UserTraitGenerator<'a> {
 
         let symbol_table = &type_info.symbol_table;
         let function = symbol_table.symbol_as_function(action_id)?;
+
+        let member_count = symbol_table.members(action_id)?.len();
 
         for (i, member_id) in symbol_table.members(action_id)?.iter().rev().enumerate() {
             let arg_inst = symbol_table.symbol_as_instance(*member_id);
@@ -170,7 +174,11 @@ impl<'a> UserTraitGenerator<'a> {
                     .arg_type(arg_type.inner_name())
                     .vec_anchor(arg_inst.sem() == SymbolAttribute::RepetitionAnchor)
                     .popped_item_is_mutable(
-                        function.sem == ProductionAttribute::AddToCollection && i == 0,
+                        function.sem == ProductionAttribute::AddToCollection
+                            && match grammar_type {
+                                GrammarType::LLK => i == 0,
+                                GrammarType::LALR1 => i == member_count - 1,
+                            },
                     )
                     .build()
                     .unwrap();
@@ -193,15 +201,30 @@ impl<'a> UserTraitGenerator<'a> {
         let fn_name = symbol_table.name(fn_type.my_id()).to_string();
 
         if config.auto_generate() && function.sem == ProductionAttribute::AddToCollection {
-            let last_arg = symbol_table
-                .members(action_id)?
-                .iter()
-                .last()
-                .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
-            let arg_inst = symbol_table.symbol_as_instance(*last_arg);
-            let arg_name = symbol_table.name(arg_inst.my_id());
-            code.push("// Add an element to the vector".to_string());
-            code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+            match self.grammar_config.grammar_type {
+                GrammarType::LLK => {
+                    let last_arg = symbol_table
+                        .members(action_id)?
+                        .iter()
+                        .last()
+                        .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                    let arg_inst = symbol_table.symbol_as_instance(*last_arg);
+                    let arg_name = symbol_table.name(arg_inst.my_id());
+                    code.push("// Add an element to the vector".to_string());
+                    code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+                }
+                GrammarType::LALR1 => {
+                    let first_arg = symbol_table
+                        .members(action_id)?
+                        .iter()
+                        .next()
+                        .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                    let arg_inst = symbol_table.symbol_as_instance(*first_arg);
+                    let arg_name = symbol_table.name(arg_inst.my_id());
+                    code.push("// Add an element to the vector".to_string());
+                    code.push(format!(" {}.push({}_built);", arg_name, fn_name,));
+                }
+            }
         }
         Ok(())
     }
@@ -284,11 +307,22 @@ impl<'a> UserTraitGenerator<'a> {
         if function.sem == ProductionAttribute::CollectionStart {
             code.push(format!("let {}_built = Vec::new();", fn_name));
         } else if function.sem == ProductionAttribute::AddToCollection {
-            code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
-            for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
-                Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+            match self.grammar_config.grammar_type {
+                GrammarType::LLK => {
+                    code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
+                    for member_id in symbol_table.members(action_id)?.iter().rev().skip(1) {
+                        Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+                    }
+                    code.push(r#"};"#.to_string());
+                }
+                GrammarType::LALR1 => {
+                    code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
+                    for member_id in symbol_table.members(action_id)?.iter().skip(1).rev() {
+                        Self::format_builder_call(symbol_table, member_id, function.sem, code)?;
+                    }
+                    code.push(r#"};"#.to_string());
+                }
             }
-            code.push(r#"};"#.to_string());
         } else if function.sem == ProductionAttribute::OptionalSome {
             code.push(format!("let {}_built = {} {{", fn_name, nt_type.name()));
             for member_id in symbol_table.members(action_id)? {
@@ -429,19 +463,38 @@ impl<'a> UserTraitGenerator<'a> {
             if function.sem == ProductionAttribute::AddToCollection {
                 // The output type of the action is the type generated for the action's non-terminal
                 // filled with type of the action's last argument (the vector)
-                let last_arg = symbol_table
-                    .members(action_id)?
-                    .iter()
-                    .last()
-                    .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
-                let arg_inst = symbol_table.symbol_as_instance(*last_arg);
-                let arg_name = symbol_table.name(arg_inst.my_id());
+                match self.grammar_config.grammar_type {
+                    GrammarType::LLK => {
+                        let last_arg = symbol_table
+                            .members(action_id)?
+                            .iter()
+                            .last()
+                            .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                        let arg_inst = symbol_table.symbol_as_instance(*last_arg);
+                        let arg_name = symbol_table.name(arg_inst.my_id());
 
-                code.push(format!(
-                    "self.push(ASTType::{}({}), context);",
-                    NmHlp::to_upper_camel_case(&function.non_terminal),
-                    arg_name
-                ));
+                        code.push(format!(
+                            "self.push(ASTType::{}({}), context);",
+                            NmHlp::to_upper_camel_case(&function.non_terminal),
+                            arg_name
+                        ));
+                    }
+                    GrammarType::LALR1 => {
+                        let first_arg = symbol_table
+                            .members(action_id)?
+                            .iter()
+                            .next()
+                            .ok_or_else(|| anyhow!("There should be at least one argument!"))?;
+                        let arg_inst = symbol_table.symbol_as_instance(*first_arg);
+                        let arg_name = symbol_table.name(arg_inst.my_id());
+
+                        code.push(format!(
+                            "self.push(ASTType::{}({}), context);",
+                            NmHlp::to_upper_camel_case(&function.non_terminal),
+                            arg_name
+                        ));
+                    }
+                }
             } else if function.sem == ProductionAttribute::OptionalNone {
                 code.push(format!(
                     "self.push(ASTType::{}(None), context);",
@@ -583,6 +636,7 @@ impl<'a> UserTraitGenerator<'a> {
     pub fn generate_user_trait_source<C: CommonGeneratorConfig + UserTraitGeneratorConfig>(
         &self,
         config: &C,
+        grammar_type: GrammarType,
         type_info: &mut GrammarTypeInfo,
     ) -> Result<String> {
         if config.range() && !config.auto_generate() {
@@ -591,6 +645,7 @@ impl<'a> UserTraitGenerator<'a> {
         if config.minimize_boxed_types() {
             type_info.minimize_boxed_types();
         }
+        type_info.set_grammar_type(grammar_type);
         type_info.build(self.grammar_config)?;
         type_info.set_auto_generate(config.auto_generate())?;
 
@@ -658,7 +713,7 @@ impl<'a> UserTraitGenerator<'a> {
             .adapter_actions
             .iter()
             .try_fold(StrVec::new(0).first_line_no_indent(), |acc, a| {
-                self.generate_single_adapter_function(a, type_info, config, acc)
+                self.generate_single_adapter_function(a, type_info, config, grammar_type, acc)
             })?;
 
         let user_trait_functions = if config.auto_generate() {
@@ -718,6 +773,7 @@ impl<'a> UserTraitGenerator<'a> {
         a: (&usize, &SymbolId),
         type_info: &GrammarTypeInfo,
         config: &C,
+        grammar_type: GrammarType,
         mut acc: StrVec,
     ) -> std::result::Result<StrVec, anyhow::Error> {
         let action_id = *a.1;
@@ -731,7 +787,7 @@ impl<'a> UserTraitGenerator<'a> {
         let mut code = StrVec::new(8);
         self.generate_context(config, &mut code);
         self.generate_token_assignments(config, &mut code, action_id, &type_info.symbol_table)?;
-        Self::generate_stack_pops(config, &mut code, action_id, type_info)?;
+        Self::generate_stack_pops(config, grammar_type, &mut code, action_id, type_info)?;
         self.generate_result_builder(config, &mut code, action_id, type_info)?;
         self.generate_push_semantic(config, &mut code, action_id, &type_info.symbol_table)?;
         self.generate_user_action_call(config, &mut code, action_id, type_info)?;

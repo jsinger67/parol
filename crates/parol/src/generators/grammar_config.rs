@@ -1,3 +1,4 @@
+use parol_runtime::log::trace;
 use parol_runtime::once_cell::sync::Lazy;
 
 use super::ScannerConfig;
@@ -103,6 +104,7 @@ impl GrammarConfig {
 
     /// Sets the grammar type
     pub fn with_grammar_type(mut self, grammar_type: GrammarType) -> Self {
+        trace!("GrammarConfig::with_grammar_type({:?})", grammar_type);
         self.grammar_type = grammar_type;
         self
     }

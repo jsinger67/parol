@@ -399,6 +399,7 @@ impl Builder {
         self.trim_parse_tree = true;
         self
     }
+
     /// Begin the process of generating the grammar
     /// using the specified listener (or None if no listener is desired).
     ///
@@ -495,7 +496,7 @@ pub struct GrammarGenerator<'l> {
     pub(crate) grammar_file: PathBuf,
     builder: Builder,
     state: Option<State>,
-    grammar_config: Option<GrammarConfig>,
+    pub(crate) grammar_config: Option<GrammarConfig>,
     lookahead_dfa_s: Option<BTreeMap<String, LookaheadDFA>>,
     parse_table: Option<LRParseTable>,
 }
@@ -624,8 +625,11 @@ impl GrammarGenerator<'_> {
         let user_trait_generator = UserTraitGenerator::new(grammar_config);
         let mut type_info: GrammarTypeInfo =
             GrammarTypeInfo::try_new(&self.builder.user_type_name)?;
-        let user_trait_source =
-            user_trait_generator.generate_user_trait_source(&self.builder, &mut type_info)?;
+        let user_trait_source = user_trait_generator.generate_user_trait_source(
+            &self.builder,
+            grammar_config.grammar_type,
+            &mut type_info,
+        )?;
         if let Some(ref user_trait_file_out) = self.builder.actions_output_file {
             fs::write(user_trait_file_out, user_trait_source)
                 .map_err(|e| parol!("Error writing generated user trait source!: {}", e))?;
@@ -666,6 +670,7 @@ impl GrammarGenerator<'_> {
         Ok(())
     }
 }
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum State {
     Parsed,

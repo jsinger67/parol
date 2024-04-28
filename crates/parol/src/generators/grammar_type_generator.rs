@@ -1,6 +1,7 @@
 use crate::analysis::lookahead_dfa::ProductionIndex;
 use crate::generators::NamingHelper as NmHlp;
 use crate::grammar::ProductionAttribute;
+use crate::parser::GrammarType;
 use crate::{Pr, Symbol, Terminal};
 use anyhow::{anyhow, bail, Result};
 use parol_runtime::log::trace;
@@ -73,6 +74,9 @@ pub struct GrammarTypeInfo {
     /// If true, the generation of boxed types is minimized over the whole grammar
     ///
     pub(crate) minimize_boxed_types: bool,
+
+    /// The grammar type
+    pub(crate) grammar_type: GrammarType,
 
     /// Helper
     terminals: Vec<String>,
@@ -160,6 +164,12 @@ impl GrammarTypeInfo {
     /// Sets the minimize boxed types flag
     pub fn minimize_boxed_types(&mut self) {
         self.minimize_boxed_types = true;
+    }
+
+    /// Set the grammar type
+    pub fn set_grammar_type(&mut self, grammar_type: GrammarType) {
+        trace!("Setting grammar type to {:?}", grammar_type);
+        self.grammar_type = grammar_type;
     }
 
     /// Add user actions
@@ -425,7 +435,21 @@ impl GrammarTypeInfo {
                 _ => bail!("Unexpected combination of production attributes"),
             };
             let mut arguments = self.arguments(primary_action)?;
-            arguments.pop(); // Remove the recursive part. Vec is wrapped outside.
+            // Remove the recursive part. Vec is wrapped outside.
+            match self.grammar_type {
+                GrammarType::LLK => {
+                    trace!(
+                        "Removing recursive part from Vec type from the right end of the arguments"
+                    );
+                    arguments.pop();
+                }
+                GrammarType::LALR1 => {
+                    trace!(
+                        "Removing recursive part from Vec type from the left end of the arguments"
+                    );
+                    arguments.remove(0);
+                }
+            }
             vector_typed_non_terminal_opt = Some(nt.to_string());
             let non_terminal_type = *self.non_terminal_types.get(nt).unwrap();
             // Copy the arguments as struct members
@@ -580,11 +604,19 @@ impl GrammarTypeInfo {
                 })?;
 
             if function_entrails.sem == ProductionAttribute::AddToCollection {
-                let ref_mut_last_type = &mut types.last_mut().unwrap().0;
-                *ref_mut_last_type = match &ref_mut_last_type {
-                    TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
-                    _ => ref_mut_last_type.clone(),
-                };
+                if grammar_config.grammar_type == GrammarType::LLK {
+                    let ref_mut_last_type = &mut types.last_mut().unwrap().0;
+                    *ref_mut_last_type = match &ref_mut_last_type {
+                        TypeEntrails::Box(r) => TypeEntrails::Vec(*r),
+                        _ => ref_mut_last_type.clone(),
+                    };
+                } else {
+                    let ref_mut_first_type = &mut types.first_mut().unwrap().0;
+                    *ref_mut_first_type = match &ref_mut_first_type {
+                        TypeEntrails::Vec(r) => TypeEntrails::Vec(*r),
+                        _ => ref_mut_first_type.clone(),
+                    };
+                }
             }
 
             let result = self

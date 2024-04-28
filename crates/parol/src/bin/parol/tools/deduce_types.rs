@@ -55,6 +55,7 @@ pub fn main(args: &Args) -> Result<()> {
     if args.minimize_boxed_types {
         type_info.minimize_boxed_types();
     }
+    type_info.set_grammar_type(grammar_config.grammar_type);
     type_info.build(&grammar_config)?;
     let scanner_state_resolver = grammar_config.get_scanner_state_resolver();
     let user_type_resolver = grammar_config.get_user_type_resolver();

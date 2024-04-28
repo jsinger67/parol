@@ -189,7 +189,7 @@ impl Report for ParolErrorReporter {
                                 Into::<Range<usize>>::into(token),
                             )])
                             .with_notes(vec![
-                                "Only 'LL(k)' and 'LALR(1)' are supported.".to_string()
+                                "Only 'LL(k)' and 'LALR(1)' are supported. Use RawString literals here.".to_string()
                             ]),
                     )?)
                 }
