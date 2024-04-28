@@ -1,7 +1,6 @@
 use super::parol_grammar_trait::{
-    self, AlternationList, Declaration, DeclarationGroup, GrammarDefinition, Parol,
-    ParolGrammarTrait, Prolog, PrologList, PrologList0, ScannerDirectives, StartDeclaration,
-    TokenLiteral,
+    self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
+    PrologList, PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -596,15 +595,8 @@ impl ParolGrammar<'_> {
             Declaration::ScannerDirectives(scanner_decl) => {
                 self.process_scanner_directive(&scanner_decl.scanner_directives)?
             }
-            Declaration::PercentGrammarUnderscoreTypeDeclarationGroup(grammar_type) => {
-                match &grammar_type.declaration_group {
-                    DeclarationGroup::RawString(r) => {
-                        self.process_grammar_type_declaration(&r.raw_string.raw_string)?
-                    }
-                    DeclarationGroup::String(s) => {
-                        self.process_grammar_type_declaration(&s.string.string)?
-                    }
-                }
+            Declaration::PercentGrammarUnderscoreTypeRawString(grammar_type) => {
+                self.process_grammar_type_declaration(&grammar_type.raw_string.raw_string)?
             }
         }
         Ok(())
