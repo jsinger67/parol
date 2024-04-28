@@ -26,7 +26,7 @@ Declaration
     : '%title'^ String
     | '%comment'^ String
     | '%user_type'^ Identifier '='^ UserTypeName: UserType // User type alias definition
-    | '%grammar_type'^ RawString // The type of the grammar, e.g. LL(k), LALR(1)
+    | '%grammar_type'^ (RawString | String) // The type of the grammar, e.g. LL(k), LALR(1)
     | ScannerDirectives
     ;
 
