@@ -31,8 +31,8 @@ parol_runtime = { path = "../parol_runtime", version = "0.21.0", features = [
 ] }
 parol-macros = { path = "../parol-macros", version = "0.2.0" }
 regex = { workspace = true }
-serde = "1.0.197"
-serde_json = "1.0.115"
+serde = "1.0.198"
+serde_json = "1.0.116"
 thiserror = { workspace = true }
 
 [build-dependencies]
