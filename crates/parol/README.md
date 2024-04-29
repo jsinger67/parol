@@ -58,7 +58,7 @@ often a more iterative approach is taken.
   called with these types. This greatly improves the development process and makes it less error-prone.
 - As of version 0.24.0 generated parsers can recover from syntax errors automatically
 - As of version 0.28.0 `parol` starts to support LR style grammars as well, in detail LALR(1)
-grammars. Please have a look at the [CHANGELOG](CHANGELOG.md)
+grammars. Please have a look at the [CHANGELOG](https://github.com/jsinger67/parol/blob/main/crates/parol/CHANGELOG.md)
 
 ## Other properties of `parol`
 
