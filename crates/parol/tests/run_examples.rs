@@ -72,6 +72,15 @@ fn run_examples_test() -> Result<()> {
         )],
     )?;
 
+    println!("Running List LR example...");
+    run(
+        &example_path!("list_lr"),
+        &[concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../examples/list_lr/list_test.txt"
+        )],
+    )?;
+
     println!("Running Oberon-0 example...");
     run(
         &example_path!("oberon_0"),

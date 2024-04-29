@@ -23,15 +23,16 @@ args = ["build", "--bin", "parol"]
 workspace = false
 dependencies = ["build_parol"]
 run_task = { name = [
-    "generate_calc",
-    "generate_calc_auto",
-    "generate_list",
-    "generate_list_auto",
-    "generate_oberon_0",
-    "generate_scanner_states",
     "generate_boolean_parser",
+    "generate_calc_auto",
+    "generate_calc",
     "generate_keywords",
     "generate_keywords2",
+    "generate_list_auto",
+    "generate_list_lr",
+    "generate_list",
+    "generate_oberon_0",
+    "generate_scanner_states",
 ], parallel = true }
 
 [tasks.generate_parol]
@@ -79,6 +80,12 @@ script = '''
 echo "Building ListAuto example..."
 ${PAROL_TARGET} -f ../../examples/list_auto/list.par -e ../../examples/list_auto/list-exp.par -p ../../examples/list_auto/list_parser.rs -a ../../examples/list_auto/list_grammar_trait.rs -t ListGrammar -m list_grammar -g -b
 '''
+
+[tasks.generate_list_lr]
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+workspace = false
+command = "cargo"
+args = ["build", "--example", "list_lr"]
 
 [tasks.generate_oberon_0]
 private = true

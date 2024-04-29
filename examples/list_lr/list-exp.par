@@ -1,0 +1,17 @@
+%start List
+%title "A possibly empty comma separated list of integers"
+%comment "Example of LALR(1) grammar for a list of integers separated by commas."
+%grammar_type 'lalr(1)'
+%line_comment "//"
+%user_type Number = crate::list_grammar::Number
+%user_type Numbers = crate::list_grammar::Numbers
+
+%%
+
+/* 0 */ List: ListOpt /* Option */;
+/* 1 */ ListOpt /* Option<T>::Some */: Items : Numbers;
+/* 2 */ ListOpt /* Option<T>::None */: ;
+/* 3 */ Items: Num ItemsList /* Vec */;
+/* 4 */ ItemsList /* Vec<T>::Push */: ItemsList ','^ /* Clipped */ Num;
+/* 5 */ ItemsList /* Vec<T>::New */: ;
+/* 6 */ Num: /0|[1-9][0-9]*/ : Number;

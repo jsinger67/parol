@@ -1,0 +1,14 @@
+%start List
+%title "A possibly empty comma separated list of integers"
+%comment "Example of LALR(1) grammar for a list of integers separated by commas."
+%line_comment "//"
+%grammar_type 'LALR(1)'
+%user_type Number = crate::list_grammar::Number
+%user_type Numbers = crate::list_grammar::Numbers
+
+%%
+
+
+List: [Items: Numbers];
+Items: Num {','^ Num};
+Num: /0|[1-9][0-9]*/: Number;

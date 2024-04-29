@@ -8,22 +8,23 @@ members = [
   "examples/json_parser",
   "examples/json_parser_auto",
   "examples/oberon2",
-  "examples/toml"
+  "examples/toml",
+  "examples/list_lr",
 ]
 
 exclude = [
+  "crates/parol/tests/snapshots/bin",
+  "crates/parol/tests/snapshots/lib",
   "examples/boolean_parser",
-  "examples/calc",
   "examples/calc_auto",
+  "examples/calc",
   "examples/json",
   "examples/keywords",
   "examples/keywords2",
-  "examples/list",
   "examples/list_auto",
+  "examples/list",
   "examples/oberon_0",
   "examples/scanner_states",
-  "crates/parol/tests/snapshots/bin",
-  "crates/parol/tests/snapshots/lib",
 ]
 
 [workspace.dependencies]
