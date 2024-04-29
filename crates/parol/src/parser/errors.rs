@@ -97,6 +97,17 @@ pub enum ParolParserError {
         /// Location
         token: Location,
     },
+
+    /// Unsupported feature
+    #[error("{feature} - Unsupported feature")]
+    UnsupportedFeature {
+        /// The feature found
+        feature: String,
+        /// Source
+        input: PathBuf,
+        /// Location
+        token: Location,
+    },
 }
 
 impl From<ParolParserError> for parol_runtime::ParolError {

@@ -68,9 +68,9 @@
 /* 57 */ StateList: Identifier StateListList /* Vec */;
 /* 58 */ StateListList /* Vec<T>::Push */: ','^ /* Clipped */ Identifier StateListList;
 /* 59 */ StateListList /* Vec<T>::New */: ;
-/* 60 */ ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
-/* 61 */ ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
-/* 62 */ ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
+/* 60 */ ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
+/* 61 */ ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
+/* 62 */ ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;
 /* 63 */ ScannerSwitchOpt /* Option<T>::Some */: Identifier;
 /* 64 */ ScannerSwitchOpt /* Option<T>::None */: ;
 /* 65 */ ASTControl: CutOperator;

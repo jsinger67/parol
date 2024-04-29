@@ -60,6 +60,5 @@ fn check_and_transform_ll(cfg: &Cfg) -> Result<Cfg> {
 }
 
 fn check_and_transform_lr(cfg: &Cfg) -> Result<Cfg> {
-    // TODO: Check for not yet implemented scanner state support
     Ok(augment_grammar(cfg))
 }

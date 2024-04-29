@@ -941,7 +941,7 @@ pub const PRODUCTIONS: &[Production; 72] = &[
         lhs: 33,
         production: &[],
     },
-    // 60 - ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
+    // 60 - ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;
     Production {
         lhs: 27,
         production: &[
@@ -951,7 +951,7 @@ pub const PRODUCTIONS: &[Production; 72] = &[
             ParseType::T(34),
         ],
     },
-    // 61 - ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
+    // 61 - ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;
     Production {
         lhs: 27,
         production: &[
@@ -961,7 +961,7 @@ pub const PRODUCTIONS: &[Production; 72] = &[
             ParseType::T(35),
         ],
     },
-    // 62 - ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;
+    // 62 - ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;
     Production {
         lhs: 27,
         production: &[ParseType::T(26), ParseType::T(25), ParseType::T(36)],

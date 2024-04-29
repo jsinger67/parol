@@ -420,36 +420,40 @@ pub struct TokenLiteralRegex<'t> {
 ///
 /// Type derived for production 60
 ///
-/// `ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
+/// `ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t> {
+    pub percent_sc: Token<'t>, /* %sc */
     pub scanner_switch_opt: Option<ScannerSwitchOpt<'t>>,
 }
 
 ///
 /// Type derived for production 61
 ///
-/// `ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
+/// `ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
 pub struct ScannerSwitchPercentPushLParenIdentifierRParen<'t> {
+    pub percent_push: Token<'t>, /* %push */
     pub identifier: Identifier<'t>,
 }
 
 ///
 /// Type derived for production 62
 ///
-/// `ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;`
+/// `ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;`
 ///
 #[allow(dead_code)]
 #[derive(Builder, Debug, Clone)]
 #[builder(crate = "parol_runtime::derive_builder")]
-pub struct ScannerSwitchPercentPopLParenRParen {}
+pub struct ScannerSwitchPercentPopLParenRParen<'t> {
+    pub percent_pop: Token<'t>, /* %pop */
+}
 
 ///
 /// Type derived for production 65
@@ -785,7 +789,7 @@ pub struct ScannerStateList<'t> {
 pub enum ScannerSwitch<'t> {
     PercentScLParenScannerSwitchOptRParen(ScannerSwitchPercentScLParenScannerSwitchOptRParen<'t>),
     PercentPushLParenIdentifierRParen(ScannerSwitchPercentPushLParenIdentifierRParen<'t>),
-    PercentPopLParenRParen(ScannerSwitchPercentPopLParenRParen),
+    PercentPopLParenRParen(ScannerSwitchPercentPopLParenRParen<'t>),
 }
 
 ///
@@ -2273,21 +2277,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 60:
     ///
-    /// `ScannerSwitch: '%sc'^ /* Clipped */ '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
+    /// `ScannerSwitch: '%sc' '('^ /* Clipped */ ScannerSwitchOpt /* Option */ ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_0(
         &mut self,
-        _percent_sc: &ParseTreeType<'t>,
+        percent_sc: &ParseTreeType<'t>,
         _l_paren: &ParseTreeType<'t>,
         _scanner_switch_opt: &ParseTreeType<'t>,
         _r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
+        let percent_sc = percent_sc.token()?.clone();
         let scanner_switch_opt = pop_item!(self, scanner_switch_opt, ScannerSwitchOpt, context);
-        let scanner_switch_0_built =
-            ScannerSwitchPercentScLParenScannerSwitchOptRParen { scanner_switch_opt };
+        let scanner_switch_0_built = ScannerSwitchPercentScLParenScannerSwitchOptRParen {
+            percent_sc,
+            scanner_switch_opt,
+        };
         let scanner_switch_0_built =
             ScannerSwitch::PercentScLParenScannerSwitchOptRParen(scanner_switch_0_built);
         // Calling user action here
@@ -2298,20 +2305,24 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 61:
     ///
-    /// `ScannerSwitch: '%push'^ /* Clipped */ '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
+    /// `ScannerSwitch: '%push' '('^ /* Clipped */ Identifier ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_1(
         &mut self,
-        _percent_push: &ParseTreeType<'t>,
+        percent_push: &ParseTreeType<'t>,
         _l_paren: &ParseTreeType<'t>,
         _identifier: &ParseTreeType<'t>,
         _r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
+        let percent_push = percent_push.token()?.clone();
         let identifier = pop_item!(self, identifier, Identifier, context);
-        let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen { identifier };
+        let scanner_switch_1_built = ScannerSwitchPercentPushLParenIdentifierRParen {
+            percent_push,
+            identifier,
+        };
         let scanner_switch_1_built =
             ScannerSwitch::PercentPushLParenIdentifierRParen(scanner_switch_1_built);
         // Calling user action here
@@ -2322,18 +2333,19 @@ impl<'t, 'u> ParolGrammarAuto<'t, 'u> {
 
     /// Semantic action for production 62:
     ///
-    /// `ScannerSwitch: '%pop'^ /* Clipped */ '('^ /* Clipped */ ')'^ /* Clipped */;`
+    /// `ScannerSwitch: '%pop' '('^ /* Clipped */ ')'^ /* Clipped */;`
     ///
     #[parol_runtime::function_name::named]
     fn scanner_switch_2(
         &mut self,
-        _percent_pop: &ParseTreeType<'t>,
+        percent_pop: &ParseTreeType<'t>,
         _l_paren: &ParseTreeType<'t>,
         _r_paren: &ParseTreeType<'t>,
     ) -> Result<()> {
         let context = function_name!();
         trace!("{}", self.trace_item_stack(context));
-        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen {};
+        let percent_pop = percent_pop.token()?.clone();
+        let scanner_switch_2_built = ScannerSwitchPercentPopLParenRParen { percent_pop };
         let scanner_switch_2_built = ScannerSwitch::PercentPopLParenRParen(scanner_switch_2_built);
         // Calling user action here
         self.user_grammar.scanner_switch(&scanner_switch_2_built)?;

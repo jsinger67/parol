@@ -193,6 +193,31 @@ impl Report for ParolErrorReporter {
                             ]),
                     )?)
                 }
+                ParolParserError::UnsupportedFeature {
+                    feature,
+                    input,
+                    token,
+                } => {
+                    let mut files = SimpleFiles::new();
+                    let content = fs::read_to_string(input).unwrap_or_default();
+                    let file_id = files.add(input.display().to_string(), content);
+
+                    Ok(term::emit(
+                        &mut writer.lock(),
+                        &config,
+                        &files,
+                        &Diagnostic::error()
+                            .with_message(format!("{feature} - Unsupported feature"))
+                            .with_code("parol::parser::unsupported_feature")
+                            .with_labels(vec![Label::primary(
+                                file_id,
+                                Into::<Range<usize>>::into(token),
+                            )])
+                            .with_notes(vec![
+                                "Sorry, but this feature is not supported yet.".to_string()
+                            ]),
+                    )?)
+                }
             }
         } else if let Some(err) = err.downcast_ref::<GrammarAnalysisError>() {
             match err {

@@ -1,6 +1,6 @@
 use super::parol_grammar_trait::{
     self, AlternationList, Declaration, GrammarDefinition, Parol, ParolGrammarTrait, Prolog,
-    PrologList, PrologList0, ScannerDirectives, StartDeclaration, TokenLiteral,
+    PrologList, PrologList0, ScannerDirectives, ScannerSwitch, StartDeclaration, TokenLiteral,
 };
 use crate::grammar::{Decorate, ProductionAttribute, SymbolAttribute, TerminalKind};
 use crate::ParolParserError;
@@ -884,20 +884,33 @@ impl ParolGrammar<'_> {
         &self,
         scanner_switch: &parol_grammar_trait::SymbolScannerSwitch,
     ) -> Result<Factor> {
-        match &scanner_switch.scanner_switch {
-            parol_grammar_trait::ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sw) => {
-                match &sw.scanner_switch_opt {
-                    Some(st) => Ok(Factor::ScannerSwitch(
-                        self.resolve_scanner(&st.identifier.identifier)?,
-                    )),
-                    None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
+        match self.grammar_type {
+            GrammarType::LLK => match &scanner_switch.scanner_switch {
+                ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sw) => {
+                    match &sw.scanner_switch_opt {
+                        Some(st) => Ok(Factor::ScannerSwitch(
+                            self.resolve_scanner(&st.identifier.identifier)?,
+                        )),
+                        None => Ok(Factor::ScannerSwitch(INITIAL_STATE)),
+                    }
                 }
-            }
-            parol_grammar_trait::ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => Ok(
-                Factor::ScannerSwitchPush(self.resolve_scanner(&sw.identifier.identifier)?),
-            ),
-            parol_grammar_trait::ScannerSwitch::PercentPopLParenRParen(_) => {
-                Ok(Factor::ScannerSwitchPop)
+                ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => Ok(
+                    Factor::ScannerSwitchPush(self.resolve_scanner(&sw.identifier.identifier)?),
+                ),
+                ScannerSwitch::PercentPopLParenRParen(_) => Ok(Factor::ScannerSwitchPop),
+            },
+            GrammarType::LALR1 => {
+                let token = match &scanner_switch.scanner_switch {
+                    ScannerSwitch::PercentScLParenScannerSwitchOptRParen(sw) => &sw.percent_sc,
+                    ScannerSwitch::PercentPushLParenIdentifierRParen(sw) => &sw.percent_push,
+                    ScannerSwitch::PercentPopLParenRParen(sw) => &sw.percent_pop,
+                };
+                Err(ParolParserError::UnsupportedFeature {
+                    feature: "Scanner switching in LALR(1) grammar".to_string(),
+                    input: token.location.file_name.to_path_buf(),
+                    token: token.into(),
+                }
+                .into())
             }
         }
     }

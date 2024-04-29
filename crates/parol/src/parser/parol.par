@@ -132,9 +132,9 @@ StateList
     ;
 
 ScannerSwitch
-    : '%sc'^ '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state
-    | '%push'^ '('^ Identifier ')'^ // Identifier of scanner state is mandatory
-    | '%pop'^ '('^ ')'^ // Parentheses are also mandatory
+    : '%sc' '('^ [ Identifier ] ')'^ // Missing identifier implies INITIAL state
+    | '%push' '('^ Identifier ')'^ // Identifier of scanner state is mandatory
+    | '%pop' '('^ ')'^ // Parentheses are also mandatory
     ;
 
 ASTControl

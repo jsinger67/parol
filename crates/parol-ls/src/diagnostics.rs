@@ -290,5 +290,12 @@ fn extract_parser_error(
                 message: grammar_type.to_string(),
             });
         }
+        ParolParserError::UnsupportedFeature { feature, token, .. } => {
+            *range = location_to_range(token);
+            related_information.push(DiagnosticRelatedInformation {
+                location: location_to_location(token, located_document_state.uri),
+                message: format!("{feature} - Feature is not yet supported"),
+            });
+        }
     }
 }
