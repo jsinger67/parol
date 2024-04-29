@@ -172,7 +172,10 @@ impl<'a> UserTraitGenerator<'a> {
                 let stack_pop_data = UserTraitFunctionStackPopDataBuilder::default()
                     .arg_name(arg_name.to_string())
                     .arg_type(arg_type.inner_name())
-                    .vec_anchor(arg_inst.sem() == SymbolAttribute::RepetitionAnchor)
+                    .vec_anchor(
+                        arg_inst.sem() == SymbolAttribute::RepetitionAnchor
+                            && grammar_type == GrammarType::LLK,
+                    )
                     .popped_item_is_mutable(
                         function.sem == ProductionAttribute::AddToCollection
                             && match grammar_type {
