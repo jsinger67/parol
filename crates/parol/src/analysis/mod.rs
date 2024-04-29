@@ -16,10 +16,6 @@ pub use errors::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
 pub mod left_recursion;
 pub use left_recursion::detect_left_recursive_non_terminals;
 
-/// Module with check for right-recursions
-pub mod right_recursion;
-pub use right_recursion::detect_right_recursive_non_terminals;
-
 /// Module with the KTuple type
 pub mod k_tuple;
 pub use k_tuple::{KTuple, KTupleBuilder};

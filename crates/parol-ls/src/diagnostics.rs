@@ -159,35 +159,6 @@ fn extract_grammar_analysis_error(
                 }
             }
         }
-        GrammarAnalysisError::RightRecursion { recursions } => {
-            for (i, rec) in recursions.iter().enumerate() {
-                related_information.push(DiagnosticRelatedInformation {
-                    location: Location {
-                        uri: located_document_state.uri.to_owned(),
-                        range: *range,
-                    },
-                    message: format!("Recursion #{}:", i + 1),
-                });
-                eprintln!("{}", rec.name);
-                if let Some(non_terminals) = Server::find_non_terminal_definitions(
-                    located_document_state.document_state,
-                    &rec.name,
-                ) {
-                    for rng in non_terminals {
-                        let (range, message) = (*rng, format!("Non-terminal: {}", rec.name));
-                        related_information.push(DiagnosticRelatedInformation {
-                            location: Location {
-                                uri: located_document_state.uri.to_owned(),
-                                range,
-                            },
-                            message,
-                        })
-                    }
-                } else if let Some(rel) = related_information.last_mut() {
-                    let _ = write!(rel.message, " {}", rec.name);
-                }
-            }
-        }
         GrammarAnalysisError::UnreachableNonTerminals { non_terminals }
         | GrammarAnalysisError::NonProductiveNonTerminals { non_terminals } => {
             for hint in non_terminals {

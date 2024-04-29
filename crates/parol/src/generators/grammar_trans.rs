@@ -60,18 +60,6 @@ fn check_and_transform_ll(cfg: &Cfg) -> Result<Cfg> {
 }
 
 fn check_and_transform_lr(cfg: &Cfg) -> Result<Cfg> {
-    // let right_recursions = detect_right_recursive_non_terminals(cfg);
-    // if !right_recursions.is_empty() {
-    //     let recursions = right_recursions
-    //         .iter()
-    //         .enumerate()
-    //         .map(|(number, name)| RecursiveNonTerminal {
-    //             number,
-    //             name: name.to_string(),
-    //         })
-    //         .collect::<Vec<RecursiveNonTerminal>>();
-
-    //     bail!(GrammarAnalysisError::RightRecursion { recursions });
-    // }
+    // TODO: Check for not yet implemented scanner state support
     Ok(augment_grammar(cfg))
 }

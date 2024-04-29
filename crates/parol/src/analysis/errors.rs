@@ -17,13 +17,6 @@ pub enum GrammarAnalysisError {
         recursions: Vec<RecursiveNonTerminal>,
     },
 
-    /// Right-recursions detected
-    #[error("Grammar contains right-recursions")]
-    RightRecursion {
-        /// Recursions
-        recursions: Vec<RecursiveNonTerminal>,
-    },
-
     /// Unreachable non-terminals are not allowed.
     #[error("Grammar contains unreachable non-terminals")]
     UnreachableNonTerminals {
