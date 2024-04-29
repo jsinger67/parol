@@ -374,7 +374,7 @@ impl<'t> LRParser<'t> {
                     let prod_index = if let Some(index) = self
                         .productions
                         .iter()
-                        .position(|p| p.lhs == self.start_symbol_index && p.len == 1)
+                        .position(|p| p.lhs == self.start_symbol_index)
                     {
                         index
                     } else {
