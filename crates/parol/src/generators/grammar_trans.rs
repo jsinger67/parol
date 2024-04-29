@@ -1,6 +1,4 @@
-use crate::analysis::{
-    detect_right_recursive_non_terminals, non_productive_non_terminals, unreachable_non_terminals,
-};
+use crate::analysis::{non_productive_non_terminals, unreachable_non_terminals};
 use crate::parser::parol_grammar::GrammarType;
 use crate::{augment_grammar, detect_left_recursive_non_terminals, left_factor, Cfg};
 use crate::{GrammarAnalysisError, RecursiveNonTerminal, RelatedHint};
@@ -62,18 +60,18 @@ fn check_and_transform_ll(cfg: &Cfg) -> Result<Cfg> {
 }
 
 fn check_and_transform_lr(cfg: &Cfg) -> Result<Cfg> {
-    let right_recursions = detect_right_recursive_non_terminals(cfg);
-    if !right_recursions.is_empty() {
-        let recursions = right_recursions
-            .iter()
-            .enumerate()
-            .map(|(number, name)| RecursiveNonTerminal {
-                number,
-                name: name.to_string(),
-            })
-            .collect::<Vec<RecursiveNonTerminal>>();
+    // let right_recursions = detect_right_recursive_non_terminals(cfg);
+    // if !right_recursions.is_empty() {
+    //     let recursions = right_recursions
+    //         .iter()
+    //         .enumerate()
+    //         .map(|(number, name)| RecursiveNonTerminal {
+    //             number,
+    //             name: name.to_string(),
+    //         })
+    //         .collect::<Vec<RecursiveNonTerminal>>();
 
-        bail!(GrammarAnalysisError::RightRecursion { recursions });
-    }
+    //     bail!(GrammarAnalysisError::RightRecursion { recursions });
+    // }
     Ok(augment_grammar(cfg))
 }
