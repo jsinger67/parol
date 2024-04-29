@@ -363,7 +363,11 @@ pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRP
     let grammar = GrammarLalr::from(cfg);
     trace!("{:#?}", grammar);
     let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| true;
-    let priority_of = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| 0;
+    let priority_of = |rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| {
+        // Use negative production index as priority:
+        // The production which comes earlier in the grammar description has the higher priority.
+        -(rhs.act as i32)
+    };
     let parse_table = grammar.lalr1(reduce_on, priority_of).map_err(|e| {
         let conflict: LRConflict = e.into();
         let mut conflict: LRConflictError = conflict.into();
