@@ -86,6 +86,8 @@ often a more iterative approach is taken.
 - can generate types that resemble the AST of your grammar automatically. Semantic actions are then
   called with these types. This greatly improves the development process and makes it less error-prone.
 - As of version 0.24.0 generated parsers can recover from syntax errors automatically
+- As of version 0.28.0 `parol` starts to support LR style grammars as well, in detail LALR(1)
+grammars.
 
 ## Other properties of `parol`
 

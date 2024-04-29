@@ -8,6 +8,7 @@ file.
 ## 0.18.0 - Not released yet
 
 * Support grammar type specification in par files with the `%grammar_type` directive
+* Support of new `parol` errors
 
 ## 0.17.1 - 2024-01-10
 

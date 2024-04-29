@@ -22,6 +22,7 @@ The Language Server currently supports
 * Hover
 * Document symbols
 * Renaming non-terminal symbols (except the start symbol)
+* Formatting the source configurable via format settings
 * and shows syntax errors as you are used to.
 
 Also problems in your grammar are detected and reported.

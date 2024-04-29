@@ -17,6 +17,10 @@ Be aware that this project is still v0.y.z which means that anything can change 
 We defined for this project that while being on major version zero we mark incompatible changes with
 new minor version numbers. Please note that this is no version handling covered by `Semver`.
 
+## 0.21.0 - Not released yet
+
+- New parser type to foster LALR(1) grammar support of `parol` 0.28.0
+
 ## 0.20.2 - 2024-03-21
 
 - Fixed issue [#310 Access internal data of TokenVec](https://github.com/jsinger67/parol/issues/310)

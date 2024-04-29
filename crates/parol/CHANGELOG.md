@@ -21,6 +21,41 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
+## 0.28.0 - Not released yet
+
+- Complete new **LALR(1) grammar support**. Use the new `%grammar_type` directive to switch to LALR(1)
+  ```
+  %grammar_type 'LALR(1)'
+  ```
+  The interfacing to the user's grammar trait works just the same as before.
+  You can find an example in the examples folder: [list_lr](../../examples/list_lr/list.par).
+
+  Although `parol` is by default a LL(k) parser generator I believe that the support of the popular
+  LALR(1) grammars can help users in general.
+
+  A view things are not yet available for LR grammars:
+    * No parse tree generation
+
+      This has to be revised since the mechanisms of constructing the parse tree during the parse
+      process are different than the ones used in the LL parser.
+
+    * Scanner state switching is not implemented yet
+
+      In fact there is not even a concept to accomplish this in the LR parser. I have to reason
+      about this a bit, I think.
+
+    * No general solution of handling conflicts during parse table generation.
+
+      This is a mix of different obstacles that comes from the tooling on the one hand and from the
+      philosophy of `parol` on the other hand. Doing it `parol`'s way I would do it in the par file
+      (as for the scanner switching).
+
+      Currently any conflict results in an error. I know this might prevent its use for more complex
+      grammars but it is the save way for now.
+
+  Please, give feedback of any kind to this new grammar type support.
+
+
 ## 0.27.0 - 2024-04-01
 
 - Heavy performance optimization of the calculation of FIRST and FOLLOW sets and there especially
