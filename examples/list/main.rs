@@ -11,6 +11,7 @@ use parol::generate_tree_layout;
 use parol_runtime::log::debug;
 use std::env;
 use std::fs;
+use std::time::Instant;
 
 // To generate:
 // parol -f ./examples/list/list.par -e ./examples/list/list-exp.par -p ./examples/list/list_parser.rs -a ./examples/list/list_grammar_trait.rs -t ListGrammar -m list_grammar
@@ -28,8 +29,11 @@ fn main() -> Result<()> {
         let input = fs::read_to_string(file_name.clone())
             .with_context(|| format!("Can't read file {}", file_name))?;
         let mut list_grammar = ListGrammar::new();
+        let now = Instant::now();
         let syntax_tree = parse(&input, &file_name, &mut list_grammar)
             .with_context(|| format!("Failed parsing file {}", file_name))?;
+        let elapsed_time = now.elapsed();
+        println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
         println!("{}", list_grammar);
         generate_tree_layout(&syntax_tree, &file_name).context("Error generating tree layout")
     } else {

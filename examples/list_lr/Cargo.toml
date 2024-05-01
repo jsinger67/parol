@@ -9,6 +9,7 @@ edition = "2021"
 anyhow = { workspace = true }
 env_logger = { workspace = true }
 parol_runtime = { path = "../../crates/parol_runtime", features = ["auto_generation"] }
+parol = { path = "../../crates/parol" }
 thiserror = { workspace = true }
 
 [build-dependencies]

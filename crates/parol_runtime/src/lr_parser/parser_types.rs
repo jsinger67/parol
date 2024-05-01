@@ -1,6 +1,6 @@
 //! Parser types for the LR parser.
 //! The parser types are used during the parsing process.
-//! They are nearly duplicates of the ones in the `parol` crate which in turn duplicates the `lalr`
+//! Some are nearly duplicates of the ones in the `parol` crate which in turn duplicates the `lalr`
 //! crate's types.
 //! This is suboptimal but necessary to avoid a dependency to the `lalr` crate here.
 
@@ -8,6 +8,7 @@ use core::str;
 use std::{
     cell::RefCell,
     collections::{BTreeMap, BTreeSet},
+    convert::TryInto,
     iter::FromIterator,
     rc::Rc,
 };
@@ -15,8 +16,8 @@ use std::{
 use log::trace;
 
 use crate::{
-    parser::parser_types::TreeBuilder, FileSource, NonTerminalIndex, ParolError, ParseTree,
-    ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
+    parser::parser_types::TreeBuilder, FileSource, LRParseTree, NonTerminalIndex, ParolError,
+    ParseTree, ParseTreeStack, ParseTreeType, ParserError, ProductionIndex, Result, SyntaxError,
     TerminalIndex, TokenStream, TokenVec, UnexpectedToken, UserActionsTrait,
 };
 
@@ -155,13 +156,10 @@ pub struct LRParser<'t> {
     /// Temporary stack that receives recognized grammar symbols before they
     /// are added to the parse tree.
     ///
-    /// !!!!!
     /// Parse tree generation is not implemented yet because of the syntree's implementation.
-    /// TODO: Rethink the parse tree generation.
-    /// !!!!!
     ///
     /// This stack is also used to provide arguments to semantic user actions.
-    parse_tree_stack: ParseTreeStack<ParseTreeType<'t>>,
+    parse_tree_stack: ParseTreeStack<LRParseTree<'t>>,
 
     /// The stack of the parser.
     parser_stack: LRParseStack,
@@ -231,15 +229,32 @@ impl<'t> LRParser<'t> {
         // Calculate the number of symbols in the production
         let n = self.productions[prod_num].len;
 
-        // We remove the last n entries from the parse tree stack and insert them as
-        // children under the node laying below on the stack
-        let children: Vec<ParseTreeType<'_>> = self
+        // We remove the last n entries from the parse tree stack
+        let children: Vec<LRParseTree<'_>> = self
             .parse_tree_stack
             .split_off(self.parse_tree_stack.len() - n);
 
-        // With the children we can call the user's semantic action
+        // Prepare the arguments for the user's semantic action
+        let arguments = children
+            .iter()
+            .map(|pt| pt.into())
+            .collect::<Vec<ParseTreeType<'t>>>();
+
+        // Insert children under the new non-terminal node of the production being reduced
+        let non_terminal = LRParseTree::NonTerminal(
+            self.non_terminal_names[self.productions[prod_num].lhs],
+            if self.trim_parse_tree {
+                Vec::new()
+            } else {
+                children
+            },
+        );
+        // Push the new non-terminal node onto the parse tree stack
+        self.parse_tree_stack.push(non_terminal);
+
+        // With the argument built from children we can call the user's semantic action
         trace!("Call semantic action for production {}", prod_num);
-        user_actions.call_semantic_action_for_production_number(prod_num, &children)?;
+        user_actions.call_semantic_action_for_production_number(prod_num, &arguments)?;
         Ok(n)
     }
 
@@ -268,9 +283,6 @@ impl<'t> LRParser<'t> {
 
         // Initialize the parse stack and the parse tree stack.
         self.parser_stack = LRParseStack::new();
-        self.parse_tree_stack.push(ParseTreeType::N(
-            self.non_terminal_names[self.start_symbol_index],
-        ));
 
         loop {
             self.handle_comments(&stream, user_actions)?;
@@ -320,7 +332,7 @@ impl<'t> LRParser<'t> {
                         token.text,
                         self.terminal_names[token.token_type as usize]
                     );
-                    let token = ParseTreeType::T(token.clone());
+                    let token = LRParseTree::Terminal(token.clone());
                     self.parse_tree_stack.push(token.clone());
                     // Consume the token
                     stream.borrow_mut().consume()?;
@@ -339,8 +351,6 @@ impl<'t> LRParser<'t> {
                         }
                         self.parser_stack.pop();
                     }
-                    let non_terminal = ParseTreeType::N(self.non_terminal_names[nt_index]);
-                    self.parse_tree_stack.push(non_terminal.clone());
                     // The new state is the one on top of the stack
                     let state = self.parser_stack.current_state();
                     trace!("Current state after removing {} states is {}", n, state);
@@ -390,8 +400,15 @@ impl<'t> LRParser<'t> {
                 }
             }
         }
-        Ok(TreeBuilder::new()
-            .build()
-            .map_err(|source| ParserError::TreeError { source })?)
+        let parse_tree = if self.trim_parse_tree {
+            // Return an empty parse tree
+            TreeBuilder::new().build()
+        } else {
+            // The parse tree stack should contain only one element at this point
+            debug_assert!(self.parse_tree_stack.len() == 1);
+            let parse_tree = self.parse_tree_stack.pop().unwrap();
+            parse_tree.try_into()
+        };
+        Ok(parse_tree.map_err(|source| ParserError::TreeError { source })?)
     }
 }

@@ -21,7 +21,7 @@ new minor version numbers. Please note that this is no version handling covered 
 
 ---
 
-## 0.28.0 - Not released yet
+## 0.28.0 - 2024-04-29
 
 - Complete new **LALR(1) grammar support**. Use the new `%grammar_type` directive to switch to LALR(1)
   ```

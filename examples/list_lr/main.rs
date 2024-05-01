@@ -6,6 +6,7 @@ mod list_parser;
 
 use crate::{list_grammar::ListGrammar, list_parser::parse};
 use anyhow::{anyhow, Context, Result};
+use parol::generate_tree_layout;
 use parol_runtime::{log::debug, Report};
 use std::{env, fs, time::Instant};
 
@@ -30,15 +31,15 @@ fn main() -> Result<()> {
         let mut list_grammar = ListGrammar::new();
         let now = Instant::now();
         match parse(&input, &file_name, &mut list_grammar) {
-            Ok(_) => {
+            Ok(syntax_tree) => {
                 let elapsed_time = now.elapsed();
-                println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                 if args.len() > 2 && args[2] == "-q" {
-                    Ok(())
                 } else {
+                    println!("Parsing took {} milliseconds.", elapsed_time.as_millis());
                     println!("Success!\n{}", list_grammar);
-                    Ok(())
                 }
+                generate_tree_layout(&syntax_tree, &file_name)
+                    .context("Error generating tree layout")
             }
             Err(e) => ErrorReporter::report_error(&e, file_name),
         }

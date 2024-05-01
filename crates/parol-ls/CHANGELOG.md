@@ -5,7 +5,7 @@ All notable changes to the "parol-ls" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this
 file.
 
-## 0.18.0 - Not released yet
+## 0.18.0 - 2024-04-29
 
 * Support grammar type specification in par files with the `%grammar_type` directive
 * Support of new `parol` errors
