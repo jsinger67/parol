@@ -14,6 +14,7 @@ use std::{
 };
 
 use anyhow::{anyhow, Result};
+use lalr::{Config, LR1ResolvedConflict};
 use parol_runtime::{
     lexer::{BLOCK_COMMENT, EOI, FIRST_USER_TOKEN, LINE_COMMENT, NEW_LINE, WHITESPACE},
     log::trace,
@@ -356,19 +357,56 @@ impl From<LR1ParseTableLalr<'_>> for LRParseTable {
     }
 }
 
+struct LALRConfig<'a> {
+    calls: std::cell::RefCell<
+        Vec<LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>>,
+    >,
+}
+
+impl<'a> LALRConfig<'a> {
+    fn new() -> Self {
+        LALRConfig {
+            calls: std::cell::RefCell::new(vec![]),
+        }
+    }
+}
+
+impl<'a> Config<'a, TerminalIndex, NonTerminalIndex, ProductionIndex> for LALRConfig<'a> {
+    fn resolve_shift_reduce_conflict_in_favor_of_shift(&self) -> bool {
+        true
+    }
+
+    fn warn_on_resolved_conflicts(&self) -> bool {
+        true
+    }
+
+    fn on_resolved_conflict(
+        &self,
+        conflict: LR1ResolvedConflict<'a, TerminalIndex, NonTerminalIndex, ProductionIndex>,
+    ) {
+        println!("Resolved conflict: {:?}", conflict);
+        self.calls.borrow_mut().push(conflict);
+    }
+
+    fn priority_of(
+        &self,
+        rhs: &lalr::Rhs<TerminalIndex, NonTerminalIndex, ProductionIndex>,
+        _lookahead: Option<&TerminalIndex>,
+    ) -> i32 {
+        // Use negative production index as priority:
+        // The production which comes earlier in the grammar description has the higher priority.
+        -(rhs.act as i32)
+    }
+}
+
 /// Calculate the LALR(1) parse table for the given grammar configuration.
 pub fn calculate_lalr1_parse_table(grammar_config: &GrammarConfig) -> Result<LRParseTable> {
     trace!("CFG: \n{}", render_par_string(grammar_config, true)?);
     let cfg = &grammar_config.cfg;
     let grammar = GrammarLalr::from(cfg);
     trace!("{:#?}", grammar);
-    let reduce_on = |_rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| true;
-    let priority_of = |rhs: &RhsLalr, _lookahead: Option<&TerminalIndex>| {
-        // Use negative production index as priority:
-        // The production which comes earlier in the grammar description has the higher priority.
-        -(rhs.act as i32)
-    };
-    let parse_table = grammar.lalr1(reduce_on, priority_of).map_err(|e| {
+    let config = LALRConfig::new();
+    let parse_table = grammar.lalr1(&config).map_err(|e| {
         let conflict: LRConflict = e.into();
         let mut conflict: LRConflictError = conflict.into();
         conflict.set_cfg(cfg.clone());
