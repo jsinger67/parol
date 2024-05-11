@@ -1,0 +1,98 @@
+%start Calc
+%title "Example grammar of an expression evaluator"
+%comment "To demonstrate use of lists, operator precedence, operator associativity"
+%line_comment "//"
+%block_comment  "/\*" "\*/"
+%grammar_type 'LALR(1)'
+
+%%
+
+// -------------------------------------------------------------------------------------------------
+// START SYMBOL
+Calc: { Instruction ";"^ };
+
+
+// -------------------------------------------------------------------------------------------------
+// OPERATOR SYMBOLS
+EqualityOp: /==|!=/;
+AssignOp: /(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=/;
+LogicalOrOp: '||';
+LogicalAndOp: '&&';
+BitwiseOrOp: '|';
+BitwiseAndOp: '&';
+BitwiseShiftOp: /<<|>>/;
+RelationalOp: /<=|<|>=|>/;
+Plus: '+';
+Minus: '-';
+PowOp: '**';
+MultOp: /\*|\/|%/;
+
+// -------------------------------------------------------------------------------------------------
+// INSTRUCTION
+Instruction: Assignment;
+Instruction: LogicalOr;
+
+// -------------------------------------------------------------------------------------------------
+// ASSIGNMENT
+AssignItem: Id AssignOp;
+Assignment: AssignItem { AssignItem } LogicalOr;
+
+// -------------------------------------------------------------------------------------------------
+// LOGICAL OR
+LogicalOr: LogicalAnd { LogicalOrOp LogicalAnd };
+
+// -------------------------------------------------------------------------------------------------
+// LOGICAL AND
+LogicalAnd: BitwiseOr { LogicalAndOp BitwiseOr };
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE OR
+BitwiseOr: BitwiseAnd { BitwiseOrOp BitwiseAnd };
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE AND
+BitwiseAnd: Equality { BitwiseAndOp Equality };
+
+// -------------------------------------------------------------------------------------------------
+// EQUALITY AND INEQUALITY
+Equality: Relational { EqualityOp Relational } ;
+
+// -------------------------------------------------------------------------------------------------
+// RELATIONAL
+Relational: BitwiseShift { RelationalOp BitwiseShift };
+
+// -------------------------------------------------------------------------------------------------
+// BITWISE SHIFT
+BitwiseShift: Summ { BitwiseShiftOp Summ };
+
+// -------------------------------------------------------------------------------------------------
+// ADDITION AND SUBTRACTION
+AddOp : Plus | Minus;
+Summ: Mult { AddOp Mult };
+
+// -------------------------------------------------------------------------------------------------
+// MULTIPLICATION, DIVISION AND REMAINDER
+Mult: Power { MultOp Power };
+
+// -------------------------------------------------------------------------------------------------
+// POWER
+Power: Factor { PowOp Factor };
+
+// -------------------------------------------------------------------------------------------------
+// NEGATION
+Negate: Minus;
+
+// -------------------------------------------------------------------------------------------------
+// FACTOR
+Factor
+    : Number
+    | Negate Factor
+    | IdRef
+    | '('^ LogicalOr ')'^
+    ;
+
+Number: /0|[1-9][0-9]*/: crate::calc_grammar::Number;
+
+IdRef: Id;
+
+Id: /[a-zA-Z_][a-zA-Z0-9_]*/;

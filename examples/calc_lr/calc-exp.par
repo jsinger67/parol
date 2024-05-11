@@ -1,0 +1,70 @@
+%start Calc
+%title "Example grammar of an expression evaluator"
+%comment "To demonstrate use of lists, operator precedence, operator associativity"
+%grammar_type 'lalr(1)'
+%line_comment "//"
+%block_comment "/\*" "\*/"
+
+%%
+
+/*  0 */ Calc: CalcList /* Vec */;
+/*  1 */ CalcList /* Vec<T>::Push */: CalcList Instruction ";"^ /* Clipped */;
+/*  2 */ CalcList /* Vec<T>::New */: ;
+/*  3 */ EqualityOp: /==|!=/;
+/*  4 */ AssignOp: /(\+|-|\*|\/|%|<<|>>|&|\^|\|)?=/;
+/*  5 */ LogicalOrOp: '||';
+/*  6 */ LogicalAndOp: '&&';
+/*  7 */ BitwiseOrOp: '|';
+/*  8 */ BitwiseAndOp: '&';
+/*  9 */ BitwiseShiftOp: /<<|>>/;
+/* 10 */ RelationalOp: /<=|<|>=|>/;
+/* 11 */ Plus: '+';
+/* 12 */ Minus: '-';
+/* 13 */ PowOp: '**';
+/* 14 */ MultOp: /\*|\/|%/;
+/* 15 */ Instruction: Assignment;
+/* 16 */ Instruction: LogicalOr;
+/* 17 */ AssignItem: Id AssignOp;
+/* 18 */ Assignment: AssignItem AssignmentList /* Vec */ LogicalOr;
+/* 19 */ AssignmentList /* Vec<T>::Push */: AssignmentList AssignItem;
+/* 20 */ AssignmentList /* Vec<T>::New */: ;
+/* 21 */ LogicalOr: LogicalAnd LogicalOrList /* Vec */;
+/* 22 */ LogicalOrList /* Vec<T>::Push */: LogicalOrList LogicalOrOp LogicalAnd;
+/* 23 */ LogicalOrList /* Vec<T>::New */: ;
+/* 24 */ LogicalAnd: BitwiseOr LogicalAndList /* Vec */;
+/* 25 */ LogicalAndList /* Vec<T>::Push */: LogicalAndList LogicalAndOp BitwiseOr;
+/* 26 */ LogicalAndList /* Vec<T>::New */: ;
+/* 27 */ BitwiseOr: BitwiseAnd BitwiseOrList /* Vec */;
+/* 28 */ BitwiseOrList /* Vec<T>::Push */: BitwiseOrList BitwiseOrOp BitwiseAnd;
+/* 29 */ BitwiseOrList /* Vec<T>::New */: ;
+/* 30 */ BitwiseAnd: Equality BitwiseAndList /* Vec */;
+/* 31 */ BitwiseAndList /* Vec<T>::Push */: BitwiseAndList BitwiseAndOp Equality;
+/* 32 */ BitwiseAndList /* Vec<T>::New */: ;
+/* 33 */ Equality: Relational EqualityList /* Vec */;
+/* 34 */ EqualityList /* Vec<T>::Push */: EqualityList EqualityOp Relational;
+/* 35 */ EqualityList /* Vec<T>::New */: ;
+/* 36 */ Relational: BitwiseShift RelationalList /* Vec */;
+/* 37 */ RelationalList /* Vec<T>::Push */: RelationalList RelationalOp BitwiseShift;
+/* 38 */ RelationalList /* Vec<T>::New */: ;
+/* 39 */ BitwiseShift: Summ BitwiseShiftList /* Vec */;
+/* 40 */ BitwiseShiftList /* Vec<T>::Push */: BitwiseShiftList BitwiseShiftOp Summ;
+/* 41 */ BitwiseShiftList /* Vec<T>::New */: ;
+/* 42 */ AddOp: Plus;
+/* 43 */ AddOp: Minus;
+/* 44 */ Summ: Mult SummList /* Vec */;
+/* 45 */ SummList /* Vec<T>::Push */: SummList AddOp Mult;
+/* 46 */ SummList /* Vec<T>::New */: ;
+/* 47 */ Mult: Power MultList /* Vec */;
+/* 48 */ MultList /* Vec<T>::Push */: MultList MultOp Power;
+/* 49 */ MultList /* Vec<T>::New */: ;
+/* 50 */ Power: Factor PowerList /* Vec */;
+/* 51 */ PowerList /* Vec<T>::Push */: PowerList PowOp Factor;
+/* 52 */ PowerList /* Vec<T>::New */: ;
+/* 53 */ Negate: Minus;
+/* 54 */ Factor: Number;
+/* 55 */ Factor: Negate Factor;
+/* 56 */ Factor: IdRef;
+/* 57 */ Factor: '('^ /* Clipped */ LogicalOr ')'^ /* Clipped */;
+/* 58 */ Number: /0|[1-9][0-9]*/ : crate::calc_grammar::Number;
+/* 59 */ IdRef: Id;
+/* 60 */ Id: /[a-zA-Z_][a-zA-Z0-9_]*/;
