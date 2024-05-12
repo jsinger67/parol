@@ -20,13 +20,10 @@ $FileCount = 0
 $FilesWithErrors = @()
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
-cargo build $CargoConfig
+cargo build $CargoConfig --example toml
 if ($LASTEXITCODE -ne 0) {
     Exit 1
 }
-
-$target = "./../../target/$Config/parol_toml"
-
 function  Invoke-SingleFile {
     param (
         [string] $fileName
@@ -36,9 +33,9 @@ function  Invoke-SingleFile {
     }
     $Script:FileCount++
     if ($Script:Verbose) {
-        Write-Host "$target $fileName -q" -ForegroundColor Yellow
+        Write-Host "cargo run $CargoConfig --example toml $fileName -q" -ForegroundColor Yellow
     }
-    &$target $fileName -q
+    cargo run $CargoConfig --example toml $fileName -q
     if (-not $?) {
         # Failed
         if (-not $NegativeTests) {

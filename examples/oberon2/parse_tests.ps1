@@ -3,7 +3,7 @@ $Config = "release"
 $CargoConfig = if ($Config -eq "release") { "--release" } else { $null }
 
 Write-Host "Building $Config. Please wait..." -ForegroundColor Cyan
-cargo build $CargoConfig
+cargo build $CargoConfig --example oberon2
 if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
@@ -14,15 +14,12 @@ if ($LASTEXITCODE -ne 0) {
     ++$ErrorCount    
 }
 
-$target = "./../../target/$Config/oberon2"
-
-
 # --------------------------------------------------------------------------------------------------
 Write-Host "Running oberon2 on some example files..." -ForegroundColor Cyan
 Get-ChildItem ./Oberon2Source/*.mod |
 ForEach-Object {
     Write-Host "Parsing $($_.FullName)..." -ForegroundColor Yellow
-    &$target $_.FullName -q
+    cargo run $CargoConfig --example oberon2 $_.FullName -q
     if ($LASTEXITCODE -ne 0) {
         ++$ErrorCount    
     }

@@ -23,16 +23,22 @@ args = ["build", "--bin", "parol"]
 workspace = false
 dependencies = ["build_parol"]
 run_task = { name = [
+    "generate_basic",
     "generate_boolean_parser",
     "generate_calc_auto",
     "generate_calc",
+    "generate_calc_lr",
+    "generate_json_parser",
+    "generate_json_parser_auto",
     "generate_keywords",
     "generate_keywords2",
     "generate_list_auto",
     "generate_list_lr",
     "generate_list",
     "generate_oberon_0",
+    "generate_oberon2",
     "generate_scanner_states",
+    "generate_toml",
 ], parallel = true }
 
 [tasks.generate_parol]
@@ -44,6 +50,12 @@ script = '''
 echo "Building parol's parser sources..."
 ${PAROL_TARGET} -f ./src/parser/parol.par -e ./src/parser/parol-exp.par -p ./src/parser/parol_parser.rs -a ./src/parser/parol_grammar_trait.rs -t ParolGrammar -m parser::parol_grammar -g -b
 '''
+
+[tasks.generate_basic]
+private = true
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}/crates/parol"
+command = "cargo"
+args = ["build", "--example", "basic"]
 
 [tasks.generate_calc]
 private = true
@@ -62,6 +74,24 @@ script = '''
 echo "Building CalcAuto example..."
 ${PAROL_TARGET} -f ../../examples/calc_auto/calc.par -e ../../examples/calc_auto/calc-exp.par -p ../../examples/calc_auto/calc_parser.rs -a ../../examples/calc_auto/calc_grammar_trait.rs -t CalcGrammar -m calc_grammar -g -b
 '''
+
+[tasks.generate_calc_lr]
+private = true
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+command = "cargo"
+args = ["build", "--example", "calc_lr"]
+
+[tasks.generate_json_parser]
+private = true
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+command = "cargo"
+args = ["build", "--example", "json_parser"]
+
+[tasks.generate_json_parser_auto]
+private = true
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+command = "cargo"
+args = ["build", "--example", "json_parser_auto"]
 
 [tasks.generate_list]
 private = true
@@ -95,6 +125,11 @@ script = '''
 echo "Building Oberon-0 example..."
 ${PAROL_TARGET} -f ../../examples/oberon_0/oberon_0.par -e ../../examples/oberon_0/oberon_0-exp.par -p ../../examples/oberon_0/oberon_0_parser.rs -a ../../examples/oberon_0/oberon_0_grammar_trait.rs -t Oberon0Grammar -m oberon_0_grammar
 '''
+[tasks.generate_oberon2]
+private = true
+cwd = "${CARGO_MAKE_WORKSPACE_WORKING_DIRECTORY}"
+command = "cargo"
+args = ["build", "--example", "oberon2"]
 
 [tasks.generate_scanner_states]
 private = true
