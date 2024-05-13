@@ -55,6 +55,10 @@ pub(crate) struct CliArgs {
     #[arg(short = 's', long = "svg")]
     pub generate_tree_graph: bool,
 
+    /// Configures the generated parser to trim the parse tree
+    #[arg(short = 'x', long = "trim")]
+    pub trim_parse_tree: bool,
+
     /// Increased verbosity
     #[arg(short, long)]
     pub verbose: bool,

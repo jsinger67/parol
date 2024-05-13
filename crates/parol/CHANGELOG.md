@@ -27,6 +27,14 @@ new minor version numbers. Please note that this is no version handling covered 
 - Cleanup structure of examples folder. All examples are now listed in crate `parol`'s Cargo.toml
 - New example `calc_lr` to showcase LALR(1) parsing with `parol`
 - Parse tree generation for LR grammars is now available
+- Add the missing command line option `trim_parse_tree` to `parol`'s arguments, see `parol help` for
+more details
+    
+    This configuration was not available until now. If you didn't use a build script and call the
+    `parol` binary to generate your source you weren't able to activate this configuration.
+    The `trim_parse_tree` option is useful if you don't need a parse tree after finishing the parse
+    process. It mostly saves runtime effort and speeds up the parsing performance as well as the
+    memory consumption.
 
 ## 0.28.0 - 2024-04-29
 
